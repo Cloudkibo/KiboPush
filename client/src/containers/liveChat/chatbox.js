@@ -75,8 +75,10 @@ class ChatBox extends React.Component {
       displayUrlMeta: false,
       showStickers: false,
       isShowingModal: false,
+      isShowingModalRecording: false,
       disabledValue: false,
-      record: false
+      record: false,
+      buttonState: 'start'
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -113,12 +115,23 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogRecording = this.showDialogRecording.bind(this)
+    this.closeDialogRecording = this.closeDialogRecording.bind(this)
     this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
     this.getDisabledValue = this.getDisabledValue.bind(this)
     this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
   }
+
+  showDialogRecording () {
+    this.setState({isShowingModalRecording: true})
+  }
+
+  closeDialogRecording () {
+    this.setState({isShowingModalRecording: false})
+  }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
@@ -202,14 +215,12 @@ class ChatBox extends React.Component {
   }
 
   startRecording () {
-    this.setState({
-      record: true
-    })
+    this.setState({record: true, buttonState: 'stop'})
   }
 
   stopRecording () {
     this.setState({
-      record: false
+      record: false, buttonState: 'start'
     })
   }
 
@@ -217,12 +228,11 @@ class ChatBox extends React.Component {
     console.log('chunk of real-time data is: ', recordedBlob)
   }
 
-  onStop (recordedBlob) {
+  onStop (recordedBlob, e) {
+    this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    console.log('readasdat', recordedBlob.readAsDataURL(recordedBlob))
-    var file = new File([recordedBlob], 'audio.m4a', {type: 'audio/webm;codecs=opus', lastModified: Date.now()})
+    var file = new File([recordedBlob], 'audio.m4a', {type: recordedBlob.type, lastModified: Date.now()})
     console.log('file', file)
-    console.log('readasdat', file.readAsDataURL(file))
     if (file) {
       this.resetFileComponent()
       this.setState({
@@ -713,6 +723,48 @@ class ChatBox extends React.Component {
                   </button>
                 </div>
               </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalRecording &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogRecording}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogRecording}>
+              <h3>Voice Recording</h3>
+              <div>
+                <ReactMic style={{width: '450px'}}
+                  height='100'
+                  width='450'
+                  record={this.state.record}
+                  className='sound-wave'
+                  onStop={this.onStop}
+                  strokeColor='#000000' />
+              </div>
+              <br />
+              {this.state.buttonState === 'start'
+              ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
+                <div style={{display: 'block', fontSize: '14px'}}>
+                  <div style={{height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}></div>
+                  <a role='button' title='Record' onClick={this.startRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
+                    <div style={{backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                      <span style={{left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}>Record</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              : <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
+                <div style={{display: 'block', fontSize: '14px'}}>
+                  <div style={{height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}></div>
+                  <a role='button' title='Record' onClick={this.stopRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
+                    <div style={{borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                      <span style={{height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}></span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            }
             </ModalDialog>
           </ModalContainer>
         }
@@ -1312,7 +1364,7 @@ class ChatBox extends React.Component {
                       }
                     </div>
                     <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
-                      <i onClick={this.showRecorder} style={styles.iconclass}>
+                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
                         <i style={{
                           fontSize: '20px',
                           position: 'absolute',
