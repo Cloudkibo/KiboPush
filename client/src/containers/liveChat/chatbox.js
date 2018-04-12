@@ -219,6 +219,34 @@ class ChatBox extends React.Component {
 
   onStop (recordedBlob) {
     console.log('recordedBlob is: ', recordedBlob)
+    var newFile = new File([recordedBlob], 'audioRecording', {type: 'audio/x-m4a', lastModified: Date.now()})
+    console.log('recordedBlob', newFile)
+    var files = newFile
+    var file = newFile[files.length - 1]
+    if (file) {
+      this.resetFileComponent()
+      this.setState({
+        attachment: file,
+        attachmentType: file.type
+      })
+      this.setComponentType(file)
+      if (file.type === 'text/javascript' || file.type === 'text/exe') {
+        this.msg.error('Cannot add js or exe files. Please select another file')
+      } else if (file.size > 25000000) {
+        this.msg.error('Files greater than 25MB not allowed')
+      } else {
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        fileData.append('componentType', this.state.componentType)
+        console.log('file', file)
+        this.setState({uploadDescription: 'File is uploading..'})
+        this.props.uploadAttachment(fileData, this.handleUpload)
+      }
+    }
+    this.textInput.focus()
   }
 
   showStickers () {
@@ -439,6 +467,7 @@ class ChatBox extends React.Component {
 
   onFileChange (e) {
     var files = e.target.files
+    console.log('e.target.files', e.target.files)
     var file = e.target.files[files.length - 1]
     if (file) {
       this.resetFileComponent()
