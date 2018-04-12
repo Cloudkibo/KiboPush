@@ -232,7 +232,7 @@ class ChatBox extends React.Component {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
     var file = new File([recordedBlob], 'audio.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
-    console.log('file', file)
+    console.log('files', file)
     if (file) {
       this.resetFileComponent()
       this.setState({
