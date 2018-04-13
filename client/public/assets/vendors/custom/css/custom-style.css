@@ -56,6 +56,12 @@ input.select2-search__field {
  .panel-heading.guidelines-heading:hover{
     background-color:#ebedf2;
   }
+  .panel-heading.dashboard-heading:hover{
+     background-color:#ebedf2 !important;
+   }
+   .panel-heading.dashboard-heading{
+      background-color:white !important;
+    }
   .linkMessageTypes:hover {
     text-decoration: underline !important;
   }
