@@ -24,6 +24,8 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import Reports from '../operationalDashboard/reports'
 import TopPages from './topPages'
 import moment from 'moment'
+import fileDownload from 'js-file-download'
+var json2csv = require('json2csv')
 
 class Dashboard extends React.Component {
   constructor (props, context) {
@@ -48,10 +50,70 @@ class Dashboard extends React.Component {
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
     this.includeZeroCounts = this.includeZeroCounts.bind(this)
     this.setChartData = this.setChartData.bind(this)
+    this.exportDashboardInformation = this.exportDashboardInformation.bind(this)
+    this.prepareExportData = this.prepareExportData.bind(this)
+    this.formatDate = this.formatDate.bind(this)
   }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
+  }
+  formatDate (data) {
+    for (var i = 0; i < data.length; i++) {
+      var recordId = data[i]._id
+      var date = `${recordId.year}-${recordId.month}-${recordId.day}`
+      data[i]._id = date
+    }
+    return data
+  }
+  prepareExportData () {
+    var data = []
+    var dashboardObj = {}
+    if (this.props.dashboard) {
+      dashboardObj = {
+        'User': this.props.dashboard.username,
+        'Connected Pages': this.props.dashboard.pages,
+        'Total Pages': this.props.dashboard.totalPages,
+        'Unread Count': this.props.dashboard.unreadCount,
+        'Activity': this.props.dashboard.activityChart,
+        'Subscribers': this.props.dashboard.subscribers
+      }
+    }
+    if (this.props.sentseendata) {
+      dashboardObj['Broadcast Sent/Seen'] = this.props.sentseendata.broadcast
+      dashboardObj['Polls Sent/Seen'] = this.props.sentseendata.poll
+      dashboardObj['Surveys Sent/Seen'] = this.props.sentseendata.survey
+    }
+    if (this.props.graphData) {
+      dashboardObj['No.of broadcasts created on different days'] = this.formatDate(this.props.graphData.broadcastsgraphdata)
+      dashboardObj['No.of polls created on different days'] = this.formatDate(this.props.graphData.pollsgraphdata)
+      dashboardObj['No.of surveys created on different days'] = this.formatDate(this.props.graphData.surveysgraphdata)
+      dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
+    }
+    if (this.props.topPages && this.props.topPages.length > 1) {
+      for (var i = 0; i < this.props.topPages.length; i++) {
+        dashboardObj['Top Page ' + (i + 1)] = this.props.topPages[i]
+      }
+    }
+    data.push(dashboardObj)
+    return data
+  }
+  exportDashboardInformation () {
+    var data = this.prepareExportData()
+    var info = data
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
+      if (err) {
+      } else {
+        fileDownload(csv, 'Dashboard.csv')
+      }
+    })
   }
   onDaysChange (e) {
     var defaultVal = 10
@@ -292,6 +354,16 @@ class Dashboard extends React.Component {
             </div>
           }
           <div className='row'>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                <span>
+                  <i className='fa fa-download' />
+                  <span>
+                    Export Records in CSV File
+                  </span>
+                </span>
+              </button>
+            </div>
             {
               this.props.pages && this.props.pages.length > 0 &&
               <PageLikesSubscribers connectedPages={this.props.pages} />
