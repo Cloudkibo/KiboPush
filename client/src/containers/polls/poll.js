@@ -112,7 +112,7 @@ class Poll extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.polls && nextProps.polls.length > 0) {
+    if (nextProps.polls) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
