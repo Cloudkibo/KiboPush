@@ -59,12 +59,14 @@ class Dashboard extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   formatDate (data) {
+    var formattedData = []
     for (var i = 0; i < data.length; i++) {
       var recordId = data[i]._id
       var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      data[i]._id = date
+      var tempObj = {'_id': date, 'count': data[i].count}
+      formattedData.push(tempObj)
     }
-    return data
+    return formattedData
   }
   prepareExportData () {
     var data = []
