@@ -63,8 +63,8 @@ class Dashboard extends React.Component {
       }
       this.props.loadGraphData(value)
     } else if (value === '') {
-      this.setState({selectedDays: defaultVal})
-      this.props.loadGraphData(value)
+      this.setState({selectedDays: ''})
+      this.props.loadGraphData(defaultVal)
     }
   }
   componentWillReceiveProps (nextprops) {
@@ -128,7 +128,7 @@ class Dashboard extends React.Component {
   }
   includeZeroCounts (data) {
     var dataArray = []
-    var days = this.state.selectedDays
+    var days = this.state.selectedDays !== '' ? this.state.selectedDays : '10'
     var index = 0
     var varDate = moment()
     for (var i = 0; i < days; i++) {

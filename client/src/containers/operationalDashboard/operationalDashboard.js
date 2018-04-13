@@ -130,7 +130,7 @@ class OperationalDashboard extends React.Component {
       this.props.loadPollsGraphData(value)
       this.props.loadSurveysGraphData(value)
     } else if (value === '') {
-      this.setState({selectedDays: defaultVal})
+      this.setState({selectedDays: ''})
       this.props.loadBroadcastsGraphData(defaultVal)
       this.props.loadPollsGraphData(defaultVal)
       this.props.loadSurveysGraphData(defaultVal)
@@ -179,7 +179,7 @@ class OperationalDashboard extends React.Component {
   }
   includeZeroCounts (data) {
     var dataArray = []
-    var days = this.state.selectedDays
+    var days = this.state.selectedDays !== '' ? this.state.selectedDays : '10'
     var index = 0
     var varDate = moment()
     for (var i = 0; i < days; i++) {
