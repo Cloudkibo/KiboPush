@@ -356,16 +356,6 @@ class Dashboard extends React.Component {
             </div>
           }
           <div className='row'>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                <span>
-                  <i className='fa fa-download' />
-                  <span>
-                    Export Records in CSV File
-                  </span>
-                </span>
-              </button>
-            </div>
             {
               this.props.pages && this.props.pages.length > 0 &&
               <PageLikesSubscribers connectedPages={this.props.pages} />
@@ -393,6 +383,18 @@ class Dashboard extends React.Component {
               onDaysChange={this.onDaysChange}
               selectedDays={this.state.selectedDays}
               />
+          </div>
+          <div className='row'>
+            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                <span>
+                  <i className='fa fa-download' />
+                  <span>
+                    Export Records in CSV File
+                  </span>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
