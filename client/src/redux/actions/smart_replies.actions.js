@@ -28,6 +28,7 @@ export function loadBotsList () {
     callApi('bots')
       .then(res => {
         if (res.status === 'success') {
+          console.log("List the sequence of bots". res.payload)
           dispatch(showBotsList(res.payload))
         }
       })

@@ -12,7 +12,18 @@ let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
 exports.index = function (req, res) {
-  return res.status(200).json({status: 'success', payload: {message: 'Bot is working'}})
+  Bots.
+    find({
+      userId: req.user._id,
+    }, (err, bots) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        });
+      }
+      return res.status(200).json({status: 'success', payload: bots});
+    });
 }
 
 exports.create = function (req, res) {
