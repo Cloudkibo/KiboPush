@@ -27,7 +27,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-
+    var uniquebotName = req.body.botName + req.user._id  + new Date().today() + " @ " + new Date().timeNow();
     request(
       {
         'method': 'POST',
@@ -37,7 +37,7 @@ exports.create = function (req, res) {
             'Content-Type': 'application/json'
         },
         body:{
-           "name":req.body.botName + req.user._id,
+           "name": uniquebotName,
            "lang":"en",
            "private":"false"
          },
@@ -64,7 +64,7 @@ exports.create = function (req, res) {
                 botName: req.body.botName,
                 witAppId: witres.body.app_id,
                 witToken: witres.body.access_token,
-                witAppName: req.body.botName + req.user._id  + new Date().today() + " @ " + new Date().timeNow(),
+                witAppName: uniquebotName,
                 isActive: req.body.isActive,
               })
 
