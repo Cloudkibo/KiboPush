@@ -181,7 +181,7 @@ class Sidebar extends Component {
   }
 
   showSmartRespliesItem () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user && this.props.user.isSuperUser || true) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/bots' className='m-menu__link m-menu__toggle'>
