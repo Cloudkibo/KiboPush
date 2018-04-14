@@ -228,10 +228,10 @@ class ChatBox extends React.Component {
     console.log('chunk of real-time data is: ', recordedBlob)
   }
 
-  onStop (recordedBlob, e) {
+  onStop (recordedBlob) {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob], 'audio.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
+    var file = new File([recordedBlob.blob], 'audio.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
     console.log('files', file)
     if (file) {
       this.resetFileComponent()
@@ -746,7 +746,7 @@ class ChatBox extends React.Component {
               {this.state.buttonState === 'start'
               ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
                 <div style={{display: 'block', fontSize: '14px'}}>
-                  <div style={{height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}></div>
+                  <div style={{height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}} />
                   <a role='button' title='Record' onClick={this.startRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
                     <div style={{backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
                       <span style={{left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}>Record</span>
