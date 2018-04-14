@@ -98,6 +98,22 @@ exports.status = function (req, res) {
 }
 
 exports.details = function (req, res) {
+  logger.serverLog(TAG,
+              `Bot details are following ${JSON.stringify(req.body)}`)
+  Bots.
+    find({
+      _id: req.body.botId,
+    }, (err, bot) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        });
+      }
+        logger.serverLog(TAG,
+              `returning Bot details ${JSON.stringify(bot)}`)
+      return res.status(200).json({status: 'success', ...bot});
+    });
     return res.status(200).json({status: "Details Working"})
 }
 
