@@ -29,7 +29,7 @@ exports.create = function (req, res) {
             'Content-Type': 'application/json'
         },
         body:{
-           "name":req.body.botName + req.body.userId,
+           "name":req.body.botName + req.user._id,
            "lang":"en",
            "private":"false"
          },
@@ -52,11 +52,11 @@ exports.create = function (req, res) {
               
               const bot = new Bots({
                 pageId: req.body.pageId, // TODO ENUMS
-                userId: req.body.userId,
+                userId: req.user._id,
                 botName: req.body.botName,
                 witAppId: witres.body.app_id,
                 witToken: witres.body.access_token,
-                witAppName: req.body.botName + req.body.userId,
+                witAppName: req.body.botName + req.user._id,
                 isActive: req.body.isActive,
               })
 
@@ -75,10 +75,24 @@ exports.create = function (req, res) {
         }
       })
 
-     
-
-      // save model to MongoDB
-
-  
+      // save model to MongoDB  
 }
+
+exports.edit = function (req, res) {
+    return res.status(200).json({status: "Edit Working"})
+}
+
+exports.status = function (req, res) {
+    return res.status(200).json({status: "Status Working"})
+}
+
+exports.details = function (req, res) {
+    return res.status(200).json({status: "Details Working"})
+}
+
+exports.delete = function (req, res) {
+    return res.status(200).json({status: "Delete Working"})
+}
+
+
 
