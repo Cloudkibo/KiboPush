@@ -19,7 +19,7 @@ class Gallery extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} handleCard={this.handleCard} />, key: 2}],
+      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} />, key: 2}],
       showPlus: false
     }
   }
@@ -43,7 +43,7 @@ class Gallery extends React.Component {
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         cards[i].id = i
-        card = {element: <Card id={i} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        card = {element: <Card id={i} button_id={props.id} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
         cardMessage.push(cards[i])
         temp.push(card)
       }
@@ -63,7 +63,7 @@ class Gallery extends React.Component {
 
   addSlide () {
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} handleCard={this.handleCard} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} button_id={props.id} handleCard={this.handleCard} />, key: temp.length + 1}]})
     this.slider.slickNext()
   }
 

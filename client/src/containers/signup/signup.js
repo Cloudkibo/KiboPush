@@ -227,14 +227,15 @@ class Signup extends React.Component {
                     { (this.state.account_type === 'none') &&
                       <div className='m-login__form m-form'>
                         <center>
-                          <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'individual'}) }}>
-                           Create Individual Account
-                          </button>
+                          We are not accepting new sign ups for now as Facebook Platform Access is temporarily disabled.
+                          {/* <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'individual'}) }}> */}
+                          {/* Create Individual Account */}
+                          {/* </button> */}
                           <br />
                           <br />
-                          <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'team'}) }}>
-                            Create Team Account
-                          </button>
+                          {/* <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { this.setState({account_type: 'team'}) }}> */}
+                          {/* Create Team Account */}
+                          {/* </button> */}
                           <br />
                           <br />
                           <span>

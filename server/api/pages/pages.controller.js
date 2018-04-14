@@ -5,7 +5,6 @@
 const logger = require('../../components/logger')
 const Pages = require('./Pages.model')
 const TAG = 'api/pages/pages.controller.js'
-const Users = require('../user/Users.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')
@@ -496,6 +495,15 @@ exports.otherPages = function (req, res) {
     })
 }
 
+function exists (list, content) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].pageId === content) {
+      return true
+    }
+  }
+  return false
+}
+
 exports.addPages = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
@@ -511,32 +519,33 @@ exports.addPages = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      Users.findOne({fbId: req.user.fbId}, (err, user) => {
+      Pages.find({companyId: companyUser.companyId}, (err, pages) => {
         if (err) {
           return res.status(500).json({status: 'failed', description: err})
         }
-        Pages.find({userId: req.user._id}, (err, pages) => {
-          if (err) {
-            return res.status(500).json({status: 'failed', description: err})
-          }
-          Pages.find({companyId: companyUser.companyId, connected: true},
-            (err, connectedPages) => {
-              if (err) {
-                return res.status(500)
-                  .json({status: 'failed', description: err})
-              }
-              for (let a = 0; a < connectedPages.length; a++) {
-                for (let b = 0; b < pages.length; b++) {
-                  if (connectedPages[a].pageId === pages[b].pageId) {
-                    pages[b].connected = true
-                  }
+        Pages.find({companyId: companyUser.companyId, connected: true},
+          (err, connectedPages) => {
+            if (err) {
+              return res.status(500)
+                .json({status: 'failed', description: err})
+            }
+            for (let a = 0; a < connectedPages.length; a++) {
+              for (let b = 0; b < pages.length; b++) {
+                if (connectedPages[a].pageId === pages[b].pageId) {
+                  pages[b].connected = true
                 }
               }
-              res.status(201).json({status: 'success', payload: pages})
-            })
-        })
-        //  return res.status(200).json({ status: 'success', payload: user});
+            }
+            let pagesSend = []
+            for (let i = 0; i < pages.length; i++) {
+              if (exists(pagesSend, pages[i].pageId) === false) {
+                pagesSend.push(pages[i])
+              }
+            }
+            res.status(201).json({status: 'success', payload: pagesSend})
+          })
       })
+      //  return res.status(200).json({ status: 'success', payload: user});
     })
 }
 exports.createWelcomeMessage = function (req, res) {

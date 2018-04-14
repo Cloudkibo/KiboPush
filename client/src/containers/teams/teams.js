@@ -229,16 +229,19 @@ class Teams extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='/createTeam'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            <span>
-                              <i className='la la-plus' />
+                        {
+                          this.props.user.role !== 'agent' &&
+                          <Link to='/createTeam'>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                               <span>
-                                Create New Team
+                                <i className='la la-plus' />
+                                <span>
+                                  Create New Team
+                                </span>
                               </span>
-                            </span>
-                          </button>
-                        </Link>
+                            </button>
+                          </Link>
+                        }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -318,12 +321,18 @@ class Teams extends React.Component {
                                             <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(team)}>
                                               View
                                             </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(team)}>
-                                              Edit
-                                            </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(team._id)}>
-                                              Delete
-                                            </button>
+                                            {
+                                              this.props.user.role !== 'agent' &&
+                                              <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(team)}>
+                                                Edit
+                                              </button>
+                                            }
+                                            {
+                                              this.props.user.role !== 'agent' &&
+                                              <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(team._id)}>
+                                                Delete
+                                              </button>
+                                            }
                                           </span>
                                         </td>
                                       </tr>
@@ -370,7 +379,8 @@ function mapStateToProps (state) {
   return {
     teams: (state.teamsInfo.teams),
     teamUniquePages: (state.teamsInfo.teamUniquePages),
-    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents)
+    teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
+    user: (state.basicInfo.user)
   }
 }
 

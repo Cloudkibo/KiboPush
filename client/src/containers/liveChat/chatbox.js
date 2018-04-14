@@ -13,14 +13,16 @@ import {
   sendChatMessage,
   fetchUrlMeta,
   markRead,
-  changeStatus
+  changeStatus,
+  sendNotifications,
+  fetchTeamAgents
 } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-// import Popover from 'react-simple-popover'
-import Popover from '../../components/Popover/popover'
+import Popover from 'react-simple-popover'
+// import Popover from '../../components/Popover/popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
 import {
@@ -30,6 +32,7 @@ import {
   showDate,
   validURL
 } from './utilities'
+import { ReactMic } from 'react-mic'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
@@ -65,12 +68,17 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       showGifPicker: false,
+      showRecorder: false,
       gifUrl: '',
       urlmeta: '',
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
-      isShowingModal: false
+      isShowingModal: false,
+      isShowingModalRecording: false,
+      disabledValue: false,
+      record: false,
+      buttonState: 'start'
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -86,6 +94,12 @@ class ChatBox extends React.Component {
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
+    this.showRecorder = this.showRecorder.bind(this)
+    this.closeRecorder = this.closeRecorder.bind(this)
+    this.startRecording = this.startRecording.bind(this)
+    this.stopRecording = this.stopRecording.bind(this)
+    this.onData = this.onData.bind(this)
+    this.onStop = this.onStop.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.showStickers = this.showStickers.bind(this)
@@ -101,7 +115,23 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogRecording = this.showDialogRecording.bind(this)
+    this.closeDialogRecording = this.closeDialogRecording.bind(this)
+    this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
+    this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
+    this.getDisabledValue = this.getDisabledValue.bind(this)
+    this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
+    this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
   }
+
+  showDialogRecording () {
+    this.setState({isShowingModalRecording: true})
+  }
+
+  closeDialogRecording () {
+    this.setState({isShowingModalRecording: false})
+  }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
@@ -109,12 +139,49 @@ class ChatBox extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+
+  handleAgentsForDisbaledValue (teamAgents) {
+    let agentIds = []
+    console.log('handleAgentsForDisbaledValue', teamAgents)
+    for (let i = 0; i < teamAgents.length; i++) {
+      agentIds.push(teamAgents[i].agentId._id)
+    }
+    console.log('agentIds', agentIds)
+    if (!agentIds.includes(this.props.user._id)) {
+      console.log('this.props.user._id', this.props.user._id)
+      this.setState({disabledValue: true})
+    }
+  }
+
+  getDisabledValue () {
+    this.setState({disabledValue: false})
+    if (this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+        this.setState({disabledValue: true})
+      } else if (this.props.currentSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForDisbaledValue)
+      }
+    }
+  }
+
+  getRepliedByMsg (msg) {
+    if (
+      (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
+      msg.replied_by && msg.replied_by.type === 'agent' && this.props.user._id !== msg.replied_by.id
+    ) {
+      return `${msg.replied_by.name} replied`
+    } else {
+      return 'You replied'
+    }
+  }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.0/js/swiper.min.js')
     document.body.appendChild(addScript)
     this.scrollToBottom()
     this.scrollToTop()
+    this.getDisabledValue()
   }
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
@@ -136,6 +203,59 @@ class ChatBox extends React.Component {
 
   closeEmojiPicker () {
     this.setState({showEmojiPicker: false})
+  }
+
+  showRecorder () {
+    this.setState({showRecorder: true})
+    console.log('in recorder')
+  }
+
+  closeRecorder () {
+    this.setState({showRecorder: false})
+  }
+
+  startRecording () {
+    this.setState({record: true, buttonState: 'stop'})
+  }
+
+  stopRecording () {
+    this.setState({
+      record: false, buttonState: 'start'
+    })
+  }
+
+  onData (recordedBlob) {
+    console.log('chunk of real-time data is: ', recordedBlob)
+  }
+
+  onStop (recordedBlob, e) {
+    this.closeDialogRecording()
+    console.log('recordedBlob is: ', recordedBlob)
+    var file = new File([recordedBlob], 'audio.m4a', {type: 'audio/x-m4a', lastModified: Date.now()})
+    console.log('files', file)
+    if (file) {
+      this.resetFileComponent()
+      this.setState({
+        attachment: file,
+        attachmentType: file.type
+      })
+      this.setComponentType(file)
+      if (file.type === 'text/javascript' || file.type === 'text/exe') {
+        this.msg.error('Cannot add js or exe files. Please select another file')
+      } else if (file.size > 25000000) {
+        this.msg.error('Files greater than 25MB not allowed')
+      } else {
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        fileData.append('componentType', this.state.componentType)
+        this.setState({uploadDescription: 'File is uploading..'})
+        this.props.uploadAttachment(fileData, this.handleUpload)
+      }
+    }
+    this.textInput.focus()
   }
 
   showStickers () {
@@ -271,50 +391,56 @@ class ChatBox extends React.Component {
     var isUrl = getmetaurl(this.state.textAreaValue)
     if (e.which === 13) {
       e.preventDefault()
-      var payload = {}
-      var session = this.props.currentSession
-      var data = {}
-      if (this.state.uploadedId !== '' && this.state.attachment) {
-        payload = this.setDataPayload('attachment')
-        data = this.setMessageData(session, payload)
-        this.props.sendAttachment(data, this.handleSendAttachment)
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (isUrl !== null && isUrl !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.textAreaValue !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.setState({textAreaValue: ''})
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'gif') {
-        payload = this.setDataPayload('gif')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.closeGif()
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'sticker') {
-        payload = this.setDataPayload('sticker')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data)
-        this.hideStickers()
-        data.format = 'convos'
-        this.props.userChat.push(data)
-      } else if (this.state.componentType === 'thumbsUp') {
-        payload = this.setDataPayload('thumbsUp')
-        data = this.setMessageData(session, payload)
-        this.props.sendChatMessage(data, session.companyId)
-        data.format = 'convos'
-        this.props.userChat.push(data)
-        this.setState({textAreaValue: ''})
+      if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent') {
+        this.msg.error('You can not send message. Only assigned agent can send messages.')
+      } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team') {
+        this.msg.error('You can not send message. Only agents who are part of assigned team can send messages.')
+      } else {
+        var payload = {}
+        var session = this.props.currentSession
+        var data = {}
+        if (this.state.uploadedId !== '' && this.state.attachment) {
+          payload = this.setDataPayload('attachment')
+          data = this.setMessageData(session, payload)
+          this.props.sendAttachment(data, this.handleSendAttachment)
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (isUrl !== null && isUrl !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.setState({textAreaValue: '', urlmeta: {}, displayUrlMeta: false})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.textAreaValue !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.setState({textAreaValue: ''})
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'gif') {
+          payload = this.setDataPayload('gif')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.closeGif()
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'sticker') {
+          payload = this.setDataPayload('sticker')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          this.hideStickers()
+          data.format = 'convos'
+          this.props.userChat.push(data)
+        } else if (this.state.componentType === 'thumbsUp') {
+          payload = this.setDataPayload('thumbsUp')
+          data = this.setMessageData(session, payload)
+          this.props.sendChatMessage(data)
+          data.format = 'convos'
+          this.props.userChat.push(data)
+          this.setState({textAreaValue: ''})
+        }
       }
     }
   }
@@ -350,6 +476,7 @@ class ChatBox extends React.Component {
 
   onFileChange (e) {
     var files = e.target.files
+    console.log('e.target.files', e.target.files)
     var file = e.target.files[files.length - 1]
     if (file) {
       this.resetFileComponent()
@@ -369,6 +496,7 @@ class ChatBox extends React.Component {
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
         fileData.append('componentType', this.state.componentType)
+        console.log('file', file)
         this.setState({uploadDescription: 'File is uploading..'})
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
@@ -390,6 +518,7 @@ class ChatBox extends React.Component {
     if (res.status === 'success') {
       this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
+    console.log('res.payload', res.paylaod)
   }
 
   onTestURLVideo (url) {
@@ -409,7 +538,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps in chat box')
+    this.getDisabledValue()
     this.scrollToBottom()
     this.scrollToTop()
     if (nextProps.urlMeta) {
@@ -474,9 +603,81 @@ class ChatBox extends React.Component {
     return `https://www.google.com/maps/place/${payload.coordinates.lat},${payload.coordinates.long}/`
   }
 
+  handleAgentsForResolved (teamAgents) {
+    let agentIds = []
+    console.log('teamAgents', teamAgents)
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
+      }
+    }
+    console.log('agentIds', agentIds)
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+  handleAgentsForReopen (teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: agentIds,
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
   changeStatus (e, status, id) {
-    this.props.changeActiveSessionFromChatbox()
-    this.props.changeStatus({_id: id, status: status}, {company_id: this.props.user._id})
+    if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'resolved') {
+      this.msg.error('You can not resolve chat session. Only assigned agent can resolve it.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'agent' && status === 'new') {
+      this.msg.error('You can not reopen chat session. Only assigned agent can reopen it.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'resolved') {
+      this.msg.error('You can not resolve chat session. Only agents who are part of assigned team can resolve chat session.')
+    } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'new') {
+      this.msg.error('You can not reopen chat session. Only agents who are part of assigned team can reopen chat session.')
+    } else {
+      this.props.changeStatus({_id: id, status: status}, this.props.changeActiveSessionFromChatbox)
+      if (status === 'resolved' && this.props.currentSession.is_assigned) {
+        if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+          let notificationsData = {
+            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been marked resolved by ${this.props.user.name}.`,
+            category: {type: 'chat_session', id: this.props.currentSession._id},
+            agentIds: [this.props.currentSession.assigned_to.id],
+            companyId: this.props.currentSession.company_id
+          }
+          this.props.sendNotifications(notificationsData)
+        } else if (this.props.currentSession.assigned_to.type === 'team') {
+          this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForResolved)
+        }
+      } else if (status === 'new' && this.props.currentSession.is_assigned) {
+        if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
+          let notificationsData = {
+            message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been reopened by ${this.props.user.name}.`,
+            category: {type: 'chat_session', id: this.props.currentSession._id},
+            agentIds: [this.props.currentSession.assigned_to.id],
+            companyId: this.props.currentSession.company_id
+          }
+          this.props.sendNotifications(notificationsData)
+        } else if (this.props.currentSession.assigned_to.type === 'team') {
+          this.props.fetchTeamAgents(this.props.currentSession.assigned_to.id, this.handleAgentsForReopen)
+        }
+      }
+    }
   }
 
   render () {
@@ -522,6 +723,48 @@ class ChatBox extends React.Component {
                   </button>
                 </div>
               </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalRecording &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogRecording}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogRecording}>
+              <h3>Voice Recording</h3>
+              <div>
+                <ReactMic style={{width: '450px'}}
+                  height='100'
+                  width='450'
+                  record={this.state.record}
+                  className='sound-wave'
+                  onStop={this.onStop}
+                  strokeColor='#000000' />
+              </div>
+              <br />
+              {this.state.buttonState === 'start'
+              ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
+                <div style={{display: 'block', fontSize: '14px'}}>
+                  <div style={{height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}></div>
+                  <a role='button' title='Record' onClick={this.startRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
+                    <div style={{backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                      <span style={{left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}>Record</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              : <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
+                <div style={{display: 'block', fontSize: '14px'}}>
+                  <div style={{height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}></div>
+                  <a role='button' title='Record' onClick={this.stopRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
+                    <div style={{borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                      <span style={{height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}></span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            }
             </ModalDialog>
           </ModalContainer>
         }
@@ -574,6 +817,24 @@ class ChatBox extends React.Component {
         >
           <div style={{marginLeft: '-15px', marginTop: '-20px'}}>
             <GiphyPicker onSelected={this.sendGif} />
+          </div>
+        </Popover>
+        <Popover
+          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+          placement='top'
+          height='390px'
+          target={this.recording}
+          show={this.state.showRecorder}
+          onHide={this.closeRecorder}
+        >
+          <div>
+            <ReactMic
+              record={this.state.record}
+              className='sound-wave'
+              onStop={this.onStop}
+              strokeColor='#000000' />
+            <button onClick={this.startRecording}>Start</button>
+            <button onClick={this.stopRecording}>Stop</button>
           </div>
         </Popover>
         <div className='m-portlet m-portlet--mobile'>
@@ -775,6 +1036,9 @@ class ChatBox extends React.Component {
                                       msg.payload.componentType &&
                                       (msg.payload.componentType === 'video'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <ReactPlayer
                                           url={msg.payload.fileurl.url}
                                           controls
@@ -785,6 +1049,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'audio'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <ReactPlayer
                                           url={msg.payload.fileurl.url}
                                           controls
@@ -795,12 +1062,18 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'file'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
                                           <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
                                         </a>
                                       </div>
                                       : msg.payload.componentType === 'card'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <div>
                                           <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                             <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
@@ -825,6 +1098,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'gallery'
                                       ? <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <Slider ref={(c) => { this.slider = c }} {...settings}>
                                           {
                                             msg.payload.cards.map((card, i) => (
@@ -855,6 +1131,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'image'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl.url}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -862,6 +1141,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'gif'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -869,6 +1151,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'sticker'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -876,6 +1161,9 @@ class ChatBox extends React.Component {
                                       </div>
                                       : msg.payload.componentType === 'thumbsUp'
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <img
                                           src={msg.payload.fileurl}
                                           style={{maxWidth: '150px', maxHeight: '85px'}}
@@ -884,6 +1172,9 @@ class ChatBox extends React.Component {
                                       : msg.url_meta && msg.url_meta !== ''
                                       ? (msg.url_meta.type
                                         ? <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           <div style={{clear: 'both', display: 'block'}}>
                                             <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
                                               <table style={{maxWidth: '175px'}}>
@@ -940,6 +1231,9 @@ class ChatBox extends React.Component {
                                           </div>
                                         </div>
                                         : <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           {
                                             validURL(msg.payload.text)
                                             ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
@@ -955,12 +1249,18 @@ class ChatBox extends React.Component {
                                       )
                                       : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div className='m-messenger__message-content'>
+                                        <div className='m-messenger__message-username'>
+                                          {this.getRepliedByMsg(msg)}
+                                        </div>
                                         <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
                                           {msg.payload.text}
                                         </div>
                                       </div>
                                       : <div>
                                         <div className='m-messenger__message-content'>
+                                          <div className='m-messenger__message-username'>
+                                            {this.getRepliedByMsg(msg)}
+                                          </div>
                                           <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                             {msg.payload.text}
                                           </div>
@@ -1063,9 +1363,23 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
+                    <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-microphone' />
+                      </i>
+                    </div>
                     {
                       /*
-                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons1'>
                         <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                           <i style={{
                             fontSize: '20px',
@@ -1223,7 +1537,9 @@ function mapDispatchToProps (dispatch) {
     sendChatMessage: (sendChatMessage),
     fetchUrlMeta: (fetchUrlMeta),
     markRead: (markRead),
-    changeStatus: (changeStatus)
+    changeStatus: (changeStatus),
+    sendNotifications: (sendNotifications),
+    fetchTeamAgents: (fetchTeamAgents)
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatBox)

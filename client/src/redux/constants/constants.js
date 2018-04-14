@@ -64,6 +64,8 @@ export const CLEAR_CURRENT_CUSTOMER_LIST = 'CLEAR_CURRENT_CUSTOMER_LIST'
 // constants for dashboard
 export const UPDATE_DASHBOARD = 'UPDATE_DASHBOARD'
 export const UPDATE_SENT_VS_SEEN = 'UPDATE_SENT_VS_SEEN'
+export const UPDATE_GRAPH_DATA = 'UPDATE_GRAPH_DATA'
+export const UPDATE_TOP_PAGES = 'UPDATE_TOP_PAGES'
 
 // constants for growth tools
 export const SAVE_PHONE_NUMBERS = 'SAVE_PHONE_NUMBERS'
@@ -88,6 +90,8 @@ export const LOADING_URL_META = 'LOADING_URL_META'
 export const GET_URL_META = 'GET_URL_META'
 export const UPDATE_CHAT = 'UPDATE_CHAT'
 export const CHANGE_STATUS = 'CHANGE_STATUS'
+export const SET_ACTIVE_SESSION = 'SET_ACTIVE_SESSION'
+export const RESET_ACTIVE_SESSION = 'RESET_ACTIVE_SESSION'
 
 // constants for login
 export const FORGOT_FAILURE = 'FORGOT_FAILURE'
@@ -188,3 +192,8 @@ export const LOAD_SUBSCRIBER_TAGS = 'LOAD_SUBSCRIBER_TAGS'
 
 // constants for notifications
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
+
+// constants for bots
+export const SHOW_BOTS = 'SHOW_BOTS'
+export const SHOW_CREATED_BOT = 'SHOW_CREATED_BOT'
+export const SHOW_BOT_DETAILS = 'SHOW_BOT_DETAILS'

@@ -6,7 +6,6 @@ const router = express.Router()
 
 const controller = require('./bots.controller')
 // const auth = require('../../auth/auth.service')
-const auth = require('../../auth/auth.service')
 
 router.get('/',
   // auth.isAuthenticated(),
@@ -49,7 +48,6 @@ router.post('/delete',
   // auth.doesPlanPermitsThisAction('workflows'),
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.delete)
-
 
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);

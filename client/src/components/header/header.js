@@ -199,7 +199,7 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
-                          <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger m-animate-blink' />
+                          <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
                         }
                         {this.props.notifications && this.state.unseenNotifications.length > 0
                         ? <span className='m-nav__link-icon m-animate-shake'>
@@ -231,39 +231,45 @@ class Header extends React.Component {
                             <div className='m-dropdown__content'>
                               <div className='tab-content'>
                                 <div className='tab-pane active' id='topbar_notifications_notifications' role='tabpanel' aria-expanded='true'>
-                                  <div className='m-scrollable mCustomScrollbar _mCS_2 mCS-autoHide mCS_no_scrollbar' data-scrollable='true' data-max-height='250' data-mobile-max-height='200' style={{maxHeight: '250px', height: '250px', position: 'relative', overflow: 'visible'}}><div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabindex='0' style={{maxHeight: '250px'}}><div id='mCSB_2_container' className='mCSB_container mCS_y_hidden mCS_no_scrollbar_y' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
-                                    <div className='m-list-timeline m-list-timeline--skin-light'>
-                                      <div className='m-list-timeline__items'>
-                                        {
-                                          this.state.unseenNotifications.map((unseen, i) => (
-                                            <div className='m-list-timeline__item'>
-                                              <span className='m-list-timeline__badge m-list-timeline__badge--brand' />
-                                              <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id)} style={{cursor: 'pointer'}}>
-                                                {unseen.message}
-                                              </span>
-                                              <span className='m-list-timeline__time' style={{width: '100px'}}>
-                                                {unseen.date}
-                                              </span>
+                                  <div className='tab-pane active m-scrollable' role='tabpanel'>
+                                    <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                                      <div style={{height: '300px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                                        <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                                          <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                                            <div className='m-list-timeline m-list-timeline--skin-light'>
+                                              <div className='m-list-timeline__items'>
+                                                {
+                                                  this.state.unseenNotifications.map((unseen, i) => (
+                                                    <div className='m-list-timeline__item'>
+                                                      <span className='m-list-timeline__badge m-list-timeline__badge--brand' />
+                                                      <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id)} style={{cursor: 'pointer'}}>
+                                                        {unseen.message}
+                                                      </span>
+                                                      <span className='m-list-timeline__time' style={{width: '100px'}}>
+                                                        {unseen.date}
+                                                      </span>
+                                                    </div>
+                                                  ))
+                                                }
+                                                { this.state.seenNotifications.map((seen, i) => (
+                                                  <div className='m-list-timeline__item m-list-timeline__item--read'>
+                                                    <span className='m-list-timeline__badge' />
+                                                    <span href='' className='m-list-timeline__text' onClick={() => this.gotoView(seen.category.id, seen._id)} style={{cursor: 'pointer'}}>
+                                                      {seen.message}
+                                                    </span>
+                                                    <span className='m-list-timeline__time' style={{width: '100px'}}>
+                                                      {seen.date}
+                                                    </span>
+                                                  </div>
+                                                ))
+                                              }
+                                              </div>
                                             </div>
-                                          ))
-                                        }
-                                        { this.state.seenNotifications.map((seen, i) => (
-                                          <div className='m-list-timeline__item m-list-timeline__item--read'>
-                                            <span className='m-list-timeline__badge' />
-                                            <span href='' className='m-list-timeline__text' onClick={() => this.gotoView(seen.category.id, seen._id)} style={{cursor: 'pointer'}}>
-                                              {seen.message}
-                                            </span>
-                                            <span className='m-list-timeline__time' style={{width: '100px'}}>
-                                              {seen.date}
-                                            </span>
                                           </div>
-                                        ))
-                                      }
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                  </div>
-                                    <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'none'}}><div className='mCSB_draggerContainer'><div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: '50px', top: '0px', display: 'block', height: '207px', maxHeight: '230px'}}><div className='mCSB_dragger_bar' style={{lineHeight: '50px'}} /></div><div className='mCSB_draggerRail' /></div></div></div>
                                 </div>
                               </div>
                             </div>
@@ -379,20 +385,20 @@ class Header extends React.Component {
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
+                                {this.props.user && this.props.user.role !== 'agent' &&
                                 <li className='m-nav__item'>
                                   <Link to='/addPageWizard' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-list-2' />
                                     <span className='m-nav__link-text'>Setup Using Wizard</span>
                                   </Link>
                                 </li>
-                                {this.props.user && this.props.user.isSuperUser &&
-                                  <li className='m-nav__item'>
-                                    <Link to='/live' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </Link>
-                                  </li>
                                 }
+                                <li className='m-nav__item'>
+                                  <Link to='/liveChat' className='m-nav__link'>
+                                    <i className='m-nav__link-icon flaticon-chat-1' />
+                                    <span className='m-nav__link-text'>Messages</span>
+                                  </Link>
+                                </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' target='_blank' className='m-nav__link'>

@@ -6,8 +6,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Popover from 'react-simple-popover'
+// import Popover from 'react-simple-popover'
 import { isWebURL } from './../../utility/utils'
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
 class Button extends React.Component {
   constructor (props, context) {
@@ -23,6 +24,7 @@ class Button extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.changeTitle = this.changeTitle.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
+    this.handleToggle = this.handleToggle.bind(this)
   }
 
   componentDidMount () {
@@ -35,6 +37,9 @@ class Button extends React.Component {
 
   handleClose (e) {
     this.setState({openPopover: false, title: '', url: ''})
+  }
+  handleToggle () {
+    this.setState({openPopover: !this.state.openPopover})
   }
 
   handleDone () {
@@ -67,26 +72,26 @@ class Button extends React.Component {
 
   render () {
     return (
-      <div id='target' ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-        <h6 onClick={this.handleClick}> + Add Button </h6>
-        <Popover
-          style={{width: '300px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px'}}
-          placement='left'
-          target={this.target}
-          show={this.state.openPopover}
-          onHide={this.handleClose} >
-          <div className='card'>
-            <h5 className='card-header'> Add Button </h5>
-            <div className='card-block' style={{padding: 5}}>
-              <h7 className='card-text'> Button Title: </h7>
-              <input type='text' className='form-control' onChange={this.changeTitle} placeholder='Enter button title' />
-              <h7 className='card-text'> Open this website when user press this button: </h7>
-              <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
-              <br />
-              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+      <div>
+        <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
+          <h6 onClick={this.handleClick}> + Add Button </h6>
+        </div>
+        <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'buttonTarget-' + this.props.button_id} toggle={this.handleToggle}>
+          <PopoverHeader>Add Tags</PopoverHeader>
+          <PopoverBody>
+            <div className='card'>
+              <h5 className='card-header'> Add Button </h5>
+              <div className='card-block' style={{padding: 5}}>
+                <h7 className='card-text'> Button Title: </h7>
+                <input type='text' className='form-control' onChange={this.changeTitle} placeholder='Enter button title' />
+                <h7 className='card-text'> Open this website when user press this button: </h7>
+                <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                <br />
+                <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
+                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+              </div>
             </div>
-          </div>
+          </PopoverBody>
         </Popover>
       </div>
     )

@@ -30,10 +30,11 @@ class Convo extends React.Component {
       broadcastsData: [],
       totalLength: 0,
       filterValue: '',
-      isShowingModal: false
-
+      isShowingModal: false,
+      selectedDays: '',
+      searchValue: ''
     }
-    props.loadBroadcastsList()
+    props.loadBroadcastsList(0)
     props.loadSubscribersList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -43,6 +44,30 @@ class Convo extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+  }
+  onDaysChange (e) {
+    this.setState({
+      filterValue: '',
+      searchValue: ''
+    })
+    var defaultVal = 0
+    var value = e.target.value
+    this.setState({selectedDays: value})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      if (value === '0') {
+        this.setState({
+          selectedDays: ''
+        })
+      }
+      this.props.loadBroadcastsList(value)
+    } else if (value === '') {
+      this.setState({selectedDays: ''})
+      this.props.loadBroadcastsList(defaultVal)
+    }
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -141,6 +166,9 @@ class Convo extends React.Component {
     }
   }
   searchBroadcast (event) {
+    this.setState({
+      searchValue: event.target.value
+    })
     var filtered = []
     if (event.target.value !== '') {
       for (let i = 0; i < this.props.broadcasts.length; i++) {
@@ -298,10 +326,10 @@ class Convo extends React.Component {
                         </div>
                       </div>
                       <div className='form-row'>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                          <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                        <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                          <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
                         </div>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                           <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
                             <option value='' disabled>Filter by type...</option>
                             <option value='text'>text</option>
@@ -314,6 +342,17 @@ class Convo extends React.Component {
                             <option value='miscellaneous'>miscellaneous</option>
                             <option value=''>all</option>
                           </select>
+                        </div>
+                        <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                          <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                            Show records for last:&nbsp;&nbsp;
+                          </span>
+                          <div style={{width: '200px'}}>
+                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                          </div>
+                          <span htmlFor='example-text-input' className='col-form-label'>
+                          &nbsp;&nbsp;days
+                          </span>
                         </div>
                       </div>
                       <div>

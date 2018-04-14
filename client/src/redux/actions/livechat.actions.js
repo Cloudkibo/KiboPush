@@ -35,7 +35,15 @@ export function socketUpdate (data) {
   }
 }
 
+export function setActiveSession (sessionId) {
+  return {
+    type: ActionTypes.SET_ACTIVE_SESSION,
+    activeSession: sessionId
+  }
+}
+
 export function showUserChats (userChat) {
+  console.log('showUserChats response', userChat)
   return {
     type: ActionTypes.SHOW_USER_CHAT,
     userChat
@@ -45,6 +53,12 @@ export function showUserChats (userChat) {
 export function resetSocket () {
   return {
     type: ActionTypes.RESET_SOCKET
+  }
+}
+
+export function resetActiveSession () {
+  return {
+    type: ActionTypes.RESET_ACTIVE_SESSION
   }
 }
 
@@ -77,17 +91,13 @@ export function showChangeStatus (data) {
   }
 }
 
-export function fetchSessions (companyid) {
+export function fetchSessions () {
   return (dispatch) => {
-    callApi('sessions', 'post', companyid)
-      .then(res => dispatch(showChatSessions(res.payload)))
-  }
-}
-
-export function fetchAllSessions (userid) {
-  return (dispatch) => {
-    callApi('sessions/getAll', 'post', userid)
-      .then(res => dispatch(showChatSessions(res.payload)))
+    callApi('sessions')
+      .then(res => {
+        console.log('fetchSessions response', res)
+        dispatch(showChatSessions(res.payload))
+      })
   }
 }
 
@@ -139,10 +149,10 @@ export function sendAttachment (data, handleSendAttachment) {
   }
 }
 
-export function sendChatMessage (data, userId) {
+export function sendChatMessage (data) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions())
     })
   }
 }
@@ -169,26 +179,27 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data, userId) {
+export function changeStatus (data, handleActiveSession) {
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions())
+      handleActiveSession()
     })
   }
 }
 
-export function unSubscribe (data, companyId) {
+export function unSubscribe (data) {
   return (dispatch) => {
     callApi('sessions/unSubscribe', 'post', data).then(res => {
-      dispatch(fetchSessions(companyId))
+      dispatch(fetchSessions())
     })
   }
 }
 
-export function assignToAgent (data, userId) {
+export function assignToAgent (data) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions())
     })
   }
 }
@@ -199,11 +210,11 @@ export function sendNotifications (data) {
   }
 }
 
-export function assignToTeam (data, userId) {
+export function assignToTeam (data) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
-      dispatch(fetchAllSessions(userId))
+      dispatch(fetchSessions())
     })
   }
 }

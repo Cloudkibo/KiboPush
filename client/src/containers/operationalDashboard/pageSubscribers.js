@@ -286,9 +286,12 @@ class PageSubscribers extends React.Component {
                                             style={{height: '55px'}} key={i}>
                                             <td data-field='pages'
                                               className='m-datatable__cell'>
-                                              <img alt='pic'
-                                                src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                                className='img-circle' width='60' height='60' />
+                                              <span
+                                                style={{width: '150px'}}>
+                                                <img alt='pic'
+                                                  src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                                  className='img-circle' width='60' height='60' />
+                                              </span>
                                             </td>
                                             <td data-field='likes'
                                               className='m-datatable__cell'>

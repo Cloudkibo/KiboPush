@@ -2277,6 +2277,666 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+
+  /teams:
+    get:
+      description: Gives all the teams
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  teams:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Teams'
+                  teamUniquePages:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Page'
+                  teamUniqueAgents:
+                    type: array
+                    items:
+                      $ref: '#/definitions/User'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/create:
+    post:
+      description: creates a team
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: formData
+          description: The name of the team
+          required: true
+          type: string
+        - name: descriprion
+          in: formData
+          description: The description of the team
+          required: true
+          type: string
+        - name: teamPages
+          in: formData
+          description: The names of the pages of the team
+          required: true
+          type: array
+          items:
+            type: string
+        - name: teamPagesIds
+          in: formData
+          description: The ids of the pages of the team
+          required: true
+          type: array
+          items:
+            type: string
+        - name: teamAgents
+          in: formData
+          description: The ids of the agents of the team
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Teams'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/update:
+    post:
+      description: updates a team
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The id of the team to team to update
+          required: true
+          type: string
+        - name: name
+          in: formData
+          description: The name of the team
+          required: true
+          type: string
+        - name: descriprion
+          in: formData
+          description: The description of the team
+          required: true
+          type: string
+        - name: teamPages
+          in: formData
+          description: The names of the pages of the team
+          required: true
+          type: array
+          items:
+            type: string
+        - name: teamPagesIds
+          in: formData
+          description: The ids of the pages of the team
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Teams'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/delete/:id:
+    delete:
+      description: Delete a team
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/addAgent:
+    post:
+      description: Adds an agent to a team
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: teamId
+          in: formData
+          description: Id of the team to add this agent to
+          required: true
+          type: string
+        - name: agentId
+          in: formData
+          description: The id of the agent to add
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/TeamAgents'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/addPage:
+    post:
+      description: Adds a page to a team
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: teamId
+          in: formData
+          description: Id of the team to add this page to
+          required: true
+          type: string
+        - name: pageId
+          in: formData
+          description: The id of the page to add
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/TeamAgents'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /teams/removeAgent:
+    delete:
+      description: Remove an agent from a team
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: teamId
+        in: formData
+        description: Id of the team to remove this agent from
+        required: true
+        type: string
+      - name: agentId
+        in: formData
+        description: The id of the agent to remove
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/removePage:
+    delete:
+      description: Remove a page from a team
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: teamId
+        in: formData
+        description: Id of the team to remove this page from
+        required: true
+        type: string
+      - name: pageId
+        in: formData
+        description: The id of the page to remove
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/fetchPages/:id:
+    get:
+      description: Gives all the team pages
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/TeamPages'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /teams/fetchAgents/:id:
+    get:
+      description: Gives all the team agents
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/TeamAgents'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /tags:
+    get:
+      description: Gives all the tags
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/Tags'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /tags/:
+    post:
+      description: Creates a tag
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: tag
+          in: formData
+          description: Name of the tag
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Tags'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /tags/rename:
+    post:
+      description: Renames a tag
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: tagName
+          in: formData
+          description: Name of the tag
+          required: true
+          type: string
+        - name: tagId
+          in: formData
+          description: Id of the tag to rename
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Tags'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /tags/delete:
+    delete:
+      description: Delete a tag
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: tagId
+        in: formData
+        description: Id of the tag to delete
+        required: true
+        type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /tags/assign:
+    post:
+      description: Assings tags to subscribers
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: tagId
+          in: formData
+          description: Id of the tag to add subscribers to
+          required: true
+          type: string
+        - name: subscribers
+          in: formData
+          description: array of subscribers
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /tags/unassign:
+    post:
+      description: Unassigns tags to subscribers
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: tagId
+          in: formData
+          description: Id of the tag to add subscribers to
+          required: true
+          type: string
+        - name: subscribers
+          in: formData
+          description: array of subscribers
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /tags/subscribertags:
+    post:
+      description: All tags of a subscriber
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: subscriberId
+          in: formData
+          description: id of subscriber
+          required: true
+          type: string
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: id of the tag
+                    tag:
+                      type: string
+                      description: name of the tag
+                    subscriberId:
+                      type: string
+                      description: id of subscriber
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 ################################################################################
 #                                 Definitions                                  #
 ################################################################################
@@ -3360,6 +4020,107 @@ definitions:
       parentListName:
         type: string
         description: Name of the parent list
+
+  TeamAgents:
+    type: object
+    description: This table is used to store team agents information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      teamId:
+        type: object
+      companyId:
+        type: object
+      agentId:
+        type: object
+      join_date:
+        type: object
+
+  TeamPages:
+    type: object
+    description: This table is used to store team pages information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      teamId:
+        type: object
+      companyId:
+        type: object
+      pageId:
+        type: object
+
+  Teams:
+    type: object
+    description: This table is used to store team information
+    required:
+      - name
+      - description
+      - teamPages
+      - teamPagesIds
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      name:
+        type: string
+      description:
+        type: string
+      created_by:
+        type: object
+        readOnly: true
+      companyId:
+        type: object
+        readOnly: true
+      teamPages:
+        type: array
+        items:
+          type: string
+      teamPagesIds:
+        type: array
+        items:
+          type: string
+      creation_date:
+        type: object
+        readOnly: true
+
+  Tags:
+    type: object
+    description: This table is used to store tags information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      tag:
+        type: string
+      userId:
+        type: object
+      companyId:
+        type: object
+      dateCreated:
+        type: object
+
+  TagSubscribers:
+    type: object
+    description: This table is used to store tag subscribers information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      tagId:
+        type: object
+      subscriberId:
+        type: object
+      companyId:
+        type: object
+      dateCreated:
+        type: object
 
   Response500:
     type: object

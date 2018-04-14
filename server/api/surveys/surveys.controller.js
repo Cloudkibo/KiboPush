@@ -35,30 +35,68 @@ exports.index = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    Surveys.find({companyId: companyUser.companyId}, (err, surveys) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+    if (req.params.days === '0') {
+      Surveys.find({companyId: companyUser.companyId}, (err, surveys) => {
         if (err) {
-          return res.status(404)
-          .json({status: 'failed', description: 'Surveys not found'})
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
         }
-        Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-          if (err2) {
+        SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+          if (err) {
             return res.status(404)
-            .json({status: 'failed', description: 'responses count not found'})
+            .json({status: 'failed', description: 'Surveys not found'})
           }
-          res.status(200).json({
-            status: 'success',
-            payload: {surveys, surveypages, responsesCount}
+          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+            if (err2) {
+              return res.status(404)
+              .json({status: 'failed', description: 'responses count not found'})
+            }
+            res.status(200).json({
+              status: 'success',
+              payload: {surveys, surveypages, responsesCount}
+            })
           })
         })
       })
-    })
+    } else {
+      Surveys.aggregate([
+        {
+          $match: {companyId: companyUser.companyId,
+            'datetime': {
+              $gte: new Date(
+                (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            }
+          }
+        }
+      ], (err, surveys) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Surveys not found'})
+          }
+          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+            if (err2) {
+              return res.status(404)
+              .json({status: 'failed', description: 'responses count not found'})
+            }
+            res.status(200).json({
+              status: 'success',
+              payload: {surveys, surveypages, responsesCount}
+            })
+          })
+        })
+      })
+    }
   })
 }
 
@@ -479,6 +517,7 @@ exports.send = function (req, res) {
                                 }
                               }
                               const data = {
+                                messaging_type: 'UPDATE',
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
@@ -565,6 +604,7 @@ exports.send = function (req, res) {
                               }
                             }
                             const data = {
+                              messaging_type: 'UPDATE',
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                               message: messageData
                             }
@@ -876,6 +916,7 @@ exports.sendSurvey = function (req, res) {
                                   }
                                 }
                                 const data = {
+                                  messaging_type: 'UPDATE',
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                   message: messageData
                                 }
@@ -962,6 +1003,7 @@ exports.sendSurvey = function (req, res) {
                                 }
                               }
                               const data = {
+                                messaging_type: 'UPDATE',
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }

@@ -21,7 +21,7 @@ class Gallery extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} handleCard={this.handleCard} />, key: 2}],
+      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} />, key: 2}],
       showPlus: false,
       pageNumber: 1
     }
@@ -32,7 +32,7 @@ class Gallery extends React.Component {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} />, key: k})
+        tmp.push({element: <Card id={k} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} />, key: k})
       }
       this.setState({cards: tmp, broadcast: this.props.cards})
     }
@@ -43,7 +43,7 @@ class Gallery extends React.Component {
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
-        card = {element: <Card id={i} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        card = {element: <Card id={i} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
         cardMessage.push(cards[i])
         temp.push(card)
       }
@@ -73,7 +73,7 @@ class Gallery extends React.Component {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} handleCard={this.handleCard} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} />, key: temp.length + 1}]})
     this.slider.slickNext()
   }
 

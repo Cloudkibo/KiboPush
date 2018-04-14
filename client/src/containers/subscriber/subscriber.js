@@ -324,7 +324,8 @@ class Subscriber extends React.Component {
         'Email': subscriber.email,
         'Source': subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other',
         'Locale': subscriber.locale,
-        'Gender': subscriber.gender
+        'Gender': subscriber.gender,
+        'tags': subscriber.tags
       }
       data.push(subscriberObj)
     }
@@ -684,15 +685,18 @@ class Subscriber extends React.Component {
                                   </div>
                                   <div className='col-md-12' style={{marginTop: '25px'}}>
                                     <div className='pull-right' style={{display: 'flex'}}>
-                                      <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
-                                        <DropdownToggle caret>
-                                           Assign Tags in bulk
-                                        </DropdownToggle>
-                                        <DropdownMenu>
-                                          <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
-                                          <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
-                                        </DropdownMenu>
-                                      </Dropdown>
+                                      <div style={{display: 'block'}}>
+                                        <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
+                                          <DropdownToggle caret>
+                                             Assign Tags in bulk
+                                          </DropdownToggle>
+                                          <DropdownMenu>
+                                            <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
+                                            <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
+                                          </DropdownMenu>
+                                        </Dropdown>
+                                        {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
+                                      </div>
                                       { this.props.tags && this.props.tags.length > 0 &&
                                         <div style={{marginLeft: '10px', marginTop: '5px'}}><Link style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}} onClick={this.openEditModal}>Edit Tags</Link></div>
                                       }
@@ -702,7 +706,7 @@ class Subscriber extends React.Component {
                                           onClose={this.closeEditModal}>
                                           <ModalDialog style={{width: '800px'}}
                                             onClose={this.closeEditModal}>
-                                            <EditTags />
+                                            <EditTags currentTags={this.props.tags} />
                                           </ModalDialog>
                                         </ModalContainer>
                                       }

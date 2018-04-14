@@ -39,6 +39,16 @@ export function liveChat (state = initialState, action) {
         changedStatus: ''
       })
 
+    case ActionTypes.SET_ACTIVE_SESSION:
+      return Object.assign({}, state, {
+        activeSession: action.activeSession
+      })
+
+    case ActionTypes.RESET_ACTIVE_SESSION:
+      return Object.assign({}, state, {
+        activeSession: ''
+      })
+
     case ActionTypes.RESET_UNREAD_SESSION:
       return Object.assign({}, state, {
         unreadSession: '',

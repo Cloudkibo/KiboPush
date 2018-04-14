@@ -7,15 +7,12 @@ const logger = require('../../components/logger')
 // const Workflows = require('./Workflows.model')
 // eslint-disable-next-line no-unused-vars
 const TAG = 'api/smart_replies/bots.controller.js'
-const CompanyUsers = require('./../companyuser/companyuser.model')
 const Bots = require('./Bots.model')
-const Answers = require('./Answers.model')
-const _ = require('lodash')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
 exports.index = function (req, res) {
-  return res.status(200).json({status: "success", payload: {message: "Bot is working"}})
+  return res.status(200).json({status: 'success', payload: {message: 'Bot is working'}})
 }
 
 exports.create = function (req, res) {
@@ -34,18 +31,18 @@ exports.create = function (req, res) {
            "private":"false"
          },
         json: true,
-      },
+    },
       (err, witres) => {
         if (err) {
           return logger.serverLog(TAG,
-            "Error Occured In Creating WIT.AI app")
-            return res.status(500).json({status: "failed", payload: {error: err}})
+            'Error Occured In Creating WIT.AI app')
+          // return res.status(500).json({status: 'failed', payload: {error: err}})
         } else {
           if (witres.statusCode !== 200) {
             logger.serverLog(TAG,
               `Error Occured in creating Wit ai app ${JSON.stringify(
                 witres.body.errors)}`)
-                return res.status(500).json({status: "failed", payload: {error: witres.body.errors}})
+            return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
           } else {
              logger.serverLog(TAG,
               "Wit.ai app created successfully", witres.body)
@@ -60,17 +57,17 @@ exports.create = function (req, res) {
                 isActive: req.body.isActive,
               })
 
-              bot.save((err, newbot) => {
-                if (err) {
-                  res.status(500).json({
-                    status: 'Failed',
-                    error: err,
-                    description: 'Failed to insert record'
-                  })
-                } else {
-                  return res.status(200).json({status: "success", payload: {message: "Bot saved succesfully"}})
-                }
-              });
+            bot.save((err, newbot) => {
+              if (err) {
+                res.status(500).json({
+                  status: 'Failed',
+                  error: err,
+                  description: 'Failed to insert record'
+                })
+              } else {
+                return res.status(200).json({status: 'success', payload: {message: 'Bot saved succesfully'}})
+              }
+            })
           }
         }
       })
@@ -93,6 +90,5 @@ exports.details = function (req, res) {
 exports.delete = function (req, res) {
     return res.status(200).json({status: "Delete Working"})
 }
-
 
 

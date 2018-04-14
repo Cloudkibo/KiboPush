@@ -121,6 +121,7 @@ function connect () {
                                 let messageData = {}
                                 if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
                                   messageData = {
+                                    'messaging_type': 'UPDATE',
                                     'recipient': JSON.stringify({
                                       'id': subscriber.senderId
                                     }),
@@ -145,6 +146,7 @@ function connect () {
 
                                     let newURL = config.domain + '/api/URL/' + savedurl._id
                                     messageData = {
+                                      'messaging_type': 'UPDATE',
                                       'recipient': JSON.stringify({
                                         'id': subscriber.senderId
                                       }),

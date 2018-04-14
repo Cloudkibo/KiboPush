@@ -1,4 +1,4 @@
-/**
+ /**
  * Created by sojharo on 27/07/2017.
  */
 
@@ -298,11 +298,11 @@ exports.create = function (req, res) {
                 })
 
                 var email2 = new sendgrid.Email({
-                  to: 'sojharo@gmail.com',
+                  to: ['sojharo@gmail.com', 'sojharo@live.com', 'jawaid@cloudkibo.com', 'jekram@hotmail.com', 'dayem@cloudkibo.com'],
                   from: 'support@cloudkibo.com',
                   subject: 'KiboPush: Account created by ' + req.body.name,
                   text: 'Welcome to KiboPush',
-                  cc: 'jawaid@cloudkibo.com'
+                  cc: 'sojharo@live.com'
                 })
 
                 // email2.setHtml('<h1>KiboSupport</h1><br><br>The following domain has created an account with KiboSupport. <br><br> <b>Domain Name: </b>'+ req.body.website);
@@ -323,14 +323,15 @@ exports.create = function (req, res) {
                   '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
                   '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
 
-                sendgrid.send(email2, function (err, json) {
-                  if (err) {
-                    logger.serverLog(TAG,
-                      `Internal Server Error on sending email : ${JSON.stringify(
-                        err)}`)
-                  }
-                  // console.log(json);
-                })
+                if (config.env === 'production') {
+                  sendgrid.send(email2, function (err, json) {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Internal Server Error on sending email : ${err}`)
+                    }
+                    // console.log(json);
+                  })
+                }
               })
             })
           }
@@ -483,11 +484,10 @@ exports.create = function (req, res) {
             })
 
             var email2 = new sendgrid.Email({
-              to: 'sojharo@gmail.com',
+              to: ['sojharo@gmail.com', 'sojharo@live.com', 'jawaid@cloudkibo.com', 'jekram@hotmail.com', 'dayem@cloudkibo.com'],
               from: 'support@cloudkibo.com',
               subject: 'KiboPush: Account created by ' + req.body.name,
-              text: 'Welcome to KiboPush',
-              cc: 'jawaid@cloudkibo.com'
+              text: 'Welcome to KiboPush'
             })
 
             // email2.setHtml('<h1>KiboSupport</h1><br><br>The following domain has created an account with KiboSupport. <br><br> <b>Domain Name: </b>'+ req.body.website);
@@ -506,14 +506,15 @@ exports.create = function (req, res) {
               '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
               '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
 
-            sendgrid.send(email2, function (err, json) {
-              if (err) {
-                logger.serverLog(TAG,
-                  `Internal Server Error on sending email : ${JSON.stringify(
-                    err)}`)
-              }
-              // console.log(json);
-            })
+            if (config.env === 'production') {
+              sendgrid.send(email2, function (err, json) {
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Internal Server Error on sending email : ${err}`)
+                }
+                // console.log(json);
+              })
+            }
           })
         })
       }

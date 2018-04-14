@@ -56,6 +56,12 @@ input.select2-search__field {
  .panel-heading.guidelines-heading:hover{
     background-color:#ebedf2;
   }
+  .panel-heading.dashboard-heading:hover{
+     background-color:#ebedf2 !important;
+   }
+   .panel-heading.dashboard-heading{
+      background-color:white !important;
+    }
   .linkMessageTypes:hover {
     text-decoration: underline !important;
   }
@@ -137,8 +143,8 @@ a.broadcastTabs.active {
 .tagLabel {
   position: relative;
   display: inline-block;
-  margin: 0 8px 8px 0;
-  padding: 3px 10px;
+  margin: 5px 5px 0 0;
+  padding: 0px 5px;
   background-color: #f4f5f8;
   border: 1px solid #c7e4ff;
   border-radius: 13px;
@@ -151,7 +157,13 @@ a.broadcastTabs.active {
 }
 .tagName {
   margin-top: 5px;
-  width: 150px;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.popover.show.buttonPopover {
+  left: -110px !important;
+  height: auto !important
+}
+.buttonPopover > .popover-inner {
+  height: auto !important;
 }
