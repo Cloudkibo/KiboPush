@@ -22,6 +22,8 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         });
       }
+      logger.serverLog(TAG,
+        'THese are the bots fetched' + JSON.stringify(bots))
       return res.status(200).json({status: 'success', payload: bots});
     });
 }
