@@ -29,7 +29,7 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
     logger.serverLog(TAG,
               `Intitiating the creation of wit.ai bot ${JSON.stringify(req.body)}`)
-    var uniquebotName = req.body.botName + req.user._id  + new Date().today() + " @ " + new Date().timeNow();
+    var uniquebotName = req.body.botName + req.user._id  + Date.now();
     request(
       {
         'method': 'POST',
