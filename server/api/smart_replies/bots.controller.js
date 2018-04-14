@@ -24,7 +24,7 @@ exports.index = function (req, res) {
       }
       logger.serverLog(TAG,
         'THese are the bots fetched' + JSON.stringify(bots))
-      return res.status(200).json({status: 'success', payload: bots});
+      return res.status(200).json({status: 'success', payload: JSON.stringify(bots)});
     });
 }
 
