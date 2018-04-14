@@ -12,6 +12,7 @@ let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
 exports.index = function (req, res) {
+  console.log("Hi from server bot")
   Bots.
     find({
       userId: req.user._id,
@@ -24,8 +25,6 @@ exports.index = function (req, res) {
       }
       return res.status(200).json({status: 'success', payload: "I am so awesome" });
     });
-
-    return res.status(200).json({status: 'success', payload: "I am so awesome outside" });
 }
 
 exports.create = function (req, res) {

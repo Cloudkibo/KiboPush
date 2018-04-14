@@ -8,7 +8,7 @@ const controller = require('./bots.controller')
 const auth = require('../../auth/auth.service')
 
 router.get('/',
-  // auth.isAuthenticated(),
+  auth.isAuthenticated(),
   // auth.doesPlanPermitsThisAction('workflows'),
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.index)
