@@ -27,11 +27,12 @@ export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
       .then(res => {
+        console.log("Response from server", JSON.stringify(res))
         if (res.status === 'success') {
           console.log("List the sequence of bots". res.payload)
           dispatch(showBotsList(res.payload))
         }else{
-          console.log("Something went wrong in fetching bots", res)
+          console.log("Something went wrong in fetching bots", JSON.stringify(res))
         }
       }).catch((err) => {
         console.log("In catch cant process bot list", err)
