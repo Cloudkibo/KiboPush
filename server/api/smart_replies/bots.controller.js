@@ -64,7 +64,7 @@ exports.create = function (req, res) {
                 botName: req.body.botName,
                 witAppId: witres.body.app_id,
                 witToken: witres.body.access_token,
-                witAppName: req.body.botName + req.user._id,
+                witAppName: req.body.botName + req.user._id  + new Date().today() + " @ " + new Date().timeNow(),
                 isActive: req.body.isActive,
               })
 
