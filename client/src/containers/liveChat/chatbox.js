@@ -250,12 +250,28 @@ class ChatBox extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
-        fileData.append('componentType', this.state.componentType)
+        fileData.append('componentType', 'audio')
         this.setState({uploadDescription: 'File is uploading..'})
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
     }
     this.textInput.focus()
+    /*const promise = new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsArrayBuffer(recordedBlob.blob)
+      reader.onload = () => {
+        if (!reader.result) {
+          resolve(reader.result)
+        } else {
+          reject(Error('Failed to convert'))
+        }
+      }
+    })
+    promise.then(result => {
+      console.log('result', result)
+    }, err => {
+      console.log('error', err)
+    })*/
   }
 
   showStickers () {
