@@ -27,8 +27,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-    logger.serverLog(TAG,
-              `Intitiating the creation of wit.ai bot ${JSON.stringify(req.body)}`)
+    
     var uniquebotName = req.body.botName + req.user._id  + Date.now();
     request(
       {
@@ -89,6 +88,8 @@ exports.create = function (req, res) {
 }
 
 exports.edit = function (req, res) {
+  logger.serverLog(TAG,
+              `Adding questions in edit bot ${JSON.stringify(req.body)}`)
     return res.status(200).json({status: "Edit Working"})
 }
 

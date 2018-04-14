@@ -10,6 +10,10 @@ const botSchema = new Schema({
   witToken: String,
   witAppName: String,
   isActive: Boolean,
+  payload: [{
+  	questions: [String],
+  	answer: String
+  }],
   datetime: {type: Date, default: Date.now}
 })
 
