@@ -23,7 +23,7 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         });
       }
-      return res.status(200).json({status: 'success', payload: "I am so awesome" });
+      return res.status(200).json({status: 'success', payload: bots });
     });
 }
 
