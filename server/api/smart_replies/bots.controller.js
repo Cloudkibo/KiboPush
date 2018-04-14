@@ -22,10 +22,10 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         });
       }
-      logger.serverLog(TAG,
-        'THese are the bots fetched' + JSON.stringify(bots))
-      return res.status(200).json({status: 'success', payload: JSON.stringify(bots)});
+      return res.status(200).json({status: 'success', payload: "I am so awesome" });
     });
+
+    return res.status(200).json({status: 'success', payload: "I am so awesome outside" });
 }
 
 exports.create = function (req, res) {
