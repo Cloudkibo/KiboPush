@@ -190,7 +190,7 @@ class Bot extends React.Component {
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
-      this.props.createBot({botName: this.state.name, pageId: this.state.pageId, isActive: this.state.isActive})
+      this.props.createBot({botName: this.state.name, pageId: this.state.pageSelected, isActive: this.state.isActive})
       browserHistory.push({
         pathname: `/createBot`
       })
