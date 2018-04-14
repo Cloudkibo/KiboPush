@@ -29,7 +29,7 @@ export function loadBotsList () {
       .then(res => {
         console.log("Response from server", JSON.stringify(res))
         if (res.status === 'success') {
-          console.log("List the sequence of bots". res.payload)
+          console.log("List the sequence of bots", res.payload)
           dispatch(showBotsList(res.payload))
         }else{
           console.log("Something went wrong in fetching bots", JSON.stringify(res))
