@@ -31,7 +31,7 @@ export function loadBotsList () {
           console.log("List the sequence of bots". res.payload)
           dispatch(showBotsList(res.payload))
         }else{
-          console.log("Something went wrong in fetching bots")
+          console.log("Something went wrong in fetching bots", res)
         }
       }).catch((err) => {
         console.log("In catch cant process bot list", err)
