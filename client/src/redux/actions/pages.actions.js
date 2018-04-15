@@ -36,7 +36,7 @@ export function loadMyPagesList () {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allpages`).then(res => {
-      console.log('res.payload', res.payload)
+      console.log('res.payload', res)
       dispatch(updatePagesList(res.payload))
     })
   }
