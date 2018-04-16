@@ -1,4 +1,3 @@
-const TAG = 'api/pages/pages.controller.js'
 const Messages = require('./../sequenceMessaging/message.model')
 
 exports.allMessages = function (req, res) {
@@ -32,5 +31,28 @@ exports.createMessage = function (req, res) {
     } else {
       res.status(201).json({status: 'success', payload: messageCreated})
     }
+  })
+}
+exports.editMessage = function (req, res) {
+  Messages.findById(req.body._id, (err, message) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!message) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    message.title = req.body.title
+    message.schedule = req.body.schedule
+    message.payload = req.body.payload
+    message.isActive = req.body.isActive
+    message.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Poll update failed'})
+      }
+      res.status(201).json({status: 'success', payload: message})
+    })
   })
 }

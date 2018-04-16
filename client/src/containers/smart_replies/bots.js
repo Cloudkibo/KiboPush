@@ -345,7 +345,7 @@ class Bot extends React.Component {
                           }
                         </div>
                         <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                          <input type='text' placeholder='Search bots by name ...' className='form-control m-input m-input--solid' onChange={this.searchBots} />
+                          <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
                           <span className='m-input-icon__icon m-input-icon__icon--left'>
                             <span><i className='la la-search' /></span>
                           </span>
@@ -418,7 +418,7 @@ class Bot extends React.Component {
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.gotoEdit(bot._id)}>Edit
                                     </button>
-                                    <button className='btn btn-sm' disabled
+                                    <button className='btn btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.showDialogDelete(bot._id)}>
                                       Delete
