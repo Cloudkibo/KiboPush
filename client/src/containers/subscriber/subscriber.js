@@ -801,6 +801,10 @@ class Subscriber extends React.Component {
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Page</span>
                                   </th>
+                                  <th data-field='Status'
+                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                    <span style={{width: '100px', overflow: 'inherit'}}>Status</span>
+                                  </th>
                                   <th data-field='PhoneNumber'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Phone</span>
@@ -857,6 +861,13 @@ class Subscriber extends React.Component {
                                     <span
                                       style={{width: '100px', overflow: 'inherit'}}>
                                       {subscriber.pageId.pageName}
+                                    </span>
+                                  </td>
+                                  <td data-field='Status'
+                                    className='m-datatable__cell'>
+                                    <span
+                                      style={{width: '100px', overflow: 'inherit'}}>
+                                      {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
                                     </span>
                                   </td>
                                   <td data-field='phoneNumber'
