@@ -1,7 +1,7 @@
 const TAG = 'api/pages/pages.controller.js'
 const Messages = require('./../sequenceMessaging/message.model')
 
-exports.index = function (req, res) {
+exports.allMessages = function (req, res) {
   Messages.find({SequenceId: req.params.id},
     (err, messages) => {
       if (err) {
