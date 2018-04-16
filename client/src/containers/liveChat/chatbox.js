@@ -234,7 +234,9 @@ class ChatBox extends React.Component {
   onStop (recordedBlob) {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob.blob], 'audio.webm', {type: 'video/webm', lastModified: Date.now()})
+    var newBlob = new Blob([recordedBlob.blob], {type: 'audio/wav'})
+    console.log('new Blob', newBlob)
+    var file = new File([newBlob], 'audio.wav', {type: 'audio/wav', lastModified: Date.now()})
     console.log('files', file)
     if (file) {
       this.resetFileComponent()
@@ -248,7 +250,7 @@ class ChatBox extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      fileData.append('componentType', 'video')
+      fileData.append('componentType', 'audio')
       this.setState({uploadDescription: 'File is uploading..'})
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
@@ -760,7 +762,7 @@ class ChatBox extends React.Component {
             onClose={this.closeDialogRecording}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogRecording}>
-              <div ref='app'>
+            {/*  <div ref='app'>
 				<h3>Audio Recorder</h3>
 				<MediaCapturer
 					constraints={{ audio: true }}
@@ -775,9 +777,9 @@ class ChatBox extends React.Component {
 						<button onClick={stop}>Stop</button>
 					</div>
 				} />
-			</div>
+			</div>*/}
               <h3>Voice Recording</h3>
-              {/*<div>
+              <div>
                 <ReactMic style={{width: '450px'}}
                   height='100'
                   width='450'
@@ -785,7 +787,7 @@ class ChatBox extends React.Component {
                   className='sound-wave'
                   onStop={this.onStop}
                   strokeColor='#000000' />
-              </div>*/}
+              </div>
               <br />
               {this.state.buttonState === 'start'
               ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
