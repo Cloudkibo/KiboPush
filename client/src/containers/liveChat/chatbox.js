@@ -231,7 +231,7 @@ class ChatBox extends React.Component {
   onStop (recordedBlob) {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob.blob], 'audio.webm', {type: 'video', lastModified: Date.now()})
+    var file = new File([recordedBlob.blob], 'audio.webm', {type: 'audio/webm;codecs=opus', lastModified: Date.now()})
     console.log('files', file)
     if (file) {
       this.resetFileComponent()
@@ -245,7 +245,7 @@ class ChatBox extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      fileData.append('componentType', 'audio')
+      fileData.append('componentType', 'video')
       this.setState({uploadDescription: 'File is uploading..'})
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
