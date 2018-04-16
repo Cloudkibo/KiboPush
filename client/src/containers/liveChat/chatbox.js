@@ -38,7 +38,7 @@ import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
+import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {
     height: 24,
@@ -78,7 +78,8 @@ class ChatBox extends React.Component {
       isShowingModalRecording: false,
       disabledValue: false,
       record: false,
-      buttonState: 'start'
+      buttonState: 'start',
+      recording: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -122,6 +123,8 @@ class ChatBox extends React.Component {
     this.getDisabledValue = this.getDisabledValue.bind(this)
     this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+    this.handleStart = this.handleStart.bind(this)
+    this.handleStop = this.handleStop.bind(this)
   }
 
   showDialogRecording () {
@@ -231,7 +234,7 @@ class ChatBox extends React.Component {
   onStop (recordedBlob) {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob.blob], 'audio.webm', {type: 'audio/webm;codecs=opus', lastModified: Date.now()})
+    var file = new File([recordedBlob.blob], 'audio.webm', {type: 'video/webm', lastModified: Date.now()})
     console.log('files', file)
     if (file) {
       this.resetFileComponent()
@@ -689,7 +692,22 @@ class ChatBox extends React.Component {
       }
     }
   }
+  handleStart(stream) {
+		this.setState({
+			recording: true
+		});
 
+		console.log('Recording Started.');
+	}
+	handleStop(blob) {
+    console.log('blob', blob)
+		this.setState({
+			recording: false
+		});
+
+		console.log('Recording Stopped.');
+		this.downloadAudio(blob);
+	}
   render () {
     var settings = {
       arrows: true,
@@ -742,8 +760,24 @@ class ChatBox extends React.Component {
             onClose={this.closeDialogRecording}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogRecording}>
+              <div ref='app'>
+				<h3>Audio Recorder</h3>
+				<MediaCapturer
+					constraints={{ audio: true }}
+					mimeType='audio/webm'
+					timeSlice={10}
+					onStart={this.handleStart}
+					onStop={this.onStop}
+					onError={this.handleError}
+					render={({ start, stop, pause, resume }) =>
+					<div>
+						<button onClick={start}>Start</button>
+						<button onClick={stop}>Stop</button>
+					</div>
+				} />
+			</div>
               <h3>Voice Recording</h3>
-              <div>
+              {/*<div>
                 <ReactMic style={{width: '450px'}}
                   height='100'
                   width='450'
@@ -751,7 +785,7 @@ class ChatBox extends React.Component {
                   className='sound-wave'
                   onStop={this.onStop}
                   strokeColor='#000000' />
-              </div>
+              </div>*/}
               <br />
               {this.state.buttonState === 'start'
               ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
