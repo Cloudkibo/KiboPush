@@ -234,9 +234,7 @@ class ChatBox extends React.Component {
   onStop (recordedBlob) {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    var newBlob = new Blob([recordedBlob.blob], {type: 'audio/wav'})
-    console.log('new Blob', newBlob)
-    var file = new File([newBlob], 'audio.wav', {type: 'audio/wav', lastModified: Date.now()})
+    var file = new File([recordedBlob.blob], 'audio.wav', {type: 'audio/wav', lastModified: Date.now()})
     console.log('files', file)
     if (file) {
       this.resetFileComponent()
@@ -786,7 +784,8 @@ class ChatBox extends React.Component {
                   record={this.state.record}
                   className='sound-wave'
                   onStop={this.onStop}
-                  strokeColor='#000000' />
+                  strokeColor='#000000'
+                  mimeType='audio/wav' />
               </div>
               <br />
               {this.state.buttonState === 'start'
