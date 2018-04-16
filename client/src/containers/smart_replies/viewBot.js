@@ -35,9 +35,9 @@ class ViewBot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.botDetails) {
-      console.log("This is supposed to be the botDetails", nextProps.botDetails)
-      this.setState({id: nextProps.botDetails._id, name: nextProps.botDetails.botName, page: nextProps.botDetails.botName, isActive: nextProps.botDetails.isActive, payload: nextProps.botDetails.payload})
+    if (nextProps.showBotDetails) {
+      console.log("This is supposed to be the botDetails", nextProps.showBotDetails)
+      this.setState({id: nextProps.showBotDetails._id, name: nextProps.showBotDetails.botName, page: nextProps.showBotDetails.botName, isActive: nextProps.showBotDetails.isActive, payload: nextProps.showBotDetails.payload})
     }
   }
 
@@ -227,10 +227,10 @@ class ViewBot extends React.Component {
                       <br />
                       <div className='col-xl-12'>
                         <label>Assigned to Page:</label>
-                        {this.props.createdBot && this.props.createdBot.pageId &&
+                        {this.props.showBotDetails && this.props.showBotDetails.pageId &&
                         <span>
-                          <img alt='pic' style={{height: '30px'}} src={(this.props.createdBot.pageId.pagePic) ? this.props.createdBot.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                          <span>{this.props.createdBot.pageId.pageName}</span>
+                          <img alt='pic' style={{height: '30px'}} src={(this.props.showBotDetails.pageId.pagePic) ? this.props.showBotDetails.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                          <span>{this.props.showBotDetails.pageId.pageName}</span>
                         </span>
                       }
                       </div>
@@ -276,7 +276,7 @@ class ViewBot extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    botDetails: (state.botsInfo.botDetails)
+    showBotDetails: (state.botsInfo.botDetails)
   }
 }
 

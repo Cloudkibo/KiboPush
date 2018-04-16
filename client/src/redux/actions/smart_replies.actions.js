@@ -17,6 +17,7 @@ export function showCreatedBot (data) {
 }
 
 export function showBotDetails (data) {
+  console.log('data', data)
   return {
     type: ActionTypes.SHOW_BOT_DETAILS,
     data

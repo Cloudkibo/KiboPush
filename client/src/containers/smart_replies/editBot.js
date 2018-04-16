@@ -35,10 +35,10 @@ class EditBot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps.botDetails)
-    if (nextProps.botDetails) {
+    console.log('nextProps in editbot.js', nextProps)
+    if (nextProps.showBotDetails) {
       console.log('nextProps bot Details', nextProps.botDetails)
-      this.setState({id: nextProps.botDetails._id, name: nextProps.botDetails.botName, page: nextProps.botDetails.pageId.pageName, isActive: nextProps.botDetails.isActive})
+      this.setState({id: nextProps.showBotDetails._id, name: nextProps.showBotDetails.botName, page: nextProps.showBotDetails.pageId.pageName, isActive: nextProps.showBotDetails.isActive})
     }
   }
 
@@ -226,14 +226,15 @@ class EditBot extends React.Component {
                       </div>
                       <br />
                       <div className='col-xl-12'>
-                        <label>Assigned to Page:</label>
-                        {this.props.createdBot && this.props.createdBot.pageId &&
+                        <label>Assigned to Page:</label>&nbsp;&nbsp;
+                        {this.props.showBotDetails && this.props.showBotDetails.pageId &&
                         <span>
-                          <img alt='pic' style={{height: '30px'}} src={(this.props.createdBot.pageId.pagePic) ? this.props.createdBot.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                          <span>{this.props.createdBot.pageId.pageName}</span>
+                          <img alt='pic' style={{height: '30px'}} src={(this.props.showBotDetails.pageId.pagePic) ? this.props.showBotDetails.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                          <span>{this.props.showBotDetails.pageId.pageName}</span>
                         </span>
                       }
                       </div>
+                      <br />
                       <div className='col-xl-12'>
                         <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
                         <select className='custom-select' id='m_form_type' value={this.state.isActive} onChange={this.changeStatus} style={{width: '500px'}}>
@@ -280,7 +281,7 @@ class EditBot extends React.Component {
 function mapStateToProps (state) {
   console.log('state in edit', state)
   return {
-    botDetails: (state.botsInfo.botDetails)
+    showBotDetails: (state.botsInfo.botDetails)
   }
 }
 
