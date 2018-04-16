@@ -15,4 +15,8 @@ router.post('/createMessage',
   auth.isAuthenticated(),
   controller.createMessage)
 
+router.post('/editMessage',
+  auth.isAuthenticated(),
+  controller.editMessage)
+
 module.exports = router

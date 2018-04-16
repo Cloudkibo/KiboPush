@@ -2937,6 +2937,331 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+  /invitations:
+    get:
+      description: Gives all the invitations
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/Invitation'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /invitations/cancel:
+    post:
+      description: cancels an invite
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: formData
+          description: email of the invited agent
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /company:
+    get:
+      description: Gives the company of the logged in user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/Company'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /company/invite:
+    post:
+      description: sends an invite to join company
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: formData
+          description: email of the agent to invite
+          required: true
+          type: string
+        - name: name
+          in: formData
+          description: name of the agent to invite
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /company/inviteAdmin:
+    post:
+      description: sends an invite to join company
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: formData
+          description: email of the agent to invite
+          required: true
+          type: string
+        - name: name
+          in: formData
+          description: name of the agent to invite
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /company/removeMember:
+    post:
+      description: removes a member from company
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: domain_email
+          in: formData
+          description: email of the member
+          required: true
+          type: string
+        - name: name
+          in: formData
+          description: name of the agent to invite
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /company/removeMemberAdmin:
+    post:
+      description: removes a member from company
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: domain_email
+          in: formData
+          description: email of the member
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              description:
+                type: string
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /company/updateRole:
+    post:
+      description: updates role of a member in company
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: domain_email
+          in: formData
+          description: email of the member
+          required: true
+          type: string
+        - name: role
+          in: formData
+          description: role of the agent
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  savedUser:
+                    type: object
+                    $ref: '#/definitions/User'
+                  savedUserCompany:
+                    type: object
+                    $ref: '#/definitions/CompanyUser'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '401':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response401'
+        '400':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response400'
+
+  /company/members:
+    get:
+      description: Gives all members of a company
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/CompanyUser'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
 ################################################################################
 #                                 Definitions                                  #
 ################################################################################
@@ -4122,6 +4447,56 @@ definitions:
       dateCreated:
         type: object
 
+  Invitation:
+    type: object
+    description: This table is used to store invitations information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      name:
+        type: string
+      email:
+        type: object
+      companyId:
+        type: object
+      createdAt:
+        type: object
+
+  Company:
+    type: object
+    description: This table is used to store company's information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      companyName:
+        type: string
+      companyDetail:
+        type: string
+      ownerId:
+        type: object
+
+  CompanyUser:
+    type: object
+    description: This table is used to store company's information
+    properties:
+      _id:
+        type: string
+        description: The unique id of the record
+        readOnly: true
+      companyId:
+        type: object
+      userId:
+        type: object
+      domain_email:
+        type: string
+      role:
+        type: string
+
+
   Response500:
     type: object
     properties:
@@ -4151,6 +4526,16 @@ definitions:
       description:
         type: string
         description: Record not found
+
+  Response401:
+    type: object
+    properties:
+      status:
+        type: string
+        description: failed
+      description:
+        type: string
+        description: Unauthorised to perform this action
 
   Response400:
     type: object
