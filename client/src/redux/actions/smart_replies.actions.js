@@ -88,9 +88,11 @@ export function deleteBot (id, msg) {
 
 export function botDetails (id) {
   return (dispatch) => {
+    console.log("Calling Bot details api")
     callApi('bots/botDetails/', 'post', {botId: id})
       .then(res => {
         if (res.status === 'success') {
+          console.log("Bot Details", res.payload)
           dispatch(showBotDetails(res.payload))
         }
       })
