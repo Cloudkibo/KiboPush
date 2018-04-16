@@ -103,7 +103,7 @@ exports.details = function (req, res) {
   Bots.
     find({
       _id: req.body.botId,
-    }, (err, bot) => {
+    }).populate('pageId').exec((err, bot) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
