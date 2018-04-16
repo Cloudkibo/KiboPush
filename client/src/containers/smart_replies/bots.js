@@ -379,15 +379,15 @@ class Bot extends React.Component {
                               </th>
                               <th data-field='page'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Page</span>
+                                <span style={{width: '100px'}}>Page</span>
                               </th>
                               <th data-field='status'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Status</span>
+                                <span style={{width: '100px'}}>Status</span>
                               </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Actions</span>
+                                <span style={{width: '175px'}}>Actions</span>
                               </th>
                             </tr>
                           </thead>
@@ -398,16 +398,16 @@ class Bot extends React.Component {
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.botName}</span></td>
-                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{bot.pageId.pageName}</span></td>
+                                <td data-field='page' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.pageId.pageName}</span></td>
                                 <td data-field='status' className='m-datatable__cell'>
                                   {bot.isActive === true
-                                    ? <span style={{width: '50px'}}>Active</span>
-                                    : <span style={{width: '50px'}}>Disabled</span>
+                                    ? <span style={{width: '100px'}}>Active</span>
+                                    : <span style={{width: '100px'}}>Disabled</span>
                                   }
                                 </td>
                                 <td data-field='actions' className='m-datatable__cell'>
                                   {this.props.user && this.props.user.role !== 'agent'
-                                  ? <span style={{width: '200px'}}>
+                                  ? <span style={{width: '175px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.gotoView(bot._id)}>
@@ -423,7 +423,7 @@ class Bot extends React.Component {
                                       Delete
                                     </button>
                                   </span>
-                                  : <span style={{width: '200px'}}>
+                                  : <span style={{width: '175px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.gotoView(bot)}>
@@ -468,6 +468,7 @@ class Bot extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state', state)
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),

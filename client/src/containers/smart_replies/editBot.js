@@ -35,8 +35,10 @@ class EditBot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps.botDetails)
     if (nextProps.botDetails) {
-      this.setState({id: nextProps.botDetails._id, name: nextProps.botDetails.botName, page: nextProps.botDetails.pageId.pageName, isActive: nextProps.botDetails.isActive, payload: nextProps.botDetails.payload})
+      console.log('nextProps bot Details', nextProps.botDetails)
+      this.setState({id: nextProps.botDetails._id, name: nextProps.botDetails.botName, page: nextProps.botDetails.pageId.pageName, isActive: nextProps.botDetails.isActive})
     }
   }
 
@@ -186,6 +188,7 @@ class EditBot extends React.Component {
   }
 
   render () {
+    console.log('this.state.name', this.state.name)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -275,6 +278,7 @@ class EditBot extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state in edit', state)
   return {
     botDetails: (state.botsInfo.botDetails)
   }
