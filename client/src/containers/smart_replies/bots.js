@@ -138,6 +138,7 @@ class Bot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.bots)
