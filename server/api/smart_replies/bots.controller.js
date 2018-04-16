@@ -112,7 +112,7 @@ exports.details = function (req, res) {
       }
         logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
-      return res.status(200).json({status: 'success', payload: bot})
+      return res.status(200).json({status: 'success', payload: bot[0]})
     });
 }
 
