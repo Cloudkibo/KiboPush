@@ -226,7 +226,7 @@ class ViewBot extends React.Component {
                       </div>
                       <br />
                       <div className='col-xl-12'>
-                        <label>Assigned to Page:</label>
+                        <label>Assigned to Page:</label>&nbsp;&nbsp;
                         {this.props.showBotDetails && this.props.showBotDetails.pageId &&
                         <span>
                           <img alt='pic' style={{height: '30px'}} src={(this.props.showBotDetails.pageId.pagePic) ? this.props.showBotDetails.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
@@ -234,6 +234,7 @@ class ViewBot extends React.Component {
                         </span>
                       }
                       </div>
+                      <br />
                       <div className='col-xl-12'>
                         <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
                         <select className='custom-select' id='m_form_type' value={this.state.isActive} onChange={this.changeStatus} style={{width: '500px'}}>
