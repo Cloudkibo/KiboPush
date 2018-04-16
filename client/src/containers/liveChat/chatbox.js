@@ -240,20 +240,14 @@ class ChatBox extends React.Component {
         attachmentType: file.type
       })
       this.setComponentType(file)
-      if (file.type === 'text/javascript' || file.type === 'text/exe') {
-        this.msg.error('Cannot add js or exe files. Please select another file')
-      } else if (file.size > 25000000) {
-        this.msg.error('Files greater than 25MB not allowed')
-      } else {
-        var fileData = new FormData()
-        fileData.append('file', file)
-        fileData.append('filename', file.name)
-        fileData.append('filetype', file.type)
-        fileData.append('filesize', file.size)
-        fileData.append('componentType', 'audio')
-        this.setState({uploadDescription: 'File is uploading..'})
-        this.props.uploadAttachment(fileData, this.handleUpload)
-      }
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      fileData.append('componentType', 'audio')
+      this.setState({uploadDescription: 'File is uploading..'})
+      this.props.uploadAttachment(fileData, this.handleUpload)
     }
     this.textInput.focus()
     /*const promise = new Promise((resolve, reject) => {
