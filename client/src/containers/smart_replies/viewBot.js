@@ -36,7 +36,8 @@ class ViewBot extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.botDetails) {
-      this.setState({id: nextProps.botDetails._id, name: nextProps.botDetails.botName, page: nextProps.botDetails.pageId.pageName, isActive: nextProps.botDetails.isActive, payload: nextProps.botDetails.payload})
+      console.log("This is supposed to be the botDetails", nextProps.botDetails)
+      this.setState({id: nextProps.botDetails._id, name: nextProps.botDetails.botName, page: nextProps.botDetails.botName, isActive: nextProps.botDetails.isActive, payload: nextProps.botDetails.payload})
     }
   }
 
