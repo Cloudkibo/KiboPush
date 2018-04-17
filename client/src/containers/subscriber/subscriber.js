@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersList } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -46,7 +46,7 @@ class Subscriber extends React.Component {
       showEditModal: false
     }
     props.loadMyPagesList()
-    props.loadSubscribersList()
+    props.loadAllSubscribersList()
     props.loadTags()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
@@ -82,7 +82,7 @@ class Subscriber extends React.Component {
   }
   closeEditModal () {
     this.setState({showEditModal: false})
-    this.props.loadSubscribersList()
+    this.props.loadAllSubscribersList()
   }
   handleAdd (value) {
     var index = 0
@@ -165,7 +165,7 @@ class Subscriber extends React.Component {
     }
   }
   handleSaveTags () {
-    this.props.loadSubscribersList()
+    this.props.loadAllSubscribersList()
     this.setState({
       selectAllChecked: false
     })
@@ -968,7 +968,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadSubscribersList: loadSubscribersList,
+  return bindActionCreators({loadAllSubscribersList: loadAllSubscribersList,
     loadMyPagesList: loadMyPagesList,
     assignTags: assignTags,
     unassignTags: unassignTags,

@@ -144,6 +144,7 @@ export const RESEND_SUCCESS = 'RESEND_SUCCESS'
 
 // constants for subscribers
 export const LOAD_SUBSCRIBERS_LIST = 'LOAD_SUBSCRIBERS_LIST'
+export const LOAD_ALL_SUBSCRIBERS_LIST = 'LOAD_ALL_SUBSCRIBERS_LIST'
 
 // constants for surveys
 export const ADD_SURVEY = 'ADD_SURVEY'
