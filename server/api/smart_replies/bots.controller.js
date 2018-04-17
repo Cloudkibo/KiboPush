@@ -122,5 +122,11 @@ exports.details = function (req, res) {
 exports.delete = function (req, res) {
   logger.serverLog(TAG,
               `Deleting a bot ${JSON.stringify(req.body)}`)
-  return res.status(200).json({status: 'success'})
+  Bots.remove({
+    _id: req.body.botId
+}, function(err, _) {
+    if (err) return res.status(500).json({status: 'failed', payload:err})
+    return res.status(200).json({status: 'success'})
+});
+  
 }
