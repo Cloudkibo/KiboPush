@@ -63,6 +63,7 @@ class EditTemplate extends React.Component {
       steps: [],
       showDropDown: false,
       selectedRadio: '',
+      subscribers: [],
       listSelected: '',
       isList: false,
       lists: []
@@ -117,6 +118,9 @@ class EditTemplate extends React.Component {
     }
     if (nextprops.questions) {
       this.setState({surveyQuestions: nextprops.questions})
+    }
+    if (nextprops.subscribers) {
+      this.setState({subscribers: nextprops.subscribers})
     }
   }
   initializeListSelect (lists) {
@@ -601,7 +605,7 @@ class EditTemplate extends React.Component {
         for (let i = 0; i < this.state.surveyQuestions.length; i++) {
           send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
         }
-        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.subscribers)
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {
