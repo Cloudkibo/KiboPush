@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-import Joyride from 'react-joyride'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
@@ -38,9 +37,6 @@ class InviteMembers extends React.Component {
       alertType: '',
       timeout: 3000
     }
-    this.addSteps = this.addSteps.bind(this)
-    this.addTooltip = this.addTooltip.bind(this)
-    this.tourFinished = this.tourFinished.bind(this)
     this.clearAlert = this.clearAlert.bind(this)
   }
 
@@ -120,43 +116,10 @@ class InviteMembers extends React.Component {
     this.setState({role: event.target.value})
   }
 
-  tourFinished (data) {
-    if (data.type === 'finished') {
-      this.props.workflowsTourCompleted({
-        'workFlowsTourSeen': true
-      })
-    }
-  }
-
-  addSteps (steps) {
-    if (!Array.isArray(steps)) {
-      steps = [steps]
-    }
-
-    if (!steps.length) {
-      return false
-    }
-    var temp = this.state.steps
-    this.setState({
-      steps: temp.concat(steps)
-    })
-  }
-
-  addTooltip (data) {
-    this.refs.joyride.addTooltip(data)
-  }
-
   render () {
     return (
 
       <div>
-        {
-          !(this.props.user && this.props.user.workFlowsTourSeen) &&
-          <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps
-            debug={false} type={'continuous'}
-            callback={this.tourFinished} showStepsProgress
-            showSkipButton />
-        }
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
