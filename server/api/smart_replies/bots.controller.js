@@ -89,7 +89,11 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
-  return res.status(200).json({status: 'Edit Working'})
+  Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function(err,affected) {
+    console.log('affected rows %d', affected);
+    return res.status(200).json({status: 'success'})
+});
+  
 }
 
 exports.status = function (req, res) {
