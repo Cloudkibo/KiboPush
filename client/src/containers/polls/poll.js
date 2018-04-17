@@ -174,10 +174,12 @@ class Poll extends React.Component {
 
   sendPoll (poll) {
     let segmentationValues = []
-    for (let i = 0; i < poll.segmentationTags.length; i++) {
-      for (let j = 0; j < this.props.tags.length; j++) {
-        if (poll.segmentationTags[i] === this.props.tags[j]._id) {
-          segmentationValues.push(this.props.tags[j].tag)
+    if (poll.segmentationTags && poll.segmentationTags.length > 0) {
+      for (let i = 0; i < poll.segmentationTags.length; i++) {
+        for (let j = 0; j < this.props.tags.length; j++) {
+          if (poll.segmentationTags[i] === this.props.tags[j]._id) {
+            segmentationValues.push(this.props.tags[j].tag)
+          }
         }
       }
     }

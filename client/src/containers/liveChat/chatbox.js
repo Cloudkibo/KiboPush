@@ -253,7 +253,7 @@ class ChatBox extends React.Component {
       this.props.uploadAttachment(fileData, this.handleUpload)
     }
     this.textInput.focus()
-    /*const promise = new Promise((resolve, reject) => {
+    /* const promise = new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.readAsArrayBuffer(recordedBlob.blob)
       reader.onload = () => {
@@ -268,7 +268,7 @@ class ChatBox extends React.Component {
       console.log('result', result)
     }, err => {
       console.log('error', err)
-    })*/
+    }) */
   }
 
   showStickers () {
@@ -692,22 +692,22 @@ class ChatBox extends React.Component {
       }
     }
   }
-  handleStart(stream) {
-		this.setState({
-			recording: true
-		});
+  handleStart (stream) {
+    this.setState({
+      recording: true
+    })
 
-		console.log('Recording Started.');
-	}
-	handleStop(blob) {
+    console.log('Recording Started.')
+  }
+  handleStop (blob) {
     console.log('blob', blob)
-		this.setState({
-			recording: false
-		});
+    this.setState({
+      recording: false
+    })
 
-		console.log('Recording Stopped.');
-		this.downloadAudio(blob);
-	}
+    console.log('Recording Stopped.')
+    this.downloadAudio(blob)
+  }
   render () {
     var settings = {
       arrows: true,
@@ -760,7 +760,7 @@ class ChatBox extends React.Component {
             onClose={this.closeDialogRecording}>
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogRecording}>
-            {/*  <div ref='app'>
+              {/*  <div ref='app'>
 				<h3>Audio Recorder</h3>
 				<MediaCapturer
 					constraints={{ audio: true }}
@@ -775,7 +775,7 @@ class ChatBox extends React.Component {
 						<button onClick={stop}>Stop</button>
 					</div>
 				} />
-			</div>*/}
+			</div> */}
               <h3>Voice Recording</h3>
               <div>
                 <ReactMic style={{width: '450px'}}
@@ -801,10 +801,10 @@ class ChatBox extends React.Component {
               </div>
               : <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
                 <div style={{display: 'block', fontSize: '14px'}}>
-                  <div style={{height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}></div>
+                  <div style={{height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}} />
                   <a role='button' title='Record' onClick={this.stopRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
                     <div style={{borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
-                      <span style={{height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}></span>
+                      <span style={{height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}} />
                     </div>
                   </a>
                 </div>

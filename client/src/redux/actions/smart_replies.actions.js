@@ -28,15 +28,15 @@ export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
       .then(res => {
-        console.log("Response from server", JSON.stringify(res))
+        console.log('Response from server', JSON.stringify(res))
         if (res.status === 'success') {
-          console.log("List the sequence of bots", res.payload)
+          console.log('List the sequence of bots', res.payload)
           dispatch(showBotsList(res.payload))
-        }else{
-          console.log("Something went wrong in fetching bots", JSON.stringify(res))
+        } else {
+          console.log('Something went wrong in fetching bots', JSON.stringify(res))
         }
       }).catch((err) => {
-        console.log("In catch cant process bot list", err)
+        console.log('In catch cant process bot list', err)
       })
   }
 }
@@ -89,11 +89,11 @@ export function deleteBot (id, msg) {
 
 export function botDetails (id) {
   return (dispatch) => {
-    console.log("Calling Bot details api")
+    console.log('Calling Bot details api')
     callApi('bots/botDetails/', 'post', {botId: id})
       .then(res => {
         if (res.status === 'success') {
-          console.log("Bot Details", res.payload)
+          console.log('Bot Details', res.payload)
           dispatch(showBotDetails(res.payload))
         }
       })
