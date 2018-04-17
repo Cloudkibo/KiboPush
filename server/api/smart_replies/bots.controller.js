@@ -12,37 +12,36 @@ let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
 exports.index = function (req, res) {
-  Bots.
-    find({
-      userId: req.user._id,
+  Bots
+    .find({
+      userId: req.user._id
     }, (err, bots) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
-        });
+        })
       }
-      return res.status(200).json({status: 'success', payload: bots });
-    });
+      return res.status(200).json({status: 'success', payload: bots })
+    })
 }
 
 exports.create = function (req, res) {
-    
-    var uniquebotName = req.body.botName + req.user._id  + Date.now();
-    request(
-      {
-        'method': 'POST',
-        'uri': 'https://api.wit.ai/apps?v=20170307',
-        headers: {
-            'Authorization': 'Bearer ' + WIT_AI_TOKEN,
-            'Content-Type': 'application/json'
-        },
-        body:{
-           "name": uniquebotName,
-           "lang":"en",
-           "private":"false"
-         },
-        json: true,
+  var uniquebotName = req.body.botName + req.user._id + Date.now()
+  request(
+    {
+      'method': 'POST',
+      'uri': 'https://api.wit.ai/apps?v=20170307',
+      headers: {
+        'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+        'Content-Type': 'application/json'
+      },
+      body: {
+        'name': uniquebotName,
+        'lang': 'en',
+        'private': 'false'
+      },
+      json: true
     },
       (err, witres) => {
         if (err) {
@@ -56,18 +55,18 @@ exports.create = function (req, res) {
                 witres.body.errors)}`)
             return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
           } else {
-             logger.serverLog(TAG,
-              "Wit.ai app created successfully", witres.body)
-              
-              const bot = new Bots({
-                pageId: req.body.pageId, // TODO ENUMS
-                userId: req.user._id,
-                botName: req.body.botName,
-                witAppId: witres.body.app_id,
-                witToken: witres.body.access_token,
-                witAppName: uniquebotName,
-                isActive: req.body.isActive,
-              })
+            logger.serverLog(TAG,
+              'Wit.ai app created successfully', witres.body)
+
+            const bot = new Bots({
+              pageId: req.body.pageId, // TODO ENUMS
+              userId: req.user._id,
+              botName: req.body.botName,
+              witAppId: witres.body.app_id,
+              witToken: witres.body.access_token,
+              witAppName: uniquebotName,
+              isActive: req.body.isActive
+            })
 
             bot.save((err, newbot) => {
               if (err) {
@@ -84,40 +83,38 @@ exports.create = function (req, res) {
         }
       })
 
-      // save model to MongoDB  
+      // save model to MongoDB
 }
 
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
-    return res.status(200).json({status: "Edit Working"})
+  return res.status(200).json({status: 'Edit Working'})
 }
 
 exports.status = function (req, res) {
-    return res.status(200).json({status: "Status Working"})
+  return res.status(200).json({status: 'Status Working'})
 }
 
 exports.details = function (req, res) {
   logger.serverLog(TAG,
               `Bot details are following ${JSON.stringify(req.body)}`)
-  Bots.
-    find({
-      _id: req.body.botId,
+  Bots
+    .find({
+      _id: req.body.botId
     }).populate('pageId').exec((err, bot) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
-        });
+        })
       }
-        logger.serverLog(TAG,
+      logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
       return res.status(200).json({status: 'success', payload: bot[0]})
-    });
+    })
 }
 
 exports.delete = function (req, res) {
-    return res.status(200).json({status: "Delete Working"})
+  return res.status(200).json({status: 'Delete Working'})
 }
-
-
