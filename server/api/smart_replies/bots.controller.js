@@ -120,5 +120,7 @@ exports.details = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  return res.status(200).json({status: 'Delete Working'})
+  logger.serverLog(TAG,
+              `Deleting a bot ${JSON.stringify(req.body)}`)
+  return res.status(200).json({status: 'success'})
 }
