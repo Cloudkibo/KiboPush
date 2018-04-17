@@ -99,7 +99,10 @@ exports.edit = function (req, res) {
 exports.status = function (req, res) {
   logger.serverLog(TAG,
               `Updating bot status ${JSON.stringify(req.body)}`)
-  return res.status(200).json({status: 'success'})
+  Bots.update({_id: req.body.botId}, {isActive: req.body.isActive}, function(err,affected) {
+    console.log('affected rows %d', affected);
+    return res.status(200).json({status: 'success'})
+});
 }
 
 exports.details = function (req, res) {
