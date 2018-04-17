@@ -15,7 +15,7 @@ exports.index = function (req, res) {
   Bots
     .find({
       userId: req.user._id
-    }, (err, bots) => {
+    }).populate('pageId').exec((err, bots) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
