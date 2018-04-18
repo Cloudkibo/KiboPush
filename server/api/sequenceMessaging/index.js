@@ -23,6 +23,10 @@ router.post('/createSequence',
   auth.isAuthenticated(),
   controller.createSequence)
 
+router.post('/editSequence',
+  auth.isAuthenticated(),
+  controller.editSequence)
+
 router.post('/testScheduler',
   controller.testScheduler)
 
