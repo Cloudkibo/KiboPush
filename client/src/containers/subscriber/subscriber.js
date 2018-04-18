@@ -710,7 +710,7 @@ class Subscriber extends React.Component {
                                           </ModalDialog>
                                         </ModalContainer>
                                       }
-                                      <Popover placement='left' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
+                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                                         <PopoverHeader>Add Tags</PopoverHeader>
                                         <PopoverBody>
                                           <div className='row' style={{minWidth: '250px'}}>
@@ -744,7 +744,7 @@ class Subscriber extends React.Component {
                                           </div>
                                         </PopoverBody>
                                       </Popover>
-                                      <Popover placement='left' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
+                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverRemoveTagOpen} target='assignTag' toggle={this.toggleRemove}>
                                         <PopoverHeader>Remove Tags</PopoverHeader>
                                         <PopoverBody>
                                           <div className='row' style={{minWidth: '250px'}}>

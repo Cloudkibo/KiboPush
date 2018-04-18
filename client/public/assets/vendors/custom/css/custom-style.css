@@ -167,3 +167,9 @@ a.broadcastTabs.active {
 .buttonPopover > .popover-inner {
   height: auto !important;
 }
+.popover.show.subscriberPopover {
+  height: auto !important
+}
+.subscriberPopover > .popover-inner {
+  height: auto !important;
+}.
