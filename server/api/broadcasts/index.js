@@ -10,7 +10,7 @@ const auth = require('../../auth/auth.service')
 const multiparty = require('connect-multiparty')
 const multipartyMiddleware = multiparty()
 
-router.get('/:days',
+router.get('/',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),

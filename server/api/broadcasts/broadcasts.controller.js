@@ -258,11 +258,11 @@ exports.getfbMessage = function (req, res) {
                                 function (err, res) {
                                   if (err) {
                                     return logger.serverLog(TAG,
-                                      `At send test message broadcast ${JSON.stringify(
+                                      `At send welcome message broadcast ${JSON.stringify(
                                         err)}`)
                                   } else {
                                     logger.serverLog(TAG,
-                                      `At send test message broadcast response ${JSON.stringify(
+                                      `At send welcome message broadcast response ${JSON.stringify(
                                         res)}`)
                                   }
                                 })
@@ -325,9 +325,20 @@ exports.getfbMessage = function (req, res) {
                               if (subscriberByPhoneNumber === true) {
                                 Subscribers.update({senderId: sender}, {
                                   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                  isSubscribedByPhoneNumber: true
+                                  isSubscribedByPhoneNumber: true,
+                                  isSubscribed: true
                                 }, (err, subscriber) => {
-                                  if (err) logger.serverLog(TAG, err)
+                                  if (err) return logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, subscriber)
+                                })
+                              } else if (!subscriber.isSubscribed) {
+                                // subscribing the subscriber again in case he
+                                // or she unsubscribed and removed chat
+                                Subscribers.update({senderId: sender}, {
+                                  isSubscribed: true
+                                }, (err, subscriber) => {
+                                  if (err) return logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, subscriber)
                                 })
                               }
                               if (!(event.postback &&
