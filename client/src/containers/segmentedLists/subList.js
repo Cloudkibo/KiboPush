@@ -23,6 +23,14 @@ export function getSubList (data, conditions, pages, joiningCondition) {
               filteredData.push(obj)
             }
           }
+        } else if (field === 'date') {
+          let subscribeDate = new Date(obj.datetime)
+          subscribeDate.setHours(0, 0, 0, 0)
+          let compareDate = new Date(text)
+          compareDate.setHours(0, 0, 0, 0)
+          if (subscribeDate.getTime() === compareDate.getTime()) {
+            filteredData.push(obj)
+          }
         } else if (obj[field] !== '' && obj[field].toLowerCase() === text.toLowerCase()) {
           filteredData.push(obj)
         }
