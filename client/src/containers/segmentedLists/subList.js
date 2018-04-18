@@ -16,6 +16,13 @@ export function getSubList (data, conditions, pages, joiningCondition) {
               filteredData.push(obj)
             }
           }
+        } else if (field === 'tag') {
+          for (let i = 0; i < obj.tags.length; i++) {
+            let tag = obj.tags[i]
+            if (tag.toLowerCase() === text.toLowerCase()) {
+              filteredData.push(obj)
+            }
+          }
         } else if (obj[field] !== '' && obj[field].toLowerCase() === text.toLowerCase()) {
           filteredData.push(obj)
         }
@@ -32,6 +39,13 @@ export function getSubList (data, conditions, pages, joiningCondition) {
         if (field === 'page') {
           for (let j = 0; j < pages.length; j++) {
             if (pages[j].pageName.toLowerCase().includes(text.toLowerCase()) && pages[j]._id === obj.pageId._id) {
+              filteredData.push(obj)
+            }
+          }
+        } else if (field === 'tag') {
+          for (let i = 0; i < obj.tags.length; i++) {
+            let tag = obj.tags[i]
+            if (tag.toLowerCase().includes(text.toLowerCase())) {
               filteredData.push(obj)
             }
           }
@@ -52,6 +66,14 @@ export function getSubList (data, conditions, pages, joiningCondition) {
           for (let j = 0; j < pages.length; j++) {
             var subText1 = pages[j].pageName.substring(0, text.length)
             if (subText1.toLowerCase() === text.toLowerCase() && pages[j]._id === obj.pageId._id) {
+              filteredData.push(obj)
+            }
+          }
+        } else if (field === 'tag') {
+          for (let i = 0; i < obj.tags.length; i++) {
+            let tag = obj.tags[i]
+            let subText = tag.substring(0, text.length)
+            if (subText.toLowerCase() === text.toLowerCase()) {
               filteredData.push(obj)
             }
           }

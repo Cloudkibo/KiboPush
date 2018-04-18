@@ -566,6 +566,7 @@ class CreateSubList extends React.Component {
                                          <option value='phoneNumber'>Phone Number</option>
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
+                                         <option value='tag'>Tag</option>
                                        </select>
                                        <span className='m-form__help'>
                                          {
