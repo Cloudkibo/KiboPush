@@ -19,4 +19,7 @@ router.post('/editMessage',
   auth.isAuthenticated(),
   controller.editMessage)
 
+router.post('/testScheduler',
+  controller.testScheduler)
+
 module.exports = router
