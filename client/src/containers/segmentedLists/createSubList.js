@@ -587,16 +587,16 @@ class CreateSubList extends React.Component {
                                          value={condition.criteria}>
                                          <option value=''>Select Criteria</option>
                                          { this.state.conditions[i].condition === 'date'
-                                         ? <div>
+                                         ? <option>
                                            <option value='is'>is</option>
                                            <option value='before'>Before</option>
                                            <option value='after'>After</option>
-                                         </div>
-                                         : <div>
+                                         </option>
+                                         : <option>
                                            <option value='is'>is</option>
                                            <option value='contains'>Contains</option>
                                            <option value='begins'>Begins with</option>
-                                         </div>
+                                         </option>
                                         }
                                        </select>
                                        <span className='m-form__help'>
