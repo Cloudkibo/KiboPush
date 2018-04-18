@@ -567,6 +567,7 @@ class CreateSubList extends React.Component {
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
                                          <option value='tag'>Tag</option>
+                                         <option value='date'>Date</option>
                                        </select>
                                        <span className='m-form__help'>
                                          {
@@ -585,9 +586,18 @@ class CreateSubList extends React.Component {
                                        <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                          value={condition.criteria}>
                                          <option value=''>Select Criteria</option>
-                                         <option value='is'>is</option>
-                                         <option value='contains'>Contains</option>
-                                         <option value='begins'>Begins with</option>
+                                         { this.state.conditions[i].condition === 'date'
+                                         ? <div>
+                                           <option value='is'>is</option>
+                                           <option value='before'>Before</option>
+                                           <option value='after'>After</option>
+                                         </div>
+                                         : <div>
+                                           <option value='is'>is</option>
+                                           <option value='contains'>Contains</option>
+                                           <option value='begins'>Begins with</option>
+                                         </div>
+                                        }
                                        </select>
                                        <span className='m-form__help'>
                                          {
@@ -607,7 +617,8 @@ class CreateSubList extends React.Component {
                                          onChange={(e) => this.changeText(e, i)}
                                          value={condition.text}
                                          id='text'
-                                         placeholder='Text' />
+                                         placeholder='Text'
+                                         type={this.state.conditions[i].condition === 'date' ? 'date' : 'text'} />
                                        <span className='m-form__help'>
                                          {
                                            this.state.errorMessages.map((m) => (
