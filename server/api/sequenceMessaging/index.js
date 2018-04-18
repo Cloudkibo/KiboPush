@@ -19,6 +19,10 @@ router.post('/editMessage',
   auth.isAuthenticated(),
   controller.editMessage)
 
+router.post('/createSequence',
+  auth.isAuthenticated(),
+  controller.createSequence)
+
 router.post('/testScheduler',
   controller.testScheduler)
 

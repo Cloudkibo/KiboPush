@@ -1,5 +1,6 @@
 const Messages = require('./../sequenceMessaging/message.model')
 const Sequences = require('./../sequenceMessaging/sequence.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 
 exports.allMessages = function (req, res) {
   Messages.find({SequenceId: req.params.id},
@@ -13,6 +14,7 @@ exports.allMessages = function (req, res) {
       res.status(200).json({status: 'success', payload: messages})
     })
 }
+
 exports.createMessage = function (req, res) {
   let messagePayload = {
     schedule: req.body.schedule,
@@ -34,6 +36,7 @@ exports.createMessage = function (req, res) {
     }
   })
 }
+
 exports.editMessage = function (req, res) {
   Messages.findById(req.body._id, (err, message) => {
     if (err) {
@@ -54,6 +57,41 @@ exports.editMessage = function (req, res) {
           .json({status: 'failed', description: 'Poll update failed'})
       }
       res.status(201).json({status: 'success', payload: message})
+    })
+  })
+}
+
+exports.createSequence = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let sequencePayload = {
+      name: req.body.name,
+      companyId: companyUser.companyId,
+      userId: req.user._id
+    }
+    const sequence = new Sequences(sequencePayload)
+
+    // save model to MongoDB
+    sequence.save((err, sequenceCreated) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to insert record'
+        })
+      } else {
+        res.status(201).json({status: 'success', payload: sequenceCreated})
+      }
     })
   })
 }
