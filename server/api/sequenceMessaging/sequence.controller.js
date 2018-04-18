@@ -1,6 +1,7 @@
 const Messages = require('./../sequenceMessaging/message.model')
 const Sequences = require('./../sequenceMessaging/sequence.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const _ = require('lodash')
 
 exports.allMessages = function (req, res) {
   Messages.find({SequenceId: req.params.id},
@@ -62,6 +63,15 @@ exports.editMessage = function (req, res) {
 }
 
 exports.createSequence = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'name')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -92,6 +102,38 @@ exports.createSequence = function (req, res) {
       } else {
         res.status(201).json({status: 'success', payload: sequenceCreated})
       }
+    })
+  })
+}
+
+exports.editSequence = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  if (!_.has(req.body, 'name')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  Sequences.findById(req.body.sequenceId, (err, sequence) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!sequence) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    sequence.name = req.body.name
+
+    sequence.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Sequence update failed'})
+      }
+      res.status(201).json({status: 'success', payload: sequence})
     })
   })
 }
