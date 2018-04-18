@@ -23,7 +23,7 @@ export function getSubList (data, conditions, pages, joiningCondition) {
               filteredData.push(obj)
             }
           }
-        } else if (field === 'date') {
+        } else if (field === 'joinDate') {
           let subscribeDate = new Date(obj.datetime)
           subscribeDate.setHours(0, 0, 0, 0)
           let compareDate = new Date(text)
