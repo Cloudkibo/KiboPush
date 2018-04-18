@@ -310,6 +310,7 @@ class CreateSubList extends React.Component {
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].text = (e.target.value).trim()
+        console.log('text: ' + conditions[i].text)
       }
     }
     this.setState({conditions: conditions})
@@ -583,22 +584,23 @@ class CreateSubList extends React.Component {
                                      </td>
                                      <td data-field='title'
                                        className='m-datatable__cell' style={{width: '25%'}}>
-                                       <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                         value={condition.criteria}>
-                                         <option value=''>Select Criteria</option>
-                                         { this.state.conditions[i].condition === 'date'
-                                         ? <option>
+                                       { this.state.conditions[i].condition === 'date'
+                                         ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                           value={condition.criteria}>
+                                           <option value=''>Select Criteria</option>
                                            <option value='is'>is</option>
                                            <option value='before'>Before</option>
                                            <option value='after'>After</option>
-                                         </option>
-                                         : <option>
+                                         </select>
+                                         : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                           value={condition.criteria}>
+                                           <option value=''>Select Criteria</option>
                                            <option value='is'>is</option>
                                            <option value='contains'>Contains</option>
                                            <option value='begins'>Begins with</option>
-                                         </option>
+                                         </select>
                                         }
-                                       </select>
+
                                        <span className='m-form__help'>
                                          {
                                            this.state.errorMessages.map((m) => (
