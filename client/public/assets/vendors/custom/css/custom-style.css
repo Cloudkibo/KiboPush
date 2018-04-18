@@ -173,4 +173,10 @@ a.broadcastTabs.active {
 }
 .subscriberPopover > .popover-inner {
   height: auto !important;
-}.
+}
+.popover.show.greetingPopover {
+  height: auto !important
+}
+.greetingPopover > .popover-inner {
+  height: auto !important;
+}
