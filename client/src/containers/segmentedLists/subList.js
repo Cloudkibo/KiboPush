@@ -97,25 +97,35 @@ export function getSubList (data, conditions, pages, joiningCondition) {
         filteredData = []
       }
     } else if (conditions[i].criteria === 'before') {
-      let subscribeDate = new Date(obj.datetime)
-      subscribeDate.setHours(0, 0, 0, 0)
-      let compareDate = new Date(text)
-      compareDate.setHours(0, 0, 0, 0)
-      console.log(subscribeDate, compareDate)
-      if (subscribeDate.getTime() < compareDate.getTime()) {
-        filteredData.push(obj)
+      field = conditions[i].condition
+      text = conditions[i].text
+      for (let i = 0; i < data.length; i++) {
+        obj = data[i]
+        let subscribeDate = new Date(obj.datetime)
+        subscribeDate.setHours(0, 0, 0, 0)
+        let compareDate = new Date(text)
+        compareDate.setHours(0, 0, 0, 0)
+        // console.log(subscribeDate, compareDate)
+        if (subscribeDate.getTime() < compareDate.getTime()) {
+          filteredData.push(obj)
+        }
       }
       if (joiningCondition === 'AND') {
         data = filteredData
         filteredData = []
       }
     } else if (conditions[i].criteria === 'after') {
-      let subscribeDate = new Date(obj.datetime)
-      subscribeDate.setHours(0, 0, 0, 0)
-      let compareDate = new Date(text)
-      compareDate.setHours(0, 0, 0, 0)
-      if (subscribeDate.getTime() > compareDate.getTime()) {
-        filteredData.push(obj)
+      field = conditions[i].condition
+      text = conditions[i].text
+      for (let i = 0; i < data.length; i++) {
+        obj = data[i]
+        let subscribeDate = new Date(obj.datetime)
+        subscribeDate.setHours(0, 0, 0, 0)
+        let compareDate = new Date(text)
+        compareDate.setHours(0, 0, 0, 0)
+        if (subscribeDate.getTime() > compareDate.getTime()) {
+          filteredData.push(obj)
+        }
       }
       if (joiningCondition === 'AND') {
         data = filteredData
