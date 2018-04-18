@@ -77,7 +77,7 @@ export function updateStatus (data) {
 
 export function deleteBot (id, msg) {
   return (dispatch) => {
-    callApi(`bots/delete/${id}`, 'delete')
+    callApi('bots/delete/', 'post', {botId: id})
       .then(res => {
         if (res.status === 'success') {
           msg.success('Bot deleted successfully')

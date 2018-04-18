@@ -15,7 +15,7 @@ exports.index = function (req, res) {
   Bots
     .find({
       userId: req.user._id
-    }, (err, bots) => {
+    }).populate('pageId').exec((err, bots) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
@@ -89,11 +89,20 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
-  return res.status(200).json({status: 'Edit Working'})
+  Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function(err,affected) {
+    console.log('affected rows %d', affected);
+    return res.status(200).json({status: 'success'})
+});
+  
 }
 
 exports.status = function (req, res) {
-  return res.status(200).json({status: 'Status Working'})
+  logger.serverLog(TAG,
+              `Updating bot status ${JSON.stringify(req.body)}`)
+  Bots.update({_id: req.body.botId}, {isActive: req.body.isActive}, function(err,affected) {
+    console.log('affected rows %d', affected);
+    return res.status(200).json({status: 'success'})
+});
 }
 
 exports.details = function (req, res) {
@@ -116,5 +125,13 @@ exports.details = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-  return res.status(200).json({status: 'Delete Working'})
+  logger.serverLog(TAG,
+              `Deleting a bot ${JSON.stringify(req.body)}`)
+  Bots.remove({
+    _id: req.body.botId
+}, function(err, _) {
+    if (err) return res.status(500).json({status: 'failed', payload:err})
+    return res.status(200).json({status: 'success'})
+});
+  
 }

@@ -401,7 +401,7 @@ class Bot extends React.Component {
                                 <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.botName}</span></td>
                                 <td data-field='page' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.pageId.pageName}</span></td>
                                 <td data-field='status' className='m-datatable__cell'>
-                                  {bot.isActive === true
+                                  {bot.isActive === 'true'
                                     ? <span style={{width: '100px'}}>Active</span>
                                     : <span style={{width: '100px'}}>Disabled</span>
                                   }

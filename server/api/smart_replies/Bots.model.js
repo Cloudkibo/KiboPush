@@ -9,7 +9,7 @@ const botSchema = new Schema({
   witAppId: String,
   witToken: String,
   witAppName: String,
-  isActive: Boolean,
+  isActive: String,
   payload: [{
   	questions: [String],
   	answer: String
