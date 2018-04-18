@@ -568,7 +568,7 @@ class CreateSubList extends React.Component {
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
                                          <option value='tag'>Tag</option>
-                                         <option value='joinDate'>Join Date</option>
+                                         <option value='subscriptionDate'>Subscription Date</option>
                                        </select>
                                        <span className='m-form__help'>
                                          {
@@ -584,7 +584,7 @@ class CreateSubList extends React.Component {
                                      </td>
                                      <td data-field='title'
                                        className='m-datatable__cell' style={{width: '25%'}}>
-                                       { this.state.conditions[i].condition === 'joinDate'
+                                       { this.state.conditions[i].condition === 'subscriptionDate'
                                          ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                            value={condition.criteria}>
                                            <option value=''>Select Criteria</option>
@@ -620,7 +620,7 @@ class CreateSubList extends React.Component {
                                          value={condition.text}
                                          id='text'
                                          placeholder='Text'
-                                         type={this.state.conditions[i].condition === 'joinDate' ? 'date' : 'text'} />
+                                         type={this.state.conditions[i].condition === 'subscriptionDate' ? 'date' : 'text'} />
                                        <span className='m-form__help'>
                                          {
                                            this.state.errorMessages.map((m) => (
