@@ -138,6 +138,34 @@ exports.editSequence = function (req, res) {
   })
 }
 
+exports.allSequences = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Sequences.find({companyId: companyUser.companyId},
+    (err, sequences) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({status: 'success', payload: sequences})
+    })
+  })
+}
+
 exports.testScheduler = function (req, res) {
   let sequencePayload = {
     name: req.body.name
