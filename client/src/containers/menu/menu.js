@@ -478,13 +478,12 @@ class Menu extends React.Component {
     }
 
     let popup = <Popover
-      className='popupMenu'
-      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: 'auto', marginTop: '40px'}}
+      style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '410px', marginTop: '40px'}}
       placement='right'
       target={this.refs[this.clickIndex]}
       show={this.state.openPopover}
       onHide={this.handleClose} >
-      <div id='popupMenu'>
+      <div id='popover'>
         <div id='popover-title' className='ui-block-title' style={{marginBottom: '20px'}} >
           <h4 id='popover-heading1' >Edit Menu Item</h4>
         </div>
