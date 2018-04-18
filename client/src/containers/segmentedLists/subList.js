@@ -96,6 +96,22 @@ export function getSubList (data, conditions, pages, joiningCondition) {
         data = filteredData
         filteredData = []
       }
+    } else if (conditions[i].criteria === 'before') {
+      let subscribeDate = new Date(obj.datetime)
+      subscribeDate.setHours(0, 0, 0, 0)
+      let compareDate = new Date(text)
+      compareDate.setHours(0, 0, 0, 0)
+      if (subscribeDate.getTime() < compareDate.getTime()) {
+        filteredData.push(obj)
+      }
+    } else if (conditions[i].criteria === 'after') {
+      let subscribeDate = new Date(obj.datetime)
+      subscribeDate.setHours(0, 0, 0, 0)
+      let compareDate = new Date(text)
+      compareDate.setHours(0, 0, 0, 0)
+      if (subscribeDate.getTime() > compareDate.getTime()) {
+        filteredData.push(obj)
+      }
     } else {
       return
     }
