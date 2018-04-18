@@ -16,7 +16,7 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import {loadTags} from '../../redux/actions/tags.actions'
+import { loadTags } from '../../redux/actions/tags.actions'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
@@ -213,6 +213,9 @@ class CreatePoll extends React.Component {
         self.setState({ tagValue: selected })
       }
     })
+      /* eslint-disable */
+    $('#selectTags').val('').trigger('change')
+      /* eslint-enable */
   }
 
   initializeLocaleSelect (localeOptions) {
@@ -352,8 +355,16 @@ class CreatePoll extends React.Component {
     })
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: [], tagValue: []})
+      /* eslint-disable */
+        $('#selectLocale').val('').trigger('change')
+        $('#selectGender').val('').trigger('change')
+        $('#selectTags').val('').trigger('change')
+      /* eslint-enable */
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
+      /* eslint-disable */
+        $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
     }
   }
   goToSend () {

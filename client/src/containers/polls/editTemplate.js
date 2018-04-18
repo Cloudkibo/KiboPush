@@ -18,6 +18,7 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { checkConditions } from './utility'
 import AlertContainer from 'react-alert'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class EditPoll extends React.Component {
   constructor (props, context) {
@@ -27,6 +28,7 @@ class EditPoll extends React.Component {
       const id = this.props.currentPoll._id
       props.loadPollDetails(id)
       props.loadCustomerLists()
+      props.loadTags()
     }
     this.state = {
       page: {
@@ -61,7 +63,8 @@ class EditPoll extends React.Component {
       listSelected: '',
       isList: false,
       isShowingModal: false,
-      lists: []
+      lists: [],
+      tagValue: []
     }
     this.createPoll = this.createPoll.bind(this)
     this.updateStatment = this.updateStatment.bind(this)
@@ -78,6 +81,7 @@ class EditPoll extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
   }
 
   componentDidMount () {
@@ -112,12 +116,49 @@ class EditPoll extends React.Component {
     if (nextprops.pollDetails) {
       this.setState({title: nextprops.pollDetails.title, statement: nextprops.pollDetails.statement, option1: nextprops.pollDetails.options[0], option2: nextprops.pollDetails.options[1], option3: nextprops.pollDetails.options[2], categoryValue: nextprops.pollDetails.category})
     }
+    if (nextprops.tags) {
+      this.initializeTagSelect(this.props.tags)
+    }
   }
   showDialog () {
     this.setState({isShowingModal: true})
   }
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i].tag,
+        text: tagOptions[i].tag
+      }
+      remappedOptions[i] = temp
+    }
+    var self = this
+      /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
   }
   initializeListSelect (lists) {
     var self = this
@@ -308,9 +349,17 @@ class EditPoll extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], tagValue: []})
+      /* eslint-disable */
+        $('#selectLocale').val('').trigger('change')
+        $('#selectGender').val('').trigger('change')
+        $('#selectTags').val('').trigger('change')
+      /* eslint-enable */
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
+      /* eslint-disable */
+        $('#selectLists').val('').trigger('change')
+      /* eslint-enable */
     }
   }
   goToSend () {
@@ -334,13 +383,21 @@ class EditPoll extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
-      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.props.subscribers)
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         this.props.sendPollDirectly({
           platform: 'Facebook',
           datetime: Date.now(),
@@ -351,6 +408,7 @@ class EditPoll extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
+          segmentationTags: tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }, this.msg)
@@ -521,6 +579,9 @@ class EditPoll extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div>
                           </div>
                           : <div className='m-form'>
                             <div className='form-group m-form__group' style={{marginTop: '10px'}}>
@@ -528,6 +589,9 @@ class EditPoll extends React.Component {
                             </div>
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
                             </div>
                           </div>
                           }
@@ -580,7 +644,8 @@ function mapStateToProps (state) {
     pollDetails: (state.templatesInfo.pollDetails),
     currentPoll: (state.backdoorInfo.currentPoll),
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -592,7 +657,8 @@ function mapDispatchToProps (dispatch) {
     loadCustomerLists: loadCustomerLists,
     sendpoll: sendpoll,
     loadSubscribersList: loadSubscribersList,
-    sendPollDirectly: sendPollDirectly
+    sendPollDirectly: sendPollDirectly,
+    loadTags: loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditPoll)
