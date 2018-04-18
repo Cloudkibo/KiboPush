@@ -1,4 +1,5 @@
 const Messages = require('./../sequenceMessaging/message.model')
+const Sequences = require('./../sequenceMessaging/sequence.model')
 
 exports.allMessages = function (req, res) {
   Messages.find({SequenceId: req.params.id},
@@ -54,5 +55,24 @@ exports.editMessage = function (req, res) {
       }
       res.status(201).json({status: 'success', payload: message})
     })
+  })
+}
+
+exports.testScheduler = function (req, res) {
+  let sequencePayload = {
+    name: req.body.name
+  }
+  const sequence = new Sequences(sequencePayload)
+
+  // save model to MongoDB
+  sequence.save((err, sequenceCreated) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        description: 'Failed to insert record'
+      })
+    } else {
+      res.status(201).json({status: 'success', payload: sequenceCreated})
+    }
   })
 }
