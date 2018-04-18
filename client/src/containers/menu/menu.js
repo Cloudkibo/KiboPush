@@ -478,7 +478,6 @@ class Menu extends React.Component {
     }
 
     let popup = <Popover
-      id='popup'
       style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width: '300px', height: '410px', marginTop: '40px'}}
       placement='right'
       target={this.refs[this.clickIndex]}
