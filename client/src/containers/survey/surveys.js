@@ -451,6 +451,7 @@ class Survey extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('survey state', state)
   return {
     surveys: (state.surveysInfo.surveys),
     subscribers: (state.subscribersInfo.subscribers),

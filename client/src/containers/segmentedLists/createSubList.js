@@ -131,7 +131,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -180,7 +180,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -701,7 +701,7 @@ function mapStateToProps (state) {
     customerLists: (state.listsInfo.customerLists),
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
-    pollResponses: (state.pollsInfo.responsesfull)
+    responses: [] // (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)
   }
 }
 function mapDispatchToProps (dispatch) {

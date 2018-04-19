@@ -474,6 +474,7 @@ class Poll extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('poll state', state)
   return {
     polls: (state.pollsInfo.polls),
     successMessage: (state.pollsInfo.successMessage),
