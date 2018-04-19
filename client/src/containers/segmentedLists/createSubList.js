@@ -568,7 +568,8 @@ class CreateSubList extends React.Component {
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
                                          <option value='tag'>Tag</option>
-                                         <option value='subscriptionDate'>Subscription Date</option>
+                                         <option value='subscriptionDate'>Subscribed</option>
+                                         <option value='reply'>Replied to Polls/Surveys</option>
                                        </select>
                                        <span className='m-form__help'>
                                          {
@@ -584,11 +585,11 @@ class CreateSubList extends React.Component {
                                      </td>
                                      <td data-field='title'
                                        className='m-datatable__cell' style={{width: '25%'}}>
-                                       { this.state.conditions[i].condition === 'subscriptionDate'
+                                       { this.state.conditions[i].condition === 'subscriptionDate' || this.state.conditions[i].condition === 'reply'
                                          ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                            value={condition.criteria}>
                                            <option value=''>Select Criteria</option>
-                                           <option value='is'>is</option>
+                                           <option value='on'>on</option>
                                            <option value='before'>Before</option>
                                            <option value='after'>After</option>
                                          </select>

@@ -1,4 +1,4 @@
-export function getSubList (data, conditions, pages, joiningCondition) {
+export function getSubList (data, conditions, pages, joiningCondition, responses) {
   var filteredData = []
   var field = ''
   var text = ''
@@ -22,14 +22,6 @@ export function getSubList (data, conditions, pages, joiningCondition) {
             if (tag.toLowerCase() === text.toLowerCase()) {
               filteredData.push(obj)
             }
-          }
-        } else if (field === 'subscriptionDate') {
-          let subscribeDate = new Date(obj.datetime)
-          subscribeDate.setHours(0, 0, 0, 0)
-          let compareDate = new Date(text)
-          compareDate.setHours(0, 0, 0, 0)
-          if (subscribeDate.getTime() === compareDate.getTime()) {
-            filteredData.push(obj)
           }
         } else if (obj[field] !== '' && obj[field].toLowerCase() === text.toLowerCase()) {
           filteredData.push(obj)
@@ -90,6 +82,24 @@ export function getSubList (data, conditions, pages, joiningCondition) {
           if (subText.toLowerCase() === (text.toLowerCase())) {
             filteredData.push(obj)
           }
+        }
+      }
+      if (joiningCondition === 'AND') {
+        data = filteredData
+        filteredData = []
+      }
+    } else if (conditions[i].criteria === 'on') {
+      field = conditions[i].condition
+      text = conditions[i].text
+      for (let i = 0; i < data.length; i++) {
+        obj = data[i]
+        let subscribeDate = new Date(obj.datetime)
+        subscribeDate.setHours(0, 0, 0, 0)
+        let compareDate = new Date(text)
+        compareDate.setHours(0, 0, 0, 0)
+        // console.log(subscribeDate, compareDate)
+        if (subscribeDate.getTime() === compareDate.getTime()) {
+          filteredData.push(obj)
         }
       }
       if (joiningCondition === 'AND') {

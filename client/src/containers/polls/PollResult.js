@@ -111,6 +111,7 @@ class PollResult extends React.Component {
   }
 
   render () {
+    console.log('PollResult props', this.props)
     return (
       <div>
         <Header />
