@@ -21,3 +21,23 @@ export function fetchAllSequence () {
       })
   }
 }
+
+export function showAllMessages (data) {
+  return {
+    type: ActionTypes.SHOW_ALL_MESSAGES,
+    messages: data
+  }
+}
+
+export function fetchAllMessages () {
+  console.log('fetchAllMessages')
+  return (dispatch) => {
+    callApi(`/allMessages`)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('allMessages', res.payload)
+          dispatch(showAllSequence(res.payload))
+        }
+      })
+  }
+}

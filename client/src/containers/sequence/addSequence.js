@@ -15,7 +15,7 @@ import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 
-class Sequence extends React.Component {
+class AddSequence extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -229,116 +229,101 @@ class Sequence extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='/addSequence'>
+                        <Link to='/CreateMessage'>
                           <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                  Create new Sequence
+                                  Add Message
                                 </span>
                             </span>
                           </button>
                         </Link>
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      {
-                        this.props.sequences && this.props.sequences.length > 0
-                        ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                          <div className='form-group m-form__group row align-items-center'>
-                            <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                              <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
-                              <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                <span><i className='la la-search' /></span>
-                              </span>
-                            </div>
-                            <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                    <div className='m-portlet__body' />
+                    <div class='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style='overflow: visible; height: 380px; max-height: 380px; position: relative;'>
+                      <div id='mCSB_4' class='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style='max-height: none;' tabindex='0'>
+                        <div id='mCSB_4_container' class='mCSB_container' style='position:relative; top:0; left:0;' dir='ltr'>
+                          <div class='m-timeline-2'>
+                            <div class='m-timeline-2__items  m--padding-top-25 m--padding-bottom-30'>
+                              <div class='m-timeline-2__item'>
+                                <span class='m-timeline-2__item-time'>5 minutes</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-danger' />
+                                </div>
+                                <div class='m-timeline-2__item-text  m--padding-top-5'>
+                                              Lorem ipsum dolor sit amit,consectetur eiusmdd tempor
+                                               incididunt ut labore et dolore magna
+                                          </div>
+                              </div>
+                              <div class='m-timeline-2__item m--margin-top-30'>
+                                <span class='m-timeline-2__item-time'>2 hours</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-success' />
+                                </div>
+                                <div class='m-timeline-2__item-text m-timeline-2__item-text--bold'>
+                                              PLACEHOLDER
+                                          </div>
 
-                          </div>
-                          {
-                            this.state.sequencesData && this.state.sequencesData.length > 0
-                            ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                              <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                                <thead className='m-datatable__head'>
-                                  <tr className='m-datatable__row'
-                                    style={{height: '53px'}}>
-                                    <th data-field='name' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Name</span>
-                                    </th>
-                                    <th data-field='description' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Description</span>
-                                    </th>
-                                    <th data-field='pages' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Subscribers</span>
-                                    </th>
-                                    <th data-field='created_by' style={{width: '125px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Messages</span>
-                                    </th>
-                                    <th data-field='datetime' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Status</span>
-                                    </th>
-                                    <th data-field='actions' style={{width: '175px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Actions</span>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                  {
-                                    this.state.sequencesData.map((sequence, i) => (
-                                      <tr key={i} data-row={i}
-                                        className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
-                                        style={{height: '55px'}}>
-                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.name}</span></td>
-                                        <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.description}</span></td>
-                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.subscribers.join(', ')}</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>{sequence.messages}</span></td>
-                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{handleDate(sequence.status)}</span></td>
-                                        <td data-field='actions' className='m-datatable__cell'>
-                                          <span style={{width: '175px'}}>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(sequence)}>
-                                              View
-                                            </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(sequence)}>
-                                                Edit
-                                              </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence._id)}>
-                                                Delete
-                                              </button>
-                                          </span>
-                                        </td>
-                                      </tr>
-                                    ))
-                                  }
-                                </tbody>
-                              </table>
-                              <div className='pagination'>
-                                <ReactPaginate
-                                  previousLabel={'previous'}
-                                  nextLabel={'next'}
-                                  breakLabel={<a>...</a>}
-                                  breakClassName={'break-me'}
-                                  pageCount={Math.ceil(this.state.totalLength / 5)}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={this.handlePageClick}
-                                  containerClassName={'pagination'}
-                                  subContainerClassName={'pages pagination'}
-                                  activeClassName={'active'} />
+                              </div>
+                              <div class='m-timeline-2__item m--margin-top-30'>
+                                <span class='m-timeline-2__item-time'>12 hours</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-brand' />
+                                </div>
+                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                              Make Deposit <a href='#' class='m-link m-link--brand m--font-bolder'>USD 700</a> To ESL.
+                                          </div>
+                              </div>
+                              <div class='m-timeline-2__item m--margin-top-30'>
+                                <span class='m-timeline-2__item-time'>3 day</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-warning' />
+                                </div>
+                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                              Lorem ipsum dolor sit amit,consectetur eiusmdd tempor incididunt ut labore et dolore magna elit enim at minim <br /> veniam quis nostrud
+                                          </div>
+                              </div>
+                              <div class='m-timeline-2__item m--margin-top-30'>
+                                <span class='m-timeline-2__item-time'>1 week</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-info' />
+                                </div>
+                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                              Placed a new order in <a href='#' class='m-link m-link--brand m--font-bolder'>SIGNATURE MOBILE</a> marketplace.
+                                          </div>
+                              </div>
+                              <div class='m-timeline-2__item m--margin-top-30'>
+                                <span class='m-timeline-2__item-time'>2 week</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-brand' />
+                                </div>
+                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                              Lorem ipsum dolor sit amit,consectetur eiusmdd tempor<br /> incididunt ut labore et dolore magna elit enim at minim<br /> veniam quis nostrud
+                                          </div>
+                              </div>
+                              <div class='m-timeline-2__item m--margin-top-30'>
+                                <span class='m-timeline-2__item-time'>3 week</span>
+                                <div class='m-timeline-2__item-cricle'>
+                                  <i class='fa fa-genderless m--font-danger' />
+                                </div>
+                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                              Received a new feedback on <a href='#' class='m-link m-link--brand m--font-bolder'>FinancePro App</a> product.
+                                          </div>
                               </div>
                             </div>
-                            : <p>No data to display</p>
-                          }
+                          </div>
                         </div>
-                        : <span>
-                          <p> No data to display </p>
-                        </span>
-                      }
+                      </div>
+                      <div id='mCSB_4_scrollbar_vertical' class='mCSB_scrollTools mCSB_4_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style='display: block;'>
+                        <div class='mCSB_draggerContainer'>
+                          <div id='mCSB_4_dragger_vertical' class='mCSB_dragger' style='position: absolute; min-height: 50px; display: block; height: 193px; max-height: 360px; top: 0px;'>
+                            <div class='mCSB_dragger_bar' style='line-height: 50px;' />
+                          </div>
+                          <div class='mCSB_draggerRail' />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -363,4 +348,4 @@ function mapDispatchToProps (dispatch) {
     fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Sequence)
+export default connect(mapStateToProps, mapDispatchToProps)(AddSequence)

@@ -102,6 +102,7 @@ import CreateBot from './containers/smart_replies/createBot'
 import EditBot from './containers/smart_replies/editBot'
 import ViewBot from './containers/smart_replies/viewBot'
 import Sequence from './containers/sequence/sequence'
+import AddSequence from './containers/sequence/addSequence'
 
 import auth from './utility/auth.service'
 
@@ -234,6 +235,7 @@ const routes = (
     <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
     <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />
     <Route path='/sequenceMessaging' component={Sequence} onEnter={requireAuth} />
+    <Route path='/addSequence' component={AddSequence} onEnter={requireAuth} />
 
   </Route>
 

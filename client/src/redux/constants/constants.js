@@ -201,3 +201,4 @@ export const SHOW_BOT_DETAILS = 'SHOW_BOT_DETAILS'
 
 // constants for Sequence
 export const SHOW_ALL_SEQUENCE = 'SHOW_ALL_SEQUENCE'
+export const SHOW_ALL_MESSAGES = 'SHOW_ALL_MESSAGES'
