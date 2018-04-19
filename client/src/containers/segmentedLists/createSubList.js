@@ -87,14 +87,14 @@ class CreateSubList extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
-      for (let i = 0; i < nextProps.surveys.length; i++) {
-        this.props.loadSurveyResponses(nextProps.surveys[i]._id)
+    if (this.props.surveys && !this.props.surveyResponses) {
+      for (let i = 0; i < this.props.surveys.length; i++) {
+        this.props.loadSurveyResponses(this.props.surveys[i]._id)
       }
     }
-    if (nextProps.polls) {
-      for (let i = 0; i < nextProps.polls.length; i++) {
-        this.props.getPollResults(nextProps.polls[i]._id)
+    if (this.props.polls && !this.props.pollResponses) {
+      for (let i = 0; i < this.props.polls.length; i++) {
+        this.props.getPollResults(this.props.polls[i]._id)
       }
     }
     if (nextProps.subscribers) {
@@ -717,6 +717,8 @@ function mapStateToProps (state) {
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
     surveys: (state.surveysInfo.surveys),
+    surveyResponses: state.surveysInfo.responses,
+    pollResponses: state.pollsInfo.responsesfull,
     polls: (state.pollsInfo.polls),
     responses: [] // (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)]
   }
