@@ -93,13 +93,15 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
         obj = data[i]
-        let subscribeDate = new Date(obj.datetime)
-        subscribeDate.setHours(0, 0, 0, 0)
-        let compareDate = new Date(text)
-        compareDate.setHours(0, 0, 0, 0)
-        // console.log(subscribeDate, compareDate)
-        if (subscribeDate.getTime() === compareDate.getTime()) {
-          filteredData.push(obj)
+        if (field === 'subscriptionDate') {
+          let subscribeDate = new Date(obj.datetime)
+          subscribeDate.setHours(0, 0, 0, 0)
+          let compareDate = new Date(text)
+          compareDate.setHours(0, 0, 0, 0)
+          // console.log(subscribeDate, compareDate)
+          if (subscribeDate.getTime() === compareDate.getTime()) {
+            filteredData.push(obj)
+          }
         }
       }
       if (joiningCondition === 'AND') {
@@ -111,13 +113,15 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
         obj = data[i]
-        let subscribeDate = new Date(obj.datetime)
-        subscribeDate.setHours(0, 0, 0, 0)
-        let compareDate = new Date(text)
-        compareDate.setHours(0, 0, 0, 0)
-        // console.log(subscribeDate, compareDate)
-        if (subscribeDate.getTime() < compareDate.getTime()) {
-          filteredData.push(obj)
+        if (field === 'subscriptionDate') {
+          let subscribeDate = new Date(obj.datetime)
+          subscribeDate.setHours(0, 0, 0, 0)
+          let compareDate = new Date(text)
+          compareDate.setHours(0, 0, 0, 0)
+          // console.log(subscribeDate, compareDate)
+          if (subscribeDate.getTime() < compareDate.getTime()) {
+            filteredData.push(obj)
+          }
         }
       }
       if (joiningCondition === 'AND') {
@@ -129,12 +133,15 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
         obj = data[i]
-        let subscribeDate = new Date(obj.datetime)
-        subscribeDate.setHours(0, 0, 0, 0)
-        let compareDate = new Date(text)
-        compareDate.setHours(0, 0, 0, 0)
-        if (subscribeDate.getTime() > compareDate.getTime()) {
-          filteredData.push(obj)
+        if (field === 'subscriptionDate') {
+          let subscribeDate = new Date(obj.datetime)
+          subscribeDate.setHours(0, 0, 0, 0)
+          let compareDate = new Date(text)
+          compareDate.setHours(0, 0, 0, 0)
+          // console.log(subscribeDate, compareDate)
+          if (subscribeDate.getTime() > compareDate.getTime()) {
+            filteredData.push(obj)
+          }
         }
       }
       if (joiningCondition === 'AND') {
