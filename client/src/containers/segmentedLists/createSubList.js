@@ -621,7 +621,7 @@ class CreateSubList extends React.Component {
                                          value={condition.text}
                                          id='text'
                                          placeholder='Text'
-                                         type={this.state.conditions[i].condition === 'subscriptionDate' ? 'date' : 'text'} />
+                                         type={this.state.conditions[i].condition === 'subscriptionDate' || this.state.conditions[i].condition === 'reply' ? 'date' : 'text'} />
                                        <span className='m-form__help'>
                                          {
                                            this.state.errorMessages.map((m) => (
