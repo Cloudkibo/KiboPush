@@ -74,7 +74,7 @@ export function clearAlertMessage () {
 
 export function loadBroadcastsList (days) {
   return (dispatch) => {
-    callApi(`broadcasts/${days}`).then(res => dispatch(showbroadcasts(res.payload)))
+    callApi(`broadcasts/all/${days}`).then(res => dispatch(showbroadcasts(res.payload)))
   }
 }
 

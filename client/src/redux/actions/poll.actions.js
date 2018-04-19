@@ -79,7 +79,7 @@ export function showresponsesfull (data) {
 
 export function loadPollsList (days) {
   return (dispatch) => {
-    callApi(`polls/${days}`).then(res => dispatch(updatePollsList(res.payload)))
+    callApi(`polls/all/${days}`).then(res => dispatch(updatePollsList(res.payload)))
   }
 }
 

@@ -1029,6 +1029,9 @@ function savepoll (req, resp) {
         `Error occurred in finding subscriber ${JSON.stringify(
           err)}`)
     }
+    if (subscriber._id === null) {
+      return
+    }
     if (array.length > 0) {
       for (var i = 0; i < array.length; i++) {
         if (mongoose.Types.ObjectId(array[i].pollId) ===
