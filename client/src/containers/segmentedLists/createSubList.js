@@ -84,9 +84,6 @@ class CreateSubList extends React.Component {
     if (this.props.currentList) {
       this.initializeList()
     }
-  }
-
-  componentWillReceiveProps (nextProps) {
     if (this.props.surveys && !this.props.surveyResponses) {
       for (let i = 0; i < this.props.surveys.length; i++) {
         this.props.loadSurveyResponses(this.props.surveys[i]._id)
@@ -97,6 +94,9 @@ class CreateSubList extends React.Component {
         this.props.getPollResults(this.props.polls[i]._id)
       }
     }
+  }
+
+  componentWillReceiveProps (nextProps) {
     if (nextProps.subscribers) {
       this.setState({ allSubscribers: nextProps.subscribers })
     }
