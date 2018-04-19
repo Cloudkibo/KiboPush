@@ -371,4 +371,4 @@ function mapDispatchToProps (dispatch) {
     fetchAllSequence: fetchAllSequence
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Teams)
+export default connect(mapStateToProps, mapDispatchToProps)(Sequence)
