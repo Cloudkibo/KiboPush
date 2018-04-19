@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence } from '../../redux/actions/sequence.actions'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -255,21 +255,7 @@ class Sequence extends React.Component {
                               </span>
                             </div>
                             <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-                            <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
-                              // <div className='m-form__label'>
-                              //   <label>Pages:&nbsp;&nbsp;</label>
-                              // </div>
-                              // <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
-                              //   <option value='' disabled>Filter by Pages...</option>
-                              //   {
-                              //     this.props.teamUniquePages && this.props.teamUniquePages.length > 0 &&
-                              //     this.props.teamUniquePages.map((page, i) => (
-                              //       <option key={i} value={page._id}>{page.pageName}</option>
-                              //     ))
-                              //   }
-                              //   <option value=''>All</option>
-                              // </select>
-                            </div>
+
                           </div>
                           {
                             this.state.sequencesData && this.state.sequencesData.length > 0
