@@ -1,6 +1,9 @@
-const Messages = require('./../sequenceMessaging/message.model')
-const Sequences = require('./../sequenceMessaging/sequence.model')
+const Messages = require('./message.model')
+const Sequences = require('./sequence.model')
+const SequenceSubscribers = require('./sequenceSubscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const logger = require('../../components/logger')
+const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
 
 exports.allMessages = function (req, res) {
@@ -161,9 +164,111 @@ exports.allSequences = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      res.status(200).json({status: 'success', payload: sequences})
+
+      let sequencePayload = []
+
+      sequences.forEach(sequence => {
+        Messages.find({sequenceId: sequence._id},
+        (err, messages) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+
+          SequenceSubscribers.find({sequenceId: sequence._id})
+          .populate('subscriberId')
+          .exec((err, subscribers) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+
+            sequencePayload.push({
+              sequence: sequence,
+              messages: messages,
+              subscribers: subscribers
+            })
+            res.status(200).json({status: 'success', payload: sequencePayload})
+          })
+        })
+      })
     })
   })
+}
+
+exports.subscribeToSequence = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  if (!_.has(req.body, 'subscriberIds')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    req.body.subscriberIds.forEach(subscriberId => {
+      let sequenceSubscriberPayload = {
+        sequenceId: req.body.sequenceId,
+        subscriberId: subscriberId,
+        companyId: companyUser.companyId,
+        status: 'subscribed'
+      }
+      const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+      // save model to MongoDB
+      sequenceSubcriber.save((err, subscriberCreated) => {
+        if (err) {
+          res.status(500).json({
+            status: 'Failed',
+            description: 'Failed to insert record'
+          })
+        }
+      })
+    })
+    res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
+  })
+}
+
+exports.unsubscribeToSequence = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  if (!_.has(req.body, 'subscriberIds')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  req.body.subscriberIds.forEach(subscriberId => {
+    SequenceSubscribers.update(
+    {sequenceId: req.body.sequenceId, subscriberId: subscriberId},
+    {status: 'unsubscribed'}, (err, updated) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+    })
+  })
+  res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
 }
 
 exports.testScheduler = function (req, res) {
