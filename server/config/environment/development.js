@@ -8,7 +8,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    // uri: 'mongodb://kibopush:4Pf8D9uXqNcan8Ymp0u9tRD3pHhmJ3xa9RHIC6g4GRG2QmgrGd7X8ghN6fgAb488l3Y6ymZelAjV8Lf3FWPWVw==@kibopush.documents.azure.com:10255/kibopush?ssl=true'
+    //uri: 'mongodb://kibopush2:0UFA1pWgmo1k3lvlrY0Ta3y2WDjdT51i1FxnSsjRgWMORJsRnftZiJgVu6jn59dk3xcwovFLI74Lyjk0y2QYmA==@kibopush2.documents.azure.com:10255/kibopush?ssl=true'
     uri: 'mongodb://localhost/kibopush-dev'
   },
   seedDB: false,
