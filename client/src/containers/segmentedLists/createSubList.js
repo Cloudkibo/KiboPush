@@ -569,7 +569,7 @@ class CreateSubList extends React.Component {
                                          <option value='locale'>Locale</option>
                                          <option value='tag'>Tag</option>
                                          <option value='subscriptionDate'>Subscribed</option>
-                                         <option value='reply'>Replied to Polls/Surveys</option>
+                                         <option value='reply'>Replied</option>
                                        </select>
                                        <span className='m-form__help'>
                                          {
@@ -700,7 +700,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
     currentList: (state.listsInfo.currentList),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    pollResponses: (state.pollsInfo.responsesfull)
   }
 }
 function mapDispatchToProps (dispatch) {

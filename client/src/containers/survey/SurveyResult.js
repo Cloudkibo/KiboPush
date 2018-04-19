@@ -94,6 +94,7 @@ class SurveyResult extends React.Component {
     fileDownload(data, this.props.survey.title + '-report.csv')
   }
   render () {
+    console.log('SurveyResult props', this.props)
     return (
       <div>
         <Header />
