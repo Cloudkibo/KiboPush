@@ -28,7 +28,7 @@ class Sequence extends React.Component {
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-    this.searchTeams = this.searchTeams.bind(this)
+    this.searchSequence = this.searchSequence.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
     this.goToEdit = this.goToEdit.bind(this)
@@ -83,23 +83,23 @@ class Sequence extends React.Component {
     }
   }
 
-  searchTeams (event) {
+  searchSequence (event) {
     this.setState({searchValue: event.target.value})
     var filtered = []
     if (event.target.value !== '' && this.state.filterValue === '') {
-      for (let i = 0; i < this.props.teams.length; i++) {
-        if (this.props.teams[i].name && this.props.teams[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
-          filtered.push(this.props.teams[i])
+      for (let i = 0; i < this.props.sequences.length; i++) {
+        if (this.props.sequences[i].name && this.props.sequences[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.sequences[i])
         }
       }
     } else if (event.target.value !== '' && this.state.filterValue !== '') {
-      for (let i = 0; i < this.props.teams.length; i++) {
-        if (this.props.teams[i].name && this.props.teams[i].name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.teams[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
-          filtered.push(this.props.teams[i])
+      for (let i = 0; i < this.props.sequences.length; i++) {
+        if (this.props.sequences[i].name && this.props.sequences[i].name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
+          filtered.push(this.props.sequences[i])
         }
       }
     } else {
-      filtered = this.props.teams
+      filtered = this.props.sequences
     }
     this.displayData(0, filtered)
     this.setState({ totalLength: filtered.length })
@@ -228,19 +228,16 @@ class Sequence extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        {
-                          this.props.user.role !== 'agent' &&
-                          <Link to='/createTeam'>
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <Link to='/createTeam'>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                            <span>
+                              <i className='la la-plus' />
                               <span>
-                                <i className='la la-plus' />
-                                <span>
                                   Create new Sequence
                                 </span>
-                              </span>
-                            </button>
-                          </Link>
-                        }
+                            </span>
+                          </button>
+                        </Link>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -249,7 +246,7 @@ class Sequence extends React.Component {
                         ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                           <div className='form-group m-form__group row align-items-center'>
                             <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                              <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchTeams} />
+                              <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
                               <span className='m-input-icon__icon m-input-icon__icon--left'>
                                 <span><i className='la la-search' /></span>
                               </span>
@@ -306,18 +303,12 @@ class Sequence extends React.Component {
                                             <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(sequence)}>
                                               View
                                             </button>
-                                            {
-                                              this.props.user.role !== 'agent' &&
-                                              <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(sequence)}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(sequence)}>
                                                 Edit
                                               </button>
-                                            }
-                                            {
-                                              this.props.user.role !== 'agent' &&
-                                              <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence._id)}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence._id)}>
                                                 Delete
                                               </button>
-                                            }
                                           </span>
                                         </td>
                                       </tr>
