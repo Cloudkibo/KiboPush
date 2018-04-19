@@ -358,7 +358,7 @@ class EditTemplate extends React.Component {
             description: this.state.description,
             image: '' // image url
           },
-          questions: send,
+          questions: this.state.surveyQuestions,
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
