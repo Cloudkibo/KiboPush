@@ -718,7 +718,7 @@ function mapStateToProps (state) {
     subscribers: (state.subscribersInfo.subscribers),
     surveys: (state.surveysInfo.surveys),
     polls: (state.pollsInfo.polls),
-    responses: (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)
+    responses: [] // (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)]
   }
 }
 function mapDispatchToProps (dispatch) {
