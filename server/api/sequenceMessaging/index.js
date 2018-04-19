@@ -31,6 +31,14 @@ router.get('/allSequences',
   auth.isAuthenticated(),
   controller.allSequences)
 
+router.get('/subscribeToSequence',
+  auth.isAuthenticated(),
+  controller.subscribeToSequence)
+
+router.get('/unsubscribeToSequence',
+  auth.isAuthenticated(),
+  controller.unsubscribeToSequence)
+
 router.post('/testScheduler',
   controller.testScheduler)
 
