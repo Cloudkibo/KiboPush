@@ -31,11 +31,11 @@ router.get('/allSequences',
   auth.isAuthenticated(),
   controller.allSequences)
 
-router.get('/subscribeToSequence',
+router.post('/subscribeToSequence',
   auth.isAuthenticated(),
   controller.subscribeToSequence)
 
-router.get('/unsubscribeToSequence',
+router.post('/unsubscribeToSequence',
   auth.isAuthenticated(),
   controller.unsubscribeToSequence)
 
