@@ -172,7 +172,7 @@ class SurveyResult extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('state.surveysInfo', state.surveysInfo)
+  console.log('surveyResults state', state)
   const {responses, survey, questions} = state.surveysInfo
   const {pages} = state.pagesInfo
   return {
