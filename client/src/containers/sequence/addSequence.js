@@ -242,86 +242,86 @@ class AddSequence extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body' />
-                    <div class='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style='overflow: visible; height: 380px; max-height: 380px; position: relative;'>
-                      <div id='mCSB_4' class='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style='max-height: none;' tabindex='0'>
-                        <div id='mCSB_4_container' class='mCSB_container' style='position:relative; top:0; left:0;' dir='ltr'>
-                          <div class='m-timeline-2'>
-                            <div class='m-timeline-2__items  m--padding-top-25 m--padding-bottom-30'>
-                              <div class='m-timeline-2__item'>
-                                <span class='m-timeline-2__item-time'>5 minutes</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-danger' />
+                    <div className='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style='overflow: visible; height: 380px; max-height: 380px; position: relative;'>
+                      <div id='mCSB_4' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style='max-height: none;' tabindex='0'>
+                        <div id='mCSB_4_container' className='mCSB_container' style='position:relative; top:0; left:0;' dir='ltr'>
+                          <div className='m-timeline-2'>
+                            <div className='m-timeline-2__items  m--padding-top-25 m--padding-bottom-30'>
+                              <div className='m-timeline-2__item'>
+                                <span className='m-timeline-2__item-time'>5 minutes</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-danger' />
                                 </div>
-                                <div class='m-timeline-2__item-text  m--padding-top-5'>
+                                <div className='m-timeline-2__item-text  m--padding-top-5'>
                                               Lorem ipsum dolor sit amit,consectetur eiusmdd tempor
                                                incididunt ut labore et dolore magna
                                           </div>
                               </div>
-                              <div class='m-timeline-2__item m--margin-top-30'>
-                                <span class='m-timeline-2__item-time'>2 hours</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-success' />
+                              <div className='m-timeline-2__item m--margin-top-30'>
+                                <span className='m-timeline-2__item-time'>2 hours</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-success' />
                                 </div>
-                                <div class='m-timeline-2__item-text m-timeline-2__item-text--bold'>
+                                <div className='m-timeline-2__item-text m-timeline-2__item-text--bold'>
                                               PLACEHOLDER
                                           </div>
 
                               </div>
-                              <div class='m-timeline-2__item m--margin-top-30'>
-                                <span class='m-timeline-2__item-time'>12 hours</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-brand' />
+                              <div className='m-timeline-2__item m--margin-top-30'>
+                                <span className='m-timeline-2__item-time'>12 hours</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-brand' />
                                 </div>
-                                <div class='m-timeline-2__item-text m--padding-top-5'>
-                                              Make Deposit <a href='#' class='m-link m-link--brand m--font-bolder'>USD 700</a> To ESL.
+                                <div className='m-timeline-2__item-text m--padding-top-5'>
+                                              Make Deposit <a href='#' className='m-link m-link--brand m--font-bolder'>USD 700</a> To ESL.
                                           </div>
                               </div>
-                              <div class='m-timeline-2__item m--margin-top-30'>
-                                <span class='m-timeline-2__item-time'>3 day</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-warning' />
+                              <div className='m-timeline-2__item m--margin-top-30'>
+                                <span className='m-timeline-2__item-time'>3 day</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-warning' />
                                 </div>
-                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                <div className='m-timeline-2__item-text m--padding-top-5'>
                                               Lorem ipsum dolor sit amit,consectetur eiusmdd tempor incididunt ut labore et dolore magna elit enim at minim <br /> veniam quis nostrud
                                           </div>
                               </div>
-                              <div class='m-timeline-2__item m--margin-top-30'>
-                                <span class='m-timeline-2__item-time'>1 week</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-info' />
+                              <div className='m-timeline-2__item m--margin-top-30'>
+                                <span className='m-timeline-2__item-time'>1 week</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-info' />
                                 </div>
-                                <div class='m-timeline-2__item-text m--padding-top-5'>
-                                              Placed a new order in <a href='#' class='m-link m-link--brand m--font-bolder'>SIGNATURE MOBILE</a> marketplace.
+                                <div className='m-timeline-2__item-text m--padding-top-5'>
+                                              Placed a new order in <a href='#' className='m-link m-link--brand m--font-bolder'>SIGNATURE MOBILE</a> marketplace.
                                           </div>
                               </div>
-                              <div class='m-timeline-2__item m--margin-top-30'>
-                                <span class='m-timeline-2__item-time'>2 week</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-brand' />
+                              <div className='m-timeline-2__item m--margin-top-30'>
+                                <span className='m-timeline-2__item-time'>2 week</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-brand' />
                                 </div>
-                                <div class='m-timeline-2__item-text m--padding-top-5'>
+                                <div className='m-timeline-2__item-text m--padding-top-5'>
                                               Lorem ipsum dolor sit amit,consectetur eiusmdd tempor<br /> incididunt ut labore et dolore magna elit enim at minim<br /> veniam quis nostrud
                                           </div>
                               </div>
-                              <div class='m-timeline-2__item m--margin-top-30'>
-                                <span class='m-timeline-2__item-time'>3 week</span>
-                                <div class='m-timeline-2__item-cricle'>
-                                  <i class='fa fa-genderless m--font-danger' />
+                              <div className='m-timeline-2__item m--margin-top-30'>
+                                <span className='m-timeline-2__item-time'>3 week</span>
+                                <div className='m-timeline-2__item-cricle'>
+                                  <i className='fa fa-genderless m--font-danger' />
                                 </div>
-                                <div class='m-timeline-2__item-text m--padding-top-5'>
-                                              Received a new feedback on <a href='#' class='m-link m-link--brand m--font-bolder'>FinancePro App</a> product.
+                                <div className='m-timeline-2__item-text m--padding-top-5'>
+                                              Received a new feedback on <a href='#' className='m-link m-link--brand m--font-bolder'>FinancePro App</a> product.
                                           </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div id='mCSB_4_scrollbar_vertical' class='mCSB_scrollTools mCSB_4_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style='display: block;'>
-                        <div class='mCSB_draggerContainer'>
-                          <div id='mCSB_4_dragger_vertical' class='mCSB_dragger' style='position: absolute; min-height: 50px; display: block; height: 193px; max-height: 360px; top: 0px;'>
-                            <div class='mCSB_dragger_bar' style='line-height: 50px;' />
+                      <div id='mCSB_4_scrollbar_vertical' className='mCSB_scrollTools mCSB_4_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style='display: block;'>
+                        <div className='mCSB_draggerContainer'>
+                          <div id='mCSB_4_dragger_vertical' className='mCSB_dragger' style='position: absolute; min-height: 50px; display: block; height: 193px; max-height: 360px; top: 0px;'>
+                            <div className='mCSB_dragger_bar' style='line-height: 50px;' />
                           </div>
-                          <div class='mCSB_draggerRail' />
+                          <div className='mCSB_draggerRail' />
                         </div>
                       </div>
                     </div>
