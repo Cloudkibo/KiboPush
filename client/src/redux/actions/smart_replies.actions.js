@@ -10,6 +10,7 @@ export function showBotsList (data) {
 }
 
 export function showCreatedBot (data) {
+  console.log('data', data)
   return {
     type: ActionTypes.SHOW_CREATED_BOT,
     data

@@ -222,7 +222,7 @@ class CreateBot extends React.Component {
                       </div>
                       <br />
                       <div className='col-xl-12'>
-                        <label>Assigned to Page:</label>
+                        <label>Assigned to Page:</label>&nbsp;&nbsp;
                         {this.props.createdBot && this.props.createdBot.pageId &&
                         <span>
                           <img alt='pic' style={{height: '30px'}} src={(this.props.createdBot.pageId.pagePic) ? this.props.createdBot.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
@@ -230,6 +230,7 @@ class CreateBot extends React.Component {
                         </span>
                       }
                       </div>
+                      <br />
                       <div className='col-xl-12'>
                         <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
                         <select className='custom-select' id='m_form_type' value={this.state.isActive} onChange={this.changeStatus} style={{width: '500px'}}>

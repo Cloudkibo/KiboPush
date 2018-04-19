@@ -7,7 +7,10 @@ const messageSchema = new Schema({
   sequenceId: {type: Schema.ObjectId, ref: 'sequences'},
   title: String,
   payload: Schema.Types.Mixed,
-  isActive: { type: Boolean, default: false }
+  isActive: { type: Boolean, default: false },
+  sent: {type: Number, default: 0},
+  seen: {type: Number, default: 0},
+  clicks: {type: Number, default: 0}
 })
 
 module.exports = mongoose.model('sequenceMessages', messageSchema)
