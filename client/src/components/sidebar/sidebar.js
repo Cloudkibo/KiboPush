@@ -78,6 +78,23 @@ class Sidebar extends Component {
     }
   }
 
+  showSequenceMessaging () {
+    if (this.props.user) {
+      if (this.props.user.isSuperUser) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/sequenceMessaging' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-statistics' />
+              <span className='m-menu__link-text'>Sequence Messaging</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
   showDashboard () {
     if (this.props.user) {
       if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
@@ -386,6 +403,7 @@ class Sidebar extends Component {
               {this.showPersistentMenuItem()}
               {this.showPagesItem()}
               {this.showSubscribersItem()}
+              {this.showSequenceMessaging()}
               {this.showCreatePhoneList()}
               {this.showInviteMembersItem()}
               {this.showMembersItem()}

@@ -198,3 +198,7 @@ export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
 export const SHOW_BOTS = 'SHOW_BOTS'
 export const SHOW_CREATED_BOT = 'SHOW_CREATED_BOT'
 export const SHOW_BOT_DETAILS = 'SHOW_BOT_DETAILS'
+
+// constants for Sequence
+export const SHOW_ALL_SEQUENCE = 'SHOW_ALL_SEQUENCE'
+export const SHOW_ALL_MESSAGES = 'SHOW_ALL_MESSAGES'

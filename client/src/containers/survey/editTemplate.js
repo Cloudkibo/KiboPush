@@ -18,6 +18,7 @@ import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import {loadTags} from '../../redux/actions/tags.actions'
 
 class EditTemplate extends React.Component {
   constructor (props, context) {
@@ -25,6 +26,7 @@ class EditTemplate extends React.Component {
     props.getuserdetails()
     props.loadSubscribersList()
     props.loadCustomerLists()
+    props.loadTags()
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
       props.loadSurveyDetails(id)
@@ -37,6 +39,7 @@ class EditTemplate extends React.Component {
       alertType: '',
       categoryValue: [],
       title: '',
+      tagValue: [],
       description: '',
       page: {
         options: []
@@ -63,7 +66,6 @@ class EditTemplate extends React.Component {
       steps: [],
       showDropDown: false,
       selectedRadio: '',
-      subscribers: [],
       listSelected: '',
       isList: false,
       lists: []
@@ -74,6 +76,7 @@ class EditTemplate extends React.Component {
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.initializeTagSelect = this.initializeTagSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
@@ -116,12 +119,48 @@ class EditTemplate extends React.Component {
     if (nextprops.survey) {
       this.setState({title: nextprops.survey[0].title, description: nextprops.survey[0].description, categoryValue: nextprops.survey[0].category})
     }
+
     if (nextprops.questions) {
       this.setState({surveyQuestions: nextprops.questions})
     }
-    if (nextprops.subscribers) {
-      this.setState({subscribers: nextprops.subscribers})
+    if (this.props.tags) {
+      this.initializeTagSelect(this.props.tags)
     }
+  }
+
+  initializeTagSelect (tagOptions) {
+    let remappedOptions = []
+
+    for (let i = 0; i < tagOptions.length; i++) {
+      let temp = {
+        id: tagOptions[i].tag,
+        text: tagOptions[i].tag
+      }
+      remappedOptions[i] = temp
+    }
+    var self = this
+      /* eslint-disable */
+    $('#selectTags').select2({
+      /* eslint-enable */
+      data: remappedOptions,
+      placeholder: 'Select Tags',
+      allowClear: true,
+      multiple: true
+    })
+      /* eslint-disable */
+    $('#selectTags').on('change', function (e) {
+      /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ tagValue: selected })
+      }
+    })
   }
   initializeListSelect (lists) {
     var self = this
@@ -300,14 +339,18 @@ class EditTemplate extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
-        var send = []
-        for (let i = 0; i < this.state.surveyQuestions.length; i++) {
-          send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
         }
         var surveybody = {
           survey: {
@@ -315,11 +358,12 @@ class EditTemplate extends React.Component {
             description: this.state.description,
             image: '' // image url
           },
-          questions: send,
+          questions: this.state.surveyQuestions,
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
+          segmentationTags: tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
@@ -530,7 +574,7 @@ class EditTemplate extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: []})
+      this.setState({genderValue: [], localeValue: [], tagValue: []})
     } if (e.currentTarget.value === 'segmentation') {
       this.setState({listSelected: [], isList: false})
     }
@@ -596,30 +640,35 @@ class EditTemplate extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
         this.state.description !== '') {
-        var send = []
-        for (let i = 0; i < this.state.surveyQuestions.length; i++) {
-          send.push({statement: this.state.surveyQuestions[i].statement, type: 'multichoice', choiceCount: this.state.surveyQuestions[i].options.length, options: this.state.surveyQuestions[i].options})
-        }
-        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.subscribers)
+        var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
         if (res === false) {
           this.msg.error('No subscribers match the selected criteria')
         } else {
+          let tagIDs = []
+          for (let i = 0; i < this.props.tags.length; i++) {
+            for (let j = 0; j < this.state.tagValue.length; j++) {
+              if (this.props.tags[i].tag === this.state.tagValue[j]) {
+                tagIDs.push(this.props.tags[i]._id)
+              }
+            }
+          }
           var surveybody = {
             survey: {
               title: this.state.title, // title of survey
-              description: this.state.description,
+              description: this.state.description, // description of survey
               image: '' // image url
             },
-            questions: send,
+            questions: this.state.surveyQuestions,
             isSegmented: isSegmentedValue,
             segmentationPageIds: this.state.pageValue,
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
+            segmentationTags: tagIDs,
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
@@ -780,6 +829,9 @@ class EditTemplate extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div>
                           </div>
                           : <div className='m-form'>
                             <div className='form-group m-form__group' style={{marginTop: '10px'}}>
@@ -787,6 +839,9 @@ class EditTemplate extends React.Component {
                             </div>
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
                             </div>
                           </div>
                           }
@@ -840,7 +895,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -852,7 +908,8 @@ function mapDispatchToProps (dispatch) {
     loadCustomerLists: loadCustomerLists,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
-    sendSurveyDirectly: sendSurveyDirectly
+    sendSurveyDirectly: sendSurveyDirectly,
+    loadTags: loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)
