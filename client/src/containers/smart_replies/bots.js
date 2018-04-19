@@ -376,15 +376,15 @@ class Bot extends React.Component {
                               style={{height: '53px'}}>
                               <th data-field='name'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Name</span>
+                                <span style={{width: '125px'}}>Name</span>
                               </th>
                               <th data-field='page'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Page</span>
+                                <span style={{width: '125px'}}>Page</span>
                               </th>
                               <th data-field='status'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Status</span>
+                                <span style={{width: '125px'}}>Status</span>
                               </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -392,18 +392,18 @@ class Bot extends React.Component {
                               </th>
                             </tr>
                           </thead>
-                          <tbody className='m-datatable__body'>
+                          <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                             {
                             this.state.botsData.map((bot, i) => (
-                              <tr data-row={i}
+                              <tr key={i} data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
-                                style={{height: '55px'}} key={i}>
-                                <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.botName}</span></td>
-                                <td data-field='page' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.pageId.pageName}</span></td>
-                                <td data-field='status' className='m-datatable__cell'>
+                                style={{height: '55px'}}>
+                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName}</span></td>
+                                <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.pageId.pageName}</span></td>
+                                <td data-field='page' className='m-datatable__cell'>
                                   {bot.isActive === 'true'
-                                    ? <span style={{width: '100px'}}>Active</span>
-                                    : <span style={{width: '100px'}}>Disabled</span>
+                                    ? <span style={{width: '125px'}}>Active</span>
+                                    : <span style={{width: '125px'}}>Disabled</span>
                                   }
                                 </td>
                                 <td data-field='actions' className='m-datatable__cell'>
@@ -418,7 +418,7 @@ class Bot extends React.Component {
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.gotoEdit(bot._id)}>Edit
                                     </button>
-                                    <button className='btn btn-sm'
+                                    <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.showDialogDelete(bot._id)}>
                                       Delete

@@ -68,9 +68,6 @@ class ViewBot extends React.Component {
                     <label style={{fontWeight: 'normal'}}>Enter several variations of same question to train the bot.</label>
                   </div>
                   {this.createMore(i)}
-                  <button className='btn btn-primary btn-sm'
-                    onClick={this.addMore.bind(this, i)}> Add More
-                </button>
                 </div>
                 <div className='col-xl-6 col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2'}}>
                   <br />
@@ -246,12 +243,6 @@ class ViewBot extends React.Component {
                       <div className='col-xl-12'>
                         <h5> Questions </h5>
                         {this.createUI()}
-                      </div>
-
-                      <div id='questions' className='col-sm-6 col-md-4'>
-                        <button className='btn btn-primary btn-sm'
-                          onClick={this.addClick.bind(this)}> Add Questions
-                      </button>
                       </div>
                       <br />
                     </div>

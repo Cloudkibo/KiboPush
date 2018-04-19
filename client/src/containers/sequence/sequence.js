@@ -229,7 +229,7 @@ class Sequence extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='/addSequence'>
+                        <Link to='/ViewMessage'>
                           <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                             <span>
                               <i className='la la-plus' />

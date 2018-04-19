@@ -28,6 +28,10 @@ const AutopostingMessages = require(
   './../autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
+const SequenceMessages = require(
+  './../sequenceMessaging/message.model')
+const SequenceSubscriberMessages = require(
+  './../sequenceMessaging/sequenceSubscribersMessages.model')
 const utility = require('./broadcasts.utility')
 const mongoose = require('mongoose')
 const og = require('open-graph')
@@ -952,8 +956,7 @@ function updateseenstatus (req) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
-
-// updating seen count for autoposting
+    // updating seen count for autoposting
   AutopostingSubscriberMessages.distinct('autoposting_messages_id',
     {subscriberId: req.sender.id, pageId: req.recipient.id, seen: false},
     (err, AutopostingMessagesIds) => {
@@ -976,6 +979,37 @@ function updateseenstatus (req) {
           AutopostingMessagesIds.forEach(autopostingMessagesId => {
             AutopostingMessages.update(
               {_id: autopostingMessagesId},
+              {$inc: {seen: 1}},
+              {multi: true}, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+              })
+          })
+        })
+    })
+  // updating seen count for sequence messages
+  SequenceSubscriberMessages.distinct('messageId',
+    {subscriberId: req.sender.id, seen: false},
+    (err, sequenceMessagesIds) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      SequenceSubscriberMessages.update(
+        {
+          subscriberId: req.sender.id,
+          seen: false,
+          datetime: {$lte: new Date(req.read.watermark)}
+        },
+        {seen: true},
+        {multi: true}, (err, updated) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          sequenceMessagesIds.forEach(sequenceMessagesId => {
+            SequenceMessages.update(
+              {_id: sequenceMessagesId},
               {$inc: {seen: 1}},
               {multi: true}, (err, updated) => {
                 if (err) {

@@ -38,7 +38,7 @@ class EditBot extends React.Component {
     console.log('nextProps in editbot.js', nextProps)
     if (nextProps.showBotDetails) {
       console.log('nextProps bot Details', nextProps.botDetails)
-      this.setState({id: nextProps.showBotDetails._id, name: nextProps.showBotDetails.botName, page: nextProps.showBotDetails.pageId.pageName, isActive: nextProps.showBotDetails.isActive})
+      this.setState({id: nextProps.showBotDetails._id, name: nextProps.showBotDetails.botName, page: nextProps.showBotDetails.pageId.pageName, isActive: nextProps.showBotDetails.isActive, payload: nextProps.showBotDetails.payload})
     }
   }
 
