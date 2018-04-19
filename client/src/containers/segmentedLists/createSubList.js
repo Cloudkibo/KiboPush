@@ -15,6 +15,8 @@ import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { loadPollsList, getpollresults } from '../../redux/actions/poll.actions'
+import { loadSurveysList, loadsurveyresponses } from '../../redux/actions/surveys.actions'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -58,6 +60,8 @@ class CreateSubList extends React.Component {
     props.loadMyPagesList()
     props.loadCustomerLists()
     props.loadSubscribersList()
+    props.loadSurveysList(0)
+    props.loadPollsList(0)
   }
   componentDidMount () {
     if (this.props.customerLists) {
@@ -83,6 +87,16 @@ class CreateSubList extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    if (nextProps.surveys) {
+      for (let i = 0; i < nextProps.surveys.length; i++) {
+        this.props.loadSurveyResponses(nextProps.surveys[i]._id)
+      }
+    }
+    if (nextProps.polls) {
+      for (let i = 0; i < nextProps.polls.length; i++) {
+        this.props.getPollResults(nextProps.polls[i]._id)
+      }
+    }
     if (nextProps.subscribers) {
       this.setState({ allSubscribers: nextProps.subscribers })
     }
@@ -696,12 +710,15 @@ class CreateSubList extends React.Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('createSubList state', state)
   return {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
-    responses: [] // (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)
+    surveys: (state.surveysInfo.surveys),
+    polls: (state.pollsInfo.polls),
+    responses: (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -712,7 +729,11 @@ function mapDispatchToProps (dispatch) {
     editList: editList,
     loadListDetails: loadListDetails,
     getParentList: getParentList,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    loadPollsList: loadPollsList,
+    loadSurveysList: loadSurveysList,
+    loadSurveyResponses: loadsurveyresponses,
+    getPollResults: getpollresults
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)
