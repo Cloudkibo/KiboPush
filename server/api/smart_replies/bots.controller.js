@@ -76,14 +76,12 @@ exports.create = function (req, res) {
                   description: 'Failed to insert record'
                 })
               } else {
-                return res.status(200).json({status: 'success', payload: {message: 'Bot saved succesfully'}})
+                return res.status(200).json({status: 'success', payload: newbot})
               }
             })
           }
         }
       })
-
-      // save model to MongoDB
 }
 
 exports.edit = function (req, res) {
@@ -126,6 +124,47 @@ exports.details = function (req, res) {
 exports.delete = function (req, res) {
   logger.serverLog(TAG,
               `Deleting a bot ${JSON.stringify(req.body)}`)
+  Bots
+    .find({
+      _id: req.body.botId
+    }).populate('pageId').exec((err, bot) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      logger.serverLog(TAG,
+              `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
+    
+      request(
+       {
+         'method': 'DELETE',
+         'uri': 'https://api.wit.ai/apps/' + bot[0].witAppId,
+         headers: {
+           'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+         },
+       },
+         (err, witres) => {
+           if (err) {
+             logger.serverLog(TAG,
+               'Error Occured In Deleting WIT.AI app')
+             return res.status(500).json({status: 'failed', payload: {error: err}})
+           } else {
+             if (witres.statusCode !== 200) {
+               logger.serverLog(TAG,
+                 `Error Occured in deleting Wit ai app ${JSON.stringify(
+                   witres.body)}`)
+               return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
+             } else {
+               logger.serverLog(TAG,
+                 'Wit.ai app deleted successfully', witres.body)
+                
+             }
+           }
+         })
+    })
+
   Bots.remove({
     _id: req.body.botId
   }, function (err, _) {

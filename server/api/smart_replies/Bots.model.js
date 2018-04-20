@@ -12,7 +12,8 @@ const botSchema = new Schema({
   isActive: String,
   payload: [{
   	questions: [String],
-  	answer: String
+  	answer: String,
+  	intent_name: String,
   }],
   datetime: {type: Date, default: Date.now}
 })

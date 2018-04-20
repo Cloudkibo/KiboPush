@@ -56,6 +56,7 @@ export function createBot (data) {
 
 export function editBot (data) {
   return (dispatch) => {
+    console.log("Creating Bot", data)
     callApi('bots/edit', 'post', data)
       .then(res => {
         if (res.status === 'success') {
@@ -81,8 +82,8 @@ export function deleteBot (id, msg) {
     callApi('bots/delete/', 'post', {botId: id})
       .then(res => {
         if (res.status === 'success') {
-          msg.success('Bot deleted successfully')
           dispatch(loadBotsList())
+          msg.success('Bot deleted successfully')
         }
       })
   }
