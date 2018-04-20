@@ -68,7 +68,8 @@ class EditTemplate extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      lists: []
+      lists: [],
+      surveyValue: []
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
@@ -80,6 +81,17 @@ class EditTemplate extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
+    this.initializeSurveySelect = this.initializeSurveySelect.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+  }
+
+  showDropDown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -93,10 +105,15 @@ class EditTemplate extends React.Component {
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
+    let surveyOptions = []
+    for (var j = 0; j < this.props.surveys.length; j++) {
+      surveyOptions[j] = {id: this.props.surveys[j]._id, text: this.props.surveys[j].title}
+    }
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    this.initializeSurveySelect(surveyOptions)
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.customerLists) {
@@ -271,7 +288,32 @@ class EditTemplate extends React.Component {
       }
     })
   }
-
+  initializeSurveySelect (surveyOptions) {
+    var self = this
+    console.log('surveyOptions', surveyOptions)
+    /* eslint-disable */
+    $('#selectSurvey').select2({
+    /* eslint-enable */
+      data: surveyOptions,
+      placeholder: 'Select Survey',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectSurvey').on('change', function (e) {
+    /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ surveyValue: selected })
+      }
+    })
+  }
   updateDescription (e) {
     this.setState({description: e.target.value})
   }
@@ -339,7 +381,7 @@ class EditTemplate extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.surveyValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
@@ -364,10 +406,15 @@ class EditTemplate extends React.Component {
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
           segmentationTags: tagIDs,
+          segmentationSurvey: this.state.surveyValue,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }
+        console.log('body', surveybody)
         this.props.createsurvey(surveybody)
+        this.props.history.push({
+          pathname: '/surveys'
+        })
       } else {
         this.setState({
           alertMessage: 'Please fill all the fields.',
@@ -640,7 +687,7 @@ class EditTemplate extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.surveyValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
@@ -669,9 +716,11 @@ class EditTemplate extends React.Component {
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
             segmentationTags: tagIDs,
+            segmentationSurvey: this.state.surveyValue,
             isList: isListValue,
             segmentationList: this.state.listSelected
           }
+          console.log('surveybody', surveybody)
           this.props.sendSurveyDirectly(surveybody, this.msg)
         }
       } else {
@@ -733,9 +782,6 @@ class EditTemplate extends React.Component {
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <button className='btn btn-primary' onClick={() => {
                                       this.createSurvey()
-                                      this.props.history.push({
-                                        pathname: '/surveys'
-                                      })
                                     }}>
                                       Save
                                     </button>
@@ -829,8 +875,31 @@ class EditTemplate extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <div className='col-lg-8 col-md-8 col-sm-8'>
+                                <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                              </div>
+                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                                  <i className='la la-info-circle' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
                             </div>
                           </div>
                           : <div className='m-form'>
@@ -840,8 +909,31 @@ class EditTemplate extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                             </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <div className='col-lg-8 col-md-8 col-sm-8'>
+                                <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
+                              </div>
+                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                                  <i className='la la-info-circle' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
                             </div>
                           </div>
                           }
@@ -896,7 +988,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    surveys: (state.surveysInfo.surveys)
   }
 }
 
