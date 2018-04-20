@@ -56,6 +56,7 @@ export function createBot (data) {
 
 export function editBot (data) {
   return (dispatch) => {
+    console.log("Creating Bot", data)
     callApi('bots/edit', 'post', data)
       .then(res => {
         if (res.status === 'success') {
