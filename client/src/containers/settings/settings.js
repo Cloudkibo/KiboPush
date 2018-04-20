@@ -150,6 +150,9 @@ class Settings extends React.Component {
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }
+    if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
+      this.setResetPass()
+    }
     if (nextProps.apiEnable) {
       if (this.state.disable === false) {
         this.setState({APIKey: nextProps.apiEnable.app_id, APISecret: nextProps.apiEnable.app_secret})
@@ -253,12 +256,14 @@ class Settings extends React.Component {
                         <li className='m-nav__section m--hide'>
                           <span className='m-nav__section-text'>Section</span>
                         </li>
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-share' />
-                            <span className='m-nav__link-text'>API</span>
-                          </a>
-                        </li>
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
+                          <li className='m-nav__item'>
+                            <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                              <i className='m-nav__link-icon flaticon-share' />
+                              <span className='m-nav__link-text'>API</span>
+                            </a>
+                          </li>
+                        }
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-lock-1' />
