@@ -138,34 +138,35 @@ exports.delete = function (req, res) {
       }
       logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
-      return res.status(200).json({status: 'success', payload: bot[0]})
+    
+      request(
+       {
+         'method': 'DELETE',
+         'uri': 'https://api.wit.ai/apps/' + bot[0].witAppId,
+         headers: {
+           'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+         },
+       },
+         (err, witres) => {
+           if (err) {
+             logger.serverLog(TAG,
+               'Error Occured In Deleting WIT.AI app')
+             return res.status(500).json({status: 'failed', payload: {error: err}})
+           } else {
+             if (witres.statusCode !== 200) {
+               logger.serverLog(TAG,
+                 `Error Occured in deleting Wit ai app ${JSON.stringify(
+                   witres.body)}`)
+               return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
+             } else {
+               logger.serverLog(TAG,
+                 'Wit.ai app deleted successfully', witres.body)
+                
+             }
+           }
+         })
     })
-   request(
-    {
-      'method': 'DELETE',
-      'uri': 'https://api.wit.ai/apps/' + bot.witAppId,
-      headers: {
-        'Authorization': 'Bearer ' + WIT_AI_TOKEN,
-      },
-    },
-      (err, witres) => {
-        if (err) {
-          logger.serverLog(TAG,
-            'Error Occured In Deleting WIT.AI app')
-          return res.status(500).json({status: 'failed', payload: {error: err}})
-        } else {
-          if (witres.statusCode !== 200) {
-            logger.serverLog(TAG,
-              `Error Occured in deleting Wit ai app ${JSON.stringify(
-                witres.body)}`)
-            return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
-          } else {
-            logger.serverLog(TAG,
-              'Wit.ai app deleted successfully', witres.body)
-             
-          }
-        }
-      })
+
   Bots.remove({
     _id: req.body.botId
   }, function (err, _) {
