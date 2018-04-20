@@ -64,7 +64,9 @@ class EditPoll extends React.Component {
       isList: false,
       isShowingModal: false,
       lists: [],
-      tagValue: []
+      tagValue: [],
+      pollValue: [],
+      showDropDown: false
     }
     this.createPoll = this.createPoll.bind(this)
     this.updateStatment = this.updateStatment.bind(this)
@@ -82,18 +84,32 @@ class EditPoll extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+    this.initializePollSelect = this.initializePollSelect.bind(this)
+  }
+  showDropDown () {
+    this.setState({showDropDown: true})
   }
 
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
   componentDidMount () {
     document.title = 'KiboPush | Edit Poll'
     let options = []
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
+    let pollOptions = []
+    for (var j = 0; j < this.props.polls.length; j++) {
+      pollOptions[j] = {id: this.props.polls[j]._id, text: this.props.polls[j].statement}
+    }
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    this.initializePollSelect(pollOptions)
   }
   componentWillReceiveProps (nextprops) {
     if (nextprops.customerLists) {
@@ -125,6 +141,31 @@ class EditPoll extends React.Component {
   }
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  initializePollSelect (pollOptions) {
+    var self = this
+    /* eslint-disable */
+    $('#selectPoll').select2({
+    /* eslint-enable */
+      data: pollOptions,
+      placeholder: 'Select Poll',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectSurvey').on('change', function (e) {
+    /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pollValue: selected })
+      }
+    })
   }
   initializeTagSelect (tagOptions) {
     let remappedOptions = []
@@ -303,8 +344,16 @@ class EditPoll extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.pollValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
+      }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
+          }
+        }
       }
       this.props.addPoll('', {
         platform: 'Facebook',
@@ -317,6 +366,8 @@ class EditPoll extends React.Component {
         segmentationGender: this.state.genderValue,
         segmentationLocale: this.state.localeValue,
         isList: isListValue,
+        segmentationTags: tagIDs,
+        segmentationPoll: this.state.pollValue,
         segmentationList: this.state.listSelected
       })
     }
@@ -383,7 +434,7 @@ class EditPoll extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.surveyValue.length > 0) {
         isSegmentedValue = true
       }
       var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
@@ -409,6 +460,7 @@ class EditPoll extends React.Component {
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
           segmentationTags: tagIDs,
+          segmentationPoll: this.state.pollValue,
           isList: isListValue,
           segmentationList: this.state.listSelected
         }, this.msg)
@@ -579,8 +631,31 @@ class EditPoll extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <div className='col-lg-8 col-md-8 col-sm-8'>
+                                <select id='selectPoll' style={{minWidth: 75 + '%'}} />
+                              </div>
+                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                                  <i className='la la-info-circle' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
                             </div>
                           </div>
                           : <div className='m-form'>
@@ -590,8 +665,31 @@ class EditPoll extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                             </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <div className='col-lg-8 col-md-8 col-sm-8'>
+                                <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
+                              </div>
+                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                                  <i className='la la-info-circle' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
                             </div>
                           </div>
                           }
@@ -639,6 +737,7 @@ class EditPoll extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
+    polls: (state.pollsInfo.polls),
     pollCreated: (state.pollsInfo.pollCreated),
     user: (state.basicInfo.user),
     pollDetails: (state.templatesInfo.pollDetails),

@@ -125,7 +125,8 @@ class EditBot extends React.Component {
     let questions = ['', '', '']
     botQuestions.push({
       'questions': questions,
-      'answer': ''
+      'answer': '',
+      'intent_name': ''
     })
     this.setState({payload: botQuestions})
   }
@@ -155,6 +156,7 @@ class EditBot extends React.Component {
   handleAnswerChange (i, event) {
     let payload = this.state.payload
     payload[i].answer = event.target.value
+    payload[i].intent_name = 'q' + (i + 1)
     this.setState({payload: payload})
   }
 
@@ -182,6 +184,7 @@ class EditBot extends React.Component {
         }
       }
     }
+    console.log('this.state.payload', this.state.payload)
     this.props.editBot({botId: this.state.id, payload: this.state.payload})
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
     this.msg.success('Bot updated successfully')

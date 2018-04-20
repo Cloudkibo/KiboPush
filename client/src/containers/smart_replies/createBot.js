@@ -120,7 +120,8 @@ class CreateBot extends React.Component {
     let questions = ['', '', '']
     botQuestions.push({
       'questions': questions,
-      'answer': ''
+      'answer': '',
+      'intent_name': ''
     })
     this.setState({payload: botQuestions})
   }
@@ -150,6 +151,7 @@ class CreateBot extends React.Component {
   handleAnswerChange (i, event) {
     let payload = this.state.payload
     payload[i].answer = event.target.value
+    payload[i].intent_name = 'q' + (i + 1)
     this.setState({payload: payload})
   }
 
