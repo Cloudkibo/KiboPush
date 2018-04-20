@@ -242,9 +242,9 @@ class AddSequence extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body' />
-                    <div className='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style='overflow: visible; height: 380px; max-height: 380px; position: relative;'>
-                      <div id='mCSB_4' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style='max-height: none;' tabindex='0'>
-                        <div id='mCSB_4_container' className='mCSB_container' style='position:relative; top:0; left:0;' dir='ltr'>
+                    <div className='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style={{overflow: 'visible', height: 380, maxHeight: 380, position: 'relative'}}>
+                      <div id='mCSB_4' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style={{maxHeight: 'none'}} tabindex='0'>
+                        <div id='mCSB_4_container' className='mCSB_container' style={{position: 'relative', top: 0, left: 0}}dir='ltr'>
                           <div className='m-timeline-2'>
                             <div className='m-timeline-2__items  m--padding-top-25 m--padding-bottom-30'>
                               <div className='m-timeline-2__item'>
@@ -316,10 +316,10 @@ class AddSequence extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div id='mCSB_4_scrollbar_vertical' className='mCSB_scrollTools mCSB_4_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style='display: block;'>
+                      <div id='mCSB_4_scrollbar_vertical' className='mCSB_scrollTools mCSB_4_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
                         <div className='mCSB_draggerContainer'>
-                          <div id='mCSB_4_dragger_vertical' className='mCSB_dragger' style='position: absolute; min-height: 50px; display: block; height: 193px; max-height: 360px; top: 0px;'>
-                            <div className='mCSB_dragger_bar' style='line-height: 50px;' />
+                          <div id='mCSB_4_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: 50, display: 'block', height: 193, maxHeight: 360, top: 0}}>
+                            <div className='mCSB_dragger_bar' style={{lineHeight: 50}} />
                           </div>
                           <div className='mCSB_draggerRail' />
                         </div>
