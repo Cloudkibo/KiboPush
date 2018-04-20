@@ -82,8 +82,6 @@ exports.create = function (req, res) {
           }
         }
       })
-
-      // save model to MongoDB
 }
 
 exports.edit = function (req, res) {
@@ -137,7 +135,7 @@ exports.delete = function (req, res) {
         })
       }
       logger.serverLog(TAG,
-              `returning Bot details ${JSON.stringify(bot)}`)
+              `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
     
       request(
        {

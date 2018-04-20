@@ -125,7 +125,8 @@ class EditBot extends React.Component {
     let questions = ['', '', '']
     botQuestions.push({
       'questions': questions,
-      'answer': ''
+      'answer': '',
+      'intent_name': 'question' + this.state.payload.length,
     })
     this.setState({payload: botQuestions})
   }
