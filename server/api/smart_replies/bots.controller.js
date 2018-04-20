@@ -126,14 +126,24 @@ exports.details = function (req, res) {
 exports.delete = function (req, res) {
   logger.serverLog(TAG,
               `Deleting a bot ${JSON.stringify(req.body)}`)
-  Bots.remove({
-    _id: req.body.botId
-  }, function (err, _) {
-    if (err) return res.status(500).json({status: 'failed', payload: err})
-    request(
+  Bots
+    .find({
+      _id: req.body.botId
+    }).populate('pageId').exec((err, bot) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      logger.serverLog(TAG,
+              `returning Bot details ${JSON.stringify(bot)}`)
+      return res.status(200).json({status: 'success', payload: bot[0]})
+    })
+   request(
     {
       'method': 'DELETE',
-      'uri': 'https://api.wit.ai/apps/' + req.body.botId,
+      'uri': 'https://api.wit.ai/apps/' + bot.witAppId,
       headers: {
         'Authorization': 'Bearer ' + WIT_AI_TOKEN,
       },
@@ -147,14 +157,19 @@ exports.delete = function (req, res) {
           if (witres.statusCode !== 200) {
             logger.serverLog(TAG,
               `Error Occured in deleting Wit ai app ${JSON.stringify(
-                witres.body.errors)}`)
+                witres.body)}`)
             return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
           } else {
             logger.serverLog(TAG,
               'Wit.ai app deleted successfully', witres.body)
-             return res.status(200).json({status: 'success'})
+             
           }
         }
       })
+  Bots.remove({
+    _id: req.body.botId
+  }, function (err, _) {
+    if (err) return res.status(500).json({status: 'failed', payload: err})
+    return res.status(200).json({status: 'success'})
   })
 }
