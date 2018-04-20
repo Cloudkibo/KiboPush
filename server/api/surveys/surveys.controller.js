@@ -155,7 +155,6 @@ exports.create = function (req, res) {
         })
       }
       // after survey is created, create survey questions
-      console.log('req.body.questions', req.body.questions)
       for (let question in req.body.questions) {
         let options = []
         options = req.body.questions[question].options
@@ -170,7 +169,6 @@ exports.create = function (req, res) {
           if (err2) {
             // return res.status(404).json({ status: 'failed', description: 'Survey Question not created' });
           }
-          console.log('question1', question1)
         })
       }
       require('./../../config/socketio').sendMessageToClient({
@@ -418,7 +416,6 @@ exports.send = function (req, res) {
               return logger.serverLog(TAG,
               `At surveys ${JSON.stringify(err)}`)
             }
-            console.log('questions', questions)
             if (questions.length > 0) {
               let first_question = questions[0]
               // create buttons
@@ -441,7 +438,6 @@ exports.send = function (req, res) {
                   })
                 })
               }
-              console.log('buttons', buttons)
               let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
               if (req.body.isSegmented) {
                 if (req.body.segmentationPageIds.length > 0) {
@@ -617,7 +613,6 @@ exports.send = function (req, res) {
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
-                              console.log('data', messageData)
                               needle.post(
                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                 data, (err, resp) => {
@@ -627,7 +622,6 @@ exports.send = function (req, res) {
                                       description: JSON.stringify(err)
                                     })
                                   }
-                                  console.log('resp', JSON.stringify(resp.body))
                                   let surveyPage = new SurveyPage({
                                     pageId: pages[z].pageId,
                                     userId: req.user._id,
@@ -823,7 +817,6 @@ exports.sendSurvey = function (req, res) {
                 description: `Internal Server Error ${JSON.stringify(err2)}`
               })
             }
-            console.log('SurveyQuestions', questions)
             Surveys.findOne({_id: survey._id}, (err, survey) => {
               if (err) {
                 return logger.serverLog(TAG,

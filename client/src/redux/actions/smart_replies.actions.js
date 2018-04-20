@@ -47,6 +47,7 @@ export function createBot (data) {
   return (dispatch) => {
     callApi('bots/create', 'post', data)
       .then(res => {
+        console.log('response from createBot', res)
         if (res.status === 'success') {
           dispatch(showCreatedBot(res.payload))
         }
