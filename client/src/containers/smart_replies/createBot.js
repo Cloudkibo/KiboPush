@@ -11,14 +11,17 @@ import {editBot, updateStatus} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class CreateBot extends React.Component {
   constructor (props) {
     super(props)
+    props.loadMyPagesList()
     this.state = {
       id: '',
       name: '',
       page: '',
+      pagePic: '',
       payload: [],
       isActive: true
     }
@@ -28,12 +31,19 @@ class CreateBot extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Create Workflows'
+    document.title = 'KiboPush | Create Bot'
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.createdBot) {
-      this.setState({id: nextProps.createdBot._id, name: nextProps.createdBot.botName, page: nextProps.createdBot.pageId.pageName, isActive: nextProps.createdBot.isActive})
+    if (nextProps.createdBot && nextProps.pages) {
+      this.setState({id: nextProps.createdBot._id, name: nextProps.createdBot.botName, isActive: nextProps.createdBot.isActive})
+      console.log('nextProps', nextProps.pages)
+      for (var i = 0; i < nextProps.pages.length; i++) {
+        if (nextProps.pages[i]._id === nextProps.createdBot.pageId) {
+          console.log('insideif')
+          this.setState({page: nextProps.pages[i].pageName, pagePic: nextProps.pages[i].pagePic})
+        }
+      }
     }
   }
 
@@ -227,8 +237,8 @@ class CreateBot extends React.Component {
                         <label>Assigned to Page:</label>&nbsp;&nbsp;
                         {this.props.createdBot && this.props.createdBot.pageId &&
                         <span>
-                          <img alt='pic' style={{height: '30px'}} src={(this.props.createdBot.pageId.pagePic) ? this.props.createdBot.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                          <span>{this.props.createdBot.pageId.pageName}</span>
+                          <img alt='pic' style={{height: '30px'}} src={(this.state.pagePic) ? this.state.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                          <span>{this.state.page}</span>
                         </span>
                       }
                       </div>
@@ -278,7 +288,8 @@ class CreateBot extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    createdBot: (state.botsInfo.createdBot)
+    createdBot: (state.botsInfo.createdBot),
+    pages: (state.pagesInfo.pages)
   }
 }
 
@@ -286,7 +297,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       editBot: editBot,
-      updateStatus: updateStatus
+      updateStatus: updateStatus,
+      loadMyPagesList: loadMyPagesList
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBot)

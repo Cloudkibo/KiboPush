@@ -28,7 +28,7 @@ class EditBot extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Create Workflows'
+    document.title = 'KiboPush | Edit Bot'
     if (this.props.location.state) {
       this.props.botDetails(this.props.location.state)
     }
