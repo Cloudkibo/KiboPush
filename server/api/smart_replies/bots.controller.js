@@ -76,7 +76,7 @@ exports.create = function (req, res) {
                   description: 'Failed to insert record'
                 })
               } else {
-                return res.status(200).json({status: 'success', payload: {message: 'Bot saved succesfully'}})
+                return res.status(200).json({status: 'success', payload: newbot})
               }
             })
           }
