@@ -125,7 +125,7 @@ exports.edit = function (req, res) {
               'Error Occured In Training WIT.AI app')
           }
           logger.serverLog(TAG,
-              'WitAI bot trained successfully')
+              `WitAI bot trained successfully ${JSON.stringify(witres)}`)
         })
     return res.status(200).json({status: 'success'})
   })
