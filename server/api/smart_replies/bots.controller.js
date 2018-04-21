@@ -27,6 +27,7 @@ function transformPayload(payload){
   return transformed
 }
 
+// Not using this function for now we might later use it
 function getEntities(payload){
   var transformed = [];
   for (var i = 0; i < payload.length; i++) {
@@ -36,30 +37,27 @@ function getEntities(payload){
   return transformed
 }
 
-
-function addEnities(entities, payload, token){
+// Not using this function for now we might later use it
+function trainingPipline(entities, payload, token){
     for (let i = 0; i < entities.length; i++) {
       request(
       {
-        'method': 'POST',
-        'uri': 'https://api.wit.ai/entities?v=20170307',
+        'method': 'DELETE',
+        'uri': 'https://api.wit.ai/entities/intent/values/' + entities[i] + '?v=20170307',
         headers: {
           'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json'
         },
-        body: { id: entities[i] },
-        json: true
       },
         (err, witres) => {
           if (err) {
             logger.serverLog(TAG,
-              'Error Occured In Creating Entitiy in WIT.AI app')
+              'Error Occured In Training Pipeline in WIT.AI app')
           }
           if(i === entities.length -1){
             trainBot(payload, token)
           }
 
-          logger.serverLog(TAG, `Response from entity creation ${JSON.stringify(witres)}`)
+          logger.serverLog(TAG, `Response from Training Pipeline ${JSON.stringify(witres)}`)
         })
     }
     
@@ -180,9 +178,9 @@ exports.edit = function (req, res) {
       }
       logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
-      // var entities = getEntities(req.body.payload)
-      // addEnities(entities,req.body.payload, bot[0].witToken)
-      trainBot(req.body.payload, bot[0].witToken)
+      var entities = getEntities(req.body.payload)
+      trainingPipline(entities, req.body.payload, bot[0].witToken)
+      // trainBot(req.body.payload, bot[0].witToken)
     })
     
     return res.status(200).json({status: 'success'})
