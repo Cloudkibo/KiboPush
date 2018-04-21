@@ -36,8 +36,10 @@ function getEntities(payload){
   return transformed
 }
 
-function addEnities(entity, token){
-    request(
+
+function addEnities(entities, payload, token){
+    for (let i = 0; i < entities.length; i++) {
+      request(
       {
         'method': 'POST',
         'uri': 'https://api.wit.ai/entities?v=20170307',
@@ -45,17 +47,22 @@ function addEnities(entity, token){
           'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
         },
-        body: { id: entity },
+        body: { id: entities[i] },
         json: true
       },
         (err, witres) => {
           if (err) {
-            return logger.serverLog(TAG,
+            logger.serverLog(TAG,
               'Error Occured In Creating Entitiy in WIT.AI app')
           }
+          if(i === entities.length -1){
+            trainBot(payload, token)
+          }
 
-           return logger.serverLog(TAG, `Response from entity creation ${JSON.stringify(witres)}`)
+          logger.serverLog(TAG, `Response from entity creation ${JSON.stringify(witres)}`)
         })
+    }
+    
 }
 
 function trainBot(payload, token){
@@ -174,9 +181,7 @@ exports.edit = function (req, res) {
       logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
       var entities = getEntities(req.body.payload)
-      addEnities('q1', bot[0].witToken)
-      trainBot(req.body.payload, bot[0].witToken)
-      
+      addEnities(entities,req.body.payload, bot[0].witToken)
     })
     
     return res.status(200).json({status: 'success'})
