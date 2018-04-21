@@ -1351,7 +1351,8 @@ function savesurvey (req) {
     SurveyResponse.update({
       surveyId: resp.survey_id,
       questionId: resp.question_id,
-      subscriberId: subscriber._id
+      subscriberId: subscriber._id,
+      datetime: Date.now()
     }, {response: resp.option}, {upsert: true}, (err1, surveyresponse, raw) => {
       // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
       if (err1) {
