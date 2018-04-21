@@ -180,8 +180,9 @@ exports.edit = function (req, res) {
       }
       logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
-      var entities = getEntities(req.body.payload)
-      addEnities(entities,req.body.payload, bot[0].witToken)
+      // var entities = getEntities(req.body.payload)
+      // addEnities(entities,req.body.payload, bot[0].witToken)
+      trainBot(req.body.payload, bot[0].witToken)
     })
     
     return res.status(200).json({status: 'success'})
