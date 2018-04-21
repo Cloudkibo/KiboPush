@@ -24,7 +24,7 @@ function transformPayload(payload){
        transformed.push(sample)
      }
   }
-  logger.serverLog(TAG, `Payload Transformed ${JSON.stringify(transformed)}`)
+  return transformed
 }
 
 exports.index = function (req, res) {
@@ -106,27 +106,27 @@ exports.edit = function (req, res) {
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
     console.log('affected rows %d', affected)
 
-    // request(
-    //   {
-    //     'method': 'POST',
-    //     'uri': 'https://api.wit.ai/samples?v=20170307',
-    //     headers: {
-    //       'Authorization': 'Bearer ' + WIT_AI_TOKEN,
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: [{
-
-    //     }],
-    //     json: true
-    //   },
-    //     (err, witres) => {
-    //       if (err) {
-    //         return logger.serverLog(TAG,
-    //           'Error Occured In Training WIT.AI app')
-    //       } 
-        
-    //     })
-    transformPayload(req.body.payload)
+    var transformed = transformPayload(req.body.payload)
+    logger.serverLog(TAG, `Payload Transformed ${JSON.stringify(transformed)}`)
+    request(
+      {
+        'method': 'POST',
+        'uri': 'https://api.wit.ai/samples?v=20170307',
+        headers: {
+          'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: transformed,
+        json: true
+      },
+        (err, witres) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              'Error Occured In Training WIT.AI app')
+          }
+          logger.serverLog(TAG,
+              'WitAI bot trained successfully')
+        })
     return res.status(200).json({status: 'success'})
   })
 }
