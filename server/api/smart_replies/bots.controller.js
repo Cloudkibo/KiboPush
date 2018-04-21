@@ -36,6 +36,25 @@ function getEntities(payload){
   return transformed
 }
 
+function addEnities(entity){
+    request(
+      {
+        'method': 'POST',
+        'uri': 'https://api.wit.ai/entities?v=20170307',
+        headers: {
+          'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: { id: entity },
+        json: true
+      },
+        (err, witres) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              'Error Occured In Creating Entitiy in WIT.AI app')
+          }
+        })
+}
 
 function trainBot(payload){
   var transformed = transformPayload(payload)
@@ -141,6 +160,7 @@ exports.edit = function (req, res) {
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
     console.log('affected rows %d', affected)
     var entities = getEntities(req.body.payload)
+    addEnities('testIntent')
     trainBot(req.body.payload)
     return res.status(200).json({status: 'success'})
   })
