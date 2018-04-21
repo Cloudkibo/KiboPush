@@ -11,6 +11,22 @@ const Bots = require('./Bots.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
+function transformPayload(payload){
+  var transformed = [];
+  for (var i = 0; i < payload.length; i++) {
+    for (var j = 0; j < payload[i].questions.length; j++) {
+       var sample = {}
+       sample.text = payload[i].questions[j]
+       sample.entities = [{
+        entity: 'intent',
+        value: payload[i].intent_name
+       }]
+       transformed.push(sample)
+     }
+  }
+  logger.serverLog(TAG, `Payload Transformed ${JSON.stringify(transformed)}`)
+}
+
 exports.index = function (req, res) {
   Bots
     .find({
@@ -89,6 +105,28 @@ exports.edit = function (req, res) {
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
     console.log('affected rows %d', affected)
+
+    // request(
+    //   {
+    //     'method': 'POST',
+    //     'uri': 'https://api.wit.ai/samples?v=20170307',
+    //     headers: {
+    //       'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: [{
+
+    //     }],
+    //     json: true
+    //   },
+    //     (err, witres) => {
+    //       if (err) {
+    //         return logger.serverLog(TAG,
+    //           'Error Occured In Training WIT.AI app')
+    //       } 
+        
+    //     })
+    transformPayload(req.body.payload)
     return res.status(200).json({status: 'success'})
   })
 }
