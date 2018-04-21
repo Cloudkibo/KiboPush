@@ -36,13 +36,13 @@ function getEntities(payload){
   return transformed
 }
 
-function addEnities(entity){
+function addEnities(entity, token){
     request(
       {
         'method': 'POST',
         'uri': 'https://api.wit.ai/entities?v=20170307',
         headers: {
-          'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+          'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
         },
         body: { id: entity },
@@ -58,7 +58,7 @@ function addEnities(entity){
         })
 }
 
-function trainBot(payload){
+function trainBot(payload, token){
   var transformed = transformPayload(payload)
     logger.serverLog(TAG, `Payload Transformed ${JSON.stringify(transformed)}`)
     request(
@@ -66,7 +66,7 @@ function trainBot(payload){
         'method': 'POST',
         'uri': 'https://api.wit.ai/samples?v=20170307',
         headers: {
-          'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+          'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
         },
         body: transformed,
@@ -161,9 +161,24 @@ exports.edit = function (req, res) {
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
     console.log('affected rows %d', affected)
-    var entities = getEntities(req.body.payload)
-    addEnities('q1')
-    trainBot(req.body.payload)
+    Bots
+    .find({
+      _id: req.body.botId
+    }).populate('pageId').exec((err, bot) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      logger.serverLog(TAG,
+              `returning Bot details ${JSON.stringify(bot)}`)
+      var entities = getEntities(req.body.payload)
+      addEnities('q1', bot[0].witToken)
+      trainBot(req.body.payload, bot[0].witToken)
+      
+    })
+    
     return res.status(200).json({status: 'success'})
   })
 }
