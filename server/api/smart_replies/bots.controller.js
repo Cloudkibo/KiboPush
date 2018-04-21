@@ -53,6 +53,8 @@ function addEnities(entity){
             return logger.serverLog(TAG,
               'Error Occured In Creating Entitiy in WIT.AI app')
           }
+
+           return logger.serverLog(TAG, `Response from entity creation ${JSON.stringify(witres)}`)
         })
 }
 
