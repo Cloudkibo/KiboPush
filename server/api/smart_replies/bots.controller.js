@@ -140,7 +140,7 @@ exports.edit = function (req, res) {
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
     console.log('affected rows %d', affected)
-    var entities = getEntities(this.req.payload)
+    var entities = getEntities(req.body.payload)
     trainBot(req.body.payload)
     return res.status(200).json({status: 'success'})
   })
