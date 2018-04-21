@@ -162,7 +162,7 @@ exports.edit = function (req, res) {
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
     console.log('affected rows %d', affected)
     var entities = getEntities(req.body.payload)
-    addEnities('testIntent')
+    addEnities('q1')
     trainBot(req.body.payload)
     return res.status(200).json({status: 'success'})
   })
