@@ -126,7 +126,7 @@ class CreatePoll extends React.Component {
       multiple: true
     })
     /* eslint-disable */
-    $('#selectSurvey').on('change', function (e) {
+    $('#selectPoll').on('change', function (e) {
     /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {

@@ -15,6 +15,7 @@ const TAG = 'api/broadcast/broadcasts.utility.js'
 const utility = require('../../components/utility')
 const TagSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 const SurveyResponses = require('./../surveys/surveyresponse.model')
+const PollResponses = require('./../polls/pollresponse.model')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -319,10 +320,49 @@ function applySurveyFilterIfNecessary (req, subscribers, fn) {
     fn(subscribers)
   }
 }
-
+function applyPollFilterIfNecessary (req, subscribers, fn) {
+  if (req.body.segmentationPoll && req.body.segmentationPoll.length > 0) {
+    PollResponses.find({pollId: {$in: req.body.segmentationPoll}}).populate('subscriberId').exec((err, responses) => {
+      if (err) {
+        return logger.serverLog(TAG,
+          `At get survey responses subscribers ${JSON.stringify(err)}`)
+      }
+      let subscribersPayload = []
+      for (let i = 0; i < subscribers.length; i++) {
+        for (let j = 0; j < responses.length; j++) {
+          if (subscribers[i]._id.toString() === responses[j].subscriberId._id.toString()) {
+            subscribersPayload.push({
+              _id: subscribers[i]._id,
+              firstName: subscribers[i].firstName,
+              lastName: subscribers[i].lastName,
+              locale: subscribers[i].locale,
+              gender: subscribers[i].gender,
+              timezone: subscribers[i].timezone,
+              profilePic: subscribers[i].profilePic,
+              companyId: subscribers[i].companyId,
+              pageScopedId: '',
+              email: '',
+              senderId: subscribers[i].senderId,
+              pageId: subscribers[i].pageId,
+              datetime: subscribers[i].datetime,
+              isEnabledByPage: subscribers[i].isEnabledByPage,
+              isSubscribed: subscribers[i].isSubscribed,
+              isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+              unSubscribedBy: subscribers[i].unSubscribedBy
+            })
+          }
+        }
+      }
+      fn(subscribersPayload)
+    })
+  } else {
+    fn(subscribers)
+  }
+}
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
 exports.validateInput = validateInput
 exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
+exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
