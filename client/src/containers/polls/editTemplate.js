@@ -153,7 +153,7 @@ class EditPoll extends React.Component {
       multiple: true
     })
     /* eslint-disable */
-    $('#selectSurvey').on('change', function (e) {
+    $('#selectPoll').on('change', function (e) {
     /* eslint-enable */
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
@@ -434,7 +434,7 @@ class EditPoll extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.surveyValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.pollValue.length > 0) {
         isSegmentedValue = true
       }
       var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
