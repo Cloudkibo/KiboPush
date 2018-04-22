@@ -27,6 +27,18 @@ function transformPayload(payload){
   return transformed
 }
 
+exports.respond = function(payload){
+  //Need to extract the pageID and message from facebook and also the senderID
+  if(payload.object !== 'page'){
+    return
+  }
+  var messageDetails = payload.entry[0].messaging[0]
+  var pageId = messageDetails.recipient.id
+  var senderId = messageDetails.sender.id
+  var text = messageDetails.message.text
+  logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text) 
+}
+
 // Not using this function for now we might later use it
 function getEntities(payload){
   var transformed = [];
