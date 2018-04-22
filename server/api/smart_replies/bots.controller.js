@@ -63,9 +63,9 @@ function getWitResponse(message, token, bot, pageId, senderId){
 }
 
 function sendMessenger(message, pageId, senderId){
-  // let messageData = utility.prepareSendAPIPayload(
-  //               senderId,
-  //               {}, true)
+  let messageData = utility.prepareSendAPIPayload(
+                senderId,
+                 {"componentType":"text","text": message} , true)
 
               // request(
               //   {
