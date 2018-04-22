@@ -99,6 +99,9 @@ exports.respond = function(payload){
   var messageDetails = payload.entry[0].messaging[0]
   var pageId = messageDetails.recipient.id
   var senderId = messageDetails.sender.id
+  if(messageDetails.message.is_echo){
+    return
+  }
   var text = messageDetails.message.text
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
   Pages.findOne({pageId: pageId}, (err, page) => {
