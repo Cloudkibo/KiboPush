@@ -28,7 +28,7 @@ function transformPayload(payload){
   return transformed
 }
 
-function getWitResponse(message, token, bot){
+function getWitResponse(message, token, bot, pageId, senderId){
   logger.serverLog(TAG, 'Trying to get a response from WIT AI')
   request(
   {
@@ -88,7 +88,7 @@ exports.respond = function(payload){
           if(bot.isActive === 'true'){
             //Write the bot response logic here
             logger.serverLog(TAG, 'Responding using the bot as status is Active')
-            getWitResponse(text, bot.witToken, bot)
+            getWitResponse(text, bot.witToken, bot, pageId, senderId)
           }
       }) 
       
