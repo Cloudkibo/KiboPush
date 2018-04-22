@@ -58,7 +58,7 @@ function getWitResponse(message, token){
     })
 }
 
-sendMessenger(message, pageId, senderId){
+function sendMessenger(message, pageId, senderId){
 
   logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
 }
@@ -93,7 +93,6 @@ exports.respond = function(payload){
                     sendMessenger(bot.payload[i].answer, pageId, senderId)
                  }
                } 
-              
             }else{
               return 
             }
