@@ -11,6 +11,7 @@ const Bots = require('./Bots.model')
 const Pages = require('../pages/Pages.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
+let utility = require('./../broadcasts/broadcasts.utility')
 
 function transformPayload(payload){
   var transformed = [];
@@ -62,7 +63,31 @@ function getWitResponse(message, token, bot, pageId, senderId){
 }
 
 function sendMessenger(message, pageId, senderId){
+  let messageData = utility.prepareSendAPIPayload(
+                senderId,
+                {}, true)
 
+              // request(
+              //   {
+              //     'method': 'POST',
+              //     'json': true,
+              //     'formData': messageData,
+              //     'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+              //     session.page_id.accessToken
+              //   },
+              //   (err, res) => {
+              //     if (err) {
+              //       return logger.serverLog(TAG,
+              //         `At send message live chat ${JSON.stringify(err)}`)
+              //     } else {
+              //       if (res.statusCode !== 200) {
+              //         logger.serverLog(TAG,
+              //           `At send message live chat response ${JSON.stringify(
+              //             res.body.error)}`)
+              //       } else {
+              //       }
+              //     }
+              //   })
   logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
 }
 
