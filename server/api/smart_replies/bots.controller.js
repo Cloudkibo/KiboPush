@@ -50,7 +50,7 @@ function getWitResponse(message, token){
         return {found: false, intent_name: 'Not Found'} 
       }
       var intent = JSON.parse(witres.body).entities.intent[0]
-      if(intent.confidence > 55){
+      if(intent.confidence > .55){
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
         return {found: true, intent_name: intent.value} 
       }else{
