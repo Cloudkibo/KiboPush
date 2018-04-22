@@ -66,29 +66,35 @@ function sendMessenger(message, pageId, senderId){
   let messageData = utility.prepareSendAPIPayload(
                 senderId,
                  {"componentType":"text","text": message} , true)
-
-              // request(
-              //   {
-              //     'method': 'POST',
-              //     'json': true,
-              //     'formData': messageData,
-              //     'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              //     session.page_id.accessToken
-              //   },
-              //   (err, res) => {
-              //     if (err) {
-              //       return logger.serverLog(TAG,
-              //         `At send message live chat ${JSON.stringify(err)}`)
-              //     } else {
-              //       if (res.statusCode !== 200) {
-              //         logger.serverLog(TAG,
-              //           `At send message live chat response ${JSON.stringify(
-              //             res.body.error)}`)
-              //       } else {
-              //       }
-              //     }
-              //   })
-  logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+      Pages.findOne({pageId: pageId}, (err, page) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          request(
+            {
+              'method': 'POST',
+              'json': true,
+              'formData': messageData,
+              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+              page.accessToken
+            },
+            (err, res) => {
+              if (err) {
+                return logger.serverLog(TAG,
+                  `At send message live chat ${JSON.stringify(err)}`)
+              } else {
+                if (res.statusCode !== 200) {
+                  logger.serverLog(TAG,
+                    `At send message live chat response ${JSON.stringify(
+                      res.body.error)}`)
+                } else {
+                  logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+                }
+              }
+            })
+      })
+              
+  
 }
 
 exports.respond = function(payload){
