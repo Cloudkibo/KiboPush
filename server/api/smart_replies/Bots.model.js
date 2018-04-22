@@ -13,7 +13,7 @@ const botSchema = new Schema({
   payload: [{
   	questions: [String],
   	answer: String,
-  	intent_name: String,
+  	intent_name: String
   }],
   datetime: {type: Date, default: Date.now}
 })
