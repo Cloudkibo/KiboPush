@@ -29,6 +29,7 @@ function transformPayload(payload){
 }
 
 function getWitResponse(message, token){
+  logger.serverLog(TAG, 'Trying to get a response from WIT AI')
   request(
   {
     'method': 'GET',
@@ -86,7 +87,7 @@ exports.respond = function(payload){
             //Write the bot response logic here
             logger.serverLog(TAG, 'Responding using the bot as status is Active')
             var witResponse = getWitResponse(text, bot.witToken)
-            if(witResponse.found){
+            if(witResponse && witResponse.found){
               //Write the response logic here
               for (let i = 0; i < bot.payload.length; i++) {
                  if(bot.payload[i].intent_name == witResponse.intent_name){
