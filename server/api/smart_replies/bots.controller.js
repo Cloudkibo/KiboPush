@@ -28,7 +28,7 @@ function transformPayload(payload){
   return transformed
 }
 
-function getWitResponse(message, token){
+function getWitResponse(message, token, bot){
   logger.serverLog(TAG, 'Trying to get a response from WIT AI')
   request(
   {
@@ -52,6 +52,11 @@ function getWitResponse(message, token){
       var intent = JSON.parse(witres.body).entities.intent[0]
       if(intent.confidence > .55){
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
+        for (let i = 0; i < bot.payload.length; i++) {
+           if(bot.payload[i].intent_name == witResponse.intent_name){
+              sendMessenger(bot.payload[i].answer, pageId, senderId)
+           }
+         } 
         return {found: true, intent_name: intent.value} 
       }else{
         return {found: false, intent_name: 'Not Found'} 
@@ -86,17 +91,7 @@ exports.respond = function(payload){
           if(bot.isActive === 'true'){
             //Write the bot response logic here
             logger.serverLog(TAG, 'Responding using the bot as status is Active')
-            var witResponse = getWitResponse(text, bot.witToken)
-            if(witResponse && witResponse.found){
-              //Write the response logic here
-              for (let i = 0; i < bot.payload.length; i++) {
-                 if(bot.payload[i].intent_name == witResponse.intent_name){
-                    sendMessenger(bot.payload[i].answer, pageId, senderId)
-                 }
-               } 
-            }else{
-              return 
-            }
+            var witResponse = getWitResponse(text, bot.witToken, bot)
           }
       }) 
       
