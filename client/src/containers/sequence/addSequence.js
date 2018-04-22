@@ -177,29 +177,22 @@ class AddSequence extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        <div style={{float: 'left', clear: 'both'}}
-          ref={(el) => { this.top = el }} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+        <div style={{float: 'left', clear: 'both'}} ref={(el) => { this.top = el }} />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            {
-              this.state.isShowingModalDelete &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialogDelete}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogDelete}>
-                  <h3>Delete Sequence</h3>
-                  <p>Are you sure you want to delete this Sequence?</p>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      this.props.deleteSequence(this.state.deleteid, this.msg)
-                      this.closeDialogDelete()
-                    }}>Delete
-                  </button>
-                </ModalDialog>
-              </ModalContainer>
+            { this.state.isShowingModalDelete &&
+            <ModalContainer style={{width: '500px'}} onClose={this.closeDialogDelete}>
+              <ModalDialog style={{width: '500px'}} onClose={this.closeDialogDelete}>
+                <h3>Delete Sequence</h3>
+                <p>Are you sure you want to delete this Sequence?</p>
+                <button style={{float: 'right'}} className='btn btn-primary btn-sm' onClick={() => {
+                  this.props.deleteSequence(this.state.deleteid, this.msg)
+                  this.closeDialogDelete()
+                }}>Delete
+                </button>
+              </ModalDialog>
+            </ModalContainer>
             }
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -233,99 +226,211 @@ class AddSequence extends React.Component {
                           <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                             <span>
                               <i className='la la-plus' />
-                              <span>
-                                  Add Message
-                                </span>
-                            </span>
+                                                    Add Message
+                                              </span>
                           </button>
                         </Link>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <div className='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style={{overflow: 'visible', height: 380, maxHeight: 380, position: 'relative'}}>
-                        <div id='mCSB_4' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style={{maxHeight: 'none'}} tabindex='0'>
-                          <div id='mCSB_4_container' className='mCSB_container' style={{position: 'relative', top: 0, left: 0}}dir='ltr'>
-                            <div className='m-timeline-2'>
-                              <div className='m-timeline-2__items  m--padding-top-25 m--padding-bottom-30'>
-                                <div className='m-timeline-2__item'>
-                                  <span className='m-timeline-2__item-time'>5 minutes</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-danger' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text  m--padding-top-5'>
-                                              Lorem ipsum dolor sit amit,consectetur eiusmdd tempor
-                                               incididunt ut labore et dolore magna
-                                          </div>
+                      <div className='tab-content'>
+                        <div className='tab-pane active' id='m_widget2_tab1_content'>
+                          <div className='m-timeline-3'>
+                            <div className='m-timeline-3__items'>
+                              <div className='m-timeline-3__item m-timeline-3__item--info'>
+                                <span className='m-timeline-3__item-time'>09:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor sit amit,consectetur eiusmdd tempor
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Bob
+                </a>
+                                  </span>
                                 </div>
-                                <div className='m-timeline-2__item m--margin-top-30'>
-                                  <span className='m-timeline-2__item-time'>2 hours</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-success' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text m-timeline-2__item-text--bold'>
-                                              PLACEHOLDER
-                                          </div>
-
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--warning'>
+                                <span className='m-timeline-3__item-time'>10:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor sit amit
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Sean
+                </a>
+                                  </span>
                                 </div>
-                                <div className='m-timeline-2__item m--margin-top-30'>
-                                  <span className='m-timeline-2__item-time'>12 hours</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-brand' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text m--padding-top-5'>
-                                              Make Deposit <a href='#' className='m-link m-link--brand m--font-bolder'>USD 700</a> To ESL.
-                                          </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--brand'>
+                                <span className='m-timeline-3__item-time'>11:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor sit amit eiusmdd tempor
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By James
+                </a>
+                                  </span>
                                 </div>
-                                <div className='m-timeline-2__item m--margin-top-30'>
-                                  <span className='m-timeline-2__item-time'>3 day</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-warning' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text m--padding-top-5'>
-                                              Lorem ipsum dolor sit amit,consectetur eiusmdd tempor incididunt ut labore et dolore magna elit enim at minim <br /> veniam quis nostrud
-                                          </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--success'>
+                                <span className='m-timeline-3__item-time'>12:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By James
+                </a>
+                                  </span>
                                 </div>
-                                <div className='m-timeline-2__item m--margin-top-30'>
-                                  <span className='m-timeline-2__item-time'>1 week</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-info' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text m--padding-top-5'>
-                                              Placed a new order in <a href='#' className='m-link m-link--brand m--font-bolder'>SIGNATURE MOBILE</a> marketplace.
-                                          </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--danger'>
+                                <span className='m-timeline-3__item-time'>14:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor sit amit,consectetur eiusmdd
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Derrick
+                </a>
+                                  </span>
                                 </div>
-                                <div className='m-timeline-2__item m--margin-top-30'>
-                                  <span className='m-timeline-2__item-time'>2 week</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-brand' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text m--padding-top-5'>
-                                              Lorem ipsum dolor sit amit,consectetur eiusmdd tempor<br /> incididunt ut labore et dolore magna elit enim at minim<br /> veniam quis nostrud
-                                          </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--info'>
+                                <span className='m-timeline-3__item-time'>15:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor sit amit,consectetur
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Iman
+                </a>
+                                  </span>
                                 </div>
-                                <div className='m-timeline-2__item m--margin-top-30'>
-                                  <span className='m-timeline-2__item-time'>3 week</span>
-                                  <div className='m-timeline-2__item-cricle'>
-                                    <i className='fa fa-genderless m--font-danger' />
-                                  </div>
-                                  <div className='m-timeline-2__item-text m--padding-top-5'>
-                                              Received a new feedback on <a href='#' className='m-link m-link--brand m--font-bolder'>FinancePro App</a> product.
-                                          </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--brand'>
+                                <span className='m-timeline-3__item-time'>17:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem ipsum dolor sit consectetur eiusmdd tempor
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Aziko
+                </a>
+                                  </span>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div id='mCSB_4_scrollbar_vertical' className='mCSB_scrollTools mCSB_4_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
-                          <div className='mCSB_draggerContainer'>
-                            <div id='mCSB_4_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: 50, display: 'block', height: 193, maxHeight: 360, top: 0}}>
-                              <div className='mCSB_dragger_bar' style={{lineHeight: 50}} />
+                        <div className='tab-pane' id='m_widget2_tab2_content'>
+                          <div className='m-timeline-3'>
+                            <div className='m-timeline-3__items'>
+                              <div className='m-timeline-3__item m-timeline-3__item--info'>
+                                <span className='m-timeline-3__item-time m--font-focus'>09:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Contrary to popular belief, Lorem Ipsum is not simply random text.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Bob
+                </a>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--warning'>
+                                <span className='m-timeline-3__item-time m--font-warning'>10:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                There are many variations of passages of Lorem Ipsum available.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Sean
+                </a>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--brand'>
+                                <span className='m-timeline-3__item-time m--font-primary'>11:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Contrary to popular belief, Lorem Ipsum is not simply random text.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By James
+                </a>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--success'>
+                                <span className='m-timeline-3__item-time m--font-success'>12:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                The standard chunk of Lorem Ipsum used since the 1500s is reproduced.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By James
+                </a>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--danger'>
+                                <span className='m-timeline-3__item-time m--font-warning'>14:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Latin words, combined with a handful of model sentence structures.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Derrick
+                </a>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--info'>
+                                <span className='m-timeline-3__item-time m--font-info'>15:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Contrary to popular belief, Lorem Ipsum is not simply random text.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Iman
+                </a>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className='m-timeline-3__item m-timeline-3__item--brand'>
+                                <span className='m-timeline-3__item-time m--font-danger'>17:00</span>
+                                <div className='m-timeline-3__item-desc'>
+                                  <span className='m-timeline-3__item-text'>
+                Lorem Ipsum is therefore always free from repetition, injected humour.
+              </span><br />
+                                  <span className='m-timeline-3__item-user-name'>
+                                    <a href='#' className='m-link m-link--metal m-timeline-3__item-link'>
+                  By Aziko
+                </a>
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                            <div className='mCSB_draggerRail' />
                           </div>
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>
@@ -333,12 +438,11 @@ class AddSequence extends React.Component {
           </div>
         </div>
       </div>
+
     )
   }
 }
-
 function mapStateToProps (state) {
-  console.log(state)
   return {
     sequences: (state.sequenceInfo.sequences)
   }

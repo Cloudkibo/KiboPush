@@ -32,7 +32,7 @@ export function showAllMessages (data) {
 export function fetchAllMessages () {
   console.log('fetchAllMessages')
   return (dispatch) => {
-    callApi(`/allMessages`)
+    callApi(`allMessages`)
       .then(res => {
         if (res.status === 'success') {
           console.log('allMessages', res.payload)
