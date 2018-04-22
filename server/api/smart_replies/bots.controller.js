@@ -42,7 +42,7 @@ exports.respond = function(payload){
     if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      Bot.findOne({pageId: page._id}, (err, bot) => {
+      Bots.findOne({pageId: page._id}, (err, bot) => {
           if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
