@@ -8,6 +8,7 @@ const logger = require('../../components/logger')
 // eslint-disable-next-line no-unused-vars
 const TAG = 'api/smart_replies/bots.controller.js'
 const Bots = require('./Bots.model')
+const Pages = require('../pages/Pages.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 
@@ -36,7 +37,13 @@ exports.respond = function(payload){
   var pageId = messageDetails.recipient.id
   var senderId = messageDetails.sender.id
   var text = messageDetails.message.text
-  logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text) 
+  logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
+  Pages.findOne({pageId: pageId}, (err, page) => {
+    if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG, `Found the page ${JSON.stringify(page)}`)
+  }) 
 }
 
 // Not using this function for now we might later use it
