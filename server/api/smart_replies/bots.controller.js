@@ -58,6 +58,11 @@ function getWitResponse(message, token){
     })
 }
 
+sendMessenger(message, pageId, senderId){
+
+  logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+}
+
 exports.respond = function(payload){
   //Need to extract the pageID and message from facebook and also the senderID
   if(payload.object !== 'page'){
@@ -80,7 +85,18 @@ exports.respond = function(payload){
           if(bot.isActive === 'true'){
             //Write the bot response logic here
             logger.serverLog(TAG, 'Responding using the bot as status is Active')
-            getWitResponse(text, bot.witToken)
+            var witResponse = getWitResponse(text, bot.witToken)
+            if(witResponse.found){
+              //Write the response logic here
+              for (let i = 0; i < bot.payload.length; i++) {
+                 if(bot.payload[i].intent_name == witResponse.intent_name){
+                    sendMessenger(bot.payload[i].answer, pageId, senderId)
+                 }
+               } 
+              
+            }else{
+              return 
+            }
           }
       }) 
       
