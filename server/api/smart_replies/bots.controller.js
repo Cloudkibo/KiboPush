@@ -28,6 +28,25 @@ function transformPayload(payload){
   return transformed
 }
 
+function getWitResponse(message, token){
+  request(
+  {
+    'method': 'GET',
+    'uri': 'https://api.wit.ai/message?v=20170307&q=' + message,
+    headers: {
+      'Authorization': 'Bearer ' + token,
+    },
+  },
+    (err, witres) => {
+      if (err) {
+        logger.serverLog(TAG,
+          'Error Occured In Getting Response From WIT.AI app')
+      }
+
+      logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(witres)}`)
+    })
+}
+
 exports.respond = function(payload){
   //Need to extract the pageID and message from facebook and also the senderID
   if(payload.object !== 'page'){
@@ -50,6 +69,7 @@ exports.respond = function(payload){
           if(bot.isActive === 'true'){
             //Write the bot response logic here
             logger.serverLog(TAG, 'Responding using the bot as status is Active')
+            getWitResponse(text, bot.witToken)
           }
       }) 
       
