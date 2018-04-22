@@ -43,7 +43,7 @@ function getWitResponse(message, token){
           'Error Occured In Getting Response From WIT.AI app')
       }
 
-      logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(witres.body.entities)}`)
+      logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
     })
 }
 
