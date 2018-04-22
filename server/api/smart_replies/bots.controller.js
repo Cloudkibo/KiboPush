@@ -53,13 +53,10 @@ function getWitResponse(message, token, bot){
       if(intent.confidence > .55){
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
         for (let i = 0; i < bot.payload.length; i++) {
-           if(bot.payload[i].intent_name == witResponse.intent_name){
+           if(bot.payload[i].intent_name == intent.value){
               sendMessenger(bot.payload[i].answer, pageId, senderId)
            }
          } 
-        return {found: true, intent_name: intent.value} 
-      }else{
-        return {found: false, intent_name: 'Not Found'} 
       }
     })
 }
@@ -91,7 +88,7 @@ exports.respond = function(payload){
           if(bot.isActive === 'true'){
             //Write the bot response logic here
             logger.serverLog(TAG, 'Responding using the bot as status is Active')
-            var witResponse = getWitResponse(text, bot.witToken, bot)
+            getWitResponse(text, bot.witToken, bot)
           }
       }) 
       
