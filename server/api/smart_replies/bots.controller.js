@@ -44,6 +44,10 @@ function getWitResponse(message, token){
       }
 
       logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
+      if(JSON.parse(witres.body).entities.intent){
+        logger.serverLog(TAG, 'No response found')
+        return {found: false, intent_name: 'Not Found'} 
+      }
       var intent = JSON.parse(witres.body).entities.intent[0]
       if(intent.confidence > 55){
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
