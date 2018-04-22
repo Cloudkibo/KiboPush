@@ -105,7 +105,7 @@ exports.create = function (req, res) {
               if (err) {
                 return logger.serverLog(TAG, `Live Chat Payload Being Sent ${JSON.stringify(req.body.payload)}`)
               }
-              logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+              logger.serverLog(TAG, `Payload from the client ${JSON.stringify(req.body.payload)}`)
               let messageData = utility.prepareSendAPIPayload(
                 subscriber.senderId,
                 req.body.payload, true)
