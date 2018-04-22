@@ -241,7 +241,7 @@ class AddSequence extends React.Component {
                         </Link>
                       </div>
                     </div>
-                    <div className='m-portlet__body' />
+                    <div className='m-portlet__body'>
                     <div className='m-scrollable mCustomScrollbar _mCS_5 mCS-autoHide _mCS_4' data-scrollbar-shown='true' data-scrollable='true' data-max-height='380' style={{overflow: 'visible', height: 380, maxHeight: 380, position: 'relative'}}>
                       <div id='mCSB_4' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' style={{maxHeight: 'none'}} tabindex='0'>
                         <div id='mCSB_4_container' className='mCSB_container' style={{position: 'relative', top: 0, left: 0}}dir='ltr'>

@@ -12,7 +12,7 @@ export function showAllSequence (data) {
 export function fetchAllSequence () {
   console.log('fetchAllSequence')
   return (dispatch) => {
-    callApi(`/allSequences`)
+    callApi(`allSequences`)
       .then(res => {
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
