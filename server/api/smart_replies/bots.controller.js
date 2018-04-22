@@ -42,7 +42,17 @@ exports.respond = function(payload){
     if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG, `Found the page ${JSON.stringify(page)}`)
+      Bot.findOne({pageId: page._id}, (err, bot) => {
+          if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+
+          if(bot.isActive === 'true'){
+            //Write the bot response logic here
+            logger.serverLog(TAG, 'Responding using the bot as status is Active')
+          }
+      }) 
+      
   }) 
 }
 
