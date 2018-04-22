@@ -43,7 +43,14 @@ function getWitResponse(message, token){
           'Error Occured In Getting Response From WIT.AI app')
       }
 
-      logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body).entities.intent[0])}`)
+      logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
+      var intent = JSON.parse(witres.body).entities.intent[0]
+      if(intent.confidence > 55){
+        logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
+        return {found: true, intent_name: intent.value} 
+      }else{
+        return {found: false, intent_name: 'Not Found'} 
+      }
     })
 }
 
