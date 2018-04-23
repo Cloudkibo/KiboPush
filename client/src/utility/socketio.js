@@ -7,6 +7,7 @@ import { socketUpdate, fetchSessions, fetchUserChats, setActiveSession } from '.
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { loadWorkFlowList } from './../redux/actions/workflows.actions'
+import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
 import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
 import { loadPollsList } from './../redux/actions/poll.actions'
@@ -35,7 +36,9 @@ var callbacks = {
   workflow_created: false,
   workflow_updated: false,
   new_subscriber: false,
-  dashboard_updated: false
+  dashboard_updated: false,
+  sequence_create: false,
+  sequence_update: false
 }
 
 export function registerAction (callback) {
@@ -96,6 +99,8 @@ socket.on('message', (data) => {
     store.dispatch(fetchSessions())
     store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchUserChats(data.payload.session_id))
+  } else if (['sequence_create', 'sequence_update'].indexOf(data.action) > -1) {
+    store.dispatch(fetchAllSequence())
   }
 
   if (callbacks[data.action]) {
