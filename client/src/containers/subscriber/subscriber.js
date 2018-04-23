@@ -12,6 +12,7 @@ import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actio
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence } from '../../redux/actions/sequence.action'
 import fileDownload from 'js-file-download'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
@@ -37,9 +38,13 @@ class Subscriber extends React.Component {
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
       popoverRemoveTagOpen: false,
+      openSubscribeToSequence: false,
+      openUnsubscribeToSequence: false,
       addTag: '',
       removeTag: '',
+      sequenceValue: '',
       options: [],
+      sequenceOptions: [],
       selectAllChecked: null,
       saveEnable: false,
       pageSelected: 0,
@@ -48,11 +53,14 @@ class Subscriber extends React.Component {
     props.loadMyPagesList()
     props.loadAllSubscribersList()
     props.loadTags()
+    props.fetchAllSequence()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.toggleTag = this.toggleTag.bind(this)
     this.toggleAdd = this.toggleAdd.bind(this)
     this.toggleRemove = this.toggleRemove.bind(this)
+    this.toggleSubscribe = this.toggleSubscribe.bind(this)
+    this.toggleUnSubscribe = this.toggleUnSubscribe.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSubscriber = this.searchSubscriber.bind(this)
@@ -76,6 +84,11 @@ class Subscriber extends React.Component {
     this.handleCreateTag = this.handleCreateTag.bind(this)
     this.openEditModal = this.openEditModal.bind(this)
     this.closeEditModal = this.closeEditModal.bind(this)
+    this.showSubscribeToSequence = this.showSubscribeToSequence.bind(this)
+    this.showUnsubscribeToSequence = this.showUnsubscribeToSequence.bind(this)
+    this.handleSequence = this.handleSequence.bind(this)
+    this.subscribeToSequence = this.subscribeToSequence.bind(this)
+    this.unsubscribeToSequence = this.unsubscribeToSequence.bind(this)
   }
   openEditModal () {
     this.setState({showEditModal: true})
@@ -106,6 +119,9 @@ class Subscriber extends React.Component {
         addTag: value
       })
     }
+  }
+  handleSequence (value) {
+    this.setState({sequenceValue: value})
   }
   handleCreateTag () {
     this.setState({
@@ -164,6 +180,37 @@ class Subscriber extends React.Component {
       }
     }
   }
+
+  subscribeToSequence () {
+    let subscribers = []
+    for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
+      if (this.state.subscribersDataAll[i].selected) {
+        subscribers.push(this.state.subscribersDataAll[i]._id)
+      }
+    }
+    let data = {
+      sequenceId: this.state.sequenceValue,
+      subscriberIds: subscribers
+    }
+    this.props.subscribeToSequence(data, this.msg)
+    this.setState({selectAllChecked: false, sequenceValue: ''})
+  }
+
+  unsubscribeToSequence () {
+    let subscribers = []
+    for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
+      if (this.state.subscribersDataAll[i].selected) {
+        subscribers.push(this.state.subscribersDataAll[i]._id)
+      }
+    }
+    let data = {
+      sequenceId: this.state.sequenceValue,
+      subscriberIds: subscribers
+    }
+    this.props.unsubscribeToSequence(data, this.msg)
+    this.setState({selectAllChecked: false, sequenceValue: ''})
+  }
+
   handleSaveTags () {
     this.props.loadAllSubscribersList()
     this.setState({
@@ -214,6 +261,16 @@ class Subscriber extends React.Component {
       popoverRemoveTagOpen: !this.state.popoverRemoveTagOpen
     })
   }
+  toggleSubscribe () {
+    this.setState({
+      openSubscribeToSequence: !this.state.openSubscribeToSequence
+    })
+  }
+  toggleUnSubscribe () {
+    this.setState({
+      openUnsubscribeToSequence: !this.state.openUnsubscribeToSequence
+    })
+  }
   showAddTag () {
     this.setState({
       addTag: null,
@@ -224,6 +281,19 @@ class Subscriber extends React.Component {
     this.setState({
       removeTag: null,
       popoverRemoveTagOpen: true
+    })
+  }
+
+  showSubscribeToSequence () {
+    this.setState({
+      sequenceValue: '',
+      openSubscribeToSequence: true
+    })
+  }
+  showUnsubscribeToSequence () {
+    this.setState({
+      sequenceValue: '',
+      openUnsubscribeToSequence: true
     })
   }
 
@@ -366,6 +436,13 @@ class Subscriber extends React.Component {
       this.setState({
         options: tagOptions
       })
+    }
+    if (nextProps.sequences) {
+      let sequenceOptions = []
+      for (let a = 0; a < nextProps.sequences.length; a++) {
+        sequenceOptions.push({'value': nextProps.sequences[a]._id, 'label': nextProps.sequences[a].name})
+      }
+      this.setState({sequenceOptions: sequenceOptions})
     }
   }
   stackGenderFilter (filteredData) {
@@ -693,6 +770,8 @@ class Subscriber extends React.Component {
                                           <DropdownMenu>
                                             <DropdownItem onClick={this.showAddTag}>Assign Tags</DropdownItem>
                                             <DropdownItem onClick={this.showRemoveTag}>UnAssign Tags</DropdownItem>
+                                            <DropdownItem onClick={this.showSubscribeToSequence}>Subscribe to Sequence</DropdownItem>
+                                            <DropdownItem onClick={this.showUnsubscribeToSequence}>Unsubscribe to Sequence</DropdownItem>
                                           </DropdownMenu>
                                         </Dropdown>
                                         {/* <span style={{fontSize: '0.8rem', color: '#5cb85c'}}>Tag limit for each subscriber is 10</span> */}
@@ -763,6 +842,65 @@ class Subscriber extends React.Component {
                                                 onClick={() => {
                                                   this.removeTags()
                                                   this.toggleRemove()
+                                                }}>Save
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </PopoverBody>
+                                      </Popover>
+                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.showSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
+                                        <PopoverHeader>Subscribe to Sequence</PopoverHeader>
+                                        <PopoverBody>
+                                          <div className='row' style={{minWidth: '250px'}}>
+                                            <div className='col-12'>
+                                              <label>Select Sequence</label>
+                                              <Select
+                                                options={this.state.sequenceOptions}
+                                                onChange={this.handleSequence}
+                                                value={this.state.sequenceValue}
+                                                placeholder='Select Sequence...'
+                                              />
+                                            </div>
+                                            {this.state.saveEnable
+                                            ? <div className='col-12'>
+                                              <button style={{float: 'right', margin: '15px'}}
+                                                className='btn btn-primary btn-sm'
+                                                onClick={() => {
+                                                  this.subscribeToSequence()
+                                                  this.toggleSubscribe()
+                                                }}>Save
+                                              </button>
+                                            </div>
+                                            : <div className='col-12'>
+                                              <button style={{float: 'right', margin: '15px'}}
+                                                className='btn btn-primary btn-sm'
+                                                disabled>
+                                                 Save
+                                              </button>
+                                            </div>
+                                          }
+                                          </div>
+                                        </PopoverBody>
+                                      </Popover>
+                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.showUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
+                                        <PopoverHeader>Unsubscribe from Sequence</PopoverHeader>
+                                        <PopoverBody>
+                                          <div className='row' style={{minWidth: '250px'}}>
+                                            <div className='col-12'>
+                                              <label>Select Tags</label>
+                                              <Select
+                                                options={this.state.sequenceOptions}
+                                                onChange={this.handleSequence}
+                                                value={this.state.sequenceValue}
+                                                placeholder='Remove User Tags'
+                                              />
+                                            </div>
+                                            <div className='col-12'>
+                                              <button style={{float: 'right', margin: '15px'}}
+                                                className='btn btn-primary btn-sm'
+                                                onClick={() => {
+                                                  this.unsubscribeToSequence()
+                                                  this.toggleUnSubscribe()
                                                 }}>Save
                                               </button>
                                             </div>
@@ -963,7 +1101,8 @@ function mapStateToProps (state) {
     subscribers: (state.subscribersInfo.subscribers),
     locales: (state.subscribersInfo.locales),
     pages: (state.pagesInfo.pages),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    sequences: (state.sequenceInfo.sequences)
   }
 }
 
@@ -973,7 +1112,11 @@ function mapDispatchToProps (dispatch) {
     assignTags: assignTags,
     unassignTags: unassignTags,
     loadTags: loadTags,
-    createTag: createTag},
+    createTag: createTag,
+    fetchAllSequence: fetchAllSequence,
+    subscribeToSequence: subscribeToSequence,
+    unsubscribeToSequence: unsubscribeToSequence
+  },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Subscriber)
