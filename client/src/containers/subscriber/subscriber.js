@@ -848,7 +848,7 @@ class Subscriber extends React.Component {
                                           </div>
                                         </PopoverBody>
                                       </Popover>
-                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.showSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
+                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.openSubscribeToSequence} target='assignTag' toggle={this.toggleSubscribe}>
                                         <PopoverHeader>Subscribe to Sequence</PopoverHeader>
                                         <PopoverBody>
                                           <div className='row' style={{minWidth: '250px'}}>
@@ -882,7 +882,7 @@ class Subscriber extends React.Component {
                                           </div>
                                         </PopoverBody>
                                       </Popover>
-                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.showUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
+                                      <Popover placement='left' className='subscriberPopover' isOpen={this.state.openUnsubscribeToSequence} target='assignTag' toggle={this.toggleUnSubscribe}>
                                         <PopoverHeader>Unsubscribe from Sequence</PopoverHeader>
                                         <PopoverBody>
                                           <div className='row' style={{minWidth: '250px'}}>
