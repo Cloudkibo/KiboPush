@@ -6,6 +6,10 @@ import * as ActionTypes from '../constants/constants'
 
 export function listsInfo (state = {}, action) {
   switch (action.type) {
+    case ActionTypes.LOAD_REPLIED_POLL_SUBSCRIBERS:
+      return Object.assign({}, state, {
+        pollSubscribers: action.data
+      })
     case ActionTypes.LOAD_CUSTOMER_LISTS:
       return Object.assign({}, state, {
         customerLists: action.data

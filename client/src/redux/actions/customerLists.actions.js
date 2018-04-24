@@ -11,6 +11,20 @@ export function showCustomerLists (data) {
   }
 }
 
+export function getRepliedPollSubscribers (data) {
+  return (dispatch) => {
+    callApi('lists/repliedPollSubscribers')
+      .then(res => dispatch(showRepliedPollSubscribers(res.payload)))
+  }
+}
+
+export function showRepliedPollSubscribers (data) {
+  return {
+    type: ActionTypes.LOAD_POLL_SUBSCRIBERS,
+    data
+  }
+}
+
 export function showListDetails (data) {
   return {
     type: ActionTypes.LOAD_LIST_DETAILS,
