@@ -20,7 +20,7 @@ export function getRepliedPollSubscribers (data) {
 
 export function showRepliedPollSubscribers (data) {
   return {
-    type: ActionTypes.LOAD_POLL_SUBSCRIBERS,
+    type: ActionTypes.LOAD_REPLIED_POLL_SUBSCRIBERS,
     data
   }
 }
