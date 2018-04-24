@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, createSubList, editList, loadListDetails, getParentList, getRepliedPollSubscribers
+  loadCustomerLists, createSubList, editList, loadListDetails, getParentList, getRepliedPollSubscribers, getRepliedSurveySubscribers
 } from '../../redux/actions/customerLists.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
@@ -59,6 +59,7 @@ class CreateSubList extends React.Component {
     props.loadCustomerLists()
     props.loadSubscribersList()
     props.getRepliedPollSubscribers()
+    props.getRepliedSurveySubscribers()
   }
   componentDidMount () {
     if (this.props.customerLists) {
@@ -703,7 +704,8 @@ function mapStateToProps (state) {
     customerLists: (state.listsInfo.customerLists),
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
-    pollSubscribers: (state.listsInfo.pollSubscribers)
+    pollSubscribers: (state.listsInfo.pollSubscribers),
+    surveySubscriber: (state.listsInfo.surveySubscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -715,7 +717,8 @@ function mapDispatchToProps (dispatch) {
     loadListDetails: loadListDetails,
     getParentList: getParentList,
     loadSubscribersList: loadSubscribersList,
-    getRepliedPollSubscribers: getRepliedPollSubscribers
+    getRepliedPollSubscribers: getRepliedPollSubscribers,
+    getRepliedSurveySubscribers: getRepliedSurveySubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)
