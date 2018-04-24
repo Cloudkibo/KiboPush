@@ -15,6 +15,7 @@ import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
 import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
+import ChatWidget from './chatWidget'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
@@ -37,6 +38,7 @@ class Settings extends React.Component {
       showGreetingMessage: false,
       showSubscribeToMessenger: false,
       showWelcomeMessage: false,
+      chatWidget: false,
       planInfo: ''
     }
     this.changeType = this.changeType.bind(this)
@@ -48,6 +50,7 @@ class Settings extends React.Component {
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
+    this.setChatWidget = this.setChatWidget.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
   }
   componentWillMount () {
@@ -77,22 +80,25 @@ class Settings extends React.Component {
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setResetPass () {
-    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setGreetingMessage () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setConnectFb () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+  }
+  setChatWidget () {
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: true})
   }
   setSubscribeToMessenger () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false, chatWidget: false})
   }
   setWelcomeMessage () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
+    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true, chatWidget: false})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -296,6 +302,14 @@ class Settings extends React.Component {
                           </a>
                         </li>
                       }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon la la-plug' />
+                            <span className='m-nav__link-text'>Add KiboPush Widget</span>
+                          </a>
+                        </li>
+                      }
                       </ul>
                     </div>
                   </div>
@@ -385,6 +399,9 @@ class Settings extends React.Component {
                 }
                 { this.state.connectFb &&
                   <ConnectFb />
+                }
+                { this.state.chatWidget &&
+                  <ChatWidget />
                 }
               </div>
             </div>
