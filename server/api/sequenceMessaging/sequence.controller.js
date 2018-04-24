@@ -7,7 +7,7 @@ const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
 
 exports.allMessages = function (req, res) {
-  Messages.find({SequenceId: req.params.id},
+  Messages.find({sequenceId: req.params.id},
     (err, messages) => {
       if (err) {
         return res.status(500).json({

@@ -54,12 +54,6 @@ class ViewBot extends React.Component {
           <div className='panel panel-default field-editor'>
             <div className='panel-heading clearfix'>
               <strong className='panel-title'>Question {i + 1}</strong>
-              <div role='toolbar' className='pull-right btn-toolbar'>
-                <a className='remove'
-                  onClick={this.removeClick.bind(this, i)}>
-                  <span className='fa fa-times' />
-                </a>
-              </div>
             </div>
             <div className='panel-body'>
               <div className='row'>
@@ -97,11 +91,6 @@ class ViewBot extends React.Component {
           <div className='m-input-icon m-input-icon--right'>
             <input type='text' className='form-control m-input' placeholder='Enter new question here' value={this.state.payload[payloadIndex].questions[i]}
               onChange={this.handleQuestionChange.bind(this, i, payloadIndex)} disabled />
-            <span className='m-input-icon__icon m-input-icon__icon--right'>
-              <span>
-                <i className='fa fa-times-circle' onClick={this.removeQuestion.bind(this, i, payloadIndex)} />
-              </span>
-            </span>
           </div>
           <br />
         </div>

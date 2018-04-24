@@ -97,33 +97,33 @@ function sendMessenger (message, pageId, senderId) {
 
 exports.respond = function (payload) {
   // Need to extract the pageID and message from facebook and also the senderID
-  if (payload.object !== 'page') {
-    return
-  }
-  var messageDetails = payload.entry[0].messaging[0]
-  var pageId = messageDetails.recipient.id
-  var senderId = messageDetails.sender.id
-  if (messageDetails.message.is_echo) {
-    return
-  }
-  var text = messageDetails.message.text
-  logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
-  Pages.findOne({pageId: pageId}, (err, page) => {
-    if (err) {
-      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-    }
-    Bots.findOne({pageId: page._id}, (err, bot) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-
-      if (bot.isActive === 'true') {
-            // Write the bot response logic here
-        logger.serverLog(TAG, 'Responding using the bot as status is Active')
-        getWitResponse(text, bot.witToken, bot, pageId, senderId)
-      }
-    })
-  })
+  // if (payload.object !== 'page') {
+  //   return
+  // }
+  // var messageDetails = payload.entry[0].messaging[0]
+  // var pageId = messageDetails.recipient.id
+  // var senderId = messageDetails.sender.id
+  // if (messageDetails.message.is_echo) {
+  //   return
+  // }
+  // var text = messageDetails.message.text
+  // logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
+  // Pages.findOne({pageId: pageId}, (err, page) => {
+  //   if (err) {
+  //     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+  //   }
+  //   Bots.findOne({pageId: page._id}, (err, bot) => {
+  //     if (err) {
+  //       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+  //     }
+  //
+  //     if (bot.isActive === 'true') {
+  //           // Write the bot response logic here
+  //       logger.serverLog(TAG, 'Responding using the bot as status is Active')
+  //       getWitResponse(text, bot.witToken, bot, pageId, senderId)
+  //     }
+  //   })
+  // })
 }
 
 // Not using this function for now we might later use it

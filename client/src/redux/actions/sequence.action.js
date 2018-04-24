@@ -9,6 +9,13 @@ export function showAllSequence (data) {
   }
 }
 
+export function createSequence (data) {
+  return (dispatch) => {
+    callApi('sequenceMessaging/createSequence', 'post', data)
+      .then(res => dispatch(fetchAllSequence()))
+  }
+}
+
 export function fetchAllSequence () {
   console.log('fetchAllSequence')
   return (dispatch) => {
@@ -29,10 +36,10 @@ export function showAllMessages (data) {
   }
 }
 
-export function fetchAllMessages () {
+export function fetchAllMessages (id) {
   console.log('fetchAllMessages')
   return (dispatch) => {
-    callApi(`sequenceMessaging/allMessages`)
+    callApi(`sequenceMessaging/allMessages/${id}`)
       .then(res => {
         if (res.status === 'success') {
           console.log('allMessages', res.payload)
