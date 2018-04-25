@@ -240,11 +240,8 @@ const routes = (
     <Route path='/sequenceMessaging' component={Sequence} onEnter={requireAuth} />
     <Route path='/addSequence' component={AddSequence} onEnter={requireAuth} />
     <Route path='/viewMessage' component={ViewMessage} onEnter={requireAuth} />
-<<<<<<< HEAD
     <Route path='/createSequence' component={CreateSequence} onEnter={requireAuth} />
-=======
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
->>>>>>> 167abe92d33800780426087d72c1a52691b89a33
 
   </Route>
 

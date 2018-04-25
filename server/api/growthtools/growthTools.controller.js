@@ -47,26 +47,30 @@ exports.upload = function (req, res) {
         })
       }
       let result = ''
+      let respSent = false
       fs.createReadStream(dir + '/userfiles' + serverPath)
         .pipe(csv())
         .on('data', function (data) {
           result = data
           logger.serverLog(TAG, `csv-data: ${JSON.stringify({data})}`)
+          logger.serverLog(TAG,
+            `file uploaded, sending response now: ${JSON.stringify({
+              id: serverPath,
+              url: `${config.domain}/api/broadcasts/download/${serverPath}`,
+              fileColumns: result
+            })}`)
+          if (respSent === false) {
+            respSent = true
+            return res.status(201).json({
+              status: 'success',
+              payload: {
+                id: serverPath,
+                url: `${config.domain}/api/broadcasts/download/${serverPath}`,
+                fileColumns: result
+              }
+            })
+          }
         })
-      logger.serverLog(TAG,
-        `file uploaded, sending response now: ${JSON.stringify({
-          id: serverPath,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-          fileColumns: result
-        })}`)
-      return res.status(201).json({
-        status: 'success',
-        payload: {
-          id: serverPath,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-          fileColumns: result
-        }
-      })
     }
   )
 }
