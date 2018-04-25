@@ -341,7 +341,9 @@ exports.repliedSurveySubscribers = function (req, res) {
         surveyIds.push(surveys[i]._id)
       }
       console.log('surveyIds', surveyIds)
-        SurveyResponses.find({surveyId: {$in: surveyIds}, (err, responses) => {
+      let date = new Date(req.body.date)
+      if (req.body.criteria.toLowerCase() === 'before') {
+        SurveyResponses.find({surveyId: {$in: surveyIds}, datetime: { $lt: date }}, (err, responses) => {
           if (err) {
             return logger.serverLog(TAG,
               `At get survey responses subscribers ${JSON.stringify(err)}`)
@@ -358,6 +360,44 @@ exports.repliedSurveySubscribers = function (req, res) {
             return res.status(200).json({status: 'success', payload: subscribers})
           })
         })
+      } else if (req.body.criteria.toLowerCase() === 'after') {
+        SurveyResponses.find({surveyId: {$in: surveyIds}, datetime: { $gt: date }}, (err, responses) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At get survey responses subscribers ${JSON.stringify(err)}`)
+          }
+          let respondedSubscribers = []
+          for (let j = 0; j < responses.length; j++) {
+            respondedSubscribers.push(responses[j].subscriberId)
+          }
+          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
+            if (err) {
+              return logger.serverLog(TAG,
+                `At get survey responses subscribers ${JSON.stringify(err)}`)
+            }
+            return res.status(200).json({status: 'success', payload: subscribers})
+          })
+        })
+      } else if (req.body.criteria.toLowerCase() === 'on') {
+        date.setDate(date.getDate() + 1)
+        SurveyResponses.find({surveyId: {$in: surveyIds}, datetime: {$gte: new Date(req.body.date), $lt: new Date(date)}}, (err, responses) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At get survey responses subscribers ${JSON.stringify(err)}`)
+          }
+          let respondedSubscribers = []
+          for (let j = 0; j < responses.length; j++) {
+            respondedSubscribers.push(responses[j].subscriberId)
+          }
+          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
+            if (err) {
+              return logger.serverLog(TAG,
+                `At get survey responses subscribers ${JSON.stringify(err)}`)
+            }
+            return res.status(200).json({status: 'success', payload: subscribers})
+          })
+        })
+      }
     })
   })
 }
