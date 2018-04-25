@@ -29,16 +29,13 @@ exports.upload = function (req, res) {
   serverPath += '.' + fext[fext.length - 1]
 
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
-  logger.serverLog(TAG, `csv-data: ${JSON.stringify(req.files.file)}`)
-  logger.serverLog(TAG, `csv-data: ${JSON.stringify(req.files.file.name)}`)
-  logger.serverLog(TAG, `csv-data: ${JSON.stringify(fext)}`)
+
   if (req.files.file.size === 0) {
     return res.status(400).json({
       status: 'failed',
       description: 'No file submitted'
     })
   }
-  logger.serverLog(TAG, `in upload`)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles/' + serverPath,
@@ -49,33 +46,29 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-      logger.serverLog(TAG, `in upload`)
       let result = ''
-      let respSent = false
       fs.createReadStream(dir + '/userfiles' + serverPath)
         .pipe(csv())
         .on('data', function (data) {
           result = data
           logger.serverLog(TAG, `csv-data: ${JSON.stringify({data})}`)
-          logger.serverLog(TAG,
-            `file uploaded, sending response now: ${JSON.stringify({
-              id: serverPath,
-              url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-              fileColumns: result
-            })}`)
-          if (respSent === false) {
-            respSent = true
-            return res.status(201).json({
-              status: 'success',
-              payload: {
-                id: serverPath,
-                url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-                fileColumns: result
-              }
-            })
-          }
         })
-    })
+      logger.serverLog(TAG,
+        `file uploaded, sending response now: ${JSON.stringify({
+          id: serverPath,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`,
+          fileColumns: result
+        })}`)
+      return res.status(201).json({
+        status: 'success',
+        payload: {
+          id: serverPath,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`,
+          fileColumns: result
+        }
+      })
+    }
+  )
 }
 /*exports.upload = function (req, res) {
   var today = new Date()
