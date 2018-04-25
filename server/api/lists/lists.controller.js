@@ -382,7 +382,7 @@ exports.repliedSurveySubscribers = function (req, res) {
               }
             }
           }
-          return res.status(200).json({status: 'success', payload: subscribers})
+          return res.status(200).json({status: 'success', payload: subscribersPayload})
         })
       })
     })
