@@ -13,6 +13,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   loadCustomerLists, saveCurrentList
 } from '../../redux/actions/customerLists.actions'
+import AlertContainer from 'react-alert'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -35,7 +36,16 @@ class CustomerMatching extends React.Component {
       nonSubscribersList: '',
       isShowingModalFileName: false,
       showFileColumns: false,
-      selectedColumns: []
+      columns: [{
+        selected: false,
+        name: 'Phone Numbers',
+        value: ''
+      },
+      {
+        selected: false,
+        name: 'Names',
+        value: ''
+      }]
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -76,12 +86,14 @@ class CustomerMatching extends React.Component {
     })
   }
   handleColumnCLick (e) {
-    var columns = this.state.selectedColumns
+    var columns = this.state.columns
     if (e.target.checked) {
-      columns.push(e.target.value)
+      columns[e.target.value].selected = e.target.checked
+    } else {
+      columns[e.target.value].selected = e.target.checked
     }
     this.setState({
-      selectedColumns: columns
+      columns: columns
     })
   }
   onSubmit () {
@@ -208,9 +220,19 @@ class CustomerMatching extends React.Component {
       }
     }
   }
-  handleResponse () {
+  handleResponse (res) {
+    if (res.status === 'success' & res.payload) {
+      this.setState({
+        showFileColumns: true
+      })
+    } else {
+      if (res.description) {
+        this.msg.error(`Unable to upload file. ${res.description}`)
+      } else {
+        this.msg.error('Unable to upload file')
+      }
+    }
     this.setState({
-      showFileColumns: true,
       loading: false
     })
   }
@@ -343,9 +365,17 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
@@ -397,22 +427,26 @@ class CustomerMatching extends React.Component {
                       </tr>
                     </thead>
                     <tbody className='m-datatable__body'>
-                      <tr
-                        className='m-datatable__row m-datatable__row--even subscriberRow'
-                        style={{height: '55px'}} key={1}>
-                        <td data-field='selectColumn'
-                          className='m-datatable__cell' style={{width: '50px', textAlign: 'center', overflow: 'inherit'}}>
-                          <span>
-                            <input type='checkbox' name='phoneNumber' value='phoneNumber' onChange={this.handleColumnCLick} />
-                          </span>
-                        </td>
-                        <td data-field='column'
-                          className='m-datatable__cell' style={{textAlign: 'center', overflow: 'inherit'}}>
-                          <span>
-                           Phone Numbers
-                          </span>
-                        </td>
-                      </tr>
+                      {
+                        this.state.columns.map((column, i) => (
+                          <tr
+                            className='m-datatable__row m-datatable__row--even subscriberRow'
+                            style={{height: '55px'}} key={i}>
+                            <td data-field='selectColumn'
+                              className='m-datatable__cell' style={{width: '50px', textAlign: 'center', overflow: 'inherit'}}>
+                              <span>
+                                <input type='checkbox' name={column.name} value={i} onChange={this.handleColumnCLick} checked={column.selected} />
+                              </span>
+                            </td>
+                            <td data-field='column'
+                              className='m-datatable__cell' style={{textAlign: 'center', overflow: 'inherit'}}>
+                              <span>
+                                { column.name }
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      }
                     </tbody>
                   </table>
                 </div>
@@ -420,7 +454,7 @@ class CustomerMatching extends React.Component {
               <button style={{float: 'right', marginLeft: '10px'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  this.saveColumns()
+                  // /this.saveColumns()
                   this.closeDialogFileColumns()
                 }}>Yes
               </button>
@@ -700,7 +734,8 @@ function mapStateToProps (state) {
     uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,
     customerLists: (state.listsInfo.customerLists),
-    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData)
+    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData),
+    columnsData: (state.growthToolsInfo.columnsData)
   }
 }
 
