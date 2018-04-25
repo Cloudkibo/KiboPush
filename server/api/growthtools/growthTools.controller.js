@@ -84,7 +84,7 @@ exports.upload = function (req, res) {
       return res.status(201)
               .json({
                 status: 'success',
-                description: 'Contacts were invited to your messenger'
+                payload: Object.keys(columnResults)
               })
     })
 }
