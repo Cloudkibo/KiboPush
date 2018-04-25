@@ -29,13 +29,16 @@ exports.upload = function (req, res) {
   serverPath += '.' + fext[fext.length - 1]
 
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
-
+  logger.serverLog(TAG, `csv-data: ${JSON.stringify(req.files.file)}`)
+  logger.serverLog(TAG, `csv-data: ${JSON.stringify(req.files.file.name)}`)
+  logger.serverLog(TAG, `csv-data: ${JSON.stringify(fext)}`)
   if (req.files.file.size === 0) {
     return res.status(400).json({
       status: 'failed',
       description: 'No file submitted'
     })
   }
+  logger.serverLog(TAG, `in upload`)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles/' + serverPath,
@@ -46,6 +49,7 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
+      logger.serverLog(TAG, `in upload`)
       let result = ''
       let respSent = false
       fs.createReadStream(dir + '/userfiles' + serverPath)
@@ -71,8 +75,7 @@ exports.upload = function (req, res) {
             })
           }
         })
-    }
-  )
+    })
 }
 /*exports.upload = function (req, res) {
   var today = new Date()
