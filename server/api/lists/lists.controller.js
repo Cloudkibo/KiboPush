@@ -341,7 +341,7 @@ exports.repliedSurveySubscribers = function (req, res) {
         surveyIds.push(surveys[i]._id)
       }
       console.log('surveyIds', surveyIds)
-        SurveyResponses.find({surveyId: {$in: surveyIds}, (err, responses) => {
+        SurveyResponses.find({surveyId: {$in: surveyIds}}, (err, responses) => {
           if (err) {
             return logger.serverLog(TAG,
               `At get survey responses subscribers ${JSON.stringify(err)}`)
