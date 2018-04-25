@@ -358,35 +358,6 @@ class CreateSequence extends React.Component {
   </div>
       </div>
     </div>
-    <div className='m-timeline-2' style={{boxSizing: 'border-box', display: 'block', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent', backgroundColor: '#e7e9f5', content: '', position: 'absolute', left: '4.89rem', width: '.214rem', height: '100%'}}>
-				<div className='m-timeline-2__items  m--padding-top-25 m--padding-bottom-30' style={{paddingBottom: '30px!important', paddingTop: '25px!important',boxSizing: 'border-box', display: 'block', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
-					<div className='m-timeline-2__item' style={{display: 'table', position: 'relative', boxSizing: 'border-box', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
-						<span className='m-timeline-2__item-time' style={{color: '#898b96', display: 'table-cell', fontSize: '1.3rem', fontWeight: '500', verticalAlign: 'top', position: 'absolute', paddingTop: '.18rem', boxSizing: 'border-box', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>10:00</span>
-						<div className='m-timeline-2__item-cricle' style={{borderRadius: '50%', border: '.89rem solid #fff', zIndex: '1', top: '.2rem', left: '4.1rem', position: 'relative', boxSizing: 'border-box', display: 'block', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
-							<i className='fa fa-genderless m--font-danger' style={{fontSize: '1.78rem', top: '-.93rem', left: '-.57rem', position: 'absolute', color: '#f4516c!important', display: 'inline-block', font: 'normal normal normal 14px/1 FontAwesome', textRendering: 'auto', webkitFontSmoothing: 'antialiased', boxSizing: 'border-box', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent', content: '\f22d'}} />
-						</div>
-						<div className='m-timeline-2__item-text  m--padding-top-5' style={{color: '#7b7e8a', display: 'table-cell', verticalAlign: 'top', fontSize: '1rem', fontWeight: '400', paddingBottom: '.3rem', paddingLeft: '5rem', paddingTop: '5px!important', boxSizing: 'border-box', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
-							Lorem ipsum dolor sit amit,consectetur eiusmdd tempor<br />
-							incididunt ut labore et dolore magna
-						</div>
-					</div>
-					<div className='m-timeline-2__item m--margin-top-30'>
-						<span className='m-timeline-2__item-time'>12:45</span>
-						<div className='m-timeline-2__item-cricle'>
-							<i className='fa fa-genderless m--font-success'></i>
-						</div>
-						<div className='m-timeline-2__item-text m-timeline-2__item-text--bold'>
-							AEOL Meeting With
-						</div>
-						<div className='m-list-pics m-list-pics--sm m--padding-left-20'>
-							<a href='#'><img src='assets/app/media/img/users/100_4.jpg' title='' class='mCS_img_loaded' /></a>
-							<a href='#'><img src='assets/app/media/img/users/100_13.jpg' title='' class='mCS_img_loaded' /></a>
-							<a href='#'><img src='assets/app/media/img/users/100_11.jpg' title='' class='mCS_img_loaded' /></a>
-							<a href='#'><img src='assets/app/media/img/users/100_14.jpg' title='' class='mCS_img_loaded' /></a>
-						</div>
-					</div>
-				</div>
-			</div>
 </div>
 </div>
     </div>
