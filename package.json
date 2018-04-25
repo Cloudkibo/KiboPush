@@ -50,6 +50,7 @@
     "concurrently": "^3.5.1",
     "connect-multiparty": "^2.0.0",
     "cookie-parser": "^1.4.3",
+    "csv-parse": "^2.2.0",
     "csv-parser": "^1.11.0",
     "csvdata": "^1.4.0",
     "debug": "^2.6.8",
