@@ -51,7 +51,7 @@ exports.upload = function (req, res) {
         .pipe(csv())
         .on('data', function (data) {
           result = data
-          logger.serverLog(TAG, data)
+          logger.serverLog(TAG, `csv-data: ${JSON.stringify({data})}`)
         })
       logger.serverLog(TAG,
         `file uploaded, sending response now: ${JSON.stringify({
@@ -63,7 +63,8 @@ exports.upload = function (req, res) {
         status: 'success',
         payload: {
           id: serverPath,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`,
+          fileData: result
         }
       })
     }
