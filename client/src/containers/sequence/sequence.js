@@ -291,103 +291,35 @@ class Sequence extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      {
-                        this.props.sequences && this.props.sequences.length > 0
-                        ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                          <div className='form-group m-form__group row align-items-center'>
-                            <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                              <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
-                              <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                <span><i className='la la-search' /></span>
-                              </span>
-                            </div>
-                            <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-
-                          </div>
-                          {
-                            this.state.sequencesData && this.state.sequencesData.length > 0
-                            ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                              <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                                <thead className='m-datatable__head'>
-                                  <tr className='m-datatable__row'
-                                    style={{height: '53px'}}>
-                                    <th data-field='name' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Name</span>
-                                    </th>
-                                    <th data-field='description' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Description</span>
-                                    </th>
-                                    <th data-field='pages' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Subscribers</span>
-                                    </th>
-                                    <th data-field='created_by' style={{width: '125px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Messages</span>
-                                    </th>
-                                    <th data-field='datetime' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Status</span>
-                                    </th>
-                                    <th data-field='actions' style={{width: '175px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Actions</span>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                  {
-                                    this.state.sequencesData.map((sequence, i) => (
-                                      <tr key={i} data-row={i}
-                                        className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
-                                        style={{height: '55px'}}>
-                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.name}</span></td>
-                                        <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.description}</span></td>
-                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.subscribers.join(', ')}</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>{sequence.messages}</span></td>
-                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{handleDate(sequence.status)}</span></td>
-                                        <td data-field='actions' className='m-datatable__cell'>
-                                          <span style={{width: '175px'}}>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(sequence)}>
-                                              View
-                                            </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(sequence)}>
-                                                Edit
-                                              </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence._id)}>
-                                                Delete
-                                              </button>
-                                          </span>
-                                        </td>
-                                      </tr>
-                                    ))
-                                  }
-                                </tbody>
-                              </table>
-                              <div className='pagination'>
-                                <ReactPaginate
-                                  previousLabel={'previous'}
-                                  nextLabel={'next'}
-                                  breakLabel={<a>...</a>}
-                                  breakClassName={'break-me'}
-                                  pageCount={Math.ceil(this.state.totalLength / 5)}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={this.handlePageClick}
-                                  containerClassName={'pagination'}
-                                  subContainerClassName={'pages pagination'}
-                                  activeClassName={'active'} />
+                      <div className='m-timeline-2' style={{boxSizing: 'border-box', display: 'block', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent', backgroundColor: '#e7e9f5', content: '', position: 'absolute', left: '4.89rem', width: '.214rem', height: '100%'}}>
+                          <div className='m-timeline-2__items m--padding-top-25 m--padding-bottom-30' style={{paddingBottom: '30px!important', paddingTop: '25px!important', boxSizing: 'border-box', display: 'block', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
+                            <div className='m-timeline-2__item' style={{display: 'table', position: 'relative', boxSizing: 'border-box', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
+                              <span className='m-timeline-2__item-time' style={{color: '#898b96', display: 'table-cell', fontSize: '1.3rem', fontWeight: '500', verticalAlign: 'top', position: 'absolute', paddingTop: '.18rem', boxSizing: 'border-box', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>10:00</span>
+                              <div className='m-timeline-2__item-cricle' style={{borderRadius: '50%', border: '.89rem solid #fff', zIndex: '1', top: '.2rem', left: '4.1rem', position: 'relative', boxSizing: 'border-box', display: 'block', color: '#575962', fontSize: '14px', fontWeight: '300', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
+                                <i className='fa fa-genderless m--font-danger' style={{fontSize: '1.78rem', top: '-.93rem', left: '-.57rem', position: 'absolute', color: '#f4516c!important', display: 'inline-block', font: 'normal normal normal 14px/1 FontAwesome', textRendering: 'auto', webkitFontSmoothing: 'antialiased', boxSizing: 'border-box', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent', content: '\f22d'}} />
+                              </div>
+                              <div className='m-timeline-2__item-text  m--padding-top-5' style={{color: '#7b7e8a', display: 'table-cell', verticalAlign: 'top', fontSize: '1rem', fontWeight: '400', paddingBottom: '.3rem', paddingLeft: '5rem', paddingTop: '5px!important', boxSizing: 'border-box', fontFamily: 'Poppins', webkitFontSmoothing: 'antialiased', lineHeight: '1.5', textAlign: 'left', webkitTextSizeAdjust: '100%', webkitTapHighlightColor: 'transparent'}}>
+                                Lorem ipsum dolor sit amit,consectetur eiusmdd tempor<br />
+                                incididunt ut labore et dolore magna
                               </div>
                             </div>
-                            : <p>No data to display</p>
-                          }
+                            <div className='m-timeline-2__item m--margin-top-30'>
+                              <span className='m-timeline-2__item-time'>12:45</span>
+                              <div className='m-timeline-2__item-cricle'>
+                                <i className='fa fa-genderless m--font-success'></i>
+                              </div>
+                              <div className='m-timeline-2__item-text m-timeline-2__item-text--bold'>
+                                AEOL Meeting With
+                              </div>
+                              <div className='m-list-pics m-list-pics--sm m--padding-left-20'>
+                                <a href='#'><img src='assets/app/media/img/users/100_4.jpg' title='' class='mCS_img_loaded' /></a>
+                                <a href='#'><img src='assets/app/media/img/users/100_13.jpg' title='' class='mCS_img_loaded' /></a>
+                                <a href='#'><img src='assets/app/media/img/users/100_11.jpg' title='' class='mCS_img_loaded' /></a>
+                                <a href='#'><img src='assets/app/media/img/users/100_14.jpg' title='' class='mCS_img_loaded' /></a>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        : <span>
-                          <p> No data to display </p>
-                        </span>
-                      }
                     </div>
                   </div>
                 </div>
