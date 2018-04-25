@@ -17,8 +17,7 @@ let request = require('request')
 const _ = require('lodash')
 const Lists = require('../lists/lists.model')
 let config = require('./../../config/environment')
-var parse = require('csv-parse/lib/sync')
-
+const csvToJson = require('csvtojson')
 exports.upload = function (req, res) {
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
@@ -47,45 +46,31 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-      var records = parse(dir + '/userfiles' + serverPath, {columns: true})
-      var columnResults = {}
-      logger.serverLog(TAG, `data from csv file ${JSON.stringify(records)}`)
-      for (var row = 0; row < records.length; row++) {
-        for (var column in records[row]) {
-          if (!columnResults[column]) {
-            columnResults[column] = []
+      const csvFilePath = dir + '/userfiles' + serverPath
+      csvToJson().fromFile(csvFilePath).on('json', (jsonObj) => {
+        logger.serverLog(TAG, `data from csv file ${JSON.stringify(jsonObj)}`)
+        logger.serverLog(TAG, `data from csv file ${JSON.stringify(jsonObj[0])}`)
+      })
+      let respSent = false
+      fs.createReadStream(dir + '/userfiles' + serverPath)
+        .pipe(csv())
+        .on('data', function (data) {
+          logger.serverLog(TAG, `data from csv file ${JSON.stringify(data[0])}`)
+          if (data.phone_numbers && data.names) {
+            //  var result = data.phone_numbers.replace(/[- )(]/g, '')
+            if (respSent === false) {
+              respSent = true
+              return res.status(201)
+                .json({
+                  status: 'success',
+                  description: 'Contacts were invited to your messenger'
+                })
+            }
+          } else {
+            return res.status(404)
+              .json({status: 'failed', description: 'Incorrect column names'})
           }
-          columnResults[column].push(records[row][column])
-        }
-      }
-      logger.serverLog(TAG, `data from csv file ${JSON.stringify(columnResults)}`)
-      // let respSent = false
-      // fs.createReadStream(dir + '/userfiles' + serverPath)
-      //   .pipe(csv())
-      //   .on('data', function (data) {
-      //     logger.serverLog(TAG, `data from csv file ${JSON.stringify(data)}`)
-      //     if (data.phone_numbers && data.names) {
-      //       //  var result = data.phone_numbers.replace(/[- )(]/g, '')
-      //       logger.serverLog(TAG, `data from csv file ${JSON.stringify(data.names)}`)
-      //
-      //       if (respSent === false) {
-      //         respSent = true
-      //         return res.status(201)
-      //           .json({
-      //             status: 'success',
-      //             description: 'Contacts were invited to your messenger'
-      //           })
-      //       }
-      //     } else {
-      //       return res.status(404)
-      //         .json({status: 'failed', description: 'Incorrect column names'})
-      //     }
-      //   })
-      return res.status(201)
-              .json({
-                status: 'success',
-                payload: Object.keys(columnResults)
-              })
+        })
     })
 }
 /*exports.upload = function (req, res) {
