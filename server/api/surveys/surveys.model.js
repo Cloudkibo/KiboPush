@@ -17,6 +17,7 @@ const surveySchema = new Schema({
   segmentationGender: [String],
   segmentationTimeZone: String,
   segmentationTags: [String],
+  segmentationSurvey: [String],
   isList: { type: Boolean, default: false },
   segmentationList: [String],
   isresponded: { type: Number, default: 0 }

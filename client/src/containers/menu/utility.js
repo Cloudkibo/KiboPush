@@ -103,3 +103,9 @@ function JSONstringify (json) {
   arr.unshift(json)
   console.log.apply(console, arr)
 }
+export function removeMenuPayload () {
+  var payload = {}
+  payload.persistent_menu = [{locale: 'default', composer_input_disabled: false}]
+  JSONstringify(payload)
+  return payload
+}

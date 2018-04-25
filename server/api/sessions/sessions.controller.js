@@ -35,7 +35,6 @@ exports.index = function (req, res) {
         return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
       }
-      logger.serverLog(TAG, `Sessions Found ${JSON.stringify(sessions)}`)
       let tempSessions = []
       for (var i = 0; i < sessions.length; i++) {
         if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
@@ -69,7 +68,6 @@ exports.index = function (req, res) {
               return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
             }
-            logger.serverLog(TAG, `LAST MESSAGE FOUND ${JSON.stringify(gotLastMessage)}`)
             for (let a = 0; a < gotLastMessage.length; a++) {
               for (let b = 0; b < sessions.length; b++) {
                 if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
@@ -85,7 +83,6 @@ exports.index = function (req, res) {
                 }
               }
             }
-            logger.serverLog(TAG, `LAST MESSAGE FOUND SESSIONS ${JSON.stringify(sessions)}`)
             return res.status(200).json({
               status: 'success',
               payload: sessions
@@ -247,6 +244,7 @@ exports.unSubscribe = function (req, res) {
                   text: 'We have unsubscribed you from our page. We will notify you when we subscribe you again. Thanks'
                 }
                 const data = {
+                  messaging_type: 'UPDATE',
                   recipient: {id: subscriber.senderId}, // this is the subscriber id
                   message: messageData
                 }

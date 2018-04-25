@@ -13,11 +13,18 @@ export function sendresp (data) {
   }
 }
 
+export function loadColumns (data) {
+  return {
+    type: ActionTypes.LOAD_CSV_COLUMNS,
+    data
+  }
+}
+
 export function downloadSampleFile () {
   let users = []
-  let user1 = {'names': 'Sania Siddiqui', 'phone_numbers': '+923312443100'}
-  let user2 = {'names': 'Anisha Chatwani', 'phone_numbers': '+923322846897'}
-  let user3 = {'names': 'Sojharo Mangi', 'phone_numbers': '+923323800399'}
+  let user1 = {'names': 'Mary Jane', 'phone_numbers': '+923312440000'}
+  let user2 = {'names': 'Tom Henry', 'phone_numbers': '+923322223000'}
+  let user3 = {'names': 'Ali Ahmed', 'phone_numbers': '+923323800300'}
   users.push(user1)
   users.push(user2)
   users.push(user3)
@@ -61,10 +68,11 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('respone', res)
-      var data = {status: res.status, description: res.description}
-      handleResponse()
-      dispatch(sendresp(data))
-      dispatch(loadCustomerLists())
+      handleResponse(res)
+      if (res && res.payload) {
+        dispatch(loadColumns(res.payload.fileColumns))
+      }
+      // dispatch(loadCustomerLists())
     })
   }
 }
@@ -85,5 +93,23 @@ export function getPendingSubscriptions (name) {
   return (dispatch) => {
     callApi(`growthTools/pendingSubscription/${name}`)
       .then(res => dispatch(showPendingSubscriptions(res.payload)))
+  }
+}
+
+export function sendFileColumns (payload, msg) {
+  console.log('Actions for sending file columns', payload)
+  return (dispatch) => {
+    callApi('growthTools/columns', 'post', payload)
+    .then(res => {
+      if (res.status === 'success') {
+        msg.success(`${res.description}`)
+      } else {
+        if (res.status === 'failed' && res.description) {
+          msg.error(`Unable to send invitation. ${res.description}`)
+        } else {
+          msg.error('Unable to send invitation')
+        }
+      }
+    })
   }
 }

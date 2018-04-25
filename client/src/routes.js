@@ -98,6 +98,15 @@ import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
 import Bots from './containers/smart_replies/bots'
+import CreateBot from './containers/smart_replies/createBot'
+import EditBot from './containers/smart_replies/editBot'
+import ViewBot from './containers/smart_replies/viewBot'
+import Sequence from './containers/sequence/sequence'
+import AddSequence from './containers/sequence/addSequence'
+import CreateSequence from './containers/sequence/createSequence'
+import ViewMessage from './containers/sequence/viewMessage'
+import CreateMessageSeq from './containers/sequence/createMessage'
+
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -225,6 +234,14 @@ const routes = (
     <Route path='/teams' component={Teams} onEnter={requireAuth} />
     <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
     <Route path='/bots' component={Bots} onEnter={requireAuth} />
+    <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
+    <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
+    <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />
+    <Route path='/sequenceMessaging' component={Sequence} onEnter={requireAuth} />
+    <Route path='/addSequence' component={AddSequence} onEnter={requireAuth} />
+    <Route path='/viewMessage' component={ViewMessage} onEnter={requireAuth} />
+    <Route path='/createSequence' component={CreateSequence} onEnter={requireAuth} />
+    <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
 
   </Route>
 

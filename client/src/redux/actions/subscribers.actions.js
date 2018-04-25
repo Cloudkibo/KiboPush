@@ -23,9 +23,38 @@ export function updateSubscribersList (data) {
   }
 }
 
+export function updateAllSubscribersList (data) {
+  console.log('Data Fetched From All Subscribers', data)
+  if (!data[0]) {
+    return {
+      type: ActionTypes.LOAD_ALL_SUBSCRIBERS_LIST,
+      data: [],
+      locale: []
+    }
+  }
+  var locale = [data[0].locale]
+  for (var i = 1; i < data.length; i++) {
+    if (locale.indexOf(data[i].locale) === -1) {
+      locale.push(data[i].locale)
+    }
+  }
+  return {
+    type: ActionTypes.LOAD_ALL_SUBSCRIBERS_LIST,
+    data,
+    locale
+  }
+}
+
 export function loadSubscribersList () {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
-    callApi('subscribers/allSubscribers').then(res => dispatch(updateSubscribersList(res)))
+    callApi('subscribers').then(res => dispatch(updateSubscribersList(res)))
+  }
+}
+
+export function loadAllSubscribersList () {
+  // here we will fetch list of subscribers from endpoint
+  return (dispatch) => {
+    callApi('subscribers/allSubscribers').then(res => dispatch(updateAllSubscribersList(res)))
   }
 }

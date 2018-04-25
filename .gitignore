@@ -39,6 +39,7 @@ node_modules/
 jspm_packages/
 client/public/js/bundle.js
 client/public/js/bundle.js.map
+client/public/dist/
 server/api/backdoor/my-file.csv
 
 # Typescript v1 declaration files

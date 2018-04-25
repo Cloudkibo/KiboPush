@@ -49,6 +49,7 @@ module.exports = function (app) {
   app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
   app.use('/api/tags', require('./api/tags'))
   app.use('/api/notifications', require('./api/notifications'))
+  app.use('/api/sequenceMessaging', require('./api/sequenceMessaging'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/migrations', require('./api/migrations'))
 
@@ -56,7 +57,8 @@ module.exports = function (app) {
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
       {expires: new Date(Date.now() + 900000)})
-    res.sendFile(path.join(config.root, 'client/index.html'))
+    // res.sendFile(path.join(config.root, 'client/index.html'))
+    res.render('main', { environment: env })
   })
 
   app.get('/dashboard2', (req, res) => {

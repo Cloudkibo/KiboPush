@@ -72,9 +72,9 @@ export function clearAlertMessage () {
   }
 }
 
-export function loadBroadcastsList () {
+export function loadBroadcastsList (days) {
   return (dispatch) => {
-    callApi('broadcasts').then(res => dispatch(showbroadcasts(res.payload)))
+    callApi(`broadcasts/all/${days}`).then(res => dispatch(showbroadcasts(res.payload)))
   }
 }
 

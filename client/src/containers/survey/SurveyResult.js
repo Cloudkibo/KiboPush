@@ -94,6 +94,7 @@ class SurveyResult extends React.Component {
     fileDownload(data, this.props.survey.title + '-report.csv')
   }
   render () {
+    console.log('SurveyResult props', this.props)
     return (
       <div>
         <Header />
@@ -171,6 +172,7 @@ class SurveyResult extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('surveyResults state', state)
   const {responses, survey, questions} = state.surveysInfo
   const {pages} = state.pagesInfo
   return {

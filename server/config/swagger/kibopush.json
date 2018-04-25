@@ -3342,6 +3342,1457 @@
                     }
                 }
             }
+        },
+        "/teams": {
+            "get": {
+                "description": "Gives all the teams",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "properties": {
+                                        "teams": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/Teams"
+                                            }
+                                        },
+                                        "teamUniquePages": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/Page"
+                                            }
+                                        },
+                                        "teamUniqueAgents": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/User"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/create": {
+            "post": {
+                "description": "creates a team",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "The name of the team",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "descriprion",
+                        "in": "formData",
+                        "description": "The description of the team",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "teamPages",
+                        "in": "formData",
+                        "description": "The names of the pages of the team",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "teamPagesIds",
+                        "in": "formData",
+                        "description": "The ids of the pages of the team",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "teamAgents",
+                        "in": "formData",
+                        "description": "The ids of the agents of the team",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/Teams"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/update": {
+            "post": {
+                "description": "updates a team",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_id",
+                        "in": "formData",
+                        "description": "The id of the team to team to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "The name of the team",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "descriprion",
+                        "in": "formData",
+                        "description": "The description of the team",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "teamPages",
+                        "in": "formData",
+                        "description": "The names of the pages of the team",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "teamPagesIds",
+                        "in": "formData",
+                        "description": "The ids of the pages of the team",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/Teams"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/delete/:id": {
+            "delete": {
+                "description": "Delete a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/addAgent": {
+            "post": {
+                "description": "Adds an agent to a team",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "teamId",
+                        "in": "formData",
+                        "description": "Id of the team to add this agent to",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "agentId",
+                        "in": "formData",
+                        "description": "The id of the agent to add",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/TeamAgents"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/addPage": {
+            "post": {
+                "description": "Adds a page to a team",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "teamId",
+                        "in": "formData",
+                        "description": "Id of the team to add this page to",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pageId",
+                        "in": "formData",
+                        "description": "The id of the page to add",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/TeamAgents"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/removeAgent": {
+            "delete": {
+                "description": "Remove an agent from a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "teamId",
+                        "in": "formData",
+                        "description": "Id of the team to remove this agent from",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "agentId",
+                        "in": "formData",
+                        "description": "The id of the agent to remove",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/removePage": {
+            "delete": {
+                "description": "Remove a page from a team",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "teamId",
+                        "in": "formData",
+                        "description": "Id of the team to remove this page from",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pageId",
+                        "in": "formData",
+                        "description": "The id of the page to remove",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/fetchPages/:id": {
+            "get": {
+                "description": "Gives all the team pages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/TeamPages"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/fetchAgents/:id": {
+            "get": {
+                "description": "Gives all the team agents",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/TeamAgents"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags": {
+            "get": {
+                "description": "Gives all the tags",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/Tags"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/": {
+            "post": {
+                "description": "Creates a tag",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in": "formData",
+                        "description": "Name of the tag",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/Tags"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/rename": {
+            "post": {
+                "description": "Renames a tag",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "tagName",
+                        "in": "formData",
+                        "description": "Name of the tag",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tagId",
+                        "in": "formData",
+                        "description": "Id of the tag to rename",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/Tags"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/delete": {
+            "delete": {
+                "description": "Delete a tag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "tagId",
+                        "in": "formData",
+                        "description": "Id of the tag to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/assign": {
+            "post": {
+                "description": "Assings tags to subscribers",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "tagId",
+                        "in": "formData",
+                        "description": "Id of the tag to add subscribers to",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "subscribers",
+                        "in": "formData",
+                        "description": "array of subscribers",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/unassign": {
+            "post": {
+                "description": "Unassigns tags to subscribers",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "tagId",
+                        "in": "formData",
+                        "description": "Id of the tag to add subscribers to",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "subscribers",
+                        "in": "formData",
+                        "description": "array of subscribers",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/subscribertags": {
+            "post": {
+                "description": "All tags of a subscriber",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "subscriberId",
+                        "in": "formData",
+                        "description": "id of subscriber",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "_id": {
+                                                "type": "string",
+                                                "description": "id of the tag"
+                                            },
+                                            "tag": {
+                                                "type": "string",
+                                                "description": "name of the tag"
+                                            },
+                                            "subscriberId": {
+                                                "type": "string",
+                                                "description": "id of subscriber"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/invitations": {
+            "get": {
+                "description": "Gives all the invitations",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/Invitation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/invitations/cancel": {
+            "post": {
+                "description": "cancels an invite",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email of the invited agent",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company": {
+            "get": {
+                "description": "Gives the company of the logged in user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/Company"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/invite": {
+            "post": {
+                "description": "sends an invite to join company",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email of the agent to invite",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "name of the agent to invite",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/inviteAdmin": {
+            "post": {
+                "description": "sends an invite to join company",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email of the agent to invite",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "name of the agent to invite",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/removeMember": {
+            "post": {
+                "description": "removes a member from company",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "domain_email",
+                        "in": "formData",
+                        "description": "email of the member",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "name of the agent to invite",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/removeMemberAdmin": {
+            "post": {
+                "description": "removes a member from company",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "domain_email",
+                        "in": "formData",
+                        "description": "email of the member",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/updateRole": {
+            "post": {
+                "description": "updates role of a member in company",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "domain_email",
+                        "in": "formData",
+                        "description": "email of the member",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "role",
+                        "in": "formData",
+                        "description": "role of the agent",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "object",
+                                    "properties": {
+                                        "savedUser": {
+                                            "type": "object",
+                                            "$ref": "#/definitions/User"
+                                        },
+                                        "savedUserCompany": {
+                                            "type": "object",
+                                            "$ref": "#/definitions/CompanyUser"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response400"
+                        }
+                    },
+                    "401": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response401"
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/members": {
+            "get": {
+                "description": "Gives all members of a company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "description": "success"
+                                },
+                                "payload": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "$ref": "#/definitions/CompanyUser"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response404"
+                        }
+                    },
+                    "500": {
+                        "description": "failed",
+                        "schema": {
+                            "$ref": "#/definitions/Response500"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -4786,6 +6237,208 @@
                 }
             }
         },
+        "TeamAgents": {
+            "type": "object",
+            "description": "This table is used to store team agents information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "teamId": {
+                    "type": "object"
+                },
+                "companyId": {
+                    "type": "object"
+                },
+                "agentId": {
+                    "type": "object"
+                },
+                "join_date": {
+                    "type": "object"
+                }
+            }
+        },
+        "TeamPages": {
+            "type": "object",
+            "description": "This table is used to store team pages information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "teamId": {
+                    "type": "object"
+                },
+                "companyId": {
+                    "type": "object"
+                },
+                "pageId": {
+                    "type": "object"
+                }
+            }
+        },
+        "Teams": {
+            "type": "object",
+            "description": "This table is used to store team information",
+            "required": [
+                "name",
+                "description",
+                "teamPages",
+                "teamPagesIds"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "object",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "object",
+                    "readOnly": true
+                },
+                "teamPages": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "teamPagesIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "creation_date": {
+                    "type": "object",
+                    "readOnly": true
+                }
+            }
+        },
+        "Tags": {
+            "type": "object",
+            "description": "This table is used to store tags information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "object"
+                },
+                "companyId": {
+                    "type": "object"
+                },
+                "dateCreated": {
+                    "type": "object"
+                }
+            }
+        },
+        "TagSubscribers": {
+            "type": "object",
+            "description": "This table is used to store tag subscribers information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "tagId": {
+                    "type": "object"
+                },
+                "subscriberId": {
+                    "type": "object"
+                },
+                "companyId": {
+                    "type": "object"
+                },
+                "dateCreated": {
+                    "type": "object"
+                }
+            }
+        },
+        "Invitation": {
+            "type": "object",
+            "description": "This table is used to store invitations information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "object"
+                },
+                "companyId": {
+                    "type": "object"
+                },
+                "createdAt": {
+                    "type": "object"
+                }
+            }
+        },
+        "Company": {
+            "type": "object",
+            "description": "This table is used to store company's information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "companyName": {
+                    "type": "string"
+                },
+                "companyDetail": {
+                    "type": "string"
+                },
+                "ownerId": {
+                    "type": "object"
+                }
+            }
+        },
+        "CompanyUser": {
+            "type": "object",
+            "description": "This table is used to store company's information",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "description": "The unique id of the record",
+                    "readOnly": true
+                },
+                "companyId": {
+                    "type": "object"
+                },
+                "userId": {
+                    "type": "object"
+                },
+                "domain_email": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "Response500": {
             "type": "object",
             "properties": {
@@ -4822,6 +6475,19 @@
                 "description": {
                     "type": "string",
                     "description": "Record not found"
+                }
+            }
+        },
+        "Response401": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "failed"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Unauthorised to perform this action"
                 }
             }
         },

@@ -21,8 +21,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-// import Popover from 'react-simple-popover'
-import Popover from '../../components/Popover/popover'
+import Popover from 'react-simple-popover'
+// import Popover from '../../components/Popover/popover'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
 import {
@@ -32,12 +32,13 @@ import {
   showDate,
   validURL
 } from './utilities'
+import { ReactMic } from 'react-mic'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
+import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {
     height: 24,
@@ -67,13 +68,18 @@ class ChatBox extends React.Component {
       textAreaValue: '',
       showEmojiPicker: false,
       showGifPicker: false,
+      showRecorder: false,
       gifUrl: '',
       urlmeta: '',
       prevURL: '',
       displayUrlMeta: false,
       showStickers: false,
       isShowingModal: false,
-      disabledValue: false
+      isShowingModalRecording: false,
+      disabledValue: false,
+      record: false,
+      buttonState: 'start',
+      recording: false
     }
     props.fetchUserChats(this.props.currentSession._id)
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -89,6 +95,12 @@ class ChatBox extends React.Component {
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
+    this.showRecorder = this.showRecorder.bind(this)
+    this.closeRecorder = this.closeRecorder.bind(this)
+    this.startRecording = this.startRecording.bind(this)
+    this.stopRecording = this.stopRecording.bind(this)
+    this.onData = this.onData.bind(this)
+    this.onStop = this.onStop.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.showStickers = this.showStickers.bind(this)
@@ -104,12 +116,25 @@ class ChatBox extends React.Component {
     this.geturl = this.geturl.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogRecording = this.showDialogRecording.bind(this)
+    this.closeDialogRecording = this.closeDialogRecording.bind(this)
     this.handleAgentsForReopen = this.handleAgentsForReopen.bind(this)
     this.handleAgentsForResolved = this.handleAgentsForResolved.bind(this)
     this.getDisabledValue = this.getDisabledValue.bind(this)
     this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
+    this.handleStart = this.handleStart.bind(this)
+    this.handleStop = this.handleStop.bind(this)
   }
+
+  showDialogRecording () {
+    this.setState({isShowingModalRecording: true})
+  }
+
+  closeDialogRecording () {
+    this.setState({isShowingModalRecording: false})
+  }
+
   showDialog () {
     this.setState({isShowingModal: true})
   }
@@ -181,6 +206,69 @@ class ChatBox extends React.Component {
 
   closeEmojiPicker () {
     this.setState({showEmojiPicker: false})
+  }
+
+  showRecorder () {
+    this.setState({showRecorder: true})
+    console.log('in recorder')
+  }
+
+  closeRecorder () {
+    this.setState({showRecorder: false})
+  }
+
+  startRecording () {
+    this.setState({record: true, buttonState: 'stop'})
+  }
+
+  stopRecording () {
+    this.setState({
+      record: false, buttonState: 'start'
+    })
+  }
+
+  onData (recordedBlob) {
+    console.log('chunk of real-time data is: ', recordedBlob)
+  }
+
+  onStop (recordedBlob) {
+    this.closeDialogRecording()
+    console.log('recordedBlob is: ', recordedBlob)
+    var file = new File([recordedBlob.blob], 'audio.wav', {type: 'audio/wav', lastModified: Date.now()})
+    console.log('files', file)
+    if (file) {
+      this.resetFileComponent()
+      this.setState({
+        attachment: file,
+        attachmentType: file.type
+      })
+      this.setComponentType(file)
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      fileData.append('componentType', 'audio')
+      this.setState({uploadDescription: 'File is uploading..'})
+      this.props.uploadAttachment(fileData, this.handleUpload)
+    }
+    this.textInput.focus()
+    /* const promise = new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsArrayBuffer(recordedBlob.blob)
+      reader.onload = () => {
+        if (!reader.result) {
+          resolve(reader.result)
+        } else {
+          reject(Error('Failed to convert'))
+        }
+      }
+    })
+    promise.then(result => {
+      console.log('result', result)
+    }, err => {
+      console.log('error', err)
+    }) */
   }
 
   showStickers () {
@@ -401,6 +489,7 @@ class ChatBox extends React.Component {
 
   onFileChange (e) {
     var files = e.target.files
+    console.log('e.target.files', e.target.files)
     var file = e.target.files[files.length - 1]
     if (file) {
       this.resetFileComponent()
@@ -420,6 +509,7 @@ class ChatBox extends React.Component {
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
         fileData.append('componentType', this.state.componentType)
+        console.log('file', file)
         this.setState({uploadDescription: 'File is uploading..'})
         this.props.uploadAttachment(fileData, this.handleUpload)
       }
@@ -441,6 +531,7 @@ class ChatBox extends React.Component {
     if (res.status === 'success') {
       this.setState({uploaded: true, uploadDescription: '', removeFileDescription: '', uploadedId: res.payload.id, uploadedUrl: res.payload.url})
     }
+    console.log('res.payload', res.paylaod)
   }
 
   onTestURLVideo (url) {
@@ -601,7 +692,22 @@ class ChatBox extends React.Component {
       }
     }
   }
+  handleStart (stream) {
+    this.setState({
+      recording: true
+    })
 
+    console.log('Recording Started.')
+  }
+  handleStop (blob) {
+    console.log('blob', blob)
+    this.setState({
+      recording: false
+    })
+
+    console.log('Recording Stopped.')
+    this.downloadAudio(blob)
+  }
   render () {
     var settings = {
       arrows: true,
@@ -645,6 +751,65 @@ class ChatBox extends React.Component {
                   </button>
                 </div>
               </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalRecording &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogRecording}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogRecording}>
+              {/*  <div ref='app'>
+				<h3>Audio Recorder</h3>
+				<MediaCapturer
+					constraints={{ audio: true }}
+					mimeType='audio/webm'
+					timeSlice={10}
+					onStart={this.handleStart}
+					onStop={this.onStop}
+					onError={this.handleError}
+					render={({ start, stop, pause, resume }) =>
+					<div>
+						<button onClick={start}>Start</button>
+						<button onClick={stop}>Stop</button>
+					</div>
+				} />
+			</div> */}
+              <h3>Voice Recording</h3>
+              <div>
+                <ReactMic style={{width: '450px'}}
+                  height='100'
+                  width='450'
+                  record={this.state.record}
+                  className='sound-wave'
+                  onStop={this.onStop}
+                  strokeColor='#000000'
+                  mimeType='audio/wav' />
+              </div>
+              <br />
+              {this.state.buttonState === 'start'
+              ? <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
+                <div style={{display: 'block', fontSize: '14px'}}>
+                  <div style={{height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}} />
+                  <a role='button' title='Record' onClick={this.startRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
+                    <div style={{backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                      <span style={{left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}}>Record</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              : <div role='dialog' aria-label='Voice clip' style={{fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px'}}>
+                <div style={{display: 'block', fontSize: '14px'}}>
+                  <div style={{height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}} />
+                  <a role='button' title='Record' onClick={this.stopRecording} style={{color: '#365899', cursor: 'pointer', textDecoration: 'none'}}>
+                    <div style={{borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                      <span style={{height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px'}} />
+                    </div>
+                  </a>
+                </div>
+              </div>
+            }
             </ModalDialog>
           </ModalContainer>
         }
@@ -697,6 +862,24 @@ class ChatBox extends React.Component {
         >
           <div style={{marginLeft: '-15px', marginTop: '-20px'}}>
             <GiphyPicker onSelected={this.sendGif} />
+          </div>
+        </Popover>
+        <Popover
+          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+          placement='top'
+          height='390px'
+          target={this.recording}
+          show={this.state.showRecorder}
+          onHide={this.closeRecorder}
+        >
+          <div>
+            <ReactMic
+              record={this.state.record}
+              className='sound-wave'
+              onStop={this.onStop}
+              strokeColor='#000000' />
+            <button onClick={this.startRecording}>Start</button>
+            <button onClick={this.stopRecording}>Stop</button>
           </div>
         </Popover>
         <div className='m-portlet m-portlet--mobile'>
@@ -1225,9 +1408,23 @@ class ChatBox extends React.Component {
                         </div>
                       }
                     </div>
+                    <div ref={(c) => { this.recording = c }} style={{display: 'inline-block'}} data-tip='recording'>
+                      <i onClick={this.showDialogRecording} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-microphone' />
+                      </i>
+                    </div>
                     {
                       /*
-                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons1'>
                         <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                           <i style={{
                             fontSize: '20px',

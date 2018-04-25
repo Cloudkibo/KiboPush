@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot } from '../../redux/actions/smart_replies.actions'
+import { loadBotsList, createBot, deleteBot } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -138,6 +138,7 @@ class Bot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.bots)
@@ -171,18 +172,18 @@ class Bot extends React.Component {
     this.setState({isActive: e.target.value})
   }
 
-  gotoView (poll) {
+  gotoView (bot) {
     this.props.history.push({
-      pathname: `/pollResult`,
-      state: poll
+      pathname: `/viewBot`,
+      state: bot
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
 
-  gotoEdit (poll) {
+  gotoEdit (bot) {
     this.props.history.push({
-      pathname: `/pollView`,
-      state: poll
+      pathname: `/editBot`,
+      state: bot
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
@@ -190,7 +191,7 @@ class Bot extends React.Component {
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
-      this.props.createBot({botName: this.state.name, pageId: this.state.pageId, isActive: this.state.isActive})
+      this.props.createBot({botName: this.state.name, pageId: this.state.pageSelected, isActive: this.state.isActive})
       browserHistory.push({
         pathname: `/createBot`
       })
@@ -324,27 +325,27 @@ class Bot extends React.Component {
                               </ModalDialog>
                             </ModalContainer>
                           }
-                          {/*
+                          {
                             this.state.isShowingModalDelete &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialogDelete}>
                               <ModalDialog style={{width: '500px'}}
                                 onClose={this.closeDialogDelete}>
-                                <h3>Delete Poll</h3>
-                                <p>Are you sure you want to delete this poll?</p>
+                                <h3>Delete Bot</h3>
+                                <p>Are you sure you want to delete this bot?</p>
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deletePoll(this.state.deleteid, this.msg)
+                                    this.props.deleteBot(this.state.deleteid, this.msg)
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
                               </ModalDialog>
                             </ModalContainer>
-                          */}
+                          }
                         </div>
                         <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                          <input type='text' placeholder='Search bots by name ...' className='form-control m-input m-input--solid' onChange={this.searchBots} />
+                          <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
                           <span className='m-input-icon__icon m-input-icon__icon--left'>
                             <span><i className='la la-search' /></span>
                           </span>
@@ -375,55 +376,55 @@ class Bot extends React.Component {
                               style={{height: '53px'}}>
                               <th data-field='name'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Name</span>
+                                <span style={{width: '125px'}}>Name</span>
                               </th>
                               <th data-field='page'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Page</span>
+                                <span style={{width: '125px'}}>Page</span>
                               </th>
                               <th data-field='status'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Status</span>
+                                <span style={{width: '125px'}}>Status</span>
                               </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Actions</span>
+                                <span style={{width: '175px'}}>Actions</span>
                               </th>
                             </tr>
                           </thead>
-                          <tbody className='m-datatable__body'>
+                          <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                             {
                             this.state.botsData.map((bot, i) => (
-                              <tr data-row={i}
+                              <tr key={i} data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
-                                style={{height: '55px'}} key={i}>
-                                <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.botName}</span></td>
-                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{bot.pageId.pageName}</span></td>
-                                <td data-field='status' className='m-datatable__cell'>
-                                  {bot.isActive === true
-                                    ? <span style={{width: '50px'}}>Active</span>
-                                    : <span style={{width: '50px'}}>Disabled</span>
+                                style={{height: '55px'}}>
+                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName}</span></td>
+                                <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.pageId.pageName}</span></td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  {bot.isActive === 'true'
+                                    ? <span style={{width: '125px'}}>Active</span>
+                                    : <span style={{width: '125px'}}>Disabled</span>
                                   }
                                 </td>
                                 <td data-field='actions' className='m-datatable__cell'>
                                   {this.props.user && this.props.user.role !== 'agent'
-                                  ? <span style={{width: '200px'}}>
+                                  ? <span style={{width: '175px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoView(bot)}>
+                                      onClick={() => this.gotoView(bot._id)}>
                                       View
                                     </button>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoEdit(bot)}>Edit
+                                      onClick={() => this.gotoEdit(bot._id)}>Edit
                                     </button>
-                                    <button className='btn btn-sm' disabled
+                                    <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.showDialogDelete(bot._id)}>
                                       Delete
                                     </button>
                                   </span>
-                                  : <span style={{width: '200px'}}>
+                                  : <span style={{width: '175px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.gotoView(bot)}>
@@ -468,6 +469,7 @@ class Bot extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state', state)
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
@@ -480,7 +482,8 @@ function mapDispatchToProps (dispatch) {
     {
       loadBotsList: loadBotsList,
       loadMyPagesList: loadMyPagesList,
-      createBot: createBot
+      createBot: createBot,
+      deleteBot: deleteBot
     },
     dispatch)
 }
