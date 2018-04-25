@@ -161,7 +161,7 @@ exports.create = function (req, res) {
         const surveyQuestion = new SurveyQuestions({
           statement: req.body.questions[question].statement, // question statement
           options, // array of question options
-          type: req.body.questions[question].type, // type can be text/multichoice
+          type: 'multichoice', // type can be text/multichoice
           surveyId: survey._id
         })
 
@@ -230,13 +230,11 @@ exports.edit = function (req, res) {
         }
         for (let question in req.body.questions) {
           let options = []
-          if (req.body.questions[question].type === 'multichoice') {
-            options = req.body.questions[question].options
-          }
+          options = req.body.questions[question].options
           const surveyQuestion = new SurveyQuestions({
             statement: req.body.questions[question].statement, // question statement
             options, // array of question options
-            type: req.body.questions[question].type, // type can be text/multichoice
+            type: 'multichoice', // type can be text/multichoice
             surveyId: survey._id
 
           })
@@ -758,7 +756,7 @@ exports.sendSurvey = function (req, res) {
         const surveyQuestion = new SurveyQuestions({
           statement: req.body.questions[question].statement, // question statement
           options, // array of question options
-          type: req.body.questions[question].type, // type can be text/multichoice
+          type: 'multichoice', // type can be text/multichoice
           surveyId: survey._id
         })
 

@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence } from '../../redux/actions/sequence.action'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -24,7 +24,10 @@ class Sequence extends React.Component {
       filterValue: '',
       searchValue: '',
       isShowingModalDelete: false,
-      deleteid: ''
+      isShowingModal: false,
+      deleteid: '',
+      name: '',
+      error: false
     }
     props.fetchAllSequence()
     this.displayData = this.displayData.bind(this)
@@ -36,12 +39,26 @@ class Sequence extends React.Component {
     this.goToView = this.goToView.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.updateName = this.updateName.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
   }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
-
+  gotoCreate () {
+    if (this.state.name === '') {
+      this.setState({error: true})
+    } else {
+      this.props.createSequence({name: this.state.name})
+      browserHistory.push({
+        pathname: `/createSequence`,
+        state: {name: this.state.name}
+      })
+    }
+  }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
     this.setState({deleteid: id})
@@ -51,11 +68,21 @@ class Sequence extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
 
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
+
   componentDidMount () {
     this.scrollToTop()
     document.title = 'KiboPush | Sequence Messaging'
   }
-
+  updateName (e) {
+    this.setState({name: e.target.value, error: false})
+  }
   displayData (n, sequences) {
     let offset = n * 4
     let data = []
@@ -201,6 +228,28 @@ class Sequence extends React.Component {
                 </ModalDialog>
               </ModalContainer>
             }
+            {
+              this.state.isShowingModal &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialog}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialog}>
+                  <h3>Create Sequence</h3>
+                  <div id='question' className='form-group m-form__group'>
+                    <label className='control-label'>Sequence Name:</label>
+                    {this.state.error &&
+                      <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
+                      }
+                    <input className='form-control' placeholder='Enter sequence name here'
+                      value={this.state.name} onChange={(e) => this.updateName(e)} />
+                  </div>
+                  <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => this.gotoCreate()}>Create
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
@@ -229,12 +278,12 @@ class Sequence extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='/addSequence'>
+                        <Link onClick={this.showDialog}>
                           <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                  Create new Sequence
+                                  Create New Sequence
                                 </span>
                             </span>
                           </button>
@@ -360,7 +409,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAllSequence: fetchAllSequence
+    fetchAllSequence: fetchAllSequence,
+    createSequence: createSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sequence)
