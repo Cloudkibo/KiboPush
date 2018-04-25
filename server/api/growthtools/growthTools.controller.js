@@ -37,56 +37,56 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-    fs.rename(
-      req.files.file.path,
-      dir + '/userfiles' + serverPath,
-      err => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'internal server error' + JSON.stringify(err)
-          })
-        }
-        var records = parse(dir + '/userfiles' + serverPath, {columns: true})
-        var columnResults = {}
+  fs.rename(
+    req.files.file.path,
+    dir + '/userfiles' + serverPath,
+    err => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      var records = parse(dir + '/userfiles' + serverPath, {columns: true})
+      var columnResults = {}
 
-for(var row =0; row < records.length; row++){
-    for(var column in records[row]){
-        if(!columnResults[column]){
-            columnResults[column] = [];
+      for (var row = 0; row < records.length; row++) {
+        for (var column in records[row]) {
+          if (!columnResults[column]) {
+            columnResults[column] = []
+          }
+          columnResults[column].push(records[row][column])
         }
-        columnResults[column].push(records[row][column]);
-    }
-}
+      }
       logger.serverLog(TAG, `data from csv file ${JSON.stringify(Object.keys(columnResults))}`)
-        // let respSent = false
-        // fs.createReadStream(dir + '/userfiles' + serverPath)
-        //   .pipe(csv())
-        //   .on('data', function (data) {
-        //     logger.serverLog(TAG, `data from csv file ${JSON.stringify(data)}`)
-        //     if (data.phone_numbers && data.names) {
-        //       //  var result = data.phone_numbers.replace(/[- )(]/g, '')
-        //       logger.serverLog(TAG, `data from csv file ${JSON.stringify(data.names)}`)
-        //
-        //       if (respSent === false) {
-        //         respSent = true
-        //         return res.status(201)
-        //           .json({
-        //             status: 'success',
-        //             description: 'Contacts were invited to your messenger'
-        //           })
-        //       }
-        //     } else {
-        //       return res.status(404)
-        //         .json({status: 'failed', description: 'Incorrect column names'})
-        //     }
-        //   })
-      })
+      // let respSent = false
+      // fs.createReadStream(dir + '/userfiles' + serverPath)
+      //   .pipe(csv())
+      //   .on('data', function (data) {
+      //     logger.serverLog(TAG, `data from csv file ${JSON.stringify(data)}`)
+      //     if (data.phone_numbers && data.names) {
+      //       //  var result = data.phone_numbers.replace(/[- )(]/g, '')
+      //       logger.serverLog(TAG, `data from csv file ${JSON.stringify(data.names)}`)
+      //
+      //       if (respSent === false) {
+      //         respSent = true
+      //         return res.status(201)
+      //           .json({
+      //             status: 'success',
+      //             description: 'Contacts were invited to your messenger'
+      //           })
+      //       }
+      //     } else {
+      //       return res.status(404)
+      //         .json({status: 'failed', description: 'Incorrect column names'})
+      //     }
+      //   })
       return res.status(201)
-                .json({
-                  status: 'success',
-                  description: 'Contacts were invited to your messenger'
-                })
+              .json({
+                status: 'success',
+                description: 'Contacts were invited to your messenger'
+              })
+    })
 }
 /*exports.upload = function (req, res) {
   var today = new Date()
