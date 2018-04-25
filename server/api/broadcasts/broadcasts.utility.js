@@ -28,26 +28,33 @@ function validateInput (body) {
     for (let i = 0; i < body.payload.length; i++) {
       if (body.payload[i].componentType === undefined) return false
       if (body.payload[i].componentType === 'text') {
-        if (body.payload[i].text === undefined) return false
+        if (body.payload[i].text === undefined ||
+          body.payload[i].text === '') return false
         if (body.payload[i].buttons) {
           for (let j = 0; j < body.payload[i].buttons.length; j++) {
             if (body.payload[i].buttons[j].type === 'web_url') {
-              if (!utility.validateUrl(body.payload[i].buttons[j].url)) return false
+              if (!utility.validateUrl(
+                  body.payload[i].buttons[j].url)) return false
             }
           }
         }
       }
       if (body.payload[i].componentType === 'card') {
-        if (body.payload[i].title === undefined) return false
-        if (body.payload[i].fileurl === undefined) return false
-        if (body.payload[i].image_url === undefined) return false
-        if (body.payload[i].description === undefined) return false
+        if (body.payload[i].title === undefined ||
+          body.payload[i].title === '') return false
+        if (body.payload[i].fileurl === undefined ||
+          body.payload[i].fileurl === '') return false
+        if (body.payload[i].image_url === undefined ||
+          body.payload[i].image_url === '') return false
+        if (body.payload[i].description === undefined ||
+          body.payload[i].description === '') return false
         if (body.payload[i].buttons === undefined) return false
         if (body.payload[i].buttons.length === 0) return false
         if (!utility.validateUrl(body.payload[i].image_url)) return false
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
-            if (!utility.validateUrl(body.payload[i].buttons[j].url)) return false
+            if (!utility.validateUrl(
+                body.payload[i].buttons[j].url)) return false
           }
         }
       }
@@ -55,15 +62,20 @@ function validateInput (body) {
         if (body.payload[i].cards === undefined) return false
         if (body.payload[i].cards.length === 0) return false
         for (let j = 0; j < body.payload[i].cards.length; j++) {
-          if (body.payload[i].cards[j].title === undefined) return false
-          if (body.payload[i].cards[j].image_url === undefined) return false
-          if (body.payload[i].cards[j].subtitle === undefined) return false
+          if (body.payload[i].cards[j].title === undefined ||
+            body.payload[i].cards[j].title === '') return false
+          if (body.payload[i].cards[j].image_url === undefined ||
+            body.payload[i].cards[j].image_url === '') return false
+          if (body.payload[i].cards[j].subtitle === undefined ||
+            body.payload[i].cards[j].subtitle === '') return false
           if (body.payload[i].cards[j].buttons === undefined) return false
           if (body.payload[i].cards[j].buttons.length === 0) return false
-          if (!utility.validateUrl(body.payload[i].cards[j].image_url)) return false
+          if (!utility.validateUrl(
+              body.payload[i].cards[j].image_url)) return false
           for (let k = 0; k < body.payload[i].cards[j].buttons.length; k++) {
             if (body.payload[i].cards[j].buttons[k].type === 'web_url') {
-              if (!utility.validateUrl(body.payload[i].cards[j].buttons[k].url)) return false
+              if (!utility.validateUrl(
+                  body.payload[i].cards[j].buttons[k].url)) return false
             }
           }
         }
@@ -218,17 +230,17 @@ function prepareBroadCastPayload (req, companyId) {
 }
 
 /* function deleteFile (fileurl) {
-  logger.serverLog(TAG,
-    `Inside deletefile file Broadcast, fileurl = ${fileurl}`)
-  // unlink file
-  fs.unlink(fileurl.id, function (err) {
-    if (err) {
-      logger.serverLog(TAG, err)
-    } else {
-      logger.serverLog(TAG, 'file deleted')
-    }
-  })
-} */
+ logger.serverLog(TAG,
+ `Inside deletefile file Broadcast, fileurl = ${fileurl}`)
+ // unlink file
+ fs.unlink(fileurl.id, function (err) {
+ if (err) {
+ logger.serverLog(TAG, err)
+ } else {
+ logger.serverLog(TAG, 'file deleted')
+ }
+ })
+ } */
 
 function parseUrl (text) {
   // eslint-disable-next-line no-useless-escape
@@ -243,39 +255,41 @@ function parseUrl (text) {
 
 function applyTagFilterIfNecessary (req, subscribers, fn) {
   if (req.body.segmentationTags && req.body.segmentationTags.length > 0) {
-    TagSubscribers.find({tagId: {$in: req.body.segmentationTags}}, (err, tagSubscribers) => {
-      if (err) {
-        return logger.serverLog(TAG,
-          `At get tags subscribers ${JSON.stringify(err)}`)
-      }
-      let subscribersPayload = []
-      for (let i = 0; i < subscribers.length; i++) {
-        for (let j = 0; j < tagSubscribers.length; j++) {
-          if (subscribers[i]._id.toString() === tagSubscribers[j].subscriberId.toString()) {
-            subscribersPayload.push({
-              _id: subscribers[i]._id,
-              firstName: subscribers[i].firstName,
-              lastName: subscribers[i].lastName,
-              locale: subscribers[i].locale,
-              gender: subscribers[i].gender,
-              timezone: subscribers[i].timezone,
-              profilePic: subscribers[i].profilePic,
-              companyId: subscribers[i].companyId,
-              pageScopedId: '',
-              email: '',
-              senderId: subscribers[i].senderId,
-              pageId: subscribers[i].pageId,
-              datetime: subscribers[i].datetime,
-              isEnabledByPage: subscribers[i].isEnabledByPage,
-              isSubscribed: subscribers[i].isSubscribed,
-              isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-              unSubscribedBy: subscribers[i].unSubscribedBy
-            })
+    TagSubscribers.find({tagId: {$in: req.body.segmentationTags}},
+      (err, tagSubscribers) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get tags subscribers ${JSON.stringify(err)}`)
+        }
+        let subscribersPayload = []
+        for (let i = 0; i < subscribers.length; i++) {
+          for (let j = 0; j < tagSubscribers.length; j++) {
+            if (subscribers[i]._id.toString() ===
+              tagSubscribers[j].subscriberId.toString()) {
+              subscribersPayload.push({
+                _id: subscribers[i]._id,
+                firstName: subscribers[i].firstName,
+                lastName: subscribers[i].lastName,
+                locale: subscribers[i].locale,
+                gender: subscribers[i].gender,
+                timezone: subscribers[i].timezone,
+                profilePic: subscribers[i].profilePic,
+                companyId: subscribers[i].companyId,
+                pageScopedId: '',
+                email: '',
+                senderId: subscribers[i].senderId,
+                pageId: subscribers[i].pageId,
+                datetime: subscribers[i].datetime,
+                isEnabledByPage: subscribers[i].isEnabledByPage,
+                isSubscribed: subscribers[i].isSubscribed,
+                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                unSubscribedBy: subscribers[i].unSubscribedBy
+              })
+            }
           }
         }
-      }
-      fn(subscribersPayload)
-    })
+        fn(subscribersPayload)
+      })
   } else {
     fn(subscribers)
   }
@@ -283,78 +297,84 @@ function applyTagFilterIfNecessary (req, subscribers, fn) {
 
 function applySurveyFilterIfNecessary (req, subscribers, fn) {
   if (req.body.segmentationSurvey && req.body.segmentationSurvey.length > 0) {
-    SurveyResponses.find({surveyId: {$in: req.body.segmentationSurvey}}).populate('subscriberId').exec((err, responses) => {
-      if (err) {
-        return logger.serverLog(TAG,
-          `At get survey responses subscribers ${JSON.stringify(err)}`)
-      }
-      let subscribersPayload = []
-      for (let i = 0; i < subscribers.length; i++) {
-        for (let j = 0; j < responses.length; j++) {
-          if (subscribers[i]._id.toString() === responses[j].subscriberId._id.toString()) {
-            subscribersPayload.push({
-              _id: subscribers[i]._id,
-              firstName: subscribers[i].firstName,
-              lastName: subscribers[i].lastName,
-              locale: subscribers[i].locale,
-              gender: subscribers[i].gender,
-              timezone: subscribers[i].timezone,
-              profilePic: subscribers[i].profilePic,
-              companyId: subscribers[i].companyId,
-              pageScopedId: '',
-              email: '',
-              senderId: subscribers[i].senderId,
-              pageId: subscribers[i].pageId,
-              datetime: subscribers[i].datetime,
-              isEnabledByPage: subscribers[i].isEnabledByPage,
-              isSubscribed: subscribers[i].isSubscribed,
-              isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-              unSubscribedBy: subscribers[i].unSubscribedBy
-            })
+    SurveyResponses.find({surveyId: {$in: req.body.segmentationSurvey}})
+      .populate('subscriberId')
+      .exec((err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let subscribersPayload = []
+        for (let i = 0; i < subscribers.length; i++) {
+          for (let j = 0; j < responses.length; j++) {
+            if (subscribers[i]._id.toString() ===
+              responses[j].subscriberId._id.toString()) {
+              subscribersPayload.push({
+                _id: subscribers[i]._id,
+                firstName: subscribers[i].firstName,
+                lastName: subscribers[i].lastName,
+                locale: subscribers[i].locale,
+                gender: subscribers[i].gender,
+                timezone: subscribers[i].timezone,
+                profilePic: subscribers[i].profilePic,
+                companyId: subscribers[i].companyId,
+                pageScopedId: '',
+                email: '',
+                senderId: subscribers[i].senderId,
+                pageId: subscribers[i].pageId,
+                datetime: subscribers[i].datetime,
+                isEnabledByPage: subscribers[i].isEnabledByPage,
+                isSubscribed: subscribers[i].isSubscribed,
+                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                unSubscribedBy: subscribers[i].unSubscribedBy
+              })
+            }
           }
         }
-      }
-      fn(subscribersPayload)
-    })
+        fn(subscribersPayload)
+      })
   } else {
     fn(subscribers)
   }
 }
 function applyPollFilterIfNecessary (req, subscribers, fn) {
   if (req.body.segmentationPoll && req.body.segmentationPoll.length > 0) {
-    PollResponses.find({pollId: {$in: req.body.segmentationPoll}}).populate('subscriberId').exec((err, responses) => {
-      if (err) {
-        return logger.serverLog(TAG,
-          `At get survey responses subscribers ${JSON.stringify(err)}`)
-      }
-      let subscribersPayload = []
-      for (let i = 0; i < subscribers.length; i++) {
-        for (let j = 0; j < responses.length; j++) {
-          if (subscribers[i]._id.toString() === responses[j].subscriberId._id.toString()) {
-            subscribersPayload.push({
-              _id: subscribers[i]._id,
-              firstName: subscribers[i].firstName,
-              lastName: subscribers[i].lastName,
-              locale: subscribers[i].locale,
-              gender: subscribers[i].gender,
-              timezone: subscribers[i].timezone,
-              profilePic: subscribers[i].profilePic,
-              companyId: subscribers[i].companyId,
-              pageScopedId: '',
-              email: '',
-              senderId: subscribers[i].senderId,
-              pageId: subscribers[i].pageId,
-              datetime: subscribers[i].datetime,
-              isEnabledByPage: subscribers[i].isEnabledByPage,
-              isSubscribed: subscribers[i].isSubscribed,
-              isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-              unSubscribedBy: subscribers[i].unSubscribedBy
-            })
+    PollResponses.find({pollId: {$in: req.body.segmentationPoll}})
+      .populate('subscriberId')
+      .exec((err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let subscribersPayload = []
+        for (let i = 0; i < subscribers.length; i++) {
+          for (let j = 0; j < responses.length; j++) {
+            if (subscribers[i]._id.toString() ===
+              responses[j].subscriberId._id.toString()) {
+              subscribersPayload.push({
+                _id: subscribers[i]._id,
+                firstName: subscribers[i].firstName,
+                lastName: subscribers[i].lastName,
+                locale: subscribers[i].locale,
+                gender: subscribers[i].gender,
+                timezone: subscribers[i].timezone,
+                profilePic: subscribers[i].profilePic,
+                companyId: subscribers[i].companyId,
+                pageScopedId: '',
+                email: '',
+                senderId: subscribers[i].senderId,
+                pageId: subscribers[i].pageId,
+                datetime: subscribers[i].datetime,
+                isEnabledByPage: subscribers[i].isEnabledByPage,
+                isSubscribed: subscribers[i].isSubscribed,
+                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                unSubscribedBy: subscribers[i].unSubscribedBy
+              })
+            }
           }
         }
-      }
-      fn(subscribersPayload)
-    })
+        fn(subscribersPayload)
+      })
   } else {
     fn(subscribers)
   }

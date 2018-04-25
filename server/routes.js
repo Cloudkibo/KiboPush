@@ -57,7 +57,8 @@ module.exports = function (app) {
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
       {expires: new Date(Date.now() + 900000)})
-    res.sendFile(path.join(config.root, 'client/index.html'))
+    // res.sendFile(path.join(config.root, 'client/index.html'))
+    res.render('main', { environment: env })
   })
 
   app.get('/dashboard2', (req, res) => {

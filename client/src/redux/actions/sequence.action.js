@@ -74,3 +74,16 @@ export function unsubscribeToSequence (data, msg) {
       })
   }
 }
+
+export function saveMessageSeq (data, msg) {
+  return (dispatch) => {
+    callApi('createMessage', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Message saved successfully')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}

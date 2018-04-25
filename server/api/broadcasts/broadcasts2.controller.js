@@ -41,7 +41,7 @@ exports.sendConversation = function (req, res) {
   if (!utility.validateInput(req.body)) {
     logger.serverLog(TAG, 'Parameters are missing.')
     return res.status(400)
-    .json({status: 'failed', description: 'Parameters or components are missing'})
+    .json({status: 'failed', description: 'Please fill all the required fields'})
   }
 
   if (req.body.self) {

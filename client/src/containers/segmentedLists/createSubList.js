@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, createSubList, editList, loadListDetails, getParentList
+  loadCustomerLists, createSubList, editList, loadListDetails, getParentList, getRepliedPollSubscribers, getRepliedSurveySubscribers
 } from '../../redux/actions/customerLists.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
@@ -15,8 +15,6 @@ import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
-import { loadPollsList, getpollresults } from '../../redux/actions/poll.actions'
-import { loadSurveysList, loadsurveyresponses } from '../../redux/actions/surveys.actions'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -60,8 +58,8 @@ class CreateSubList extends React.Component {
     props.loadMyPagesList()
     props.loadCustomerLists()
     props.loadSubscribersList()
-    props.loadSurveysList(0)
-    props.loadPollsList(0)
+    props.getRepliedPollSubscribers()
+    props.getRepliedSurveySubscribers()
   }
   componentDidMount () {
     if (this.props.customerLists) {
@@ -83,16 +81,6 @@ class CreateSubList extends React.Component {
     }
     if (this.props.currentList) {
       this.initializeList()
-    }
-    if (this.props.surveys && !this.props.surveyResponses) {
-      for (let i = 0; i < this.props.surveys.length; i++) {
-        this.props.loadSurveyResponses(this.props.surveys[i]._id)
-      }
-    }
-    if (this.props.polls && !this.props.pollResponses) {
-      for (let i = 0; i < this.props.polls.length; i++) {
-        this.props.getPollResults(this.props.polls[i]._id)
-      }
     }
   }
 
@@ -716,11 +704,8 @@ function mapStateToProps (state) {
     customerLists: (state.listsInfo.customerLists),
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
-    surveys: (state.surveysInfo.surveys),
-    surveyResponses: state.surveysInfo.responses,
-    pollResponses: state.pollsInfo.responsesfull,
-    polls: (state.pollsInfo.polls),
-    responses: [] // (state.pollsInfo.responsesfull).concat(state.surveysInfo.responses)]
+    pollSubscribers: (state.listsInfo.pollSubscribers),
+    surveySubscriber: (state.listsInfo.surveySubscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -732,10 +717,8 @@ function mapDispatchToProps (dispatch) {
     loadListDetails: loadListDetails,
     getParentList: getParentList,
     loadSubscribersList: loadSubscribersList,
-    loadPollsList: loadPollsList,
-    loadSurveysList: loadSurveysList,
-    loadSurveyResponses: loadsurveyresponses,
-    getPollResults: getpollresults
+    getRepliedPollSubscribers: getRepliedPollSubscribers,
+    getRepliedSurveySubscribers: getRepliedSurveySubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)
