@@ -29,53 +29,60 @@ exports.upload = function (req, res) {
   serverPath += '.' + fext[fext.length - 1]
 
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
-  logger.serverLog(TAG, `csv-data: ${JSON.stringify(req.files.file)}`)
-  logger.serverLog(TAG, `csv-data: ${JSON.stringify(req.files.file.name)}`)
-  logger.serverLog(TAG, `csv-data: ${JSON.stringify(fext)}`)
+
   if (req.files.file.size === 0) {
     return res.status(400).json({
       status: 'failed',
       description: 'No file submitted'
     })
   }
-  logger.serverLog(TAG, `in upload`)
-  fs.rename(
-    req.files.file.path,
-    dir + '/userfiles/' + serverPath,
-    err => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: 'internal server error' + JSON.stringify(err)
-        })
-      }
-      logger.serverLog(TAG, `in upload`)
-      let result = ''
-      let respSent = false
-      fs.createReadStream(dir + '/userfiles' + serverPath)
-        .pipe(csv())
-        .on('data', function (data) {
-          result = data
-          logger.serverLog(TAG, `csv-data: ${JSON.stringify({data})}`)
-          logger.serverLog(TAG,
-            `file uploaded, sending response now: ${JSON.stringify({
-              id: serverPath,
-              url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-              fileColumns: result
-            })}`)
-          if (respSent === false) {
-            respSent = true
-            return res.status(201).json({
-              status: 'success',
-              payload: {
-                id: serverPath,
-                url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-                fileColumns: result
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    fs.rename(
+      req.files.file.path,
+      dir + '/userfiles' + serverPath,
+      err => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'internal server error' + JSON.stringify(err)
+          })
+        }
+        let respSent = false
+        fs.createReadStream(dir + '/userfiles' + serverPath)
+          .pipe(csv())
+          .on('data', function (data) {
+            logger.serverLog(TAG, `data from csv file ${JSON.stringify(data)}`)
+            if (data.phone_numbers && data.names) {
+              //  var result = data.phone_numbers.replace(/[- )(]/g, '')
+              logger.serverLog(TAG, `data from csv file ${JSON.stringify(data.names)}`)
+
+              if (respSent === false) {
+                respSent = true
+                return res.status(201)
+                  .json({
+                    status: 'success',
+                    description: 'Contacts were invited to your messenger'
+                  })
               }
-            })
-          }
-        })
-    })
+            } else {
+              return res.status(404)
+                .json({status: 'failed', description: 'Incorrect column names'})
+            }
+          })
+      })
+  })
 }
 /*exports.upload = function (req, res) {
   var today = new Date()
