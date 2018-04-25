@@ -16,7 +16,60 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 let request = require('request')
 const _ = require('lodash')
 const Lists = require('../lists/lists.model')
+let config = require('./../../config/environment')
+
 exports.upload = function (req, res) {
+  var today = new Date()
+  var uid = crypto.randomBytes(5).toString('hex')
+  var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
+    (today.getMonth() + 1) + '' + today.getDate()
+  serverPath += '' + today.getHours() + '' + today.getMinutes() + '' +
+    today.getSeconds()
+  let fext = req.files.file.name.split('.')
+  serverPath += '.' + fext[fext.length - 1]
+
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+
+  if (req.files.file.size === 0) {
+    return res.status(400).json({
+      status: 'failed',
+      description: 'No file submitted'
+    })
+  }
+  fs.rename(
+    req.files.file.path,
+    dir + '/userfiles/' + serverPath,
+    err => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      let result = ''
+      fs.createReadStream(dir + '/userfiles' + serverPath)
+        .pipe(csv())
+        .on('data', function (data) {
+          result = data
+          logger.serverLog(TAG, data)
+        })
+      logger.serverLog(TAG,
+        `file uploaded, sending response now: ${JSON.stringify({
+          id: serverPath,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`,
+          data: result
+        })}`)
+      return res.status(201).json({
+        status: 'success',
+        payload: {
+          id: serverPath,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+        }
+      })
+    }
+  )
+}
+/*exports.upload = function (req, res) {
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -237,7 +290,7 @@ exports.upload = function (req, res) {
       })
   })
 }
-
+*/
 exports.sendNumbers = function (req, res) {
   let parametersMissing = false
 

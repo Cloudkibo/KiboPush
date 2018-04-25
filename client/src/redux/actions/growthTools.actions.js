@@ -71,7 +71,7 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
 
 export function sendPhoneNumbers (data) {
   return (dispatch) => {
-    callApi('growthTools/sendNumbers', 'post', data)
+    callApi('growthTools/columns', 'post', data)
       .then(res => {
         console.log('Response', res)
         dispatch(sendresp(res))
@@ -85,5 +85,23 @@ export function getPendingSubscriptions (name) {
   return (dispatch) => {
     callApi(`growthTools/pendingSubscription/${name}`)
       .then(res => dispatch(showPendingSubscriptions(res.payload)))
+  }
+}
+
+export function sendFileColumns (payload, msg) {
+  console.log('Actions for sending file columns', payload)
+  return (dispatch) => {
+    callApi('growthTools/columns', 'post', payload)
+    .then(res => {
+      if (res.status === 'success') {
+        msg.success(`${res.description}`)
+      } else {
+        if (res.status === 'failed' && res.description) {
+          msg.error(`Unable to send invitation. ${res.description}`)
+        } else {
+          msg.error('Unable to send invitation')
+        }
+      }
+    })
   }
 }
