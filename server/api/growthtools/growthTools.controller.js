@@ -49,7 +49,7 @@ exports.upload = function (req, res) {
       }
       var records = parse(dir + '/userfiles' + serverPath, {columns: true})
       var columnResults = {}
-
+      logger.serverLog(TAG, `data from csv file ${JSON.stringify(records)}`)
       for (var row = 0; row < records.length; row++) {
         for (var column in records[row]) {
           if (!columnResults[column]) {
@@ -58,7 +58,7 @@ exports.upload = function (req, res) {
           columnResults[column].push(records[row][column])
         }
       }
-      logger.serverLog(TAG, `data from csv file ${JSON.stringify(Object.keys(columnResults))}`)
+      logger.serverLog(TAG, `data from csv file ${JSON.stringify(columnResults)}`)
       // let respSent = false
       // fs.createReadStream(dir + '/userfiles' + serverPath)
       //   .pipe(csv())

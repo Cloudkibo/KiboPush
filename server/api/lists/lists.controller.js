@@ -380,6 +380,15 @@ exports.repliedSurveySubscribers = function (req, res) {
                   dateReplied: responses[b].datetime
                 })
               }
+              if (JSON.stringify(subscribers[a]._id) === JSON.stringify(responses[b].subscriberId)) {
+                logger.serverLog(TAG, `first`)
+              }
+              if (JSON.stringify(subscribers[a]._id) === responses[b].subscriberId) {
+                logger.serverLog(TAG, `second`)
+              }
+              if (subscribers[a]._id === JSON.stringify(responses[b].subscriberId)) {
+                logger.serverLog(TAG, `third`)
+              }
             }
           }
           return res.status(200).json({status: 'success', payload: subscribersPayload})
