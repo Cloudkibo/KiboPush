@@ -55,17 +55,18 @@ exports.upload = function (req, res) {
       fs.createReadStream(dir + '/userfiles' + serverPath)
         .pipe(csv())
         .on('data', function (data) {
-          logger.serverLog(TAG, `data from csv file ${JSON.stringify(data[0])}`)
-          if (data.phone_numbers && data.names) {
-            //  var result = data.phone_numbers.replace(/[- )(]/g, '')
-            if (respSent === false) {
-              respSent = true
-              return res.status(201)
-                .json({
-                  status: 'success',
-                  description: 'Contacts were invited to your messenger'
-                })
-            }
+          logger.serverLog(TAG, `data from csv file ${JSON.stringify(data)}`)
+          var keys = []
+          for (var k in data) {
+            keys.push(k)
+          }
+          if (respSent === false) {
+            respSent = true
+            return res.status(201)
+              .json({
+                status: 'success',
+                payload: { columns: keys, file: dir + '/userfiles' + serverPath }
+              })
           } else {
             return res.status(404)
               .json({status: 'failed', description: 'Incorrect column names'})
