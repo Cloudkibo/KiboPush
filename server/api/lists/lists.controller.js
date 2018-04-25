@@ -340,24 +340,51 @@ exports.repliedSurveySubscribers = function (req, res) {
       for (let i = 0; i < surveys.length; i++) {
         surveyIds.push(surveys[i]._id)
       }
-      console.log('surveyIds', surveyIds)
-        SurveyResponses.find({surveyId: {$in: surveyIds}}, (err, responses) => {
+      SurveyResponses.find({surveyId: {$in: surveyIds}}, (err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let respondedSubscribers = []
+        for (let j = 0; j < responses.length; j++) {
+          respondedSubscribers.push(responses[j].subscriberId)
+        }
+        Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
           if (err) {
             return logger.serverLog(TAG,
               `At get survey responses subscribers ${JSON.stringify(err)}`)
           }
-          let respondedSubscribers = []
-          for (let j = 0; j < responses.length; j++) {
-            respondedSubscribers.push(responses[j].subscriberId)
-          }
-          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
-            if (err) {
-              return logger.serverLog(TAG,
-                `At get survey responses subscribers ${JSON.stringify(err)}`)
+          let subscribersPayload = []
+          for (let a = 0; a < subscribers.length; a++) {
+            for (let b = 0; b < responses.length; b++) {
+              if (subscribers[a]._id === responses[b].subscriberId) {
+                subscribersPayload.push({
+                  _id: subscribers[a]._id,
+                  pageScopedId: subscribers[a].pageScopedId,
+                  firstName: subscribers[a].firstName,
+                  lastName: subscribers[a].lastName,
+                  locale: subscribers[a].locale,
+                  timezone: subscribers[a].timezone,
+                  email: subscribers[a].email,
+                  gender: subscribers[a].gender,
+                  senderId: subscribers[a].senderId,
+                  profilePic: subscribers[a].senderId,
+                  pageId: subscribers[a].pageId,
+                  phoneNumber: subscribers[a].phoneNumber,
+                  unSubscribedBy: subscribers[a].unSubscribedBy,
+                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
+                  companyId: subscribers[a].companyId,
+                  isSubscribed: subscribers[a].isSubscribed,
+                  isEnabledByPage: subscribers[a].isEnabledByPage,
+                  datetime: subscribers[a].datetime,
+                  dateReplied: responses[b].datetime
+                })
+              }
             }
-            return res.status(200).json({status: 'success', payload: subscribers})
-          })
+          }
+          return res.status(200).json({status: 'success', payload: subscribers})
         })
+      })
     })
   })
 }
