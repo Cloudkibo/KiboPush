@@ -91,19 +91,19 @@ class Button extends React.Component {
         this.props.onAdd({
           type: 'postback',
           title: this.state.title, // User defined label
-          payload: {
+          payload: JSON.stringify({
             sequenceId: this.state.sequenceValue,
             action: 'subscribe'
-          }
+          })
         })
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         this.props.onAdd({
           type: 'postback',
           title: this.state.title, // User defined label
-          payload: {
+          payload: JSON.stringify({
             sequenceId: this.state.sequenceValue,
             action: 'unsubscribe'
-          }
+          })
         })
       }
     }
@@ -187,8 +187,8 @@ class Button extends React.Component {
                     <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
                       <option key='' value='' disabled>Select Sequence...</option>
                       {
-                        this.props.sequences.map((sequence, i) => (
-                          <option key={i} value={sequence._id}>{sequence.name}</option>
+                        this.props.sequences.map((seq, i) => (
+                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
                         ))
                       }
                     </select>
@@ -203,8 +203,8 @@ class Button extends React.Component {
                     <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
                       <option key='' value='' disabled>Select Sequence...</option>
                       {
-                        this.props.sequences.map((sequence, i) => (
-                          <option key={i} value={sequence._id}>{sequence.name}</option>
+                        this.props.sequences.map((seq, i) => (
+                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
                         ))
                       }
                     </select>
