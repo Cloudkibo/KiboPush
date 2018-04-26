@@ -106,6 +106,7 @@ import AddSequence from './containers/sequence/addSequence'
 import CreateSequence from './containers/sequence/createSequence'
 import ViewMessage from './containers/sequence/viewMessage'
 import CreateMessageSeq from './containers/sequence/createMessage'
+import EditSequence from './containers/sequence/editSequence'
 
 import auth from './utility/auth.service'
 
@@ -241,6 +242,7 @@ const routes = (
     <Route path='/addSequence' component={AddSequence} onEnter={requireAuth} />
     <Route path='/viewMessage' component={ViewMessage} onEnter={requireAuth} />
     <Route path='/createSequence' component={CreateSequence} onEnter={requireAuth} />
+    <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
 
   </Route>

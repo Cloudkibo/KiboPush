@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, fetchAllMessages } from '../../redux/actions/sequence.action'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -29,7 +29,6 @@ class CreateSequence extends React.Component {
       name: '',
       error: false
     }
-    props.fetchAllSequence()
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSequence = this.searchSequence.bind(this)
@@ -105,9 +104,8 @@ class CreateSequence extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.sequences) {
-      this.displayData(0, nextProps.sequences)
-      this.setState({ totalLength: nextProps.sequences.length })
+    if (nextProps.createdSequence) {
+      //  this.props.fetchAllMessages(nextProps.createdSequence._id)
     }
   }
 
@@ -229,139 +227,169 @@ class CreateSequence extends React.Component {
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
               <div className='m-portlet  m-portlet--full-height '>
-	<div className='m-portlet__head'>
-		<div className='m-portlet__head-caption'>
-			<div className='m-portlet__head-title'>
-				<h3 className='m-portlet__head-text'>
-				     {this.props.location.state.name}
-				</h3>
-			</div>
-		</div>
-	</div>
-	<div className='m-portlet__body'>
-    <div className='row'>
-      <div className='col-xl-2'>
-        <div className='m-list-timeline'>
-          <div style={{float: 'right', textAlign: 'right'}}>
-            <div className='m-list-timeline__time'>
-              <div className='row' style={{padding: '5px', width: 'max-content'}}>
-              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
+              	<div className='m-portlet__head'>
+              		<div className='m-portlet__head-caption'>
+              			<div className='m-portlet__head-title'>
+              				<h3 className='m-portlet__head-text'>
+              				     {this.props.location.state.name}
+              				</h3>
+              			</div>
+              		</div>
+                  <div className='m-portlet__head-tools'>
+                    <Link to='/createMessageSeq'>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                              Add Message
+                            </span>
+                        </span>
+                      </button>
+                    </Link>
+                  </div>
+              	</div>
+              	<div className='m-portlet__body'>
+                  {this.props.messages
+                  ? <div className='row'>
+                    <div className='col-xl-2'>
+                      <div className='m-list-timeline'>
+                        <div style={{float: 'right', textAlign: 'right'}}>
+                          <div className='m-list-timeline__time'>
+                            <div className='row' style={{padding: '5px', width: 'max-content'}}>
+                              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Schedule</span>
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__time'>
+                            <div className='row' style={{padding: '5px', width: 'max-content'}}>
+                              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__time'>
+                            <div className='row' style={{padding: '5px', width: 'max-content'}}>
+                            <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__time'>
+                            <div className='row' style={{padding: '5px', width: 'max-content'}}>
+                            <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__time'>
+                            <div className='row' style={{padding: '5px', width: 'max-content'}}>
+                            <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__time'>
+                            <div className='row' style={{padding: '5px', width: 'max-content', height: '57px'}}>
+                            <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-xl-10'>
+                      <div className='m-list-timeline'>
+                        <div className='m-list-timeline__items'>
+                          <div className='m-list-timeline__item'>
+                              <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                              <div className='row'>
+                                <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px'}}>Active</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Message</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Sent</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Seen</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Clicked</span>
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__item'>
+                              <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                              <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
+                                <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                                  <label>
+                                    <input typeName='checkbox' checked name='' />
+                                    <span></span>
+                                  </label>
+                                </span>
+                                <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
+                                <span className='m-list-timeline__text flaticon flaticon-delete-2' style={{width: '100', marginTop: '6px'}} />
+                            </div>
+                          </div>
+                          <div className='m-list-timeline__item'>
+                              <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                              <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
+                              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                                <label>
+                                  <input typeName='checkbox' checked name='' />
+                                  <span></span>
+                                </label>
+                              </span>
+                              <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
+                          </div>
+                        </div>
+                          <div className='m-list-timeline__item'>
+                              <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                              <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
+                              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                                <label>
+                                  <input typeName='checkbox' checked name='' />
+                                  <span></span>
+                                </label>
+                              </span>
+                              <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
+                              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
+                          </div>
+                        </div>
+                        <div className='m-list-timeline__item'>
+                            <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                            <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
+                            <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                              <label>
+                                <input typeName='checkbox' checked name='' />
+                                <span></span>
+                              </label>
+                            </span>
+                            <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
+                            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
+                            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
+                            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
+                            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
+                        </div>
+                      </div>
+                      <div className='m-list-timeline__item'>
+                          <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                          <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
+                          <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                            <label>
+                              <input typeName='checkbox' checked name='' />
+                              <span></span>
+                            </label>
+                          </span>
+                          <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
+                          <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
+                          <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
+                          <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
+                          <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className='m-list-timeline__time'>
-              <div className='row' style={{padding: '5px', width: 'max-content'}}>
-              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
-              </div>
-            </div>
-            <div className='m-list-timeline__time'>
-              <div className='row' style={{padding: '5px', width: 'max-content'}}>
-              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
-              </div>
-            </div>
-            <div className='m-list-timeline__time'>
-              <div className='row' style={{padding: '5px', width: 'max-content'}}>
-              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
-              </div>
-            </div>
-            <div className='m-list-timeline__time'>
-              <div className='row' style={{padding: '5px', width: 'max-content', height: '57px'}}>
-              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: '50px'}}>Message 1</span>
-              </div>
-            </div>
+            : <div>No data to display</div>
+          }
           </div>
-    </div>
-  </div>
-      <div className='col-xl-10'>
-        <div className='m-list-timeline'>
-          <div className='m-list-timeline__items'>
-            <div className='m-list-timeline__item'>
-                <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-                <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
-                  <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-                    <label>
-                      <input typeName='checkbox' checked name='' />
-                      <span></span>
-                    </label>
-                  </span>
-                  <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
-                  <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
-                  <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
-                  <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
-                  <span className='m-list-timeline__text flaticon flaticon-delete-2' style={{width: '100', marginTop: '6px'}} />
-              </div>
-            </div>
-            <div className='m-list-timeline__item'>
-                <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-                <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
-                <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-                  <label>
-                    <input typeName='checkbox' checked name='' />
-                    <span></span>
-                  </label>
-                </span>
-                <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
-            </div>
-          </div>
-            <div className='m-list-timeline__item'>
-                <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-                <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
-                <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-                  <label>
-                    <input typeName='checkbox' checked name='' />
-                    <span></span>
-                  </label>
-                </span>
-                <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
-                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
-            </div>
-          </div>
-          <div className='m-list-timeline__item'>
-              <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-              <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
-              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-                <label>
-                  <input typeName='checkbox' checked name='' />
-                  <span></span>
-                </label>
-              </span>
-              <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
-              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
-              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
-              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
-              <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
-          </div>
-        </div>
-        <div className='m-list-timeline__item'>
-            <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-            <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
-            <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-              <label>
-                <input typeName='checkbox' checked name='' />
-                <span></span>
-              </label>
-            </span>
-            <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
-            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
-            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
-            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
-            <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Delete</span>
         </div>
       </div>
     </div>
-  </div>
-      </div>
-    </div>
-</div>
-</div>
-    </div>
-  </div>
 </div>
 </div>
     )
@@ -371,14 +399,17 @@ class CreateSequence extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    createdSequence: (state.sequenceInfo.createdSequence),
+    messages: (state.sequenceInfo.messages)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllSequence: fetchAllSequence,
-    createSequence: createSequence
+    createSequence: createSequence,
+    fetchAllMessages: fetchAllMessages
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
