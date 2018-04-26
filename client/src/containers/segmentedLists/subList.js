@@ -156,7 +156,7 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
           if (responseDate.getTime() < compareDate.getTime()) {
             for (let j = 0; j < filteredData.length; j++) {
               if (filteredData[j]._id === responseSubscriber._id) {
-                console.log('already added ' + filteredData[j])
+                console.log('already added', filteredData[j])
                 alreadyAdded = true
                 break
               }
@@ -167,6 +167,7 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
           }
         }
       }
+      console.log('filteredData', filteredData)
       if (joiningCondition === 'AND') {
         data = filteredData
         filteredData = []
