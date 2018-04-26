@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions, sendFileColumns } from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -15,7 +15,8 @@ import {
 } from '../../redux/actions/customerLists.actions'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
-// import Papa from 'Papaparse'
+import Papa from 'Papaparse'
+
 class CustomerMatching extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -40,7 +41,8 @@ class CustomerMatching extends React.Component {
       columns: [],
       nameColumn: '',
       phoneColumn: '',
-      columnAlerts: false
+      columnAlerts: false,
+      csvData: ''
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -62,6 +64,7 @@ class CustomerMatching extends React.Component {
     this.handleNameColumn = this.handleNameColumn.bind(this)
     this.handlePhoneColumn = this.handlePhoneColumn.bind(this)
     this.saveColumns = this.saveColumns.bind(this)
+    this.parseCSV = this.parseCSV.bind(this)
     this.props.clearAlertMessage()
     this.props.loadCustomerLists()
     this.props.getPendingSubscriptions()
@@ -76,6 +79,9 @@ class CustomerMatching extends React.Component {
       })
       return
     }
+    this.setState({
+      disabled: false
+    })
     this.closeDialogFileColumns()
   }
   closeDialogFileName () {
@@ -88,14 +94,26 @@ class CustomerMatching extends React.Component {
     })
   }
   handleNameColumn (value) {
-    this.setState({
-      nameColumn: value
-    })
+    if (!value) {
+      this.setState({
+        nameColumn: ''
+      })
+    } else {
+      this.setState({
+        nameColumn: value
+      })
+    }
   }
   handlePhoneColumn (value) {
-    this.setState({
-      phoneColumn: value
-    })
+    if (!value) {
+      this.setState({
+        phoneColumn: ''
+      })
+    } else {
+      this.setState({
+        phoneColumn: value
+      })
+    }
   }
   onSubmit () {
     var file = this.state.file
@@ -166,52 +184,67 @@ class CustomerMatching extends React.Component {
       loading: false,
       manually: false,
       phoneNumbers: [],
-      numbersError: []
+      numbersError: [],
+      nameColumn: '',
+      phoneColumn: ''
     })
     this.props.clearAlertMessage()
     this.selectPage()
   }
 
   onFilesChange (files) {
+    var self = this
     if (files.length > 0) {
       this.setState({
         file: files,
-        fileErrors: []
+        fileErrors: [],
+        nameColumn: '',
+        phoneColumn: ''
       })
-      let fileSelected = files[0]
+      var fileSelected = files[0]
       if (fileSelected.extension !== 'csv') {
         this.setState({
           fileErrors: [{errorMsg: 'Please select a file with .csv extension'}]
         })
         return
       }
-      var name = (files[0].name).split('.')
-      var nameExists = false
-      for (var i = 0; i < this.state.customerLists.length; i++) {
-        var list = this.state.customerLists[i]
-        if (list.initialList && (list.listName).toLowerCase() === name[0].toLowerCase()) {
-          nameExists = true
-          break
-        }
-      }
-      if (nameExists) {
-        this.showDialogFileName()
-        return
-      }
-      this.uploadFile()
+      this.parseCSV(self, fileSelected)
     }
   }
-  uploadFile () {
-    var file = this.state.file
+  parseCSV (self, file) {
+    Papa.parse(file, {
+      complete: function (results) {
+        console.log('Finished:', results.data)
+        self.setState({
+          csvData: results.data
+        })
+        if (results.data && results.data.length > 0) {
+          var columnsArray = []
+          var columns = results.data[0]
+          for (var i = 0; i < columns.length; i++) {
+            columnsArray.push({'value': columns[i], 'label': columns[i]})
+          }
+          self.setState({
+            columns: columnsArray,
+            showFileColumns: true
+          })
+        }
+      }
+    })
+  }
+
+  uploadFile (file) {
     if (file && file !== '') {
       var fileData = new FormData()
-      fileData.append('file', file[0])
-      fileData.append('filename', file[0].name)
-      fileData.append('filetype', file[0].type)
-      fileData.append('filesize', file[0].size)
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
       fileData.append('text', this.state.textAreaValue)
       fileData.append('pageId', this.state.selectPage.pageId)
       fileData.append('_id', this.state.selectPage._id)
+      fileData.append('phoneColumn', this.state.phoneColumn)
+      fileData.append('nameColumn', this.state.nameColumn)
 
       if (this.validate('file')) {
         this.setState({
@@ -230,7 +263,8 @@ class CustomerMatching extends React.Component {
   /* global FormData */
   handleSubmit () {
     var file = this.state.file
-    if (file && file !== '') {
+    if (file && file.length > 0) {
+      this.uploadFile(file[0])
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
         this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
@@ -238,19 +272,7 @@ class CustomerMatching extends React.Component {
     }
   }
   handleResponse (res) {
-    if (res.status === 'success' & res.payload) {
-      this.setState({
-        showFileColumns: true
-      })
-    } else {
-      if (res.description) {
-        this.msg.error(`Unable to upload file. ${res.description}`)
-      } else {
-        this.msg.error('Unable to upload file')
-      }
-    }
     this.setState({
-      showFileColumns: true,
       loading: false
     })
   }
@@ -346,11 +368,6 @@ class CustomerMatching extends React.Component {
         customerLists: customerLists
       })
     }
-    if (nextProps.columnsData) {
-      this.setState({
-        columns: nextProps.columnsData
-      })
-    }
     if (nextProps.nonSubscribersNumbers && nextProps.nonSubscribersNumbers.length > 0) {
       this.setState({
         nonSubscribersList: nextProps.nonSubscribersNumbers
@@ -435,7 +452,7 @@ class CustomerMatching extends React.Component {
                 <div className='col-lg-8'>
                   <Select
                     options={this.state.columns}
-                    onChange={this.hanldeNameColumn}
+                    onChange={this.handleNameColumn}
                     value={this.state.nameColumn}
                     placeholder='Select Field'
                   />
@@ -488,7 +505,7 @@ class CustomerMatching extends React.Component {
               <button style={{float: 'right', marginLeft: '10px'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  this.uploadFile()
+                  this.handleSubmit()
                   this.closeDialogFileName()
                 }}>Yes
               </button>
@@ -620,7 +637,7 @@ class CustomerMatching extends React.Component {
                                   <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                                 </span>
                                 <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
-                                <button style={{cursor: 'pointer'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Show Columns</button>
+                                <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>
                               </div>
                             </div>
                             : <div className='m-dropzone dropzone dz-clickable'
@@ -691,18 +708,19 @@ class CustomerMatching extends React.Component {
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
-                                : <button onClick={this.handleSubmit} type='submit' className='btn btn-primary'>
+                                : <button onClick={this.onSubmit} type='submit' className='btn btn-primary'>
                                   Submit
                                 </button>
                               }
-                              <div className='pull-right' style={{display: 'inline-block'}} onClick={this.getSampleFile}>
-                                <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                                  <label>Download Sample CSV file: </label>
-                                </div>
-                                <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                                  <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
-                                </div>
-                              </div>
+
+                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getSampleFile}>
+                                <span>
+                                  <i className='fa fa-download' />
+                                  <span>
+                                    Download Sample CSV file
+                                  </span>
+                                </span>
+                              </button>
                             </div>
                             {
                               this.state.loading
@@ -745,8 +763,7 @@ function mapStateToProps (state) {
     uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,
     customerLists: (state.listsInfo.customerLists),
-    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData),
-    columnsData: (state.growthToolsInfo.columnsData)
+    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData)
   }
 }
 
@@ -759,8 +776,7 @@ function mapDispatchToProps (dispatch) {
     clearAlertMessage: clearAlertMessage,
     loadCustomerLists: loadCustomerLists,
     saveCurrentList: saveCurrentList,
-    getPendingSubscriptions: getPendingSubscriptions,
-    sendFileColumns: sendFileColumns
+    getPendingSubscriptions: getPendingSubscriptions
   },
     dispatch)
 }
