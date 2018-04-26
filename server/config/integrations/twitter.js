@@ -51,6 +51,7 @@ function connect () {
               if (err) {
                 return logger.serverLog(TAG, 'Internal Server Error on connect')
               }
+              logger.serverLog(TAG, `Tweet received and accounts listening to it ${autopostings.length}`)
               autopostings.forEach(postingItem => {
                 let pagesFindCriteria = {
                   companyId: postingItem.companyId._id,
