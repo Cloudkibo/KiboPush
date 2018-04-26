@@ -155,7 +155,7 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
           compareDate.setHours(0, 0, 0, 0)
           if (responseDate.getTime() < compareDate.getTime()) {
             for (let j = 0; j < filteredData.length; j++) {
-              if (filteredData[i]._id === responseSubscriber._id) {
+              if (filteredData[j]._id === responseSubscriber._id) {
                 alreadyAdded = true
                 break
               }
@@ -196,7 +196,7 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
           compareDate.setHours(0, 0, 0, 0)
           if (responseDate.getTime() > compareDate.getTime()) {
             for (let j = 0; j < filteredData.length; j++) {
-              if (filteredData[i]._id === responseSubscriber._id) {
+              if (filteredData[j]._id === responseSubscriber._id) {
                 alreadyAdded = true
                 break
               }
