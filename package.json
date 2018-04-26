@@ -75,6 +75,7 @@
     "mongoose": "^4.11.4",
     "morgan": "^1.8.2",
     "needle": "^1.6.0",
+    "node-phonenumber": "^1.0.0",
     "open-graph": "^0.2.3",
     "papaparse": "^4.4.0",
     "passport": "~0.2.0",

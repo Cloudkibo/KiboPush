@@ -54,8 +54,8 @@ class Sequence extends React.Component {
     } else {
       this.props.createSequence({name: this.state.name})
       browserHistory.push({
-        pathname: `/createSequence`,
-        state: {name: this.state.name}
+        pathname: `/editSequence`,
+        state: {name: this.state.name, module: 'create'}
       })
     }
   }
@@ -106,7 +106,6 @@ class Sequence extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.sequences) {
-      console.log('nextProps.sequences', nextProps.sequences)
       this.displayData(0, nextProps.sequences)
       this.setState({ totalLength: nextProps.sequences.length })
     }
@@ -347,7 +346,7 @@ class Sequence extends React.Component {
                                         <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.name}</span></td>
                                         <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.description}</span></td>
                                         <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>subscribers</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>messages</span></td>
+                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>message</span></td>
                                         <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>status</span></td>
                                         <td data-field='actions' className='m-datatable__cell'>
                                           <span style={{width: '175px'}}>

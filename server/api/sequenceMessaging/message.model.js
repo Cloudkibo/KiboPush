@@ -3,7 +3,7 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 const messageSchema = new Schema({
-  schedule: String,
+  schedule: {type: Schema.Types.Mixed},
   sequenceId: {type: Schema.ObjectId, ref: 'sequences'},
   title: String,
   payload: Schema.Types.Mixed,

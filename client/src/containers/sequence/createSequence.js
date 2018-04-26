@@ -249,7 +249,7 @@ class CreateSequence extends React.Component {
                   </div>
               	</div>
               	<div className='m-portlet__body'>
-                  {this.props.messages
+                  {this.props.messages && this.props.messages.length > 0
                   ? <div className='row'>
                     <div className='col-xl-2'>
                       <div className='m-list-timeline'>
