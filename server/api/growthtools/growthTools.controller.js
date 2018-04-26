@@ -57,14 +57,14 @@ exports.upload = function (req, res) {
         `file uploaded, sending response now: ${JSON.stringify({
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-          data: result
+          fileColumns: result
         })}`)
       return res.status(201).json({
         status: 'success',
         payload: {
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`,
-          fileData: result
+          fileColumns: result
         }
       })
     }
