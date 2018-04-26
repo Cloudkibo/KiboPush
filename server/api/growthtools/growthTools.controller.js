@@ -74,9 +74,12 @@ exports.upload = function (req, res) {
         let respSent = false
         let phoneColumn = req.body.phoneColumn
         let nameColumn = req.body.nameColumn
+        logger.serverLog(TAG, `uploaded file columns ${phoneColumn} ${nameColumn}`)
         fs.createReadStream(dir + '/userfiles' + serverPath)
           .pipe(csv())
           .on('data', function (data) {
+            logger.serverLog(TAG, `uploaded file columns ${JSON.stringify(data[phoneColumn])}`)
+            logger.serverLog(TAG, `uploaded file columns ${JSON.stringify(data[nameColumn])}`)
             if (data[phoneColumn] && data[nameColumn]) {
               var result = data[phoneColumn].replace(/[- )(]/g, '')
               // var savePhoneNumber = new PhoneNumber({
