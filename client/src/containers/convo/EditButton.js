@@ -15,9 +15,13 @@ class EditButton extends React.Component {
     super(props, context)
     this.state = {
       openPopover: false,
-      title: this.props.data.title,
-      url: this.props.data.url,
-      disabled: false
+      title: this.props.data.button.title,
+      url: '',
+      disabled: false,
+      sequenceValue: '',
+      openWebsite: false,
+      openSubscribe: false,
+      openUnsubscribe: false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -25,9 +29,53 @@ class EditButton extends React.Component {
     this.changeTitle = this.changeTitle.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
+    this.showWebsite = this.showWebsite.bind(this)
+    this.showSubscribe = this.showSubscribe.bind(this)
+    this.showUnsubscribe = this.showUnsubscribe.bind(this)
+    this.closeWebsite = this.closeWebsite.bind(this)
+    this.closeSubscribe = this.closeSubscribe.bind(this)
+    this.closeUnsubscribe = this.closeUnsubscribe.bind(this)
+    this.onSequenceChange = this.onSequenceChange.bind(this)
   }
 
   componentDidMount () {
+    if (this.props.data.button.type === 'postback') {
+      if (this.props.data.button.payload.action === 'subscribe') {
+        this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
+      } else if (this.props.data.button.payload.action === 'unsubscribe') {
+        this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
+      }
+    } else {
+      this.setState({sequenceValue: this.props.data.button.url})
+    }
+  }
+
+  showWebsite () {
+    this.setState({openWebsite: true})
+  }
+
+  showSubscribe () {
+    this.setState({openSubscribe: true})
+  }
+
+  showUnsubscribe () {
+    this.setState({openUnsubscribe: true})
+  }
+
+  closeWebsite () {
+    this.setState({openWebsite: false})
+  }
+
+  closeSubscribe () {
+    this.setState({openSubscribe: false, sequenceValue: ''})
+  }
+
+  closeUnsubscribe () {
+    this.setState({openUnsubscribe: false, sequenceValue: ''})
+  }
+
+  onSequenceChange (e) {
+    this.setState({sequenceValue: e.target.value, disabled: false})
   }
 
   handleClick (e) {
@@ -41,12 +89,43 @@ class EditButton extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
   }
   handleDone () {
-    this.setState({openPopover: false})
-    this.props.onEdit({
-      id: this.props.data.id,
-      url: this.state.url, // User defined link,
-      title: this.state.title // User defined label
-    })
+    if (this.state.url !== '') {
+      this.props.onEdit({
+        id: this.props.data.id,
+        button: {
+          type: 'web_url',
+          url: this.state.url, // User defined link,
+          title: this.state.title // User defined label
+        }
+      })
+    } else if (this.state.sequenceValue !== '') {
+      if (this.state.openSubscribe && !this.state.openUnsubscribe) {
+        this.props.onEdit({
+          id: this.props.data.id,
+          button: {
+            type: 'postback',
+            title: this.state.title, // User defined label
+            payload: {
+              sequenceId: this.state.sequenceValue,
+              action: 'subscribe'
+            }
+          }
+        })
+      } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
+        this.props.onAdd({
+          id: this.props.data.id,
+          button: {
+            type: 'postback',
+            title: this.state.title, // User defined label
+            payload: {
+              sequenceId: this.state.sequenceValue,
+              action: 'unsubscribe'
+            }
+          }
+
+        })
+      }
+    }
   }
 
   changeTitle (event) {
