@@ -79,17 +79,18 @@ class CustomerMatching extends React.Component {
       })
       return
     }
+    if (this.state.phoneColumn.value === this.state.nameColumn.value) {
+      this.setState({
+        columnAlerts: true
+      })
+      return
+    }
     this.setState({
       disabled: false
     })
     this.closeDialogFileColumns()
   }
   closeDialogFileName () {
-    if (this.state.nameColumn === '' && this.state.phoneColumn === '') {
-      this.setState({
-        disable: true
-      })
-    }
     this.setState({isShowingModalFileName: false})
   }
   closeDialogFileColumns () {
@@ -484,6 +485,10 @@ class CustomerMatching extends React.Component {
                   </span>
                 }
               </div>
+              { this.state.columnAlerts && this.state.nameColumn.value === this.state.phoneColumn.value && <span className='m-form__help' >
+                <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
+                </span>
+              }
               <button style={{float: 'right', marginLeft: '10px'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
@@ -642,8 +647,15 @@ class CustomerMatching extends React.Component {
                                   <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                                 </span>
                                 <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
-                                <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>
+                                {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>}
                               </div>
+                              <span className='m-form__help'>
+                                {
+                                  this.state.fileErrors.map(
+                                    m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                                  )
+                                }
+                              </span>
                             </div>
                             : <div className='m-dropzone dropzone dz-clickable'
                               id='m-dropzone-one'>
@@ -709,7 +721,7 @@ class CustomerMatching extends React.Component {
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
-                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled
+                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled || (this.state.phoneColumn === '') || (this.state.nameColumn === '')
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
