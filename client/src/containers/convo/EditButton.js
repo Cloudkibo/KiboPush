@@ -105,10 +105,10 @@ class EditButton extends React.Component {
           button: {
             type: 'postback',
             title: this.state.title, // User defined label
-            payload: {
+            payload: JSON.stringify({
               sequenceId: this.state.sequenceValue,
               action: 'subscribe'
-            }
+            })
           }
         })
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
@@ -117,10 +117,10 @@ class EditButton extends React.Component {
           button: {
             type: 'postback',
             title: this.state.title, // User defined label
-            payload: {
+            payload: JSON.stringify({
               sequenceId: this.state.sequenceValue,
               action: 'unsubscribe'
-            }
+            })
           }
 
         })
@@ -159,23 +159,81 @@ class EditButton extends React.Component {
     return (
       <div>
         <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center'>
-          <button onClick={this.handleClick} className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.title}</button>
+          <button onClick={this.handleClick} className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.button.title}</button>
         </div>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'editButtonTarget-' + this.props.button_id} toggle={this.handleToggle}>
-          <PopoverHeader>Add Tags</PopoverHeader>
+          <PopoverHeader><strong>Edit Button</strong></PopoverHeader>
           <PopoverBody>
-            <div className='card'>
-              <h5 className='card-header'> Edit Button </h5>
-              {/* <button onClick={this.handleRemove.bind(this)} className='btn btn-primary btn-sm pull-right'> Remove Button </button> */}
-              <div className='card-block' style={{padding: 10}}>
-                <h7 className='card-text'> Button Title: </h7>
-                <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} />
-                <h7 className='card-text'> Open this website when user press this button: </h7>
-                <input type='text' className='form-control' value={this.state.url} onChange={this.changeUrl} placeholder='Enter a link...' />
-                <br />
-                <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove.bind(this)} className='btn pull-left'> Remove </button>
-              </div>
+            <div>
+              <h6>Button Title:</h6>
+              <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
+              <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
+              {
+                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe &&
+                <div>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                  </div>
+                  {
+                    this.props.sequences && this.props.sequences.length > 0 &&
+                    <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showSubscribe}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
+                    </div>
+                  }
+                  {
+                    this.props.sequences && this.props.sequences.length > 0 &&
+                    <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showUnsubscribe}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
+                    </div>
+                  }
+                </div>
+              }
+              {
+                this.state.openWebsite &&
+                <div className='card'>
+                  <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    <input type='text' className='form-control' value={this.state.url} onChange={this.changeUrl} placeholder='Enter link...' />
+                  </div>
+                </div>
+              }
+              {
+                this.state.openSubscribe &&
+                <div className='card'>
+                  <h7 className='card-header'>Subscribe to Sequence <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeSubscribe} /></h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
+                      <option key='' value='' disabled>Select Sequence...</option>
+                      {
+                        this.props.sequences.map((seq, i) => (
+                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                </div>
+              }
+              {
+                this.state.openUnsubscribe &&
+                <div className='card'>
+                  <h7 className='card-header'>Unsubscribe from Sequence <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeUnsubscribe} /></h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    <select className='form-control m-input m-input--square' value={this.state.sequenceValue} onChange={this.onSequenceChange}>
+                      <option key='' value='' disabled>Select Sequence...</option>
+                      {
+                        this.props.sequences.map((seq, i) => (
+                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                </div>
+              }
+              <hr style={{color: '#ccc'}} />
+              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleRemove.bind(this)} className='btn pull-left'> Remove </button>
+              <br />
+              <br />
             </div>
           </PopoverBody>
         </Popover>
