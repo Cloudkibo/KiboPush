@@ -136,8 +136,7 @@ class Card extends React.Component {
   editButton (obj) {
     var temp = this.state.button.map((elm, index) => {
       if (index === obj.id) {
-        elm.title = obj.title
-        elm.url = obj.url
+        elm = obj.button
       }
       return elm
     })
@@ -220,7 +219,7 @@ class Card extends React.Component {
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />

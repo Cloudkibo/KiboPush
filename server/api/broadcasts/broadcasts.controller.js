@@ -2,6 +2,8 @@
  * Created by sojharo on 27/07/2017.
  */
 //
+const Sequences = require('../sequenceMessaging/sequence.model')
+const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
@@ -378,6 +380,10 @@ exports.getfbMessage = function (req, res) {
                 savesurvey(event)
               } else if (resp.unsubscribe) {
                 handleUnsubscribe(resp, event)
+              } else if (resp.action === 'subscribe') {
+                subscribeToSequence(resp.sequenceId, event)
+              } else if (resp.action === 'unsubscribe') {
+                unsubscribeFromSequence(resp.sequenceId, event)
               } else {
                 sendReply(event)
               }
@@ -1558,6 +1564,124 @@ function savesurvey (req) {
                   })
                 })
             })
+        }
+      })
+    })
+  })
+}
+
+function subscribeToSequence (sequenceId, req) {
+  Sequences.findOne({_id: sequenceId}, (err, sequence) => {
+    if (err) {
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
+    }
+
+    Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Internal Server Error ${JSON.stringify(err)}`)
+      }
+
+      SequenceSubscribers.findOne({subscriberId: subscriber._id}, (err, sequenceSubscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Internal Server Error ${JSON.stringify(err)}`)
+        }
+
+        // CASE-1 Subscriber already exists
+        if (sequenceSubscriber !== {}) {
+          SequenceSubscribers.update({_id: sequenceSubscriber._id}, {status: 'subscribed'}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        // CASE-2 Subscriber doesn't exist
+        } else {
+          let sequenceSubscriberPayload = {
+            sequenceId: sequenceId,
+            subscriberId: subscriber._id,
+            companyId: sequence.companyId,
+            status: 'subscribed'
+          }
+          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+          // save model to MongoDB
+          sequenceSubcriber.save((err, subscriberCreated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Failed to insert record`)
+            }
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: sequence.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: sequenceId
+                }
+              }
+            })
+          })
+        }
+      })
+    })
+  })
+}
+
+function unsubscribeFromSequence (sequenceId, req) {
+  Sequences.findOne({_id: sequenceId}, (err, sequence) => {
+    if (err) {
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
+    }
+
+    Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Internal Server Error ${JSON.stringify(err)}`)
+      }
+
+      SequenceSubscribers.findOne({subscriberId: subscriber._id}, (err, sequenceSubscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Internal Server Error ${JSON.stringify(err)}`)
+        }
+
+        // CASE-1 Subscriber already exists
+        if (sequenceSubscriber !== {}) {
+          SequenceSubscribers.update({_id: sequenceSubscriber._id}, {status: 'unsubscribed'}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        // CASE-2 Subscriber doesn't exist
+        } else {
+          let sequenceSubscriberPayload = {
+            sequenceId: sequenceId,
+            subscriberId: subscriber._id,
+            companyId: sequence.companyId,
+            status: 'unsubscribed'
+          }
+          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+          // save model to MongoDB
+          sequenceSubcriber.save((err, subscriberCreated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Failed to insert record`)
+            }
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: sequence.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: sequenceId
+                }
+              }
+            })
+          })
         }
       })
     })
