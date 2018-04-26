@@ -28,6 +28,41 @@ export function createSequence (data) {
   }
 }
 
+export function createMessage (data) {
+  console.log('data createMessage', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/createMessage', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(data.sequenceId))
+        }
+      })
+  }
+}
+
+export function setSchedule (data, sequenceId) {
+  return (dispatch) => {
+    callApi('sequenceMessaging/setSchedule', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(sequenceId))
+        }
+      })
+  }
+}
+
+export function setStatus (data, sequenceId) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/setStatus', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(sequenceId))
+        }
+      })
+  }
+}
+
 export function fetchAllSequence () {
   console.log('fetchAllSequence')
   return (dispatch) => {
@@ -97,6 +132,18 @@ export function saveMessageSeq (data, msg) {
           msg.success('Message saved successfully')
         } else {
           msg.error(res.description)
+        }
+      })
+  }
+}
+
+export function deleteMessage (id, msg, sequenceId) {
+  return (dispatch) => {
+    callApi(`sequenceMessaging/deleteMessage${id}`, 'delete')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(sequenceId))
+          msg.success('Message deleted successfully')
         }
       })
   }
