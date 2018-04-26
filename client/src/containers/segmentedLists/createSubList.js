@@ -707,7 +707,7 @@ function mapStateToProps (state) {
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
     pollSubscribers: (state.listsInfo.pollSubscribers),
-    surveySubscriber: (state.listsInfo.surveySubscribers)
+    surveySubscribers: (state.listsInfo.surveySubscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
