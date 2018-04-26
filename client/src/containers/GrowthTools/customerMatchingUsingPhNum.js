@@ -85,6 +85,11 @@ class CustomerMatching extends React.Component {
     this.closeDialogFileColumns()
   }
   closeDialogFileName () {
+    if (this.state.nameColumn === '' && this.state.phoneColumn === '') {
+      this.setState({
+        disable: true
+      })
+    }
     this.setState({isShowingModalFileName: false})
   }
   closeDialogFileColumns () {
