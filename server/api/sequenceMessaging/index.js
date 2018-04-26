@@ -7,7 +7,7 @@ const router = express.Router()
 const controller = require('./sequence.controller')
 const auth = require('../../auth/auth.service')
 
-router.get('/allMessages',
+router.get('/allMessages/:id',
   auth.isAuthenticated(),
   controller.allMessages)
 

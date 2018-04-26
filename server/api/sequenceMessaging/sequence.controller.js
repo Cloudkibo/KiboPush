@@ -7,7 +7,7 @@ const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
 
 exports.allMessages = function (req, res) {
-  Messages.find({SequenceId: req.params.id},
+  Messages.find({sequenceId: req.params.id},
     (err, messages) => {
       if (err) {
         return res.status(500).json({
@@ -243,40 +243,34 @@ exports.allSequences = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-
       let sequencePayload = []
-      appendMessagesAndSubscribers(sequencePayload, sequences, 0)
-      res.status(200).json({status: 'success', payload: sequencePayload})
-    })
-  })
-}
+      sequences.forEach(sequence => {
+        Messages.find({sequenceId: sequence._id},
+        (err, messages) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
 
-function appendMessagesAndSubscribers (sequencePayload, sequences, index) {
-  if (index < sequences.length) {
-    Messages.find({sequenceId: sequences[index]._id},
-    (err, messages) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
+          SequenceSubscribers.find({sequenceId: sequence._id})
+          .populate('subscriberId')
+          .exec((err, subscribers) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
 
-      SequenceSubscribers.find({sequenceId: sequences[index]._id})
-      .populate('subscriberId')
-      .exec((err, subscribers) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-
-        sequencePayload.push({
-          sequence: sequences[index],
-          messages: messages,
-          subscribers: subscribers
+            sequencePayload.push({
+              sequence: sequence,
+              messages: messages,
+              subscribers: subscribers
+            })
+            if (sequencePayload.length === sequences.length) {
+              res.status(200).json({status: 'success', payload: sequencePayload})
+            }
+          })
         })
-        appendMessagesAndSubscribers(sequencePayload, index + 1)
       })
     })
-  } else {
-    return sequencePayload
-  }
+  })
 }
 
 exports.subscribeToSequence = function (req, res) {
