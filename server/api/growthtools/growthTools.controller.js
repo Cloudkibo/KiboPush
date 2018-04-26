@@ -72,14 +72,17 @@ exports.upload = function (req, res) {
           })
         }
         let respSent = false
-        let phoneColumn = JSON.stringify(req.body.phoneColumn)
-        let nameColumn = JSON.stringify(req.body.nameColumn)
+        let phoneColumn = req.body.phoneColumn
+        let nameColumn = req.body.nameColumn
         logger.serverLog(TAG, `uploaded file columns ${JSON.stringify(req.body.phoneColumn)} ${JSON.stringify(req.body.nameColumn)} `)
         fs.createReadStream(dir + '/userfiles' + serverPath)
           .pipe(csv())
           .on('data', function (data) {
             logger.serverLog(TAG, `uploaded file columns ${JSON.stringify(data[phoneColumn])}`)
             logger.serverLog(TAG, `uploaded file columns ${JSON.stringify(data[nameColumn])}`)
+            if (data[phoneColumn]) {
+              logger.serverLog(TAG, `in if`)
+            }
             if (data[`${phoneColumn}`] && data[`${nameColumn}`]) {
               var result = data[`${phoneColumn}`].replace(/[- )(]/g, '')
               // var savePhoneNumber = new PhoneNumber({
@@ -122,7 +125,7 @@ exports.upload = function (req, res) {
                     filename.push(newFileName)
                   }
                   PhoneNumber.update({number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id}, {
-                    name: data.names,
+                    name: data[`${nameColumn}`],
                     number: result,
                     userId: req.user._id,
                     companyId: companyUser.companyId,
