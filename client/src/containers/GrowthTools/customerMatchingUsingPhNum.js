@@ -248,8 +248,8 @@ class CustomerMatching extends React.Component {
       fileData.append('text', this.state.textAreaValue)
       fileData.append('pageId', this.state.selectPage.pageId)
       fileData.append('_id', this.state.selectPage._id)
-      fileData.append('phoneColumn', this.state.phoneColumn)
-      fileData.append('nameColumn', this.state.nameColumn)
+      fileData.append('phoneColumn', this.state.phoneColumn.value)
+      fileData.append('nameColumn', this.state.nameColumn.value)
 
       if (this.validate('file')) {
         this.setState({
