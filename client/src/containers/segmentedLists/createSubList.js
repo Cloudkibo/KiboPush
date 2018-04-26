@@ -133,7 +133,8 @@ class CreateSubList extends React.Component {
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
+        let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
