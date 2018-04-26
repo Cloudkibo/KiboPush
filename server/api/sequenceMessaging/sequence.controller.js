@@ -381,6 +381,74 @@ exports.unsubscribeToSequence = function (req, res) {
   })
 }
 
+exports.deleteSequence = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Sequences.deleteOne({_id: req.params.id}, (err, deleted) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'sequence_delete',
+          payload: {
+            sequence_id: req.params.id
+          }
+        }
+      })
+      res.status(201).json({status: 'success', payload: deleted})
+    })
+  })
+}
+
+exports.deleteMessage = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Messages.deleteOne({_id: req.params.id}, (err, deleted) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'sequence_delete',
+          payload: {
+            sequence_id: req.params.id
+          }
+        }
+      })
+      res.status(201).json({status: 'success', payload: deleted})
+    })
+  })
+}
+
 exports.testScheduler = function (req, res) {
   let sequencePayload = {
     name: req.body.name
