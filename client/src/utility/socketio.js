@@ -38,7 +38,8 @@ var callbacks = {
   new_subscriber: false,
   dashboard_updated: false,
   sequence_create: false,
-  sequence_update: false
+  sequence_update: false,
+  sequence_delete: false
 }
 
 export function registerAction (callback) {
@@ -99,7 +100,7 @@ socket.on('message', (data) => {
     store.dispatch(fetchSessions())
     store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchUserChats(data.payload.session_id))
-  } else if (['sequence_create', 'sequence_update'].indexOf(data.action) > -1) {
+  } else if (['sequence_create', 'sequence_update', 'sequence_delete'].indexOf(data.action) > -1) {
     store.dispatch(fetchAllSequence())
   }
 

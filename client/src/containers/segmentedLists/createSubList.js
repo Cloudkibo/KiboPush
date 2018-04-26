@@ -133,7 +133,9 @@ class CreateSubList extends React.Component {
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
+        let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
+        console.log('Responses: ', responses)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -705,7 +707,7 @@ function mapStateToProps (state) {
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
     pollSubscribers: (state.listsInfo.pollSubscribers),
-    surveySubscriber: (state.listsInfo.surveySubscribers)
+    surveySubscribers: (state.listsInfo.surveySubscribers)
   }
 }
 function mapDispatchToProps (dispatch) {

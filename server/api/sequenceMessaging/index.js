@@ -7,7 +7,7 @@ const router = express.Router()
 const controller = require('./sequence.controller')
 const auth = require('../../auth/auth.service')
 
-router.get('/allMessages',
+router.get('/allMessages/:id',
   auth.isAuthenticated(),
   controller.allMessages)
 
@@ -18,6 +18,14 @@ router.post('/createMessage',
 router.post('/editMessage',
   auth.isAuthenticated(),
   controller.editMessage)
+
+router.get('/deleteSequence:id',
+  auth.isAuthenticated(),
+  controller.deleteSequence)
+
+router.get('/deleteMessage:id',
+  auth.isAuthenticated(),
+  controller.deleteMessage)
 
 router.post('/createSequence',
   auth.isAuthenticated(),

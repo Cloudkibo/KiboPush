@@ -254,63 +254,51 @@ exports.repliedPollSubscribers = function (req, res) {
       for (let i = 0; i < polls.length; i++) {
         pollIds.push(polls[i]._id)
       }
-      let date = new Date(req.body.date)
-      if (req.body.criteria.toLowerCase() === 'before') {
-        PollResponses.find({pollId: {$in: pollIds}, datetime: { $lt: date }}, (err, responses) => {
+      PollResponses.find({pollId: {$in: pollIds}}, (err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let respondedSubscribers = []
+        for (let j = 0; j < responses.length; j++) {
+          respondedSubscribers.push(responses[j].subscriberId)
+        }
+        Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
           if (err) {
             return logger.serverLog(TAG,
               `At get survey responses subscribers ${JSON.stringify(err)}`)
           }
-          let respondedSubscribers = []
-          for (let j = 0; j < responses.length; j++) {
-            respondedSubscribers.push(responses[j].subscriberId)
-          }
-          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
-            if (err) {
-              return logger.serverLog(TAG,
-                `At get survey responses subscribers ${JSON.stringify(err)}`)
+          let subscribersPayload = []
+          for (let a = 0; a < subscribers.length; a++) {
+            for (let b = 0; b < responses.length; b++) {
+              if (JSON.stringify(subscribers[a]._id) === JSON.stringify(responses[b].subscriberId)) {
+                subscribersPayload.push({
+                  _id: subscribers[a]._id,
+                  pageScopedId: subscribers[a].pageScopedId,
+                  firstName: subscribers[a].firstName,
+                  lastName: subscribers[a].lastName,
+                  locale: subscribers[a].locale,
+                  timezone: subscribers[a].timezone,
+                  email: subscribers[a].email,
+                  gender: subscribers[a].gender,
+                  senderId: subscribers[a].senderId,
+                  profilePic: subscribers[a].senderId,
+                  pageId: subscribers[a].pageId,
+                  phoneNumber: subscribers[a].phoneNumber,
+                  unSubscribedBy: subscribers[a].unSubscribedBy,
+                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
+                  companyId: subscribers[a].companyId,
+                  isSubscribed: subscribers[a].isSubscribed,
+                  isEnabledByPage: subscribers[a].isEnabledByPage,
+                  datetime: subscribers[a].datetime,
+                  dateReplied: responses[b].datetime
+                })
+              }
             }
-            return res.status(200).json({status: 'success', payload: subscribers})
-          })
+          }
+          return res.status(200).json({status: 'success', payload: subscribersPayload})
         })
-      } else if (req.body.criteria.toLowerCase() === 'after') {
-        PollResponses.find({pollId: {$in: pollIds}, datetime: { $gt: date }}, (err, responses) => {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At get survey responses subscribers ${JSON.stringify(err)}`)
-          }
-          let respondedSubscribers = []
-          for (let j = 0; j < responses.length; j++) {
-            respondedSubscribers.push(responses[j].subscriberId)
-          }
-          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
-            if (err) {
-              return logger.serverLog(TAG,
-                `At get survey responses subscribers ${JSON.stringify(err)}`)
-            }
-            return res.status(200).json({status: 'success', payload: subscribers})
-          })
-        })
-      } else if (req.body.criteria.toLowerCase() === 'on') {
-        date.setDate(date.getDate() + 1)
-        PollResponses.find({pollId: {$in: pollIds}, datetime: {$gte: new Date(req.body.date), $lt: new Date(date)}}, (err, responses) => {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At get survey responses subscribers ${JSON.stringify(err)}`)
-          }
-          let respondedSubscribers = []
-          for (let j = 0; j < responses.length; j++) {
-            respondedSubscribers.push(responses[j].subscriberId)
-          }
-          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
-            if (err) {
-              return logger.serverLog(TAG,
-                `At get survey responses subscribers ${JSON.stringify(err)}`)
-            }
-            return res.status(200).json({status: 'success', payload: subscribers})
-          })
-        })
-      }
+      })
     })
   })
 }
@@ -340,24 +328,51 @@ exports.repliedSurveySubscribers = function (req, res) {
       for (let i = 0; i < surveys.length; i++) {
         surveyIds.push(surveys[i]._id)
       }
-      console.log('surveyIds', surveyIds)
-        SurveyResponses.find({surveyId: {$in: surveyIds}}, (err, responses) => {
+      SurveyResponses.find({surveyId: {$in: surveyIds}}, (err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let respondedSubscribers = []
+        for (let j = 0; j < responses.length; j++) {
+          respondedSubscribers.push(responses[j].subscriberId)
+        }
+        Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
           if (err) {
             return logger.serverLog(TAG,
               `At get survey responses subscribers ${JSON.stringify(err)}`)
           }
-          let respondedSubscribers = []
-          for (let j = 0; j < responses.length; j++) {
-            respondedSubscribers.push(responses[j].subscriberId)
-          }
-          Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
-            if (err) {
-              return logger.serverLog(TAG,
-                `At get survey responses subscribers ${JSON.stringify(err)}`)
+          let subscribersPayload = []
+          for (let a = 0; a < subscribers.length; a++) {
+            for (let b = 0; b < responses.length; b++) {
+              if (JSON.stringify(subscribers[a]._id) === JSON.stringify(responses[b].subscriberId)) {
+                subscribersPayload.push({
+                  _id: subscribers[a]._id,
+                  pageScopedId: subscribers[a].pageScopedId,
+                  firstName: subscribers[a].firstName,
+                  lastName: subscribers[a].lastName,
+                  locale: subscribers[a].locale,
+                  timezone: subscribers[a].timezone,
+                  email: subscribers[a].email,
+                  gender: subscribers[a].gender,
+                  senderId: subscribers[a].senderId,
+                  profilePic: subscribers[a].senderId,
+                  pageId: subscribers[a].pageId,
+                  phoneNumber: subscribers[a].phoneNumber,
+                  unSubscribedBy: subscribers[a].unSubscribedBy,
+                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
+                  companyId: subscribers[a].companyId,
+                  isSubscribed: subscribers[a].isSubscribed,
+                  isEnabledByPage: subscribers[a].isEnabledByPage,
+                  datetime: subscribers[a].datetime,
+                  dateReplied: responses[b].datetime
+                })
+              }
             }
-            return res.status(200).json({status: 'success', payload: subscribers})
-          })
+          }
+          return res.status(200).json({status: 'success', payload: subscribersPayload})
         })
+      })
     })
   })
 }

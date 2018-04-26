@@ -9,10 +9,22 @@ export function showAllSequence (data) {
   }
 }
 
+export function showCreatedSequence (data) {
+  return {
+    type: ActionTypes.SHOW_CREATED_SEQUENCE,
+    data
+  }
+}
+
 export function createSequence (data) {
   return (dispatch) => {
     callApi('sequenceMessaging/createSequence', 'post', data)
-      .then(res => dispatch(fetchAllSequence()))
+      .then(res => {
+        console.log('response from createBot', res)
+        if (res.status === 'success') {
+          dispatch(showCreatedSequence(res.payload))
+        }
+      })
   }
 }
 
@@ -21,6 +33,7 @@ export function fetchAllSequence () {
   return (dispatch) => {
     callApi(`sequenceMessaging/allSequences`)
       .then(res => {
+        console.log('fetchAllSequence', res)
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))
@@ -41,9 +54,10 @@ export function fetchAllMessages (id) {
   return (dispatch) => {
     callApi(`sequenceMessaging/allMessages/${id}`)
       .then(res => {
+        console.log('res', res)
         if (res.status === 'success') {
           console.log('allMessages', res.payload)
-          dispatch(showAllSequence(res.payload))
+          dispatch(showAllMessages(res.payload))
         }
       })
   }

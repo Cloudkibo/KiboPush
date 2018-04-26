@@ -23,10 +23,6 @@ export function growthToolsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         nonSubscribersData: action.data
       })
-    case ActionTypes.LOAD_CSV_COLUMNS:
-      return Object.assign({}, state, {
-        columnsData: action.data
-      })
     default:
       return state
   }

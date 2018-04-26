@@ -7,7 +7,7 @@ const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
 
 exports.allMessages = function (req, res) {
-  Messages.find({SequenceId: req.params.id},
+  Messages.find({sequenceId: req.params.id},
     (err, messages) => {
       if (err) {
         return res.status(500).json({
@@ -243,40 +243,34 @@ exports.allSequences = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-
       let sequencePayload = []
-      appendMessagesAndSubscribers(sequencePayload, sequences, 0)
-      res.status(200).json({status: 'success', payload: sequencePayload})
-    })
-  })
-}
+      sequences.forEach(sequence => {
+        Messages.find({sequenceId: sequence._id},
+        (err, messages) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
 
-function appendMessagesAndSubscribers (sequencePayload, sequences, index) {
-  if (index < sequences.length) {
-    Messages.find({sequenceId: sequences[index]._id},
-    (err, messages) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
+          SequenceSubscribers.find({sequenceId: sequence._id})
+          .populate('subscriberId')
+          .exec((err, subscribers) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
 
-      SequenceSubscribers.find({sequenceId: sequences[index]._id})
-      .populate('subscriberId')
-      .exec((err, subscribers) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-
-        sequencePayload.push({
-          sequence: sequences[index],
-          messages: messages,
-          subscribers: subscribers
+            sequencePayload.push({
+              sequence: sequence,
+              messages: messages,
+              subscribers: subscribers
+            })
+            if (sequencePayload.length === sequences.length) {
+              res.status(200).json({status: 'success', payload: sequencePayload})
+            }
+          })
         })
-        appendMessagesAndSubscribers(sequencePayload, index + 1)
       })
     })
-  } else {
-    return sequencePayload
-  }
+  })
 }
 
 exports.subscribeToSequence = function (req, res) {
@@ -384,6 +378,74 @@ exports.unsubscribeToSequence = function (req, res) {
       })
     })
     res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
+  })
+}
+
+exports.deleteSequence = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Sequences.deleteOne({_id: req.params.id}, (err, deleted) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'sequence_delete',
+          payload: {
+            sequence_id: req.params.id
+          }
+        }
+      })
+      res.status(201).json({status: 'success', payload: deleted})
+    })
+  })
+}
+
+exports.deleteMessage = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Messages.deleteOne({_id: req.params.id}, (err, deleted) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      require('./../../config/socketio').sendMessageToClient({
+        room_id: companyUser.companyId,
+        body: {
+          action: 'sequence_delete',
+          payload: {
+            sequence_id: req.params.id
+          }
+        }
+      })
+      res.status(201).json({status: 'success', payload: deleted})
+    })
   })
 }
 

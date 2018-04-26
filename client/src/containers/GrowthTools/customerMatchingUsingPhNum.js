@@ -6,14 +6,16 @@ import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions, sendFileColumns } from '../../redux/actions/growthTools.actions'
+import { saveFileForPhoneNumbers, downloadSampleFile, sendPhoneNumbers, clearAlertMessage, getPendingSubscriptions } from '../../redux/actions/growthTools.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   loadCustomerLists, saveCurrentList
 } from '../../redux/actions/customerLists.actions'
+import Select from 'react-select'
 import AlertContainer from 'react-alert'
+import Papa from 'papaparse'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
@@ -36,16 +38,11 @@ class CustomerMatching extends React.Component {
       nonSubscribersList: '',
       isShowingModalFileName: false,
       showFileColumns: false,
-      columns: [{
-        selected: false,
-        name: 'Phone Numbers',
-        value: ''
-      },
-      {
-        selected: false,
-        name: 'Names',
-        value: ''
-      }]
+      columns: [],
+      nameColumn: '',
+      phoneColumn: '',
+      columnAlerts: false,
+      csvData: ''
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -64,8 +61,10 @@ class CustomerMatching extends React.Component {
     this.removeFile = this.removeFile.bind(this)
     this.onPhoneNumbersChange = this.onPhoneNumbersChange.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
-    this.handleColumnCLick = this.handleColumnCLick.bind(this)
+    this.handleNameColumn = this.handleNameColumn.bind(this)
+    this.handlePhoneColumn = this.handlePhoneColumn.bind(this)
     this.saveColumns = this.saveColumns.bind(this)
+    this.parseCSV = this.parseCSV.bind(this)
     this.props.clearAlertMessage()
     this.props.loadCustomerLists()
     this.props.getPendingSubscriptions()
@@ -74,27 +73,53 @@ class CustomerMatching extends React.Component {
     this.setState({isShowingModalFileName: true})
   }
   saveColumns () {
-    var payload = {fileId: '', columns: this.state.selectedColumns}
-    this.props.sendFileColumns(payload, this.msg)
+    if (this.state.phoneColumn === '' || this.state.nameColumn === '') {
+      this.setState({
+        columnAlerts: true
+      })
+      return
+    }
+    if (this.state.phoneColumn.value === this.state.nameColumn.value) {
+      this.setState({
+        columnAlerts: true
+      })
+      return
+    }
+    this.setState({
+      disabled: false
+    })
+    this.closeDialogFileColumns()
   }
   closeDialogFileName () {
     this.setState({isShowingModalFileName: false})
   }
   closeDialogFileColumns () {
     this.setState({
-      showFileColumns: false
+      showFileColumns: false,
+      columnAlerts: false
     })
   }
-  handleColumnCLick (e) {
-    var columns = this.state.columns
-    if (e.target.checked) {
-      columns[e.target.value].selected = e.target.checked
+  handleNameColumn (value) {
+    if (!value) {
+      this.setState({
+        nameColumn: ''
+      })
     } else {
-      columns[e.target.value].selected = e.target.checked
+      this.setState({
+        nameColumn: value
+      })
     }
-    this.setState({
-      columns: columns
-    })
+  }
+  handlePhoneColumn (value) {
+    if (!value) {
+      this.setState({
+        phoneColumn: ''
+      })
+    } else {
+      this.setState({
+        phoneColumn: value
+      })
+    }
   }
   onSubmit () {
     var file = this.state.file
@@ -165,29 +190,76 @@ class CustomerMatching extends React.Component {
       loading: false,
       manually: false,
       phoneNumbers: [],
-      numbersError: []
+      numbersError: [],
+      nameColumn: '',
+      phoneColumn: ''
     })
     this.props.clearAlertMessage()
     this.selectPage()
   }
 
   onFilesChange (files) {
+    var self = this
     if (files.length > 0) {
-      let fileSelected = files[0]
+      this.setState({
+        file: files,
+        fileErrors: [],
+        nameColumn: '',
+        phoneColumn: ''
+      })
+      var fileSelected = files[0]
       if (fileSelected.extension !== 'csv') {
         this.setState({
           fileErrors: [{errorMsg: 'Please select a file with .csv extension'}]
         })
         return
       }
-      this.setState({
-        file: files,
-        fileErrors: [],
-        disabled: false
-      })
+      this.parseCSV(self, fileSelected)
     }
   }
+  parseCSV (self, file) {
+    Papa.parse(file, {
+      complete: function (results) {
+        console.log('Finished:', results.data)
+        self.setState({
+          csvData: results.data
+        })
+        if (results.data && results.data.length > 0) {
+          var columnsArray = []
+          var columns = results.data[0]
+          for (var i = 0; i < columns.length; i++) {
+            columnsArray.push({'value': columns[i], 'label': columns[i]})
+          }
+          self.setState({
+            columns: columnsArray,
+            showFileColumns: true
+          })
+        }
+      }
+    })
+  }
 
+  uploadFile (file) {
+    if (file && file !== '') {
+      var fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      fileData.append('text', this.state.textAreaValue)
+      fileData.append('pageId', this.state.selectPage.pageId)
+      fileData.append('_id', this.state.selectPage._id)
+      fileData.append('phoneColumn', this.state.phoneColumn.value)
+      fileData.append('nameColumn', this.state.nameColumn.value)
+
+      if (this.validate('file')) {
+        this.setState({
+          loading: true
+        })
+        this.props.saveFileForPhoneNumbers(fileData, this.handleResponse)
+      }
+    }
+  }
   onFilesError (error, file) {
     this.setState({
       fileErrors: [{errorMsg: error.message}]
@@ -197,23 +269,8 @@ class CustomerMatching extends React.Component {
   /* global FormData */
   handleSubmit () {
     var file = this.state.file
-    if (file && file !== '') {
-      var fileData = new FormData()
-      fileData.append('file', file[0])
-      fileData.append('filename', file[0].name)
-      fileData.append('filetype', file[0].type)
-      fileData.append('filesize', file[0].size)
-      fileData.append('text', this.state.textAreaValue)
-      fileData.append('pageId', this.state.selectPage.pageId)
-      fileData.append('_id', this.state.selectPage._id)
-
-      if (this.validate('file')) {
-        this.setState({
-          loading: true,
-          disabled: true
-        })
-        this.props.saveFileForPhoneNumbers(fileData, this.handleResponse)
-      }
+    if (file && file.length > 0) {
+      this.uploadFile(file[0])
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
         this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
@@ -221,17 +278,6 @@ class CustomerMatching extends React.Component {
     }
   }
   handleResponse (res) {
-    if (res.status === 'success' & res.payload) {
-      this.setState({
-        showFileColumns: true
-      })
-    } else {
-      if (res.description) {
-        this.msg.error(`Unable to upload file. ${res.description}`)
-      } else {
-        this.msg.error('Unable to upload file')
-      }
-    }
     this.setState({
       loading: false
     })
@@ -405,62 +451,57 @@ class CustomerMatching extends React.Component {
             onClose={this.closeDialogFileColumns}>
             <ModalDialog style={{width: '680px'}}
               onClose={this.closeDialogFileColumns}>
-              <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                  <table className='m-datatable__table'
-                    id='m-datatable--27866229129' style={{
-                      display: 'block',
-                      height: 'auto',
-                      minWidth: '600px'
-                    }}>
-                    <thead className='m-datatable__head'>
-                      <tr className='m-datatable__row'
-                        style={{height: '53px'}}>
-                        <th data-field='title'
-                          className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                          <span style={{width: '50px'}} />
-                        </th>
-                        <th data-field='actions'
-                          className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                          <span style={{width: '200px', marginLeft: '115px'}}>Columns</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='m-datatable__body'>
-                      {
-                        this.state.columns.map((column, i) => (
-                          <tr
-                            className='m-datatable__row m-datatable__row--even subscriberRow'
-                            style={{height: '55px'}} key={i}>
-                            <td data-field='selectColumn'
-                              className='m-datatable__cell' style={{width: '50px', textAlign: 'center', overflow: 'inherit'}}>
-                              <span>
-                                <input type='checkbox' name={column.name} value={i} onChange={this.handleColumnCLick} checked={column.selected} />
-                              </span>
-                            </td>
-                            <td data-field='column'
-                              className='m-datatable__cell' style={{textAlign: 'center', overflow: 'inherit'}}>
-                              <span>
-                                { column.name }
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
+              <div className='form-group m-form__group col-12'>
+                <label className='col-lg-12 col-form-label'>
+                  Select column for customer names
+                </label>
+                <div className='col-lg-8'>
+                  <Select
+                    options={this.state.columns}
+                    onChange={this.handleNameColumn}
+                    value={this.state.nameColumn}
+                    placeholder='Select Field'
+                  />
                 </div>
+                { this.state.columnAlerts && this.state.nameColumn === '' && <span className='m-form__help' >
+                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  </span>
+                }
               </div>
+              <div className='form-group m-form__group col-12'>
+                <label className='col-lg-12 col-form-label'>
+                  Select column for customer phone numbers
+                </label>
+                <div className='col-lg-8'>
+                  <Select
+                    options={this.state.columns}
+                    onChange={this.handlePhoneColumn}
+                    value={this.state.phoneColumn}
+                    placeholder='Select Field'
+                  />
+                </div>
+                { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
+                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  </span>
+                }
+              </div>
+              { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
+                <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
+                </span>
+              }
               <button style={{float: 'right', marginLeft: '10px'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  // /this.saveColumns()
-                  this.closeDialogFileColumns()
-                }}>Yes
+                  this.saveColumns()
+                }}>Save
               </button>
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
+                  this.setState({
+                    phoneColumn: '',
+                    nameColumn: ''
+                  })
                   this.closeDialogFileColumns()
                 }}>Cancel
               </button>
@@ -610,7 +651,15 @@ class CustomerMatching extends React.Component {
                                   <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                                 </span>
                                 <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
+                                {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>}
                               </div>
+                              <span className='m-form__help'>
+                                {
+                                  this.state.fileErrors.map(
+                                    m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                                  )
+                                }
+                              </span>
                             </div>
                             : <div className='m-dropzone dropzone dz-clickable'
                               id='m-dropzone-one'>
@@ -676,7 +725,7 @@ class CustomerMatching extends React.Component {
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
-                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled
+                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled || (this.state.phoneColumn === '') || (this.state.nameColumn === '')
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>
@@ -684,14 +733,15 @@ class CustomerMatching extends React.Component {
                                   Submit
                                 </button>
                               }
-                              <div className='pull-right' style={{display: 'inline-block'}} onClick={this.getSampleFile}>
-                                <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                                  <label>Download Sample CSV file: </label>
-                                </div>
-                                <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                                  <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
-                                </div>
-                              </div>
+
+                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getSampleFile}>
+                                <span>
+                                  <i className='fa fa-download' />
+                                  <span>
+                                    Download Sample CSV file
+                                  </span>
+                                </span>
+                              </button>
                             </div>
                             {
                               this.state.loading
@@ -734,8 +784,7 @@ function mapStateToProps (state) {
     uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,
     customerLists: (state.listsInfo.customerLists),
-    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData),
-    columnsData: (state.growthToolsInfo.columnsData)
+    nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData)
   }
 }
 
@@ -748,8 +797,7 @@ function mapDispatchToProps (dispatch) {
     clearAlertMessage: clearAlertMessage,
     loadCustomerLists: loadCustomerLists,
     saveCurrentList: saveCurrentList,
-    getPendingSubscriptions: getPendingSubscriptions,
-    sendFileColumns: sendFileColumns
+    getPendingSubscriptions: getPendingSubscriptions
   },
     dispatch)
 }

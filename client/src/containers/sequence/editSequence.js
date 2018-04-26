@@ -29,6 +29,9 @@ class CreateSequence extends React.Component {
       name: '',
       error: false
     }
+    if (this.props.location.state) {
+      props.fetchAllMessages(this.props.location.state._id)
+    }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSequence = this.searchSequence.bind(this)
@@ -104,8 +107,8 @@ class CreateSequence extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.createdSequence) {
-      //  this.props.fetchAllMessages(nextProps.createdSequence._id)
+    if (nextProps.messages) {
+      console.log('nextProps.message', nextProps.messages)
     }
   }
 
@@ -231,26 +234,14 @@ class CreateSequence extends React.Component {
               		<div className='m-portlet__head-caption'>
               			<div className='m-portlet__head-title'>
               				<h3 className='m-portlet__head-text'>
-              				     {this.props.location.state.name}
+            				     {this.props.location.state.name}
               				</h3>
               			</div>
               		</div>
-                  <div className='m-portlet__head-tools'>
-                    <Link to='/createMessageSeq'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                              Add Message
-                            </span>
-                        </span>
-                      </button>
-                    </Link>
-                  </div>
               	</div>
               	<div className='m-portlet__body'>
-                  {this.props.messages
-                  ? <div className='row'>
+                  {this.props.messages && this.props.messages.length > 0 &&
+                  <div className='row'>
                     <div className='col-xl-2'>
                       <div className='m-list-timeline'>
                         <div style={{float: 'right', textAlign: 'right'}}>
@@ -291,8 +282,7 @@ class CreateSequence extends React.Component {
                       <div className='m-list-timeline'>
                         <div className='m-list-timeline__items'>
                           <div className='m-list-timeline__item'>
-                              <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-                              <div className='row'>
+                              <div className='row' style = {{padding: '5px', width: 'max-content', marginLeft: '-420px'}}>
                                 <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px'}}>Active</span>
                                 <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Message</span>
                                 <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Sent</span>
@@ -300,6 +290,7 @@ class CreateSequence extends React.Component {
                                 <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>Clicked</span>
                             </div>
                           </div>
+                          {this.props.messages.map((message, i) => (
                           <div className='m-list-timeline__item'>
                               <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                               <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
@@ -309,13 +300,14 @@ class CreateSequence extends React.Component {
                                     <span></span>
                                   </label>
                                 </span>
-                                <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>Message 1</span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>10</span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>5</span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>2</span>
-                                <span className='m-list-timeline__text flaticon flaticon-delete-2' style={{width: '100', marginTop: '6px'}} />
+                                <span className='m-list-timeline__text' style={{width: '300px', marginTop: '6px', marginLeft: '10px'}}>{message.title}</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>{message.sent}</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>{message.seen}</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}>{message.clicks}</span>
+                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '6px'}}><i className='fa fa-trash-o' /></span>
                             </div>
                           </div>
+                        ))}
                           <div className='m-list-timeline__item'>
                               <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                               <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px'}}>
@@ -384,7 +376,6 @@ class CreateSequence extends React.Component {
                 </div>
               </div>
             </div>
-            : <div>No data to display</div>
           }
           </div>
         </div>
