@@ -15,7 +15,7 @@ import {
 } from '../../redux/actions/customerLists.actions'
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
-import Papa from 'Papaparse'
+import Papa from 'papaparse'
 
 class CustomerMatching extends React.Component {
   constructor (props, context) {
