@@ -98,6 +98,9 @@ export function loadListDetails (id) {
         console.log('loadListDetails response', res)
         if (res.status === 'success') {
           dispatch(showListDetails(res.payload))
+        } else {
+          var list = []
+          dispatch(showListDetails(list))
         }
       })
   }
