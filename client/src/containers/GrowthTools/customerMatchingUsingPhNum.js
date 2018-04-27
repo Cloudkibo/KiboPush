@@ -42,7 +42,7 @@ class CustomerMatching extends React.Component {
       nameColumn: '',
       phoneColumn: '',
       columnAlerts: false,
-      csvData: ''
+      fileContent: []
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -217,22 +217,74 @@ class CustomerMatching extends React.Component {
       this.parseCSV(self, fileSelected)
     }
   }
+  validateFileContent () {
+    var content = this.state.fileContent
+    var columnsArray = content[0]
+    var indexName = ''
+    var indexPhone = ''
+    var faulty = false
+    var errors = []
+    for (let i = 0; i < columnsArray.length; i++) {
+      if (this.state.phoneColumn.value === columnsArray[i]) {
+        indexPhone = i
+      }
+      if (this.state.nameColumn.value === columnsArray[i]) {
+        indexName = i
+      }
+    }
+    for (let i = 1; i < content.length; i++) {
+      var record = content[i]
+      var recordName = record[indexName]
+      var recordPhone = record[indexPhone]
+      // eslint-disable-next-line
+      let regexp = /^[0-9+\(\)#\.\s\/ext-]+$/
+      if (recordName.length > 50) {
+        faulty = true
+        let error = {errorMsg: 'File consists of customer names that is too long'}
+        errors.push(error)
+        break
+      }
+      if ((recordPhone.length > 0 && recordPhone.length < 5) || !regexp.test(recordPhone)) {
+        faulty = true
+        let error = {errorMsg: 'File consists of invalid phone numbers'}
+        errors.push(error)
+        break
+      }
+    }
+    if (faulty) {
+      this.setState({
+        fileErrors: errors,
+        disabled: true
+      })
+    }
+    return faulty
+  }
   parseCSV (self, file) {
     Papa.parse(file, {
       complete: function (results) {
         console.log('Finished:', results.data)
-        self.setState({
-          csvData: results.data
-        })
+        var faulty = false
         if (results.data && results.data.length > 0) {
           var columnsArray = []
           var columns = results.data[0]
           for (var i = 0; i < columns.length; i++) {
-            columnsArray.push({'value': columns[i], 'label': columns[i]})
+            if (columns[i] !== '') {
+              columnsArray.push({'value': columns[i], 'label': columns[i]})
+            } else {
+              faulty = true
+              break
+            }
+          }
+          if (faulty) {
+            self.setState({
+              fileErrors: [{errorMsg: 'Incorrect data format'}]
+            })
+            return
           }
           self.setState({
             columns: columnsArray,
-            showFileColumns: true
+            showFileColumns: true,
+            fileContent: results.data
           })
         }
       }
@@ -270,7 +322,10 @@ class CustomerMatching extends React.Component {
   handleSubmit () {
     var file = this.state.file
     if (file && file.length > 0) {
-      this.uploadFile(file[0])
+      var hasErrors = this.validateFileContent()
+      if (!hasErrors) {
+        this.uploadFile(file[0])
+      }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
         this.props.sendPhoneNumbers({numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id})
