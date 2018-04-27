@@ -485,7 +485,7 @@ class CustomerMatching extends React.Component {
                   </span>
                 }
               </div>
-              { this.state.columnAlerts && this.state.nameColumn.value === this.state.phoneColumn.value && <span className='m-form__help' >
+              { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
                 <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
                 </span>
               }
@@ -498,6 +498,10 @@ class CustomerMatching extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
+                  this.setState({
+                    phoneColumn: '',
+                    nameColumn: ''
+                  })
                   this.closeDialogFileColumns()
                 }}>Cancel
               </button>
