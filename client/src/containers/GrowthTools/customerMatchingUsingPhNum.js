@@ -573,11 +573,8 @@ class CustomerMatching extends React.Component {
                 <div className='m-alert__text'>
                   Upload a file with '.csv' extension containing phone numbers
                   of your customers to invite them for a chat on messenger.
-                  The
-                  file should contain columns 'names' and 'phone_numbers'.
-                  The columns should contain the list all the customers&#39;
-                  name and phone
-                  numbers respectively. An invitation message will be sent on
+                  Then select columns from your file that contain customers&#39; names and phone numbers.
+                  An invitation message will be sent on
                   Facebook messenger
                   to all the customers listed using their phone
                   numbers.
