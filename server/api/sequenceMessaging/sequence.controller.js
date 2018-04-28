@@ -111,6 +111,94 @@ exports.editMessage = function (req, res) {
   })
 }
 
+exports.setSchedule = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Messages.findById(req.body.messageId, (err, message) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      if (!message) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Record not found'})
+      }
+      message.schedule = {condition: req.body.condition, days: req.body.days, date: req.body.date}
+      message.save((err2) => {
+        if (err2) {
+          return res.status(500)
+            .json({status: 'failed', description: 'Poll update failed'})
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'sequence_update',
+            payload: {
+              sequence_id: message.sequenceId
+            }
+          }
+        })
+        res.status(201).json({status: 'success', payload: message})
+      })
+    })
+  })
+}
+
+exports.setStatus = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Messages.findById(req.body.messageId, (err, message) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      if (!message) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Record not found'})
+      }
+      message.isActive = req.body.isActive
+      message.save((err2) => {
+        if (err2) {
+          return res.status(500)
+            .json({status: 'failed', description: 'Poll update failed'})
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'sequence_update',
+            payload: {
+              sequence_id: message.sequenceId
+            }
+          }
+        })
+        res.status(201).json({status: 'success', payload: message})
+      })
+    })
+  })
+}
+
 exports.createSequence = function (req, res) {
   let parametersMissing = false
 

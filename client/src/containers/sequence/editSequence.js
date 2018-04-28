@@ -6,7 +6,7 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { browserHistory, Link } from 'react-router'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus } from '../../redux/actions/sequence.action'
@@ -28,10 +28,9 @@ class CreateSequence extends React.Component {
       condition: 'immediately',
       sequenceId: ''
     }
-    if (this.props.location.state && this.props.location.state.module === 'edit') {
+    if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
     }
-    this.goToEdit = this.goToEdit.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -43,6 +42,15 @@ class CreateSequence extends React.Component {
     this.changeCondition = this.changeCondition.bind(this)
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
+    this.gotoView = this.gotoView.bind(this)
+  }
+
+  gotoView (message) {
+    this.props.createSequence({name: this.state.name})
+    browserHistory.push({
+      pathname: `/viewMessage`,
+      state: {title: message.title, payload: message.payload, id: this.state.sequenceId}
+    })
   }
 
   changeStatus (e, id) {
@@ -74,9 +82,9 @@ class CreateSequence extends React.Component {
   }
 
   handleDone () {
-    console.log('days', this.state.selectedDays)
+    this.setState({openPopover: !this.state.openPopover})
     if (this.state.condition === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately'})
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.messageId}, this.state.sequenceId)
     } else {
       var d1 = new Date()
       if (this.state.condition === 'hours') {
@@ -87,11 +95,8 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       var utcDate = new Date(d1).toISOString()
-      console.log('d1', d1)
-      console.log('before 5', utcDate)
       d1.setHours(d1.getHours() + 5)
       utcDate = new Date(d1).toISOString()
-      console.log('utcDate', utcDate)
       this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
     }
   }
@@ -133,34 +138,11 @@ class CreateSequence extends React.Component {
       this.props.fetchAllMessages(nextProps.createdSequence._id)
     }
     if (nextProps.messages) {
-      console.log('nextProps.message', nextProps.messages)
       //  this.setState({condition: nextProps.messages.schedule.condition, selectedDays: nextProps.messages.schedule.selectedDays})
     }
   }
 
-  goToEdit (sequence) {
-    // var agents = []
-    // var pages = []
-    // for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
-    //   if (team._id === this.props.teamUniqueAgents[i].teamId) {
-    //     agents.push(this.props.teamUniqueAgents[i])
-    //   }
-    // }
-    // for (var j = 0; j < this.props.teamUniquePages.length; j++) {
-    //   if (team._id === this.props.teamUniquePages[j].teamId) {
-    //     pages.push(this.props.teamUniquePages[j])
-    //   }
-    // }
-    // console.log('agents', agents)
-    // console.log('pages', pages)
-    browserHistory.push({
-      pathname: `/editSequence`,
-      state: {module: 'edit', name: sequence.name, _id: sequence._id}
-    })
-  }
-
   initializeSwitch (state, id) {
-    console.log('in switch', id, state)
     var self = this
     var temp = '#' + id
     /* eslint-disable */
@@ -263,7 +245,7 @@ class CreateSequence extends React.Component {
                       </div>
                     </div>
                     {this.state.targetValue &&
-                    <Popover placement='right' isOpen={this.state.openPopover} className='buttonPopover' target={this.state.targetValue} toggle={this.handleToggle}>
+                    <Popover placement='right' isOpen={this.state.openPopover} style={{marginTop: '55px'}} target={this.state.targetValue} toggle={this.handleToggle}>
                       <PopoverBody style={{height: '230px'}}>
                         <div>
                           <label style={{fontWeight: 'normal'}}>This message will be sent</label>
@@ -326,7 +308,7 @@ class CreateSequence extends React.Component {
 																			<span></span>
 																		</label>
 									                 </span>
-                                    <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
+                                    <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
                                     <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.sent}</span>
                                     <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.seen}</span>
                                     <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.clicks}</span>
@@ -342,7 +324,7 @@ class CreateSequence extends React.Component {
 																			<span></span>
 																		</label>
 									                 </span>
-                                    <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
+                                    <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
                                     <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.sent}</span>
                                     <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.seen}</span>
                                     <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.clicks}</span>
