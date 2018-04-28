@@ -237,6 +237,10 @@ class Bot extends React.Component {
                   Need help in understanding bots? Here is the <a href='http://kibopush.com/bots/' target='_blank'>documentation</a>.
                   Or check out this <a>video tutorial</a>
                 </div>
+
+                <div className='m-alert__text'>
+                  Bots might take 30mins to 1 hour to train. Please test the bot after 1 hour to see if it is working
+                </div>
               </div>
               <div className='row'>
                 <div className='col-xl-12'>
