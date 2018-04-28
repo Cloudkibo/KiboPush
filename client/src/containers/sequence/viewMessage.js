@@ -5,13 +5,14 @@ import ReactPlayer from 'react-player'
 import Slider from 'react-slick'
 import RightArrow from '../../containers/convo/RightArrow'
 import LeftArrow from '../../containers/convo/LeftArrow'
-import { Link } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
 
   componentDidMount () {
@@ -47,6 +48,14 @@ class ViewBroadcastTemplate extends React.Component {
     }
   }
 
+  goBack () {
+    console.log('goBack')
+    browserHistory.push({
+      pathname: `/editSequence`,
+      state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.title}
+    })
+  }
+
   render () {
     var settings = {
       arrows: true,
@@ -76,7 +85,7 @@ class ViewBroadcastTemplate extends React.Component {
                     <div style={{border: '1px solid #f2f2f2', borderRadius: '2px', display: 'block', height: '100%', position: 'relative', width: '100%', textAlign: 'center', zIndex: 2, overflow: 'hidden'}}>
                       <div style={{background: '#f7f7f8', borderBottom: '1px solid #c8c7cc', zIndex: 10, position: 'relative'}}>
                         <div style={{display: 'inline-block', margin: '5px'}}>
-                          <h6 style={{color: '#007aff'}}><i className='fa fa-chevron-left' />Back</h6>
+                          <h6 style={{color: '#007aff'}} onClick={() => this.goBack()}><i className='fa fa-chevron-left' />Back</h6>
                         </div>
                         <div style={{display: 'inline-block', margin: '5px'}}>
                           <h7>KiboPush</h7>
@@ -215,7 +224,7 @@ class ViewBroadcastTemplate extends React.Component {
                   </div>
                 </div>
                 <div className='col-xl-3'>
-                  <Link to='/sequenceMessaging' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>&nbsp;&nbsp;
+                  <Link onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>&nbsp;&nbsp;
                   <Link to='/editMessage' style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </Link>
                 </div>
               </div>

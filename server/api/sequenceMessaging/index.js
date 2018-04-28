@@ -19,11 +19,19 @@ router.post('/editMessage',
   auth.isAuthenticated(),
   controller.editMessage)
 
-router.get('/deleteSequence:id',
+router.post('/setSchedule',
+  auth.isAuthenticated(),
+  controller.setSchedule)
+
+router.post('/setStatus',
+  auth.isAuthenticated(),
+  controller.setStatus)
+
+router.delete('/deleteSequence/:id',
   auth.isAuthenticated(),
   controller.deleteSequence)
 
-router.get('/deleteMessage:id',
+router.delete('/deleteMessage/:id',
   auth.isAuthenticated(),
   controller.deleteMessage)
 
