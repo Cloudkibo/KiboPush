@@ -15,6 +15,7 @@ let AutopostingMessagesSchema = new Schema({
   autopostingId: {type: Schema.ObjectId, ref: 'autopostings'}, // unique name for autoposting account
   sent: Number, // sent count
   seen: Number, // seen count
+  subscriberSenderIds: [String],
   clicked: Number, // clicked count
   datetime: {type: Date, default: Date.now}
 })
