@@ -948,9 +948,10 @@ function updateseenstatus (req) {
     {
       sender_fb_id: req.recipient.id,
       recipient_fb_id: req.sender.id,
-      status: 'unseen'
+      seen: false,
+      datetime: {$lte: new Date(req.read.watermark)}
     },
-    {status: 'seen'},
+    {status: 'seen', seenDateTime: new Date(req.read.watermark), seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
