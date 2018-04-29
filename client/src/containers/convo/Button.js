@@ -52,15 +52,15 @@ class Button extends React.Component {
   }
 
   closeWebsite () {
-    this.setState({openWebsite: false, url: ''})
+    this.setState({openWebsite: false, url: '', disabled: true})
   }
 
   closeSubscribe () {
-    this.setState({openSubscribe: false, sequenceValue: ''})
+    this.setState({openSubscribe: false, sequenceValue: '', disabled: true})
   }
 
   closeUnsubscribe () {
-    this.setState({openUnsubscribe: false, sequenceValue: ''})
+    this.setState({openUnsubscribe: false, sequenceValue: '', disabled: true})
   }
 
   onSequenceChange (e) {
