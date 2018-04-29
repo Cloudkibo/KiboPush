@@ -315,10 +315,6 @@ class Sequence extends React.Component {
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                       <span>Name</span>
                                     </th>
-                                    <th data-field='description' style={{width: '100px'}}
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Description</span>
-                                    </th>
                                     <th data-field='pages' style={{width: '100px'}}
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                       <span>Subscribers</span>
@@ -344,10 +340,9 @@ class Sequence extends React.Component {
                                         className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
                                         style={{height: '55px'}}>
                                         <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.sequence.name}</span></td>
-                                        <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.description}</span></td>
-                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>sequence.subscribers.length</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>sequence.messages.length</span></td>
-                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>sequence.status</span></td>
+                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.subscribers.length}</span></td>
+                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>{sequence.messages.length}</span></td>
+                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.status}</span></td>
                                         <td data-field='actions' className='m-datatable__cell'>
                                           <span style={{width: '175px'}}>
                                             <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(sequence)}>
@@ -356,7 +351,7 @@ class Sequence extends React.Component {
                                             <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(sequence.sequence)}>
                                                 Edit
                                               </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence._id)}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence.sequence._id)}>
                                                 Delete
                                               </button>
                                           </span>
