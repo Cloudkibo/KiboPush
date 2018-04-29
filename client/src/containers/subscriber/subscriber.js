@@ -34,6 +34,7 @@ class Subscriber extends React.Component {
       filteredData: '',
       filterByTag: '',
       searchValue: '',
+      statusValue: '',
       selectedSubscribers: [],
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
@@ -48,7 +49,8 @@ class Subscriber extends React.Component {
       selectAllChecked: null,
       saveEnable: false,
       pageSelected: 0,
-      showEditModal: false
+      showEditModal: false,
+      subscriber: {}
     }
     props.loadMyPagesList()
     props.loadAllSubscribersList()
@@ -89,9 +91,27 @@ class Subscriber extends React.Component {
     this.handleSequence = this.handleSequence.bind(this)
     this.subscribeToSequence = this.subscribeToSequence.bind(this)
     this.unsubscribeToSequence = this.unsubscribeToSequence.bind(this)
+    this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
+    this.stackStatusFilter = this.stackStatusFilter.bind(this)
+    this.setSubscriber = this.setSubscriber.bind(this)
+    this.getDate = this.getDate.bind(this)
   }
+
+  getDate (datetime) {
+    let d = new Date(datetime)
+    let dayofweek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()]
+    let date = d.getDate()
+    let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]
+    let year = d.getFullYear()
+
+    return [dayofweek, date, month, year, d.toLocaleTimeString()].join(' ')
+  }
+
   openEditModal () {
     this.setState({showEditModal: true})
+  }
+  setSubscriber (s) {
+    this.setState({subscriber: s})
   }
   closeEditModal () {
     this.setState({showEditModal: false})
@@ -470,6 +490,20 @@ class Subscriber extends React.Component {
     }
     return filteredData
   }
+  stackStatusFilter (filteredData) {
+    if (this.state.statusValue !== '') {
+      var filtered = []
+      for (var i = 0; i < filteredData.length; i++) {
+        if (this.state.statusValue === 'subscribed' && filteredData[i].isSubscribed) {
+          filtered.push(this.props.subscribers[i])
+        } else if (this.state.statusValue === 'unsubscribed' && !filteredData[i].isSubscribed) {
+          filtered.push(this.props.subscribers[i])
+        }
+      }
+      filteredData = filtered
+    }
+    return filteredData
+  }
   stackPageFilter (filteredData) {
     if (this.state.filterByPage !== '') {
       var filtered = []
@@ -506,6 +540,7 @@ class Subscriber extends React.Component {
     filteredData = this.stackGenderFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
     filteredData = this.stackPageFilter(filteredData)
+    filteredData = this.stackStatusFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
@@ -531,6 +566,7 @@ class Subscriber extends React.Component {
     filteredData = this.stackGenderFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
     filteredData = this.stackTagFilter(filteredData)
+    filteredData = this.stackStatusFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
@@ -552,6 +588,7 @@ class Subscriber extends React.Component {
     filteredData = this.stackPageFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
     filteredData = this.stackTagFilter(filteredData)
+    filteredData = this.stackStatusFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
@@ -573,10 +610,35 @@ class Subscriber extends React.Component {
     filteredData = this.stackPageFilter(filteredData)
     filteredData = this.stackGenderFilter(filteredData)
     filteredData = this.stackTagFilter(filteredData)
+    filteredData = this.stackStatusFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
         if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
+          filtered.push(filteredData[k])
+        }
+      }
+      filteredData = filtered
+    }
+    this.setState({filteredData: filteredData})
+    this.displayData(0, filteredData)
+    this.setState({pageSelected: 0})
+    this.setState({ totalLength: filteredData.length })
+  }
+
+  handleFilterByStatus (e) {
+    this.setState({statusValue: e.target.value, searchValue: ''})
+    var filteredData = this.props.subscribers
+    filteredData = this.stackPageFilter(filteredData)
+    filteredData = this.stackGenderFilter(filteredData)
+    filteredData = this.stackTagFilter(filteredData)
+    filteredData = this.stackLocaleFilter(filteredData)
+    var filtered = []
+    if (e.target.value !== '') {
+      for (var k = 0; k < filteredData.length; k++) {
+        if (e.target.value === 'subscribed' && filteredData[k].isSubscribed) {
+          filtered.push(filteredData[k])
+        } else if (e.target.value === 'unsubscribed' && !filteredData[k].isSubscribed) {
           filtered.push(filteredData[k])
         }
       }
@@ -764,7 +826,7 @@ class Subscriber extends React.Component {
                                         <label style={{width: '60px'}}>Status:</label>
                                       </div>
                                       <div className='m-form__control'>
-                                        <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
+                                        <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
                                           <option key='' value='' disabled>Filter by Status...</option>
                                           <option key='ALL' value=''>ALL</option>
                                           <option key='subscribed' value='subscribed'>Subscribed</option>
@@ -984,9 +1046,9 @@ class Subscriber extends React.Component {
                               <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                                 {
                               this.state.subscribersData.map((subscriber, i) => (
-                                <tr data-row={i}
+                                <tr data-row={i} onClick={() => { this.setSubscriber(subscriber) }}
                                   className='m-datatable__row m-datatable__row--even subscriberRow'
-                                  style={{height: '55px'}} key={i}>
+                                  style={{height: '55px', cursor: 'pointer'}} data-toggle='modal' data-target='#m_modal_1_2' key={i}>
                                   <td data-field='Select All'
                                     className='m-datatable__cell'>
                                     <span style={{width: '30px', overflow: 'inherit'}}>
@@ -1083,10 +1145,104 @@ class Subscriber extends React.Component {
                       }
 
                     </div>
+                    <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                      <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
+                        <div className='modal-content'>
+                          <div style={{display: 'block'}} className='modal-header'>
+                            <h5 className='modal-title' id='exampleModalLabel'>
+                              {this.state.subscriber.firstName ? (this.state.subscriber.firstName + ' ' + this.state.subscriber.lastName) : ''}
+                            </h5>
+                            <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                              <span aria-hidden='true'>
+                                &times;
+                              </span>
+                            </button>
+                          </div>
+                          <div className='modal-body'>
+                            <div className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                              <div className='row'>
+                                <div className='col-md-3'>
+                                  <img style={{width: '120px'}} alt='pic' src={(this.state.subscriber.profilePic) ? this.state.subscriber.profilePic : ''} />
+                                </div>
+                                <div style={{paddingLeft: '30px'}} className='col-md-9'>
+                                  {
+                                    this.state.subscriber.isSubscribed
+                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-check-circle' />  subscribed <a style={{color: 'blue', textDecoration: 'underline'}}> {'(Unsubscribe)'}</a></span>
+                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-times-circle' />  unsubscribed <a style={{color: 'blue', textDecoration: 'underline'}}> {'(Subscribe)'}</a></span>
+                                  }
+                                  {
+                                    this.state.subscriber.gender && this.state.subscriber.gender === 'male'
+                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-male' /> male</span>
+                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-female' /> female</span>
+                                  }
+                                  {
+                                    this.state.subscriber.locale
+                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /> {this.state.subscriber.locale}</span>
+                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /></span>
+                                  }
+                                  {
+                                    this.state.subscriber.email
+                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /> {this.state.subscriber.email}</span>
+                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /></span>
+                                  }
+                                  {
+                                    this.state.subscriber.phoneNumber
+                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /> {this.state.subscriber.phoneNumber}</span>
+                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /></span>
+                                  }
+                                </div>
+                              </div>
+                              <br />
+                              <div className='row'>
+                                <div className='col-md-4'>
+                                  {
+                                    this.state.subscriber.isSubscribed
+                                    ? <div>
+                                      <span style={{fontWeight: 600}}>Subscribed At:</span>
+                                      <br />
+                                      <span>{this.getDate(this.state.subscriber.datetime)}</span>
+                                    </div>
+                                    : <div>
+                                      <span style={{fontWeight: 600}}>Unsubscribed At:</span>
+                                      <br />
+                                      <span>{this.getDate(this.state.subscriber.datetime)}</span>
+                                    </div>
+                                  }
+                                </div>
+                                <div className='col-md-4'>
+                                  {
+                                    this.state.subscriber.pageId &&
+                                    <div>
+                                      <span style={{fontWeight: 600}}>Facebook Page:</span>
+                                      <br />
+                                      <span>{this.state.subscriber.pageId.pageName}</span>
+                                    </div>
+                                  }
+                                </div>
+                                <div className='col-md-4'>
+                                  {
+                                    this.state.subscriber.isSubscribedByPhoneNumber
+                                    ? <div>
+                                      <span style={{fontWeight: 600}}>Source:</span>
+                                      <br />
+                                      <span>Phone Number</span>
+                                    </div>
+                                    : <div>
+                                      <span style={{fontWeight: 600}}>Source:</span>
+                                      <br />
+                                      <span>Direct Message</span>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='modal-footer' />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
                 </div>
-
               </div>
             </div>
           </div>
