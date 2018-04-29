@@ -38,7 +38,7 @@ import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import MediaCapturer from 'react-multimedia-capture'
+// import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {
     height: 24,
@@ -761,21 +761,21 @@ class ChatBox extends React.Component {
             <ModalDialog style={{width: '500px'}}
               onClose={this.closeDialogRecording}>
               {/*  <div ref='app'>
-				<h3>Audio Recorder</h3>
-				<MediaCapturer
-					constraints={{ audio: true }}
-					mimeType='audio/webm'
-					timeSlice={10}
-					onStart={this.handleStart}
-					onStop={this.onStop}
-					onError={this.handleError}
-					render={({ start, stop, pause, resume }) =>
-					<div>
-						<button onClick={start}>Start</button>
-						<button onClick={stop}>Stop</button>
-					</div>
-				} />
-			</div> */}
+                <h3>Audio Recorder</h3>
+                <MediaCapturer
+                constraints={{ audio: true }}
+                mimeType='audio/webm'
+                timeSlice={10}
+                onStart={this.handleStart}
+                onStop={this.onStop}
+                onError={this.handleError}
+                render={({ start, stop, pause, resume }) =>
+                <div>
+                <button onClick={start}>Start</button>
+                <button onClick={stop}>Stop</button>
+                </div>
+                } />
+                </div> */}
               <h3>Voice Recording</h3>
               <div>
                 <ReactMic style={{width: '450px'}}
