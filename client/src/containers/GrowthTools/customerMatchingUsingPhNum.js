@@ -236,15 +236,21 @@ class CustomerMatching extends React.Component {
       var record = content[i]
       var recordName = record[indexName]
       var recordPhone = record[indexPhone]
+      if (record && record.length === 1 && record[0] === '') {
+        faulty = true
+        let error = {errorMsg: 'No records found'}
+        errors.push(error)
+        break
+      }
       // eslint-disable-next-line
       let regexp = /^[0-9+\(\)#\.\s\/ext-]+$/
-      if (recordName.length > 50) {
+      if (recordName && recordName.length > 50) {
         faulty = true
         let error = {errorMsg: 'File consists of customer names that is too long'}
         errors.push(error)
         break
       }
-      if ((recordPhone.length > 0 && recordPhone.length < 5) || !regexp.test(recordPhone)) {
+      if (recordPhone && ((recordPhone.length > 0 && recordPhone.length < 5) || !regexp.test(recordPhone))) {
         faulty = true
         let error = {errorMsg: 'File consists of invalid phone numbers'}
         errors.push(error)
