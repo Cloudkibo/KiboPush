@@ -38,9 +38,12 @@ export function updateAllSubscribersList (data) {
       locale.push(data[i].locale)
     }
   }
+  let subscribed = data.filter(subscriber => subscriber.isSubscribed)
+  let unsubscribed = data.filter(subscriber => !subscriber.isSubscribed)
+  let subscribersData = subscribed.concat(unsubscribed)
   return {
     type: ActionTypes.LOAD_ALL_SUBSCRIBERS_LIST,
-    data,
+    data: subscribersData,
     locale
   }
 }
