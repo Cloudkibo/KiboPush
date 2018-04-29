@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, deleteSequence } from '../../redux/actions/sequence.action'
 import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -343,11 +343,11 @@ class Sequence extends React.Component {
                                       <tr key={i} data-row={i}
                                         className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
                                         style={{height: '55px'}}>
-                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.name}</span></td>
+                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.sequence.name}</span></td>
                                         <td data-field='description' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.description}</span></td>
-                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>subscribers</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>message</span></td>
-                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>status</span></td>
+                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>sequence.subscribers.length</span></td>
+                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>sequence.messages.length</span></td>
+                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>sequence.status</span></td>
                                         <td data-field='actions' className='m-datatable__cell'>
                                           <span style={{width: '175px'}}>
                                             <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(sequence)}>
@@ -410,7 +410,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllSequence: fetchAllSequence,
-    createSequence: createSequence
+    createSequence: createSequence,
+    deleteSequence: deleteSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sequence)
