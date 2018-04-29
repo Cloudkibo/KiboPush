@@ -596,6 +596,15 @@ class Subscriber extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    var subscribedStyle = {
+      width: '100px',
+      overflow: 'inherit'
+    }
+    var unsubscribedStyle = {
+      width: '100px',
+      overflow: 'inherit',
+      color: '#818a91'
+    }
 
     return (
       <div>
@@ -666,101 +675,115 @@ class Subscriber extends React.Component {
 
                     <div className='m-portlet__body'>
                       { this.props.subscribers && this.props.subscribers.length > 0
-                        ? <div>
+                        ? <div style={{marginTop: '-50px'}}>
                           <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                             <div className='row align-items-center'>
                               <div className='col-xl-12 order-2 order-xl-1'>
-                                <div className='form-group m-form__group row align-items-center'>
-                                  <div className='col-md-12'>
+                                <div className='row filters' style={{marginTop: '25px', display: 'flex'}}>
+                                  <div className='col-md-4'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='' style={{marginTop: '10px'}}>
+                                        <label style={{width: '60px'}}>Gender:</label>
+                                      </div>
+                                      {/* <div className='m-form__control'>
+                                    <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
+                                    </div> */}
+                                      <div className='m-form__control'>
+                                        <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
+                                          <option key='' value='' disabled>Filter by Gender...</option>
+                                          <option key='ALL' value=''>All</option>
+                                          <option key='male' value='male'>Male</option>
+                                          <option key='female' value='female'>Female</option>
+                                          <option key='other' value='other'>Other</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div className='d-md-none m--margin-bottom-10' />
+                                  </div>
+                                  <div className='col-md-4'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='' style={{marginTop: '10px'}}>
+                                        <label style={{width: '60px'}}>Page:</label>
+                                      </div>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
+                                          <option key='' value='' disabled>Filter by Page...</option>
+                                          <option key='ALL' value=''>ALL</option>
+                                          {
+                                            this.props.pages.map((page, i) => (
+                                              <option key={i} value={page.pageId}>{page.pageName}</option>
+                                            ))
+                                          }
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='col-md-4'>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='' style={{marginTop: '10px'}}>
+                                        <label style={{width: '60px'}}>Locale:</label>
+                                      </div>
+                                      <div className='m-form__control'>
+                                        {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
+                                      <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
+                                      <div className='dropdown-menu open' role='combobox'>
+                                        <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
+                                      */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
+                                        <option key='' value='' disabled>Filter by Locale...</option>
+                                        <option key='ALL' value=''>ALL</option>
+                                        {
+                                          this.props.locales.map((locale, i) => (
+                                            <option key={i} value={locale}>{locale}</option>
+                                          ))
+                                        }
+                                      </select>{/* </div> */}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='col-md-4' style={{marginTop: '20px'}}>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='' style={{marginTop: '10px'}}>
+                                        <label style={{width: '60px'}}>Tags:</label>
+                                      </div>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
+                                          <option key='' value='' disabled>Filter by Tags...</option>
+                                          <option key='ALL' value=''>ALL</option>
+                                          {
+                                            this.state.options.map((tag, i) => (
+                                              <option key={i} value={tag.label}>{tag.label}</option>
+                                            ))
+                                          }
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='col-md-4' style={{marginTop: '20px'}}>
+                                    <div className='m-form__group m-form__group--inline'>
+                                      <div className='' style={{marginTop: '10px'}}>
+                                        <label style={{width: '60px'}}>Status:</label>
+                                      </div>
+                                      <div className='m-form__control'>
+                                        <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
+                                          <option key='' value='' disabled>Filter by Status...</option>
+                                          <option key='ALL' value=''>ALL</option>
+                                          <option key='subscribed' value='subscribed'>Subscribed</option>
+                                          <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div style={{marginTop: '15px'}} className='form-group m-form__group row align-items-center'>
+                                  <div className='col-md-8'>
                                     <div className='m-input-icon m-input-icon--left'>
-                                      <input type='text' style={{width: '33%'}} className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                      <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
                                       <span className='m-input-icon__icon m-input-icon__icon--left'>
                                         <span><i className='la la-search' /></span>
                                       </span>
                                     </div>
                                   </div>
-                                  <div className='row filters' style={{marginTop: '25px', display: 'flex'}}>
-
-                                    <div className='col-md-6'>
-                                      <div className='m-form__group m-form__group--inline'>
-                                        <div className='col-md-2' style={{marginTop: '10px'}}>
-                                          <label style={{width: '60px'}}>Gender:</label>
-                                        </div>
-                                        {/* <div className='m-form__control'>
-                                      <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
-                                      </div> */}
-                                        <div className='col-md-4 m-form__control'>
-                                          <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
-                                            <option key='' value='' disabled>Filter by Gender...</option>
-                                            <option key='ALL' value=''>All</option>
-                                            <option key='male' value='male'>Male</option>
-                                            <option key='female' value='female'>Female</option>
-                                            <option key='other' value='other'>Other</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div className='d-md-none m--margin-bottom-10' />
-                                    </div>
-                                    <div className='col-md-6'>
-                                      <div className='m-form__group m-form__group--inline'>
-                                        <div className='col-md-2' style={{marginTop: '10px'}}>
-                                          <label style={{width: '60px'}}>Page:</label>
-                                        </div>
-                                        <div className='col-md-4 m-form__control'>
-                                          <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
-                                            <option key='' value='' disabled>Filter by Page...</option>
-                                            <option key='ALL' value=''>ALL</option>
-                                            {
-                                              this.props.pages.map((page, i) => (
-                                                <option key={i} value={page.pageId}>{page.pageName}</option>
-                                              ))
-                                            }
-                                          </select>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className='col-md-6' style={{marginTop: '20px'}}>
-                                      <div className='m-form__group m-form__group--inline'>
-                                        <div className='col-md-2' style={{marginTop: '10px'}}>
-                                          <label style={{width: '60px'}}>Locale:</label>
-                                        </div>
-                                        <div className='col-md-4 m-form__control'>
-                                          {/* <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid'>
-                                        <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
-                                        <div className='dropdown-menu open' role='combobox'>
-                                          <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
-                                        */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
-                                          <option key='' value='' disabled>Filter by Locale...</option>
-                                          <option key='ALL' value=''>ALL</option>
-                                          {
-                                            this.props.locales.map((locale, i) => (
-                                              <option key={i} value={locale}>{locale}</option>
-                                            ))
-                                          }
-                                        </select>{/* </div> */}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className='col-md-6' style={{marginTop: '20px'}}>
-                                      <div className='m-form__group m-form__group--inline'>
-                                        <div className='col-md-2' style={{marginTop: '10px'}}>
-                                          <label style={{width: '60px'}}>Tags:</label>
-                                        </div>
-                                        <div className='col-md-4 m-form__control'>
-                                          <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
-                                            <option key='' value='' disabled>Filter by Tags...</option>
-                                            <option key='ALL' value=''>ALL</option>
-                                            {
-                                              this.state.options.map((tag, i) => (
-                                                <option key={i} value={tag.label}>{tag.label}</option>
-                                              ))
-                                            }
-                                          </select>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className='col-md-12' style={{marginTop: '25px'}}>
+                                  <div className='col-md-4'>
                                     <div className='pull-right' style={{display: 'flex'}}>
                                       <div style={{display: 'block'}}>
                                         <Dropdown id='assignTag' isOpen={this.state.dropdownActionOpen} toggle={this.toggleTag}>
@@ -943,14 +966,6 @@ class Subscriber extends React.Component {
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '100px', overflow: 'inherit'}}>Status</span>
                                   </th>
-                                  <th data-field='PhoneNumber'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Phone</span>
-                                  </th>
-                                  <th data-field='Source'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
-                                  </th>
                                   <th data-field='Gender'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                     <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
@@ -991,49 +1006,35 @@ class Subscriber extends React.Component {
                                   <td data-field='Name'
                                     className='m-datatable__cell'>
                                     <span
-                                      style={{width: '100px', overflow: 'inherit'}}>{subscriber.firstName} {subscriber.lastName}</span>
+                                      style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
                                   </td>
 
                                   <td data-field='Page'
                                     className='m-datatable__cell'>
                                     <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
+                                      style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
                                       {subscriber.pageId.pageName}
                                     </span>
                                   </td>
                                   <td data-field='Status'
                                     className='m-datatable__cell'>
                                     <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
+                                      style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
                                       {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
-                                    </span>
-                                  </td>
-                                  <td data-field='phoneNumber'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.phoneNumber}
-                                    </span>
-                                  </td>
-                                  <td data-field='source'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other'}
                                     </span>
                                   </td>
                                   <td data-field='Gender' className='m-datatable__cell'>
                                     <span style={{width: '50px'}}>
                                       {
-                                        subscriber.gender === 'male' ? (<i className='la la-male' style={{color: '#716aca'}} />) : (<i className='la la-female' style={{color: '#716aca'}} />)
+                                        subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
                                       }
                                     </span>
                                   </td>
-                                  <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                                  <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white', backgroundColor: !subscriber.isSubscribed && '#818a91'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
                                   <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
                                     <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
                                       {
-                                        subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: '#716aca'}} />) : ('No Tags Assigned')
+                                        subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
                                       }
                                     </span>
                                     {subscriber.tags && subscriber.tags.length > 0 &&
