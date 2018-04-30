@@ -904,7 +904,7 @@ class ChatBox extends React.Component {
                         {
                             this.props.userChat && this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
-                              ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block'}} className='row'>
+                              ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
                                 {
                                   index === 0
                                   ? <div className='m-messenger__datetime'>
@@ -1063,7 +1063,7 @@ class ChatBox extends React.Component {
                                   </div>
                                 </div>
                               </div>
-                              : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block'}} className='row'>
+                              : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
                                 {
                                   index === 0
                                   ? <div className='m-messenger__datetime'>
