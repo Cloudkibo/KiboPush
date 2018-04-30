@@ -178,6 +178,12 @@ a.broadcastTabs.active {
 .subscriberPopover > .popover-inner {
   height: auto !important;
 }
+.popover.show.liveChatPopover {
+  height: auto !important
+}
+.liveChatPopover > .popover-inner {
+  height: auto !important;
+}
 .popover.show.greetingPopover {
   height: auto !important
 }
