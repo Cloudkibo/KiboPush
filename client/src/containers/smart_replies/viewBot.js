@@ -224,7 +224,7 @@ class ViewBot extends React.Component {
                       <br />
                       <div className='col-xl-12'>
                         <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
-                        <select className='custom-select' id='m_form_type' value={this.state.isActive} onChange={this.changeStatus} style={{width: '500px'}}>
+                        <select className='custom-select' id='m_form_type' value={this.state.isActive} disabled={true} onChange={this.changeStatus} style={{width: '500px'}}>
                           <option key='2' value='true'>Active</option>
                           <option key='3' value='false'>Disabled</option>
                         </select>
