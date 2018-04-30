@@ -7,6 +7,11 @@ export function sequenceInfo (state = {}, action) {
         sequences: action.sequence
       })
 
+    case ActionTypes.SHOW_SUBSCRIBER_SEQUENCE:
+      return Object.assign({}, state, {
+        subscriberSequences: action.subscriberSequences
+      })
+
     case ActionTypes.SHOW_ALL_MESSAGES:
       return Object.assign({}, state, {
         messages: action.messages,
