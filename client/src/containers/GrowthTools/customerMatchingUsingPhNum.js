@@ -236,7 +236,7 @@ class CustomerMatching extends React.Component {
       var record = content[i]
       var recordName = record[indexName]
       var recordPhone = record[indexPhone]
-      if (record && record.length === 1 && record[0] === '') {
+      if (content.length === 2 && record && record.length === 1 && record[0] === '') {
         faulty = true
         let error = {errorMsg: 'No records found'}
         errors.push(error)
