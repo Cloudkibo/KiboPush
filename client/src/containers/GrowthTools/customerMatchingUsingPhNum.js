@@ -98,6 +98,11 @@ class CustomerMatching extends React.Component {
       showFileColumns: false,
       columnAlerts: false
     })
+    if (this.state.phoneColumn.value === '' || this.state.nameColumn.value === '') {
+      this.setState({
+        disabled: true
+      })
+    }
   }
   handleNameColumn (value) {
     if (!value) {
@@ -205,7 +210,8 @@ class CustomerMatching extends React.Component {
         file: files,
         fileErrors: [],
         nameColumn: '',
-        phoneColumn: ''
+        phoneColumn: '',
+        disabled: true
       })
       var fileSelected = files[0]
       if (fileSelected.extension !== 'csv') {
@@ -345,6 +351,10 @@ class CustomerMatching extends React.Component {
   }
 
   onPhoneNumbersChange (e) {
+    if (e.target.value === '') {
+      this.setState({disabled: true})
+      return
+    }
     this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({disabled: false})
@@ -559,10 +569,6 @@ class CustomerMatching extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  this.setState({
-                    phoneColumn: '',
-                    nameColumn: ''
-                  })
                   this.closeDialogFileColumns()
                 }}>Cancel
               </button>
@@ -783,7 +789,7 @@ class CustomerMatching extends React.Component {
                               <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
                                 Reset
                               </button>
-                              { (this.props.pages && this.props.pages.length === 0) || this.state.disabled || (this.state.phoneColumn === '') || (this.state.nameColumn === '')
+                              { ((this.props.pages && this.props.pages.length === 0) || this.state.disabled)
                                 ? <button type='submit' className='btn btn-primary' disabled>
                                   Submit
                                 </button>

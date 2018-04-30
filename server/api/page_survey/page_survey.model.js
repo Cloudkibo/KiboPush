@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const pollSchema = new Schema({
+const surveySchema = new Schema({
   pageId: String,
   userId: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
@@ -16,4 +16,4 @@ const pollSchema = new Schema({
   seen: {type: Boolean}
 })
 
-module.exports = mongoose.model('page_surveys', pollSchema)
+module.exports = mongoose.model('page_surveys', surveySchema)
