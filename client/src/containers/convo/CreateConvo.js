@@ -434,6 +434,7 @@ class CreateConvo extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
+        this.setState({tabActive: 'broadcast'})
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         // this.setState({broadcast: [], list: []})
       }
