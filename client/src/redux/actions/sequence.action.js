@@ -9,11 +9,66 @@ export function showAllSequence (data) {
   }
 }
 
+export function showCreatedSequence (data) {
+  return {
+    type: ActionTypes.SHOW_CREATED_SEQUENCE,
+    data
+  }
+}
+
+export function createSequence (data) {
+  return (dispatch) => {
+    callApi('sequenceMessaging/createSequence', 'post', data)
+      .then(res => {
+        console.log('response from createBot', res)
+        if (res.status === 'success') {
+          dispatch(showCreatedSequence(res.payload))
+        }
+      })
+  }
+}
+
+export function createMessage (data) {
+  console.log('data createMessage', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/createMessage', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(data.sequenceId))
+        }
+      })
+  }
+}
+
+export function setSchedule (data, sequenceId) {
+  return (dispatch) => {
+    callApi('sequenceMessaging/setSchedule', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(sequenceId))
+        }
+      })
+  }
+}
+
+export function setStatus (data, sequenceId) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/setStatus', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchAllMessages(sequenceId))
+        }
+      })
+  }
+}
+
 export function fetchAllSequence () {
   console.log('fetchAllSequence')
   return (dispatch) => {
     callApi(`sequenceMessaging/allSequences`)
       .then(res => {
+        console.log('fetchAllSequence', res)
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))
@@ -29,14 +84,15 @@ export function showAllMessages (data) {
   }
 }
 
-export function fetchAllMessages () {
+export function fetchAllMessages (id) {
   console.log('fetchAllMessages')
   return (dispatch) => {
-    callApi(`sequenceMessaging/allMessages`)
+    callApi(`sequenceMessaging/allMessages/${id}`)
       .then(res => {
+        console.log('res', res)
         if (res.status === 'success') {
           console.log('allMessages', res.payload)
-          dispatch(showAllSequence(res.payload))
+          dispatch(showAllMessages(res.payload))
         }
       })
   }
@@ -70,7 +126,7 @@ export function unsubscribeToSequence (data, msg) {
 
 export function saveMessageSeq (data, msg) {
   return (dispatch) => {
-    callApi('sequenceMessaging/createMessage', 'post', data)
+    callApi('createMessage', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           msg.success('Message saved successfully')
