@@ -98,11 +98,6 @@ class CustomerMatching extends React.Component {
       showFileColumns: false,
       columnAlerts: false
     })
-    if (this.state.phoneColumn.value === '' || this.state.nameColumn.value === '') {
-      this.setState({
-        disabled: true
-      })
-    }
   }
   handleNameColumn (value) {
     if (!value) {
@@ -569,6 +564,11 @@ class CustomerMatching extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
+                  this.setState({
+                    phoneColumn: '',
+                    nameColumn: '',
+                    disabled: true
+                  })
                   this.closeDialogFileColumns()
                 }}>Cancel
               </button>
