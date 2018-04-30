@@ -47,6 +47,10 @@ router.get('/allSequences',
   auth.isAuthenticated(),
   controller.allSequences)
 
+router.get('/subscriberSequences/:id',
+  auth.isAuthenticated(),
+  controller.subscriberSequences)
+
 router.post('/subscribeToSequence',
   auth.isAuthenticated(),
   controller.subscribeToSequence)

@@ -9,6 +9,13 @@ export function showAllSequence (data) {
   }
 }
 
+export function showSubscriberSequence (data) {
+  return {
+    type: ActionTypes.SHOW_SUBSCRIBER_SEQUENCE,
+    subscriberSequences: data
+  }
+}
+
 export function fetchAllSequence () {
   console.log('fetchAllSequence')
   return (dispatch) => {
@@ -17,6 +24,18 @@ export function fetchAllSequence () {
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))
+        }
+      })
+  }
+}
+
+export function getSubscriberSequences (subscriberId) {
+  return (dispatch) => {
+    callApi(`sequenceMessaging/subscriberSequences/${subscriberId}`)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('subscriberSequences', res.payload)
+          dispatch(showSubscriberSequence(res.payload))
         }
       })
   }
@@ -47,9 +66,10 @@ export function subscribeToSequence (data, msg) {
     callApi(`sequenceMessaging/subscribeToSequence`, 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          this.msg.success('Subscriber(s) have been subscribed successfully!')
+          msg.success('Subscriber(s) have been subscribed successfully!')
         } else {
-          this.msg.erro('Failed to subscribe to sequence!')
+          console.log(res.description)
+          msg.error('Failed to subscribe to sequence!')
         }
       })
   }
@@ -60,9 +80,10 @@ export function unsubscribeToSequence (data, msg) {
     callApi(`sequenceMessaging/unsubscribeToSequence`, 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          this.msg.success('Subscriber(s) have been unsubscribed successfully!')
+          msg.success('Subscriber(s) have been unsubscribed successfully!')
+          dispatch(getSubscriberSequences(data.subscriberIds[0]))
         } else {
-          this.msg.erro('Failed to unsubscribe to sequence!')
+          msg.error('Failed to unsubscribe to sequence!')
         }
       })
   }
