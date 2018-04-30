@@ -175,6 +175,7 @@ class ViewBot extends React.Component {
   }
 
   render () {
+    console.log("Current state in ViewBot", this.state)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
