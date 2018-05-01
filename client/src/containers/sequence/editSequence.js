@@ -292,9 +292,9 @@ class CreateSequence extends React.Component {
                               <div className='row' style = {{padding: '5px', width: 'max-content', marginLeft: '30px'}}>
                                 <span className='m-list-timeline__text' style={{width: '100px', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Active</label></span>
                                 <span className='m-list-timeline__text' style={{width: '290', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Message</label></span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Sent</label></span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Seen</label></span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Clicked</label></span>
+                                <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Sent</label></span>
+                                <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Seen</label></span>
+                                <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Clicked</label></span>
                             </div>
                           </div>
                           {this.props.messages.map((message, i) => (
@@ -309,10 +309,10 @@ class CreateSequence extends React.Component {
 																		</label>
 									                 </span>
                                     <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.sent}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.seen}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.clicks}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px', cursor: 'pointer'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.sent}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.seen}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.clicks}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px', cursor: 'pointer'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
                               </div>
                               </div>
                               : <div className='m-list-timeline__item'>
@@ -325,10 +325,10 @@ class CreateSequence extends React.Component {
 																		</label>
 									                 </span>
                                     <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.sent}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.seen}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.clicks}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.sent}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.seen}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.clicks}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
                               </div>
                               </div>
                             )
