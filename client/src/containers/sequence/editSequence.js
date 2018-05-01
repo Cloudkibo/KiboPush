@@ -318,7 +318,7 @@ class CreateSequence extends React.Component {
                               </div>
                             )
                         ))}
-                        { this.props.messages &&
+                        { this.props.messages && this.props.messages.length > 0 &&
                         <div className='m-list-timeline__item'>
                             <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                             <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px', cursor: 'pointer', color: 'rgb(113, 106, 202)'}} ref={(b) => { this.target = b }}>
