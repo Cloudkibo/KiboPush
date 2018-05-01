@@ -11,6 +11,7 @@ import EditButton from './EditButton'
 import Halogen from 'halogen'
 import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
+import AlertContainer from 'react-alert'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -194,8 +195,16 @@ class Card extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
