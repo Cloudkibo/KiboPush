@@ -13,6 +13,8 @@ export function showSubscriberSequence (data) {
   return {
     type: ActionTypes.SHOW_SUBSCRIBER_SEQUENCE,
     subscriberSequences: data
+  }
+}
 
 export function showCreatedSequence (data) {
   return {
