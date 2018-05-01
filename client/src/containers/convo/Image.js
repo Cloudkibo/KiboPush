@@ -16,6 +16,7 @@ import {
 import Halogen from 'halogen'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -43,6 +44,10 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
+    if (file.type !== 'image/bmp' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+      this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      return
+    }
     var reader = new FileReader()
     reader.readAsDataURL(file)
 
@@ -70,8 +75,16 @@ class Image extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -87,6 +100,7 @@ class Image extends React.Component {
               type='file'
               name='user[image]'
               multiple='true'
+              accept='image/*'
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
             {
               (this.state.imgSrc === '')
