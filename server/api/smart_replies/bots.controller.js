@@ -97,6 +97,7 @@ function sendMessenger (message, pageId, senderId) {
 
 exports.respond = function (payload) {
   // Need to extract the pageID and message from facebook and also the senderID
+  logger.serverLog(TAG, `Getting this in respond ${JSON.stringify(payload)}`)
   if (payload.object !== 'page') {
     return
   }
