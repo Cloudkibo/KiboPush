@@ -44,7 +44,7 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
-    if (file.type !== 'image/bmp' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+    if (file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
       this.msg.error('Please select an image of type jpg, gif, bmp or png')
       return
     }
@@ -101,6 +101,7 @@ class Image extends React.Component {
               name='user[image]'
               multiple='true'
               accept='image/*'
+              title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
             {
               (this.state.imgSrc === '')
