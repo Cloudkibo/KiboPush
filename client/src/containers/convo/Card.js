@@ -68,6 +68,10 @@ class Card extends React.Component {
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
+    if (file.type !== 'image/bmp' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+      this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      return
+    }
     var reader = new FileReader()
     reader.readAsDataURL(file)
 
@@ -204,6 +208,7 @@ class Card extends React.Component {
               type='file'
               name='user[image]'
               multiple='true'
+              accept='image/*'
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
 
             {
