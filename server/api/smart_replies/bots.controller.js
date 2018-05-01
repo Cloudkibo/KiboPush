@@ -101,9 +101,16 @@ exports.respond = function (payload) {
   if (payload.object !== 'page') {
     return
   }
+  if(!payload.entry[0].messaging[0]){
+  	return
+  }
   var messageDetails = payload.entry[0].messaging[0]
   var pageId = messageDetails.recipient.id
   var senderId = messageDetails.sender.id
+  
+  if(!messageDetails.message){
+  	return 
+  }
   if (messageDetails.message.is_echo) {
     return
   }
@@ -117,7 +124,7 @@ exports.respond = function (payload) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-
+		logger.serverLog(TAG, `Response for does bot exist ${JSON.stringify(bot)}`)
       if (bot.isActive === 'true') {
             // Write the bot response logic here
         logger.serverLog(TAG, 'Responding using the bot as status is Active')
