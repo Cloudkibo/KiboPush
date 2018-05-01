@@ -219,7 +219,7 @@ class CreateSequence extends React.Component {
               	<div className='m-portlet__body'>
                   {this.props.messages && this.props.messages.length > 0
                   ? <div className='row'>
-                    <div className='col-xl-2'>
+                    <div className='col-xl-2 col-lg-2 col-md-2 col-sm-2'>
                       <div className='m-list-timeline'>
                         <div style={{float: 'right', textAlign: 'right'}}>
                           <div className='m-list-timeline__time'>
@@ -285,7 +285,7 @@ class CreateSequence extends React.Component {
                       </PopoverBody>
                     </Popover>
                   }
-                    <div className='col-xl-10'>
+                    <div className='col-xl-10 col-lg-10 col-md-10 col-sm-10'>
                       <div className='m-list-timeline'>
                         <div className='m-list-timeline__items'>
                           <div className='m-list-timeline__item'>
@@ -347,7 +347,7 @@ class CreateSequence extends React.Component {
             <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
               <Link
                 to='/sequenceMessaging'
-                className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                className='btn btn-primary' style={{'marginLeft': '10px'}}>
                 Back
               </Link>
             </div>
