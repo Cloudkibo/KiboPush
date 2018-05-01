@@ -343,6 +343,15 @@ class CreateSequence extends React.Component {
             : <div> No data to display</div>
           }
           </div>
+          <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+            <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
+              <Link
+                to='/sequenceMessaging'
+                className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                Back
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
