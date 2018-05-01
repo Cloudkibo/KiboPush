@@ -79,7 +79,7 @@ exports.upload = function (req, res) {
           .pipe(csv())
           .on('data', function (data) {
             if (data[`${phoneColumn}`] && data[`${nameColumn}`]) {
-              var result = data[`${phoneColumn}`].replace(/[- )(]/g, '')
+              var result = data[`${phoneColumn}`].replace(/[- )(]+/g, '')
               // var savePhoneNumber = new PhoneNumber({
               //   name: data.name,
               //   number: result,
