@@ -299,22 +299,7 @@ class CreateSequence extends React.Component {
                           </div>
                           {this.props.messages.map((message, i) => (
                             (i === (this.props.messages.length - 1)
-                              ? <div className='m-list-timeline__item'>
-                                  <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-                                  <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px', cursor: 'pointer', color: 'rgb(113, 106, 202)'}} ref={(b) => { this.target = b }}>
-                                    <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-																		<label>
-																			<input ref={message._id} type="checkbox" name="" defaultChecked={message.isActive} onChange={(e) => this.changeStatus(e, message._id)} />
-																			<span></span>
-																		</label>
-									                 </span>
-                                    <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
-                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.sent}</span>
-                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.seen}</span>
-                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.clicks}</span>
-                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px', cursor: 'pointer'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
-                              </div>
-                              </div>
+                              ? null
                               : <div className='m-list-timeline__item'>
                                   <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                                   <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '10px', cursor: 'pointer'}}>
@@ -333,6 +318,24 @@ class CreateSequence extends React.Component {
                               </div>
                             )
                         ))}
+                        { this.props.messages &&
+                        <div className='m-list-timeline__item'>
+                            <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                            <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px', cursor: 'pointer', color: 'rgb(113, 106, 202)'}} ref={(b) => { this.target = b }}>
+                              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                              <label>
+                                <input ref={this.props.messages[this.props.messages.length - 1]._id} type="checkbox" name="" defaultChecked={this.props.messages[this.props.messages.length - 1].isActive} onChange={(e) => this.changeStatus(e, this.props.messages[this.props.messages.length - 1]._id)} />
+                                <span></span>
+                              </label>
+                             </span>
+                              <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{this.props.messages[this.props.messages.length - 1].title}</label></span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{this.props.messages[this.props.messages.length - 1].sent}</span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{this.props.messages[this.props.messages.length - 1].seen}</span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{this.props.messages[this.props.messages.length - 1].clicks}</span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px', cursor: 'pointer'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(this.props.messages[this.props.messages.length - 1]._id)} /></span>
+                        </div>
+                        </div>
+                      }
                   </div>
                 </div>
               </div>
