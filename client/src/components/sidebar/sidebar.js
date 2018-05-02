@@ -252,7 +252,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/menu' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-menu-1' />
+              <i className='m-menu__link-icon flaticon-menu-button' />
               <span className='m-menu__link-text'>Persistent Menu</span>
             </Link>
           </li>
