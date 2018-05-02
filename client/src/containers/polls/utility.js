@@ -55,7 +55,9 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
     for (let p = 0; p < polls.selectedPolls.length; p++) {
       for (let q = 0; q < polls.pollResponses; q++) {
         if (polls.pollResponses[q].pollId === polls.selectedPolls[p]) {
+          console.log('found poll', polls.pollResponses[q])
           for (let o = 0; o < subscribers.length; o++) {
+            console.log('subscriber ' + o, subscribers[o])
             if (subscribers[o]._id === polls.pollResponses[q].subscriberId) {
               subscribersMatchPolls.push(subscribers[o])
             }
