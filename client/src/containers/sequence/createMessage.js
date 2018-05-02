@@ -52,7 +52,6 @@ class CreateMessage extends React.Component {
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
-    this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
