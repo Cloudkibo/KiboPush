@@ -36,17 +36,27 @@ class Sequence extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.scrollToTop = this.scrollToTop.bind(this)
     this.goToEdit = this.goToEdit.bind(this)
-    this.goToView = this.goToView.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.updateName = this.updateName.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
+    this.getSequenceStatus = this.getSequenceStatus.bind(this)
   }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
+  }
+  getSequenceStatus (messages) {
+    var active = 'InActive'
+    messages.map((msg, i) => {
+      if (msg.isActive) {
+        active = 'Active'
+        return active
+      }
+    })
+    return active
   }
   gotoCreate () {
     if (this.state.name === '') {
@@ -174,24 +184,7 @@ class Sequence extends React.Component {
       state: {module: 'edit', name: sequence.name, _id: sequence._id}
     })
   }
-  goToView (sequence) {
-    // var agents = []
-    // var pages = []
-    // for (var i = 0; i < this.props.teamUniqueAgents.length; i++) {
-    //   if (team._id === this.props.teamUniqueAgents[i].teamId) {
-    //     agents.push(this.props.teamUniqueAgents[i])
-    //   }
-    // }
-    // for (var j = 0; j < this.props.teamUniquePages.length; j++) {
-    //   if (team._id === this.props.teamUniquePages[j].teamId) {
-    //     pages.push(this.props.teamUniquePages[j])
-    //   }
-    // }
-    browserHistory.push({
-      pathname: `/viewSequence`,
-      state: {module: 'view', name: sequence.name, _id: sequence._id}
-    })
-  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -311,25 +304,25 @@ class Sequence extends React.Component {
                                 <thead className='m-datatable__head'>
                                   <tr className='m-datatable__row'
                                     style={{height: '53px'}}>
-                                    <th data-field='name' style={{width: '100px'}}
+                                    <th data-field='name'
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Name</span>
+                                      <span style={{width: '100px'}}>Name</span>
                                     </th>
-                                    <th data-field='pages' style={{width: '100px'}}
+                                    <th data-field='pages'
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Subscribers</span>
+                                      <span style={{width: '100px'}}>Subscribers</span>
                                     </th>
-                                    <th data-field='created_by' style={{width: '125px'}}
+                                    <th data-field='created_by'
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Messages</span>
+                                      <span style={{width: '100px'}}>Messages</span>
                                     </th>
-                                    <th data-field='datetime' style={{width: '100px'}}
+                                    <th data-field='datetime'
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Status</span>
+                                      <span style={{width: '100px'}}>Status</span>
                                     </th>
-                                    <th data-field='actions' style={{width: '175px'}}
+                                    <th data-field='actions'
                                       className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span>Actions</span>
+                                      <span style={{width: '175px'}}>Actions</span>
                                     </th>
                                   </tr>
                                 </thead>
@@ -339,16 +332,13 @@ class Sequence extends React.Component {
                                       <tr key={i} data-row={i}
                                         className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
                                         style={{height: '55px'}}>
-                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.sequence.name}</span></td>
-                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.subscribers.length}</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '125px'}}>{sequence.messages.length}</span></td>
-                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px'}}>{sequence.status}</span></td>
+                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.sequence.name}</span></td>
+                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.subscribers.length}</span></td>
+                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.messages.length}</span></td>
+                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{this.getSequenceStatus(sequence.messages)}</span></td>
                                         <td data-field='actions' className='m-datatable__cell'>
                                           <span style={{width: '175px'}}>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToView(sequence)}>
-                                              View
-                                            </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.goToEdit(sequence.sequence)}>
+                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.goToEdit(sequence.sequence)}>
                                                 Edit
                                               </button>
                                             <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence.sequence._id)}>

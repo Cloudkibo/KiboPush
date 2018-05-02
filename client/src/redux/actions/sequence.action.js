@@ -187,3 +187,21 @@ export function deleteSequence (id, msg) {
       })
   }
 }
+
+export function deleteMessage (id, msg, seqId) {
+  return (dispatch) => {
+    callApi(`sequenceMessaging/deleteMessage/${id}`, 'delete')
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Sequence deleted successfully')
+          dispatch(fetchAllMessages(seqId))
+        } else {
+          if (res.status === 'failed' && res.description) {
+            msg.error(`Failed to delete Message. ${res.description}`)
+          } else {
+            msg.error('Failed to delete Message')
+          }
+        }
+      })
+  }
+}
