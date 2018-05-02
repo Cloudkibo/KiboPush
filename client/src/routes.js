@@ -243,7 +243,7 @@ const routes = (
     <Route path='/viewMessage' component={ViewMessage} onEnter={requireAuth} />
     <Route path='/createSequence' component={CreateSequence} onEnter={requireAuth} />
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
-    <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
+    <Route path='/createMessage' component={CreateMessageSeq} onEnter={requireAuth} />
 
   </Route>
 

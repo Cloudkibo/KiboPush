@@ -49,10 +49,17 @@ class ViewBroadcastTemplate extends React.Component {
   }
 
   goBack () {
-    console.log('goBack')
     browserHistory.push({
       pathname: `/editSequence`,
       state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.title}
+    })
+  }
+
+  gotoEdit () {
+    //  this.props.createSequence({name: this.state.name})
+    browserHistory.push({
+      pathname: `/createMessage`,
+      state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
     })
   }
 
@@ -225,7 +232,7 @@ class ViewBroadcastTemplate extends React.Component {
                 </div>
                 <div className='col-xl-3'>
                   <Link onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>&nbsp;&nbsp;
-                  <Link to='/editMessage' style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </Link>
+                  <Link onClick={() => this.gotoEdit()} style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </Link>
                 </div>
               </div>
             </div>

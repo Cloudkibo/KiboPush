@@ -88,9 +88,7 @@ exports.editMessage = function (req, res) {
           .json({status: 'failed', description: 'Record not found'})
       }
       message.title = req.body.title
-      message.schedule = req.body.schedule
       message.payload = req.body.payload
-      message.isActive = req.body.isActive
       message.save((err2) => {
         if (err2) {
           return res.status(500)

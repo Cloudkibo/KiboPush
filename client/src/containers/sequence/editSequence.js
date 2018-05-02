@@ -46,10 +46,10 @@ class CreateSequence extends React.Component {
   }
 
   gotoView (message) {
-    this.props.createSequence({name: this.state.name})
+    //  this.props.createSequence({name: this.state.name})
     browserHistory.push({
       pathname: `/viewMessage`,
-      state: {title: message.title, payload: message.payload, id: this.state.sequenceId}
+      state: {title: message.title, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
     })
   }
 
