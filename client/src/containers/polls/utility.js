@@ -1,6 +1,6 @@
 import _ from 'underscore'
 
-export function checkConditions (pageValue, genderValue, localeValue, tagValue, subscribers) {
+export function checkConditions (pageValue, genderValue, localeValue, tagValue, subscribers, polls) {
   let subscribersMatchPages = []
   let subscribersMatchLocale = []
   let subscribersMatchGender = []
