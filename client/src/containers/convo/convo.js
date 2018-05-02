@@ -13,7 +13,7 @@ import {
   addBroadcast,
   clearAlertMessage,
   loadBroadcastsList,
-  sendbroadcast
+  sendbroadcast, allBroadcasts
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -34,7 +34,7 @@ class Convo extends React.Component {
       selectedDays: '',
       searchValue: ''
     }
-    props.loadBroadcastsList(0)
+    props.allBroadcasts({last_id: 'none', number_of_records: 10})
     props.loadSubscribersList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -97,14 +97,14 @@ class Convo extends React.Component {
   }
 
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 10) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -114,6 +114,7 @@ class Convo extends React.Component {
   }
 
   handlePageClick (data) {
+    this.props.allBroadcasts({last_id: this.props.broadcasts[this.props.broadcasts.length - 1]._id, number_of_records: 10})
     this.displayData(data.selected, this.props.broadcasts)
   }
 
@@ -417,7 +418,7 @@ class Convo extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
@@ -461,7 +462,8 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    allBroadcasts: allBroadcasts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Convo)

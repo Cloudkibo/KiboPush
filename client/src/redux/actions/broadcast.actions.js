@@ -78,6 +78,18 @@ export function loadBroadcastsList (days) {
   }
 }
 
+export function allBroadcasts (broadcast) {
+  return (dispatch) => {
+    callApi('broadcasts/allBroadcasts', 'post', broadcast)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('allBroadcasts', res.payload)
+          dispatch(showbroadcasts(res.payload))
+        }
+      })
+  }
+}
+
 export function createbroadcast (broadcast) {
   return (dispatch) => {
     callApi('broadcasts/create', 'post', broadcast)
