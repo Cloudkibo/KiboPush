@@ -50,7 +50,7 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
       }
     }
   }
-
+  console.log('polls', polls)
   if (polls && polls.selectedPolls.length > 0) {
     for (let p = 0; p < polls.selectedPolls.length; p++) {
       for (let q = 0; q < polls.pollResponses; q++) {
@@ -64,6 +64,7 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
       }
     }
   }
+  console.log('subscribersMatchPolls', subscribersMatchPolls)
   if (intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender, subscribersMatchTag, subscribersMatchPolls).length === 0) {
     return false
   }

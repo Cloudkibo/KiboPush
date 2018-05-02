@@ -137,8 +137,8 @@ class CreatePoll extends React.Component {
           var selectedOption = selectedOptions[i].value
           selected.push(selectedOption)
         }
-        console.log('pollValue', self.state.pollValue)
         self.setState({ pollValue: selected })
+        console.log('pollValue', self.state.pollValue)
       }
     })
   }
