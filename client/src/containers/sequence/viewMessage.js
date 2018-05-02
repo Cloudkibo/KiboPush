@@ -56,6 +56,14 @@ class ViewBroadcastTemplate extends React.Component {
     })
   }
 
+  gotoEdit (message) {
+    //  this.props.createSequence({name: this.state.name})
+    browserHistory.push({
+      pathname: `/createMessage`,
+      state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+    })
+  }
+
   render () {
     var settings = {
       arrows: true,
