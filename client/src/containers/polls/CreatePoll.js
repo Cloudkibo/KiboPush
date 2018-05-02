@@ -436,7 +436,12 @@ class CreatePoll extends React.Component {
                     this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.pollValue.length > 0) {
         isSegmentedValue = true
       }
-      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
+      let polls = {
+        selectedPolls: this.state.pollValue,
+        pollResponses: this.state.allResponses
+
+      }
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers, polls)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
