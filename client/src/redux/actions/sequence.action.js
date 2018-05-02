@@ -70,6 +70,18 @@ export function setStatus (data, sequenceId) {
   }
 }
 
+export function editMessage (data, msg) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/editMessage', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Message saved successfully')
+        }
+      })
+  }
+}
+
 export function fetchAllSequence () {
   console.log('fetchAllSequence')
   return (dispatch) => {
