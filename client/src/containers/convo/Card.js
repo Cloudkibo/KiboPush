@@ -11,6 +11,7 @@ import EditButton from './EditButton'
 import Halogen from 'halogen'
 import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
+import AlertContainer from 'react-alert'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -68,21 +69,29 @@ class Card extends React.Component {
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
-    var reader = new FileReader()
-    reader.readAsDataURL(file)
+    if (file) {
+      if (file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+        if (this.props.handleCard) {
+          this.props.handleCard({error: 'invalid image'})
+        }
+        return
+      }
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
 
-    reader.onloadend = function (e) {
-      // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
-      this.setState({
-        imgSrc: [reader.result]
-      })
-    }.bind(this)
-    this.setState({loading: true})
-    this.props.uploadImage(file, {fileurl: '',
-      fileName: file.name,
-      type: file.type,
-      image_url: '',
-      size: file.size}, this.updateImageUrl, this.setLoading)
+      reader.onloadend = function (e) {
+        // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
+        this.setState({
+          imgSrc: [reader.result]
+        })
+      }.bind(this)
+      this.setState({loading: true})
+      this.props.uploadImage(file, {fileurl: '',
+        fileName: file.name,
+        type: file.type,
+        image_url: '',
+        size: file.size}, this.updateImageUrl, this.setLoading)
+    }
   }
 
   handleChange (event) {
@@ -190,8 +199,16 @@ class Card extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -204,6 +221,8 @@ class Card extends React.Component {
               type='file'
               name='user[image]'
               multiple='true'
+              accept='image/*'
+              title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
 
             {

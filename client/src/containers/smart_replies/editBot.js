@@ -173,7 +173,7 @@ class EditBot extends React.Component {
         } else {
           for (var j = 0; j < this.state.payload[i].questions.length; j++) {
             if (this.state.payload[i].questions[j] === '') {
-              this.msg.error('You must enter atleast 3 variations of a question')
+              this.msg.error('One of the fields for questions is empty. Please fill all fields')
               return
             }
           }

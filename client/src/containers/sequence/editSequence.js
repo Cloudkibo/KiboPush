@@ -6,7 +6,7 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus } from '../../redux/actions/sequence.action'
@@ -219,7 +219,7 @@ class CreateSequence extends React.Component {
               	<div className='m-portlet__body'>
                   {this.props.messages && this.props.messages.length > 0
                   ? <div className='row'>
-                    <div className='col-xl-2'>
+                    <div className='col-xl-2 col-lg-2 col-md-2 col-sm-2'>
                       <div className='m-list-timeline'>
                         <div style={{float: 'right', textAlign: 'right'}}>
                           <div className='m-list-timeline__time'>
@@ -285,36 +285,21 @@ class CreateSequence extends React.Component {
                       </PopoverBody>
                     </Popover>
                   }
-                    <div className='col-xl-10'>
+                    <div className='col-xl-10 col-lg-10 col-md-10 col-sm-10'>
                       <div className='m-list-timeline'>
                         <div className='m-list-timeline__items'>
                           <div className='m-list-timeline__item'>
                               <div className='row' style = {{padding: '5px', width: 'max-content', marginLeft: '30px'}}>
                                 <span className='m-list-timeline__text' style={{width: '100px', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Active</label></span>
                                 <span className='m-list-timeline__text' style={{width: '290', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Message</label></span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Sent</label></span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Seen</label></span>
-                                <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Clicked</label></span>
+                                <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Sent</label></span>
+                                <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Seen</label></span>
+                                <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><label style={{fontWeight: '600'}}>Clicked</label></span>
                             </div>
                           </div>
                           {this.props.messages.map((message, i) => (
                             (i === (this.props.messages.length - 1)
-                              ? <div className='m-list-timeline__item'>
-                                  <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
-                                  <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '-420px', cursor: 'pointer', color: 'rgb(113, 106, 202)'}} ref={(b) => { this.target = b }}>
-                                    <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-																		<label>
-																			<input ref={message._id} type="checkbox" name="" defaultChecked={message.isActive} onChange={(e) => this.changeStatus(e, message._id)} />
-																			<span></span>
-																		</label>
-									                 </span>
-                                    <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.sent}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.seen}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.clicks}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px', cursor: 'pointer'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
-                              </div>
-                              </div>
+                              ? null
                               : <div className='m-list-timeline__item'>
                                   <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                                   <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '10px', cursor: 'pointer'}}>
@@ -325,20 +310,47 @@ class CreateSequence extends React.Component {
 																		</label>
 									                 </span>
                                     <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.sent}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.seen}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}>{message.clicks}</span>
-                                    <span className='m-list-timeline__text' style={{width: '100', marginTop: '10px'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.sent}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.seen}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.clicks}</span>
+                                    <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(message._id)} /></span>
                               </div>
                               </div>
                             )
                         ))}
+                        { this.props.messages && this.props.messages.length > 0 &&
+                        <div className='m-list-timeline__item'>
+                            <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
+                            <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '10px', cursor: 'pointer', color: 'rgb(113, 106, 202)'}} ref={(b) => { this.target = b }}>
+                              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                              <label>
+                                <input ref={this.props.messages[this.props.messages.length - 1]._id} type="checkbox" name="" defaultChecked={this.props.messages[this.props.messages.length - 1].isActive} onChange={(e) => this.changeStatus(e, this.props.messages[this.props.messages.length - 1]._id)} />
+                                <span></span>
+                              </label>
+                             </span>
+                              <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{this.props.messages[this.props.messages.length - 1].title}</label></span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{this.props.messages[this.props.messages.length - 1].sent}</span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{this.props.messages[this.props.messages.length - 1].seen}</span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{this.props.messages[this.props.messages.length - 1].clicks}</span>
+                              <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px', cursor: 'pointer'}}><i className='fa fa-trash-o' style={{pointer: 'cursor'}} onClick={() => this.showDialogDelete(this.props.messages[this.props.messages.length - 1]._id)} /></span>
+                        </div>
+                        </div>
+                      }
                   </div>
                 </div>
               </div>
             </div>
             : <div> No data to display</div>
           }
+          </div>
+          <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+            <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
+              <Link
+                to='/sequenceMessaging'
+                className='btn btn-primary' style={{'marginLeft': '10px'}}>
+                Back
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -361,6 +361,20 @@ exports.allSequences = function (req, res) {
   })
 }
 
+exports.subscriberSequences = function (req, res) {
+  Sequences.find({subscriberId: req.params.id, status: 'subscribed'})
+  .populate('sequenceId')
+  .exec((err, sequences) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({status: 'success', payload: sequences})
+  })
+}
+
 exports.subscribeToSequence = function (req, res) {
   let parametersMissing = false
 
@@ -413,10 +427,10 @@ exports.subscribeToSequence = function (req, res) {
               }
             }
           })
+          res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
         }
       })
     })
-    res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
   })
 }
 
@@ -462,10 +476,10 @@ exports.unsubscribeToSequence = function (req, res) {
               }
             }
           })
+          res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
         }
       })
     })
-    res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
   })
 }
 

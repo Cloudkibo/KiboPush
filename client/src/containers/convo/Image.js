@@ -16,6 +16,7 @@ import {
 import Halogen from 'halogen'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -43,35 +44,49 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
-    var reader = new FileReader()
-    reader.readAsDataURL(file)
+    if (file) {
+      if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
 
-    reader.onloadend = function (e) {
+      reader.onloadend = function (e) {
+        this.setState({
+          imgSrc: [reader.result]
+        })
+      }.bind(this)
+
       this.setState({
-        imgSrc: [reader.result]
+        showPreview: false,
+        loading: true
       })
-    }.bind(this)
-
-    this.setState({
-      showPreview: false,
-      loading: true
-    })
-    this.props.uploadImage(file, {
-      id: this.props.id,
-      componentType: 'image',
-      fileName: file.name,
-      fileurl: '',
-      image_url: '',
-      type: file.type, // jpg, png, gif
-      size: file.size
-    }, this.props.handleImage, this.setLoading)
+      this.props.uploadImage(file, {
+        id: this.props.id,
+        componentType: 'image',
+        fileName: file.name,
+        fileurl: '',
+        image_url: '',
+        type: file.type, // jpg, png, gif
+        size: file.size
+      }, this.props.handleImage, this.setLoading)
+    }
 
   // TODO: concat files
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -87,6 +102,8 @@ class Image extends React.Component {
               type='file'
               name='user[image]'
               multiple='true'
+              accept='image/*'
+              title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
             {
               (this.state.imgSrc === '')

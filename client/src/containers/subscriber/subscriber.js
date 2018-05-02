@@ -12,7 +12,7 @@ import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actio
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscriberSequences } from '../../redux/actions/sequence.action'
 import fileDownload from 'js-file-download'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
@@ -52,10 +52,10 @@ class Subscriber extends React.Component {
       showEditModal: false,
       subscriber: {}
     }
+    props.fetchAllSequence()
     props.loadMyPagesList()
     props.loadAllSubscribersList()
     props.loadTags()
-    props.fetchAllSequence()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.toggleTag = this.toggleTag.bind(this)
@@ -95,6 +95,7 @@ class Subscriber extends React.Component {
     this.stackStatusFilter = this.stackStatusFilter.bind(this)
     this.setSubscriber = this.setSubscriber.bind(this)
     this.getDate = this.getDate.bind(this)
+    this.removeSequence = this.removeSequence.bind(this)
   }
 
   getDate (datetime) {
@@ -112,6 +113,7 @@ class Subscriber extends React.Component {
   }
   setSubscriber (s) {
     this.setState({subscriber: s})
+    this.props.getSubscriberSequences(s._id)
   }
   closeEditModal () {
     this.setState({showEditModal: false})
@@ -141,7 +143,7 @@ class Subscriber extends React.Component {
     }
   }
   handleSequence (value) {
-    this.setState({sequenceValue: value})
+    this.setState({sequenceValue: value, saveEnable: true})
   }
   handleCreateTag () {
     this.setState({
@@ -214,6 +216,14 @@ class Subscriber extends React.Component {
     }
     this.props.subscribeToSequence(data, this.msg)
     this.setState({selectAllChecked: false, sequenceValue: ''})
+  }
+
+  removeSequence (sequenceId) {
+    let data = {
+      sequenceId: sequenceId,
+      subscriberIds: [this.state.subscriber._id]
+    }
+    this.props.unsubscribeToSequence(data)
   }
 
   unsubscribeToSequence () {
@@ -460,7 +470,7 @@ class Subscriber extends React.Component {
     if (nextProps.sequences) {
       let sequenceOptions = []
       for (let a = 0; a < nextProps.sequences.length; a++) {
-        sequenceOptions.push({'value': nextProps.sequences[a]._id, 'label': nextProps.sequences[a].name})
+        sequenceOptions.push({'value': nextProps.sequences[a].sequence._id, 'label': nextProps.sequences[a].sequence.name})
       }
       this.setState({sequenceOptions: sequenceOptions})
     }
@@ -972,7 +982,7 @@ class Subscriber extends React.Component {
                                         <PopoverBody>
                                           <div className='row' style={{minWidth: '250px'}}>
                                             <div className='col-12'>
-                                              <label>Select Tags</label>
+                                              <label>Select Sequence</label>
                                               <Select
                                                 options={this.state.sequenceOptions}
                                                 onChange={this.handleSequence}
@@ -1046,15 +1056,15 @@ class Subscriber extends React.Component {
                               <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                                 {
                               this.state.subscribersData.map((subscriber, i) => (
-                                <tr data-row={i} onClick={() => { this.setSubscriber(subscriber) }}
+                                <tr data-row={i}
                                   className='m-datatable__row m-datatable__row--even subscriberRow'
-                                  style={{height: '55px', cursor: 'pointer'}} data-toggle='modal' data-target='#m_modal_1_2' key={i}>
+                                  style={{height: '55px', cursor: 'pointer'}} key={i}>
                                   <td data-field='Select All'
                                     className='m-datatable__cell'>
                                     <span style={{width: '30px', overflow: 'inherit'}}>
                                       <input type='checkbox' name={subscriber._id} value={i} onChange={this.handleSubscriberClick} checked={subscriber.selected} />
                                     </span></td>
-                                  <td data-field='Profile Picture'
+                                  <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Profile Picture'
                                     className='m-datatable__cell'>
                                     <span
                                       style={{width: '100px', overflow: 'inherit'}}>
@@ -1065,35 +1075,35 @@ class Subscriber extends React.Component {
                                     </span>
                                   </td>
 
-                                  <td data-field='Name'
+                                  <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
                                     className='m-datatable__cell'>
                                     <span
                                       style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
                                   </td>
 
-                                  <td data-field='Page'
+                                  <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
                                     className='m-datatable__cell'>
                                     <span
                                       style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
                                       {subscriber.pageId.pageName}
                                     </span>
                                   </td>
-                                  <td data-field='Status'
+                                  <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
                                     className='m-datatable__cell'>
                                     <span
                                       style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
                                       {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
                                     </span>
                                   </td>
-                                  <td data-field='Gender' className='m-datatable__cell'>
+                                  <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
                                     <span style={{width: '50px'}}>
                                       {
                                         subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
                                       }
                                     </span>
                                   </td>
-                                  <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white', backgroundColor: !subscriber.isSubscribed && '#818a91'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
-                                  <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
+                                  <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white', backgroundColor: !subscriber.isSubscribed && '#818a91'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                                  <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
                                     <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
                                       {
                                         subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
@@ -1159,7 +1169,7 @@ class Subscriber extends React.Component {
                             </button>
                           </div>
                           <div className='modal-body'>
-                            <div className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
+                            <div style={{maxHeight: '350px', overflowX: 'hidden', overflowY: 'scroll'}} className='m-scrollable' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
                               <div className='row'>
                                 <div className='col-md-3'>
                                   <img style={{width: '120px'}} alt='pic' src={(this.state.subscriber.profilePic) ? this.state.subscriber.profilePic : ''} />
@@ -1235,6 +1245,41 @@ class Subscriber extends React.Component {
                                   }
                                 </div>
                               </div>
+                              <br />
+                              {
+                                this.props.tags && this.props.tags.length > 0 &&
+                                <div className='row'>
+                                  <span style={{fontWeight: 600, marginLeft: '15px'}}>User Tags:</span>
+                                  <a style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}}><i className='la la-plus' /> Add Tags</a>
+                                </div>
+                              }
+                              {
+                                this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0 &&
+                                <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                  {
+                                    this.state.subscriber.tags.map((tag, i) => (
+                                      <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{tag} <i style={{cursor: 'pointer'}} onClick={() => { this.removeSequence(tag) }} className='la la-close' /></button>
+                                    ))
+                                  }
+                                </div>
+                              }
+                              {
+                                this.props.sequences && this.props.sequences.length > 0 &&
+                                <div className='row'>
+                                  <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
+                                  <a style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '150px'}}> Subscribe</a>
+                                </div>
+                              }
+                              {
+                                this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0 &&
+                                <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                  {
+                                    this.props.subscriberSequences.map((seq, i) => (
+                                      <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{seq.sequenceId.name} <i style={{cursor: 'pointer'}} onClick={() => { this.removeSequence(seq.sequenceId._id) }} className='la la-close' /></button>
+                                    ))
+                                  }
+                                </div>
+                              }
                             </div>
                           </div>
                           <div className='modal-footer' />
@@ -1259,7 +1304,8 @@ function mapStateToProps (state) {
     locales: (state.subscribersInfo.locales),
     pages: (state.pagesInfo.pages),
     tags: (state.tagsInfo.tags),
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    subscriberSequences: (state.sequenceInfo.subscriberSequences)
   }
 }
 
@@ -1272,7 +1318,8 @@ function mapDispatchToProps (dispatch) {
     createTag: createTag,
     fetchAllSequence: fetchAllSequence,
     subscribeToSequence: subscribeToSequence,
-    unsubscribeToSequence: unsubscribeToSequence
+    unsubscribeToSequence: unsubscribeToSequence,
+    getSubscriberSequences: getSubscriberSequences
   },
     dispatch)
 }

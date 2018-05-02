@@ -78,6 +78,12 @@ class Gallery extends React.Component {
   }
 
   handleCard (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      }
+      return
+    }
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -99,7 +105,7 @@ class Gallery extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
