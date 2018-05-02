@@ -320,7 +320,7 @@ class CreateMessage extends React.Component {
     //  this.props.createSequence({name: this.state.name})
     browserHistory.push({
       pathname: `/viewMessage`,
-      state: {title: this.props.location.state.title, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+      state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
     })
   }
   render () {
@@ -438,7 +438,7 @@ class CreateMessage extends React.Component {
                                   <StickyDiv zIndex={1}>
                                     <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                                       <div style={{padding: '5px'}}>
-                                        <h3>{this.props.location.state.title} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                                        <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
                                       </div>
                                     </div>
                                   </StickyDiv>
