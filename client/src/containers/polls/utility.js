@@ -8,7 +8,7 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
   let subscribersMatchPolls = []
 
   // Need to add tagValue.length === 0 once tags are complete
-  if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0 && (polls && polls.selectedPolls.length === 0)) {
+  if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0 && (!polls || (polls && polls.selectedPolls.length === 0))) {
     return true
   }
   if (pageValue.length > 0) {
