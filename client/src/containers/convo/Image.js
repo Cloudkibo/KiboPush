@@ -44,32 +44,34 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
-    if (file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
-      this.msg.error('Please select an image of type jpg, gif, bmp or png')
-      return
-    }
-    var reader = new FileReader()
-    reader.readAsDataURL(file)
+    if (file) {
+      if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
 
-    reader.onloadend = function (e) {
+      reader.onloadend = function (e) {
+        this.setState({
+          imgSrc: [reader.result]
+        })
+      }.bind(this)
+
       this.setState({
-        imgSrc: [reader.result]
+        showPreview: false,
+        loading: true
       })
-    }.bind(this)
-
-    this.setState({
-      showPreview: false,
-      loading: true
-    })
-    this.props.uploadImage(file, {
-      id: this.props.id,
-      componentType: 'image',
-      fileName: file.name,
-      fileurl: '',
-      image_url: '',
-      type: file.type, // jpg, png, gif
-      size: file.size
-    }, this.props.handleImage, this.setLoading)
+      this.props.uploadImage(file, {
+        id: this.props.id,
+        componentType: 'image',
+        fileName: file.name,
+        fileurl: '',
+        image_url: '',
+        type: file.type, // jpg, png, gif
+        size: file.size
+      }, this.props.handleImage, this.setLoading)
+    }
 
   // TODO: concat files
   }
