@@ -116,13 +116,13 @@ class Sequence extends React.Component {
     var filtered = []
     if (event.target.value !== '' && this.state.filterValue === '') {
       for (let i = 0; i < this.props.sequences.length; i++) {
-        if (this.props.sequences[i].name && this.props.sequences[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
+        if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase())) {
           filtered.push(this.props.sequences[i])
         }
       }
     } else if (event.target.value !== '' && this.state.filterValue !== '') {
       for (let i = 0; i < this.props.sequences.length; i++) {
-        if (this.props.sequences[i].name && this.props.sequences[i].name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
+        if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
           filtered.push(this.props.sequences[i])
         }
       }
@@ -335,7 +335,7 @@ class Sequence extends React.Component {
                                 </thead>
                                 <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                                   {
-                                    this.props.sequences.map((sequence, i) => (
+                                    this.state.sequencesData.map((sequence, i) => (
                                       <tr key={i} data-row={i}
                                         className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
                                         style={{height: '55px'}}>
