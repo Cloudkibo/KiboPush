@@ -439,7 +439,6 @@ class CreatePoll extends React.Component {
       let polls = {
         selectedPolls: this.state.pollValue,
         pollResponses: this.props.allResponses
-
       }
       var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers, polls)
       if (res === false) {

@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadPollDetails } from '../../redux/actions/templates.actions'
-import { addPoll, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
+import { addPoll, sendpoll, sendPollDirectly, getAllPollResults } from '../../redux/actions/poll.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { Link } from 'react-router'
@@ -105,6 +105,7 @@ class EditPoll extends React.Component {
     for (var j = 0; j < this.props.polls.length; j++) {
       pollOptions[j] = {id: this.props.polls[j]._id, text: this.props.polls[j].statement}
     }
+    this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
@@ -437,7 +438,11 @@ class EditPoll extends React.Component {
                     this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.pollValue.length > 0) {
         isSegmentedValue = true
       }
-      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
+      let polls = {
+        selectedPolls: this.state.pollValue,
+        pollResponses: this.props.allResponses
+      }
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers, polls)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
@@ -744,12 +749,14 @@ function mapStateToProps (state) {
     currentPoll: (state.backdoorInfo.currentPoll),
     customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    allResponses: (state.pollsInfo.allResponses)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    getAllPollResults: getAllPollResults,
     addPoll: addPoll,
     loadPollDetails: loadPollDetails,
     getuserdetails: getuserdetails,

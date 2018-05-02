@@ -13,7 +13,8 @@ import {
   loadPollsList,
   sendpoll,
   clearAlertMessage,
-  deletePoll
+  deletePoll,
+  getAllPollResults
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -50,6 +51,7 @@ class Poll extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.sendPoll = this.sendPoll.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.props.getAllPollResults()
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -183,7 +185,11 @@ class Poll extends React.Component {
         }
       }
     }
-    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, segmentationValues, this.props.subscribers)
+    let polls = {
+      pollResponses: this.props.allResponses,
+      selectedPolls: poll.segmentationPoll
+    }
+    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, segmentationValues, this.props.subscribers, polls)
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
@@ -481,7 +487,8 @@ function mapStateToProps (state) {
     errorMessage: (state.pollsInfo.errorMessage),
     subscribers: (state.subscribersInfo.subscribers),
     user: (state.basicInfo.user),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    allResponses: (state.pollsInfo.allResponses)
   }
 }
 
@@ -489,6 +496,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       loadPollsList: loadPollsList,
+      getAllPollResults: getAllPollResults,
       addPoll: addPoll,
       sendpoll: sendpoll,
       clearAlertMessage: clearAlertMessage,
