@@ -109,6 +109,63 @@ exports.index = function (req, res) {
     })
 }
 
+exports.allBroadcasts = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      if (req.body.last_id === 'none') {
+        Broadcasts.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          BroadcastPage.find({companyId: companyUser.companyId},
+            (err, broadcastpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+              })
+            })
+        })
+      } else {
+        Broadcasts.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          BroadcastPage.find({companyId: companyUser.companyId},
+            (err, broadcastpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+              })
+            })
+        })
+      }
+    })
+}
+
 // Get a single broadcast
 exports.show = function (req, res) {
   Broadcasts.findById(req.params.id)
