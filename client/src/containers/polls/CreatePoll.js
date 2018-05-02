@@ -7,7 +7,7 @@ import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
+import { addPoll, loadPollsList, sendpoll, sendPollDirectly, getAllPollResults } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -100,6 +100,7 @@ class CreatePoll extends React.Component {
     for (var j = 0; j < this.props.polls.length; j++) {
       pollOptions[j] = {id: this.props.polls[j]._id, text: this.props.polls[j].statement}
     }
+    this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
@@ -735,6 +736,7 @@ class CreatePoll extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('CreatePoll state', state)
   return {
     pollCreated: (state.pollsInfo.pollCreated),
     pages: (state.pagesInfo.pages),
@@ -742,12 +744,14 @@ function mapStateToProps (state) {
     customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers),
     tags: (state.tagsInfo.tags),
-    polls: (state.pollsInfo.polls)
+    polls: (state.pollsInfo.polls),
+    allResponses: (state.pollsInfo.allResponses)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    getAllPollResults: getAllPollResults,
     loadPollsList: loadPollsList,
     addPoll: addPoll,
     getuserdetails: getuserdetails,

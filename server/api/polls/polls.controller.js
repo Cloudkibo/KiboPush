@@ -227,6 +227,19 @@ exports.submitresponses = function (req, res) {
   })
 }
 
+exports.getAllResponses = function (req, res) {
+  PollResponse.find()
+    .exec((err, pollresponses) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      return res.status(200).json({status: 'success', payload: pollresponses})
+    })
+}
+
 exports.getresponses = function (req, res) {
   PollResponse.find({pollId: req.params.id})
     .populate('pollId subscriberId')
