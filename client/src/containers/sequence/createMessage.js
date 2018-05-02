@@ -31,11 +31,9 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import _ from 'underscore'
 import { browserHistory } from 'react-router'
-import { registerAction } from '../../utility/socketio'
 
-class EditTemplate extends React.Component {
+class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -548,4 +546,4 @@ function mapDispatchToProps (dispatch) {
     dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditTemplate)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateMessage)
