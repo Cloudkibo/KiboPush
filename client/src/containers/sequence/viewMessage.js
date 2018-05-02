@@ -232,7 +232,7 @@ class ViewBroadcastTemplate extends React.Component {
                 </div>
                 <div className='col-xl-3'>
                   <Link onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>&nbsp;&nbsp;
-                  <Link onClick={() => this.gotoEdit()} style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </Link>
+                  <button onClick={() => this.gotoEdit()} style={{lineHeight: 2.5}} className='btn btn-primary btn-sm'> Edit </button>
                 </div>
               </div>
             </div>
