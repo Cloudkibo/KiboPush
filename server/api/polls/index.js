@@ -43,11 +43,11 @@ router.get('/responses/:id',
   auth.doesRolePermitsThisAction('pollsPermission'),
   controller.getresponses)
 
-router.get('/allResponses/',
+router.get('/allResponses',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('polls'),
   auth.doesRolePermitsThisAction('pollsPermission'),
-  controller.getAllresponses)
+  controller.getAllResponses)
 
 router.delete('/deletePoll/:id',
     auth.isAuthenticated(),
