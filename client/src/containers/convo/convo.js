@@ -51,7 +51,7 @@ class Convo extends React.Component {
       filterValue: '',
       searchValue: ''
     })
-    var defaultVal = 0
+    //  var defaultVal = 0
     var value = e.target.value
     this.setState({selectedDays: value})
     if (value && value !== '') {
@@ -66,7 +66,7 @@ class Convo extends React.Component {
       this.props.loadBroadcastsList(value)
     } else if (value === '') {
       this.setState({selectedDays: ''})
-      this.props.loadBroadcastsList(defaultVal)
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10})
     }
   }
   scrollToTop () {

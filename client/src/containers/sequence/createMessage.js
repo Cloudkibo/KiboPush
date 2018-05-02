@@ -37,6 +37,7 @@ class CreateMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      list: [],
       broadcast: [],
       stayOpen: false,
       disabled: false,
@@ -57,10 +58,6 @@ class CreateMessage extends React.Component {
     this.renameTitle = this.renameTitle.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
     this.goBack = this.goBack.bind(this)
-
-    if (this.props.location.state) {
-      this.setEditComponents(this.props.location.state.payload)
-    }
   }
   componentWillMount () {
     // this.props.loadMyPagesList();
@@ -146,6 +143,9 @@ class CreateMessage extends React.Component {
     document.title = 'KiboPush | Edit Message'
     this.scrollToTop()
     this.setState({convoTitle: this.props.location.state.title})
+    if (this.props.location.state) {
+      this.setEditComponents(this.props.location.state.payload)
+    }
   }
 
   showDialog () {
@@ -362,8 +362,8 @@ class CreateMessage extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <button className='btn btn-secondary' onClick={() => this.goBack()}>Cancel</button>
-                        <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                        <button className='btn btn-secondary' onClick={() => this.goBack()} style={{marginRight: '10px'}}>Cancel</button>
+                        <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -431,12 +431,6 @@ class CreateMessage extends React.Component {
                                           <h6>File</h6>
                                         </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                  <div className='row'>
-                                    <div className='col-12' style={{paddingTop: '50px'}}>
-                                      <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
-                                      <button className='btn btn-primary' onClick={() => this.goBack()}>Back</button>
                                     </div>
                                   </div>
                                 </div>
