@@ -54,7 +54,7 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
   if (polls && polls.selectedPolls.length > 0) {
     for (let p = 0; p < polls.selectedPolls.length; p++) {
       console.log('polls.selectedPolls[p]', polls.selectedPolls[p])
-      for (let q = 0; q < polls.pollResponses; q++) {
+      for (let q = 0; q < polls.pollResponses.length; q++) {
         console.log('polls.pollResponses[q]', polls.pollResponses[q])
         if (polls.pollResponses[q].pollId === polls.selectedPolls[p]) {
           console.log('found poll', polls.pollResponses[q])
