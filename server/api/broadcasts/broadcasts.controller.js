@@ -1008,7 +1008,7 @@ function updateseenstatus (req) {
       seen: false,
       datetime: {$lte: new Date(req.read.watermark)}
     },
-    {status: 'seen', seenDateTime: new Date(req.read.watermark), seen: true},
+    {seenDateTime: new Date(req.read.watermark), seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)

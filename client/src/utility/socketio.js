@@ -70,9 +70,11 @@ socket.on('new_chat', (data) => {
 })
 
 socket.on('message', (data) => {
-  if (data.action === 'new_chat' || data.action === 'message_seen') {
+  if (data.action === 'new_chat') {
     store.dispatch(socketUpdate(data.payload))
     store.dispatch(loadDashboardData())
+  } else if (data.action === 'message_seen') {
+    store.dispatch(socketUpdate(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
     store.dispatch(loadAutopostingList())
   } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
