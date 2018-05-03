@@ -125,6 +125,8 @@ class CreateSequence extends React.Component {
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.module === 'edit') {
       this.setState({sequenceId: this.props.location.state._id})
+    } else if (this.props.location.state && this.props.location.state.module === 'view') {
+      this.setState({sequenceId: this.props.location.state._id})
     }
     document.title = 'KiboPush | Sequence Messaging'
   }
