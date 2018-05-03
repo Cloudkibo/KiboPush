@@ -39,7 +39,8 @@ var callbacks = {
   dashboard_updated: false,
   sequence_create: false,
   sequence_update: false,
-  sequence_delete: false
+  sequence_delete: false,
+  message_seen: false
 }
 
 export function registerAction (callback) {
@@ -69,7 +70,7 @@ socket.on('new_chat', (data) => {
 })
 
 socket.on('message', (data) => {
-  if (data.action === 'new_chat') {
+  if (data.action === 'new_chat' || data.action === 'message_seen') {
     store.dispatch(socketUpdate(data.payload))
     store.dispatch(loadDashboardData())
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {

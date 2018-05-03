@@ -322,10 +322,17 @@ class CreateMessage extends React.Component {
 
   goBack () {
     //  this.props.createSequence({name: this.state.name})
-    browserHistory.push({
-      pathname: `/viewMessage`,
-      state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
-    })
+    if (this.props.location.state.payload && this.props.location.state.payload.length > 0) {
+      browserHistory.push({
+        pathname: `/viewMessage`,
+        state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+      })
+    } else {
+      browserHistory.push({
+        pathname: `/editSequence`,
+        state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.title}
+      })
+    }
   }
   render () {
     var alertOptions = {
