@@ -142,8 +142,8 @@ class Subscriber extends React.Component {
       })
     }
   }
-  handleSequence (value) {
-    this.setState({sequenceValue: value, saveEnable: true})
+  handleSequence (obj) {
+    this.setState({sequenceValue: obj.value, saveEnable: true})
   }
   handleCreateTag () {
     this.setState({

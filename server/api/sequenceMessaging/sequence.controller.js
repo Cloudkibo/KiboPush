@@ -360,7 +360,7 @@ exports.allSequences = function (req, res) {
 }
 
 exports.subscriberSequences = function (req, res) {
-  Sequences.find({subscriberId: req.params.id, status: 'subscribed'})
+  SequenceSubscribers.find({subscriberId: req.params.id, status: 'subscribed'})
   .populate('sequenceId')
   .exec((err, sequences) => {
     if (err) {
@@ -410,12 +410,12 @@ exports.subscribeToSequence = function (req, res) {
       // save model to MongoDB
       sequenceSubcriber.save((err, subscriberCreated) => {
         if (err) {
+          console.log(err)
           res.status(500).json({
             status: 'Failed',
             description: 'Failed to insert record'
           })
-        }
-        if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+        } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
           require('./../../config/socketio').sendMessageToClient({
             room_id: companyUser.companyId,
             body: {
@@ -463,8 +463,7 @@ exports.unsubscribeToSequence = function (req, res) {
       {status: 'unsubscribed'}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-        if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+        } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
           require('./../../config/socketio').sendMessageToClient({
             room_id: companyUser.companyId,
             body: {
