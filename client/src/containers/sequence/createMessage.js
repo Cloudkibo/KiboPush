@@ -306,6 +306,10 @@ class CreateMessage extends React.Component {
     }
     this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
     this.setState({stay: true})
+    browserHistory.push({
+      pathname: `/viewMessage`,
+      state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+    })
   }
 
   newConvo () {
@@ -320,7 +324,7 @@ class CreateMessage extends React.Component {
     //  this.props.createSequence({name: this.state.name})
     browserHistory.push({
       pathname: `/viewMessage`,
-      state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+      state: {title: this.props.location.state.title, payload: this.props.location.state.payload, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
     })
   }
   render () {

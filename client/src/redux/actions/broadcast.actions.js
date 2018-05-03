@@ -13,6 +13,7 @@ export function appendSentSeenData (data) {
     broadcasts[j].sent = pagebroadcast.length// total sent
     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
+    //  broadcasts[j].count = data.count
   }
   var newBroadcast = broadcasts.reverse()
   return newBroadcast
