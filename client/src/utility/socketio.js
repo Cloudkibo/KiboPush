@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, fetchSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { loadWorkFlowList } from './../redux/actions/workflows.actions'
@@ -74,7 +74,7 @@ socket.on('message', (data) => {
     store.dispatch(socketUpdate(data.payload))
     store.dispatch(loadDashboardData())
   } else if (data.action === 'message_seen') {
-    store.dispatch(socketUpdate(data.payload))
+    store.dispatch(socketUpdateSeen(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
     store.dispatch(loadAutopostingList())
   } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
