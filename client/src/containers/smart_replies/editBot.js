@@ -179,7 +179,7 @@ class EditBot extends React.Component {
           }
         }
         if (this.state.payload[i].answer === '') {
-          this.msg.error('You must enter answer of all the questions')
+          this.msg.error('You must enter answer of the questions')
           return
         }
       }

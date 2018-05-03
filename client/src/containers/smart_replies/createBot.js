@@ -168,7 +168,7 @@ class CreateBot extends React.Component {
   createBot () {
     console.log('payload', this.state.payload)
     if (this.state.payload.length === 0) {
-      this.msg.error('Please enter one question atleast')
+      this.msg.error('Please enter a question')
       return
     } else {
       for (var i = 0; i < this.state.payload.length; i++) {
@@ -178,13 +178,13 @@ class CreateBot extends React.Component {
         } else {
           for (var j = 0; j < this.state.payload[i].questions.length; j++) {
             if (this.state.payload[i].questions[j] === '') {
-              this.msg.error('You must enter atleast 3 variations of a question')
+              this.msg.error('One of the fields for questions is empty. Please fill all fields')
               return
             }
           }
         }
         if (this.state.payload[i].answer === '') {
-          this.msg.error('You must enter answer of all the questions')
+          this.msg.error('You must enter answer of the questions')
           return
         }
       }
