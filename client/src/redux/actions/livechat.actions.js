@@ -35,6 +35,13 @@ export function socketUpdate (data) {
   }
 }
 
+export function socketUpdateSeen (data) {
+  return {
+    type: ActionTypes.SOCKET_UPDATE_SEEN,
+    data
+  }
+}
+
 export function setActiveSession (sessionId) {
   return {
     type: ActionTypes.SET_ACTIVE_SESSION,
