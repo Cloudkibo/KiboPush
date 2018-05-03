@@ -79,7 +79,7 @@ exports.upload = function (req, res) {
           .pipe(csv())
           .on('data', function (data) {
             if (data[`${phoneColumn}`] && data[`${nameColumn}`]) {
-              var result = data[`${phoneColumn}`].replace(/[- )(]+/g, '')
+              var result = data[`${phoneColumn}`].replace(/[- )(]+_/g, '')
               // var savePhoneNumber = new PhoneNumber({
               //   name: data.name,
               //   number: result,
@@ -322,7 +322,7 @@ exports.sendMessage = function (req, res) {
     fs.createReadStream(req.body.path)
       .pipe(csv())
       .on('data', function (data) {
-        var result = data.req.body.phone_numbers.replace(/[- )(]/g, '')
+        var result = data.req.body.phone_numbers.replace(/[- )(]+_/g, '')
         // var savePhoneNumber = new PhoneNumber({
         //   name: data.req.body.names,
         //   number: result,
@@ -514,7 +514,7 @@ exports.sendNumbers = function (req, res) {
       }
     })
     for (let i = 0; i < req.body.numbers.length; i++) {
-      let result = req.body.numbers[i].replace(/[- )(]/g, '')
+      let result = req.body.numbers[i].replace(/[- )(]+_/g, '')
       let pagesFindCriteria = {userId: req.user._id, connected: true, pageId: req.body.pageId}
       Pages.find(pagesFindCriteria, (err, pages) => {
         if (err) {
