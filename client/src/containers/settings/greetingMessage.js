@@ -11,7 +11,7 @@ import { Link } from 'react-router'
 import { Picker } from 'emoji-mart'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Popover from 'react-simple-popover'
-import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from './viewScreen'
 
