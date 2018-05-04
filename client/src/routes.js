@@ -105,7 +105,7 @@ import Sequence from './containers/sequence/sequence'
 import ViewMessage from './containers/sequence/viewMessage'
 import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
-import FacebookPosts from './containers/commentCapture/FacebookPosts'
+import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 
 import auth from './utility/auth.service'
