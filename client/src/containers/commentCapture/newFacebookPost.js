@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
+import {createFacebookPost} from '../../redux/actions/commentCapture.actions'
 const styles = {
   iconclass: {
     height: 24,
@@ -45,10 +46,14 @@ class FacebookPosts extends React.Component {
     this.reset = this.reset.bind(this)
     this.onFileChange = this.onFileChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
+    this.onPost = this.onPost.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | New Facebook Post'
+    if (this.props.pages) {
+      this.setState({selectedPage: this.props.pages[0]})
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -100,10 +105,11 @@ class FacebookPosts extends React.Component {
     this.setState({showEmojiPicker: !this.state.showEmojiPicker})
   }
   onPageChange (event) {
+    console.log('event', event.target.value)
     if (event.target.value !== -1) {
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageId === event.target.value) {
+        if (this.props.pages[i]._id === event.target.value) {
           page = this.props.pages[i]
           break
         }
@@ -118,6 +124,9 @@ class FacebookPosts extends React.Component {
         selectedPage: {}
       })
     }
+  }
+  onPost () {
+    this.props.createFacebookPost({pageId: this.state.selectedPage._id, payload: this.state.facebookPost, reply: 'reply', includedKeywords: ['hello'], excludedKeywords: ['hi']})
   }
   render () {
     return (
@@ -155,10 +164,10 @@ class FacebookPosts extends React.Component {
                               <label className='col-form-label'>Choose Page</label>
                             </div>
                             <div className='col-9'>
-                              <select className='form-control' value={this.state.selectedPage.pageId} onChange={this.onPageChange}>
+                              <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
                                 {
                                   this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                    <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectedPage.pageId}>{page.pageName}</option>
+                                    <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
                                   ))
                                 }
                               </select>
@@ -273,14 +282,9 @@ class FacebookPosts extends React.Component {
                         <button style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-secondary' onClick={this.reset}>
                           Reset
                         </button>
-                        { ((this.props.pages && this.props.pages.length === 0) || this.state.disabled)
-                          ? <button type='submit' className='btn btn-primary' disabled>
-                            <i className='fa fa-facebook' /> Post on Facebook
-                          </button>
-                          : <button onClick={this.onSubmit} type='submit' className='btn btn-primary'>
-                            <i className='fa fa-facebook' /> Post on Facebook
-                          </button>
-                        }
+                        <button type='submit' className='btn btn-primary' onClick={this.onPost}>
+                          <i className='fa fa-facebook' /> Post on Facebook
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -304,6 +308,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    createFacebookPost: createFacebookPost
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)
