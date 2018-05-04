@@ -22,3 +22,16 @@ export function fetchAllPosts () {
     })
   }
 }
+
+export function createFacebookPost (data) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi('post/create', 'post', data)
+      .then(res => {
+        console.log('response from server', res)
+        if (res.status === 'success') {
+          console.log('response', res)
+        }
+      })
+  }
+}
