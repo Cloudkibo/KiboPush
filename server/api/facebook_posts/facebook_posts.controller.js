@@ -104,6 +104,8 @@ exports.create = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
+          logger.serverLog(TAG,
+          `Page found${JSON.stringify(userPage)}`)
           Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
             if (err) {
               return res.status(500).json({
@@ -124,6 +126,8 @@ exports.create = function (req, res) {
                 logger.serverLog(TAG,
                 `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
+              logger.serverLog(TAG,
+              `response from get request ${JSON.stringify(resp.body)}`)
               const data = {
                 message: 'hi Anisha'
               }
