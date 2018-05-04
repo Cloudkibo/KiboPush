@@ -7,6 +7,11 @@ export function subscribersInfo (state = {}, action) {
         subscribers: action.data,
         locales: action.locale
       })
+    case ActionTypes.LOAD_ALL_SUBSCRIBERS_LIST:
+      return Object.assign({}, state, {
+        subscribers: action.data,
+        locales: action.locale
+      })
 
     default:
       return state

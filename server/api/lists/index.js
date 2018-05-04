@@ -41,4 +41,14 @@ router.delete('/deleteList/:id',
     // auth.doesPlanPermitsThisAction('customer_matching'),
     // auth.doesRolePermitsThisAction('customerMatchingPermission'),
     controller.deleteList)
+router.get('/repliedPollSubscribers',
+    auth.isAuthenticated(),
+    // auth.doesPlanPermitsThisAction('customer_matching'),
+    // auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.repliedPollSubscribers)
+router.get('/repliedSurveySubscribers',
+    auth.isAuthenticated(),
+    // auth.doesPlanPermitsThisAction('customer_matching'),
+    // auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.repliedSurveySubscribers)
 module.exports = router

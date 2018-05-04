@@ -3,6 +3,445 @@
  * Created by sojharo on 11/01/2018.
  */
 
+let abcTweetNotIgnored = {
+  'created_at': 'Tue May 01 09:38:13 +0000 2018',
+  'id': 991250428233961500,
+  'id_str': '991250428233961472',
+  'text': 'RT @ABC: RUN HOME: 3-year-old Lennox Salcedo was told to “run home as fast as he can” during a baseball game. He delivered the performance…',
+  'source': '<a href="http://twitter.com/download/iphone" rel="nofollow">Twitter for iPhone</a>',
+  'truncated': false,
+  'in_reply_to_status_id': null,
+  'in_reply_to_status_id_str': null,
+  'in_reply_to_user_id': null,
+  'in_reply_to_user_id_str': null,
+  'in_reply_to_screen_name': null,
+  'user': {
+    'id': 141230477,
+    'id_str': '141230477',
+    'name': 'Janet Robinson',
+    'screen_name': 'Mama_JRo',
+    'location': 'Charlotte, NC',
+    'url': null,
+    'description': 'Mama bear of two awesome human beings, wife of nerdiest most patient man on Earth, photographer, traveler. Wanderer but not lost. #autism #mentalhealth',
+    'translator_type': 'none',
+    'protected': false,
+    'verified': false,
+    'followers_count': 81,
+    'friends_count': 292,
+    'listed_count': 1,
+    'favourites_count': 895,
+    'statuses_count': 448,
+    'created_at': 'Fri May 07 14:18:22 +0000 2010',
+    'utc_offset': -14400,
+    'time_zone': 'Eastern Time (US & Canada)',
+    'geo_enabled': false,
+    'lang': 'en',
+    'contributors_enabled': false,
+    'is_translator': false,
+    'profile_background_color': '642D8B',
+    'profile_background_image_url': 'http://pbs.twimg.com/profile_background_images/610239631267794944/qivLJDNz.jpg',
+    'profile_background_image_url_https': 'https://pbs.twimg.com/profile_background_images/610239631267794944/qivLJDNz.jpg',
+    'profile_background_tile': true,
+    'profile_link_color': '981CEB',
+    'profile_sidebar_border_color': 'FFFFFF',
+    'profile_sidebar_fill_color': '859096',
+    'profile_text_color': '82B197',
+    'profile_use_background_image': true,
+    'profile_image_url': 'http://pbs.twimg.com/profile_images/987517631778435072/Q9O-h9Fe_normal.jpg',
+    'profile_image_url_https': 'https://pbs.twimg.com/profile_images/987517631778435072/Q9O-h9Fe_normal.jpg',
+    'profile_banner_url': 'https://pbs.twimg.com/profile_banners/141230477/1516302427',
+    'default_profile': false,
+    'default_profile_image': false,
+    'following': null,
+    'follow_request_sent': null,
+    'notifications': null,
+  },
+  'geo': null,
+  'coordinates': null,
+  'place': null,
+  'contributors': null,
+  'retweeted_status': {
+    'created_at': 'Tue May 01 06:35:49 +0000 2018',
+    'id': 991204528186908700,
+    'id_str': '991204528186908672',
+    'text': 'RUN HOME: 3-year-old Lennox Salcedo was told to “run home as fast as he can” during a baseball game. He delivered t… https://t.co/bn5JyJymZE',
+    'display_text_range': [0, 140],
+    'source': '<a href="http://www.socialflow.com" rel="nofollow">SocialFlow</a>',
+    'truncated': true,
+    'in_reply_to_status_id': null,
+    'in_reply_to_status_id_str': null,
+    'in_reply_to_user_id': null,
+    'in_reply_to_user_id_str': null,
+    'in_reply_to_screen_name': null,
+    'user': {
+      'id': 28785486,
+      'id_str': '28785486',
+      'name': 'ABC News',
+      'screen_name': 'ABC',
+      'location': 'New York City / Worldwide',
+      'url': 'http://ABCNews.com',
+      'description': 'All the news and information you need to see, curated by the @ABC News team. Instagram: https://www.instagram.com/abcnews',
+      'translator_type': 'regular',
+      'protected': false,
+      'verified': true,
+      'followers_count': 13994680,
+      'friends_count': 634,
+      'listed_count': 52604,
+      'favourites_count': 470,
+      'statuses_count': 205915,
+      'created_at': 'Sat Apr 04 12:40:32 +0000 2009',
+      'utc_offset': -14400,
+      'time_zone': 'Eastern Time (US & Canada)',
+      'geo_enabled': true,
+      'lang': 'en',
+      'contributors_enabled': false,
+      'is_translator': false,
+      'profile_background_color': '6E8EB5',
+      'profile_background_image_url': 'http://pbs.twimg.com/profile_background_images/441965491024719872/pAv-lzCZ.jpeg',
+      'profile_background_image_url_https': 'https://pbs.twimg.com/profile_background_images/441965491024719872/pAv-lzCZ.jpeg',
+      'profile_background_tile': false,
+      'profile_link_color': '336699',
+      'profile_sidebar_border_color': 'FFFFFF',
+      'profile_sidebar_fill_color': 'DDEEF6',
+      'profile_text_color': '333333',
+      'profile_use_background_image': true,
+      'profile_image_url': 'http://pbs.twimg.com/profile_images/877547979363758080/ny06RNTT_normal.jpg',
+      'profile_image_url_https': 'https://pbs.twimg.com/profile_images/877547979363758080/ny06RNTT_normal.jpg',
+      'profile_banner_url': 'https://pbs.twimg.com/profile_banners/28785486/1505493568',
+      'default_profile': false,
+      'default_profile_image': false,
+      'following': null,
+      'follow_request_sent': null,
+      'notifications': null,
+    },
+    'geo': null,
+    'coordinates': null,
+    'place': null,
+    'contributors': null,
+    'is_quote_status': false,
+    'extended_tweet': {
+      'full_text': 'RUN HOME: 3-year-old Lennox Salcedo was told to “run home as fast as he can” during a baseball game. He delivered the performance of a lifetime. https://t.co/CaxlYmw98l https://t.co/KpCIoo1bEA',
+      'display_text_range': [0, 168],
+      'entities': {
+        'hashtags': [],
+        'urls': [
+          {
+            'url': 'https://t.co/CaxlYmw98l',
+            'expanded_url': 'https://abcn.ws/2JF6Oyd',
+            'display_url': 'abcn.ws/2JF6Oyd',
+            'indices': [145, 168],
+          }],
+        'user_mentions': [],
+        'symbols': [],
+        'media': [
+          {
+            'id': 991204363183018000,
+            'id_str': '991204363183017986',
+            'indices': [169, 192],
+            'additional_media_info': {'monetizable': false},
+            'media_url': 'http://pbs.twimg.com/ext_tw_video_thumb/991204363183017986/pu/img/-eyVa8-mkp-2hx6O.jpg',
+            'media_url_https': 'https://pbs.twimg.com/ext_tw_video_thumb/991204363183017986/pu/img/-eyVa8-mkp-2hx6O.jpg',
+            'url': 'https://t.co/KpCIoo1bEA',
+            'display_url': 'pic.twitter.com/KpCIoo1bEA',
+            'expanded_url': 'https://twitter.com/ABC/status/991204528186908672/video/1',
+            'type': 'video',
+            'video_info': {
+              'aspect_ratio': [9, 16],
+              'duration_millis': 47005,
+              'variants': [
+                {
+                  'bitrate': 2176000,
+                  'content_type': 'video/mp4',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/vid/720x1280/2fymhaIhvWhUeGLO.mp4?tag=3',
+                },
+                {
+                  'content_type': 'application/x-mpegURL',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/pl/8xm-fMz-akTC3FKh.m3u8?tag=3',
+                },
+                {
+                  'bitrate': 832000,
+                  'content_type': 'video/mp4',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/vid/360x640/FaTGp1Cv0YfCtKb7.mp4?tag=3',
+                },
+                {
+                  'bitrate': 256000,
+                  'content_type': 'video/mp4',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/vid/180x320/hu9AzWiPtHuOoJ8f.mp4?tag=3',
+                }],
+            },
+            'sizes': {
+              'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+              'small': {'w': 383, 'h': 680, 'resize': 'fit'},
+              'large': {'w': 720, 'h': 1280, 'resize': 'fit'},
+              'medium': {'w': 675, 'h': 1200, 'resize': 'fit'},
+            },
+          }],
+      },
+      'extended_entities': {
+        'media': [
+          {
+            'id': 991204363183018000,
+            'id_str': '991204363183017986',
+            'indices': [169, 192],
+            'additional_media_info': {'monetizable': false},
+            'media_url': 'http://pbs.twimg.com/ext_tw_video_thumb/991204363183017986/pu/img/-eyVa8-mkp-2hx6O.jpg',
+            'media_url_https': 'https://pbs.twimg.com/ext_tw_video_thumb/991204363183017986/pu/img/-eyVa8-mkp-2hx6O.jpg',
+            'url': 'https://t.co/KpCIoo1bEA',
+            'display_url': 'pic.twitter.com/KpCIoo1bEA',
+            'expanded_url': 'https://twitter.com/ABC/status/991204528186908672/video/1',
+            'type': 'video',
+            'video_info': {
+              'aspect_ratio': [9, 16],
+              'duration_millis': 47005,
+              'variants': [
+                {
+                  'bitrate': 2176000,
+                  'content_type': 'video/mp4',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/vid/720x1280/2fymhaIhvWhUeGLO.mp4?tag=3',
+                },
+                {
+                  'content_type': 'application/x-mpegURL',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/pl/8xm-fMz-akTC3FKh.m3u8?tag=3',
+                },
+                {
+                  'bitrate': 832000,
+                  'content_type': 'video/mp4',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/vid/360x640/FaTGp1Cv0YfCtKb7.mp4?tag=3',
+                },
+                {
+                  'bitrate': 256000,
+                  'content_type': 'video/mp4',
+                  'url': 'https://video.twimg.com/ext_tw_video/991204363183017986/pu/vid/180x320/hu9AzWiPtHuOoJ8f.mp4?tag=3',
+                }],
+            },
+            'sizes': {
+              'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+              'small': {'w': 383, 'h': 680, 'resize': 'fit'},
+              'large': {'w': 720, 'h': 1280, 'resize': 'fit'},
+              'medium': {'w': 675, 'h': 1200, 'resize': 'fit'},
+            },
+          }],
+      },
+    },
+    'quote_count': 148,
+    'reply_count': 99,
+    'retweet_count': 508,
+    'favorite_count': 1592,
+    'entities': {
+      'hashtags': [],
+      'urls': [
+        {
+          'url': 'https://t.co/bn5JyJymZE',
+          'expanded_url': 'https://twitter.com/i/web/status/991204528186908672',
+          'display_url': 'twitter.com/i/web/status/9…',
+          'indices': [117, 140],
+        }],
+      'user_mentions': [],
+      'symbols': [],
+    },
+    'favorited': false,
+    'retweeted': false,
+    'possibly_sensitive': false,
+    'filter_level': 'low',
+    'lang': 'en',
+  },
+  'is_quote_status': false,
+  'quote_count': 0,
+  'reply_count': 0,
+  'retweet_count': 0,
+  'favorite_count': 0,
+  'entities': {
+    'hashtags': [],
+    'urls': [],
+    'user_mentions': [
+      {
+        'screen_name': 'ABC',
+        'name': 'ABC News',
+        'id': 28785486,
+        'id_str': '28785486',
+        'indices': [3, 7],
+      }],
+    'symbols': [],
+  },
+  'favorited': false,
+  'retweeted': false,
+  'filter_level': 'low',
+  'lang': 'en',
+  'timestamp_ms': '1525167493290',
+}
+
+let abcTweet = {
+  'created_at': 'Tue May 01 09:17:23 +0000 2018',
+  'id': 991245185307828200,
+  'id_str': '991245185307828225',
+  'text': '@ABC @JJohnson2u Never interrupt an actor while he perfects his craft. Totally a winner.',
+  'display_text_range': [17, 88],
+  'source': '<a href="http://twitter.com/download/android" rel="nofollow">Twitter for Android</a>',
+  'truncated': false,
+  'in_reply_to_status_id': 991027351935946800,
+  'in_reply_to_status_id_str': '991027351935946754',
+  'in_reply_to_user_id': 28785486,
+  'in_reply_to_user_id_str': '28785486',
+  'in_reply_to_screen_name': 'ABC',
+  'user': {
+    'id': 34078951,
+    'id_str': '34078951',
+    'name': 'BBBB Snarky Sharky 🇺🇸',
+    'screen_name': 'BeBe_2008',
+    'location': 'Texas',
+    'url': null,
+    'description': 'Mom,music and movie lover, Sci Fi watcher and advocate for logic in an illogical world. Well versed in the art of sarcasm. Patriot. #Resist',
+    'translator_type': 'none',
+    'protected': false,
+    'verified': false,
+    'followers_count': 3271,
+    'friends_count': 4960,
+    'listed_count': 5,
+    'favourites_count': 31977,
+    'statuses_count': 22879,
+    'created_at': 'Tue Apr 21 22:58:06 +0000 2009',
+    'utc_offset': -18000,
+    'time_zone': 'Central Time (US & Canada)',
+    'geo_enabled': true,
+    'lang': 'en',
+    'contributors_enabled': false,
+    'is_translator': false,
+    'profile_background_color': '642D8B',
+    'profile_background_image_url': 'http://abs.twimg.com/images/themes/theme10/bg.gif',
+    'profile_background_image_url_https': 'https://abs.twimg.com/images/themes/theme10/bg.gif',
+    'profile_background_tile': true,
+    'profile_link_color': 'FF0000',
+    'profile_sidebar_border_color': '65B0DA',
+    'profile_sidebar_fill_color': '7AC3EE',
+    'profile_text_color': '3D1957',
+    'profile_use_background_image': true,
+    'profile_image_url': 'http://pbs.twimg.com/profile_images/844675189749288960/zVHNCbBJ_normal.jpg',
+    'profile_image_url_https': 'https://pbs.twimg.com/profile_images/844675189749288960/zVHNCbBJ_normal.jpg',
+    'profile_banner_url': 'https://pbs.twimg.com/profile_banners/34078951/1494623547',
+    'default_profile': false,
+    'default_profile_image': false,
+    'following': null,
+    'follow_request_sent': null,
+    'notifications': null,
+  },
+  'geo': null,
+  'coordinates': null,
+  'place': null,
+  'contributors': null,
+  'is_quote_status': false,
+  'quote_count': 0,
+  'reply_count': 0,
+  'retweet_count': 0,
+  'favorite_count': 0,
+  'entities': {
+    'hashtags': [],
+    'urls': [],
+    'user_mentions': [
+      {
+        'screen_name': 'ABC',
+        'name': 'ABC News',
+        'id': 28785486,
+        'id_str': '28785486',
+        'indices': [0, 4],
+      },
+      {
+        'screen_name': 'JJohnson2u',
+        'name': 'JJohnson 🌊',
+        'id': 4868688743,
+        'id_str': '4868688743',
+        'indices': [5, 16],
+      }],
+    'symbols': [],
+  },
+  'favorited': false,
+  'retweeted': false,
+  'filter_level': 'low',
+  'lang': 'en',
+  'timestamp_ms': '1525166243279',
+}
+
+let testTweet = {
+  'created_at': 'Wed Apr 25 11:18:41 +0000 2018',
+  'id': 989101383239520300,
+  'id_str': '989101383239520256',
+  'text': '@AnsaSojharo How are you Ansa',
+  'source': '<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>',
+  'truncated': false,
+  'in_reply_to_status_id': null,
+  'in_reply_to_status_id_str': null,
+  'in_reply_to_user_id': 968221357627539500,
+  'in_reply_to_user_id_str': '968221357627539456',
+  'in_reply_to_screen_name': 'AnsaSojharo',
+  'user': {
+    'id': 2616186000,
+    'id_str': '2616186000',
+    'name': 'Sojharo',
+    'screen_name': 'SojharoMangi',
+    'location': 'Hyderabad, Sindh',
+    'url': null,
+    'description': 'Enthusiastic about #WebRTC, #WebApp, #ECommerce, #ArtificialIntelligence, #MEAN, #Reading, #Writing, #Programming, #Philosophy http://lnkd.in/qCKxwr',
+    'translator_type': 'none',
+    'protected': false,
+    'verified': false,
+    'followers_count': 103,
+    'friends_count': 57,
+    'listed_count': 10,
+    'favourites_count': 133,
+    'statuses_count': 96,
+    'created_at': 'Thu Jul 10 21:45:54 +0000 2014',
+    'utc_offset': 18000,
+    'time_zone': 'Asia/Karachi',
+    'geo_enabled': false,
+    'lang': 'en',
+    'contributors_enabled': false,
+    'is_translator': false,
+    'profile_background_color': 'C0DEED',
+    'profile_background_image_url': 'http://abs.twimg.com/images/themes/theme1/bg.png',
+    'profile_background_image_url_https': 'https://abs.twimg.com/images/themes/theme1/bg.png',
+    'profile_background_tile': false,
+    'profile_link_color': '1DA1F2',
+    'profile_sidebar_border_color': 'C0DEED',
+    'profile_sidebar_fill_color': 'DDEEF6',
+    'profile_text_color': '333333',
+    'profile_use_background_image': true,
+    'profile_image_url': 'http://pbs.twimg.com/profile_images/487354529726230528/ObT3TigA_normal.jpeg',
+    'profile_image_url_https': 'https://pbs.twimg.com/profile_images/487354529726230528/ObT3TigA_normal.jpeg',
+    'profile_banner_url': 'https://pbs.twimg.com/profile_banners/2616186000/1405029950',
+    'default_profile': true,
+    'default_profile_image': false,
+    'following': null,
+    'follow_request_sent': null,
+    'notifications': null,
+  },
+  'geo': null,
+  'coordinates': null,
+  'place': null,
+  'contributors': null,
+  'is_quote_status': false,
+  'quote_count': 0,
+  'reply_count': 0,
+  'retweet_count': 0,
+  'favorite_count': 0,
+  'entities': {
+    'hashtags': [],
+    'urls': [],
+    'user_mentions': [
+      {
+        'screen_name': 'AnsaSojharo',
+        'name': 'Ansa Sojharo',
+        'id': 968221357627539500,
+        'id_str': '968221357627539456',
+        'indices': [0, 12],
+      }],
+    'symbols': [],
+  },
+  'favorited': false,
+  'retweeted': false,
+  'filter_level': 'low',
+  'lang': 'en',
+  'timestamp_ms': '1524655121036',
+}
+
 let simpleText = {
   'created_at': 'Thu Jan 11 17:30:59 +0000 2018',
   'id': 951506738586505200,
@@ -54,7 +493,7 @@ let simpleText = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -69,13 +508,13 @@ let simpleText = {
     'hashtags': [{'text': 'kibopush', 'indices': [0, 9]}],
     'urls': [],
     'user_mentions': [],
-    'symbols': []
+    'symbols': [],
   },
   'favorited': false,
   'retweeted': false,
   'filter_level': 'low',
   'lang': 'en',
-  'timestamp_ms': '1515691859276'
+  'timestamp_ms': '1515691859276',
 }
 
 let simpleTweetWithURLandText = {
@@ -129,7 +568,7 @@ let simpleTweetWithURLandText = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -147,17 +586,17 @@ let simpleTweetWithURLandText = {
         'url': 'https://t.co/Hn40MJkKho',
         'expanded_url': 'http://kibopush.com',
         'display_url': 'kibopush.com',
-        'indices': [24, 47]
+        'indices': [24, 47],
       }],
     'user_mentions': [],
-    'symbols': []
+    'symbols': [],
   },
   'favorited': false,
   'retweeted': false,
   'possibly_sensitive': false,
   'filter_level': 'low',
   'lang': 'en',
-  'timestamp_ms': '1515692008346'
+  'timestamp_ms': '1515692008346',
 }
 
 let tweetWithURLOnly = {
@@ -211,7 +650,7 @@ let tweetWithURLOnly = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -229,17 +668,17 @@ let tweetWithURLOnly = {
         'url': 'https://t.co/bCJAruQHzE',
         'expanded_url': 'https://www.yahoo.com',
         'display_url': 'yahoo.com',
-        'indices': [0, 23]
+        'indices': [0, 23],
       }],
     'user_mentions': [],
-    'symbols': []
+    'symbols': [],
   },
   'favorited': false,
   'retweeted': false,
   'possibly_sensitive': false,
   'filter_level': 'low',
   'lang': 'und',
-  'timestamp_ms': '1515693180784'
+  'timestamp_ms': '1515693180784',
 }
 
 let tweetwithLinkandTextAndImage = {
@@ -294,7 +733,7 @@ let tweetwithLinkandTextAndImage = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -312,7 +751,7 @@ let tweetwithLinkandTextAndImage = {
         'url': 'https://t.co/np7vl9fjjd',
         'expanded_url': 'https://app.kibopush.com',
         'display_url': 'app.kibopush.com',
-        'indices': [16, 39]
+        'indices': [16, 39],
       }],
     'user_mentions': [],
     'symbols': [],
@@ -331,9 +770,9 @@ let tweetwithLinkandTextAndImage = {
           'large': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'small': {'w': 680, 'h': 144, 'resize': 'fit'},
           'medium': {'w': 1024, 'h': 217, 'resize': 'fit'},
-          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'}
-        }
-      }]
+          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+        },
+      }],
   },
   'extended_entities': {
     'media': [
@@ -351,16 +790,16 @@ let tweetwithLinkandTextAndImage = {
           'large': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'small': {'w': 680, 'h': 144, 'resize': 'fit'},
           'medium': {'w': 1024, 'h': 217, 'resize': 'fit'},
-          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'}
-        }
-      }]
+          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+        },
+      }],
   },
   'favorited': false,
   'retweeted': false,
   'possibly_sensitive': false,
   'filter_level': 'low',
   'lang': 'en',
-  'timestamp_ms': '1515693517803'
+  'timestamp_ms': '1515693517803',
 }
 
 let imageOnly = {
@@ -415,7 +854,7 @@ let imageOnly = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -446,9 +885,9 @@ let imageOnly = {
           'large': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'small': {'w': 680, 'h': 144, 'resize': 'fit'},
           'medium': {'w': 1024, 'h': 217, 'resize': 'fit'},
-          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'}
-        }
-      }]
+          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+        },
+      }],
   },
   'extended_entities': {
     'media': [
@@ -466,16 +905,16 @@ let imageOnly = {
           'large': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'small': {'w': 680, 'h': 144, 'resize': 'fit'},
           'medium': {'w': 1024, 'h': 217, 'resize': 'fit'},
-          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'}
-        }
-      }]
+          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+        },
+      }],
   },
   'favorited': false,
   'retweeted': false,
   'possibly_sensitive': false,
   'filter_level': 'low',
   'lang': 'und',
-  'timestamp_ms': '1515693726522'
+  'timestamp_ms': '1515693726522',
 }
 
 let tweetMulitpleImages = {
@@ -530,7 +969,7 @@ let tweetMulitpleImages = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -561,9 +1000,9 @@ let tweetMulitpleImages = {
           'medium': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'large': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'small': {'w': 680, 'h': 144, 'resize': 'fit'},
-          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'}
-        }
-      }]
+          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+        },
+      }],
   },
   'extended_entities': {
     'media': [
@@ -581,8 +1020,8 @@ let tweetMulitpleImages = {
           'medium': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'large': {'w': 1024, 'h': 217, 'resize': 'fit'},
           'small': {'w': 680, 'h': 144, 'resize': 'fit'},
-          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'}
-        }
+          'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
+        },
       },
       {
         'id': 951516356985450500,
@@ -598,16 +1037,16 @@ let tweetMulitpleImages = {
           'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
           'medium': {'w': 1200, 'h': 786, 'resize': 'fit'},
           'large': {'w': 1366, 'h': 895, 'resize': 'fit'},
-          'small': {'w': 680, 'h': 446, 'resize': 'fit'}
-        }
-      }]
+          'small': {'w': 680, 'h': 446, 'resize': 'fit'},
+        },
+      }],
   },
   'favorited': false,
   'retweeted': false,
   'possibly_sensitive': false,
   'filter_level': 'low',
   'lang': 'und',
-  'timestamp_ms': '1515694167590'
+  'timestamp_ms': '1515694167590',
 }
 
 let tweetVideo = {
@@ -662,7 +1101,7 @@ let tweetVideo = {
     'default_profile_image': false,
     'following': null,
     'follow_request_sent': null,
-    'notifications': null
+    'notifications': null,
   },
   'geo': null,
   'coordinates': null,
@@ -693,9 +1132,9 @@ let tweetVideo = {
           'large': {'w': 560, 'h': 320, 'resize': 'fit'},
           'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
           'small': {'w': 560, 'h': 320, 'resize': 'fit'},
-          'medium': {'w': 560, 'h': 320, 'resize': 'fit'}
-        }
-      }]
+          'medium': {'w': 560, 'h': 320, 'resize': 'fit'},
+        },
+      }],
   },
   'extended_entities': {
     'media': [
@@ -713,7 +1152,7 @@ let tweetVideo = {
           'large': {'w': 560, 'h': 320, 'resize': 'fit'},
           'thumb': {'w': 150, 'h': 150, 'resize': 'crop'},
           'small': {'w': 560, 'h': 320, 'resize': 'fit'},
-          'medium': {'w': 560, 'h': 320, 'resize': 'fit'}
+          'medium': {'w': 560, 'h': 320, 'resize': 'fit'},
         },
         'video_info': {
           'aspect_ratio': [7, 4],
@@ -721,20 +1160,20 @@ let tweetVideo = {
           'variants': [
             {
               'content_type': 'application/x-mpegURL',
-              'url': 'https://video.twimg.com/ext_tw_video/951519224819781632/pu/pl/VzMh4JXeD3auy8UZ.m3u8'
+              'url': 'https://video.twimg.com/ext_tw_video/951519224819781632/pu/pl/VzMh4JXeD3auy8UZ.m3u8',
             },
             {
               'bitrate': 320000,
               'content_type': 'video/mp4',
-              'url': 'https://video.twimg.com/ext_tw_video/951519224819781632/pu/vid/314x180/CXhfy-jDnhtudRSk.mp4'
-            }]
-        }
-      }]
+              'url': 'https://video.twimg.com/ext_tw_video/951519224819781632/pu/vid/314x180/CXhfy-jDnhtudRSk.mp4',
+            }],
+        },
+      }],
   },
   'favorited': false,
   'retweeted': false,
   'possibly_sensitive': false,
   'filter_level': 'low',
   'lang': 'und',
-  'timestamp_ms': '1515694844948'
+  'timestamp_ms': '1515694844948',
 }

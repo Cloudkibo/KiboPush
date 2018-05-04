@@ -15,9 +15,9 @@ export function sendresp (data) {
 
 export function downloadSampleFile () {
   let users = []
-  let user1 = {'names': 'Sania Siddiqui', 'phone_numbers': '+923312443100'}
-  let user2 = {'names': 'Anisha Chatwani', 'phone_numbers': '+923322846897'}
-  let user3 = {'names': 'Sojharo Mangi', 'phone_numbers': '+923323800399'}
+  let user1 = {'names': 'Mary Jane', 'phone_numbers': '+923312440000'}
+  let user2 = {'names': 'Tom Henry', 'phone_numbers': '+923322223000'}
+  let user3 = {'names': 'Ali Ahmed', 'phone_numbers': '+923323800300'}
   users.push(user1)
   users.push(user2)
   users.push(user3)
@@ -61,9 +61,8 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('respone', res)
-      var data = {status: res.status, description: res.description}
-      handleResponse()
-      dispatch(sendresp(data))
+      handleResponse(res)
+      dispatch(sendresp(res))
       dispatch(loadCustomerLists())
     })
   }

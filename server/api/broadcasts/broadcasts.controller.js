@@ -2,8 +2,11 @@
  * Created by sojharo on 27/07/2017.
  */
 //
+const Sequences = require('../sequenceMessaging/sequence.model')
+const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
+const botController = require('./../smart_replies/bots.controller')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -26,8 +29,10 @@ const Users = require('./../user/Users.model')
 const URL = require('./../URLforClickedCount/URL.model')
 const AutopostingMessages = require(
   './../autoposting_messages/autoposting_messages.model')
-const AutopostingSubscriberMessages = require(
-  './../autoposting_messages/autoposting_subscriber_messages.model')
+const SequenceMessages = require(
+  './../sequenceMessaging/message.model')
+const SequenceSubscriberMessages = require(
+  './../sequenceMessaging/sequenceSubscribersMessages.model')
 const utility = require('./broadcasts.utility')
 const mongoose = require('mongoose')
 const og = require('open-graph')
@@ -53,23 +58,111 @@ exports.index = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      Broadcasts.find({companyId: companyUser.companyId}, (err, broadcasts) => {
-        if (err) {
-          return res.status(404)
-            .json({status: 'failed', description: 'Broadcasts not found'})
-        }
-        BroadcastPage.find({companyId: companyUser.companyId},
-          (err, broadcastpages) => {
-            if (err) {
-              return res.status(404)
-                .json({status: 'failed', description: 'Broadcasts not found'})
-            }
-            res.status(200).json({
-              status: 'success',
-              payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+      if (req.params.days === '0') {
+        Broadcasts.find({companyId: companyUser.companyId}, (err, broadcasts) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          BroadcastPage.find({companyId: companyUser.companyId},
+            (err, broadcastpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+              })
             })
-          })
-      })
+        })
+      } else {
+        Broadcasts.aggregate([
+          {
+            $match: {companyId: companyUser.companyId,
+              'datetime': {
+                $gte: new Date(
+                  (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
+                $lt: new Date(
+                  (new Date().getTime()))
+              }
+            }
+          }
+        ], (err, broadcasts) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          BroadcastPage.find({companyId: companyUser.companyId},
+            (err, broadcastpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+              })
+            })
+        })
+      }
+    })
+}
+
+exports.allBroadcasts = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      if (req.body.last_id === 'none') {
+        Broadcasts.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          BroadcastPage.find({companyId: companyUser.companyId},
+            (err, broadcastpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+              })
+            })
+        })
+      } else {
+        Broadcasts.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          BroadcastPage.find({companyId: companyUser.companyId},
+            (err, broadcastpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+              })
+            })
+        })
+      }
     })
 }
 
@@ -104,6 +197,11 @@ exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}
 
 // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
+  botController.respond(JSON.parse(JSON.stringify(req.body)))
+
+  logger.serverLog(TAG,
+    `something received from facebook ${JSON.stringify(req.body)}`)
+
   let subscriberByPhoneNumber = false
   let phoneNumber = ''
   logger.serverLog(TAG,
@@ -214,7 +312,7 @@ exports.getfbMessage = function (req, res) {
                               }
                               let messageData = utility.prepareSendAPIPayload(
                                 subsriber.id,
-                                payloadItem, false)
+                                payloadItem, true)
 
                               request(
                                 {
@@ -227,11 +325,11 @@ exports.getfbMessage = function (req, res) {
                                 function (err, res) {
                                   if (err) {
                                     return logger.serverLog(TAG,
-                                      `At send test message broadcast ${JSON.stringify(
+                                      `At send welcome message broadcast ${JSON.stringify(
                                         err)}`)
                                   } else {
                                     logger.serverLog(TAG,
-                                      `At send test message broadcast response ${JSON.stringify(
+                                      `At send welcome message broadcast response ${JSON.stringify(
                                         res)}`)
                                   }
                                 })
@@ -294,9 +392,20 @@ exports.getfbMessage = function (req, res) {
                               if (subscriberByPhoneNumber === true) {
                                 Subscribers.update({senderId: sender}, {
                                   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                  isSubscribedByPhoneNumber: true
+                                  isSubscribedByPhoneNumber: true,
+                                  isSubscribed: true
                                 }, (err, subscriber) => {
-                                  if (err) logger.serverLog(TAG, err)
+                                  if (err) return logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, subscriber)
+                                })
+                              } else if (!subscriber.isSubscribed) {
+                                // subscribing the subscriber again in case he
+                                // or she unsubscribed and removed chat
+                                Subscribers.update({senderId: sender}, {
+                                  isSubscribed: true
+                                }, (err, subscriber) => {
+                                  if (err) return logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, subscriber)
                                 })
                               }
                               if (!(event.postback &&
@@ -326,6 +435,10 @@ exports.getfbMessage = function (req, res) {
                 savesurvey(event)
               } else if (resp.unsubscribe) {
                 handleUnsubscribe(resp, event)
+              } else if (resp.action === 'subscribe') {
+                subscribeToSequence(resp.sequenceId, event)
+              } else if (resp.action === 'unsubscribe') {
+                unsubscribeFromSequence(resp.sequenceId, event)
               } else {
                 sendReply(event)
               }
@@ -507,164 +620,158 @@ function handleThePagePostsForAutoPosting (event, status) {
                   return logger.serverLog(TAG,
                     `Error ${JSON.stringify(err)}`)
                 }
-
                 logger.serverLog(TAG,
                   `Total Subscribers of page ${page.pageName} are ${subscribers.length}`)
+                let subscriberSenderIds = []
+                subscribers.forEach(subscriber => {
+                  subscriberSenderIds.push(subscriber.senderId)
+                  if (subscribers.length === subscriberSenderIds.length) {
+                    let newMsg = new AutopostingMessages({
+                      pageId: page._id,
+                      companyId: postingItem.companyId,
+                      autoposting_type: 'facebook',
+                      autopostingId: postingItem._id,
+                      sent: subscribers.length,
+                      seen: 0,
+                      clicked: 0
+                    })
+                    newMsg.save((err, savedMsg) => {
+                      if (err) logger.serverLog(TAG, err)
 
-                let newMsg = new AutopostingMessages({
-                  pageId: page._id,
-                  companyId: postingItem.companyId,
-                  autoposting_type: 'facebook',
-                  autopostingId: postingItem._id,
-                  sent: subscribers.length,
-                  seen: 0,
-                  clicked: 0
-                })
+                      if (subscribers.length > 0) {
+                        utility.applyTagFilterIfNecessary({body: postingItem}, subscribers, (taggedSubscribers) => {
+                          taggedSubscribers.forEach(subscriber => {
+                            let messageData = {}
 
-                newMsg.save((err, savedMsg) => {
-                  if (err) logger.serverLog(TAG, err)
-
-                  if (subscribers.length > 0) {
-                    utility.applyTagFilterIfNecessary({body: postingItem}, subscribers, (taggedSubscribers) => {
-                      taggedSubscribers.forEach(subscriber => {
-                        let messageData = {}
-
-                        if (event.value.item === 'status' || status) {
-                          messageData = {
-                            'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'text': event.value.message,
-                              'metadata': 'This is metadata'
-                            })
-                          }
-                          sendAutopostingMessage(messageData, page, savedMsg)
-                        } else if (event.value.item === 'share') {
-                          let URLObject = new URL({
-                            originalURL: event.value.link,
-                            subscriberId: subscriber._id,
-                            module: {
-                              id: savedMsg._id,
-                              type: 'autoposting'
-                            }
-                          })
-
-                          URLObject.save((err, savedurl) => {
-                            if (err) logger.serverLog(TAG, err)
-
-                            let newURL = config.domain + '/api/URL/' +
-                              savedurl._id
-
-                            messageData = {
-                              'recipient': JSON.stringify({
-                                'id': subscriber.senderId
-                              }),
-                              'message': JSON.stringify({
-                                'attachment': {
-                                  'type': 'template',
-                                  'payload': {
-                                    'template_type': 'generic',
-                                    'elements': [
-                                      {
-                                        'title': (event.value.message)
-                                          ? event.value.message
-                                          : event.value.sender_name,
-                                        'image_url': event.value.image,
-                                        'subtitle': 'kibopush.com',
-                                        'buttons': [
-                                          {
-                                            'type': 'web_url',
-                                            'url': newURL,
-                                            'title': 'View Link'
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              })
-                            }
-                            sendAutopostingMessage(messageData, page, savedMsg)
-                          })
-                        } else if (event.value.item === 'photo') {
-                          let URLObject = new URL({
-                            originalURL: 'https://www.facebook.com/' +
-                            event.value.sender_id,
-                            subscriberId: subscriber._id,
-                            module: {
-                              id: savedMsg._id,
-                              type: 'autoposting'
-                            }
-                          })
-
-                          URLObject.save((err, savedurl) => {
-                            if (err) logger.serverLog(TAG, err)
-
-                            let newURL = config.domain + '/api/URL/' +
-                              savedurl._id
-                            messageData = {
-                              'recipient': JSON.stringify({
-                                'id': subscriber.senderId
-                              }),
-                              'message': JSON.stringify({
-                                'attachment': {
-                                  'type': 'template',
-                                  'payload': {
-                                    'template_type': 'generic',
-                                    'elements': [
-                                      {
-                                        'title': (event.value.message)
-                                          ? event.value.message
-                                          : event.value.sender_name,
-                                        'image_url': event.value.link,
-                                        'subtitle': 'kibopush.com',
-                                        'buttons': [
-                                          {
-                                            'type': 'web_url',
-                                            'url': newURL,
-                                            'title': 'View Page'
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              })
-                            }
-                            sendAutopostingMessage(messageData, page, savedMsg)
-                          })
-                        } else if (event.value.item === 'video') {
-                          messageData = {
-                            'recipient': JSON.stringify({
-                              'id': subscriber.senderId
-                            }),
-                            'message': JSON.stringify({
-                              'attachment': {
-                                'type': 'video',
-                                'payload': {
-                                  'url': event.value.link,
-                                  'is_reusable': false
-                                }
+                            if (event.value.item === 'status' || status) {
+                              messageData = {
+                                'messaging_type': 'UPDATE',
+                                'recipient': JSON.stringify({
+                                  'id': subscriber.senderId
+                                }),
+                                'message': JSON.stringify({
+                                  'text': event.value.message,
+                                  'metadata': 'This is metadata'
+                                })
                               }
-                            })
-                          }
-                          sendAutopostingMessage(messageData, page, savedMsg)
-                        }
+                              sendAutopostingMessage(messageData, page, savedMsg)
+                            } else if (event.value.item === 'share') {
+                              let URLObject = new URL({
+                                originalURL: event.value.link,
+                                subscriberId: subscriber._id,
+                                module: {
+                                  id: savedMsg._id,
+                                  type: 'autoposting'
+                                }
+                              })
 
-                        let newSubscriberMsg = new AutopostingSubscriberMessages({
-                          pageId: page.pageId,
-                          companyId: postingItem.companyId,
-                          autopostingId: postingItem._id,
-                          autoposting_messages_id: savedMsg._id,
-                          subscriberId: subscriber.senderId,
-                          payload: messageData
-                        })
+                              URLObject.save((err, savedurl) => {
+                                if (err) logger.serverLog(TAG, err)
 
-                        newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                          if (err) logger.serverLog(TAG, err)
+                                let newURL = config.domain + '/api/URL/' +
+                                  savedurl._id
+
+                                messageData = {
+                                  'messaging_type': 'UPDATE',
+                                  'recipient': JSON.stringify({
+                                    'id': subscriber.senderId
+                                  }),
+                                  'message': JSON.stringify({
+                                    'attachment': {
+                                      'type': 'template',
+                                      'payload': {
+                                        'template_type': 'generic',
+                                        'elements': [
+                                          {
+                                            'title': (event.value.message)
+                                              ? event.value.message
+                                              : event.value.sender_name,
+                                            'image_url': event.value.image,
+                                            'subtitle': 'kibopush.com',
+                                            'buttons': [
+                                              {
+                                                'type': 'web_url',
+                                                'url': newURL,
+                                                'title': 'View Link'
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  })
+                                }
+                                sendAutopostingMessage(messageData, page, savedMsg)
+                              })
+                            } else if (event.value.item === 'photo') {
+                              let URLObject = new URL({
+                                originalURL: 'https://www.facebook.com/' +
+                                event.value.sender_id,
+                                subscriberId: subscriber._id,
+                                module: {
+                                  id: savedMsg._id,
+                                  type: 'autoposting'
+                                }
+                              })
+
+                              URLObject.save((err, savedurl) => {
+                                if (err) logger.serverLog(TAG, err)
+
+                                let newURL = config.domain + '/api/URL/' +
+                                  savedurl._id
+                                messageData = {
+                                  'messaging_type': 'UPDATE',
+                                  'recipient': JSON.stringify({
+                                    'id': subscriber.senderId
+                                  }),
+                                  'message': JSON.stringify({
+                                    'attachment': {
+                                      'type': 'template',
+                                      'payload': {
+                                        'template_type': 'generic',
+                                        'elements': [
+                                          {
+                                            'title': (event.value.message)
+                                              ? event.value.message
+                                              : event.value.sender_name,
+                                            'image_url': event.value.link,
+                                            'subtitle': 'kibopush.com',
+                                            'buttons': [
+                                              {
+                                                'type': 'web_url',
+                                                'url': newURL,
+                                                'title': 'View Page'
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  })
+                                }
+                                sendAutopostingMessage(messageData, page, savedMsg)
+                              })
+                            } else if (event.value.item === 'video') {
+                              messageData = {
+                                'messaging_type': 'UPDATE',
+                                'recipient': JSON.stringify({
+                                  'id': subscriber.senderId
+                                }),
+                                'message': JSON.stringify({
+                                  'attachment': {
+                                    'type': 'video',
+                                    'payload': {
+                                      'url': event.value.link,
+                                      'is_reusable': false
+                                    }
+                                  }
+                                })
+                              }
+                              sendAutopostingMessage(messageData, page, savedMsg)
+                            }
+                          })
                         })
-                      })
+                      }
                     })
                   }
                 })
@@ -898,26 +1005,47 @@ function updateseenstatus (req) {
     {
       sender_fb_id: req.recipient.id,
       recipient_fb_id: req.sender.id,
-      status: 'unseen'
+      seen: false,
+      datetime: {$lte: new Date(req.read.watermark)}
     },
-    {status: 'seen'},
+    {seenDateTime: new Date(req.read.watermark), seen: true},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
+      LiveChat.findOne({sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id}, (err, chat) => {
+        if (err) {
+        }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: chat.company_id,
+          body: {
+            action: 'message_seen',
+            payload: {
+              session_id: chat.session_id
+            }
+          }
+        })
+      })
     })
-
-// updating seen count for autoposting
-  AutopostingSubscriberMessages.distinct('autoposting_messages_id',
-    {subscriberId: req.sender.id, pageId: req.recipient.id, seen: false},
-    (err, AutopostingMessagesIds) => {
+    // updating seen count for autoposting
+  AutopostingMessages.update({subscriberSenderIds: req.sender.id, page_fb_id: req.recipient.id},
+    {$inc: {seen: 1}},
+    {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      AutopostingSubscriberMessages.update(
+      logger.serverLog(TAG, `updated ${JSON.stringify(updated)}`)
+    })
+  // updating seen count for sequence messages
+  SequenceSubscriberMessages.distinct('messageId',
+    {subscriberId: req.sender.id, seen: false},
+    (err, sequenceMessagesIds) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      SequenceSubscriberMessages.update(
         {
           subscriberId: req.sender.id,
-          pageId: req.recipient.id,
           seen: false,
           datetime: {$lte: new Date(req.read.watermark)}
         },
@@ -927,9 +1055,9 @@ function updateseenstatus (req) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
 
-          AutopostingMessagesIds.forEach(autopostingMessagesId => {
-            AutopostingMessages.update(
-              {_id: autopostingMessagesId},
+          sequenceMessagesIds.forEach(sequenceMessagesId => {
+            SequenceMessages.update(
+              {_id: sequenceMessagesId},
               {$inc: {seen: 1}},
               {multi: true}, (err, updated) => {
                 if (err) {
@@ -945,7 +1073,7 @@ function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   parsedData.forEach(payloadItem => {
     let messageData = utility.prepareSendAPIPayload(
-      req.sender.id, payloadItem)
+      req.sender.id, payloadItem, true)
     logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
     Pages.find({pageId: req.recipient.id}, (err, pages) => {
       if (err) {
@@ -982,6 +1110,9 @@ function savepoll (req, resp) {
       logger.serverLog(TAG,
         `Error occurred in finding subscriber ${JSON.stringify(
           err)}`)
+    }
+    if (subscriber._id === null) {
+      return
     }
     if (array.length > 0) {
       for (var i = 0; i < array.length; i++) {
@@ -1039,6 +1170,7 @@ function handleUnsubscribe (resp, req) {
           `Page token error from graph api ${JSON.stringify(err3)}`)
       }
       const data = {
+        messaging_type: 'RESPONSE',
         recipient: {id: req.sender.id}, // this is the subscriber id
         message: messageData
       }
@@ -1158,6 +1290,7 @@ function sendautomatedmsg (req, page) {
                       }
                     })
                   const data = {
+                    messaging_type: 'RESPONSE',
                     recipient: {id: req.sender.id}, // this is the subscriber id
                     message: messageData
                   }
@@ -1174,6 +1307,7 @@ function sendautomatedmsg (req, page) {
             }
 
             const data = {
+              messaging_type: 'RESPONSE',
               recipient: {id: req.sender.id}, // this is the subscriber id
               message: messageData
             }
@@ -1266,7 +1400,7 @@ function savesurvey (req) {
       surveyId: resp.survey_id,
       questionId: resp.question_id,
       subscriberId: subscriber._id
-    }, {response: resp.option}, {upsert: true}, (err1, surveyresponse, raw) => {
+    }, {response: resp.option, datetime: Date.now()}, {upsert: true}, (err1, surveyresponse, raw) => {
       // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
@@ -1326,6 +1460,7 @@ function savesurvey (req) {
                 }
               }
               const data = {
+                messaging_type: 'RESPONSE',
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
@@ -1411,6 +1546,7 @@ function savesurvey (req) {
                 text: 'Thank you. Response submitted successfully.'
               }
               const data = {
+                messaging_type: 'RESPONSE',
                 recipient: {id: req.sender.id}, // this is the subscriber id
                 message: messageData
               }
@@ -1464,6 +1600,124 @@ function savesurvey (req) {
                   })
                 })
             })
+        }
+      })
+    })
+  })
+}
+
+function subscribeToSequence (sequenceId, req) {
+  Sequences.findOne({_id: sequenceId}, (err, sequence) => {
+    if (err) {
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
+    }
+
+    Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Internal Server Error ${JSON.stringify(err)}`)
+      }
+
+      SequenceSubscribers.findOne({subscriberId: subscriber._id}, (err, sequenceSubscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Internal Server Error ${JSON.stringify(err)}`)
+        }
+
+        // CASE-1 Subscriber already exists
+        if (sequenceSubscriber !== {}) {
+          SequenceSubscribers.update({_id: sequenceSubscriber._id}, {status: 'subscribed'}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        // CASE-2 Subscriber doesn't exist
+        } else {
+          let sequenceSubscriberPayload = {
+            sequenceId: sequenceId,
+            subscriberId: subscriber._id,
+            companyId: sequence.companyId,
+            status: 'subscribed'
+          }
+          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+          // save model to MongoDB
+          sequenceSubcriber.save((err, subscriberCreated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Failed to insert record`)
+            }
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: sequence.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: sequenceId
+                }
+              }
+            })
+          })
+        }
+      })
+    })
+  })
+}
+
+function unsubscribeFromSequence (sequenceId, req) {
+  Sequences.findOne({_id: sequenceId}, (err, sequence) => {
+    if (err) {
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
+    }
+
+    Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Internal Server Error ${JSON.stringify(err)}`)
+      }
+
+      SequenceSubscribers.findOne({subscriberId: subscriber._id}, (err, sequenceSubscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Internal Server Error ${JSON.stringify(err)}`)
+        }
+
+        // CASE-1 Subscriber already exists
+        if (sequenceSubscriber !== {}) {
+          SequenceSubscribers.update({_id: sequenceSubscriber._id}, {status: 'unsubscribed'}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        // CASE-2 Subscriber doesn't exist
+        } else {
+          let sequenceSubscriberPayload = {
+            sequenceId: sequenceId,
+            subscriberId: subscriber._id,
+            companyId: sequence.companyId,
+            status: 'unsubscribed'
+          }
+          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+          // save model to MongoDB
+          sequenceSubcriber.save((err, subscriberCreated) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Failed to insert record`)
+            }
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: sequence.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: sequenceId
+                }
+              }
+            })
+          })
         }
       })
     })

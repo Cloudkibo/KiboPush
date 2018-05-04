@@ -13,7 +13,8 @@ import {
   loadPollsList,
   sendpoll,
   clearAlertMessage,
-  deletePoll
+  deletePoll,
+  getAllPollResults
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -27,7 +28,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Poll extends React.Component {
   constructor (props, context) {
     props.loadSubscribersList()
-    props.loadPollsList()
+    props.loadPollsList(0)
     props.loadTags()
     super(props, context)
     this.state = {
@@ -37,7 +38,8 @@ class Poll extends React.Component {
       totalLength: 0,
       isShowingModal: false,
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      selectedDays: ''
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -48,6 +50,8 @@ class Poll extends React.Component {
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.sendPoll = this.sendPoll.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+    this.props.getAllPollResults()
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -55,6 +59,25 @@ class Poll extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  onDaysChange (e) {
+    var defaultVal = 0
+    var value = e.target.value
+    this.setState({selectedDays: value})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      if (value === '0') {
+        this.setState({
+          selectedDays: ''
+        })
+      }
+      this.props.loadPollsList(value)
+    } else if (value === '') {
+      this.setState({selectedDays: ''})
+      this.props.loadPollsList(defaultVal)
+    }
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -91,7 +114,7 @@ class Poll extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.polls && nextProps.polls.length > 0) {
+    if (nextProps.polls) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.polls.length })
@@ -153,14 +176,20 @@ class Poll extends React.Component {
 
   sendPoll (poll) {
     let segmentationValues = []
-    for (let i = 0; i < poll.segmentationTags.length; i++) {
-      for (let j = 0; j < this.props.tags.length; j++) {
-        if (poll.segmentationTags[i] === this.props.tags[j]._id) {
-          segmentationValues.push(this.props.tags[j].tag)
+    if (poll.segmentationTags && poll.segmentationTags.length > 0) {
+      for (let i = 0; i < poll.segmentationTags.length; i++) {
+        for (let j = 0; j < this.props.tags.length; j++) {
+          if (poll.segmentationTags[i] === this.props.tags[j]._id) {
+            segmentationValues.push(this.props.tags[j].tag)
+          }
         }
       }
     }
-    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, segmentationValues, this.props.subscribers)
+    let polls = {
+      pollResponses: this.props.allResponses,
+      selectedPolls: poll.segmentationPoll
+    }
+    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, segmentationValues, this.props.subscribers, polls)
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
@@ -168,6 +197,7 @@ class Poll extends React.Component {
     }
   }
   render () {
+    console.log('poll props', this.props)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -300,6 +330,20 @@ class Poll extends React.Component {
                               </ModalDialog>
                             </ModalContainer>
                           }
+                        </div>
+                      </div>
+                      <div className='form-row'>
+                        <div className='form-group col-md-6' />
+                        <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                          <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                            Show records for last:&nbsp;&nbsp;
+                          </span>
+                          <div style={{width: '200px'}}>
+                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                          </div>
+                          <span htmlFor='example-text-input' className='col-form-label'>
+                          &nbsp;&nbsp;days
+                          </span>
                         </div>
                       </div>
                       { this.state.pollsData && this.state.pollsData.length > 0
@@ -436,13 +480,15 @@ class Poll extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('poll state', state)
   return {
     polls: (state.pollsInfo.polls),
     successMessage: (state.pollsInfo.successMessage),
     errorMessage: (state.pollsInfo.errorMessage),
     subscribers: (state.subscribersInfo.subscribers),
     user: (state.basicInfo.user),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    allResponses: (state.pollsInfo.allResponses)
   }
 }
 
@@ -450,6 +496,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       loadPollsList: loadPollsList,
+      getAllPollResults: getAllPollResults,
       addPoll: addPoll,
       sendpoll: sendpoll,
       clearAlertMessage: clearAlertMessage,

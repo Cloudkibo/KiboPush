@@ -13,6 +13,7 @@ export function appendSentSeenData (data) {
     broadcasts[j].sent = pagebroadcast.length// total sent
     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
+    //  broadcasts[j].count = data.count
   }
   var newBroadcast = broadcasts.reverse()
   return newBroadcast
@@ -72,9 +73,21 @@ export function clearAlertMessage () {
   }
 }
 
-export function loadBroadcastsList () {
+export function loadBroadcastsList (days) {
   return (dispatch) => {
-    callApi('broadcasts').then(res => dispatch(showbroadcasts(res.payload)))
+    callApi(`broadcasts/all/${days}`).then(res => dispatch(showbroadcasts(res.payload)))
+  }
+}
+
+export function allBroadcasts (broadcast) {
+  return (dispatch) => {
+    callApi('broadcasts/allBroadcasts', 'post', broadcast)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('allBroadcasts', res.payload)
+          dispatch(showbroadcasts(res.payload))
+        }
+      })
   }
 }
 

@@ -10,11 +10,17 @@ const auth = require('../../auth/auth.service')
 const multiparty = require('connect-multiparty')
 const multipartyMiddleware = multiparty()
 
-router.get('/',
+router.get('/all/:days',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),
   controller.index)
+
+router.post('/allBroadcasts',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller.allBroadcasts)
 
 router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)

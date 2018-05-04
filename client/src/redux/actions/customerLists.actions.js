@@ -11,6 +11,34 @@ export function showCustomerLists (data) {
   }
 }
 
+export function getRepliedPollSubscribers () {
+  return (dispatch) => {
+    callApi('lists/repliedPollSubscribers')
+      .then(res => dispatch(showRepliedPollSubscribers(res.payload)))
+  }
+}
+
+export function getRepliedSurveySubscribers () {
+  return (dispatch) => {
+    callApi('lists/repliedSurveySubscribers')
+      .then(res => dispatch(showRepliedSurveySubscribers(res.payload)))
+  }
+}
+
+export function showRepliedSurveySubscribers (data) {
+  return {
+    type: ActionTypes.LOAD_REPLIED_SURVEY_SUBSCRIBERS,
+    data
+  }
+}
+
+export function showRepliedPollSubscribers (data) {
+  return {
+    type: ActionTypes.LOAD_REPLIED_POLL_SUBSCRIBERS,
+    data
+  }
+}
+
 export function showListDetails (data) {
   return {
     type: ActionTypes.LOAD_LIST_DETAILS,
@@ -70,6 +98,9 @@ export function loadListDetails (id) {
         console.log('loadListDetails response', res)
         if (res.status === 'success') {
           dispatch(showListDetails(res.payload))
+        } else {
+          var list = []
+          dispatch(showListDetails(list))
         }
       })
   }

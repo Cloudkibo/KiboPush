@@ -7,7 +7,7 @@ const router = express.Router()
 const controller = require('./polls.controller')
 const auth = require('../../auth/auth.service')
 
-router.get('/',
+router.get('/all/:days',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('polls'),
   auth.doesRolePermitsThisAction('pollsPermission'),
@@ -42,6 +42,12 @@ router.get('/responses/:id',
   auth.doesPlanPermitsThisAction('polls'),
   auth.doesRolePermitsThisAction('pollsPermission'),
   controller.getresponses)
+
+router.get('/allResponses',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('polls'),
+  auth.doesRolePermitsThisAction('pollsPermission'),
+  controller.getAllResponses)
 
 router.delete('/deletePoll/:id',
     auth.isAuthenticated(),

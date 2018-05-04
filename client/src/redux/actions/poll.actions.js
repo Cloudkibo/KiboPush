@@ -77,9 +77,16 @@ export function showresponsesfull (data) {
   }
 }
 
-export function loadPollsList () {
+export function getAllResponses (data) {
+  return {
+    type: ActionTypes.GET_ALL_POLL_RESPONSES,
+    data
+  }
+}
+
+export function loadPollsList (days) {
   return (dispatch) => {
-    callApi('polls').then(res => dispatch(updatePollsList(res.payload)))
+    callApi(`polls/all/${days}`).then(res => dispatch(updatePollsList(res.payload)))
   }
 }
 
@@ -161,6 +168,15 @@ export function getpollresults (pollid) {
       .then(res => {
         dispatch(showresponses(res.payload))
         dispatch(showresponsesfull(res.payload))
+      })
+  }
+}
+
+export function getAllPollResults (pollid) {
+  return (dispatch) => {
+    callApi(`polls/allResponses/`)
+      .then(res => {
+        dispatch(getAllResponses(res.payload))
       })
   }
 }

@@ -38,7 +38,8 @@ class Sidebar extends Component {
       inviteMembers: true,
       members: true,
       welcomeMessage: true,
-      createPhoneList: true
+      createPhoneList: true,
+      commentCapture: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -69,6 +70,40 @@ class Sidebar extends Component {
             <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-statistics' />
               <span className='m-menu__link-text'>Operational Dashboard</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showCommentCapture () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.commentCapture && this.props.user.isSuperUser) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-statistics' />
+              <span className='m-menu__link-text'>Comment Capture</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showSequenceMessaging () {
+    if (this.props.user) {
+      if (this.props.user.isSuperUser) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/sequenceMessaging' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-dashboard' />
+              <span className='m-menu__link-text'>Sequence Messaging</span>
             </Link>
           </li>
         )
@@ -135,7 +170,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/surveys' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-list-1' />
+              <i className='m-menu__link-icon flaticon-statistics' />
               <span className='m-menu__link-text'>Surveys</span>
             </Link>
           </li>
@@ -152,7 +187,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/poll' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-multimedia-2' />
+              <i className='m-menu__link-icon flaticon-graphic-2' />
               <span className='m-menu__link-text'>Polls</span>
             </Link>
           </li>
@@ -169,7 +204,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/workflows' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-interface-8' />
+              <i className='m-menu__link-icon flaticon-speech-bubble' />
               <span className='m-menu__link-text'>Workflows</span>
             </Link>
           </li>
@@ -181,11 +216,11 @@ class Sidebar extends Component {
   }
 
   showSmartRespliesItem () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user && this.props.user.isSuperUser || true) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/bots' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-interface-8' />
+            <i className='m-menu__link-icon flaticon-comment' />
             <span className='m-menu__link-text'>Smart Replies</span>
           </Link>
         </li>
@@ -218,7 +253,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-signs-2' />
+              <i className='m-menu__link-icon flaticon-time-3' />
               <span className='m-menu__link-text'>Auto Posting</span>
             </Link>
           </li>
@@ -235,7 +270,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/menu' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-network' />
+              <i className='m-menu__link-icon flaticon-menu-button' />
               <span className='m-menu__link-text'>Persistent Menu</span>
             </Link>
           </li>
@@ -350,7 +385,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/teams' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon fa fa-group' />
+              <i className='m-menu__link-icon flaticon-map' />
               <span className='m-menu__link-text'>Teams</span>
             </Link>
           </li>
@@ -377,6 +412,7 @@ class Sidebar extends Component {
               {this.showOperationalDashboard()}
               {this.showDashboard()}
               {this.showBroadcastsItem()}
+              {this.showCommentCapture()}
               {this.showSurveysItem()}
               {this.showPollsItem()}
               {this.showWorkflowsItem()}
@@ -386,6 +422,7 @@ class Sidebar extends Component {
               {this.showPersistentMenuItem()}
               {this.showPagesItem()}
               {this.showSubscribersItem()}
+              {this.showSequenceMessaging()}
               {this.showCreatePhoneList()}
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
@@ -394,7 +431,7 @@ class Sidebar extends Component {
               {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-file' />
+                  <i className='m-menu__link-icon flaticon-list-3' />
                   <span className='m-menu__link-text'>Invite using phone number</span>
                 </Link>
               </li>

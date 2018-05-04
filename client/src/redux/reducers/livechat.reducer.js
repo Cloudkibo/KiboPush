@@ -33,6 +33,11 @@ export function liveChat (state = initialState, action) {
         changedStatus: ''
       })
 
+    case ActionTypes.SOCKET_UPDATE_SEEN:
+      return Object.assign({}, state, {
+        socketSession: action.data.session_id
+      })
+
     case ActionTypes.RESET_SOCKET:
       return Object.assign({}, state, {
         socketSession: '',

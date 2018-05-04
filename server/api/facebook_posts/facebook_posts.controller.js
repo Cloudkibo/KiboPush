@@ -1,0 +1,193 @@
+const logger = require('../../components/logger')
+const FacebookPosts = require('./facebook_posts.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
+const Pages = require('../pages/Pages.model')
+const Users = require('./../user/Users.model')
+const needle = require('needle')
+const TAG = 'api/facebook_posts/facebook_posts.controller.js'
+
+exports.index = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    FacebookPosts.find({companyId: companyUser.companyId}, (err, posts) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: posts
+      })
+    })
+  })
+}
+
+exports.viewPost = function (req, res) {
+  FacebookPosts.findOne({_id: req.params.id}, (err, post) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: post
+    })
+  })
+}
+
+exports.create = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let postPayload = {
+      pageId: req.body.pageId,
+      companyId: companyUser.companyId,
+      userId: req.user._id,
+      payload: req.body.payload,
+      reply: req.body.reply,
+      includedKeywords: req.body.includedKeywords,
+      excludedKeywords: req.body.excludedKeywords
+    }
+    const post = new FacebookPosts(postPayload)
+
+    // save model to MongoDB
+    post.save((err, postCreated) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          error: err,
+          description: 'Failed to insert record'
+        })
+      } else {
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'post_created',
+            payload: {
+              poll_id: postCreated._id,
+              user_id: req.user._id,
+              user_name: req.user.name,
+              company_id: companyUser.companyId
+            }
+          }
+        })
+        Pages.findOne({_id: req.body.pageId}, (err, userPage) => {
+          if (err) {
+            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          logger.serverLog(TAG,
+          `Page found${JSON.stringify(userPage)}`)
+          Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            var currentUser
+            if (req.user.facebookInfo) {
+              currentUser = req.user
+            } else {
+              currentUser = connectedUser
+            }
+            needle.get(
+            `https://graph.facebook.com/v2.10/${userPage.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+            (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG,
+                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+              }
+              logger.serverLog(TAG,
+              `response from get request ${JSON.stringify(resp.body)}`)
+              const data = {
+                message: 'hi Anisha'
+              }
+              needle.post(
+                `https://graph.facebook.com/${userPage.pageId}/feed?message=${'Hello Fans'}&access_token=${resp.body.access_token}`,
+                data, (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG, err)
+                  }
+                  logger.serverLog(TAG,
+                  `response from post on facebook ${JSON.stringify(resp.body)}`)
+                  res.status(201).json({status: 'success', payload: postCreated})
+                })
+            })
+          })
+        })
+      }
+    })
+  })
+}
+
+exports.edit = function (req, res) {
+  FacebookPosts.findById(req.body.postId, (err, post) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!post) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    post.includedKeywords = req.body.includedKeywords
+    post.excludedKeywords = req.body.excludedKeywords
+    post.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'post update failed'})
+      }
+      res.status(201).json({status: 'success', payload: post})
+    })
+  })
+}
+
+exports.delete = function (req, res) {
+  FacebookPosts.findById(req.params.id, (err, post) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!post) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Record not found'})
+    }
+    post.remove((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'post update failed'})
+      }
+      return res.status(200)
+      .json({status: 'success'})
+    })
+  })
+}

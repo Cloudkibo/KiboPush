@@ -35,7 +35,6 @@ exports.index = function (req, res) {
         return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})
       }
-      logger.serverLog(TAG, `Sessions Found ${JSON.stringify(sessions)}`)
       let tempSessions = []
       for (var i = 0; i < sessions.length; i++) {
         if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
@@ -69,7 +68,6 @@ exports.index = function (req, res) {
               return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
             }
-            logger.serverLog(TAG, `LAST MESSAGE FOUND ${JSON.stringify(gotLastMessage)}`)
             for (let a = 0; a < gotLastMessage.length; a++) {
               for (let b = 0; b < sessions.length; b++) {
                 if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
@@ -85,7 +83,6 @@ exports.index = function (req, res) {
                 }
               }
             }
-            logger.serverLog(TAG, `LAST MESSAGE FOUND SESSIONS ${JSON.stringify(sessions)}`)
             return res.status(200).json({
               status: 'success',
               payload: sessions
@@ -174,6 +171,74 @@ exports.changeStatus = function (req, res) {
 }
 exports.markread = function (req, res) {
   // todo tell fb users that message is read
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Sessions.findOne({_id: req.params.id}).populate('subscriber_id page_id').exec((err, session) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      Pages.findOne({companyId: companyUser.companyId, connected: true}, (err, userPage) => {
+        if (err) {
+          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          var currentUser
+          if (req.user.facebookInfo) {
+            currentUser = req.user
+          } else {
+            currentUser = connectedUser
+          }
+          needle.get(
+          `https://graph.facebook.com/v2.10/${session.page_id.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+          (err, resp) => {
+            if (err) {
+              logger.serverLog(TAG,
+              `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+            }
+            const data = {
+              messaging_type: 'UPDATE',
+              recipient: {id: session.subscriber_id.senderId}, // this is the subscriber id
+              sender_action: 'mark_seen'
+            }
+            needle.post(
+              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+              data, (err, resp1) => {
+                if (err) {
+                  logger.serverLog(TAG, err)
+                  logger.serverLog(TAG,
+                    `Error occured at subscriber :${JSON.stringify(
+                      session.subscriber_id)}`)
+                }
+              })
+          })
+        })
+      })
+    })
+  })
   LiveChat.update(
     {session_id: req.params.id},
     {status: 'seen'},
@@ -247,6 +312,7 @@ exports.unSubscribe = function (req, res) {
                   text: 'We have unsubscribed you from our page. We will notify you when we subscribe you again. Thanks'
                 }
                 const data = {
+                  messaging_type: 'UPDATE',
                   recipient: {id: subscriber.senderId}, // this is the subscriber id
                   message: messageData
                 }

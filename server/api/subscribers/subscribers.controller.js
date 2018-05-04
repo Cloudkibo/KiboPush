@@ -54,6 +54,7 @@ exports.index = function (req, res) {
             isEnabledByPage: subscribers[i].isEnabledByPage,
             isSubscribed: subscribers[i].isSubscribed,
             isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+            phoneNumber: subscribers[i].phoneNumber,
             unSubscribedBy: subscribers[i].unSubscribedBy,
             tags: []
           })
@@ -124,6 +125,7 @@ exports.allSubscribers = function (req, res) {
             isEnabledByPage: subscribers[i].isEnabledByPage,
             isSubscribed: subscribers[i].isSubscribed,
             isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+            phoneNumber: subscribers[i].phoneNumber,
             unSubscribedBy: subscribers[i].unSubscribedBy,
             tags: []
           })

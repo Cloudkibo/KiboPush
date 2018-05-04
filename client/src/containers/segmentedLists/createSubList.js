@@ -6,7 +6,7 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, createSubList, editList, loadListDetails, getParentList
+  loadCustomerLists, createSubList, editList, loadListDetails, getParentList, getRepliedPollSubscribers, getRepliedSurveySubscribers
 } from '../../redux/actions/customerLists.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -29,7 +30,9 @@ class CreateSubList extends React.Component {
       parentListName: '',
       parentListData: [],
       allSubscribers: [],
-      lists: []
+      lists: [],
+      dropdownConditionOpen: false,
+      joiningCondition: 'AND'
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -49,9 +52,14 @@ class CreateSubList extends React.Component {
     this.handleGetParentList = this.handleGetParentList.bind(this)
     this.createSubList = this.createSubList.bind(this)
     this.editSubList = this.editSubList.bind(this)
+    this.toggleCondition = this.toggleCondition.bind(this)
+    this.changeConditionToAnd = this.changeConditionToAnd.bind(this)
+    this.changeConditionToOr = this.changeConditionToOr.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
     props.loadSubscribersList()
+    props.getRepliedPollSubscribers()
+    props.getRepliedSurveySubscribers()
   }
   componentDidMount () {
     if (this.props.customerLists) {
@@ -81,7 +89,19 @@ class CreateSubList extends React.Component {
       this.setState({ allSubscribers: nextProps.subscribers })
     }
   }
-
+  toggleCondition () {
+    this.setState({dropdownConditionOpen: !this.state.dropdownConditionOpen})
+  }
+  changeConditionToAnd () {
+    this.setState({
+      joiningCondition: 'AND'
+    })
+  }
+  changeConditionToOr () {
+    this.setState({
+      joiningCondition: 'OR'
+    })
+  }
   initializeList () {
     var tempConditions = []
     if (this.props.currentList.conditions) {
@@ -113,7 +133,9 @@ class CreateSubList extends React.Component {
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages)
+        let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
+        console.log('Responses: ', responses)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -126,7 +148,7 @@ class CreateSubList extends React.Component {
   handleGetParentList (response) {
     if (response.payload) {
       this.setState({parentListData: response.payload})
-      var subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages)
+      var subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
@@ -162,7 +184,7 @@ class CreateSubList extends React.Component {
         this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages)
+        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -292,6 +314,7 @@ class CreateSubList extends React.Component {
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].text = (e.target.value).trim()
+        console.log('text: ' + conditions[i].text)
       }
     }
     this.setState({conditions: conditions})
@@ -489,6 +512,18 @@ class CreateSubList extends React.Component {
                             }
                           </span>
                         </div>
+                        <div className='form-group m-form__group col-12' style={{marginBottom: '20px', color: '#337ab7', display: 'flex'}}>
+                          <div style={{marginTop: '10px'}}>Create a list of subscribers that match<span id='switchCondition' style={{fontWeight: 'bold', textDecoration: 'underline'}}>{this.state.joiningCondition === 'OR' ? ' any of the following conditions' : ' all of the following conditions'}:</span></div>
+                          <Dropdown id='switchCondition' style={{marginLeft: '10px'}}isOpen={this.state.dropdownConditionOpen} toggle={this.toggleCondition}>
+                            <DropdownToggle caret>
+                               Change Joining Condition
+                            </DropdownToggle>
+                            <DropdownMenu>
+                              <DropdownItem onClick={this.changeConditionToAnd}>all of the following conditions</DropdownItem>
+                              <DropdownItem onClick={this.changeConditionToOr}>any of the following conditions</DropdownItem>
+                            </DropdownMenu>
+                          </Dropdown>
+                        </div>
                         <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                           <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                             <table className='m-datatable__table'
@@ -536,6 +571,9 @@ class CreateSubList extends React.Component {
                                          <option value='phoneNumber'>Phone Number</option>
                                          <option value='gender'>Gender</option>
                                          <option value='locale'>Locale</option>
+                                         <option value='tag'>Tag</option>
+                                         <option value='subscriptionDate'>Subscribed</option>
+                                         <option value='reply'>Replied</option>
                                        </select>
                                        <span className='m-form__help'>
                                          {
@@ -551,13 +589,23 @@ class CreateSubList extends React.Component {
                                      </td>
                                      <td data-field='title'
                                        className='m-datatable__cell' style={{width: '25%'}}>
-                                       <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                         value={condition.criteria}>
-                                         <option value=''>Select Criteria</option>
-                                         <option value='is'>is</option>
-                                         <option value='contains'>Contains</option>
-                                         <option value='begins'>Begins with</option>
-                                       </select>
+                                       { this.state.conditions[i].condition === 'subscriptionDate' || this.state.conditions[i].condition === 'reply'
+                                         ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                           value={condition.criteria}>
+                                           <option value=''>Select Criteria</option>
+                                           <option value='on'>on</option>
+                                           <option value='before'>Before</option>
+                                           <option value='after'>After</option>
+                                         </select>
+                                         : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                           value={condition.criteria}>
+                                           <option value=''>Select Criteria</option>
+                                           <option value='is'>is</option>
+                                           <option value='contains'>Contains</option>
+                                           <option value='begins'>Begins with</option>
+                                         </select>
+                                        }
+
                                        <span className='m-form__help'>
                                          {
                                            this.state.errorMessages.map((m) => (
@@ -576,7 +624,8 @@ class CreateSubList extends React.Component {
                                          onChange={(e) => this.changeText(e, i)}
                                          value={condition.text}
                                          id='text'
-                                         placeholder='Text' />
+                                         placeholder='Text'
+                                         type={this.state.conditions[i].condition === 'subscriptionDate' || this.state.conditions[i].condition === 'reply' ? 'date' : 'text'} />
                                        <span className='m-form__help'>
                                          {
                                            this.state.errorMessages.map((m) => (
@@ -651,11 +700,14 @@ class CreateSubList extends React.Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('createSubList state', state)
   return {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
     currentList: (state.listsInfo.currentList),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    pollSubscribers: (state.listsInfo.pollSubscribers),
+    surveySubscribers: (state.listsInfo.surveySubscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -666,7 +718,9 @@ function mapDispatchToProps (dispatch) {
     editList: editList,
     loadListDetails: loadListDetails,
     getParentList: getParentList,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    getRepliedPollSubscribers: getRepliedPollSubscribers,
+    getRepliedSurveySubscribers: getRepliedSurveySubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)

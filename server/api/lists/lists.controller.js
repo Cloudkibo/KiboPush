@@ -6,6 +6,11 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 // eslint-disable-next-line no-unused-vars
 const TAG = 'api/lists/lists.controller.js'
 const PhoneNumber = require('../growthtools/growthtools.model')
+const Polls = require('./../polls/Polls.model')
+const Surveys = require('./../surveys/surveys.model')
+const PollResponses = require('./../polls/pollresponse.model')
+const SurveyResponses = require('./../surveys/surveyresponse.model')
+
 let _ = require('lodash')
 exports.allLists = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
@@ -220,6 +225,154 @@ exports.editList = function (req, res) {
           .json({status: 'failed', description: 'Poll update failed'})
       }
       return res.status(200).json({status: 'success', payload: savedList})
+    })
+  })
+}
+exports.repliedPollSubscribers = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Polls.find({companyId: companyUser.companyId}, {_id: 1}, (err, polls) => {
+      if (err) {
+        logger.serverLog(TAG, `Error: ${err}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      let pollIds = []
+      for (let i = 0; i < polls.length; i++) {
+        pollIds.push(polls[i]._id)
+      }
+      PollResponses.find({pollId: {$in: pollIds}}, (err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let respondedSubscribers = []
+        for (let j = 0; j < responses.length; j++) {
+          respondedSubscribers.push(responses[j].subscriberId)
+        }
+        Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At get survey responses subscribers ${JSON.stringify(err)}`)
+          }
+          let subscribersPayload = []
+          for (let a = 0; a < subscribers.length; a++) {
+            for (let b = 0; b < responses.length; b++) {
+              if (JSON.stringify(subscribers[a]._id) === JSON.stringify(responses[b].subscriberId)) {
+                subscribersPayload.push({
+                  _id: subscribers[a]._id,
+                  pageScopedId: subscribers[a].pageScopedId,
+                  firstName: subscribers[a].firstName,
+                  lastName: subscribers[a].lastName,
+                  locale: subscribers[a].locale,
+                  timezone: subscribers[a].timezone,
+                  email: subscribers[a].email,
+                  gender: subscribers[a].gender,
+                  senderId: subscribers[a].senderId,
+                  profilePic: subscribers[a].senderId,
+                  pageId: subscribers[a].pageId,
+                  phoneNumber: subscribers[a].phoneNumber,
+                  unSubscribedBy: subscribers[a].unSubscribedBy,
+                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
+                  companyId: subscribers[a].companyId,
+                  isSubscribed: subscribers[a].isSubscribed,
+                  isEnabledByPage: subscribers[a].isEnabledByPage,
+                  datetime: subscribers[a].datetime,
+                  dateReplied: responses[b].datetime
+                })
+              }
+            }
+          }
+          return res.status(200).json({status: 'success', payload: subscribersPayload})
+        })
+      })
+    })
+  })
+}
+exports.repliedSurveySubscribers = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Surveys.find({companyId: companyUser.companyId}, {_id: 1}, (err, surveys) => {
+      if (err) {
+        logger.serverLog(TAG, `Error: ${err}`)
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error${JSON.stringify(err)}`
+        })
+      }
+      let surveyIds = []
+      for (let i = 0; i < surveys.length; i++) {
+        surveyIds.push(surveys[i]._id)
+      }
+      SurveyResponses.find({surveyId: {$in: surveyIds}}, (err, responses) => {
+        if (err) {
+          return logger.serverLog(TAG,
+            `At get survey responses subscribers ${JSON.stringify(err)}`)
+        }
+        let respondedSubscribers = []
+        for (let j = 0; j < responses.length; j++) {
+          respondedSubscribers.push(responses[j].subscriberId)
+        }
+        Subscribers.find({_id: {$in: respondedSubscribers}}, (err, subscribers) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At get survey responses subscribers ${JSON.stringify(err)}`)
+          }
+          let subscribersPayload = []
+          for (let a = 0; a < subscribers.length; a++) {
+            for (let b = 0; b < responses.length; b++) {
+              if (JSON.stringify(subscribers[a]._id) === JSON.stringify(responses[b].subscriberId)) {
+                subscribersPayload.push({
+                  _id: subscribers[a]._id,
+                  pageScopedId: subscribers[a].pageScopedId,
+                  firstName: subscribers[a].firstName,
+                  lastName: subscribers[a].lastName,
+                  locale: subscribers[a].locale,
+                  timezone: subscribers[a].timezone,
+                  email: subscribers[a].email,
+                  gender: subscribers[a].gender,
+                  senderId: subscribers[a].senderId,
+                  profilePic: subscribers[a].senderId,
+                  pageId: subscribers[a].pageId,
+                  phoneNumber: subscribers[a].phoneNumber,
+                  unSubscribedBy: subscribers[a].unSubscribedBy,
+                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
+                  companyId: subscribers[a].companyId,
+                  isSubscribed: subscribers[a].isSubscribed,
+                  isEnabledByPage: subscribers[a].isEnabledByPage,
+                  datetime: subscribers[a].datetime,
+                  dateReplied: responses[b].datetime
+                })
+              }
+            }
+          }
+          return res.status(200).json({status: 'success', payload: subscribersPayload})
+        })
+      })
     })
   })
 }

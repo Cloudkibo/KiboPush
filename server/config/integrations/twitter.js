@@ -44,13 +44,17 @@ function connect () {
           {follow: arrUsers})
 
         stream.on('tweet', tweet => {
-          // logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet)}`)
+          if (tweet.in_reply_to_status_id !== null || tweet.in_reply_to_user_id !== null || tweet.in_reply_to_screen_name !== null || tweet.retweeted_status !== null) {
+            return
+          }
+          // logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet.user.screen_name)}`)
           AutoPosting.find({accountUniqueName: tweet.user.screen_name, isActive: true})
             .populate('userId companyId')
             .exec((err, autopostings) => {
               if (err) {
                 return logger.serverLog(TAG, 'Internal Server Error on connect')
               }
+              // logger.serverLog(TAG, `Tweet received and pages listening to it ${autopostings.length} and account is ${tweet.user.screen_name}`)
               autopostings.forEach(postingItem => {
                 let pagesFindCriteria = {
                   companyId: postingItem.companyId._id,
@@ -121,6 +125,7 @@ function connect () {
                                 let messageData = {}
                                 if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
                                   messageData = {
+                                    'messaging_type': 'UPDATE',
                                     'recipient': JSON.stringify({
                                       'id': subscriber.senderId
                                     }),
@@ -145,6 +150,7 @@ function connect () {
 
                                     let newURL = config.domain + '/api/URL/' + savedurl._id
                                     messageData = {
+                                      'messaging_type': 'UPDATE',
                                       'recipient': JSON.stringify({
                                         'id': subscriber.senderId
                                       }),

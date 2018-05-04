@@ -345,11 +345,11 @@ class Workflows extends React.Component {
                                 </th>
                                 <th data-field='KeyWords'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Page Name</span>
+                                  <span style={{width: '150px'}}>Keywords</span>
                                 </th>
                                 <th data-field='Message'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>Status</span>
+                                  <span style={{width: '150px'}}>Reply</span>
                                 </th>
                                 <th data-field='Active'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>

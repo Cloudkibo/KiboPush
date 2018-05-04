@@ -398,7 +398,7 @@ class Profile extends React.Component {
                 }
               </div>
             }
-              <Popover placement='left' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
+              <Popover placement='left' className='liveChatPopover' isOpen={this.state.popoverAddTagOpen} target='assignTag' toggle={this.toggleAdd}>
                 <PopoverHeader>Add Tags</PopoverHeader>
                 <PopoverBody>
                   <div className='row' style={{minWidth: '250px'}}>
