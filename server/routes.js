@@ -50,6 +50,7 @@ module.exports = function (app) {
   app.use('/api/tags', require('./api/tags'))
   app.use('/api/notifications', require('./api/notifications'))
   app.use('/api/sequenceMessaging', require('./api/sequenceMessaging'))
+  app.use('/api/post', require('./api/facebook_posts'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/migrations', require('./api/migrations'))
 
