@@ -200,3 +200,9 @@ a.broadcastTabs.active {
   background-color: #f5f5f5 !important;
   border-color: #45ccb1 !important;
 }
+.addLink {
+  color: white !important;
+}
+.addLink:hover {
+  color: white !important;
+}

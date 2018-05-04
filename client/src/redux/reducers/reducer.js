@@ -26,6 +26,7 @@ import {tagsInfo} from './tags.reducer'
 import {notificationsInfo} from './notifications.reducer'
 import {botsInfo} from './smart_replies.reducer'
 import {sequenceInfo} from './sequence.reducer'
+import {postsInfo} from './commentCapture.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -53,7 +54,8 @@ const appReducer = combineReducers({
   tagsInfo,
   notificationsInfo,
   botsInfo,
-  sequenceInfo
+  sequenceInfo,
+  postsInfo
 })
 
 export default appReducer

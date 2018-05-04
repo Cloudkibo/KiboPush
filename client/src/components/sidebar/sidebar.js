@@ -38,7 +38,8 @@ class Sidebar extends Component {
       inviteMembers: true,
       members: true,
       welcomeMessage: true,
-      createPhoneList: true
+      createPhoneList: true,
+      commentCapture: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -69,6 +70,23 @@ class Sidebar extends Component {
             <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-statistics' />
               <span className='m-menu__link-text'>Operational Dashboard</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showCommentCapture () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.commentCapture && this.props.user.isSuperUser) {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-statistics' />
+              <span className='m-menu__link-text'>Comment Capture</span>
             </Link>
           </li>
         )
@@ -394,6 +412,7 @@ class Sidebar extends Component {
               {this.showOperationalDashboard()}
               {this.showDashboard()}
               {this.showBroadcastsItem()}
+              {this.showCommentCapture()}
               {this.showSurveysItem()}
               {this.showPollsItem()}
               {this.showWorkflowsItem()}
