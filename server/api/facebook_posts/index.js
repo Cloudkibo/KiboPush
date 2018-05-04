@@ -20,4 +20,12 @@ router.post('/create',
   auth.isAuthenticated(),
   controller.create)
 
+router.post('/edit',
+  auth.isAuthenticated(),
+  controller.edit)
+
+router.delete('/delete/:id',
+    auth.isAuthenticated(),
+    controller.delete)
+
 module.exports = router
