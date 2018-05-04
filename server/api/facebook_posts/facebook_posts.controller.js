@@ -133,7 +133,8 @@ exports.create = function (req, res) {
                   if (err) {
                     logger.serverLog(TAG, err)
                   }
-                  console.lof('resp', resp)
+                  logger.serverLog(TAG,
+                  `response from post on facebook ${JSON.stringify(resp.body)}`)
                   res.status(201).json({status: 'success', payload: postCreated})
                 })
             })
