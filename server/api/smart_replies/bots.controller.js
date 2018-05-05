@@ -339,6 +339,11 @@ exports.delete = function (req, res) {
       }
       logger.serverLog(TAG,
               `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
+      if(bot.length == 0){
+      	logger.serverLog(TAG,
+              `Cannot find a bot to delete`)
+      	return
+      }
 
       request(
         {
@@ -362,15 +367,20 @@ exports.delete = function (req, res) {
              } else {
                logger.serverLog(TAG,
                  'Wit.ai app deleted successfully', witres.body)
+
+               Bots.remove({
+                 _id: req.body.botId
+               }, function (err, _) {
+                 if (err) return res.status(500).json({status: 'failed', payload: err})
+                 return res.status(200).json({status: 'success'})
+               })
+
+               logger.serverLog(TAG,
+                 'Bot Deleted From Database as well')
              }
            }
          })
     })
 
-  Bots.remove({
-    _id: req.body.botId
-  }, function (err, _) {
-    if (err) return res.status(500).json({status: 'failed', payload: err})
-    return res.status(200).json({status: 'success'})
-  })
+  
 }
