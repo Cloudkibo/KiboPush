@@ -129,7 +129,7 @@ exports.create = function (req, res) {
               logger.serverLog(TAG,
               `response from get request ${JSON.stringify(resp.body)}`)
               const data = {
-                message: 'hi Anisha'
+                message: req.body.payload
               }
               needle.post(
                 `https://graph.facebook.com/${userPage.pageId}/feed?message=${'Hello Fans'}&access_token=${resp.body.access_token}`,
