@@ -101,6 +101,12 @@ exports.respond = function (payload) {
   if (payload.object !== 'page') {
     return
   }
+  if(!payload.entry){
+  	return
+  }
+  if(!payload.entry[0].messaging){
+  	return
+  }
   if(!payload.entry[0].messaging[0]){
   	return
   }
