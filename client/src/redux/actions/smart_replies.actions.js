@@ -25,6 +25,13 @@ export function showBotDetails (data) {
   }
 }
 
+export function applyBotTemplate (data) {
+  return {
+    type: ActionTypes.APPLY_BOT_TEMPLATE,
+    data
+  }
+}
+
 export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
@@ -100,5 +107,16 @@ export function botDetails (id) {
           dispatch(showBotDetails(res.payload))
         }
       })
+  }
+}
+
+export function loadPoliticsBotTemplate () {
+  return (dispatch) => {
+    callApi('templates/getPoliticsBotTemplate')
+    .then(res => {
+      if (res.status === 'success') {
+        dispatch(applyBotTemplate(res.payload))
+      }
+    })
   }
 }

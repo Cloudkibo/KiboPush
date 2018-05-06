@@ -1,4 +1,3 @@
-
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
@@ -10,11 +9,12 @@ const botSchema = new Schema({
   witToken: String,
   witAppName: String,
   isActive: String,
-  payload: [{
-  	questions: [String],
-  	answer: String,
-  	intent_name: String
-  }],
+  payload: [
+    {
+      questions: [String],
+      answer: String,
+      intent_name: String
+    }],
   datetime: {type: Date, default: Date.now}
 })
 
