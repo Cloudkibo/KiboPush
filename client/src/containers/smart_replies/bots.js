@@ -30,7 +30,8 @@ class Bot extends React.Component {
       isActive: true,
       error: false,
       filterValue: '',
-      searchValue: ''
+      searchValue: '',
+      createBotDialogButton: false,
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -188,6 +189,13 @@ class Bot extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
   gotoCreate () {
+
+    if (/\s/.test(this.state.name)) {
+      this.setState({error: true})
+      this.msg.error("Bot Name Cannot Have Any Spaces")
+      return
+     }
+
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
@@ -326,7 +334,7 @@ class Bot extends React.Component {
                                 </div>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                                    <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}>
                                       Create
                                     </button>
                                   </div>
