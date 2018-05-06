@@ -7,7 +7,7 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import {editBot, updateStatus} from '../../redux/actions/smart_replies.actions'
+import {editBot, updateStatus, loadPoliticsBotTemplate} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
@@ -28,6 +28,7 @@ class CreateBot extends React.Component {
     this.createUI = this.createUI.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.createBot = this.createBot.bind(this)
+    this.addTemplate = this.addTemplate.bind(this)
   }
 
   componentDidMount () {
@@ -35,20 +36,28 @@ class CreateBot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.createdBot && nextProps.pages) {
+    if (nextProps.createdBot && nextProps.pages ) {
       this.setState({id: nextProps.createdBot._id, name: nextProps.createdBot.botName, isActive: nextProps.createdBot.isActive})
       console.log('nextProps', nextProps.pages)
       for (var i = 0; i < nextProps.pages.length; i++) {
         if (nextProps.pages[i]._id === nextProps.createdBot.pageId) {
-          console.log('insideif')
           this.setState({page: nextProps.pages[i].pageName, pagePic: nextProps.pages[i].pagePic})
         }
       }
+    }
+    if (nextProps.botTemplate) {
+      console.log('nextProps for bot', nextProps.botTemplate)
+      this.setState({payload: nextProps.botTemplate})
+      console.log(this.state)
     }
   }
 
   changeStatus (e) {
     this.setState({isActive: e.target.value})
+  }
+
+  addTemplate() {
+    this.props.loadPoliticsBotTemplate()
   }
 
   createUI () {
@@ -252,6 +261,12 @@ class CreateBot extends React.Component {
                       </div>
                       <br />
                       <div className='col-xl-12'>
+                        <button className='btn btn-primary btn-sm'
+                                onClick={this.addTemplate.bind(this)}> Apply Politics Chat Bot Template
+                        </button>
+                      </div>
+                      <br />
+                      <div className='col-xl-12'>
                         <h5> Questions </h5>
                         {this.createUI()}
                       </div>
@@ -288,6 +303,7 @@ class CreateBot extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    botTemplate: (state.botsInfo.botTemplate),
     createdBot: (state.botsInfo.createdBot),
     pages: (state.pagesInfo.pages)
   }
@@ -298,7 +314,8 @@ function mapDispatchToProps (dispatch) {
     {
       editBot: editBot,
       updateStatus: updateStatus,
-      loadMyPagesList: loadMyPagesList
+      loadMyPagesList: loadMyPagesList,
+      loadPoliticsBotTemplate: loadPoliticsBotTemplate
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBot)

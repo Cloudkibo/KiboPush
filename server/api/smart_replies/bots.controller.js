@@ -237,7 +237,7 @@ exports.create = function (req, res) {
         } else {
           if (witres.statusCode !== 200) {
             logger.serverLog(TAG,
-              `Error Occured in creating Wit ai app ${JSON.stringify(
+              `Error occurred in creating Wit ai app ${JSON.stringify(
                 witres.body.errors)}`)
             return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
           } else {
@@ -273,7 +273,7 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
-  Bots.update({_id: req.body.botId}, {payload: req.body.payload}, function (err, affected) {
+  Bots.update({_id: req.body.botId}, {payload: req.body.payload}, (err, affected) => {
     console.log('affected rows %d', affected)
     Bots
     .find({
