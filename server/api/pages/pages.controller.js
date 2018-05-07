@@ -52,6 +52,102 @@ exports.allpages = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
+      Pages.find({connected: true, companyId: companyUser.companyId},
+        (err, pages) => {
+          if (err) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting pages ${JSON.stringify(err)}`
+            })
+          }
+          Subscribers.aggregate([
+            {$match: {isSubscribed: true}},
+            {
+              $group: {
+                _id: {pageId: '$pageId'},
+                count: {$sum: 1}
+              }
+            }], (err2, gotSubscribersCount) => {
+            if (err2) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pages subscriber count ${JSON.stringify(
+                  err2)}`
+              })
+            }
+            Subscribers.aggregate([
+              {$match: {isSubscribed: false}},
+              {
+                $group: {
+                  _id: {pageId: '$pageId'},
+                  count: {$sum: 1}
+                }
+              }], (err2, gotUnSubscribersCount) => {
+              if (err2) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting pages subscriber count ${JSON.stringify(
+                    err2)}`
+                })
+              }
+              let pagesPayload = []
+              for (let i = 0; i < pages.length; i++) {
+                pagesPayload.push({
+                  _id: pages[i]._id,
+                  pageId: pages[i].pageId,
+                  pageName: pages[i].pageName,
+                  userId: pages[i].userId,
+                  pagePic: pages[i].pagePic,
+                  connected: pages[i].connected,
+                  pageUserName: pages[i].pageUserName,
+                  likes: pages[i].likes,
+                  isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+                  welcomeMessage: pages[i].welcomeMessage,
+                  subscribers: 0,
+                  unsubscribes: 0,
+                  greetingText: pages[i].greetingText
+                })
+              }
+              for (let i = 0; i < pagesPayload.length; i++) {
+                for (let j = 0; j < gotSubscribersCount.length; j++) {
+                  if (pagesPayload[i]._id.toString() ===
+                    gotSubscribersCount[j]._id.pageId.toString()) {
+                    pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                  }
+                }
+              }
+              for (let i = 0; i < pagesPayload.length; i++) {
+                for (let j = 0; j < gotUnSubscribersCount.length; j++) {
+                  if (pagesPayload[i]._id.toString() ===
+                    gotUnSubscribersCount[j]._id.pageId.toString()) {
+                    pagesPayload[i].unsubscribes = gotUnSubscribersCount[j].count
+                  }
+                }
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: pagesPayload
+              })
+            })
+          })
+        })
+    })
+}
+exports.getAllpages = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
       if (req.body.first_page) {
         if (!req.body.filter) {
           Pages.aggregate([
