@@ -30,7 +30,8 @@ class Bot extends React.Component {
       isActive: true,
       error: false,
       filterValue: '',
-      searchValue: ''
+      searchValue: '',
+      createBotDialogButton: false,
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -188,6 +189,13 @@ class Bot extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
   gotoCreate () {
+
+    if (/\s/.test(this.state.name)) {
+      this.setState({error: true})
+      this.msg.error("Bot Name Cannot Have Any Spaces")
+      return
+     }
+
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
@@ -326,7 +334,7 @@ class Bot extends React.Component {
                                 </div>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                                    <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}>
                                       Create
                                     </button>
                                   </div>
@@ -395,6 +403,14 @@ class Bot extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '125px'}}>Status</span>
                               </th>
+                              <th data-field='status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '125px'}}>Answered Queries</span>
+                              </th>
+                              <th data-field='status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '125px'}}>Unanswered Queries</span>
+                              </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '175px'}}>Actions</span>
@@ -413,6 +429,18 @@ class Bot extends React.Component {
                                   {bot.isActive === 'true'
                                     ? <span style={{width: '125px'}}>Active</span>
                                     : <span style={{width: '125px'}}>Disabled</span>
+                                  }
+                                </td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  { (bot.hitCount) 
+                                    ? <span style={{width: '125px'}}>{ bot.hitCount}</span>
+                                    : <span style={{width: '125px'}}>0</span>
+                                  }
+                                </td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  { (bot.missCount) 
+                                    ? <span style={{width: '125px'}}>{ bot.missCount}</span>
+                                    : <span style={{width: '125px'}}>0</span>
                                   }
                                 </td>
                                 <td data-field='actions' className='m-datatable__cell'>
