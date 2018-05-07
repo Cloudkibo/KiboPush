@@ -29,9 +29,6 @@ import SubmitSurvey from './containers/survey/SubmitSurvey'
 import ViewSurveyDetail from './containers/survey/ViewSurveyDetail'
 import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
-import CreateWorkflow from './containers/workflows/CreateWorkflow'
-import EditWorkflow from './containers/workflows/EditWorkflow'
-import Workflows from './containers/workflows/Workflows'
 import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
@@ -91,7 +88,6 @@ import InviteUsingLinkWizard from './containers/wizard/inviteUsingLink'
 import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
-import WorkflowWizard from './containers/wizard/workflow'
 import MenuWizard from './containers/wizard/menu'
 import FinishWizard from './containers/wizard/finish'
 import CreateTeam from './containers/teams/createTeam'
@@ -154,10 +150,7 @@ const routes = (
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
     <Route path='/surveys' component={Surveys} onEnter={requireAuth} />
     <Route path='/createBroadcast' component={CreateConvo} onEnter={requireAuth} />
-    <Route path='/createWorkflow' component={CreateWorkflow} onEnter={requireAuth} />
-    <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
     <Route path='/createPoll' component={CreatePoll} onEnter={requireAuth} />
-    <Route path='/editWorkflow' component={EditWorkflow} onEnter={requireAuth} />
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
@@ -225,7 +218,6 @@ const routes = (
     <Route path='/greetingTextWizard' component={GreetingTextWizard} onEnter={requireAuth} />
     <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
-    <Route path='/workflowWizard' component={WorkflowWizard} onEnter={requireAuth} />
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
     <Route path='/finishWizard' component={FinishWizard} onEnter={requireAuth} />
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
