@@ -81,7 +81,7 @@ class Sidebar extends Component {
   showCommentCapture () {
     if (this.props.user) {
       // include user persmissions
-      if (this.state.commentCapture && this.props.user.isSuperUser) {
+      if (this.state.commentCapture) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
