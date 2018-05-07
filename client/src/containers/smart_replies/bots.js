@@ -403,6 +403,14 @@ class Bot extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '125px'}}>Status</span>
                               </th>
+                              <th data-field='status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '125px'}}>Answered Queries</span>
+                              </th>
+                              <th data-field='status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '125px'}}>Unanswered Queries</span>
+                              </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '175px'}}>Actions</span>
@@ -421,6 +429,18 @@ class Bot extends React.Component {
                                   {bot.isActive === 'true'
                                     ? <span style={{width: '125px'}}>Active</span>
                                     : <span style={{width: '125px'}}>Disabled</span>
+                                  }
+                                </td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  { (bot.hitCount) 
+                                    ? <span style={{width: '125px'}}>{ bot.hitCount}</span>
+                                    : <span style={{width: '125px'}}>0</span>
+                                  }
+                                </td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  { (bot.missCount) 
+                                    ? <span style={{width: '125px'}}>{ bot.missCount}</span>
+                                    : <span style={{width: '125px'}}>0</span>
                                   }
                                 </td>
                                 <td data-field='actions' className='m-datatable__cell'>
