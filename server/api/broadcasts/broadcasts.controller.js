@@ -28,10 +28,10 @@ const Users = require('./../user/Users.model')
 const URL = require('./../URLforClickedCount/URL.model')
 const AutopostingMessages = require(
   './../autoposting_messages/autoposting_messages.model')
-const SequenceMessages = require(
-  './../sequenceMessaging/message.model')
-const SequenceSubscriberMessages = require(
-  './../sequenceMessaging/sequenceSubscribersMessages.model')
+// const SequenceMessages = require(
+//  './../sequenceMessaging/message.model')
+// const SequenceSubscriberMessages = require(
+//  './../sequenceMessaging/sequenceSubscribersMessages.model')
 const utility = require('./broadcasts.utility')
 const mongoose = require('mongoose')
 const og = require('open-graph')
@@ -42,7 +42,7 @@ const request = require('request')
 let config = require('./../../config/environment')
 var array = []
 
-exports.index = function (req, res) {
+exports.indexx = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
       if (err) {
@@ -108,7 +108,7 @@ exports.index = function (req, res) {
     })
 }
 
-exports.allBroadcasts = function (req, res) {
+exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
       if (err) {
@@ -123,44 +123,180 @@ exports.allBroadcasts = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      if (req.body.last_id === 'none') {
-        Broadcasts.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
-        .exec((err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({status: 'failed', description: 'Broadcasts not found'})
+      if (req.body.first_page) {
+        if (!req.body.filter) {
+          Broadcasts.aggregate([
+            { $match: {companyId: companyUser.companyId} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, broadcastsCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Broadcasts.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+            .exec((err, broadcasts) => {
+              if (err) {
+                console.log(err)
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              BroadcastPage.find({companyId: companyUser.companyId},
+                (err, broadcastpages) => {
+                  if (err) {
+                    return res.status(404)
+                      .json({status: 'failed', description: 'BroadcastPage not found'})
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+                  })
+                })
+            })
+          })
+        } else {
+          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+          let findCriteria = {}
+          if (req.body.filter_criteria.type_value === 'miscellaneous') {
+            findCriteria = {
+              companyId: companyUser.companyId,
+              'payload.1': {$exists: true},
+              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'datetime': req.body.days !== '0' ? {
+                $gte: new Date(
+                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                $lt: new Date(
+                  (new Date().getTime()))
+              } : {$exists: true}
+            }
+          } else {
+            findCriteria = {
+              companyId: companyUser.companyId,
+              payload: req.body.filter_criteria.type_value ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
+              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'datetime': req.body.days !== '0' ? {
+                $gte: new Date(
+                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                $lt: new Date(
+                  (new Date().getTime()))
+              } : {$exists: true}
+            }
           }
-          BroadcastPage.find({companyId: companyUser.companyId},
-            (err, broadcastpages) => {
+
+          Broadcasts.aggregate([
+            { $match: findCriteria },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, broadcastsCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Broadcasts.find(findCriteria).limit(req.body.number_of_records)
+            .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              res.status(200).json({
-                status: 'success',
-                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
-              })
+              BroadcastPage.find({companyId: companyUser.companyId},
+                (err, broadcastpages) => {
+                  if (err) {
+                    return res.status(404)
+                      .json({status: 'failed', description: 'Broadcasts not found'})
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
+                  })
+                })
             })
-        })
+          })
+        }
       } else {
-        Broadcasts.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
-        .exec((err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({status: 'failed', description: 'Broadcasts not found'})
+        if (!req.body.filter) {
+          Broadcasts.aggregate([
+            { $match: {companyId: companyUser.companyId} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, broadcastsCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Broadcasts.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+            .exec((err, broadcasts) => {
+              if (err) {
+                console.log(err)
+                return res.status(404)
+                  .json({status: 'failed', description: 'Broadcasts not found'})
+              }
+              BroadcastPage.find({companyId: companyUser.companyId},
+                (err, broadcastpages) => {
+                  if (err) {
+                    return res.status(404)
+                      .json({status: 'failed', description: 'BroadcastPage not found'})
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+                  })
+                })
+            })
+          })
+        } else {
+          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+          let findCriteria = {}
+          if (req.body.filter_criteria.type_value === 'miscellaneous') {
+            findCriteria = {
+              companyId: companyUser.companyId,
+              'payload.1': {$exists: true},
+              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'datetime': req.body.days !== '0' ? {
+                $gte: new Date(
+                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                $lt: new Date(
+                  (new Date().getTime()))
+              } : {$exists: true}
+            }
+          } else {
+            findCriteria = {
+              companyId: companyUser.companyId,
+              payload: req.body.filter_criteria.type_value ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
+              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'datetime': req.body.days !== '0' ? {
+                $gte: new Date(
+                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                $lt: new Date(
+                  (new Date().getTime()))
+              } : {$exists: true}
+            }
           }
-          BroadcastPage.find({companyId: companyUser.companyId},
-            (err, broadcastpages) => {
+
+          Broadcasts.aggregate([
+            { $match: findCriteria },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, broadcastsCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Broadcasts.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+            .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              res.status(200).json({
-                status: 'success',
-                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
-              })
+              BroadcastPage.find({companyId: companyUser.companyId},
+                (err, broadcastpages) => {
+                  if (err) {
+                    return res.status(404)
+                      .json({status: 'failed', description: 'Broadcasts not found'})
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
+                  })
+                })
             })
-        })
+          })
+        }
       }
     })
 }
