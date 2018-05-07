@@ -145,9 +145,9 @@ class Header extends React.Component {
                                      </Link>
                                   }
 
-                                    <Link to='/createworkflow' className='m-nav-grid__item'>
+                                    <Link to='/bots' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-clipboard' />
-                                      <span className='m-nav-grid__text'>Create New Workflow</span>
+                                      <span className='m-nav-grid__text'>Create New Bot</span>
                                     </Link>
                                   </div>
                                 </div>

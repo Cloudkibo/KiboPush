@@ -14,10 +14,7 @@ import {
 } from '../../redux/actions/invitations.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
-import {
-  getuserdetails,
-  workflowsTourCompleted
-} from '../../redux/actions/basicinfo.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
 
 class InviteMembers extends React.Component {
@@ -267,7 +264,6 @@ function mapDispatchToProps (dispatch) {
       loadInvitationsList: loadInvitationsList,
       addInvitation: addInvitation,
       getuserdetails: getuserdetails,
-      workflowsTourCompleted: workflowsTourCompleted,
       clearAlertMessages: clearAlertMessages
     }, dispatch)
 }

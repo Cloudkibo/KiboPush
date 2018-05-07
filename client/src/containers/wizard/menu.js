@@ -761,7 +761,7 @@ class Menu extends React.Component {
                           <div className='m-form__actions'>
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' >
-                                <Link to='/workflowWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <Link to='/autopostingWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <i className='la la-arrow-left' />
                                     <span>Back</span>&nbsp;&nbsp;
