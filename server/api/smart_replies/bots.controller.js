@@ -48,6 +48,14 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
       if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
         logger.serverLog(TAG, 'No response found')
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'missCount' : 1}}).exec((err, db_res) => { 
+            if (err) { 
+              throw err; 
+            } 
+            else { 
+              console.log(db_res); 
+            } 
+          })
         return {found: false, intent_name: 'Not Found'}
       }
       var intent = JSON.parse(witres.body).entities.intent[0]
@@ -257,7 +265,9 @@ exports.create = function (req, res) {
               witAppId: witres.body.app_id,
               witToken: witres.body.access_token,
               witAppName: uniquebotName,
-              isActive: req.body.isActive
+              isActive: req.body.isActive,
+              hitCount: 0,
+              missCount: 0,
             })
 
             bot.save((err, newbot) => {
