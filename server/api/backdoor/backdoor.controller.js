@@ -510,71 +510,57 @@ exports.uploadFile = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
+    let usersPayload = []
+    for (let i = 0; i < users.length; i++) {
+      usersPayload.push({
+        Name: users[i].name,
+        Gender: users[i].gender,
+        Email: users[i].email,
+        Locale: users[i].locale,
+        Timezone: users[i].timezone
+      })
+    }
+    //  let dir = path.resolve(__dirname, './my-file.csv')
+    // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
+    // csvdata.write(dir, usersPayload,
+    //   {header: 'Name,Gender,Email,Locale,Timezone'})
+    // logger.serverLog(TAG, 'created file')
+    // try {
+    //   return res.status(201).json({
+    //     status: 'success',
+    //     payload: {
+    //       url: `${config.domain}/api/broadcasts/download/users.csv`
+    //     }
+    //   })
+    // try {
+    //   res.set({
+    //     'Content-Disposition': 'attachment; filename=users.csv',
+    //     'Content-Type': 'text/csv'
+    //   })
+    //   res.send(dir)
+    // } catch (err) {
+    //   logger.serverLog(TAG,
+    //     `Inside Download file, err = ${JSON.stringify(err)}`)
+    //   res.status(201)
+    //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
+    // }
+    // fs.unlinkSync(dir)
 
-    Pages.find({}, (err, pages) => {
+    var info = usersPayload
+    var keys = []
+    var val = info[0]
+
+    for (var j in val) {
+      var subKey = j
+      keys.push(subKey)
+    }
+    json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
-        return res.status(404).json({
-          status: 'failed',
-          description: `Error in getting pages ${JSON.stringify(err)}`
-        })
+        console.log(err)
       }
-
-      let usersPayload = []
-      for (let a = 0; a < pages.length; a++) {
-        for (let b = 0; b < users.length; b++) {
-          if (JSON.stringify(pages[a].userId) === JSON.stringify(users[b]._id)) {
-            usersPayload.push({
-              Page: pages[a].pageName,
-              isConnected: pages[a].connected,
-              Name: users[b].name,
-              Gender: users[b].gender,
-              Email: users[b].email,
-              Locale: users[b].locale,
-              Timezone: users[b].timezone
-            })
-          }
-        }
-      }
-      //  let dir = path.resolve(__dirname, './my-file.csv')
-      // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
-      // csvdata.write(dir, usersPayload,
-      //   {header: 'Name,Gender,Email,Locale,Timezone'})
-      // try {
-      //   return res.status(201).json({
-      //     status: 'success',
-      //     payload: {
-      //       url: `${config.domain}/api/broadcasts/download/users.csv`
-      //     }
-      //   })
-      // try {
-      //   res.set({
-      //     'Content-Disposition': 'attachment; filename=users.csv',
-      //     'Content-Type': 'text/csv'
-      //   })
-      //   res.send(dir)
-      // } catch (err) {
-      //   res.status(201)
-      //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
-      // }
-      // fs.unlinkSync(dir)
-
-      var info = usersPayload
-      var keys = []
-      var val = info[0]
-
-      for (var j in val) {
-        var subKey = j
-        keys.push(subKey)
-      }
-      json2csv({ data: info, fields: keys }, function (err, csv) {
-        if (err) {
-          logger.serverLog(TAG,
-                        `Error at exporting csv file ${JSON.stringify(err)}`)
-        }
-        res.status(200).json({
-          status: 'success',
-          payload: csv
-        })
+      res.status(200).json({
+        status: 'success',
+        payload: csv
       })
     })
   })
