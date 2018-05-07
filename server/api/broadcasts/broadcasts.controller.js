@@ -171,7 +171,7 @@ exports.index = function (req, res) {
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              payload: req.body.filter_criteria.type_value ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
+              payload: req.body.filter_criteria.type_value !== '' ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
               'datetime': req.body.days !== '0' ? {
                 $gte: new Date(
@@ -258,7 +258,7 @@ exports.index = function (req, res) {
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              payload: req.body.filter_criteria.type_value ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
+              payload: req.body.filter_criteria.type_value !== '' ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
               'datetime': req.body.days !== '0' ? {
                 $gte: new Date(

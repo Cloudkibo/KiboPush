@@ -13,4 +13,10 @@ router.get('/:id',
   auth.doesRolePermitsThisAction('autopostingPermission'),
   controller.index)
 
+router.post('/getMessages/:id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('autoposting'),
+  auth.doesRolePermitsThisAction('autopostingPermission'),
+  controller.getMessages)
+
 module.exports = router
