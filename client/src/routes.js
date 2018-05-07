@@ -89,7 +89,6 @@ import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
 import MenuWizard from './containers/wizard/menu'
-import FinishWizard from './containers/wizard/finish'
 import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
@@ -219,7 +218,6 @@ const routes = (
     <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
-    <Route path='/finishWizard' component={FinishWizard} onEnter={requireAuth} />
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
     <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
     <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />
