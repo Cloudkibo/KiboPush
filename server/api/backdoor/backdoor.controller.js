@@ -514,10 +514,10 @@ exports.uploadFile = function (req, res) {
     for (let i = 0; i < users.length; i++) {
       usersPayload.push({
         Name: users[i].name,
-        Gender: users[i].gender,
+        Gender: users[i].facebookInfo ? users[i].facebookInfo.gender : '',
         Email: users[i].email,
-        Locale: users[i].locale,
-        Timezone: users[i].timezone
+        Locale: users[i].facebookInfo ? users[i].facebookInfo.locale : '',
+        Timezone: users[i].facebookInfo ? users[i].facebookInfo.timezone : ''
       })
     }
     //  let dir = path.resolve(__dirname, './my-file.csv')

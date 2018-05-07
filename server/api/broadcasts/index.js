@@ -14,13 +14,13 @@ router.get('/all/:days',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),
-  controller.index)
+  controller.indexx)
 
 router.post('/allBroadcasts',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),
-  controller.allBroadcasts)
+  controller.index)
 
 router.post('/webhook', controller.getfbMessage)
 router.get('/webhook', controller.verifyhook)
