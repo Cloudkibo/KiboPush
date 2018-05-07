@@ -5,7 +5,7 @@
 import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, updateMode } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
@@ -27,6 +27,11 @@ class Header extends React.Component {
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.timeSince = this.timeSince.bind(this)
+    this.changeStatus = this.changeStatus.bind(this)
+  }
+
+  changeStatus (e, id) {
+    this.props.updateMode({ _id: id, advancedMode: e.target.checked })
   }
 
   toggleSidebar () {
@@ -196,6 +201,20 @@ class Header extends React.Component {
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
+                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{marginRight: '-15px'}}>
+                      <label style={{fontWeight: 'inherit', marginTop: '25px'}}>Advanced Mode:
+                      </label>
+                    </li>
+                    {this.props.user &&
+                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                      <span className='m-switch m-switch--outline m-switch--icon m-switch--success' style={{marginTop: '17px'}}>
+                        <label>
+                          <input ref={this.props.user._id} type='checkbox' name='' defaultChecked={this.props.user.advancedMode} onChange={(e) => this.changeStatus(e, this.props.user._id)} />
+                          <span />
+                        </label>
+                      </span>
+                    </li>
+                    }
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
@@ -335,9 +354,9 @@ class Header extends React.Component {
                                      </Link>
                                   }
 
-                                    <Link to='/createworkflow' className='m-nav-grid__item'>
+                                    <Link to='/bots' className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-clipboard' />
-                                      <span className='m-nav-grid__text'>Create New Workflow</span>
+                                      <span className='m-nav-grid__text'>Create New Bot</span>
                                     </Link>
                                   </div>
                                 </div>
@@ -454,7 +473,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     fetchNotifications: fetchNotifications,
     resetSocket: resetSocket,
-    markRead: markRead
+    markRead: markRead,
+    updateMode: updateMode
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

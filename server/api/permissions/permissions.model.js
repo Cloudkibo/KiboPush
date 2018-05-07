@@ -31,7 +31,6 @@ var PermissionsSchema = new Schema({
   pollsPermission: { type: Boolean, default: true },
   subscriberPermission: { type: Boolean, default: true },
   surveyPermission: { type: Boolean, default: true },
-  workflowPermission: { type: Boolean, default: true },
   apiPermission: { type: Boolean, default: true }
 
 })

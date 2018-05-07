@@ -4,7 +4,6 @@
 
 // eslint-disable-next-line no-unused-vars
 const logger = require('../../components/logger')
-// const Workflows = require('./Workflows.model')
 // eslint-disable-next-line no-unused-vars
 const TAG = 'api/smart_replies/bots.controller.js'
 const Bots = require('./Bots.model')
@@ -48,26 +47,26 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
       if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
         logger.serverLog(TAG, 'No response found')
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'missCount' : 1}}).exec((err, db_res) => { 
-            if (err) { 
-              throw err; 
-            } 
-            else { 
-              console.log(db_res); 
-            } 
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'missCount' : 1}}).exec((err, db_res) => {
+            if (err) {
+              throw err;
+            }
+            else {
+              console.log(db_res);
+            }
           })
         return {found: false, intent_name: 'Not Found'}
       }
       var intent = JSON.parse(witres.body).entities.intent[0]
       if (intent.confidence > 0.55) {
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'hitCount' : 1}}).exec((err, db_res) => { 
-            if (err) { 
-              throw err; 
-            } 
-            else { 
-              console.log(db_res); 
-            } 
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'hitCount' : 1}}).exec((err, db_res) => {
+            if (err) {
+              throw err;
+            }
+            else {
+              console.log(db_res);
+            }
           })
         for (let i = 0; i < bot.payload.length; i++) {
           if (bot.payload[i].intent_name == intent.value) {
@@ -410,5 +409,5 @@ exports.delete = function (req, res) {
          })
     })
 
-  
+
 }
