@@ -1038,36 +1038,36 @@ function updateseenstatus (req) {
       logger.serverLog(TAG, `updated ${JSON.stringify(updated)}`)
     })
   // updating seen count for sequence messages
-  SequenceSubscriberMessages.distinct('messageId',
-    {subscriberId: req.sender.id, seen: false},
-    (err, sequenceMessagesIds) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-      SequenceSubscriberMessages.update(
-        {
-          subscriberId: req.sender.id,
-          seen: false,
-          datetime: {$lte: new Date(req.read.watermark)}
-        },
-        {seen: true},
-        {multi: true}, (err, updated) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-
-          sequenceMessagesIds.forEach(sequenceMessagesId => {
-            SequenceMessages.update(
-              {_id: sequenceMessagesId},
-              {$inc: {seen: 1}},
-              {multi: true}, (err, updated) => {
-                if (err) {
-                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                }
-              })
-          })
-        })
-    })
+  // SequenceSubscriberMessages.distinct('messageId',
+  //   {subscriberId: req.sender.id, seen: false},
+  //   (err, sequenceMessagesIds) => {
+  //     if (err) {
+  //       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+  //     }
+  //     SequenceSubscriberMessages.update(
+  //       {
+  //         subscriberId: req.sender.id,
+  //         seen: false,
+  //         datetime: {$lte: new Date(req.read.watermark)}
+  //       },
+  //       {seen: true},
+  //       {multi: true}, (err, updated) => {
+  //         if (err) {
+  //           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+  //         }
+  //
+  //         sequenceMessagesIds.forEach(sequenceMessagesId => {
+  //           SequenceMessages.update(
+  //             {_id: sequenceMessagesId},
+  //             {$inc: {seen: 1}},
+  //             {multi: true}, (err, updated) => {
+  //               if (err) {
+  //                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+  //               }
+  //             })
+  //         })
+  //       })
+  //   })
 }
 
 function sendReply (req) {
