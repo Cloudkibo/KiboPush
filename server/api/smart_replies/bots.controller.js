@@ -113,17 +113,21 @@ function sendMessenger (message, pageId, senderId) {
 
 exports.respond = function (payload) {
   // Need to extract the pageID and message from facebook and also the senderID
-  logger.serverLog(TAG, `Getting this in respond ${JSON.stringify(payload)}`)
+  // logger.serverLog(TAG, `Getting this in respond ${JSON.stringify(payload)}`)
   if (payload.object && payload.object !== 'page') {
+    logger.serverLog(TAG, `Payload received is not for bot`)
     return
   }
   if(!payload.entry){
+    logger.serverLog(TAG, `Payload received is not for bot does not contain entry`)
   	return
   }
   if(!payload.entry[0].messaging){
+    logger.serverLog(TAG, `Payload received is not for bot does contain messaging field`)
   	return
   }
   if(!payload.entry[0].messaging[0]){
+    logger.serverLog(TAG, `Payload received is not for bot does not contain messaging array`)
   	return
   }
   var messageDetails = payload.entry[0].messaging[0]
