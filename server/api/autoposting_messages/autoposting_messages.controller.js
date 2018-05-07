@@ -44,17 +44,28 @@ exports.getMessages = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id})
-    .populate('pageId companyId autopostingId')
-    .exec((err, autopostingMessages) => {
-      if (err) {
-        return res.status(500)
-        .json({status: 'failed', description: 'Autoposting query failed'})
-      }
-      res.status(200).json({
-        status: 'success',
-        payload: autopostingMessages
+    if (req.body.first_page) {
+      AutopostingMessages.aggregate([
+        { $match: {companyId: companyUser.companyId, autopostingId: req.params.id} },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, messagesCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id}).limit(req.body.number_of_records)
+        .populate('pageId companyId autopostingId')
+        .exec((err, autopostingMessages) => {
+          if (err) {
+            return res.status(500)
+            .json({status: 'failed', description: 'Autoposting query failed'})
+          }
+          res.status(200).json({
+            status: 'success',
+            payload: {messages: autopostingMessages, count: messagesCount}
+          })
+        })
       })
-    })
+    }
   })
 }

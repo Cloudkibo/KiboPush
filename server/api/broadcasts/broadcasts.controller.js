@@ -161,9 +161,9 @@ exports.index = function (req, res) {
               companyId: companyUser.companyId,
               'payload.1': {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -173,9 +173,9 @@ exports.index = function (req, res) {
               companyId: companyUser.companyId,
               payload: req.body.filter_criteria.type_value !== '' ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -248,9 +248,9 @@ exports.index = function (req, res) {
               companyId: companyUser.companyId,
               'payload.1': {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -260,9 +260,9 @@ exports.index = function (req, res) {
               companyId: companyUser.companyId,
               payload: req.body.filter_criteria.type_value !== '' ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
