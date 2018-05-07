@@ -28,7 +28,6 @@ const UserSchema = new Schema({
   wizardSeen: {type: Boolean, default: false},
   getStartedSeen: {type: Boolean, default: false},
   dashboardTourSeen: {type: Boolean, default: false},
-  workFlowsTourSeen: {type: Boolean, default: false},
   surveyTourSeen: {type: Boolean, default: false},
   convoTourSeen: {type: Boolean, default: false},
   pollTourSeen: {type: Boolean, default: false},
@@ -38,7 +37,8 @@ const UserSchema = new Schema({
   autoPostingTourSeen: {type: Boolean, default: false},
   mainMenuTourSeen: {type: Boolean, default: false},
   subscribeToMessengerTourSeen: {type: Boolean, default: false},
-  pagesTourSeen: {type: Boolean, default: false}
+  pagesTourSeen: {type: Boolean, default: false},
+  advancedMode: {type: Boolean, default: false}
 })
 
 /**

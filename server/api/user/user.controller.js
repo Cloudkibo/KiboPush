@@ -104,7 +104,6 @@ exports.updateChecks = function (req, res) {
 
     if (req.body.getStartedSeen) user.getStartedSeen = req.body.getStartedSeen
     if (req.body.dashboardTourSeen) user.dashboardTourSeen = req.body.dashboardTourSeen
-    if (req.body.workFlowsTourSeen) user.workFlowsTourSeen = req.body.workFlowsTourSeen
     if (req.body.surveyTourSeen) user.surveyTourSeen = req.body.surveyTourSeen
     if (req.body.convoTourSeen) user.convoTourSeen = req.body.convoTourSeen
     if (req.body.pollTourSeen) user.pollTourSeen = req.body.pollTourSeen
@@ -123,6 +122,77 @@ exports.updateChecks = function (req, res) {
           .json({status: 'failed', description: 'Internal Server Error'})
       }
       return res.status(200).json({status: 'success', payload: user})
+    })
+  })
+}
+
+exports.updateMode = function (req, res) {
+  Users.findOne({_id: req.body._id}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!user) {
+      return res.status(404)
+        .json({status: 'failed', description: 'User not found'})
+    }
+
+    user.advancedMode = req.body.advancedMode
+    user.save((err) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      CompanyUsers.findOne({userId: req.body._id}, (err, companyUser) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        if (!companyUser) {
+          return res.status(404).json({
+            status: 'failed',
+            description: 'The user account does not belong to any company. Please contact support'
+          })
+        }
+        Permissions.findOne({userId: req.body._id}, (err, permissions) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (!permissions) {
+            return res.status(404).json({
+              status: 'failed',
+              description: 'Permissions not set for this user. Please contact support'
+            })
+          }
+          Plans.findOne({}, (err, plan) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (!plan) {
+              return res.status(404).json({
+                status: 'failed',
+                description: 'Fatal Error, plan not set for this user. Please contact support'
+              })
+            }
+            user = user.toObject()
+            user.companyId = companyUser.companyId
+            user.permissions = permissions
+            user.currentPlan = user.plan
+            user.plan = plan[user.plan]
+            res.status(200).json({status: 'success', payload: user})
+          })
+        })
+      })
     })
   })
 }
