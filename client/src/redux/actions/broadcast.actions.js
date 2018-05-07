@@ -22,7 +22,8 @@ export function appendSentSeenData (data) {
 export function showbroadcasts (data) {
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    broadcasts: appendSentSeenData(data)
+    broadcasts: appendSentSeenData(data),
+    count: data.count
   }
 }
 
