@@ -10,7 +10,6 @@ import {dashboardInfo} from './dashboard.reducer'
 import {broadcastsInfo} from './broadcast.reducer'
 import {pollsInfo} from './poll.reducer'
 import {surveysInfo} from './surveys.reducer.js'
-import {workflowsInfo} from './workflows.reducer.js'
 import {autopostingInfo} from './autoposting.reducer.js'
 import {convosInfo} from './convos.reducer.js'
 import {growthToolsInfo} from './growthTools.reducer.js'
@@ -37,7 +36,6 @@ const appReducer = combineReducers({
   surveysInfo,
   backdoorInfo,
   broadcastsInfo,
-  workflowsInfo,
   pollsInfo,
   dashboardInfo,
   autopostingInfo,
