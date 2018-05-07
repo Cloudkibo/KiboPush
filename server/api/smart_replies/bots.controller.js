@@ -61,6 +61,14 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       var intent = JSON.parse(witres.body).entities.intent[0]
       if (intent.confidence > 0.55) {
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'hitCount' : 1}}).exec((err, db_res) => { 
+            if (err) { 
+              throw err; 
+            } 
+            else { 
+              console.log(db_res); 
+            } 
+          })
         for (let i = 0; i < bot.payload.length; i++) {
           if (bot.payload[i].intent_name == intent.value) {
             sendMessenger(bot.payload[i].answer, pageId, senderId)
