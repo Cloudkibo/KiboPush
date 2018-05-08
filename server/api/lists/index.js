@@ -17,6 +17,10 @@ router.get('/allLists',
   // auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.allLists)
 
+router.get('/getAll',
+  auth.isAuthenticated(),
+  controller.getAll)
+
 // todo remove this, this is not being used, discuss
 router.post('/createList',
   auth.isAuthenticated(),

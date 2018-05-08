@@ -39,6 +39,74 @@ exports.allLists = function (req, res) {
       })
     })
 }
+
+exports.getAll = function (req, res) {
+  /*
+  body: {
+  first_page:
+  last_id: number_of_records
+}
+  */
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      if (req.body.first_page) {
+        Lists.aggregate([
+          { $match: {companyId: companyUser.companyId} },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err, listsCount) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'BroadcastsCount not found'})
+          }
+          Lists.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+          .exec((err, lists) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            // after survey is created, create survey questions
+            return res.status(201).json({status: 'success', payload: {lists: lists, count: lists.length > 0 ? listsCount[0].count : ''}})
+          })
+        })
+      } else {
+        Lists.aggregate([
+          { $match: {companyId: companyUser.companyId} },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err, listsCount) => {
+          if (err) {
+            return res.status(404)
+              .json({status: 'failed', description: 'BroadcastsCount not found'})
+          }
+          Lists.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+          .exec((err, lists) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            // after survey is created, create survey questions
+            return res.status(201).json({status: 'success', payload: {lists: lists, count: lists.length > 0 ? listsCount[0].count : ''}})
+          })
+        })
+      }
+    })
+}
+
 exports.viewList = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
