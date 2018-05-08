@@ -204,7 +204,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
                   })
                 })
             })
@@ -235,7 +235,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
                   })
                 })
             })
@@ -291,7 +291,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
                   })
                 })
             })
