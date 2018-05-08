@@ -132,13 +132,14 @@ class FacebookPosts extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'top right',
+      position: 'bottom right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
     }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>

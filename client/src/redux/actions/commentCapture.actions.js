@@ -30,8 +30,7 @@ export function createFacebookPost (data, msg) {
       .then(res => {
         console.log('response from server', res)
         if (res.status === 'success') {
-          console.log('response', res)
-          msg.success('Post sent to facebook')
+          msg.success('Posted on Facebook successfully')
         }
       })
   }
