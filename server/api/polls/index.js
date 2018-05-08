@@ -13,6 +13,12 @@ router.get('/all/:days',
   auth.doesRolePermitsThisAction('pollsPermission'),
   controller.index)
 
+router.post('/allPolls',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('polls'),
+  auth.doesRolePermitsThisAction('pollsPermission'),
+  controller.allPolls)
+
 router.post('/create',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('polls'),
