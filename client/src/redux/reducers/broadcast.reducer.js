@@ -8,7 +8,8 @@ export function broadcastsInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.FETCH_BROADCASTS_LIST:
       return Object.assign({}, state, {
-        broadcasts: action.broadcasts
+        broadcasts: action.broadcasts,
+        count: action.count
       })
     case ActionTypes.ADD_BROADCAST:
       return Object.assign({}, state, {
