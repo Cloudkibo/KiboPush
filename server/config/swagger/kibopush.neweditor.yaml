@@ -1730,7 +1730,7 @@ paths:
           schema:
              $ref: '#/definitions/Response500'
   /polls/deletePoll/:id:
-    post:
+    delete:
       description: deletes a particular poll
       consumes:
           - application/json
