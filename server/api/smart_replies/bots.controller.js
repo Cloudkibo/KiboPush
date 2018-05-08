@@ -150,9 +150,10 @@ exports.respond = function (payload) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-		// logger.serverLog(TAG, `Response for does bot exist ${JSON.stringify(bot)}`)
+		
 		// Return if no bot found
 		if(!bot){
+      logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
 			return
 		}
       if (bot.isActive === 'true') {
