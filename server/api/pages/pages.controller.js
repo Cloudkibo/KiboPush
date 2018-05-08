@@ -134,6 +134,17 @@ exports.allpages = function (req, res) {
     })
 }
 exports.getAllpages = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter:
+    filter_criteria: {
+      search_value:
+  }
+}
+  */
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
       if (err) {
@@ -232,7 +243,7 @@ exports.getAllpages = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {pages: pagesPayload, count: pagesCount[0].count, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
+                    payload: {pages: pagesPayload, count: pagesCount.length > 0 ? pagesCount[0].count : 0, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
                   })
                 })
               })
@@ -327,7 +338,7 @@ exports.getAllpages = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {pages: pagesPayload, count: pagesCount[0].count, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
+                    payload: {pages: pagesPayload, count: pagesCount.length > 0 ? pagesCount[0].count : 0, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
                   })
                 })
               })
@@ -418,7 +429,7 @@ exports.getAllpages = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {pages: pagesPayload, count: pagesCount[0].count, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
+                    payload: {pages: pagesPayload, count: pagesCount.length > 0 ? pagesCount[0].count : 0, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
                   })
                 })
               })
@@ -513,7 +524,7 @@ exports.getAllpages = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {pages: pagesPayload, count: pagesCount[0].count, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
+                    payload: {pages: pagesPayload, count: pagesCount.length > 0 ? pagesCount[0].count : 0, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
                   })
                 })
               })
