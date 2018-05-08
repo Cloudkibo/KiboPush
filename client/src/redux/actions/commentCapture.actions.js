@@ -23,7 +23,7 @@ export function fetchAllPosts () {
   }
 }
 
-export function createFacebookPost (data) {
+export function createFacebookPost (data, msg) {
   console.log('data', data)
   return (dispatch) => {
     callApi('post/create', 'post', data)
@@ -31,6 +31,7 @@ export function createFacebookPost (data) {
         console.log('response from server', res)
         if (res.status === 'success') {
           console.log('response', res)
+          msg.success('Post sent to facebook')
         }
       })
   }

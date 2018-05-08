@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
 import {createFacebookPost} from '../../redux/actions/commentCapture.actions'
+import AlertContainer from 'react-alert'
 const styles = {
   iconclass: {
     height: 24,
@@ -126,15 +127,23 @@ class FacebookPosts extends React.Component {
     }
   }
   onPost () {
-    this.props.createFacebookPost({pageId: this.state.selectedPage._id, payload: this.state.facebookPost, reply: 'reply', includedKeywords: ['hello'], excludedKeywords: ['hi']})
+    this.props.createFacebookPost({pageId: this.state.selectedPage._id, payload: this.state.facebookPost, reply: 'reply', includedKeywords: ['hello'], excludedKeywords: ['hi']}, this.msg)
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
