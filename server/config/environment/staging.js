@@ -9,7 +9,7 @@
    // MongoDB connection options
    mongo: {
      // uri: 'mongodb://kibopush2:0UFA1pWgmo1k3lvlrY0Ta3y2WDjdT51i1FxnSsjRgWMORJsRnftZiJgVu6jn59dk3xcwovFLI74Lyjk0y2QYmA==@kibopush2.documents.azure.com:10255/kibopush?ssl=true'
-     uri: 'mongodb://localhost/kibopush-staging'
+     uri: process.env.MONGO_URI || 'mongodb://localhost/kibopush-staging'
    },
    seedDB: false,
 
