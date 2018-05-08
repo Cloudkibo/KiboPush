@@ -81,15 +81,12 @@ export function loadBroadcastsList (days) {
 }
 
 export function allBroadcasts (broadcast) {
-  console.log('broadcast', broadcast)
   return (dispatch) => {
     callApi('broadcasts/allBroadcasts', 'post', broadcast)
       .then(res => {
         if (res.status === 'success') {
           console.log('allBroadcasts', res.payload)
           dispatch(showbroadcasts(res.payload))
-        } else {
-          console.log('error', res)
         }
       })
   }
