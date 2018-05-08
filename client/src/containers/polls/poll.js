@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addPoll,
-  loadPollsList,
+  loadPollsListNew,
   sendpoll,
   clearAlertMessage,
   deletePoll,
@@ -28,7 +28,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Poll extends React.Component {
   constructor (props, context) {
     props.loadSubscribersList()
-    props.loadPollsList(0)
+    props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
     props.loadTags()
     super(props, context)
     this.state = {
@@ -61,7 +61,7 @@ class Poll extends React.Component {
     this.setState({isShowingModal: false})
   }
   onDaysChange (e) {
-    var defaultVal = 0
+    //  var defaultVal = 0
     var value = e.target.value
     this.setState({selectedDays: value})
     if (value && value !== '') {
@@ -73,10 +73,10 @@ class Poll extends React.Component {
           selectedDays: ''
         })
       }
-      this.props.loadPollsList(value)
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: value})
     } else if (value === '') {
       this.setState({selectedDays: ''})
-      this.props.loadPollsList(defaultVal)
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
     }
   }
   showDialogDelete (id) {
@@ -93,14 +93,15 @@ class Poll extends React.Component {
   }
 
   displayData (n, polls) {
-    let offset = n * 5
+    console.log('in displayData', polls)
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > polls.length) {
+    if ((offset + 10) > polls.length) {
       limit = polls.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = polls[i]
@@ -110,14 +111,15 @@ class Poll extends React.Component {
   }
 
   handlePageClick (data) {
+    this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
     this.displayData(data.selected, this.props.polls)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.polls) {
+    if (nextProps.polls && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
-      this.setState({ totalLength: nextProps.polls.length })
+      this.setState({ totalLength: nextProps.count })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -454,7 +456,7 @@ class Poll extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
@@ -483,6 +485,7 @@ function mapStateToProps (state) {
   console.log('poll state', state)
   return {
     polls: (state.pollsInfo.polls),
+    count: (state.pollsInfo.count),
     successMessage: (state.pollsInfo.successMessage),
     errorMessage: (state.pollsInfo.errorMessage),
     subscribers: (state.subscribersInfo.subscribers),
@@ -495,7 +498,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadPollsList: loadPollsList,
+      loadPollsListNew: loadPollsListNew,
       getAllPollResults: getAllPollResults,
       addPoll: addPoll,
       sendpoll: sendpoll,

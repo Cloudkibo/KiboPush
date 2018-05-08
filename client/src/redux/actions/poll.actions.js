@@ -29,7 +29,13 @@ export function updatePollsList (data) {
     data: appendSentSeenResponsesData(data)
   }
 }
-
+export function updatePollsListNew (data) {
+  return {
+    type: ActionTypes.FETCH_POLLS_LIST_NEW,
+    data: appendSentSeenResponsesData(data),
+    count: data.count
+  }
+}
 export function createPoll (data) {
   return {
     type: ActionTypes.ADD_POLL,
@@ -89,7 +95,14 @@ export function loadPollsList (days) {
     callApi(`polls/all/${days}`).then(res => dispatch(updatePollsList(res.payload)))
   }
 }
-
+export function loadPollsListNew (data) {
+  return (dispatch) => {
+    callApi(`polls/allPolls`, 'post', data).then(res => {
+      console.log('response from allPolls', res)
+      dispatch(updatePollsListNew(res.payload))
+    })
+  }
+}
 export function sendpoll (poll, msg) {
   return (dispatch) => {
     callApi('polls/send', 'post', poll)
