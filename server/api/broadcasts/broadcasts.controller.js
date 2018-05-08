@@ -161,9 +161,9 @@ exports.index = function (req, res) {
               companyId: companyUser.companyId,
               'payload.1': {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -171,11 +171,11 @@ exports.index = function (req, res) {
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              payload: req.body.filter_criteria.type_value ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
+              'payload.0': req.body.filter_criteria.type_value !== '' ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -204,7 +204,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
                   })
                 })
             })
@@ -235,7 +235,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
                   })
                 })
             })
@@ -248,9 +248,9 @@ exports.index = function (req, res) {
               companyId: companyUser.companyId,
               'payload.1': {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -258,11 +258,11 @@ exports.index = function (req, res) {
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              payload: req.body.filter_criteria.type_value ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
+              'payload.0': req.body.filter_criteria.type_value !== '' ? {componentType: req.body.filter_criteria.type_value} : {$exists: true},
               title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-              'datetime': req.body.days !== '0' ? {
+              'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
-                  (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
               } : {$exists: true}
@@ -291,7 +291,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts.length > 0 ? broadcasts[broadcasts.length - 1]._id : ''}
                   })
                 })
             })

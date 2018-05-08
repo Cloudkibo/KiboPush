@@ -117,7 +117,7 @@ class Convo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.allBroadcasts({last_id: this.props.broadcasts[this.props.broadcasts.length - 1]._id, number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
     this.displayData(data.selected, this.props.broadcasts)
   }
 
@@ -179,7 +179,7 @@ class Convo extends React.Component {
     //  var filtered = []
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.allBroadcasts({last_id: this.props.broadcasts[this.props.broadcasts.length - 1]._id, number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
       // for (let i = 0; i < this.props.broadcasts.length; i++) {
       //   if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
       //     filtered.push(this.props.broadcasts[i])
@@ -187,7 +187,7 @@ class Convo extends React.Component {
       // }
     } else {
       this.setState({filter: false})
-      this.props.allBroadcasts({last_id: this.props.broadcasts[this.props.broadcasts.length - 1]._id, number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
       //  filtered = this.props.broadcasts
     }
     // this.displayData(0, filtered)
@@ -199,7 +199,7 @@ class Convo extends React.Component {
     // var filtered = []
     if (e.target.value !== '') {
       this.setState({filter: true})
-      this.props.allBroadcasts({last_id: this.props.broadcasts[this.props.broadcasts.length - 1]._id, number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
       // for (let i = 0; i < this.props.broadcasts.length; i++) {
       //   if (e.target.value === 'miscellaneous') {
       //     if (this.props.broadcasts[i].payload.length > 1) {
@@ -213,7 +213,7 @@ class Convo extends React.Component {
       // }
     } else {
       this.setState({filter: false})
-      this.props.allBroadcasts({last_id: this.props.broadcasts[this.props.broadcasts.length - 1]._id, number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
       // filtered = this.props.broadcasts
     }
     // this.displayData(0, filtered)
