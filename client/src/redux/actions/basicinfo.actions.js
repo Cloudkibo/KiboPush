@@ -17,6 +17,15 @@ export function showuserdetails (data) {
   }
 }
 
+export function showUpdatedUserDetails (data) {
+  // NOTE: don't remove following auth method call
+  auth.putUserId(data._id)
+  return {
+    type: ActionTypes.LOAD_UPDATED_USER_DETAILS,
+    data
+  }
+}
+
 export function storeFbAppId (data) {
   // NOTE: don't remove following auth method call
   return {
@@ -62,5 +71,16 @@ export function getFbAppId () {
 export function getAdminSubscriptions () {
   return (dispatch) => {
     callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
+  }
+}
+export function updateMode (data) {
+  console.log('data for updateMode', data)
+  return (dispatch) => {
+    callApi('users/updateMode', 'post', data).then(res => {
+      console.log('response from updateMode', res)
+      if (res.status === 'success') {
+        dispatch(showUpdatedUserDetails(res.payload))
+      }
+    })
   }
 }

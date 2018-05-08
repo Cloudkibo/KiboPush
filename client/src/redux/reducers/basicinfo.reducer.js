@@ -23,7 +23,14 @@ export function basicInfo (state = initialState, action) {
 
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
-        user: action.data
+        user: action.data,
+        updatedUser: ''
+      })
+
+    case ActionTypes.LOAD_UPDATED_USER_DETAILS:
+      return Object.assign({}, state, {
+        user: action.data,
+        updatedUser: action.data
       })
 
     case ActionTypes.SET_SOCKET_STATUS:
