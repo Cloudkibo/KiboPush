@@ -20,7 +20,7 @@ class AutopostingMessages extends React.Component {
       messagesData: [],
       totalLength: 0
     }
-    props.loadAutopostingMessages(props.location.state.id)
+    props.loadAutopostingMessages(props.location.state.id, {first_page: true, last_id: 'none', number_of_records: 10})
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
   }
@@ -35,14 +35,14 @@ class AutopostingMessages extends React.Component {
   }
 
   displayData (n, messages) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > messages.length) {
+    if ((offset + 10) > messages.length) {
       limit = messages.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = messages[i]
@@ -52,13 +52,14 @@ class AutopostingMessages extends React.Component {
   }
 
   handlePageClick (data) {
+    props.loadAutopostingMessages(props.location.state.id, {first_page: false, last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
     this.displayData(data.selected, this.props.autoposting_messages)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.autoposting_messages) {
+    if (nextProps.autoposting_messages && nextProps.count) {
       this.displayData(0, nextProps.autoposting_messages)
-      this.setState({ totalLength: nextProps.autoposting_messages.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
 
@@ -184,7 +185,9 @@ class AutopostingMessages extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    autoposting_messages: (state.autopostingInfo.autoposting_messages)
+    autoposting_messages: (state.autopostingInfo.autoposting_messages),
+    count: (state.autopostingInfo.count)
+
   }
 }
 

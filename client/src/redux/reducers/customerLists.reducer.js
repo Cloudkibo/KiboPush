@@ -18,6 +18,11 @@ export function listsInfo (state = {}, action) {
       return Object.assign({}, state, {
         customerLists: action.data
       })
+    case ActionTypes.LOAD_CUSTOMER_LISTS_NEW:
+      return Object.assign({}, state, {
+        customerLists: action.lists,
+        count: action.count
+      })
     case ActionTypes.ADD_NEW_LIST:
       return Object.assign({}, state, {
         customerLists: [...state.customerLists, action.data.payload],
