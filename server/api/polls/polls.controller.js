@@ -132,6 +132,160 @@ exports.index = function (req, res) {
   })
 }
 
+exports.allPolls = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    days:
+}
+  */
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    if (req.body.first_page) {
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        'datetime': req.body.days !== '0' ? {
+          $gte: new Date(
+            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        } : {$exists: true}
+      }
+      Polls.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, pollsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        Polls.find(findCriteria).limit(req.body.number_of_records)
+        .exec((err, polls) => {
+          if (err) {
+            logger.serverLog(TAG, `Error: ${err}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error${JSON.stringify(err)}`
+            })
+          }
+          PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Polls not found'})
+            }
+            PollResponse.aggregate([{
+              $group: {
+                _id: {pollId: '$pollId'},
+                count: {$sum: 1}
+              }}
+            ], (err2, responsesCount1) => {
+              if (err2) {
+                return res.status(404)
+                .json({status: 'failed', description: 'Polls not found'})
+              }
+              let responsesCount = []
+              for (let i = 0; i < polls.length; i++) {
+                responsesCount.push({
+                  _id: polls[i]._id,
+                  count: 0
+                })
+              }
+              for (let i = 0; i < polls.length; i++) {
+                for (let j = 0; j < responsesCount1.length; j++) {
+                  if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+                    responsesCount[i].count = responsesCount1[j].count
+                  }
+                }
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {polls: polls, pollpages: pollpages, responsesCount: responsesCount, count: polls.length > 0 ? pollsCount[0].count : 0}
+              })
+            })
+          })
+        })
+      })
+    } else {
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        'datetime': req.body.days !== '0' ? {
+          $gte: new Date(
+            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        } : {$exists: true}
+      }
+      Polls.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, pollsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        Polls.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+        .exec((err, polls) => {
+          if (err) {
+            logger.serverLog(TAG, `Error: ${err}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error${JSON.stringify(err)}`
+            })
+          }
+          PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Polls not found'})
+            }
+            PollResponse.aggregate([{
+              $group: {
+                _id: {pollId: '$pollId'},
+                count: {$sum: 1}
+              }}
+            ], (err2, responsesCount1) => {
+              if (err2) {
+                return res.status(404)
+                .json({status: 'failed', description: 'Polls not found'})
+              }
+              let responsesCount = []
+              for (let i = 0; i < polls.length; i++) {
+                responsesCount.push({
+                  _id: polls[i]._id,
+                  count: 0
+                })
+              }
+              for (let i = 0; i < polls.length; i++) {
+                for (let j = 0; j < responsesCount1.length; j++) {
+                  if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+                    responsesCount[i].count = responsesCount1[j].count
+                  }
+                }
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {polls: polls, pollpages: pollpages, responsesCount: responsesCount, count: polls.length > 0 ? pollsCount[0].count : 0}
+              })
+            })
+          })
+        })
+      })
+    }
+  })
+}
+
 exports.create = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {

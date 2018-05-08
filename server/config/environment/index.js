@@ -88,7 +88,6 @@ const all = {
       pollsPermission: true,
       subscriberPermission: true,
       surveyPermission: true,
-      workflowPermission: true,
       apiPermission: false
     },
     agent: {
@@ -116,7 +115,6 @@ const all = {
       pollsPermission: true,
       subscriberPermission: true,
       surveyPermission: true,
-      workflowPermission: true,
       apiPermission: false
     }
   },
@@ -133,7 +131,6 @@ const all = {
       surveys: true,
       surveys_reports: true,
       csv_exports: true,
-      workflows: true,
       live_chat: true,
       autoposting: true,
       menu: true,
@@ -158,7 +155,6 @@ const all = {
       surveys: true,
       surveys_reports: true,
       csv_exports: false,
-      workflows: true,
       live_chat: true,
       autoposting: true,
       menu: true,
@@ -183,7 +179,6 @@ const all = {
       surveys: true,
       surveys_reports: true,
       csv_exports: true,
-      workflows: true,
       live_chat: true,
       autoposting: true,
       menu: true,
@@ -208,7 +203,6 @@ const all = {
       surveys: true,
       surveys_reports: true,
       csv_exports: false,
-      workflows: true,
       live_chat: true,
       autoposting: true,
       menu: true,

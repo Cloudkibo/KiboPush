@@ -6,7 +6,6 @@ import { setSocketStatus } from './../redux/actions/basicinfo.actions'
 import { socketUpdate, socketUpdateSeen, fetchSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
-import { loadWorkFlowList } from './../redux/actions/workflows.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
 import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
@@ -33,8 +32,6 @@ var callbacks = {
   page_disconnect: false,
   poll_created: false,
   survey_created: false,
-  workflow_created: false,
-  workflow_updated: false,
   new_subscriber: false,
   dashboard_updated: false,
   sequence_create: false,
@@ -80,8 +77,6 @@ socket.on('message', (data) => {
   } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
     store.dispatch(loadMyPagesList())
     store.dispatch(loadDashboardData())
-  } else if (data.action === 'workflow_updated') {
-    store.dispatch(loadWorkFlowList())
   } else if (data.action === 'new_broadcast') {
     store.dispatch(loadBroadcastsList())
     store.dispatch(sentVsSeen())
