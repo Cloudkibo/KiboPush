@@ -33,7 +33,16 @@ class FacebookPosts extends React.Component {
     super(props, context)
     this.state = {
       postText: '',
-      attachments: [],
+      attachments: [{
+        componentType: 'image',
+        id: '123',
+        url: 'img/logo.png'
+      },
+      {
+        componentType: 'image',
+        id: '456',
+        url: 'img/man.png'
+      }],
       selectedPage: {},
       showEmojiPicker: false,
       autoReply: '',
@@ -92,14 +101,17 @@ class FacebookPosts extends React.Component {
   }
   removeAttachment (attachment) {
     var id = attachment.id
+    var facebookPost = this.state.facebookPost
     var attachments = []
-    for (let i = 0; i <= this.state.attachments.length; i++) {
+    for (let i = 0; i < this.state.attachments.length; i++) {
       if (this.state.attachments[i].id !== id) {
         attachments.push(this.state.attachments[i])
+        facebookPost.push(this.state.attachments[i])
       }
     }
     this.setState({
-      attachments: attachmentss
+      attachments: attachments,
+      facebookPost: facebookPost
     })
   }
   handleUpload (res, fileData) {
@@ -114,8 +126,9 @@ class FacebookPosts extends React.Component {
     if (res.status === 'success') {
       var attachments = this.state.attachments
       var facebookPost = this.state.facebookPost
-      attachments.push({id: res.payload.id, url: res.payload.url})
-      facebookPost.push({componentType: fileData.componentType, id: res.payload.id, url: res.payload.url})
+      var attachComponent = {componentType: fileData.componentType, id: res.payload.id, url: res.payload.url}
+      attachments.push(attachComponent)
+      facebookPost.push(attachComponent)
       this.setState({
         attachments: attachments,
         facebookPost: facebookPost
@@ -125,21 +138,23 @@ class FacebookPosts extends React.Component {
   }
   validateKeywords () {
     var errors = false
-    var errorMessages = this.state.keywordErrors
-    var includedKeywords = this.state.includedKeywords.split(',')
-    var excludedKeywords = this.state.excludedKeywords.split(',')
-    for (let i = 0; i < includedKeywords.length; i++) {
-      for (let j = 0; j < excludedKeywords.length; j++) {
-        if ((includedKeywords[i].trim()) === (excludedKeywords[j].trim())) {
-          errors = true
-          var errorMessage = {error: 'keywords', message: 'Keywords cannot be same in both the fields'}
-          errorMessages.push(errorMessage)
-          this.setState({keywordErrors: errorMessages})
+    if (this.state.includedKeywords !== '' && this.state.excludedKeywords !== '') {
+      var errorMessages = this.state.keywordErrors
+      var includedKeywords = this.state.includedKeywords.split(',')
+      var excludedKeywords = this.state.excludedKeywords.split(',')
+      for (let i = 0; i < includedKeywords.length; i++) {
+        for (let j = 0; j < excludedKeywords.length; j++) {
+          if ((includedKeywords[i].trim()) === (excludedKeywords[j].trim())) {
+            errors = true
+            var errorMessage = {error: 'keywords', message: 'Keywords cannot be same in both the fields'}
+            errorMessages.push(errorMessage)
+            this.setState({keywordErrors: errorMessages})
+            break
+          }
+        }
+        if (errors) {
           break
         }
-      }
-      if (errors) {
-        break
       }
     }
     return errors
@@ -213,7 +228,7 @@ class FacebookPosts extends React.Component {
     })
   }
   replyChange (e) {
-    if (((e.target.value && e.target.value !== '') || this.state.attachments.length > 0) && this.state.facebookPost !== '') {
+    if ((e.target.value && e.target.value !== '') && (this.state.facebookPost !== '' || this.state.attachments.length > 0)) {
       this.setState({
         disabled: false
       })
@@ -228,7 +243,7 @@ class FacebookPosts extends React.Component {
   }
   setEmoji (emoji) {
     this.setState({
-      facebookPost: this.state.facebookPost + emoji.native,
+      postText: this.state.postText + emoji.native,
       showEmojiPicker: false
     })
   }
@@ -282,6 +297,7 @@ class FacebookPosts extends React.Component {
       includedKeywords: this.state.includedKeywords.split(','),
       excludedKeywords: this.state.excludedKeywords.split(',')
     }
+    console.log('facebook post', payload)
     this.props.createFacebookPost(payload, this.msg, this.reset)
   }
   render () {
@@ -379,7 +395,7 @@ class FacebookPosts extends React.Component {
                                     {
                                     this.state.attachments.map((attachment, i) => (
                                       <div className='col-2'>
-                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '5px'}} onclick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '5px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                           <div className='align-center' style={{height: '60px'}}>
                                             <img src={attachment.url} alt='Image' style={{maxHeight: '25px'}} />
@@ -410,7 +426,7 @@ class FacebookPosts extends React.Component {
                                     this.refs.selectVideo.click()
                                   }} />
                                 </span>
-                                <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
+                                <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
                                   ref='selectVideo' style={styles.inputf} />
                               </span>
                               <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
