@@ -33,16 +33,7 @@ class FacebookPosts extends React.Component {
     super(props, context)
     this.state = {
       postText: '',
-      attachments: [{
-        componentType: 'image',
-        id: '123',
-        url: 'img/logo.png'
-      },
-      {
-        componentType: 'image',
-        id: '456',
-        url: 'img/man.png'
-      }],
+      attachments: [],
       selectedPage: {},
       showEmojiPicker: false,
       autoReply: '',
