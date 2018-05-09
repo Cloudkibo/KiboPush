@@ -206,3 +206,6 @@ a.broadcastTabs.active {
 .addLink:hover {
   color: white !important;
 }
+.attachmentDiv {
+  border: 2px dashed lightgray;
+}
