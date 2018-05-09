@@ -19,6 +19,12 @@ router.get('/allSubscribers',
   auth.doesRolePermitsThisAction('subscriberPermission'),
   controller.allSubscribers)
 
+router.post('/getAll',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_subscribers'),
+  auth.doesRolePermitsThisAction('subscriberPermission'),
+  controller.getAll)
+
 router.get('/subscribeBack/:id',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('manage_subscribers'),

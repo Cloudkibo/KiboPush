@@ -11,6 +11,14 @@ export function showCustomerLists (data) {
   }
 }
 
+export function showCustomerListsNew (data) {
+  return {
+    type: ActionTypes.LOAD_CUSTOMER_LISTS_NEW,
+    lists: data.lists,
+    count: data.count
+  }
+}
+
 export function getRepliedPollSubscribers () {
   return (dispatch) => {
     callApi('lists/repliedPollSubscribers')
@@ -71,6 +79,13 @@ export function loadCustomerLists () {
   return (dispatch) => {
     callApi('lists/allLists')
       .then(res => dispatch(showCustomerLists(res.payload)))
+  }
+}
+
+export function loadCustomerListsNew (data) {
+  return (dispatch) => {
+    callApi('lists/getAll', 'post', data)
+      .then(res => dispatch(showCustomerListsNew(res.payload)))
   }
 }
 

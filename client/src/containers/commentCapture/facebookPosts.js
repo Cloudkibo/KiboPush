@@ -10,39 +10,44 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {
-  fetchAllPosts
+  fetchAllPosts, deletePost, saveCurrentPost
 } from '../../redux/actions/commentCapture.actions'
 import { Link } from 'react-router'
+import { handleDate } from '../../utility/utils'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class FacebookPosts extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      postsData: [{
-        post: 'Hello ..',
-        keywords: 'Great, Wow, Know More',
-        commentsCount: '12',
-        dateCreated: '5/3/2018'
-      },
-      {
-        post: 'Please to announce ..',
-        keywords: 'When, Where',
-        commentsCount: '10',
-        dateCreated: '5/3/2018'
-      }],
+      postsData: [],
       totalLength: 0,
-      searchValue: ''
+      searchValue: '',
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     props.fetchAllPosts()
+    props.saveCurrentPost(null)
     this.displayData = this.displayData.bind(this)
+    this.onEdit = this.onEdit.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPosts = this.searchPosts.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
-
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
+  }
   componentDidMount () {
     document.title = 'KiboPush | Comment Capture'
   }
-
+  onEdit (post) {
+    this.props.saveCurrentPost(post)
+  }
   displayData (n, posts) {
     let offset = n * 10
     let data = []
@@ -65,6 +70,9 @@ class FacebookPosts extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    if (nextProps.posts) {
+      this.setState({postsData: nextProps.posts})
+    }
   }
 
   searchPosts (event) {
@@ -74,7 +82,7 @@ class FacebookPosts extends React.Component {
     var filtered = []
     if (event.target.value !== '') {
       for (let i = 0; i < this.props.posts.length; i++) {
-        if (this.props.posts[i].post && this.props.posts[i].post.toLowerCase().includes(event.target.value.toLowerCase())) {
+        if (this.props.posts[i].payload && this.props.posts[i].payload.toLowerCase().includes(event.target.value.toLowerCase())) {
           filtered.push(this.props.posts[i])
         }
       }
@@ -86,12 +94,38 @@ class FacebookPosts extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          {
+            this.state.isShowingModalDelete &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialogDelete}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeDialogDelete}>
+                <h3>Delete Post</h3>
+                <p>Are you sure you want to delete this post?</p>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deletePost(this.state.deleteid, this.msg)
+                    this.closeDialogDelete()
+                  }}>Delete
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -106,7 +140,7 @@ class FacebookPosts extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/' target='_blank'>documentation</a>.
+                  Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/commentCapture' target='_blank'>documentation</a>.
                 </div>
               </div>
               <div className='row'>
@@ -146,9 +180,9 @@ class FacebookPosts extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span >Posts</span>
                               </th>
-                              <th data-field='keywords' style={{width: 150}}
+                              <th data-field='reply' style={{width: 150}}
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span>Key Words</span>
+                                <span>Reply</span>
                               </th>
                               <th data-field='commentsCount' style={{width: 100}}
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -160,7 +194,7 @@ class FacebookPosts extends React.Component {
                               </th>
                               <th data-field='dateCreated' style={{width: 150}}
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span >Date Created</span>
+                                <span >Actions</span>
                               </th>
                             </tr>
                           </thead>
@@ -170,16 +204,16 @@ class FacebookPosts extends React.Component {
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
-                                <td data-field='post' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.post}</span></td>
-                                <td data-field='keywords' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.keywords}</span></td>
+                                <td data-field='post' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.payload}</span></td>
+                                <td data-field='keywords' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.reply}</span></td>
                                 <td data-field='commentsCount' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{post.commentsCount}</span></td>
-                                <td data-field='dateCreated' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{post.dateCreated}</span></td>
+                                <td data-field='dateCreated' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{handleDate(post.datetime)}</span></td>
                                 <td data-field='actions' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'>
                                   <span>
-                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}}>
+                                    <Link to='/createPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                         Edit
-                                      </button>
-                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    </Link>
+                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(post._id)}>
                                         Delete
                                       </button>
                                   </span>
@@ -231,7 +265,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAllPosts: fetchAllPosts
+    fetchAllPosts: fetchAllPosts,
+    deletePost: deletePost,
+    saveCurrentPost: saveCurrentPost
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)

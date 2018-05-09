@@ -10,8 +10,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
-import {createFacebookPost} from '../../redux/actions/commentCapture.actions'
+import { createFacebookPost, editFacebookPost } from '../../redux/actions/commentCapture.actions'
 import AlertContainer from 'react-alert'
+import { Link } from 'react-router'
 const styles = {
   iconclass: {
     height: 24,
@@ -35,7 +36,9 @@ class FacebookPosts extends React.Component {
       autoReply: '',
       includedKeywords: '',
       excludedKeywords: '',
-      disabled: true
+      disabled: true,
+      keywordErrors: [],
+      isEdit: this.props.currentPost ? 'true' : 'false'
     }
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
@@ -48,16 +51,72 @@ class FacebookPosts extends React.Component {
     this.onFileChange = this.onFileChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.onPost = this.onPost.bind(this)
+    this.editPost = this.editPost.bind(this)
+    this.validateKeywords = this.validateKeywords.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | New Facebook Post'
     if (this.props.pages) {
-      this.setState({selectedPage: this.props.pages[0]})
+      var selectedPage = this.props.pages[0]
+
+      if (this.props.currentPost) {
+        console.log('Current Post', this.props.currentPost)
+        for (let i = 0; i < this.props.pages.length; i++) {
+          if (this.props.pages[i]._id === this.props.currentPost.pageId) {
+            selectedPage = this.props.pages[i]
+            break
+          }
+        }
+        this.setState({
+          facebookPost: this.props.currentPost.payload,
+          autoReply: this.props.currentPost.reply,
+          includedKeywords: this.props.currentPost.includedKeywords.join(),
+          excludedKeywords: this.props.currentPost.excludedKeywords.join()
+        })
+      }
+      this.setState({
+        selectedPage: selectedPage
+      })
     }
   }
 
   componentWillReceiveProps (nextProps) {
+  }
+  validateKeywords () {
+    var errors = false
+    var errorMessages = this.state.keywordErrors
+    var includedKeywords = this.state.includedKeywords.split(',')
+    var excludedKeywords = this.state.excludedKeywords.split(',')
+    for (let i = 0; i < includedKeywords.length; i++) {
+      for (let j = 0; j < excludedKeywords.length; j++) {
+        if ((includedKeywords[i].trim()) === (excludedKeywords[j].trim())) {
+          errors = true
+          var errorMessage = {error: 'keywords', message: 'Keywords cannot be same in both the fields'}
+          errorMessages.push(errorMessage)
+          this.setState({keywordErrors: errorMessages})
+          break
+        }
+      }
+      if (errors) {
+        break
+      }
+    }
+    return errors
+  }
+  editPost () {
+    if (this.state.keywordErrors.length > 0) {
+      return
+    }
+    if (this.validateKeywords()) {
+      return
+    }
+    var payload = {
+      postId: this.props.currentPost._id,
+      includedKeywords: this.state.includedKeywords.split(','),
+      excludedKeywords: this.state.excludedKeywords.split(',')
+    }
+    this.props.editFacebookPost(payload, this.msg)
   }
   reset () {
     this.setState({
@@ -77,11 +136,29 @@ class FacebookPosts extends React.Component {
 
   }
   onFacebookPostChange (e) {
+    if (e.target.value && e.target.value === '' && this.state.autoReply !== '') {
+      this.setState({
+        disabled: false
+      })
+    } else {
+      this.setState({
+        disabled: true
+      })
+    }
     this.setState({
       facebookPost: e.target.value
     })
   }
   replyChange (e) {
+    if (e.target.value && e.target.value !== '' && this.state.facebookPost !== '') {
+      this.setState({
+        disabled: false
+      })
+    } else {
+      this.setState({
+        disabled: true
+      })
+    }
     this.setState({
       autoReply: e.target.value
     })
@@ -94,11 +171,13 @@ class FacebookPosts extends React.Component {
   }
   includedKeywordsChange (e) {
     this.setState({
+      keywordErrors: [],
       includedKeywords: e.target.value
     })
   }
   excludedKeywordsChange (e) {
     this.setState({
+      keywordErrors: [],
       excludedKeywords: e.target.value
     })
   }
@@ -127,23 +206,36 @@ class FacebookPosts extends React.Component {
     }
   }
   onPost () {
-    this.props.createFacebookPost({pageId: this.state.selectedPage._id, payload: this.state.facebookPost, reply: 'reply', includedKeywords: ['hello'], excludedKeywords: ['hi']}, this.msg)
+    if (this.state.keywordErrors.length > 0) {
+      return
+    }
+    if (this.validateKeywords()) {
+      return
+    }
+    var payload = {
+      pageId: this.state.selectedPage._id,
+      payload: this.state.facebookPost,
+      reply: this.state.autoReply,
+      includedKeywords: this.state.includedKeywords.split(','),
+      excludedKeywords: this.state.excludedKeywords.split(',')
+    }
+    this.props.createFacebookPost(payload, this.msg, this.reset)
   }
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
     }
     return (
       <div>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -168,20 +260,30 @@ class FacebookPosts extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='row'>
                         <div className='col-12'>
-                          <div className='form-group m-form__group' style={{display: 'flex'}}>
-                            <div className='col-3'>
-                              <label className='col-form-label'>Choose Page</label>
-                            </div>
-                            <div className='col-9'>
-                              <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
-                                {
-                                  this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                    <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
-                                  ))
-                                }
-                              </select>
-                            </div>
+                          { this.state.isEdit === 'true'
+                        ? <div className='form-group m-form__group' style={{display: 'flex'}}>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Page</label>
                           </div>
+                          <div className='col-9'>
+                            <span>{this.state.selectedPage.pageName}</span>
+                          </div>
+                        </div>
+                        : <div className='form-group m-form__group' style={{display: 'flex'}}>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Choose Page</label>
+                          </div>
+                          <div className='col-9'>
+                            <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
+                              {
+                                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                  <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
+                                ))
+                              }
+                            </select>
+                          </div>
+                        </div>
+                          }
                         </div>
                         <div className='col-12'>
                           <div className='form-group m-form__group'>
@@ -189,38 +291,38 @@ class FacebookPosts extends React.Component {
                               <label className='col-form-label'>Facebook Post</label>
                             </div>
                             <div className='col-12'>
-                              <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
-                                <textarea
-                                  className='form-control m-input m-input--solid'
-                                  id='postTextArea' rows='3'
-                                  placeholder='Enter text to post on facebook'
-                                  style={{height: '150px', resize: 'none'}}
-                                  value={this.state.facebookPost}
-                                  onChange={this.onFacebookPostChange} />
-                                <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
-                                  <span>
-                                    <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
-                                  </span>
+                              { this.state.isEdit === 'false'
+                            ? <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
+                              <textarea
+                                className='form-control m-input m-input--solid'
+                                id='postTextArea' rows='3'
+                                placeholder='Enter text to post on facebook'
+                                style={{height: '150px', resize: 'none'}}
+                                value={this.state.facebookPost}
+                                onChange={this.onFacebookPostChange} />
+                              <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
+                                <span>
+                                  <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
                                 </span>
-                                <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
-                                  <span>
-                                    <i className='fa fa-image' style={{cursor: 'pointer'}} onClick={() => {
-                                      this.refs.selectImage.click()
-                                    }} />
-                                  </span>
-                                  <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
-                                    ref='selectImage' style={styles.inputf} />
+                              </span>
+                              <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
+                                <span>
+                                  <i className='fa fa-image' style={{cursor: 'pointer'}} onClick={() => {
+                                    this.refs.selectImage.click()
+                                  }} />
                                 </span>
-                                <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                                  <span>
-                                    <i className='fa fa-file-video-o' style={{cursor: 'pointer'}} onClick={() => {
-                                      this.refs.selectVideo.click()
-                                    }} />
-                                  </span>
-                                  <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
-                                    ref='selectVideo' style={styles.inputf} />
+                                <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
+                                  ref='selectImage' style={styles.inputf} />
+                              </span>
+                              <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                <span>
+                                  <i className='fa fa-file-video-o' style={{cursor: 'pointer'}} onClick={() => {
+                                    this.refs.selectVideo.click()
+                                  }} />
                                 </span>
-                              </div>
+                                <input type='file' accept='image/*' onChange={this.onFileChange} onError={this.onFilesError}
+                                  ref='selectVideo' style={styles.inputf} />
+                              </span>
                               <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
                                 <PopoverBody>
                                   <div>
@@ -238,6 +340,17 @@ class FacebookPosts extends React.Component {
                                 </PopoverBody>
                               </Popover>
                             </div>
+                            : <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
+                              <textarea
+                                className='form-control m-input m-input--solid'
+                                id='postTextArea' rows='3'
+                                placeholder='Enter text to post on facebook'
+                                style={{height: '150px', resize: 'none'}}
+                                value={this.state.facebookPost}
+                                disabled />
+                            </div>
+                            }
+                            </div>
                           </div>
                         </div>
                         <div className='col-12'>
@@ -250,7 +363,8 @@ class FacebookPosts extends React.Component {
                                 Enter the reply that commentors will receive from your bot
                               </p>
                             </div>
-                            <div className='col-12'>
+                            { this.state.isEdit === 'false'
+                            ? <div className='col-12'>
                               <textarea
                                 className='form-control m-input m-input--solid'
                                 id='replyTextArea' rows='3'
@@ -259,6 +373,16 @@ class FacebookPosts extends React.Component {
                                 value={this.state.autoReply}
                                 onChange={this.replyChange} />
                             </div>
+                            : <div className='col-12'>
+                              <textarea
+                                className='form-control m-input m-input--solid'
+                                id='replyTextArea' rows='3'
+                                placeholder='Enter Reply'
+                                style={{height: '100px', resize: 'none'}}
+                                value={this.state.autoReply}
+                                disabled />
+                            </div>
+                          }
                           </div>
                         </div>
                         <div className='col-12'>
@@ -268,7 +392,7 @@ class FacebookPosts extends React.Component {
                             </div>
                             <div className='col-12'>
                               <p>
-                                Reply if these keywords are used in the comment. Example 'When , Where, How'
+                                Reply if these keywords are used in the comment. Example 'When, Where, How'
                               </p>
                             </div>
                             <div className='col-12'>
@@ -276,25 +400,51 @@ class FacebookPosts extends React.Component {
                             </div>
                             <div className='col-12' style={{marginTop: '10px'}}>
                               <p>
-                                Donot reply if these keywords are used in the comment. Example 'When , Where, How'
+                                Donot reply if these keywords are used in the comment. Example 'When, Where, How'
                               </p>
                             </div>
                             <div className='col-12'>
                               <input type='text' className='form-control m-input m-input--square' value={this.state.excludedKeywords} onChange={this.excludedKeywordsChange} placeholder='Enter Keywords separated by {,}' />
                             </div>
+                            <span className='m-form__help'>
+                              {
+                                this.state.keywordErrors.map((m, i) => (
+                                  m.error === 'keywords' &&
+                                    <span style={{color: 'red', marginLeft: '20px'}}>{m.message}</span>
+                                ))
+                              }
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit'>
-                      <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                        <button style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-secondary' onClick={this.reset}>
-                          Reset
-                        </button>
-                        <button type='submit' className='btn btn-primary' onClick={this.onPost}>
+                      { this.state.isEdit === 'false'
+                     ? <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                       <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
+                        Back
+                       </Link>
+                       <button className='btn btn-secondary' onClick={this.reset}>
+                        Reset
+                       </button>
+                       { this.props.pages && this.props.pages.length > 0 && !this.state.disabled
+                        ? <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' onClick={this.onPost}>
                           <i className='fa fa-facebook' /> Post on Facebook
                         </button>
-                      </div>
+                        : <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' disabled>
+                          <i className='fa fa-facebook' /> Post on Facebook
+                        </button>
+                        }
+                     </div>
+                    : <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                      <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
+                         Back
+                      </Link>
+                      <button className='btn btn-primary' onClick={this.editPost}>
+                         Save
+                      </button>
+                    </div>
+                    }
                     </div>
                   </div>
                 </div>
@@ -311,13 +461,15 @@ class FacebookPosts extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    currentPost: (state.postsInfo.currentPost)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createFacebookPost: createFacebookPost
+    createFacebookPost: createFacebookPost,
+    editFacebookPost: editFacebookPost
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)
