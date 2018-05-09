@@ -151,6 +151,37 @@ exports.allSubscribers = function (req, res) {
     })
 }
 
+exports.allLocales = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+  (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Subscribers.distinct('locale', {companyId: companyUser.companyId},
+    (err, locales) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: locales
+      })
+    })
+  })
+}
+
 exports.getAll = function (req, res) {
   /*
   body = {
@@ -182,59 +213,302 @@ exports.getAll = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      Subscribers.find({
-        companyId: companyUser.companyId,
-        isEnabledByPage: true
-      }).populate('pageId').exec((err, subscribers) => {
-        if (err) {
-          logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
-          return res.status(404)
-            .json({status: 'failed', description: 'Subscribers not found'})
-        }
-        let subsArray = []
-        let subscribersPayload = []
-        for (let i = 0; i < subscribers.length; i++) {
-          subsArray.push(subscribers[i]._id)
-          subscribersPayload.push({
-            _id: subscribers[i]._id,
-            firstName: subscribers[i].firstName,
-            lastName: subscribers[i].lastName,
-            locale: subscribers[i].locale,
-            gender: subscribers[i].gender,
-            timezone: subscribers[i].timezone,
-            profilePic: subscribers[i].profilePic,
-            companyId: subscribers[i].companyId,
-            pageScopedId: '',
-            email: '',
-            senderId: subscribers[i].senderId,
-            pageId: subscribers[i].pageId,
-            datetime: subscribers[i].datetime,
-            isEnabledByPage: subscribers[i].isEnabledByPage,
-            isSubscribed: subscribers[i].isSubscribed,
-            isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-            phoneNumber: subscribers[i].phoneNumber,
-            unSubscribedBy: subscribers[i].unSubscribedBy,
-            tags: []
-          })
-        }
-        TagsSubscribers.find({subscriberId: {$in: subsArray}})
-          .populate('tagId')
-          .exec((err, tags) => {
+      if (req.body.first_page) {
+        if (!req.body.filter) {
+          Subscribers.aggregate([
+            { $match: {companyId: companyUser.companyId, isEnabledByPage: true} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, subscribersCount) => {
             if (err) {
-              logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
               return res.status(404)
-                .json({status: 'failed', description: 'Subscribers not found'})
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            for (let i = 0; i < subscribers.length; i++) {
-              for (let j = 0; j < tags.length; j++) {
-                if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
-                  subscribersPayload[i].tags.push(tags[j].tagId.tag)
-                }
+            Subscribers.find({
+              companyId: companyUser.companyId,
+              isEnabledByPage: true
+            }).limit(req.body.number_of_records)
+            .populate('pageId').exec((err, subscribers) => {
+              if (err) {
+                logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                return res.status(404)
+                  .json({status: 'failed', description: 'Subscribers not found'})
               }
-            }
-            res.status(200).json(subscribersPayload)
+              let subsArray = []
+              let subscribersPayload = []
+              for (let i = 0; i < subscribers.length; i++) {
+                subsArray.push(subscribers[i]._id)
+                subscribersPayload.push({
+                  _id: subscribers[i]._id,
+                  firstName: subscribers[i].firstName,
+                  lastName: subscribers[i].lastName,
+                  locale: subscribers[i].locale,
+                  gender: subscribers[i].gender,
+                  timezone: subscribers[i].timezone,
+                  profilePic: subscribers[i].profilePic,
+                  companyId: subscribers[i].companyId,
+                  pageScopedId: '',
+                  email: '',
+                  senderId: subscribers[i].senderId,
+                  pageId: subscribers[i].pageId,
+                  datetime: subscribers[i].datetime,
+                  isEnabledByPage: subscribers[i].isEnabledByPage,
+                  isSubscribed: subscribers[i].isSubscribed,
+                  isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                  phoneNumber: subscribers[i].phoneNumber,
+                  unSubscribedBy: subscribers[i].unSubscribedBy,
+                  tags: []
+                })
+              }
+              TagsSubscribers.find({subscriberId: {$in: subsArray}})
+                .populate('tagId')
+                .exec((err, tags) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                    return res.status(404)
+                      .json({status: 'failed', description: 'Subscribers not found'})
+                  }
+                  for (let i = 0; i < subscribers.length; i++) {
+                    for (let j = 0; j < tags.length; j++) {
+                      if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
+                        subscribersPayload[i].tags.push(tags[j].tagId.tag)
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                  })
+                })
+            })
           })
-      })
+        } else {
+          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+          let subscribersFindCriteria = {
+            companyId: companyUser.companyId,
+            isEnabledByPage: true,
+            $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
+            gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
+            locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
+            isSubscribed: req.body.filter_criteria.status_value !== '' ? req.body.filter_criteria.status_value : {$exists: true},
+            pageId: req.body.filter_criteria.page_value !== '' ? req.body.filter_criteria.page_value : {$exists: true}
+          }
+          Subscribers.aggregate([
+            { $match: subscribersFindCriteria },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, subscribersCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Subscribers.find(subscribersFindCriteria).limit(req.body.number_of_records)
+            .populate('pageId').exec((err, subscribers) => {
+              if (err) {
+                logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                return res.status(404)
+                  .json({status: 'failed', description: 'Subscribers not found'})
+              }
+              let subsArray = []
+              let subscribersPayload = []
+              for (let i = 0; i < subscribers.length; i++) {
+                subsArray.push(subscribers[i]._id)
+                subscribersPayload.push({
+                  _id: subscribers[i]._id,
+                  firstName: subscribers[i].firstName,
+                  lastName: subscribers[i].lastName,
+                  locale: subscribers[i].locale,
+                  gender: subscribers[i].gender,
+                  timezone: subscribers[i].timezone,
+                  profilePic: subscribers[i].profilePic,
+                  companyId: subscribers[i].companyId,
+                  pageScopedId: '',
+                  email: '',
+                  senderId: subscribers[i].senderId,
+                  pageId: subscribers[i].pageId,
+                  datetime: subscribers[i].datetime,
+                  isEnabledByPage: subscribers[i].isEnabledByPage,
+                  isSubscribed: subscribers[i].isSubscribed,
+                  isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                  phoneNumber: subscribers[i].phoneNumber,
+                  unSubscribedBy: subscribers[i].unSubscribedBy,
+                  tags: []
+                })
+              }
+              let tagFindCriteria = {
+                subscriberId: {$in: subsArray},
+                tagId: req.body.filter_criteria.tag_value !== '' ? req.body.filter_criteria.tag_value : {$exists: true}
+              }
+              TagsSubscribers.find(tagFindCriteria)
+                .populate('tagId')
+                .exec((err, tags) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                    return res.status(404)
+                      .json({status: 'failed', description: 'Subscribers not found'})
+                  }
+                  for (let i = 0; i < subscribers.length; i++) {
+                    for (let j = 0; j < tags.length; j++) {
+                      if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
+                        subscribersPayload[i].tags.push(tags[j].tagId.tag)
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                  })
+                })
+            })
+          })
+        }
+      } else {
+        if (!req.body.filter) {
+          Subscribers.aggregate([
+            { $match: {companyId: companyUser.companyId, isEnabledByPage: true} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, subscribersCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Subscribers.find({
+              companyId: companyUser.companyId,
+              isEnabledByPage: true,
+              _id: {$gt: req.body.last_id}
+            }).limit(req.body.number_of_records)
+            .populate('pageId').exec((err, subscribers) => {
+              if (err) {
+                logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                return res.status(404)
+                  .json({status: 'failed', description: 'Subscribers not found'})
+              }
+              let subsArray = []
+              let subscribersPayload = []
+              for (let i = 0; i < subscribers.length; i++) {
+                subsArray.push(subscribers[i]._id)
+                subscribersPayload.push({
+                  _id: subscribers[i]._id,
+                  firstName: subscribers[i].firstName,
+                  lastName: subscribers[i].lastName,
+                  locale: subscribers[i].locale,
+                  gender: subscribers[i].gender,
+                  timezone: subscribers[i].timezone,
+                  profilePic: subscribers[i].profilePic,
+                  companyId: subscribers[i].companyId,
+                  pageScopedId: '',
+                  email: '',
+                  senderId: subscribers[i].senderId,
+                  pageId: subscribers[i].pageId,
+                  datetime: subscribers[i].datetime,
+                  isEnabledByPage: subscribers[i].isEnabledByPage,
+                  isSubscribed: subscribers[i].isSubscribed,
+                  isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                  phoneNumber: subscribers[i].phoneNumber,
+                  unSubscribedBy: subscribers[i].unSubscribedBy,
+                  tags: []
+                })
+              }
+              TagsSubscribers.find({subscriberId: {$in: subsArray}})
+                .populate('tagId')
+                .exec((err, tags) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                    return res.status(404)
+                      .json({status: 'failed', description: 'Subscribers not found'})
+                  }
+                  for (let i = 0; i < subscribers.length; i++) {
+                    for (let j = 0; j < tags.length; j++) {
+                      if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
+                        subscribersPayload[i].tags.push(tags[j].tagId.tag)
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                  })
+                })
+            })
+          })
+        } else {
+          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+          let subscribersFindCriteria = {
+            companyId: companyUser.companyId,
+            isEnabledByPage: true,
+            $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
+            gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
+            locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
+            isSubscribed: req.body.filter_criteria.status_value === 'subscribed' ? req.body.filter_criteria.status_value : {$exists: true},
+            pageId: req.body.filter_criteria.page_value !== '' ? req.body.filter_criteria.page_value : {$exists: true}
+          }
+          Subscribers.aggregate([
+            { $match: subscribersFindCriteria },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, subscribersCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'BroadcastsCount not found'})
+            }
+            Subscribers.find(Object.assign(subscribersFindCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+            .populate('pageId').exec((err, subscribers) => {
+              if (err) {
+                logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                return res.status(404)
+                  .json({status: 'failed', description: 'Subscribers not found'})
+              }
+              let subsArray = []
+              let subscribersPayload = []
+              for (let i = 0; i < subscribers.length; i++) {
+                subsArray.push(subscribers[i]._id)
+                subscribersPayload.push({
+                  _id: subscribers[i]._id,
+                  firstName: subscribers[i].firstName,
+                  lastName: subscribers[i].lastName,
+                  locale: subscribers[i].locale,
+                  gender: subscribers[i].gender,
+                  timezone: subscribers[i].timezone,
+                  profilePic: subscribers[i].profilePic,
+                  companyId: subscribers[i].companyId,
+                  pageScopedId: '',
+                  email: '',
+                  senderId: subscribers[i].senderId,
+                  pageId: subscribers[i].pageId,
+                  datetime: subscribers[i].datetime,
+                  isEnabledByPage: subscribers[i].isEnabledByPage,
+                  isSubscribed: subscribers[i].isSubscribed,
+                  isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
+                  phoneNumber: subscribers[i].phoneNumber,
+                  unSubscribedBy: subscribers[i].unSubscribedBy,
+                  tags: []
+                })
+              }
+              let tagFindCriteria = {
+                subscriberId: {$in: subsArray},
+                tagId: req.body.filter_criteria.tag_value !== '' ? req.body.filter_criteria.tag_value : {$exists: true}
+              }
+              TagsSubscribers.find(tagFindCriteria)
+                .populate('tagId')
+                .exec((err, tags) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
+                    return res.status(404)
+                      .json({status: 'failed', description: 'Subscribers not found'})
+                  }
+                  for (let i = 0; i < subscribers.length; i++) {
+                    for (let j = 0; j < tags.length; j++) {
+                      if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
+                        subscribersPayload[i].tags.push(tags[j].tagId.tag)
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                  })
+                })
+            })
+          })
+        }
+      }
     })
 }
 
