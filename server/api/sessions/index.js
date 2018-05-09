@@ -14,13 +14,13 @@ router.get('/',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
 
-router.get('/getOpenSessions',
+router.post('/getOpenSessions',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.getNewSessions)
 
-router.get('/getClosedSessions',
+router.post('/getClosedSessions',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
