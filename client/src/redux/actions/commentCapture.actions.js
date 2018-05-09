@@ -1,6 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+export const API_URL = '/api'
 
 export function showAllPosts (data) {
   console.log('Data Fetched From posts', data)
@@ -90,7 +91,7 @@ export function uploadAttachment (fileData, handleUpload) {
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
-      console.log('respone', res)
+      console.log('response', res)
       handleUpload(res, fileData)
     })
   }
