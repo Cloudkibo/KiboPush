@@ -329,6 +329,22 @@ exports.create = function (req, res) {
                   }
                 })
 
+                let mailchimp = require('mailchimp-api-v3')('2d154e5f15ca18180d52c40ad6e5971e-us12')
+
+                mailchimp.post({
+                  path: '/lists/5a4e866849/members',
+                  body: {
+                    email_address: req.body.email,
+                    status: 'subscribed'
+                  }
+                }, function (err, result) {
+                  if (err) {
+                    logger.serverLog('welcome email error', err)
+                  } else {
+                    logger.serverLog('welcome email sent', result)
+                  }
+                })
+
                 let sendgrid = require('sendgrid')(config.sendgrid.username,
                   config.sendgrid.password)
 

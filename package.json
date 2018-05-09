@@ -69,6 +69,7 @@
     "jsonwebtoken": "^7.4.1",
     "lodash": "^4.17.4",
     "lodash.intersection": "^4.4.0",
+    "mailchimp-api-v3": "^1.8.0",
     "method-override": "^2.3.9",
     "moment": "^2.19.1",
     "moment-range": "^3.0.3",
