@@ -201,6 +201,7 @@ exports.updateMode = function (req, res) {
  * Creates a new user
  */
 exports.create = function (req, res) {
+  logger.serverLog('Creating new user')
   let parametersMissing = false
 
   if (!_.has(req.body, 'email')) parametersMissing = true
