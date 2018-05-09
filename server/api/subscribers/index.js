@@ -19,6 +19,12 @@ router.get('/allSubscribers',
   auth.doesRolePermitsThisAction('subscriberPermission'),
   controller.allSubscribers)
 
+router.get('/allLocales',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_subscribers'),
+  auth.doesRolePermitsThisAction('subscriberPermission'),
+  controller.allLocales)
+
 router.post('/getAll',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('manage_subscribers'),

@@ -14,6 +14,18 @@ router.get('/',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
 
+router.get('/getOpenSessions',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesRolePermitsThisAction('livechatPermission'),
+  controller.getNewSessions)
+
+router.get('/getCosedSessions',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesRolePermitsThisAction('livechatPermission'),
+  controller.getResolvedSessions)
+
 router.get('/markread/:id',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
