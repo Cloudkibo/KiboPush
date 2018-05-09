@@ -83,9 +83,13 @@ export function loadCustomerLists () {
 }
 
 export function loadCustomerListsNew (data) {
+  console.log('data', data)
   return (dispatch) => {
     callApi('lists/getAll', 'post', data)
-      .then(res => dispatch(showCustomerListsNew(res.payload)))
+      .then(res => {
+        console.log('response from lists', res)
+        dispatch(showCustomerListsNew(res.payload))
+      })
   }
 }
 

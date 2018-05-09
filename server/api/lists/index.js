@@ -17,7 +17,7 @@ router.get('/allLists',
   // auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.allLists)
 
-router.get('/getAll',
+router.post('/getAll',
   auth.isAuthenticated(),
   controller.getAll)
 

@@ -296,6 +296,7 @@ exports.getAll = function (req, res) {
             { $match: subscribersFindCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, subscribersCount) => {
+            console.log('subscribersCount', subscribersCount)
             if (err) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})

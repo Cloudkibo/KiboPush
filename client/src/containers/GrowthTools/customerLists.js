@@ -22,7 +22,8 @@ class CustomerLists extends React.Component {
       isShowingModalDelete: false,
       deleteid: '',
       customerLists: [],
-      totalLength: 0
+      totalLength: 0,
+      pageNumber: 0
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
@@ -76,7 +77,12 @@ class CustomerLists extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: false})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
+    } else {
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: false})
+    }
     this.displayData(data.selected, this.props.polls)
   }
   componentWillReceiveProps (nextProps) {
@@ -213,7 +219,8 @@ class CustomerLists extends React.Component {
                               onPageChange={this.handlePageClick}
                               containerClassName={'pagination'}
                               subContainerClassName={'pages pagination'}
-                              activeClassName={'active'} />
+                              activeClassName={'active'}
+                              forcePage={this.state.pageNumber} />
                           </div>
                         </div>
                       </div>

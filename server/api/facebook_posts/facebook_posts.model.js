@@ -11,7 +11,7 @@ let facebookPostSchema = new Schema({
   companyId: {type: Schema.ObjectId, ref: 'companyprofile'},
   userId: { type: Schema.ObjectId, ref: 'users' },
   datetime: {type: Date, default: Date.now},
-  payload: String,
+  payload: Schema.Types.Mixed,
   reply: String,
   includedKeywords: [String],
   excludedKeywords: [String]
