@@ -14,6 +14,7 @@ import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../re
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import Halogen from 'halogen'
+import { ModalContainer } from 'react-modal-dialog'
 const styles = {
   iconclass: {
     height: 24,
@@ -184,7 +185,7 @@ class FacebookPosts extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
-        fileData.append('componentType', this.state.componentType)
+        fileData.append('componentType', componentType)
         console.log('file', file)
         this.setState({
           loading: true
@@ -295,10 +296,14 @@ class FacebookPosts extends React.Component {
       <div>
         <Header />
         {
-          this.state.loading &&
-          <div className='align-center'>
-            <center><Halogen.RingLoader color='#716aca' /></center>
-          </div>
+          this.state.loading
+          ? <ModalContainer>
+            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+              className='align-center'>
+              <center><Halogen.RingLoader color='#716aca' /></center>
+            </div>
+          </ModalContainer>
+          : <span />
         }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
