@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsListNew, createBot, deleteBot } from '../../redux/actions/smart_replies.actions'
+import { loadBotsList, createBot, deleteBot } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -16,7 +16,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class Bot extends React.Component {
   constructor (props, context) {
-    props.loadBotsListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', page_value: ''}})
+    props.loadBotsList()
     props.loadMyPagesList()
     super(props, context)
     this.state = {
@@ -89,12 +89,12 @@ class Bot extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageSelected: data.selected})
-    if (data.selected === 0) {
-      this.props.loadBotsListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
-    } else {
-      this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
-    }
+    // this.setState({pageSelected: data.selected})
+    // if (data.selected === 0) {
+    //   this.props.loadBotsListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
+    // } else {
+    //   this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
+    // }
     this.displayData(data.selected, this.props.bots)
   }
 
@@ -104,58 +104,57 @@ class Bot extends React.Component {
 
   searchBot (event) {
     this.setState({searchValue: event.target.value})
-    //  var filtered = []
-    if (event.target.value !== '') {
-      this.setState({filter: true})
-      this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, page_value: this.state.filterValue}})
-    //   for (let i = 0; i < this.props.bots.length; i++) {
-    //     if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase())) {
-    //       filtered.push(this.props.bots[i])
-    //     }
-    //   }
-    // } else if (event.target.value !== '' && this.state.filterValue !== '') {
-    //   for (let i = 0; i < this.props.bots.length; i++) {
-    //     if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.bots[i].pageId._id === this.state.filterValue) {
-    //       filtered.push(this.props.bots[i])
-    //     }
-    //   }
+    var filtered = []
+    if (event.target.value !== '' && this.state.filterValue === '') {
+      // this.setState({filter: true})
+      // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, page_value: this.state.filterValue}})
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else if (event.target.value !== '' && this.state.filterValue !== '') {
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.bots[i].pageId._id === this.state.filterValue) {
+          filtered.push(this.props.bots[i])
+        }
+      }
     } else {
-      //  filtered = this.props.bots
+      filtered = this.props.bots
     }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
     this.setState({filterValue: e.target.value})
-    //  var filtered = []
-    if (e.target.value !== '') {
-      this.setState({filter: true})
-      this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
+    var filtered = []
+    if (e.target.value && this.state.searchValue === '') {
+      // this.setState({filter: true})
+      // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].pageId._id === e.target.value) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else if (e.target.value !== '' && this.state.searchValue !== '') {
+      for (let i = 0; i < this.props.bots.length; i++) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId._id === e.target.value) {
+          filtered.push(this.props.bots[i])
+        }
+      }
+    } else {
+      filtered = this.props.bots
     }
-    //   for (let i = 0; i < this.props.bots.length; i++) {
-    //     if (this.props.bots[i].pageId._id === e.target.value) {
-    //       filtered.push(this.props.bots[i])
-    //     }
-    //   }
-    // } else if (e.target.value !== '' && this.state.searchValue !== '') {
-    //   for (let i = 0; i < this.props.bots.length; i++) {
-    //     if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId._id === e.target.value) {
-    //       filtered.push(this.props.bots[i])
-    //     }
-    //   }
-    // } else {
-    //   filtered = this.props.bots
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
+    this.displayData(0, filtered)
+    this.setState({ totalLength: filtered.length })
   }
 
   componentWillReceiveProps (nextProps) {
     console.log('nextprops in bots.js', nextProps)
-    if (nextProps.bots && nextProps.bots.length > 0 && nextProps.count) {
+    if (nextProps.bots && nextProps.bots.length > 0) {
       this.displayData(0, nextProps.bots)
-      this.setState({ totalLength: nextProps.count })
+      this.setState({ totalLength: nextProps.bots.length })
     }
     if (nextProps.pages && nextProps.pages.length > 0) {
       this.state.pageSelected = nextProps.pages[0]._id
@@ -497,8 +496,7 @@ class Bot extends React.Component {
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
-                            activeClassName={'active'}
-                            forcePage={this.state.pageNumber} />
+                            activeClassName={'active'} />
                         </div>
                       </div>
                       : <span>
@@ -531,7 +529,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadBotsListNew: loadBotsListNew,
+      loadBotsList: loadBotsList,
       loadMyPagesList: loadMyPagesList,
       createBot: createBot,
       deleteBot: deleteBot
