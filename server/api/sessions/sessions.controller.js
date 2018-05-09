@@ -594,14 +594,14 @@ exports.getResolvedSessions = function (req, res) {
                   }
                   return res.status(200).json({
                     status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
+                    payload: {closedSessions: sessions, count: sessionsData.length}
                   })
                 })
               })
             } else {
               return res.status(200).json({
                 status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
+                payload: {closedSessions: sessions, count: sessionsData.length}
               })
             }
           })
@@ -687,14 +687,14 @@ exports.getResolvedSessions = function (req, res) {
                   }
                   return res.status(200).json({
                     status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
+                    payload: {closedSessions: sessions, count: sessionsData.length}
                   })
                 })
               })
             } else {
               return res.status(200).json({
                 status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
+                payload: {closedSessions: sessions, count: sessionsData.length}
               })
             }
           })
@@ -775,14 +775,14 @@ exports.getResolvedSessions = function (req, res) {
                   }
                   return res.status(200).json({
                     status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
+                    payload: {closedSessions: sessions, count: sessionsData.length}
                   })
                 })
               })
             } else {
               return res.status(200).json({
                 status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
+                payload: {closedSessions: sessions, count: sessionsData.length}
               })
             }
           })
@@ -868,14 +868,14 @@ exports.getResolvedSessions = function (req, res) {
                   }
                   return res.status(200).json({
                     status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
+                    payload: {closedSessions: sessions, count: sessionsData.length}
                   })
                 })
               })
             } else {
               return res.status(200).json({
                 status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
+                payload: {closedSessions: sessions, count: sessionsData.length}
               })
             }
           })

@@ -359,6 +359,141 @@ exports.allSequences = function (req, res) {
   })
 }
 
+exports.getAll = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter:
+    filter_criteria: {
+      search_value:
+    }
+  }
+  */
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    if (req.body.first_page) {
+      let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+      }
+      Sequences.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, sequenceCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        Sequences.find(findCriteria).limit(req.body.number_of_records)
+        .exec((err, sequences) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          let sequencePayload = []
+          sequences.forEach(sequence => {
+            Messages.find({sequenceId: sequence._id},
+            (err, messages) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+
+              SequenceSubscribers.find({sequenceId: sequence._id})
+              .populate('subscriberId')
+              .exec((err, subscribers) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+
+                sequencePayload.push({
+                  sequence: sequence,
+                  messages: messages,
+                  subscribers: subscribers
+                })
+                if (sequencePayload.length === sequences.length) {
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {sequences: sequencePayload, count: sequencePayload.length > 0 ? sequenceCount[0].count : ''}
+                  })
+                }
+              })
+            })
+          })
+        })
+      })
+    } else {
+      let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+      }
+      Sequences.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, sequenceCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        Sequences.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+        .exec((err, sequences) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          let sequencePayload = []
+          sequences.forEach(sequence => {
+            Messages.find({sequenceId: sequence._id},
+            (err, messages) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+
+              SequenceSubscribers.find({sequenceId: sequence._id})
+              .populate('subscriberId')
+              .exec((err, subscribers) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+
+                sequencePayload.push({
+                  sequence: sequence,
+                  messages: messages,
+                  subscribers: subscribers
+                })
+                if (sequencePayload.length === sequences.length) {
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {sequences: sequencePayload, count: sequencePayload.length > 0 ? sequenceCount[0].count : ''}
+                  })
+                }
+              })
+            })
+          })
+        })
+      })
+    }
+  })
+}
+
 exports.subscriberSequences = function (req, res) {
   SequenceSubscribers.find({subscriberId: req.params.id, status: 'subscribed'})
   .populate('sequenceId')

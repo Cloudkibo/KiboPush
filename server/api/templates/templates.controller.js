@@ -454,6 +454,95 @@ exports.allBroadcasts = function (req, res) {
   })
 }
 
+exports.getAllBroadcasts = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter_criteria: {
+      search_value:
+      category_value:
+    }
+  }
+  */
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    if (req.body.first_page) {
+      let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+      let findCriteria = {
+        '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
+        title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+        category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
+      }
+      TemplateBroadcasts.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        TemplateBroadcasts.find(findCriteria).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            logger.serverLog(TAG, `Error: ${err}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error${JSON.stringify(err)}`
+            })
+          }
+          res.status(200).json({
+            status: 'success',
+            payload: {broadcasts: broadcasts, count: broadcasts.length > 0 ? broadcastsCount[0].count : ''}
+          })
+        })
+      })
+    } else {
+      let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+      let findCriteria = {
+        '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
+        title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+        category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
+      }
+      TemplateBroadcasts.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        TemplateBroadcasts.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            logger.serverLog(TAG, `Error: ${err}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error${JSON.stringify(err)}`
+            })
+          }
+          res.status(200).json({
+            status: 'success',
+            payload: {broadcasts: broadcasts, count: broadcasts.length > 0 ? broadcastsCount[0].count : ''}
+          })
+        })
+      })
+    }
+  })
+}
+
 exports.deleteBroadcast = function (req, res) {
   TemplateBroadcasts.findById(req.params.id, (err, broadcast) => {
     if (err) {

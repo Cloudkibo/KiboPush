@@ -24,6 +24,7 @@ router.post('/editSurvey', auth.isAuthorizedSuperUser(), controller.editSurvey)
 
 router.post('/createBroadcast', auth.isAuthenticated(), controller.createBroadcast)
 router.get('/allBroadcasts', auth.isAuthenticated(), controller.allBroadcasts)
+router.get('/getAllBroadcasts', auth.isAuthenticated(), controller.getAllBroadcasts) // pagination
 router.post('/editBroadcast', auth.isAuthenticated(), controller.editBroadcast)
 router.delete('/deleteBroadcast/:id', auth.isAuthenticated(), controller.deleteBroadcast)
 router.get('/broadcastDetails/:broadcastid', auth.isAuthenticated(), controller.broadcastDetails)

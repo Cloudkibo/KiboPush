@@ -20,7 +20,7 @@ router.get('/getOpenSessions',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.getNewSessions)
 
-router.get('/getCosedSessions',
+router.get('/getClosedSessions',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
