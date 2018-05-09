@@ -483,6 +483,8 @@ class EditTemplate extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
+    this.initTab()
+    //  this.setState({tabActive: 'broadcast'})
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -529,7 +531,6 @@ class EditTemplate extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
-        this.setState({tabActive: 'broadcast'})
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         //  this.setState({broadcast: [], list: []})
       }

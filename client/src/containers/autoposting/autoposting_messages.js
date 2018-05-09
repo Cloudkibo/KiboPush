@@ -18,7 +18,8 @@ class AutopostingMessages extends React.Component {
     super(props, context)
     this.state = {
       messagesData: [],
-      totalLength: 0
+      totalLength: 0,
+      pageNumber: 0
     }
     props.loadAutopostingMessages(props.location.state.id, {first_page: true, last_id: 'none', number_of_records: 10})
     this.displayData = this.displayData.bind(this)
@@ -52,7 +53,12 @@ class AutopostingMessages extends React.Component {
   }
 
   handlePageClick (data) {
-    props.loadAutopostingMessages(props.location.state.id, {first_page: false, last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadAutopostingMessages(props.location.state.id, {first_page: true, last_id: 'none', number_of_records: 10})
+    } else {
+      this.props.loadAutopostingMessages(props.location.state.id, {first_page: false, last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
+    }
     this.displayData(data.selected, this.props.autoposting_messages)
   }
 
@@ -159,7 +165,8 @@ class AutopostingMessages extends React.Component {
                                 onPageChange={this.handlePageClick}
                                 containerClassName={'pagination'}
                                 subContainerClassName={'pages pagination'}
-                                activeClassName={'active'} />
+                                activeClassName={'active'}
+                                forcePage={this.state.pageNumber} />
                             </div>
                           </div>
                           : <span>

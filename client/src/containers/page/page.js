@@ -29,7 +29,8 @@ class Page extends React.Component {
       totalLength: 0,
       filter: false,
       search_value: '',
-      connectedPages: false
+      connectedPages: false,
+      pageNumber: 0
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -63,7 +64,12 @@ class Page extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    } else {
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    }
     this.displayData(data.selected, this.props.pages)
   }
 
@@ -136,7 +142,7 @@ class Page extends React.Component {
   searchPages (event) {
     // var filtered = []
     if (event.target.value !== '') {
-      this.setState({search_value: event.target.value, filter: true})
+      this.setState({searchValue: event.target.value, filter: true})
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value}})
 
       // for (let i = 0; i < this.props.pages.length; i++) {
@@ -365,7 +371,8 @@ class Page extends React.Component {
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
-                            activeClassName={'active'} />
+                            activeClassName={'active'}
+                            forcePage={this.state.pageNumber} />
                         </div>
                       </div>
                       : <span>

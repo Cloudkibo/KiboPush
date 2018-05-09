@@ -39,7 +39,8 @@ class Poll extends React.Component {
       isShowingModal: false,
       isShowingModalDelete: false,
       deleteid: '',
-      selectedDays: ''
+      selectedDays: '',
+      pageNumber: 0
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -111,7 +112,12 @@ class Poll extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+    } else {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    }
     this.displayData(data.selected, this.props.polls)
   }
 
@@ -462,7 +468,8 @@ class Poll extends React.Component {
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
-                            activeClassName={'active'} />
+                            activeClassName={'active'}
+                            forcePage={this.state.pageNumber} />
                         </div>
                       </div>
                       : <span>

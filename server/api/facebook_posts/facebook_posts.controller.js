@@ -5,6 +5,7 @@ const Pages = require('../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const needle = require('needle')
 const TAG = 'api/facebook_posts/facebook_posts.controller.js'
+//  const utility = require('./facebook_posts.utility')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -128,12 +129,15 @@ exports.create = function (req, res) {
               }
               logger.serverLog(TAG,
               `response from get request ${JSON.stringify(resp.body)}`)
-              const data = {
+              const messageData = {
                 message: req.body.payload
               }
+              console.log('body', req.body.payload)
+              //  let messageData = utility.prepareSendAPIPayload(req.body.payload)
+              console.log('messageData', messageData)
               needle.post(
                 `https://graph.facebook.com/${userPage.pageId}/feed?message=${'Hello Fans'}&access_token=${resp.body.access_token}`,
-                data, (err, resp) => {
+                messageData, (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, err)
                   }

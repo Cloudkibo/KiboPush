@@ -15,6 +15,44 @@ export function showChatSessions (sessions) {
   }
 }
 
+export function showOpenChatSessions (sessions, firstPage) {
+  var sorted = sessions.openSessions.sort(function (a, b) {
+    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+  })
+  console.log('sorted sessions', sorted)
+  if (firstPage) {
+    return {
+      type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE,
+      openSessions: sorted,
+      count: sessions.count
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS,
+      openSessions: sorted,
+      count: sessions.count
+    }
+  }
+}
+
+export function showCloseChatSessions (sessions, firstPage) {
+  var sorted = sessions.closedSessions.sort(function (a, b) {
+    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+  })
+  console.log('sorted sessions', sorted)
+  if (firstPage) {
+    return {
+      type: ActionTypes.SHOW_CLOSE_CHAT_SESSIONS_OVERWRITE,
+      closeSessions: sorted,
+      count: sessions.count
+    }
+  }
+  return {
+    type: ActionTypes.SHOW_CLOSE_CHAT_SESSIONS,
+    closeSessions: sorted,
+    count: sessions.count
+  }
+}
 export function updateChatSessions (session, sessions) {
   var temp = sessions
   for (var i = 0; i < temp.length; i++) {
@@ -104,6 +142,28 @@ export function fetchSessions () {
       .then(res => {
         console.log('fetchSessions response', res)
         dispatch(showChatSessions(res.payload))
+      })
+  }
+}
+
+export function fetchOpenSessions (data) {
+  console.log('fetchOpenSessions', data)
+  return (dispatch) => {
+    callApi('sessions/getOpenSessions', 'post', data)
+      .then(res => {
+        console.log('fetchSessions response', res)
+        dispatch(showOpenChatSessions(res.payload, data.first_page))
+      })
+  }
+}
+
+export function fetchCloseSessions (data) {
+  console.log('fetchCloseSessions', data)
+  return (dispatch) => {
+    callApi('sessions/getClosedSessions', 'post', data)
+      .then(res => {
+        console.log('fetchSessions response', res)
+        dispatch(showCloseChatSessions(res.payload, data.first_page))
       })
   }
 }

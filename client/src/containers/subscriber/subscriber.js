@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadAllSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew, allLocales } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -50,11 +50,14 @@ class Subscriber extends React.Component {
       saveEnable: false,
       pageSelected: 0,
       showEditModal: false,
-      subscriber: {}
+      subscriber: {},
+      filter: false,
+      pageNumber: 0
     }
+    props.allLocales()
     props.fetchAllSequence()
     props.loadMyPagesList()
-    props.loadAllSubscribersList()
+    props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
     props.loadTags()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
@@ -329,30 +332,37 @@ class Subscriber extends React.Component {
 
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})
-    var filtered = []
-    var data = this.props.subscribers
-    if (this.state.filteredData !== '') {
-      data = this.state.filteredData
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
+
+      // var filtered = []
+      // var data = this.props.subscribers
+      // if (this.state.filteredData !== '') {
+      //   data = this.state.filteredData
+      // }
+      // for (let i = 0; i < data.length; i++) {
+      //   var fullName = data[i].firstName + ' ' + data[i].lastName
+      //   if (data[i].firstName.toLowerCase().includes((event.target.value).toLowerCase()) || data[i].lastName.toLowerCase().includes((event.target.value).toLowerCase()) || fullName.toLowerCase().includes((event.target.value).toLowerCase())) {
+      //     filtered.push(data[i])
+      //   }
+      // }
+      // this.displayData(0, filtered)
+      // this.setState({ totalLength: filtered.length })
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: '', gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
     }
-    for (let i = 0; i < data.length; i++) {
-      var fullName = data[i].firstName + ' ' + data[i].lastName
-      if (data[i].firstName.toLowerCase().includes((event.target.value).toLowerCase()) || data[i].lastName.toLowerCase().includes((event.target.value).toLowerCase()) || fullName.toLowerCase().includes((event.target.value).toLowerCase())) {
-        filtered.push(data[i])
-      }
-    }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
 
   displayData (n, subscribers) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > subscribers.length) {
+    if ((offset + 10) > subscribers.length) {
       limit = subscribers.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = subscribers[i]
@@ -450,13 +460,19 @@ class Subscriber extends React.Component {
   }
   handlePageClick (data) {
     this.setState({pageSelected: data.selected})
+    if (data.selected === 0) {
+      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
+    }
     this.displayData(data.selected, this.state.subscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.subscribers) {
+    console.log('nextProps in subscribers', nextProps)
+    if (nextProps.subscribers && nextProps.count) {
       this.displayData(this.state.pageSelected, nextProps.subscribers)
-      this.setState({ totalLength: nextProps.subscribers.length })
+      this.setState({ totalLength: nextProps.count })
     }
     if (nextProps.tags) {
       var tagOptions = []
@@ -545,119 +561,130 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByTag (e) {
-    this.setState({filterByTag: e.target.value, searchValue: ''})
-    var filteredData = this.props.subscribers
-    filteredData = this.stackGenderFilter(filteredData)
-    filteredData = this.stackLocaleFilter(filteredData)
-    filteredData = this.stackPageFilter(filteredData)
-    filteredData = this.stackStatusFilter(filteredData)
-    var filtered = []
+    this.setState({filterByTag: e.target.value})
+    //  this.setState({searchValue: ''})
+    // var filteredData = this.props.subscribers
+    // filteredData = this.stackGenderFilter(filteredData)
+    // filteredData = this.stackLocaleFilter(filteredData)
+    // filteredData = this.stackPageFilter(filteredData)
+    // filteredData = this.stackStatusFilter(filteredData)
+    //  var filtered = []
     if (e.target.value !== '') {
-      for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].tags) {
-          for (var i = 0; i < filteredData[k].tags.length; i++) {
-            if (filteredData[k].tags[i] === e.target.value) {
-              filtered.push(filteredData[k])
-              break
-            }
-          }
-        }
-      }
-      filteredData = filtered
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: e.target.value, status_value: this.state.statusValue}})
+      // for (var k = 0; k < filteredData.length; k++) {
+      //   if (filteredData[k].tags) {
+      //     for (var i = 0; i < filteredData[k].tags.length; i++) {
+      //       if (filteredData[k].tags[i] === e.target.value) {
+      //         filtered.push(filteredData[k])
+      //         break
+      //       }
+      //     }
+      //   }
+      // }
+      // filteredData = filtered
     }
-    this.setState({filteredData: filteredData})
-    this.displayData(0, filteredData)
-    this.setState({pageSelected: 0})
-    this.setState({ totalLength: filteredData.length })
+    // this.setState({filteredData: filteredData})
+    // this.displayData(0, filteredData)
+    // this.setState({pageSelected: 0})
+    // this.setState({ totalLength: filteredData.length })
   }
   handleFilterByPage (e) {
-    this.setState({filterByPage: e.target.value, searchValue: ''})
-    var filteredData = this.props.subscribers
-    filteredData = this.stackGenderFilter(filteredData)
-    filteredData = this.stackLocaleFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
-    filteredData = this.stackStatusFilter(filteredData)
-    var filtered = []
+    this.setState({filterByPage: e.target.value})
+    // var filteredData = this.props.subscribers
+    // filteredData = this.stackGenderFilter(filteredData)
+    // filteredData = this.stackLocaleFilter(filteredData)
+    // filteredData = this.stackTagFilter(filteredData)
+    // filteredData = this.stackStatusFilter(filteredData)
+    // var filtered = []
     if (e.target.value !== '') {
-      for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
-          filtered.push(filteredData[k])
-        }
-      }
-      filteredData = filtered
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: e.target.value, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
+      // for (var k = 0; k < filteredData.length; k++) {
+      //   if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
+      //     filtered.push(filteredData[k])
+      //   }
+      // }
+      // filteredData = filtered
     }
-    this.setState({filteredData: filteredData})
-    this.displayData(0, filteredData)
-    this.setState({pageSelected: 0})
-    this.setState({ totalLength: filteredData.length })
+    // this.setState({filteredData: filteredData})
+    // this.displayData(0, filteredData)
+    // this.setState({pageSelected: 0})
+    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByGender (e) {
-    this.setState({filterByGender: e.target.value, searchValue: ''})
-    var filteredData = this.props.subscribers
-    filteredData = this.stackPageFilter(filteredData)
-    filteredData = this.stackLocaleFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
-    filteredData = this.stackStatusFilter(filteredData)
-    var filtered = []
+    this.setState({filterByGender: e.target.value})
+    // var filteredData = this.props.subscribers
+    // filteredData = this.stackPageFilter(filteredData)
+    // filteredData = this.stackLocaleFilter(filteredData)
+    // filteredData = this.stackTagFilter(filteredData)
+    // filteredData = this.stackStatusFilter(filteredData)
+    // var filtered = []
     if (e.target.value !== '') {
-      for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
-          filtered.push(filteredData[k])
-        }
-      }
-      filteredData = filtered
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
+      // for (var k = 0; k < filteredData.length; k++) {
+      //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
+      //     filtered.push(filteredData[k])
+      //   }
+      // }
+      // filteredData = filtered
     }
-    this.setState({filteredData: filteredData})
-    this.displayData(0, filteredData)
-    this.setState({pageSelected: 0})
-    this.setState({ totalLength: filteredData.length })
+    // this.setState({filteredData: filteredData})
+    // this.displayData(0, filteredData)
+    // this.setState({pageSelected: 0})
+    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByLocale (e) {
-    this.setState({filterByLocale: e.target.value, searchValue: ''})
-    var filteredData = this.props.subscribers
-    filteredData = this.stackPageFilter(filteredData)
-    filteredData = this.stackGenderFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
-    filteredData = this.stackStatusFilter(filteredData)
-    var filtered = []
+    this.setState({filterByLocale: e.target.value})
+    // var filteredData = this.props.subscribers
+    // filteredData = this.stackPageFilter(filteredData)
+    // filteredData = this.stackGenderFilter(filteredData)
+    // filteredData = this.stackTagFilter(filteredData)
+    // filteredData = this.stackStatusFilter(filteredData)
+    // var filtered = []
     if (e.target.value !== '') {
-      for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
-          filtered.push(filteredData[k])
-        }
-      }
-      filteredData = filtered
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: e.target.value, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
+      // for (var k = 0; k < filteredData.length; k++) {
+      //   if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
+      //     filtered.push(filteredData[k])
+      //   }
+      // }
+      // filteredData = filtered
     }
-    this.setState({filteredData: filteredData})
-    this.displayData(0, filteredData)
-    this.setState({pageSelected: 0})
-    this.setState({ totalLength: filteredData.length })
+    // this.setState({filteredData: filteredData})
+    // this.displayData(0, filteredData)
+    // this.setState({pageSelected: 0})
+    // this.setState({ totalLength: filteredData.length })
   }
 
   handleFilterByStatus (e) {
-    this.setState({statusValue: e.target.value, searchValue: ''})
-    var filteredData = this.props.subscribers
-    filteredData = this.stackPageFilter(filteredData)
-    filteredData = this.stackGenderFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
-    filteredData = this.stackLocaleFilter(filteredData)
-    var filtered = []
+    this.setState({statusValue: e.target.value})
+    // var filteredData = this.props.subscribers
+    // filteredData = this.stackPageFilter(filteredData)
+    // filteredData = this.stackGenderFilter(filteredData)
+    // filteredData = this.stackTagFilter(filteredData)
+    // filteredData = this.stackLocaleFilter(filteredData)
+    // var filtered = []
     if (e.target.value !== '') {
-      for (var k = 0; k < filteredData.length; k++) {
-        if (e.target.value === 'subscribed' && filteredData[k].isSubscribed) {
-          filtered.push(filteredData[k])
-        } else if (e.target.value === 'unsubscribed' && !filteredData[k].isSubscribed) {
-          filtered.push(filteredData[k])
-        }
-      }
-      filteredData = filtered
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: e.target.value}})
+      // for (var k = 0; k < filteredData.length; k++) {
+      //   if (e.target.value === 'subscribed' && filteredData[k].isSubscribed) {
+      //     filtered.push(filteredData[k])
+      //   } else if (e.target.value === 'unsubscribed' && !filteredData[k].isSubscribed) {
+      //     filtered.push(filteredData[k])
+      //   }
+      // }
+      // filteredData = filtered
     }
-    this.setState({filteredData: filteredData})
-    this.displayData(0, filteredData)
-    this.setState({pageSelected: 0})
-    this.setState({ totalLength: filteredData.length })
+    // this.setState({filteredData: filteredData})
+    // this.displayData(0, filteredData)
+    // this.setState({pageSelected: 0})
+    // this.setState({ totalLength: filteredData.length })
   }
 
   render () {
@@ -783,7 +810,7 @@ class Subscriber extends React.Component {
                                           <option key='ALL' value=''>ALL</option>
                                           {
                                             this.props.pages.map((page, i) => (
-                                              <option key={i} value={page.pageId}>{page.pageName}</option>
+                                              <option key={i} value={page._id}>{page.pageName}</option>
                                             ))
                                           }
                                         </select>
@@ -804,7 +831,7 @@ class Subscriber extends React.Component {
                                         <option key='' value='' disabled>Filter by Locale...</option>
                                         <option key='ALL' value=''>ALL</option>
                                         {
-                                          this.props.locales.map((locale, i) => (
+                                          this.props.locales && this.props.locales.map((locale, i) => (
                                             <option key={i} value={locale}>{locale}</option>
                                           ))
                                         }
@@ -823,7 +850,7 @@ class Subscriber extends React.Component {
                                           <option key='ALL' value=''>ALL</option>
                                           {
                                             this.state.options.map((tag, i) => (
-                                              <option key={i} value={tag.label}>{tag.label}</option>
+                                              <option key={i} value={tag._id}>{tag.label}</option>
                                             ))
                                           }
                                         </select>
@@ -839,8 +866,8 @@ class Subscriber extends React.Component {
                                         <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
                                           <option key='' value='' disabled>Filter by Status...</option>
                                           <option key='ALL' value=''>ALL</option>
-                                          <option key='subscribed' value='subscribed'>Subscribed</option>
-                                          <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
+                                          <option key='subscribed' value={true}>Subscribed</option>
+                                          <option key='unsubscribed' value={false}>Unsubscribed</option>
                                         </select>
                                       </div>
                                     </div>
@@ -1128,7 +1155,7 @@ class Subscriber extends React.Component {
                               nextLabel={'next'}
                               breakLabel={<a>...</a>}
                               breakClassName={'break-me'}
-                              pageCount={Math.ceil(this.state.totalLength / 4)}
+                              pageCount={Math.ceil(this.state.totalLength / 10)}
                               marginPagesDisplayed={1}
                               pageRangeDisplayed={3}
                               onPageChange={this.handlePageClick}
@@ -1301,6 +1328,7 @@ class Subscriber extends React.Component {
 function mapStateToProps (state) {
   return {
     subscribers: (state.subscribersInfo.subscribers),
+    count: (state.subscribersInfo.count),
     locales: (state.subscribersInfo.locales),
     pages: (state.pagesInfo.pages),
     tags: (state.tagsInfo.tags),
@@ -1310,8 +1338,9 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadAllSubscribersList: loadAllSubscribersList,
+  return bindActionCreators({loadAllSubscribersListNew: loadAllSubscribersListNew,
     loadMyPagesList: loadMyPagesList,
+    allLocales: allLocales,
     assignTags: assignTags,
     unassignTags: unassignTags,
     loadTags: loadTags,

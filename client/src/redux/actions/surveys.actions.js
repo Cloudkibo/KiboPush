@@ -82,9 +82,12 @@ export function loadSurveysList (days) {
   }
 }
 export function loadSurveysListNew (data) {
-  // here we will fetch list of subscribers from endpoint
+  console.log('data', data)
   return (dispatch) => {
-    callApi(`surveys/allSurveys`, 'post', data).then(res => dispatch(showSurveysNew(res.payload)))
+    callApi(`surveys/allSurveys`, 'post', data).then(res => {
+      console.log('response from surveys', res)
+      dispatch(showSurveysNew(res.payload))
+    })
   }
 }
 export function sendsurvey (survey, msg) {

@@ -35,7 +35,8 @@ class Survey extends React.Component {
       isShowingModal: false,
       isShowingModalDelete: false,
       deleteid: '',
-      selectedDays: ''
+      selectedDays: '',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -100,7 +101,12 @@ class Survey extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    }
     this.displayData(data.selected, this.props.surveys)
   }
 
@@ -422,13 +428,15 @@ class Survey extends React.Component {
                       }
                           </tbody>
                         </table>
-                        <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
+                        <ReactPaginate
+                          previousLabel={'previous'}
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={2}
                           pageRangeDisplayed={3}
+                          forcePage={this.state.pageNumber}
                           onPageChange={this.handlePageClick}
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}

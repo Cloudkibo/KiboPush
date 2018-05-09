@@ -9,6 +9,14 @@ export function showAllSequence (data) {
   }
 }
 
+export function showAllSequenceNew (data) {
+  return {
+    type: ActionTypes.SHOW_ALL_SEQUENCE_NEW,
+    sequence: data.sequences,
+    count: data.count
+  }
+}
+
 export function showSubscriberSequence (data) {
   return {
     type: ActionTypes.SHOW_SUBSCRIBER_SEQUENCE,
@@ -91,6 +99,20 @@ export function fetchAllSequence () {
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))
+        }
+      })
+  }
+}
+
+export function fetchAllSequenceNew (data) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi(`sequenceMessaging/getAll`, 'post', data)
+      .then(res => {
+        console.log('fetchAllSequence', res)
+        if (res.status === 'success') {
+          console.log('allSequences', res.payload)
+          dispatch(showAllSequenceNew(res.payload))
         }
       })
   }

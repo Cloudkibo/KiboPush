@@ -3,14 +3,44 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   socketSession: '',
   socketData: {},
-  userChat: []
+  userChat: [],
+  openSessions: [],
+  closeSessions: []
 }
 
 export function liveChat (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SHOW_CHAT_SESSIONS:
       return Object.assign({}, state, {
-        sessions: action.sessions
+        openSessions: state.openSessions.concat(action.openSessions),
+        count: action.count
+      })
+      // return Object.assign({}, state, {
+      //   sessions: action.sessions
+      // })
+
+    case ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE:
+      return Object.assign({}, state, {
+        openSessions: action.openSessions,
+        openCount: action.count
+      })
+
+    case ActionTypes.SHOW_OPEN_CHAT_SESSIONS:
+      return Object.assign({}, state, {
+        openSessions: action.openSessions,
+        openCount: action.count
+      })
+
+    case ActionTypes.SHOW_CLOSE_CHAT_SESSIONS:
+      return Object.assign({}, state, {
+        closeSessions: action.closeSessions,
+        closeCount: action.count
+      })
+
+    case ActionTypes.SHOW_CLOSE_CHAT_SESSIONS_OVERWRITE:
+      return Object.assign({}, state, {
+        closeSessions: state.closeSessions.concat(action.closeSessions),
+        count: action.count
       })
 
     case ActionTypes.UPDATE_CHAT_SESSIONS:
