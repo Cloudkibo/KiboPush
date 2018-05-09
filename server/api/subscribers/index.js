@@ -13,7 +13,7 @@ router.get('/',
   auth.doesRolePermitsThisAction('subscriberPermission'),
   controller.index)
 
-router.get('/allSubscribers',
+router.post('/allSubscribers',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('manage_subscribers'),
   auth.doesRolePermitsThisAction('subscriberPermission'),

@@ -8,9 +8,11 @@ const controller = require('./templates.controller')
 const auth = require('../../auth/auth.service')
 
 router.get('/allPolls', auth.isAuthenticated(), controller.allPolls)
+router.post('/getAllPolls', auth.isAuthenticated(), controller.getAllPolls) // pagination
 router.post('/createPoll', auth.isAuthorizedSuperUser(), controller.createPoll)
 router.post('/createSurvey', auth.isAuthorizedSuperUser(), controller.createSurvey)
 router.get('/allSurveys', auth.isAuthenticated(), controller.allSurveys)
+router.post('/getAllSurveys', auth.isAuthenticated(), controller.getAllSurveys) // pagination
 router.post('/createCategory', auth.isAuthenticated(), controller.createCategory)
 router.get('/allCategories', auth.isAuthenticated(), controller.allCategories)
 router.get('/surveyDetails/:surveyid', auth.isAuthenticated(), controller.surveyDetails)
@@ -24,7 +26,7 @@ router.post('/editSurvey', auth.isAuthorizedSuperUser(), controller.editSurvey)
 
 router.post('/createBroadcast', auth.isAuthenticated(), controller.createBroadcast)
 router.get('/allBroadcasts', auth.isAuthenticated(), controller.allBroadcasts)
-router.get('/getAllBroadcasts', auth.isAuthenticated(), controller.getAllBroadcasts) // pagination
+router.post('/getAllBroadcasts', auth.isAuthenticated(), controller.getAllBroadcasts) // pagination
 router.post('/editBroadcast', auth.isAuthenticated(), controller.editBroadcast)
 router.delete('/deleteBroadcast/:id', auth.isAuthenticated(), controller.deleteBroadcast)
 router.get('/broadcastDetails/:broadcastid', auth.isAuthenticated(), controller.broadcastDetails)

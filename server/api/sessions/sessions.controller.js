@@ -137,9 +137,8 @@ exports.getNewSessions = function (req, res) {
           }
           let tempSessionsData = []
           for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
             if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
+              sessionsData[a].subscriber_id.isSubscribed) {
               tempSessionsData.push(sessionsData[a])
             }
           }

@@ -12,6 +12,7 @@ const controller = require('./backdoor.controller')
 const auth = require('../../auth/auth.service')
 
 router.get('/alluser', auth.isAuthorizedSuperUser(), controller.index)
+router.post('/getAllUsers', auth.isAuthorizedSuperUser(), controller.getAllUsers) // pagination
 router.get('/allpages/:userid', auth.isAuthorizedSuperUser(), controller.allpages)
 router.get('/allsubscribers/:pageid', auth.isAuthorizedSuperUser(), controller.allsubscribers)
 router.get('/allbroadcasts/:userid', auth.isAuthorizedSuperUser(), controller.allbroadcasts)
@@ -27,6 +28,8 @@ router.get('/pollsGraph/:days', auth.isAuthorizedSuperUser(), controller.pollsGr
 router.get('/surveysGraph/:days', auth.isAuthorizedSuperUser(), controller.surveysGraph)
 router.get('/sessionsGraph/:days', auth.isAuthorizedSuperUser(), controller.sessionsGraph)
 router.get('/broadcastsByDays/:days', auth.isAuthorizedSuperUser(), controller.broadcastsByDays)
+router.get('/broadcastsByDays/:days', auth.isAuthorizedSuperUser(), controller.broadcastsByDays)
+router.post('/getAllBroadcasts', auth.isAuthorizedSuperUser(), controller.getAllBroadcasts) // pagination
 router.get('/surveysByDays/:days', auth.isAuthorizedSuperUser(), controller.surveysByDays)
 router.get('/pollsByDays/:days', auth.isAuthorizedSuperUser(), controller.pollsByDays)
 router.get('/sendEmail', auth.isAuthorizedSuperUser(), controller.sendEmail)
