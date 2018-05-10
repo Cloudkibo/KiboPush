@@ -340,9 +340,9 @@ exports.create = function (req, res) {
                   }
                 }, function (err, result) {
                   if (err) {
-                    logger.serverLog(TAG, 'welcome email error', err)
+                    logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
                   } else {
-                    logger.serverLog(TAG, 'welcome email sent', result)
+                    logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
                   }
                 })
 
