@@ -7,6 +7,7 @@ const Subscribers = require('./Subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/subscribers/subscribers.controller.js'
 const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
+const mongoose = require('mongoose')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
@@ -290,7 +291,7 @@ exports.getAll = function (req, res) {
             gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
             locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
             isSubscribed: req.body.filter_criteria.status_value !== '' ? req.body.filter_criteria.status_value : {$exists: true},
-            pageId: req.body.filter_criteria.page_value !== '' ? req.body.filter_criteria.page_value : {$exists: true}
+            pageId: req.body.filter_criteria.page_value !== '' ? mongoose.Types.ObjectId(req.body.filter_criteria.page_value) : {$exists: true}
           }
           Subscribers.aggregate([
             { $match: subscribersFindCriteria },
@@ -439,7 +440,7 @@ exports.getAll = function (req, res) {
             gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
             locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
             isSubscribed: req.body.filter_criteria.status_value === 'subscribed' ? req.body.filter_criteria.status_value : {$exists: true},
-            pageId: req.body.filter_criteria.page_value !== '' ? req.body.filter_criteria.page_value : {$exists: true}
+            pageId: req.body.filter_criteria.page_value !== '' ? mongoose.Types.ObjectId(req.body.filter_criteria.page_value) : {$exists: true}
           }
           Subscribers.aggregate([
             { $match: subscribersFindCriteria },
