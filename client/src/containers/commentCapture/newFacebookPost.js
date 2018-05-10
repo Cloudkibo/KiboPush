@@ -175,8 +175,10 @@ class FacebookPosts extends React.Component {
         var videoAttachment = []
         videoAttachment.push(attachComponent)
         var videoPost = []
-        videoPost.push(this.state.postText)
-        videoPost.push(this.state.videoAttachment)
+        if (this.state.postText !== '') {
+          videoPost.push({componentType: 'text', text: e.target.value})
+        }
+        videoPost.push(attachComponent)
         this.setState({
           attachments: videoAttachment,
           facebookPost: videoPost,
@@ -311,9 +313,16 @@ class FacebookPosts extends React.Component {
         disabled: true
       })
     }
+    var facebookPost = []
+    facebookPost.push({componentType: 'text', text: e.target.value})
+    if (this.state.attachments.length > 0) {
+      for (var i = 0; i < this.state.attachments.length; i++) {
+        facebookPost.push(this.state.attachments[i])
+      }
+    }
     this.setState({
       postText: e.target.value,
-      facebookPost: {componentType: 'text', text: e.target.value}
+      facebookPost: facebookPost
     })
   }
   replyChange (e) {
@@ -527,7 +536,7 @@ class FacebookPosts extends React.Component {
                                         <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                           { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='Image' style={{maxHeight: '50px', maxWidth: '120px'}} />
+                                            <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                           </div>
                                           }
                                           { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
@@ -594,14 +603,14 @@ class FacebookPosts extends React.Component {
                                 style={{height: '150px', resize: 'none'}}
                                 value={this.state.postText}
                                 disabled />
-                              { this.state.attachments.length > 1 && this.state.videoPost &&
+                              { this.state.attachments.length > 0 && this.state.videoPost &&
                                 <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                   <span>
                                     <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
                                   </span>
                                 </span>
                               }
-                              { this.state.attachments.length > 1 && !this.state.videoPost &&
+                              { this.state.attachments.length > 0 && !this.state.videoPost &&
                                 <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                   <span>
                                     <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
