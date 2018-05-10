@@ -175,8 +175,10 @@ class FacebookPosts extends React.Component {
         var videoAttachment = []
         videoAttachment.push(attachComponent)
         var videoPost = []
-        videoPost.push(this.state.postText)
-        videoPost.push(this.state.videoAttachment)
+        if (this.state.postText !== '') {
+          videoPost.push({componentType: 'text', text: this.state.postText})
+        }
+        videoPost.push(attachComponent)
         this.setState({
           attachments: videoAttachment,
           facebookPost: videoPost,
@@ -311,7 +313,7 @@ class FacebookPosts extends React.Component {
         disabled: true
       })
     }
-    var facebookPost = []
+    var facebookPost = this.state.facebookPost
     facebookPost.push({componentType: 'text', text: e.target.value})
     this.setState({
       postText: e.target.value,
