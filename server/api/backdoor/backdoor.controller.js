@@ -97,26 +97,27 @@ exports.getAllUsers = function (req, res) {
             status: 'failed',
             description: `Error in getting users ${JSON.stringify(err)}`
           })
-        }
-        let usersPayload
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].facebookInfo) {
-            if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-              if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-                usersPayload.push(users[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-              if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayload.push(users[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-              if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayload.push(users[i])
+        } if (req.body.filter) {
+          let usersPayload = []
+          for (let i = 0; i < users.length; i++) {
+            if (users[i].facebookInfo) {
+              if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+                  usersPayload.push(users[i])
+                }
+              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+                if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                  usersPayload.push(users[i])
+                }
+              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                  usersPayload.push(users[i])
+                }
               }
             }
           }
+          users = usersPayload
         }
-        users = usersPayload
         res.status(200).json({
           status: 'success',
           payload: {users: users, count: usersData.length}
@@ -164,25 +165,27 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        let usersPayload
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].facebookInfo) {
-            if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-              if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-                usersPayload.push(users[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-              if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayload.push(users[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-              if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayload.push(users[i])
+        if (req.body.filter) {
+          let usersPayload = []
+          for (let i = 0; i < users.length; i++) {
+            if (users[i].facebookInfo) {
+              if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+                  usersPayload.push(users[i])
+                }
+              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+                if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                  usersPayload.push(users[i])
+                }
+              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                  usersPayload.push(users[i])
+                }
               }
             }
           }
+          users = usersPayload
         }
-        users = usersPayload
         res.status(200).json({
           status: 'success',
           payload: {users: users, count: usersData.length}
@@ -262,6 +265,248 @@ exports.allpages = function (req, res) {
   })
 }
 
+exports.getAllPages = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    search_value:
+  }
+  */
+  let search = new RegExp('.*' + req.body.search_value + '.*', 'i')
+  let findCriteria = {
+    userId: req.params.userid,
+    pageName: req.body.search_value !== '' ? {$regex: search} : {$exists: true}
+  }
+  if (req.body.first_page) {
+    Pages.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pagesCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Pages.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, pages) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsers.findOne({userId: req.params.userid}, (err, companyUser) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (!companyUser) {
+            return res.status(404).json({
+              status: 'failed',
+              description: 'The user account does not belong to any company. Please contact support'
+            })
+          }
+          Subscribers.aggregate([
+            {
+              $match: {
+                companyId: companyUser.companyId
+              }
+            }, {
+              $group: {
+                _id: {pageId: '$pageId'},
+                count: {$sum: 1}
+              }
+            }], (err2, gotSubscribersCount) => {
+            if (err2) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pages subscriber count ${JSON.stringify(
+                  err2)}`
+              })
+            }
+            let pagesPayload = []
+            for (let i = 0; i < pages.length; i++) {
+              pagesPayload.push({
+                _id: pages[i]._id,
+                pageId: pages[i].pageId,
+                pageName: pages[i].pageName,
+                userId: pages[i].userId,
+                pagePic: pages[i].pagePic,
+                connected: pages[i].connected,
+                pageUserName: pages[i].pageUserName,
+                likes: pages[i].likes,
+                subscribers: 0
+              })
+            }
+            for (let i = 0; i < pagesPayload.length; i++) {
+              for (let j = 0; j < gotSubscribersCount.length; j++) {
+                if (pagesPayload[i]._id.toString() ===
+                  gotSubscribersCount[j]._id.pageId.toString()) {
+                  pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                }
+              }
+            }
+            res.status(200).json({
+              status: 'success',
+              payload: {pages: pagesPayload, count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
+            })
+          })
+        })
+      })
+    })
+  } else {
+    Pages.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pagesCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Pages.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, pages) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsers.findOne({userId: req.params.userid}, (err, companyUser) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (!companyUser) {
+            return res.status(404).json({
+              status: 'failed',
+              description: 'The user account does not belong to any company. Please contact support'
+            })
+          }
+          Subscribers.aggregate([
+            {
+              $match: {
+                companyId: companyUser.companyId
+              }
+            }, {
+              $group: {
+                _id: {pageId: '$pageId'},
+                count: {$sum: 1}
+              }
+            }], (err2, gotSubscribersCount) => {
+            if (err2) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pages subscriber count ${JSON.stringify(
+                  err2)}`
+              })
+            }
+            let pagesPayload = []
+            for (let i = 0; i < pages.length; i++) {
+              pagesPayload.push({
+                _id: pages[i]._id,
+                pageId: pages[i].pageId,
+                pageName: pages[i].pageName,
+                userId: pages[i].userId,
+                pagePic: pages[i].pagePic,
+                connected: pages[i].connected,
+                pageUserName: pages[i].pageUserName,
+                likes: pages[i].likes,
+                subscribers: 0
+              })
+            }
+            for (let i = 0; i < pagesPayload.length; i++) {
+              for (let j = 0; j < gotSubscribersCount.length; j++) {
+                if (pagesPayload[i]._id.toString() ===
+                  gotSubscribersCount[j]._id.pageId.toString()) {
+                  pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                }
+              }
+            }
+            res.status(200).json({
+              status: 'success',
+              payload: {pages: pagesPayload, count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
+            })
+          })
+        })
+      })
+    })
+  }
+}
+
+exports.getAllSubscribers = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter_criteria: {
+      search_value:
+      gender_value:
+      locale_value:
+    }
+  }
+  */
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  let findCriteria = {
+    pageId: req.params.pageid,
+    $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
+    gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
+    locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true}
+  }
+  if (req.bdoy.first_page) {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Subscribers.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  } else {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Subscribers.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  }
+}
+
 exports.allsubscribers = function (req, res) {
   Subscribers.find({pageId: req.params.pageid}, (err, subscribers) => {
     if (err) {
@@ -293,6 +538,82 @@ exports.allbroadcasts = function (req, res) {
   })
 }
 
+exports.allbroadcasts = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter_criteria: {
+      search_value:
+      type_value:
+  }
+}
+  */
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  let findCriteria = {}
+  if (req.body.filter_criteria.type_value === 'miscellaneous') {
+    findCriteria = {
+      userId: req.params.userid,
+      'payload.1': {$exists: true},
+      title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+    }
+  } else {
+    findCriteria = {
+      userId: req.params.userid,
+      'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : {$exists: true},
+      title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+    }
+  }
+  if (req.body.first_page) {
+    Broadcasts.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, broadcastsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Broadcasts.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, broadcasts) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting broadcasts ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {broadcasts: broadcasts, count: broadcasts.length > 0 ? broadcastsCount[0].count : ''}
+        })
+      })
+    })
+  } else {
+    Broadcasts.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, broadcastsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Broadcasts.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, broadcasts) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting broadcasts ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {broadcasts: broadcasts, count: broadcasts.length > 0 ? broadcastsCount[0].count : ''}
+        })
+      })
+    })
+  }
+}
+
 exports.allpolls = function (req, res) {
   // todo put pagination for scaling
   Polls.find({userId: req.params.userid}, (err, polls) => {
@@ -307,6 +628,150 @@ exports.allpolls = function (req, res) {
       payload: polls
     })
   })
+}
+
+exports.allpolls = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter_criteria: {
+      search_value:
+      days:
+    }
+  }
+  */
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  let findCriteria = {
+    userId: req.params.userid,
+    statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+    'datetime': req.body.filter_criteria.days !== '0' ? {
+      $gte: new Date(
+        (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+      $lt: new Date(
+        (new Date().getTime()))
+    } : {$exists: true}
+  }
+  if (req.body.first_page) {
+    Polls.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pollsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Polls.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, polls) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting polls ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {polls: polls, count: polls.length > 0 ? pollsCount[0].count : ''}
+        })
+      })
+    })
+  } else {
+    Polls.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pollsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Polls.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, polls) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting polls ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {polls: polls, count: polls.length > 0 ? pollsCount[0].count : ''}
+        })
+      })
+    })
+  }
+}
+
+exports.allUserSurveys = function (req, res) {
+  /*
+  body = {
+    first_page:
+    last_id:
+    number_of_records:
+    filter_criteria: {
+      search_value:
+      days:
+    }
+  }
+  */
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  let findCriteria = {
+    userId: req.params.userid,
+    title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+    'datetime': req.body.filter_criteria.days !== '0' ? {
+      $gte: new Date(
+        (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+      $lt: new Date(
+        (new Date().getTime()))
+    } : {$exists: true}
+  }
+  if (req.body.first_page) {
+    Surveys.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, surveysCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Surveys.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, surveys) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {surveys: surveys, count: surveys.length > 0 ? surveysCount[0].count : ''}
+        })
+      })
+    })
+  } else {
+    Surveys.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, surveysCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Surveys.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, surveys) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {surveys: surveys, count: surveys.length > 0 ? surveysCount[0].count : ''}
+        })
+      })
+    })
+  }
 }
 
 exports.allsurveys = function (req, res) {
