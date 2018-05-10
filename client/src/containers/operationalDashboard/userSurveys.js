@@ -12,14 +12,16 @@ const moment = extendMoment(Moment)
 class SurveysInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysList(props.userID)
+    props.loadSurveysList(props.userID, {first_page: true, last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       SurveyData: [],
       totalLength: 0,
       filterOptions: [
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
-      selectedFilterValue: 10
+      selectedFilterValue: 10,
+      searchValue: '',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -44,14 +46,14 @@ class SurveysInfo extends React.Component {
   }
 
   displayData (n, surveys) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > surveys.length) {
+    if ((offset + 10) > surveys.length) {
       limit = surveys.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = surveys[i]
@@ -61,37 +63,48 @@ class SurveysInfo extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysList(this.props.userID, {first_page: true, last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+    } else {
+      this.props.loadSurveysList(this.props.userID, {first_page: false, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+    }
     this.displayData(data.selected, this.props.surveys)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchSurveys (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.surveys.length; i++) {
-      if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.surveys[i])
-      }
-    }
-
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    this.props.loadSurveysList(this.props.userID, {first_page: true, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedFilterValue}})
+    // var filtered = []
+    // for (let i = 0; i < this.props.surveys.length; i++) {
+    //   if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.surveys[i])
+    //   }
+    // }
+    //
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   onFilter (val) {
-    if (!val) {
-      this.setState({selectedFilterValue: null})
-      this.displayData(0, this.props.surveys)
-      this.setState({ totalLength: this.props.surveys.length })
-    } else if (val.value === 10) {
-      this.filterByDays(10)
-      this.setState({ selectedFilterValue: val })
-    } else if (val.value === 30) {
-      this.filterByDays(30)
-      this.setState({ selectedFilterValue: val })
-    }
+    this.setState({ selectedFilterValue: val })
+    this.props.loadSurveysList(this.props.userID, {first_page: true, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: val}})
+
+    // if (!val) {
+    //   this.setState({selectedFilterValue: null})
+    //   this.displayData(0, this.props.surveys)
+    //   this.setState({ totalLength: this.props.surveys.length })
+    // } else if (val.value === 10) {
+    //   this.filterByDays(10)
+    //   this.setState({ selectedFilterValue: val })
+    // } else if (val.value === 30) {
+    //   this.filterByDays(30)
+    //   this.setState({ selectedFilterValue: val })
+    // }
   }
 
   filterByDays (val) {
@@ -215,13 +228,14 @@ class SurveysInfo extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No search results found. </p>
                 }
@@ -241,7 +255,9 @@ class SurveysInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    surveys: state.backdoorInfo.surveys
+    surveys: state.backdoorInfo.surveys,
+    count: state.backdoorInfo.surveysUserCount
+
   }
 }
 

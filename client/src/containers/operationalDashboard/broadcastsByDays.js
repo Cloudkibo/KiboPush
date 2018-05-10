@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsByDays(0)
+    props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       BroadcastData: [],
       totalLength: 0,
@@ -17,7 +17,9 @@ class BroadcastsInfo extends React.Component {
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
       selectedFilterValue: 10,
-      selectedDays: 10
+      selectedDays: 10,
+      searchValue: '',
+      filter: true
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -41,14 +43,14 @@ class BroadcastsInfo extends React.Component {
   }
 
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 10) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -58,38 +60,45 @@ class BroadcastsInfo extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    }
     this.displayData(data.selected, this.props.broadcasts)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
+    if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.length })
+      this.setState({ totalLength: nextProps.broadcasts.count })
     }
   }
   searchBroadcasts (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.broadcasts.length; i++) {
-      if (this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.broadcasts[i])
-      }
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
     }
-
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
-  onDaysChange (e) {
-    var defaultVal = 10
-    var value = e.target.value
-    this.setState({selectedDays: value})
-    if (value && value !== '') {
-      if (value.indexOf('.') !== -1) {
-        value = Math.floor(value)
-      }
-      this.props.loadBroadcastsByDays(value)
-    } else if (value === '') {
-      this.setState({selectedDays: defaultVal})
-      this.props.loadBroadcastsByDays(defaultVal)
+  onDaysChange (event) {
+    this.setState({selectedDays: event.target.value})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
     }
+    // var defaultVal = 10
+    // var value = e.target.value
+    // this.setState({selectedDays: value})
+    // if (value && value !== '') {
+    //   if (value.indexOf('.') !== -1) {
+    //     value = Math.floor(value)
+    //   }
+    //   this.props.loadBroadcastsByDays(value)
+    // } else if (value === '') {
+    //   this.setState({selectedDays: defaultVal})
+    //   this.props.loadBroadcastsByDays(defaultVal)
+    // }
   }
   onBroadcastClick (broadcast) {
     browserHistory.push({
@@ -227,13 +236,14 @@ class BroadcastsInfo extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No search results found. </p>
                 }
@@ -253,7 +263,8 @@ class BroadcastsInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    broadcasts: state.backdoorInfo.broadcasts
+    broadcasts: state.backdoorInfo.broadcasts,
+    count: state.backdoorInfo.broadcastscount
   }
 }
 

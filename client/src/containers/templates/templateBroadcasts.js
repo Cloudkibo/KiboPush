@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadBroadcastsList, loadCategoriesList, deleteBroadcast, saveBroadcastInformation } from '../../redux/actions/templates.actions'
+import { loadBroadcastsListNew, loadCategoriesList, deleteBroadcast, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -12,7 +12,7 @@ import NotificationBadge, {Effect} from 'react-notification-badge'
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsList()
+    props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
     props.loadCategoriesList()
     this.state = {
       broadcastsData: [],
@@ -22,7 +22,9 @@ class TemplateBroadcasts extends React.Component {
       isShowingModalDelete: false,
       deleteid: '',
       filteredByCategory: '',
-      searchValue: ''
+      searchValue: '',
+      filter: false,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -63,14 +65,14 @@ class TemplateBroadcasts extends React.Component {
   }
 
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 5) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -80,67 +82,78 @@ class TemplateBroadcasts extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    }
     this.displayData(data.selected, this.state.broadcastsDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
+    if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
 
   searchBroadcast (event) {
     this.setState({searchValue: event.target.value})
-    var filtered = []
+    // var filtered = []
     if (event.target.value !== '') {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        for (let i = 0; i < this.state.filteredByCategory.length; i++) {
-          if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.state.filteredByCategory[i])
-          }
-        }
-      } else {
-        for (let i = 0; i < this.props.broadcasts.length; i++) {
-          if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.props.broadcasts[i])
-          }
-        }
-      }
+      this.setState({filter: true})
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
+      // if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+      //   for (let i = 0; i < this.state.filteredByCategory.length; i++) {
+      //     if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+      //       filtered.push(this.state.filteredByCategory[i])
+      //     }
+      //   }
+      // } else {
+      //   for (let i = 0; i < this.props.broadcasts.length; i++) {
+      //     if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+      //       filtered.push(this.props.broadcasts[i])
+      //     }
+      //   }
+      // }
     } else {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        filtered = this.state.filteredByCategory
-      } else {
-        filtered = this.props.broadcasts
-      }
+      // if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+      //   filtered = this.state.filteredByCategory
+      // } else {
+      //   filtered = this.props.broadcasts
+      // }
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
-    this.setState({filterValue: e.target.value, searchValue: ''})
-    var filtered = []
+    this.setState({filterValue: e.target.value})
+    // var filtered = []
     if (e.target.value !== '') {
-      for (let i = 0; i < this.props.broadcasts.length; i++) {
-        if (e.target.value === 'all') {
-          if (this.props.broadcasts[i].category.length > 1) {
-            filtered.push(this.props.broadcasts[i])
-          }
-        } else {
-          for (let j = 0; j < this.props.broadcasts[i].category.length; j++) {
-            if (this.props.broadcasts[i].category[j] === e.target.value) {
-              filtered.push(this.props.broadcasts[i])
-            }
-          }
-        }
-      }
-    } else {
-      filtered = this.props.broadcasts
+      this.setState({filter: true})
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     }
-    this.setState({filteredByCategory: filtered})
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   for (let i = 0; i < this.props.broadcasts.length; i++) {
+    //     if (e.target.value === 'all') {
+    //       if (this.props.broadcasts[i].category.length > 1) {
+    //         filtered.push(this.props.broadcasts[i])
+    //       }
+    //     } else {
+    //       for (let j = 0; j < this.props.broadcasts[i].category.length; j++) {
+    //         if (this.props.broadcasts[i].category[j] === e.target.value) {
+    //           filtered.push(this.props.broadcasts[i])
+    //         }
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   filtered = this.props.broadcasts
+    // }
+    // this.setState({filteredByCategory: filtered})
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   showDialogDelete (id) {
@@ -335,13 +348,14 @@ class TemplateBroadcasts extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No search results found. </p>
                 }
@@ -361,13 +375,14 @@ class TemplateBroadcasts extends React.Component {
 function mapStateToProps (state) {
   return {
     broadcasts: state.templatesInfo.broadcasts,
+    count: state.templatesInfo.count,
     categories: state.templatesInfo.categories
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadBroadcastsList: loadBroadcastsList,
+    {loadBroadcastsListNew: loadBroadcastsListNew,
       loadCategoriesList: loadCategoriesList,
       deleteBroadcast: deleteBroadcast,
       saveBroadcastInformation: saveBroadcastInformation}, dispatch)

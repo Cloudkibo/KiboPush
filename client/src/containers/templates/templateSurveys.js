@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadSurveysList, loadCategoriesList, deleteSurvey } from '../../redux/actions/templates.actions'
+import { loadSurveysListNew, loadCategoriesList, deleteSurvey } from '../../redux/actions/templates.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -12,7 +12,7 @@ import AlertContainer from 'react-alert'
 class templateSurveys extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysList()
+    props.loadSurveysListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
     props.loadCategoriesList()
     this.state = {
       surveysData: [],
@@ -22,7 +22,9 @@ class templateSurveys extends React.Component {
       isShowingModalDelete: false,
       deleteid: '',
       filteredByCategory: [],
-      searchValue: ''
+      searchValue: '',
+      filter: false,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -49,14 +51,14 @@ class templateSurveys extends React.Component {
     this.props.saveSurveyInformation(survey)
   }
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 5) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -65,65 +67,77 @@ class templateSurveys extends React.Component {
     this.setState({surveysData: data, surveysDataAll: broadcasts})
   }
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    }
     this.displayData(data.selected, this.state.surveysDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchSurvey (event) {
-    var filtered = []
+  //  var filtered = []
     this.setState({searchValue: event.target.value})
     if (event.target.value !== '') {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        for (let i = 0; i < this.state.filteredByCategory.length; i++) {
-          if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.state.filteredByCategory[i])
-          }
-        }
-      } else {
-        for (let i = 0; i < this.props.surveys.length; i++) {
-          if (this.props.surveys[i].title && this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.props.surveys[i])
-          }
-        }
-      }
-    } else {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        filtered = this.state.filteredByCategory
-      } else {
-        filtered = this.props.surveys
-      }
+      this.setState({filter: true})
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+    //     for (let i = 0; i < this.state.filteredByCategory.length; i++) {
+    //       if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //         filtered.push(this.state.filteredByCategory[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (let i = 0; i < this.props.surveys.length; i++) {
+    //       if (this.props.surveys[i].title && this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //         filtered.push(this.props.surveys[i])
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+    //     filtered = this.state.filteredByCategory
+    //   } else {
+    //     filtered = this.props.surveys
+    //   }
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
-    this.setState({filterValue: e.target.value, searchValue: ''})
-    var filtered = []
+    this.setState({filterValue: e.target.value})
+    //  var filtered = []
     if (e.target.value !== '') {
-      for (let i = 0; i < this.props.surveys.length; i++) {
-        if (e.target.value === 'all') {
-          if (this.props.surveys[i].category.length > 1) {
-            filtered.push(this.props.surveys[i])
-          }
-        } else {
-          for (let j = 0; j < this.props.surveys[i].category.length; j++) {
-            if (this.props.surveys[i].category[j] === e.target.value) {
-              filtered.push(this.props.surveys[i])
-            }
-          }
-        }
-      }
-    } else {
-      filtered = this.props.surveys
+      this.setState({filter: true})
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     }
-    this.setState({filteredByCategory: filtered})
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   for (let i = 0; i < this.props.surveys.length; i++) {
+    //     if (e.target.value === 'all') {
+    //       if (this.props.surveys[i].category.length > 1) {
+    //         filtered.push(this.props.surveys[i])
+    //       }
+    //     } else {
+    //       for (let j = 0; j < this.props.surveys[i].category.length; j++) {
+    //         if (this.props.surveys[i].category[j] === e.target.value) {
+    //           filtered.push(this.props.surveys[i])
+    //         }
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   filtered = this.props.surveys
+    // }
+    // this.setState({filteredByCategory: filtered})
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -303,13 +317,14 @@ class templateSurveys extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No search results found. </p>
                 }
@@ -329,13 +344,14 @@ class templateSurveys extends React.Component {
 function mapStateToProps (state) {
   return {
     surveys: state.templatesInfo.surveys,
+    count: state.templatesInfo.count,
     categories: state.templatesInfo.categories
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList,
+    {loadSurveysListNew: loadSurveysListNew,
       loadCategoriesList: loadCategoriesList,
       deleteSurvey: deleteSurvey,
       saveSurveyInformation}, dispatch)

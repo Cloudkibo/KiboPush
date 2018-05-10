@@ -115,13 +115,14 @@ class PagesInfo extends React.Component {
                      nextLabel={'next'}
                      breakLabel={<a>...</a>}
                      breakClassName={'break-me'}
-                     pageCount={Math.ceil(this.props.length / 4)}
+                     pageCount={Math.ceil(this.props.length / 10)}
                      marginPagesDisplayed={1}
                      pageRangeDisplayed={3}
                      onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
                      containerClassName={'pagination'}
                      subContainerClassName={'pages pagination'}
-                     activeClassName={'active'} />
+                     activeClassName={'active'}
+                     forcePage={this.props.pageNumber} />
                  </div>
                 : <p> No search results found. </p>
               }

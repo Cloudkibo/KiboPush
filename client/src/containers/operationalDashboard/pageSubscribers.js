@@ -15,7 +15,7 @@ class PageSubscribers extends React.Component {
     if (this.props.currentPage) {
       pageName = this.props.currentPage.pageName
       const id = this.props.currentPage._id
-      this.props.loadPageSubscribersList(id)
+      props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: '', gender_value: '', localeValue: ''}})
     }
     this.state = {
       pageName: pageName,
@@ -27,7 +27,9 @@ class PageSubscribers extends React.Component {
         { value: 'female', label: 'Female' },
         { value: 'other', label: 'Other' }],
       genderValue: '',
-      localeValue: ''
+      localeValue: '',
+      searchValue: '',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -38,14 +40,14 @@ class PageSubscribers extends React.Component {
   }
 
   displayData (n, pageSubscribers) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > pageSubscribers.length) {
+    if ((offset + 10) > pageSubscribers.length) {
       limit = pageSubscribers.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = pageSubscribers[i]
@@ -55,24 +57,36 @@ class PageSubscribers extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (this.props.currentPage) {
+      if (data.selected === 0) {
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+      } else {
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+      }
+    }
     this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.pageSubscribers) {
+    if (nextProps.pageSubscribers && nextProps.count) {
       this.displayData(0, nextProps.pageSubscribers)
-      this.setState({ totalLength: nextProps.pageSubscribers.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchSubscribers (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.pageSubscribers.length; i++) {
-      if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value.toLowerCase()) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.pageSubscribers[i])
-      }
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    if (this.props.currentPage) {
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: this.state.pageSubscribersData.length })
+    // var filtered = []
+    // for (let i = 0; i < this.props.pageSubscribers.length; i++) {
+    //   if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value.toLowerCase()) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.pageSubscribers[i])
+    //   }
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: this.state.pageSubscribersData.length })
   }
 
   backToUserDetails () {
@@ -84,69 +98,77 @@ class PageSubscribers extends React.Component {
   }
 
   onFilterByGender (data) {
-    var filtered = []
-    if (!data) {
-      if (this.state.localeValue !== '') {
-        for (var a = 0; a < this.props.pageSubscribers.length; a++) {
-          if (this.props.pageSubscribers[a].locale === this.state.localeValue) {
-            filtered.push(this.props.pageSubscribers[a])
-          }
-        }
-      } else {
-        filtered = this.props.pageSubscribers
-      }
-      this.setState({genderValue: ''})
-    } else {
-      if (this.state.localeValue !== '') {
-        for (var i = 0; i < this.props.pageSubscribers.length; i++) {
-          if (this.props.pageSubscribers[i].gender === data.value && this.props.pageSubscribers[i].locale === this.state.localeValue) {
-            filtered.push(this.props.pageSubscribers[i])
-          }
-        }
-      } else {
-        for (var j = 0; j < this.props.pageSubscribers.length; j++) {
-          if (this.props.pageSubscribers[j].gender === data.value) {
-            filtered.push(this.props.pageSubscribers[j])
-          }
-        }
-      }
-      this.setState({genderValue: data.value})
+    this.setState({genderValue: data.value})
+    if (this.props.currentPage) {
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, localeValue: this.state.localeValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // if (!data) {
+    //   if (this.state.localeValue !== '') {
+    //     for (var a = 0; a < this.props.pageSubscribers.length; a++) {
+    //       if (this.props.pageSubscribers[a].locale === this.state.localeValue) {
+    //         filtered.push(this.props.pageSubscribers[a])
+    //       }
+    //     }
+    //   } else {
+    //     filtered = this.props.pageSubscribers
+    //   }
+    //   this.setState({genderValue: ''})
+    // } else {
+    //   if (this.state.localeValue !== '') {
+    //     for (var i = 0; i < this.props.pageSubscribers.length; i++) {
+    //       if (this.props.pageSubscribers[i].gender === data.value && this.props.pageSubscribers[i].locale === this.state.localeValue) {
+    //         filtered.push(this.props.pageSubscribers[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (var j = 0; j < this.props.pageSubscribers.length; j++) {
+    //       if (this.props.pageSubscribers[j].gender === data.value) {
+    //         filtered.push(this.props.pageSubscribers[j])
+    //       }
+    //     }
+    //   }
+    //   this.setState({genderValue: data.value})
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilterByLocale (data) {
-    var filtered = []
-    if (!data) {
-      if (this.state.genderValue !== '') {
-        for (var a = 0; a < this.props.pageSubscribers.length; a++) {
-          if (this.props.pageSubscribers[a].gender === this.state.genderValue) {
-            filtered.push(this.props.pageSubscribers[a])
-          }
-        }
-      } else {
-        filtered = this.props.pageSubscribers
-      }
-      this.setState({localeValue: ''})
-    } else {
-      if (this.state.genderValue !== '') {
-        for (var i = 0; i < this.props.pageSubscribers.length; i++) {
-          if (this.props.pageSubscribers[i].gender === this.state.genderValue && this.props.pageSubscribers[i].locale === data.value) {
-            filtered.push(this.props.pageSubscribers[i])
-          }
-        }
-      } else {
-        for (var j = 0; j < this.props.pageSubscribers.length; j++) {
-          if (this.props.pageSubscribers[j].locale === data.value) {
-            filtered.push(this.props.pageSubscribers[j])
-          }
-        }
-      }
-      this.setState({localeValue: data.value})
+    this.setState({localeValue: data.value})
+    if (this.props.currentPage) {
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: data.value}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // if (!data) {
+    //   if (this.state.genderValue !== '') {
+    //     for (var a = 0; a < this.props.pageSubscribers.length; a++) {
+    //       if (this.props.pageSubscribers[a].gender === this.state.genderValue) {
+    //         filtered.push(this.props.pageSubscribers[a])
+    //       }
+    //     }
+    //   } else {
+    //     filtered = this.props.pageSubscribers
+    //   }
+    //   this.setState({localeValue: ''})
+    // } else {
+    //   if (this.state.genderValue !== '') {
+    //     for (var i = 0; i < this.props.pageSubscribers.length; i++) {
+    //       if (this.props.pageSubscribers[i].gender === this.state.genderValue && this.props.pageSubscribers[i].locale === data.value) {
+    //         filtered.push(this.props.pageSubscribers[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (var j = 0; j < this.props.pageSubscribers.length; j++) {
+    //       if (this.props.pageSubscribers[j].locale === data.value) {
+    //         filtered.push(this.props.pageSubscribers[j])
+    //       }
+    //     }
+    //   }
+    //   this.setState({localeValue: data.value})
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -317,13 +339,14 @@ class PageSubscribers extends React.Component {
                                     nextLabel={'next'}
                                     breakLabel={<a>...</a>}
                                     breakClassName={'break-me'}
-                                    pageCount={Math.ceil(this.state.totalLength / 5)}
+                                    pageCount={Math.ceil(this.state.totalLength / 10)}
                                     marginPagesDisplayed={2}
                                     pageRangeDisplayed={3}
                                     onPageChange={this.handlePageClick}
                                     containerClassName={'pagination'}
                                     subContainerClassName={'pages pagination'}
-                                    activeClassName={'active'} />
+                                    activeClassName={'active'}
+                                    forcePage={this.state.pageNumber} />
                                 </div>
                                 : <p> No search results found. </p>
                             }
@@ -349,6 +372,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
     pageSubscribers: (state.backdoorInfo.pageSubscribers),
+    count: (state.backdoorInfo.subscribersCount),
     locales: (state.backdoorInfo.locales),
     currentUser: (state.backdoorInfo.currentUser),
     currentPage: (state.backdoorInfo.currentPage)
