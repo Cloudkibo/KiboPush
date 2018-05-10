@@ -334,15 +334,11 @@ exports.getfbMessage = function (req, res) {
 // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
   logger.serverLog(TAG,
   `something received from facebook FIRST ${JSON.stringify(req.body)}`)
-  botController.respond(JSON.parse(JSON.stringify(req.body)))
 
-  logger.serverLog(TAG,
-    `something received from facebook ${JSON.stringify(req.body)}`)
+  botController.respond(JSON.parse(JSON.stringify(req.body)))
 
   let subscriberByPhoneNumber = false
   let phoneNumber = ''
-  logger.serverLog(TAG,
-    `something received from facebook ${JSON.stringify(req.body)}`, true)
   if (req.body.entry && req.body.entry[0].messaging &&
     req.body.entry[0].messaging[0] &&
     req.body.entry[0].messaging[0].prior_message &&
@@ -593,10 +589,12 @@ exports.getfbMessage = function (req, res) {
         }
       }
     } else if (payload.changes) {
+      logger.serverLog(TAG, 'This seems to PAGE POST OF AUTOPOSTING')
       const changeEvents = payload.changes
       for (let i = 0; i < changeEvents.length; i++) {
         const event = changeEvents[i]
         if (event.field && event.field === 'feed') {
+          logger.serverLog(TAG, 'This indeed is PAGE POST OF AUTOPOSTING')
           if (event.value.verb === 'add' &&
             (['status', 'photo', 'video', 'share'].indexOf(event.value.item) >
             -1)) {
@@ -699,6 +697,7 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
 }
 
 function handleThePagePostsForAutoPosting (event, status) {
+  logger.serverLog(TAG, 'Going to handle PAGE POST OF AUTOPOSTING')
   AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
     .populate('userId')
     .exec((err, autopostings) => {
@@ -706,6 +705,7 @@ function handleThePagePostsForAutoPosting (event, status) {
         return logger.serverLog(TAG,
           'Internal Server Error on connect')
       }
+    logger.serverLog(TAG, 'listeneres of PAGE POST OF AUTOPOSTING ' + JSON.stringify(autopostings))
       autopostings.forEach(postingItem => {
         let pagesFindCriteria = {
           userId: postingItem.userId._id,
