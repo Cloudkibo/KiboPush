@@ -14,10 +14,15 @@ const auth = require('../../auth/auth.service')
 router.get('/alluser', auth.isAuthorizedSuperUser(), controller.index)
 router.post('/getAllUsers', auth.isAuthorizedSuperUser(), controller.getAllUsers) // pagination
 router.get('/allpages/:userid', auth.isAuthorizedSuperUser(), controller.allpages)
+router.post('/getAllPages/:userid', auth.isAuthorizedSuperUser(), controller.getAllPages) // pagination
 router.get('/allsubscribers/:pageid', auth.isAuthorizedSuperUser(), controller.allsubscribers)
+router.post('/getAllSubscribers/:pageid', auth.isAuthorizedSuperUser(), controller.getAllSubscribers) // pagination
 router.get('/allbroadcasts/:userid', auth.isAuthorizedSuperUser(), controller.allbroadcasts)
+router.post('/allUserBroadcasts/:userid', auth.isAuthorizedSuperUser(), controller.allUserBroadcasts) // pagination
 router.get('/allpolls/:userid', auth.isAuthorizedSuperUser(), controller.allpolls)
+router.post('/allUserPolls/:userid', auth.isAuthorizedSuperUser(), controller.allUserPolls) // pagination
 router.get('/allsurveys/:userid', auth.isAuthorizedSuperUser(), controller.allsurveys)
+router.post('/allUserSurveys/:userid', auth.isAuthorizedSuperUser(), controller.allUserSurveys) // pagination
 router.get('/toppages', auth.isAuthorizedSuperUser(), controller.toppages)
 router.get('/datacount/:userid', auth.isAuthorizedSuperUser(), controller.datacount)
 router.get('/uploadFile', auth.isAuthorizedSuperUser(), controller.uploadFile)
