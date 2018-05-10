@@ -14,7 +14,8 @@ import { createFacebookPost, editFacebookPost, uploadAttachment } from '../../re
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import Halogen from 'halogen'
-import { ModalContainer } from 'react-modal-dialog'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import ReactPlayer from 'react-player'
 const styles = {
   iconclass: {
     height: 24,
@@ -43,7 +44,11 @@ class FacebookPosts extends React.Component {
       keywordErrors: [],
       isEdit: this.props.currentPost ? 'true' : 'false',
       loading: false,
-      facebookPost: []
+      facebookPost: [],
+      isVideo: false,
+      videoPost: false,
+      showImages: false,
+      showVideo: false
     }
     this.onFacebookPostChange = this.onFacebookPostChange.bind(this)
     this.onPageChange = this.onPageChange.bind(this)
@@ -60,6 +65,10 @@ class FacebookPosts extends React.Component {
     this.validateKeywords = this.validateKeywords.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
     this.removeAttachment = this.removeAttachment.bind(this)
+    this.validateFile = this.validateFile.bind(this)
+    this.previewImages = this.previewImages.bind(this)
+    this.previewVideo = this.previewVideo.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
   }
 
   componentDidMount () {
@@ -75,8 +84,33 @@ class FacebookPosts extends React.Component {
             break
           }
         }
+        if (this.props.currentPost.payload) {
+          var payload = this.props.currentPost.payload
+          var images = []
+          for (let i = 0; i < payload.length; i++) {
+            if (payload[i].componentType === 'text') {
+              this.setState({
+                postText: payload[i].text
+              })
+            }
+            if (payload[i].componentType === 'video') {
+              this.setState({
+                attachments: payload[i],
+                videoPost: true
+              })
+            }
+            if (payload[i].componentType === 'image') {
+              images.push(payload[i])
+            }
+          }
+          if (images.length > 1) {
+            this.setState({
+              attachments: images
+            })
+          }
+        }
         this.setState({
-          postText: this.props.currentPost.payload,
+          // postText: this.props.currentPost.payload,
           autoReply: this.props.currentPost.reply,
           includedKeywords: this.props.currentPost.includedKeywords.join(),
           excludedKeywords: this.props.currentPost.excludedKeywords.join()
@@ -87,8 +121,24 @@ class FacebookPosts extends React.Component {
       })
     }
   }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
 
+    if (truef === false) {
+    }
+  }
   componentWillReceiveProps (nextProps) {
+  }
+  previewImages () {
+    this.setState({
+      showImages: true
+    })
+  }
+  previewVideo () {
+    this.setState({
+      showVideo: true
+    })
   }
   removeAttachment (attachment) {
     var id = attachment.id
@@ -104,6 +154,11 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     })
+    if (attachments.length < 1) {
+      this.setState({
+        isVideo: false
+      })
+    }
   }
   handleUpload (res, fileData) {
     this.setState({
@@ -111,19 +166,40 @@ class FacebookPosts extends React.Component {
     })
     if (res.status === 'failed') {
       this.setState({
-        attachment: []
+        attachments: []
       })
     }
     if (res.status === 'success') {
-      var attachments = this.state.attachments
-      var facebookPost = this.state.facebookPost
-      var attachComponent = {componentType: fileData.componentType, id: res.payload.id, url: res.payload.url}
-      attachments.push(attachComponent)
-      facebookPost.push(attachComponent)
-      this.setState({
-        attachments: attachments,
-        facebookPost: facebookPost
-      })
+      var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
+      if (fileData.get('componentType') === 'video') {
+        var videoAttachment = []
+        videoAttachment.push(attachComponent)
+        var videoPost = []
+        videoPost.push(this.state.postText)
+        videoPost.push(this.state.videoAttachment)
+        this.setState({
+          attachments: videoAttachment,
+          facebookPost: videoPost,
+          isVideo: true
+        })
+      } else {
+        if (this.state.isVideo) {
+          this.setState({
+            attachments: [{componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}],
+            facebookPost: [{componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}],
+            isVideo: false
+          })
+        } else {
+          var attachments = this.state.attachments
+          var facebookPost = this.state.facebookPost
+          attachments.push(attachComponent)
+          facebookPost.push(attachComponent)
+          this.setState({
+            attachments: attachments,
+            facebookPost: facebookPost
+          })
+        }
+      }
     }
     console.log('res.payload', res.paylaod)
   }
@@ -172,31 +248,53 @@ class FacebookPosts extends React.Component {
       includedKeywords: '',
       excludedKeywords: '',
       disabled: true,
-      attachments: []
+      attachments: [],
+      keywordErrors: []
     })
   }
-  onFileChange (e, componentType) {
-    var files = e.target.files
-    console.log('file', files)
-    console.log('e.target.files', e.target.files)
-    var file = e.target.files[files.length - 1]
+  validateFile (files, componentType) {
+    var errors = false
+    var file = files[files.length - 1]
+    if (componentType === 'image' && this.state.attachments.length === 5) {
+      errors = true
+      this.msg.error('Cannot add more than 5 images')
+    }
     if (file) {
-      if (file.type === 'text/javascript' || file.type === 'text/exe') {
-        this.msg.error('Cannot add js or exe files. Please select another file')
-      } else if (file.size > 25000000) {
-        this.msg.error('Files greater than 25MB not allowed')
-      } else {
-        var fileData = new FormData()
-        fileData.append('file', file)
-        fileData.append('filename', file.name)
-        fileData.append('filetype', file.type)
-        fileData.append('filesize', file.size)
-        fileData.append('componentType', componentType)
-        console.log('file', file)
-        this.setState({
-          loading: true
-        })
-        this.props.uploadAttachment(fileData, this.handleUpload)
+      if (componentType === 'image' && !(file.type).match('image')) {
+        errors = true
+        this.msg.error('Choose an image')
+      } else if (componentType === 'video' && !(file.type).match('video')) {
+        errors = true
+        this.msg.error('Choose an image')
+      }
+    }
+    return errors
+  }
+
+  onFileChange (e, componentType) {
+    if (!this.validateFile(e.target.files, componentType)) {
+      var files = e.target.files
+      console.log('file', files)
+      console.log('e.target.files', e.target.files)
+      var file = e.target.files[files.length - 1]
+      if (file) {
+        if (file.type === 'text/javascript' || file.type === 'text/exe') {
+          this.msg.error('Cannot add js or exe files. Please select another file')
+        } else if (file.size > 25000000) {
+          this.msg.error('Files greater than 25MB not allowed')
+        } else {
+          var fileData = new FormData()
+          fileData.append('file', file)
+          fileData.append('filename', file.name)
+          fileData.append('filetype', file.type)
+          fileData.append('filesize', file.size)
+          fileData.append('componentType', componentType)
+          console.log('file', file)
+          this.setState({
+            loading: true
+          })
+          this.props.uploadAttachment(fileData, this.handleUpload)
+        }
       }
     }
   }
@@ -312,6 +410,46 @@ class FacebookPosts extends React.Component {
           </ModalContainer>
           : <span />
         }
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                { this.state.attachments.length > 0 && this.state.videoPost &&
+                  <ReactPlayer
+                    url={this.state.attachments[0].url}
+                    controls
+                    width='100%'
+                    height='auto'
+                    onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
+                  />
+                }
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.showImages &&
+          <ModalContainer style={{width: '500px', top: '100px'}}
+            onClose={() => { this.setState({showImages: false}) }}>
+            <ModalDialog style={{width: '500px', top: '100px'}}
+              onClose={() => { this.setState({showImages: false}) }}>
+              <div>
+                {
+              this.state.attachments.map((attachment, i) => (
+                <div className='col-12'>
+                  <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
+                    <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
+                  </div>
+                </div>
+              ))
+              }
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -376,7 +514,7 @@ class FacebookPosts extends React.Component {
                               <textarea
                                 className='form-control m-input m-input--solid'
                                 id='postTextArea' rows='3'
-                                placeholder='Enter text to post on facebook'
+                                placeholder={this.state.isVideo ? 'Describe your video here' : 'Enter text to post on facebook'}
                                 style={{height: '150px', resize: 'none'}}
                                 value={this.state.postText}
                                 onChange={this.onFacebookPostChange} />
@@ -386,11 +524,16 @@ class FacebookPosts extends React.Component {
                                     {
                                     this.state.attachments.map((attachment, i) => (
                                       <div className='col-2'>
-                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '5px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                                          <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='Image' style={{maxHeight: '25px'}} />
+                                          { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
+                                            <img src={attachment.url} alt='Image' style={{maxHeight: '50px', maxWidth: '120px'}} />
                                           </div>
+                                          }
+                                          { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
+                                            <img src='icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                          </div>
+                                          }
                                         </div>
                                       </div>
                                     ))
@@ -404,22 +547,29 @@ class FacebookPosts extends React.Component {
                               </span>
                               <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
                                 <span>
-                                  <i className='fa fa-image' style={{cursor: 'pointer'}} onClick={() => {
+                                  <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                     this.refs.selectImage.click()
                                   }} />
                                 </span>
                                 <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
                                   ref='selectImage' style={styles.inputf} />
                               </span>
-                              <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                              { this.state.isVideo === false
+                              ? <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                 <span>
-                                  <i className='fa fa-file-video-o' style={{cursor: 'pointer'}} onClick={() => {
+                                  <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                     this.refs.selectVideo.click()
                                   }} />
                                 </span>
                                 <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
                                   ref='selectVideo' style={styles.inputf} />
                               </span>
+                              : <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                <span>
+                                  <i className='fa fa-file-video-o' style={{cursor: 'pointer', color: 'gray'}} disabled />
+                                </span>
+                              </span>
+                              }
                               <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
                                 <PopoverBody>
                                   <div>
@@ -441,10 +591,23 @@ class FacebookPosts extends React.Component {
                               <textarea
                                 className='form-control m-input m-input--solid'
                                 id='postTextArea' rows='3'
-                                placeholder='Enter text to post on facebook'
                                 style={{height: '150px', resize: 'none'}}
                                 value={this.state.postText}
                                 disabled />
+                              { this.state.attachments.length > 1 && this.state.videoPost &&
+                                <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                  <span>
+                                    <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
+                                  </span>
+                                </span>
+                              }
+                              { this.state.attachments.length > 1 && !this.state.videoPost &&
+                                <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                  <span>
+                                    <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
+                                  </span>
+                                </span>
+                              }
                             </div>
                             }
                             </div>
