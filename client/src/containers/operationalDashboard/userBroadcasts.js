@@ -7,12 +7,14 @@ import { handleDate } from '../../utility/utils'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsList(props.userID)
+    props.loadBroadcastsList(props.userID, {first_page: true, last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', type_value: ''}})
     this.state = {
       broadcastsData: [],
       broadcastsDataAll: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      pageNumber: 0,
+      searchValue: ''
     }
     //  props.loadBroadcastsList(props.location.this.state)
     // this.submitSurvey = this.submitSurvey.bind(this);
@@ -35,14 +37,14 @@ class BroadcastsInfo extends React.Component {
     document.body.appendChild(addScript)
   }
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 10) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -51,49 +53,60 @@ class BroadcastsInfo extends React.Component {
     this.setState({broadcastsData: data, broadcastsDataAll: broadcasts})
   }
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadBroadcastsList(this.props.userID, {first_page: true, last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
+    } else {
+      this.props.loadBroadcastsList(this.props.userID, {first_page: false, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
+    }
     this.displayData(data.selected, this.state.broadcastsDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
+    if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchBroadcast (event) {
-    var filtered = []
-    if (event.target.value !== '') {
-      for (let i = 0; i < this.props.broadcasts.length; i++) {
-        if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-          filtered.push(this.props.broadcasts[i])
-        }
-      }
-    } else {
-      filtered = this.props.broadcasts
-    }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    this.props.loadBroadcastsList(this.props.userID, {first_page: true, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue}})
+
+    // var filtered = []
+    // if (event.target.value !== '') {
+    //   for (let i = 0; i < this.props.broadcasts.length; i++) {
+    //     if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //       filtered.push(this.props.broadcasts[i])
+    //     }
+    //   }
+    // } else {
+    //   filtered = this.props.broadcasts
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
     this.setState({filterValue: e.target.value})
-    var filtered = []
-    if (e.target.value !== '') {
-      for (let i = 0; i < this.props.broadcasts.length; i++) {
-        if (e.target.value === 'miscellaneous') {
-          if (this.props.broadcasts[i].payload.length > 1) {
-            filtered.push(this.props.broadcasts[i])
-          }
-        } else {
-          if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
-            filtered.push(this.props.broadcasts[i])
-          }
-        }
-      }
-    } else {
-      filtered = this.props.broadcasts
-    }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    this.props.loadBroadcastsList(this.props.userID, {first_page: true, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value}})
+
+    // var filtered = []
+    // if (e.target.value !== '') {
+    //   for (let i = 0; i < this.props.broadcasts.length; i++) {
+    //     if (e.target.value === 'miscellaneous') {
+    //       if (this.props.broadcasts[i].payload.length > 1) {
+    //         filtered.push(this.props.broadcasts[i])
+    //       }
+    //     } else {
+    //       if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
+    //         filtered.push(this.props.broadcasts[i])
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   filtered = this.props.broadcasts
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -192,13 +205,14 @@ class BroadcastsInfo extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No search results found. </p>
                 }
@@ -218,7 +232,8 @@ class BroadcastsInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    broadcasts: state.backdoorInfo.broadcasts
+    broadcasts: state.backdoorInfo.broadcasts,
+    count: state.backdoorInfo.broadcastsUserCount
   }
 }
 

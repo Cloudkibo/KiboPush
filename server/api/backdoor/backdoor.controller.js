@@ -538,7 +538,7 @@ exports.allbroadcasts = function (req, res) {
   })
 }
 
-exports.allbroadcasts = function (req, res) {
+exports.allUserBroadcasts = function (req, res) {
   /*
   body = {
     first_page:
@@ -630,7 +630,7 @@ exports.allpolls = function (req, res) {
   })
 }
 
-exports.allpolls = function (req, res) {
+exports.allUserPolls = function (req, res) {
   /*
   body = {
     first_page:
@@ -1501,11 +1501,8 @@ exports.getAllBroadcasts = function (req, res) {
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
       Broadcasts.aggregate([
-        {
-          $match: findCriteria,
-          $limit: req.body.number_of_records
-        }
-      ], (err, broadcasts) => {
+          { $match: findCriteria }
+      ]).limit(req.body.number_of_records).exec((err, broadcasts) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -1634,11 +1631,8 @@ exports.getAllBroadcasts = function (req, res) {
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
       Broadcasts.aggregate([
-        {
-          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}}),
-          $limit: req.body.number_of_records
-        }
-      ], (err, broadcasts) => {
+        {$match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})}
+      ]).limit(req.body.number_of_records).exec((err, broadcasts) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -1784,10 +1778,9 @@ exports.getAllSurveys = function (req, res) {
       }
       Surveys.aggregate([
         {
-          $match: findCriteria,
-          $limit: req.body.number_of_records
+          $match: findCriteria
         }
-      ], (err, surveys) => {
+      ]).limit(req.body.number_of_records).exec((err, surveys) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -1943,10 +1936,9 @@ exports.getAllSurveys = function (req, res) {
       }
       Surveys.aggregate([
         {
-          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}}),
-          $limit: req.body.number_of_records
+          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})
         }
-      ], (err, surveys) => {
+      ]).limit(req.body.number_of_records).exec((err, surveys) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2118,10 +2110,9 @@ exports.getAllPolls = function (req, res) {
       }
       Polls.aggregate([
         {
-          $match: findCriteria,
-          $limit: req.body.number_of_records
+          $match: findCriteria
         }
-      ], (err, polls) => {
+      ]).limit(req.body.number_of_records).exec((err, polls) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2278,10 +2269,9 @@ exports.getAllPolls = function (req, res) {
       }
       Polls.aggregate([
         {
-          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}}),
-          $limit: req.body.number_of_records
+          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})
         }
-      ], (err, polls) => {
+      ]).limit(req.body.number_of_records).exec((err, polls) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',

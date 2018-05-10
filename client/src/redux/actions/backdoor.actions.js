@@ -4,13 +4,15 @@ import fileDownload from 'js-file-download'
 export const API_URL = '/api'
 
 export function getLocales (data) {
-  var locale = [{ value: data.payload[0].locale, label: data.payload[0].locale }]
-  var tempLocale = [data.payload[0].locale]
-  for (var i = 1; i < data.payload.length; i++) {
-    if (tempLocale.indexOf(data.payload[i].locale) === -1) {
-      var temp = { value: data.payload[i].locale, label: data.payload[i].locale }
-      locale.push(temp)
-      tempLocale.push(data.payload[i].locale)
+  if (data.length > 0) {
+    var locale = [{ value: data[0].locale, label: data[0].locale }]
+    var tempLocale = [data[0].locale]
+    for (var i = 1; i < data.length; i++) {
+      if (tempLocale.indexOf(data[i].locale) === -1) {
+        var temp = { value: data[i].locale, label: data[i].locale }
+        locale.push(temp)
+        tempLocale.push(data[i].locale)
+      }
     }
   }
 }
@@ -18,8 +20,9 @@ export function getLocales (data) {
 export function updateUsersList (data) {
   return {
     type: ActionTypes.LOAD_USERS_LIST,
-    data: data.payload,
-    locale: getLocales(data)
+    data: data.users,
+    count: data.count,
+    locale: getLocales(data.users)
   }
 }
 
@@ -31,6 +34,7 @@ export function updateDataObjectsCount (data) {
 }
 
 export function updateTopPages (data) {
+  console.log('toppages', data.payload)
   return {
     type: ActionTypes.LOAD_TOP_PAGES_LIST,
     data: data.payload
@@ -40,7 +44,8 @@ export function updateTopPages (data) {
 export function updatePagesList (data) {
   return {
     type: ActionTypes.LOAD_BACKDOOR_PAGES_LIST,
-    data: data.payload
+    data: data.pages,
+    count: data.count
   }
 }
 
@@ -61,21 +66,24 @@ export function updatePollsGraphData (data) {
 export function updatePollsByDays (data) {
   return {
     type: ActionTypes.UPDATE_POLLS_BY_DAYS,
-    data
+    polls: data.polls,
+    count: data.count
   }
 }
 
 export function updateSurveysByDays (data) {
   return {
     type: ActionTypes.UPDATE_SURVEYS_BY_DAYS,
-    data
+    surveys: data.surveys,
+    count: data.count
   }
 }
 
 export function updateBroadcastsByDays (data) {
   return {
     type: ActionTypes.UPDATE_BROADCASTS_BY_DAYS,
-    data
+    broadcasts: data.broadcasts,
+    count: data.count
   }
 }
 
@@ -96,21 +104,24 @@ export function updateSessionsGraphData (data) {
 export function updateBroadcastsList (data) {
   return {
     type: ActionTypes.LOAD_BROADCASTS_LIST,
-    data: data.payload.reverse()
+    data: data.broadcasts.reverse(),
+    count: data.count
   }
 }
 
 export function updatePollList (data) {
   return {
     type: ActionTypes.LOAD_POLLS_LIST,
-    data: data.payload.reverse()
+    data: data.polls.reverse(),
+    count: data.count
   }
 }
 
 export function updateSurveysList (data) {
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST,
-    data: data.payload.reverse()
+    data: data.surveys.reverse(),
+    count: data.count
   }
 }
 
@@ -126,8 +137,9 @@ export function updateSurveyDetails (data) {
 export function updatePageSubscribersList (data) {
   return {
     type: ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST,
-    data: data.payload,
-    locale: getLocales(data)
+    data: data.subscribers,
+    locale: getLocales(data.subscribers),
+    count: data.count
   }
 }
 
@@ -169,10 +181,14 @@ export function fileStatus (data) {
   }
 }
 
-export function loadUsersList () {
+export function loadUsersList (data) {
   // here we will fetch list of subscribers from endpoint
+  console.log('data for getAllUsers', data)
   return (dispatch) => {
-    callApi('backdoor/alluser').then(res => dispatch(updateUsersList(res)))
+    callApi('backdoor/getAllUsers', 'post', data).then(res => {
+      console.log('response from getAllUsers', res)
+      dispatch(updateUsersList(res.payload))
+    })
   }
 }
 
@@ -187,7 +203,10 @@ export function loadDataObjectsCount (id) {
 
 export function loadTopPages () {
   return (dispatch) => {
-    callApi('backdoor/toppages').then(res => dispatch(updateTopPages(res)))
+    callApi('backdoor/toppages').then(res => {
+      console.log('response from toppages', res)
+      dispatch(updateTopPages(res))
+    })
   }
 }
 
@@ -207,27 +226,39 @@ export function loadPollsGraphData (days) {
   }
 }
 
-export function loadPollsByDays (days) {
+export function loadPollsByDays (data) {
   // here we will fetch list of subscribers from endpoint
+  console.log('data for loadPollsByDays', data)
   return (dispatch) => {
-    callApi(`backdoor/pollsByDays/${days}`)
-      .then(res => dispatch(updatePollsByDays(res.payload)))
+    callApi(`backdoor/getAllPolls`, 'post', data)
+      .then(res => {
+        console.log('response from loadPollsByDays', res)
+        dispatch(updatePollsByDays(res.payload))
+      })
   }
 }
 
-export function loadSurveysByDays (days) {
+export function loadSurveysByDays (data) {
   // here we will fetch list of subscribers from endpoint
+  console.log('data for loadSurveysByDays', data)
   return (dispatch) => {
-    callApi(`backdoor/surveysByDays/${days}`)
-      .then(res => dispatch(updateSurveysByDays(res.payload)))
+    callApi(`backdoor/getAllSurveys`, 'post', data)
+      .then(res => {
+        console.log('response from surveysByDays', res)
+        dispatch(updateSurveysByDays(res.payload))
+      })
   }
 }
 
-export function loadBroadcastsByDays (days) {
+export function loadBroadcastsByDays (data) {
   // here we will fetch list of subscribers from endpoint
+  console.log('data for loadBroadcastsByDays', data)
   return (dispatch) => {
-    callApi(`backdoor/broadcastsByDays/${days}`)
-      .then(res => dispatch(updateBroadcastsByDays(res.payload)))
+    callApi(`backdoor/getAllBroadcasts`, 'post', data)
+      .then(res => {
+        console.log('response from loadBroadcastsByDays', res)
+        dispatch(updateBroadcastsByDays(res.payload))
+      })
   }
 }
 
@@ -246,38 +277,38 @@ export function loadSessionsGraphData (days) {
       .then(res => dispatch(updateSessionsGraphData(res.payload)))
   }
 }
-export function loadPagesList (id) {
+export function loadPagesList (id, data) {
   // here we will fetch list of user pages from endpoint
   return (dispatch) => {
-    callApi(`backdoor/allpages/${id}`).then(res => dispatch(updatePagesList(res)))
+    callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => dispatch(updatePagesList(res.payload)))
   }
 }
 
-export function loadBroadcastsList (id) {
+export function loadBroadcastsList (id, data) {
   return (dispatch) => {
-    callApi(`backdoor/allbroadcasts/${id}`)
-      .then(res => dispatch(updateBroadcastsList(res)))
+    callApi(`backdoor/allUserBroadcasts/${id}`, 'post', data)
+      .then(res => dispatch(updateBroadcastsList(res.payload)))
   }
 }
 
-export function loadPollsList (id) {
+export function loadPollsList (id, data) {
   return (dispatch) => {
-    callApi(`backdoor/allpolls/${id}`)
-      .then(res => dispatch(updatePollList(res)))
+    callApi(`backdoor/allUserPolls/${id}`, 'post', data)
+      .then(res => dispatch(updatePollList(res.payload)))
   }
 }
 
-export function loadPageSubscribersList (id) {
+export function loadPageSubscribersList (id, data) {
   return (dispatch) => {
-    callApi(`backdoor/allsubscribers/${id}`)
-      .then(res => dispatch(updatePageSubscribersList(res)))
+    callApi(`backdoor/getAllSubscribers/${id}`, 'post', data)
+      .then(res => dispatch(updatePageSubscribersList(res.payload)))
   }
 }
 
-export function loadSurveysList (id) {
+export function loadSurveysList (id, data) {
   return (dispatch) => {
-    callApi(`backdoor/allsurveys/${id}`)
-      .then(res => dispatch(updateSurveysList(res)))
+    callApi(`backdoor/allUserSurveys/${id}`, 'post', data)
+      .then(res => dispatch(updateSurveysList(res.payload)))
   }
 }
 

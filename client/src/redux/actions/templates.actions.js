@@ -33,11 +33,29 @@ export function showSurveys (data) {
   }
 }
 
+export function showSurveysNew (data) {
+  let surveys = data.surveys.reverse()
+  return {
+    type: ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST_NEW,
+    surveys: surveys,
+    count: data.count
+  }
+}
+
 export function showPolls (data) {
   data = data.reverse()
   return {
     type: ActionTypes.LOAD_TEMPLATE_POLLS_LIST,
     data
+  }
+}
+
+export function showPollsNew (data) {
+  let polls = data.polls.reverse()
+  return {
+    type: ActionTypes.LOAD_TEMPLATE_POLLS_LIST_NEW,
+    polls: polls,
+    count: data.count
   }
 }
 
@@ -68,6 +86,15 @@ export function showBroadcasts (data) {
   return {
     type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST,
     data
+  }
+}
+
+export function showBroadcastsNew (data) {
+  let broadcasts = data.broadcasts.reverse()
+  return {
+    type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW,
+    broadcasts: broadcasts,
+    count: data.count
   }
 }
 
@@ -131,10 +158,24 @@ export function loadSurveysList () {
   }
 }
 
+export function loadSurveysListNew (data) {
+  // here we will fetch list of subscribers from endpoint
+  return (dispatch) => {
+    callApi('templates/getAllSurveys', 'post', data).then(res => dispatch(showSurveysNew(res.payload)))
+  }
+}
+
 export function loadPollsList () {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
     callApi('templates/allPolls').then(res => dispatch(showPolls(res.payload)))
+  }
+}
+
+export function loadPollsListNew (data) {
+  // here we will fetch list of subscribers from endpoint
+  return (dispatch) => {
+    callApi('templates/getAllPolls', 'post', data).then(res => dispatch(showPollsNew(res.payload)))
   }
 }
 
@@ -246,6 +287,12 @@ export function loadBroadcastDetails (id) {
 export function loadBroadcastsList () {
   return (dispatch) => {
     callApi('templates/allBroadcasts').then(res => dispatch(showBroadcasts(res.payload)))
+  }
+}
+
+export function loadBroadcastsListNew (data) {
+  return (dispatch) => {
+    callApi('templates/getAllBroadcasts', 'post', data).then(res => dispatch(showBroadcastsNew(res.payload)))
   }
 }
 
