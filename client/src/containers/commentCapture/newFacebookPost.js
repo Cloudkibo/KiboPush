@@ -527,7 +527,7 @@ class FacebookPosts extends React.Component {
                                         <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
                                           { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='Image' style={{maxHeight: '50px', maxWidth: '120px'}} />
+                                            <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
                                           </div>
                                           }
                                           { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
