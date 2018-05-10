@@ -94,8 +94,10 @@ class FacebookPosts extends React.Component {
               })
             }
             if (payload[i].componentType === 'video') {
+              var videoAttachment = []
+              videoAttachment.push(payload[i])
               this.setState({
-                attachments: payload[i],
+                attachments: videoAttachment,
                 videoPost: true
               })
             }
@@ -103,7 +105,7 @@ class FacebookPosts extends React.Component {
               images.push(payload[i])
             }
           }
-          if (images.length > 1) {
+          if (images.length > 0) {
             this.setState({
               attachments: images
             })
