@@ -201,7 +201,7 @@ exports.updateMode = function (req, res) {
  * Creates a new user
  */
 exports.create = function (req, res) {
-  logger.serverLog('Creating new user')
+  logger.serverLog(TAG, 'Creating new user')
   let parametersMissing = false
 
   if (!_.has(req.body, 'email')) parametersMissing = true
@@ -340,9 +340,9 @@ exports.create = function (req, res) {
                   }
                 }, function (err, result) {
                   if (err) {
-                    logger.serverLog('welcome email error', err)
+                    logger.serverLog(TAG, 'welcome email error', err)
                   } else {
-                    logger.serverLog('welcome email sent', result)
+                    logger.serverLog(TAG, 'welcome email sent', result)
                   }
                 })
 
