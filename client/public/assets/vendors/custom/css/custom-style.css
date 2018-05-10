@@ -209,3 +209,6 @@ a.broadcastTabs.active {
 .attachmentDiv {
   border: 2px dashed lightgray;
 }
+.postIcons:hover {
+  color: blue !important
+}
