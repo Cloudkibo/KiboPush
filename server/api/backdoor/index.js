@@ -31,7 +31,9 @@ router.get('/broadcastsByDays/:days', auth.isAuthorizedSuperUser(), controller.b
 router.get('/broadcastsByDays/:days', auth.isAuthorizedSuperUser(), controller.broadcastsByDays)
 router.post('/getAllBroadcasts', auth.isAuthorizedSuperUser(), controller.getAllBroadcasts) // pagination
 router.get('/surveysByDays/:days', auth.isAuthorizedSuperUser(), controller.surveysByDays)
+router.post('/getAllSurveys', auth.isAuthorizedSuperUser(), controller.getAllSurveys) // pagination
 router.get('/pollsByDays/:days', auth.isAuthorizedSuperUser(), controller.pollsByDays)
+router.post('/getAllPolls', auth.isAuthorizedSuperUser(), controller.getAllPolls) // pagination
 router.get('/sendEmail', auth.isAuthorizedSuperUser(), controller.sendEmail)
 
 module.exports = router

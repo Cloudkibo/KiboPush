@@ -69,25 +69,27 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      let usersPayloadData
-      for (let i = 0; i < usersData.length; i++) {
-        if (usersData[i].facebookInfo) {
-          if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-            if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-              usersPayloadData.push(usersData[i])
-            }
-          } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-            if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-              usersPayloadData.push(usersData[i])
-            }
-          } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-            if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-              usersPayloadData.push(usersData[i])
+      if (req.body.filter) {
+        let usersPayloadData = []
+        for (let i = 0; i < usersData.length; i++) {
+          if (usersData[i].facebookInfo) {
+            if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+                usersPayloadData.push(usersData[i])
+              }
+            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+              if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                usersPayloadData.push(usersData[i])
+              }
+            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                usersPayloadData.push(usersData[i])
+              }
             }
           }
         }
+        usersData = usersPayloadData
       }
-      usersData = usersPayloadData
       Users.find(findCriteria).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
@@ -133,25 +135,27 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      let usersPayloadData
-      for (let i = 0; i < usersData.length; i++) {
-        if (usersData[i].facebookInfo) {
-          if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-            if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-              usersPayloadData.push(usersData[i])
-            }
-          } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-            if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-              usersPayloadData.push(usersData[i])
-            }
-          } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-            if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-              usersPayloadData.push(usersData[i])
+      if (req.body.filter) {
+        let usersPayloadData
+        for (let i = 0; i < usersData.length; i++) {
+          if (usersData[i].facebookInfo) {
+            if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+                usersPayloadData.push(usersData[i])
+              }
+            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+              if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                usersPayloadData.push(usersData[i])
+              }
+            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+                usersPayloadData.push(usersData[i])
+              }
             }
           }
         }
+        usersData = usersPayloadData
       }
-      usersData = usersPayloadData
       Users.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
@@ -1271,6 +1275,676 @@ exports.getAllBroadcasts = function (req, res) {
                   .json({
                     status: 'success',
                     payload: {broadcasts: newBroadcast, count: newBroadcast.length > 0 ? broadcastsCount[0].count : ''}
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  }
+}
+
+exports.getAllSurveys = function (req, res) {
+  /*
+    body = {
+      first_page:
+      last_id:
+      number_of_records:
+      filter_criteria: {
+        search_value:
+        days:
+      }
+    }
+  */
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  if (req.body.first_page) {
+    let findCriteria = {
+      title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      'datetime': req.body.filter_criteria.days !== '' ? {
+        $gte: new Date(
+          (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+        $lt: new Date(
+          (new Date().getTime()))
+      } : {$exists: true}
+    }
+    Surveys.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, surveysCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Surveys.aggregate([
+        {
+          $match: findCriteria,
+          $limit: req.body.number_of_records
+        }
+      ], (err, surveys) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys count ${JSON.stringify(err)}`
+          })
+        }
+        let temp = []
+        let tempUser = []
+        let tempCompany = []
+        for (let i = 0; i < surveys.length; i++) {
+          temp.push(surveys[i]._id)
+          tempUser.push(surveys[i].userId)
+          tempCompany.push(surveys[i].companyId)
+        }
+        SurveyPage.find({surveyId: {
+          $in: temp
+        }}, (err, surveypages) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          SurveyResponses.find({surveyId: {
+            $in: temp
+          }}, (err, surveyResponses) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+            }
+            Users.find({_id: {
+              $in: tempUser
+            }}, (err, users) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'internal server error' + JSON.stringify(err)
+                })
+              }
+              CompanyProfile.find({_id: {
+                $in: tempCompany
+              }}, (err, companies) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'internal server error' + JSON.stringify(err)
+                  })
+                }
+                Pages.find({}, (err, pages) => {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'internal server error' + JSON.stringify(err)
+                    })
+                  }
+                  Subscribers.find({}, (err, subscribers) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting subscribers ${JSON.stringify(err)}`
+                      })
+                    }
+                    let data = []
+                    for (let j = 0; j < surveys.length; j++) {
+                      let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
+                      let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
+                      let subscriberData = []
+                      let responded = 0
+                      for (let n = 0; n < pagesurvey.length; n++) {
+                        let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
+                        let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                        // if (responsesurvey[n]) {
+                        //   let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
+                        //   if (subscriberNew.length > 0) {
+                        //     res = true
+                        //   }
+                        // }
+                        subscriberData.push({_id: subscriber[0]._id,
+                          firstName: subscriber[0].firstName,
+                          lastName: subscriber[0].lastName,
+                          locale: subscriber[0].locale,
+                          gender: subscriber[0].gender,
+                          profilePic: subscriber[0].profilePic,
+                          page: subscriberPage[0].pageName,
+                          seen: pagesurvey[n].seen,
+                          responded: false})
+                      }
+                      for (let m = 0; m < responsesurvey.length; m++) {
+                        let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[m].subscriberId))
+                        for (let o = 0; o < subscriberData.length; o++) {
+                          if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                            subscriberData[o].responded = true
+                            responded = responded + 1
+                          }
+                        }
+                      }
+                      let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
+                      let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].userId))
+                      let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].companyId))
+                      let pageSend = []
+                      if (surveys[j].segmentationPageIds && surveys[j].segmentationPageIds.length > 0) {
+                        for (let k = 0; k < surveys[j].segmentationPageIds.length; k++) {
+                          let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(surveys[j].segmentationPageIds[k]))
+                          pageSend.push(page[0].pageName)
+                        }
+                      } else {
+                        let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                        for (let a = 0; a < page.length; a++) {
+                          pageSend.push(page[a].pageName)
+                        }
+                      }
+                      //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                      data.push({_id: surveys[j]._id,
+                        title: surveys[j].title,
+                        datetime: surveys[j].datetime,
+                        page: pageSend,
+                        user: user,
+                        company: company,
+                        sent: pagesurvey.length,
+                        seen: pagesurveyTapped.length,
+                        responded: responded,
+                        subscriber: subscriberData}) // total tapped
+                    }
+                    var newSurvey = data.reverse()
+                    return res.status(200)
+                    .json({
+                      status: 'success',
+                      payload: {surveys: newSurvey, count: newSurvey.length > 0 ? surveysCount[0].count : ''}
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  } else {
+    let findCriteria = {
+      title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      'datetime': req.body.filter_criteria.days !== '' ? {
+        $gte: new Date(
+          (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+        $lt: new Date(
+          (new Date().getTime()))
+      } : {$exists: true}
+    }
+    Surveys.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, surveysCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Surveys.aggregate([
+        {
+          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}}),
+          $limit: req.body.number_of_records
+        }
+      ], (err, surveys) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys count ${JSON.stringify(err)}`
+          })
+        }
+        let temp = []
+        let tempUser = []
+        let tempCompany = []
+        for (let i = 0; i < surveys.length; i++) {
+          temp.push(surveys[i]._id)
+          tempUser.push(surveys[i].userId)
+          tempCompany.push(surveys[i].companyId)
+        }
+        SurveyPage.find({surveyId: {
+          $in: temp
+        }}, (err, surveypages) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          SurveyResponses.find({surveyId: {
+            $in: temp
+          }}, (err, surveyResponses) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Broadcasts not found'})
+            }
+            Users.find({_id: {
+              $in: tempUser
+            }}, (err, users) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'internal server error' + JSON.stringify(err)
+                })
+              }
+              CompanyProfile.find({_id: {
+                $in: tempCompany
+              }}, (err, companies) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'internal server error' + JSON.stringify(err)
+                  })
+                }
+                Pages.find({}, (err, pages) => {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'internal server error' + JSON.stringify(err)
+                    })
+                  }
+                  Subscribers.find({}, (err, subscribers) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting subscribers ${JSON.stringify(err)}`
+                      })
+                    }
+                    let data = []
+                    for (let j = 0; j < surveys.length; j++) {
+                      let pagesurvey = surveypages.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
+                      let responsesurvey = surveyResponses.filter((c) => JSON.stringify(c.surveyId) === JSON.stringify(surveys[j]._id))
+                      let subscriberData = []
+                      let responded = 0
+                      for (let n = 0; n < pagesurvey.length; n++) {
+                        let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
+                        let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                        // if (responsesurvey[n]) {
+                        //   let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
+                        //   if (subscriberNew.length > 0) {
+                        //     res = true
+                        //   }
+                        // }
+                        subscriberData.push({_id: subscriber[0]._id,
+                          firstName: subscriber[0].firstName,
+                          lastName: subscriber[0].lastName,
+                          locale: subscriber[0].locale,
+                          gender: subscriber[0].gender,
+                          profilePic: subscriber[0].profilePic,
+                          page: subscriberPage[0].pageName,
+                          seen: pagesurvey[n].seen,
+                          responded: false})
+                      }
+                      for (let m = 0; m < responsesurvey.length; m++) {
+                        let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[m].subscriberId))
+                        for (let o = 0; o < subscriberData.length; o++) {
+                          if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                            subscriberData[o].responded = true
+                            responded = responded + 1
+                          }
+                        }
+                      }
+                      let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
+                      let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].userId))
+                      let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(surveys[j].companyId))
+                      let pageSend = []
+                      if (surveys[j].segmentationPageIds && surveys[j].segmentationPageIds.length > 0) {
+                        for (let k = 0; k < surveys[j].segmentationPageIds.length; k++) {
+                          let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(surveys[j].segmentationPageIds[k]))
+                          pageSend.push(page[0].pageName)
+                        }
+                      } else {
+                        let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                        for (let a = 0; a < page.length; a++) {
+                          pageSend.push(page[a].pageName)
+                        }
+                      }
+                      //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                      data.push({_id: surveys[j]._id,
+                        title: surveys[j].title,
+                        datetime: surveys[j].datetime,
+                        page: pageSend,
+                        user: user,
+                        company: company,
+                        sent: pagesurvey.length,
+                        seen: pagesurveyTapped.length,
+                        responded: responded,
+                        subscriber: subscriberData}) // total tapped
+                    }
+                    var newSurvey = data.reverse()
+                    return res.status(200)
+                    .json({
+                      status: 'success',
+                      payload: {surveys: newSurvey, count: newSurvey.length > 0 ? surveysCount[0].count : ''}
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  }
+}
+
+exports.getAllPolls = function (req, res) {
+  /*
+    body = {
+      first_page:
+      last_id:
+      number_of_records:
+      filter_criteria: {
+        search_value:
+        days:
+      }
+    }
+  */
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  if (req.body.first_page) {
+    let findCriteria = {
+      statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      'datetime': req.body.filter_criteria.days !== '' ? {
+        $gte: new Date(
+          (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+        $lt: new Date(
+          (new Date().getTime()))
+      } : {$exists: true}
+    }
+    Polls.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pollsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Polls.aggregate([
+        {
+          $match: findCriteria,
+          $limit: req.body.number_of_records
+        }
+      ], (err, polls) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys count ${JSON.stringify(err)}`
+          })
+        }
+        let temp = []
+        let tempUser = []
+        let tempCompany = []
+        for (let i = 0; i < polls.length; i++) {
+          temp.push(polls[i]._id)
+          tempUser.push(polls[i].userId)
+          tempCompany.push(polls[i].companyId)
+        }
+        PollPage.find({pollId: {
+          $in: temp
+        }}, (err, pollpages) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          PollResponse.find({pollId: {
+            $in: temp
+          }}, (err, pollResponses) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error${JSON.stringify(err)}`
+              })
+            }
+            PollPages.find({pollId: req.params.pollid}, (err, pollpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Polls not found'})
+              }
+            })
+            Users.find({_id: {
+              $in: tempUser
+            }}, (err, users) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'internal server error' + JSON.stringify(err)
+                })
+              }
+              CompanyProfile.find({_id: {
+                $in: tempCompany
+              }}, (err, companies) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'internal server error' + JSON.stringify(err)
+                  })
+                }
+                Pages.find({}, (err, pages) => {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'internal server error' + JSON.stringify(err)
+                    })
+                  }
+                  Subscribers.find({}, (err, subscribers) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting subscribers ${JSON.stringify(err)}`
+                      })
+                    }
+                    let data = []
+                    for (let j = 0; j < polls.length; j++) {
+                      let pagepoll = pollpages.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
+                      let responsepoll = pollResponses.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
+                      let subscriberData = []
+                      for (let n = 0; n < pagepoll.length; n++) {
+                        let subscriber = subscribers.filter((c) => c.senderId === pagepoll[n].subscriberId)
+                        let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                        subscriberData.push({_id: subscriber[0]._id,
+                          firstName: subscriber[0].firstName,
+                          lastName: subscriber[0].lastName,
+                          locale: subscriber[0].locale,
+                          gender: subscriber[0].gender,
+                          profilePic: subscriber[0].profilePic,
+                          page: subscriberPage[0].pageName,
+                          seen: pagepoll[n].seen,
+                          responded: false
+                        })
+                      }
+                      for (let m = 0; m < responsepoll.length; m++) {
+                        let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsepoll[m].subscriberId))
+                        for (let o = 0; o < subscriberData.length; o++) {
+                          if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                            subscriberData[o].responded = true
+                          }
+                        }
+                      }
+                      let pagepollTapped = pagepoll.filter((c) => c.seen === true)
+                      let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].userId))
+                      let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].companyId))
+                      let pageSend = []
+                      if (polls[j].segmentationPageIds && polls[j].segmentationPageIds.length > 0) {
+                        for (let k = 0; k < polls[j].segmentationPageIds.length; k++) {
+                          let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(polls[j].segmentationPageIds[k]))
+                          pageSend.push(page[0].pageName)
+                        }
+                      } else {
+                        let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                        for (let a = 0; a < page.length; a++) {
+                          pageSend.push(page[a].pageName)
+                        }
+                      }
+                      //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                      data.push({_id: polls[j]._id,
+                        statement: polls[j].statement,
+                        datetime: polls[j].datetime,
+                        page: pageSend,
+                        user: user,
+                        company: company,
+                        sent: pagepoll.length,
+                        seen: pagepollTapped.length,
+                        responded: responsepoll.length,
+                        subscriber: subscriberData }) // total tapped
+                    }
+                    var newPoll = data.reverse()
+                    return res.status(200)
+                    .json({
+                      status: 'success',
+                      payload: {polls: newPoll, count: newPoll.length > 0 ? pollsCount[0].count : ''}
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  } else {
+    let findCriteria = {
+      statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      'datetime': req.body.filter_criteria.days !== '' ? {
+        $gte: new Date(
+          (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+        $lt: new Date(
+          (new Date().getTime()))
+      } : {$exists: true}
+    }
+    Polls.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pollsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Polls.aggregate([
+        {
+          $match: Object.assign(findCriteria, {_id: {$gt: req.body.last_id}}),
+          $limit: req.body.number_of_records
+        }
+      ], (err, polls) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys count ${JSON.stringify(err)}`
+          })
+        }
+        let temp = []
+        let tempUser = []
+        let tempCompany = []
+        for (let i = 0; i < polls.length; i++) {
+          temp.push(polls[i]._id)
+          tempUser.push(polls[i].userId)
+          tempCompany.push(polls[i].companyId)
+        }
+        PollPage.find({pollId: {
+          $in: temp
+        }}, (err, pollpages) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Broadcasts not found'})
+          }
+          PollResponse.find({pollId: {
+            $in: temp
+          }}, (err, pollResponses) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error${JSON.stringify(err)}`
+              })
+            }
+            PollPages.find({pollId: req.params.pollid}, (err, pollpages) => {
+              if (err) {
+                return res.status(404)
+                  .json({status: 'failed', description: 'Polls not found'})
+              }
+            })
+            Users.find({_id: {
+              $in: tempUser
+            }}, (err, users) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'internal server error' + JSON.stringify(err)
+                })
+              }
+              CompanyProfile.find({_id: {
+                $in: tempCompany
+              }}, (err, companies) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'internal server error' + JSON.stringify(err)
+                  })
+                }
+                Pages.find({}, (err, pages) => {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'internal server error' + JSON.stringify(err)
+                    })
+                  }
+                  Subscribers.find({}, (err, subscribers) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting subscribers ${JSON.stringify(err)}`
+                      })
+                    }
+                    let data = []
+                    for (let j = 0; j < polls.length; j++) {
+                      let pagepoll = pollpages.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
+                      let responsepoll = pollResponses.filter((c) => JSON.stringify(c.pollId) === JSON.stringify(polls[j]._id))
+                      let subscriberData = []
+                      for (let n = 0; n < pagepoll.length; n++) {
+                        let subscriber = subscribers.filter((c) => c.senderId === pagepoll[n].subscriberId)
+                        let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                        subscriberData.push({_id: subscriber[0]._id,
+                          firstName: subscriber[0].firstName,
+                          lastName: subscriber[0].lastName,
+                          locale: subscriber[0].locale,
+                          gender: subscriber[0].gender,
+                          profilePic: subscriber[0].profilePic,
+                          page: subscriberPage[0].pageName,
+                          seen: pagepoll[n].seen,
+                          responded: false
+                        })
+                      }
+                      for (let m = 0; m < responsepoll.length; m++) {
+                        let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsepoll[m].subscriberId))
+                        for (let o = 0; o < subscriberData.length; o++) {
+                          if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                            subscriberData[o].responded = true
+                          }
+                        }
+                      }
+                      let pagepollTapped = pagepoll.filter((c) => c.seen === true)
+                      let user = users.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].userId))
+                      let company = companies.filter((c) => JSON.stringify(c._id) === JSON.stringify(polls[j].companyId))
+                      let pageSend = []
+                      if (polls[j].segmentationPageIds && polls[j].segmentationPageIds.length > 0) {
+                        for (let k = 0; k < polls[j].segmentationPageIds.length; k++) {
+                          let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(polls[j].segmentationPageIds[k]))
+                          pageSend.push(page[0].pageName)
+                        }
+                      } else {
+                        let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
+                        for (let a = 0; a < page.length; a++) {
+                          pageSend.push(page[a].pageName)
+                        }
+                      }
+                      //  let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].pageId))
+                      data.push({_id: polls[j]._id,
+                        statement: polls[j].statement,
+                        datetime: polls[j].datetime,
+                        page: pageSend,
+                        user: user,
+                        company: company,
+                        sent: pagepoll.length,
+                        seen: pagepollTapped.length,
+                        responded: responsepoll.length,
+                        subscriber: subscriberData }) // total tapped
+                    }
+                    var newPoll = data.reverse()
+                    return res.status(200)
+                    .json({
+                      status: 'success',
+                      payload: {polls: newPoll, count: newPoll.length > 0 ? pollsCount[0].count : ''}
+                    })
                   })
                 })
               })
