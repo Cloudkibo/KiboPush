@@ -32,6 +32,8 @@ class Bot extends React.Component {
       filterValue: '',
       searchValue: '',
       createBotDialogButton: false,
+      pageNumber: 0,
+      filter: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -70,14 +72,14 @@ class Bot extends React.Component {
   }
 
   displayData (n, bots) {
-    let offset = n * 5
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > bots.length) {
+    if ((offset + 10) > bots.length) {
       limit = bots.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = bots[i]
@@ -87,6 +89,12 @@ class Bot extends React.Component {
   }
 
   handlePageClick (data) {
+    // this.setState({pageSelected: data.selected})
+    // if (data.selected === 0) {
+    //   this.props.loadBotsListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
+    // } else {
+    //   this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
+    // }
     this.displayData(data.selected, this.props.bots)
   }
 
@@ -98,6 +106,8 @@ class Bot extends React.Component {
     this.setState({searchValue: event.target.value})
     var filtered = []
     if (event.target.value !== '' && this.state.filterValue === '') {
+      // this.setState({filter: true})
+      // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, page_value: this.state.filterValue}})
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase())) {
           filtered.push(this.props.bots[i])
@@ -119,7 +129,9 @@ class Bot extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value !== '' && this.state.searchValue === '') {
+    if (e.target.value && this.state.searchValue === '') {
+      // this.setState({filter: true})
+      // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].pageId._id === e.target.value) {
           filtered.push(this.props.bots[i])
@@ -141,7 +153,6 @@ class Bot extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
-      // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
     }
@@ -189,12 +200,11 @@ class Bot extends React.Component {
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
   gotoCreate () {
-
     if (/\s/.test(this.state.name)) {
       this.setState({error: true})
-      this.msg.error("Bot Name Cannot Have Any Spaces")
+      this.msg.error('Bot Name Cannot Have Any Spaces')
       return
-     }
+    }
 
     if (this.state.name === '') {
       this.setState({error: true})
@@ -432,13 +442,13 @@ class Bot extends React.Component {
                                   }
                                 </td>
                                 <td data-field='page' className='m-datatable__cell'>
-                                  { (bot.hitCount) 
+                                  { (bot.hitCount)
                                     ? <span style={{width: '125px'}}>{ bot.hitCount}</span>
                                     : <span style={{width: '125px'}}>0</span>
                                   }
                                 </td>
                                 <td data-field='page' className='m-datatable__cell'>
-                                  { (bot.missCount) 
+                                  { (bot.missCount)
                                     ? <span style={{width: '125px'}}>{ bot.missCount}</span>
                                     : <span style={{width: '125px'}}>0</span>
                                   }
@@ -480,7 +490,7 @@ class Bot extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
@@ -510,7 +520,9 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    bots: (state.botsInfo.bots)
+    bots: (state.botsInfo.bots),
+    count: (state.botsInfo.count)
+
   }
 }
 

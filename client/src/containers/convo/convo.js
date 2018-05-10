@@ -33,7 +33,8 @@ class Convo extends React.Component {
       isShowingModal: false,
       selectedDays: '0',
       searchValue: '',
-      filter: false
+      filter: false,
+      pageNumber: 0
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     props.loadSubscribersList()
@@ -117,7 +118,12 @@ class Convo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    } else {
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    }
     this.displayData(data.selected, this.props.broadcasts)
   }
 
@@ -186,7 +192,7 @@ class Convo extends React.Component {
       //   }
       // }
     } else {
-      this.setState({filter: false})
+      //  this.setState({filter: false})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
       //  filtered = this.props.broadcasts
     }
@@ -435,6 +441,7 @@ class Convo extends React.Component {
                             pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
+                            forcePage={this.state.pageNumber}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}

@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
-  loadSurveysList,
+  loadSurveysListNew,
   sendsurvey,
   deleteSurvey
 } from '../../redux/actions/surveys.actions'
@@ -35,7 +35,8 @@ class Survey extends React.Component {
       isShowingModal: false,
       isShowingModalDelete: false,
       deleteid: '',
-      selectedDays: ''
+      selectedDays: '',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -53,7 +54,7 @@ class Survey extends React.Component {
   }
   componentWillMount () {
     this.props.loadSubscribersList()
-    this.props.loadSurveysList(0)
+    this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
     this.props.loadTags()
   }
   showDialog () {
@@ -64,7 +65,7 @@ class Survey extends React.Component {
     this.setState({isShowingModal: false})
   }
   onDaysChange (e) {
-    var defaultVal = 0
+    //  var defaultVal = 0
     var value = e.target.value
     this.setState({selectedDays: value})
     if (value && value !== '') {
@@ -76,21 +77,21 @@ class Survey extends React.Component {
           selectedDays: ''
         })
       }
-      this.props.loadSurveysList(value)
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: value})
     } else if (value === '') {
       this.setState({selectedDays: ''})
-      this.props.loadSurveysList(defaultVal)
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
     }
   }
   displayData (n, surveys) {
-    let offset = n * 5
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > surveys.length) {
+    if ((offset + 10) > surveys.length) {
       limit = surveys.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = surveys[i]
@@ -100,6 +101,12 @@ class Survey extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    }
     this.displayData(data.selected, this.props.surveys)
   }
 
@@ -111,9 +118,9 @@ class Survey extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -421,13 +428,15 @@ class Survey extends React.Component {
                       }
                           </tbody>
                         </table>
-                        <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
+                        <ReactPaginate
+                          previousLabel={'previous'}
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={2}
                           pageRangeDisplayed={3}
+                          forcePage={this.state.pageNumber}
                           onPageChange={this.handlePageClick}
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}
@@ -454,6 +463,7 @@ function mapStateToProps (state) {
   console.log('survey state', state)
   return {
     surveys: (state.surveysInfo.surveys),
+    count: (state.surveysInfo.count),
     subscribers: (state.subscribersInfo.subscribers),
     successMessage: (state.surveysInfo.successMessage),
     errorMessage: (state.surveysInfo.errorMessage),
@@ -466,6 +476,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags}, dispatch)
+    {loadSurveysListNew: loadSurveysListNew, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

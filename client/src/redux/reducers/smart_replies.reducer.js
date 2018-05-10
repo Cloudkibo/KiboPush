@@ -6,6 +6,11 @@ export function botsInfo (state = {}, action) {
       return Object.assign({}, state, {
         bots: action.data
       })
+    case ActionTypes.SHOW_BOTS_NEW:
+      return Object.assign({}, state, {
+        bots: action.bots,
+        count: action.count
+      })
     case ActionTypes.SHOW_CREATED_BOT:
       return Object.assign({}, state, {
         createdBot: action.data

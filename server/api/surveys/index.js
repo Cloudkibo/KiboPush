@@ -13,6 +13,12 @@ router.get('/all/:days',
   auth.doesRolePermitsThisAction('surveyPermission'),
   controller.index)
 
+router.post('/allSurveys',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('surveys'),
+  auth.doesRolePermitsThisAction('surveyPermission'),
+  controller.allSurveys)
+
 router.post('/create',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('surveys'),

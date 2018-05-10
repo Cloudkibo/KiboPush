@@ -201,6 +201,7 @@ exports.updateMode = function (req, res) {
  * Creates a new user
  */
 exports.create = function (req, res) {
+  logger.serverLog(TAG, 'Creating new user')
   let parametersMissing = false
 
   if (!_.has(req.body, 'email')) parametersMissing = true
@@ -326,6 +327,22 @@ exports.create = function (req, res) {
                   if (err) {
                     logger.serverLog(TAG, `New Token save : ${JSON.stringify(
                       err)}`)
+                  }
+                })
+
+                let mailchimp = require('mailchimp-api-v3')('2d154e5f15ca18180d52c40ad6e5971e-us12')
+
+                mailchimp.post({
+                  path: '/lists/5a4e866849/members',
+                  body: {
+                    email_address: req.body.email,
+                    status: 'subscribed'
+                  }
+                }, function (err, result) {
+                  if (err) {
+                    logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
                   }
                 })
 

@@ -11,6 +11,11 @@ export function pagesInfo (state = [], action) {
       return Object.assign({}, state, {
         pages: action.data
       })
+    case ActionTypes.LOAD_PAGES_LIST_NEW:
+      return Object.assign({}, state, {
+        pages: action.pages,
+        count: action.count
+      })
     case ActionTypes.FETCH_PAGES_LIST:
       return Object.assign({}, state, {
         otherPages: action.data,

@@ -47,6 +47,10 @@ router.get('/allSequences',
   auth.isAuthenticated(),
   controller.allSequences)
 
+router.post('/getAll', // pagination
+  auth.isAuthenticated(),
+  controller.getAll)
+
 router.get('/subscriberSequences/:id',
   auth.isAuthenticated(),
   controller.subscriberSequences)

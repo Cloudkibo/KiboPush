@@ -25,6 +25,14 @@ export function showSurveys (data) {
   }
 }
 
+export function showSurveysNew (data) {
+  return {
+    type: ActionTypes.LOAD_SURVEYS_LIST_NEW,
+    data: appendSentSeenResponsesData(data),
+    count: data.count
+  }
+}
+
 export function submitresponse (data) {
   return {
     type: ActionTypes.SUBMIT_SURVEY,
@@ -71,6 +79,15 @@ export function loadSurveysList (days) {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
     callApi(`surveys/all/${days}`).then(res => dispatch(showSurveys(res.payload)))
+  }
+}
+export function loadSurveysListNew (data) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi(`surveys/allSurveys`, 'post', data).then(res => {
+      console.log('response from surveys', res)
+      dispatch(showSurveysNew(res.payload))
+    })
   }
 }
 export function sendsurvey (survey, msg) {

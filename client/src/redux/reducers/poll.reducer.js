@@ -14,6 +14,11 @@ export function pollsInfo (state = {}, action) {
       return Object.assign({}, state, {
         polls: action.data
       })
+    case ActionTypes.FETCH_POLLS_LIST_NEW:
+      return Object.assign({}, state, {
+        polls: action.data,
+        count: action.count
+      })
     case ActionTypes.ADD_POLL:
       return Object.assign({}, state, {
         pollCreated: action.data

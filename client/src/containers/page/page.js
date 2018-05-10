@@ -10,9 +10,8 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
   addPages,
-  loadMyPagesList,
+  loadMyPagesListNew,
   removePage
-
 } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -27,7 +26,11 @@ class Page extends React.Component {
       isShowingModal: false,
       page: {},
       pagesData: [],
-      totalLength: 0
+      totalLength: 0,
+      filter: false,
+      search_value: '',
+      connectedPages: false,
+      pageNumber: 0
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -39,19 +42,19 @@ class Page extends React.Component {
 
   componentWillMount () {
     this.props.getuserdetails()
-    this.props.loadMyPagesList()
+    this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: ''}})
     this.props.loadSubscribersList()
   }
 
   displayData (n, pages) {
-    let offset = n * 5
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > pages.length) {
+    if ((offset + 10) > pages.length) {
       limit = pages.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = pages[i]
@@ -61,6 +64,12 @@ class Page extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    } else {
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    }
     this.displayData(data.selected, this.props.pages)
   }
 
@@ -79,7 +88,8 @@ class Page extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.pages) {
+    console.log('nextProps in pages', nextProps)
+    if (nextProps.pages && nextProps.count) {
       var connectedPages = []
       nextProps.pages.map((page, i) => {
         if (page.connected) {
@@ -87,7 +97,9 @@ class Page extends React.Component {
         }
       })
       this.displayData(0, connectedPages)
-      this.setState({ totalLength: connectedPages.length })
+      this.setState({ totalLength: nextProps.count, connectedPages: true })
+    } else {
+      this.setState({ pagesData: [], totalLength: 0 })
     }
   }
 
@@ -128,18 +140,24 @@ class Page extends React.Component {
     })
   }
   searchPages (event) {
-    var filtered = []
+    // var filtered = []
     if (event.target.value !== '') {
-      for (let i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageName && this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.pages[i].connected) {
-          filtered.push(this.props.pages[i])
-        }
-      }
+      this.setState({searchValue: event.target.value, filter: true})
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value}})
+
+      // for (let i = 0; i < this.props.pages.length; i++) {
+      //   if (this.props.pages[i].pageName && this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.pages[i].connected) {
+      //     filtered.push(this.props.pages[i])
+      //   }
+      // }
     } else {
-      filtered = this.props.pages
+      this.setState({filter: false, search_value: ''})
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: ''}})
+
+      // filtered = this.props.pages
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   goToAddPages () {
     browserHistory.push({
@@ -183,7 +201,7 @@ class Page extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              { this.props.pages && this.props.pages.length === 0
+              { !this.state.connectedPages
                 ? <div className='alert alert-success'>
                   <h4 className='block'>0 Connected Pages</h4>
                   You do not have any connected pages. Please click on Connect Facebook Pages to connect your Facebook Pages.
@@ -347,13 +365,14 @@ class Page extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
-                            activeClassName={'active'} />
+                            activeClassName={'active'}
+                            forcePage={this.state.pageNumber} />
                         </div>
                       </div>
                       : <span>
@@ -380,6 +399,7 @@ class Page extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
+    count: (state.pagesInfo.count),
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers)
   }
@@ -387,7 +407,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList,
+    loadMyPagesListNew: loadMyPagesListNew,
     getuserdetails: getuserdetails,
     removePage: removePage,
     addPages: addPages,

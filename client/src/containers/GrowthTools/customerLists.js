@@ -6,13 +6,14 @@ import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {
-  loadCustomerLists, saveCurrentList, deleteList, clearCurrentList
+  loadCustomerListsNew, saveCurrentList, deleteList, clearCurrentList
 } from '../../redux/actions/customerLists.actions'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
+import ReactPaginate from 'react-paginate'
 
 class CustomerLists extends React.Component {
   constructor (props, context) {
@@ -20,13 +21,16 @@ class CustomerLists extends React.Component {
     this.state = {
       isShowingModalDelete: false,
       deleteid: '',
-      customerLists: []
+      customerLists: [],
+      totalLength: 0,
+      pageNumber: 0
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.saveCurrentList = this.saveCurrentList.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
     props.loadMyPagesList()
-    props.loadCustomerLists()
+    props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
     props.clearCurrentList()
   }
   scrollToTop () {
@@ -54,16 +58,48 @@ class CustomerLists extends React.Component {
   componentDidMount () {
     this.scrollToTop()
   }
-  componentWillReceiveProps (nextProps) {
-    var lists = []
-    for (var i = 0; i < nextProps.customerLists.length; i++) {
-      if (nextProps.customerLists[i].initialList) {
-        lists.push(nextProps.customerLists[i])
-      }
+  displayData (n, lists) {
+    console.log('in displayData', lists)
+    let offset = n * 10
+    let data = []
+    let limit
+    let index = 0
+    if ((offset + 10) > lists.length) {
+      limit = lists.length
+    } else {
+      limit = offset + 10
     }
-    this.setState({
-      customerLists: lists
-    })
+    for (var i = offset; i < limit; i++) {
+      data[index] = lists[i]
+      index++
+    }
+    this.setState({customerLists: data})
+  }
+
+  handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
+    } else {
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: false})
+    }
+    this.displayData(data.selected, this.props.polls)
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.customerLists && nextProps.count) {
+      // this.setState({broadcasts: nextProps.broadcasts});
+      this.displayData(0, nextProps.customerLists)
+      this.setState({ totalLength: nextProps.count })
+    }
+    // var lists = []
+    // for (var i = 0; i < nextProps.customerLists.length; i++) {
+    //   if (nextProps.customerLists[i].initialList) {
+    //     lists.push(nextProps.customerLists[i])
+    //   }
+    // }
+    // this.setState({
+    //   customerLists: lists
+    // })
   }
   render () {
     var alertOptions = {
@@ -172,6 +208,20 @@ class CustomerLists extends React.Component {
                               }
                             </tbody>
                           </table>
+                          <div className='pagination'>
+                            <ReactPaginate previousLabel={'previous'}
+                              nextLabel={'next'}
+                              breakLabel={<a>...</a>}
+                              breakClassName={'break-me'}
+                              pageCount={Math.ceil(this.state.totalLength / 10)}
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={3}
+                              onPageChange={this.handlePageClick}
+                              containerClassName={'pagination'}
+                              subContainerClassName={'pages pagination'}
+                              activeClassName={'active'}
+                              forcePage={this.state.pageNumber} />
+                          </div>
                         </div>
                       </div>
                     : <div className='table-responsive'>
@@ -199,13 +249,14 @@ class CustomerLists extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    count: (state.listsInfo.count)
   }
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
-    loadCustomerLists: loadCustomerLists,
+    loadCustomerListsNew: loadCustomerListsNew,
     saveCurrentList: saveCurrentList,
     deleteList: deleteList,
     clearCurrentList: clearCurrentList

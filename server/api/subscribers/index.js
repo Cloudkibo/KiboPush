@@ -13,11 +13,23 @@ router.get('/',
   auth.doesRolePermitsThisAction('subscriberPermission'),
   controller.index)
 
-router.get('/allSubscribers',
+router.post('/allSubscribers',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('manage_subscribers'),
   auth.doesRolePermitsThisAction('subscriberPermission'),
   controller.allSubscribers)
+
+router.get('/allLocales',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_subscribers'),
+  auth.doesRolePermitsThisAction('subscriberPermission'),
+  controller.allLocales)
+
+router.post('/getAll',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_subscribers'),
+  auth.doesRolePermitsThisAction('subscriberPermission'),
+  controller.getAll)
 
 router.get('/subscribeBack/:id',
   auth.isAuthenticated(),

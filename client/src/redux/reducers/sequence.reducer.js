@@ -6,7 +6,11 @@ export function sequenceInfo (state = {}, action) {
       return Object.assign({}, state, {
         sequences: action.sequence
       })
-
+    case ActionTypes.SHOW_ALL_SEQUENCE_NEW:
+      return Object.assign({}, state, {
+        sequences: action.sequence,
+        count: action.count
+      })
     case ActionTypes.SHOW_SUBSCRIBER_SEQUENCE:
       return Object.assign({}, state, {
         subscriberSequences: action.subscriberSequences
