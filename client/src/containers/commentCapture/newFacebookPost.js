@@ -311,9 +311,11 @@ class FacebookPosts extends React.Component {
         disabled: true
       })
     }
+    var facebookPost = []
+    facebookPost.push({componentType: 'text', text: e.target.value})
     this.setState({
       postText: e.target.value,
-      facebookPost: {componentType: 'text', text: e.target.value}
+      facebookPost: facebookPost
     })
   }
   replyChange (e) {
