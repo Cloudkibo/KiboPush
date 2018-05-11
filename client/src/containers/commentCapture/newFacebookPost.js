@@ -178,7 +178,7 @@ class FacebookPosts extends React.Component {
         videoAttachment.push(attachComponent)
         var videoPost = []
         if (this.state.postText !== '') {
-          videoPost.push({componentType: 'text', text: e.target.value})
+          videoPost.push({componentType: 'text', text: this.state.postText})
         }
         videoPost.push(attachComponent)
         this.setState({
@@ -188,9 +188,14 @@ class FacebookPosts extends React.Component {
         })
       } else {
         if (this.state.isVideo) {
+          var facebookPostTemp = []
+          if (this.state.postText !== '') {
+            facebookPostTemp.push({componentType: 'text', text: this.state.postText})
+          }
+          facebookPostTemp.push({componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url})
           this.setState({
             attachments: [{componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}],
-            facebookPost: [{componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}],
+            facebookPost: facebookPostTemp,
             isVideo: false
           })
         } else {
