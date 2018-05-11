@@ -11,20 +11,20 @@ export function appendSentSeenData (data) {
   for (let j = 0; j < broadcasts.length; j++) {
     let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
     let filterBySubscriber = []
-    pagebroadcasts.map((c, i) => {
+    pagebroadcast.map((c, i) => {
       if (c.broadcastId === broadcasts[j]._id) {
         for (var index = 0; index < filterBySubscriber.length; index++) {
-          if (c.subscriberId === filterBySubscriber[index].subscriber) {
+          if (c.subscriberId === filterBySubscriber[index].subscriberId) {
             break
           }
         }
         if (index === filterBySubscriber.length) {
-          filterBySubscriber.push({subscriber: c.subscriberId, broadcast: c.broadcastId})
+          filterBySubscriber.push(c)
         }
       }
     })
     broadcasts[j].sent = filterBySubscriber.length// total sent
-    let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+    let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
     //  broadcasts[j].count = data.count
   }
