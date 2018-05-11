@@ -603,14 +603,14 @@ class FacebookPosts extends React.Component {
                                 style={{height: '150px', resize: 'none'}}
                                 value={this.state.postText}
                                 disabled />
-                              { this.state.attachments.length > 1 && this.state.videoPost &&
+                              { this.state.attachments.length > 0 && this.state.videoPost &&
                                 <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                   <span>
                                     <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
                                   </span>
                                 </span>
                               }
-                              { this.state.attachments.length > 1 && !this.state.videoPost &&
+                              { this.state.attachments.length > 0 && !this.state.videoPost &&
                                 <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                   <span>
                                     <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
