@@ -62,12 +62,12 @@ class OperationalDashboard extends React.Component {
       filter: false
     }
     props.loadDataObjectsCount(0)
+    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     props.loadTopPages()
     props.loadBroadcastsGraphData(0)
     props.loadPollsGraphData(0)
     props.loadSurveysGraphData(0)
     props.loadSessionsGraphData(0)
-    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -87,7 +87,13 @@ class OperationalDashboard extends React.Component {
   }
 
   loadMore () {
-    this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+    // let index = this.props.users.length - 1
+    // console.log('this.props.users', this.props.users)
+    // console.log('this.props.users[index]._id', this.props.users[index]._id)
+    // console.log('this.props.users[index][0]._id', this.props.users[index][0]._id)
+    // console.log('addmore', this.props.users[index[0]]._id)
+    //  console.log('this.props.users[this.props.users.length - 1][0]', this.props.users[this.props.users.length - 1].length)
+    this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -146,8 +152,11 @@ class OperationalDashboard extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps in backdoor', nextProps)
     if (nextProps.users && nextProps.count) {
+      console.log('in nextProps.users')
       this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({usersData: [], usersDataAll: []})
     }
     if (nextProps.dataobjects && nextProps.dataobjects !== null) {
       this.displayObjects(0, nextProps.dataobjects)
@@ -563,7 +572,7 @@ class OperationalDashboard extends React.Component {
                                                 </button>
                                                </div>
                                              </div>
-                                              ))}
+                                          ))}
                                       </div>
                                       : <div>No Data to display</div>
                                       }

@@ -91,9 +91,10 @@ class PollsInfo extends React.Component {
     // this.setState({ totalLength: filtered.length })
   }
 
-  onFilter (val) {
-    this.setState({ selectedFilterValue: val })
-    this.props.loadPollsList(this.props.userID, {first_page: true, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: val}})
+  onFilter (e) {
+    console.log('val in onfilter', e.target.value)
+    this.setState({ selectedFilterValue: e.target.value })
+    this.props.loadPollsList(this.props.userID, {first_page: true, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: e.target.value}})
     // if (!val) {
     //   this.setState({selectedFilterValue: null})
     //   this.displayData(0, this.props.polls)

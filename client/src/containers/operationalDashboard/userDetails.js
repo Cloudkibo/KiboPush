@@ -67,6 +67,7 @@ class UserDetails extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps in allpages', nextProps)
     if (nextProps.pages && nextProps.count) {
       this.displayData(0, nextProps.pages)
       this.setState({ totalLength: nextProps.pages.count })

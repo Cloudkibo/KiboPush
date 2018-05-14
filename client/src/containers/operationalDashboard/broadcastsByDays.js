@@ -69,6 +69,7 @@ class BroadcastsInfo extends React.Component {
     this.displayData(data.selected, this.props.broadcasts)
   }
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps in broadcastbydays', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.broadcasts.count })
@@ -264,7 +265,7 @@ class BroadcastsInfo extends React.Component {
 function mapStateToProps (state) {
   return {
     broadcasts: state.backdoorInfo.broadcasts,
-    count: state.backdoorInfo.broadcastscount
+    count: state.backdoorInfo.broadcastsCount
   }
 }
 
