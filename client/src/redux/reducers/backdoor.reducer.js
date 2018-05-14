@@ -22,7 +22,14 @@ const initialState = {
 export function backdoorInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_USERS_LIST:
-      return Object.assign({}, ...state, {
+      return Object.assign({}, state, {
+        users: [...state.users, ...action.data],
+        //  users: action.data,
+        locales: action.locale,
+        count: action.count
+      })
+    case ActionTypes.LOAD_USERS_LIST_FILTERS:
+      return Object.assign({}, state, {
         //  users: [...state.users, action.data],
         users: action.data,
         locales: action.locale,
@@ -35,8 +42,9 @@ export function backdoorInfo (state = initialState, action) {
       })
 
     case ActionTypes.LOAD_TOP_PAGES_LIST:
+      console.log('loadTopPages', action.data)
       return Object.assign({}, state, {
-        toppages: action.data
+        toppages: [...state.toppages, ...action.data]
       })
 
     case ActionTypes.LOAD_BACKDOOR_PAGES_LIST:

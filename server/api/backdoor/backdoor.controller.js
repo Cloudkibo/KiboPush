@@ -23,8 +23,7 @@ const PollPage = require('../page_poll/page_poll.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const config = require('./../../config/environment/index')
 const LiveChat = require('../livechat/livechat.model')
-
-// const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 var json2csv = require('json2csv')
 
 let _ = require('lodash')
@@ -276,7 +275,7 @@ exports.getAllPages = function (req, res) {
   */
   let search = new RegExp('.*' + req.body.search_value + '.*', 'i')
   let findCriteria = {
-    userId: req.params.userid,
+    userId: mongoose.Types.ObjectId(req.params.userid),
     pageName: req.body.search_value !== '' ? {$regex: search} : {$exists: true}
   }
   if (req.body.first_page) {
@@ -554,13 +553,13 @@ exports.allUserBroadcasts = function (req, res) {
   let findCriteria = {}
   if (req.body.filter_criteria.type_value === 'miscellaneous') {
     findCriteria = {
-      userId: req.params.userid,
+      userId: mongoose.Types.ObjectId(req.params.userid),
       'payload.1': {$exists: true},
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
     }
   } else {
     findCriteria = {
-      userId: req.params.userid,
+      userId: mongoose.Types.ObjectId(req.params.userid),
       'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : {$exists: true},
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
     }
@@ -644,7 +643,7 @@ exports.allUserPolls = function (req, res) {
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
   let findCriteria = {
-    userId: req.params.userid,
+    userId: mongoose.Types.ObjectId(req.params.userid),
     statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
     'datetime': req.body.filter_criteria.days !== '0' ? {
       $gte: new Date(
@@ -716,7 +715,7 @@ exports.allUserSurveys = function (req, res) {
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
   let findCriteria = {
-    userId: req.params.userid,
+    userId: mongoose.Types.ObjectId(req.params.userid),
     title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
     'datetime': req.body.filter_criteria.days !== '0' ? {
       $gte: new Date(
@@ -1169,7 +1168,6 @@ exports.uploadFile = function (req, res) {
     }
     json2csv({ data: info, fields: keys }, function (err, csv) {
       if (err) {
-        console.log(err)
       }
       res.status(200).json({
         status: 'success',

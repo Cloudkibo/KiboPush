@@ -17,12 +17,21 @@ export function getLocales (data) {
   }
 }
 
-export function updateUsersList (data) {
-  return {
-    type: ActionTypes.LOAD_USERS_LIST,
-    data: data.users,
-    count: data.count,
-    locale: getLocales(data.users)
+export function updateUsersList (data, originalData) {
+  if (originalData.first_page && (originalData.search_value !== '' || originalData.locale_value !== '' || originalData.gender_value !== '')) {
+    return {
+      type: ActionTypes.LOAD_USERS_LIST_FILTERS,
+      data: data.users,
+      count: data.count,
+      locale: getLocales(data.users)
+    }
+  } else {
+    return {
+      type: ActionTypes.LOAD_USERS_LIST,
+      data: data.users,
+      count: data.count,
+      locale: getLocales(data.users)
+    }
   }
 }
 
@@ -187,7 +196,7 @@ export function loadUsersList (data) {
   return (dispatch) => {
     callApi('backdoor/getAllUsers', 'post', data).then(res => {
       console.log('response from getAllUsers', res)
-      dispatch(updateUsersList(res.payload))
+      dispatch(updateUsersList(res.payload, data))
     })
   }
 }
@@ -280,7 +289,10 @@ export function loadSessionsGraphData (days) {
 export function loadPagesList (id, data) {
   // here we will fetch list of user pages from endpoint
   return (dispatch) => {
-    callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => dispatch(updatePagesList(res.payload)))
+    callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => {
+      console.log('response from allpages', res)
+      dispatch(updatePagesList(res.payload))
+    })
   }
 }
 
@@ -292,6 +304,7 @@ export function loadBroadcastsList (id, data) {
 }
 
 export function loadPollsList (id, data) {
+  console.log('data for loadPollsList', data)
   return (dispatch) => {
     callApi(`backdoor/allUserPolls/${id}`, 'post', data)
       .then(res => dispatch(updatePollList(res.payload)))
@@ -308,7 +321,10 @@ export function loadPageSubscribersList (id, data) {
 export function loadSurveysList (id, data) {
   return (dispatch) => {
     callApi(`backdoor/allUserSurveys/${id}`, 'post', data)
-      .then(res => dispatch(updateSurveysList(res.payload)))
+      .then(res => {
+        console.log('response from surveys', res)
+        dispatch(updateSurveysList(res.payload))
+      })
   }
 }
 

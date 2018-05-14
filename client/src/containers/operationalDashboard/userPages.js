@@ -39,7 +39,7 @@ class PagesInfo extends React.Component {
                   </span>
                 </div>
                 {
-                  this.props.pages && this.props.length > 0
+                  this.props.pages && this.props.pages.length > 0
                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                    <table className='m-datatable__table'
                      id='m-datatable--27866229129' style={{

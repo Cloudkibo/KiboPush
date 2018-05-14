@@ -15,12 +15,12 @@ export function showChatSessions (sessions) {
   }
 }
 
-export function showOpenChatSessions (sessions, firstPage) {
+export function showOpenChatSessions (sessions, data) {
   var sorted = sessions.openSessions.sort(function (a, b) {
     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
   })
   console.log('sorted sessions', sorted)
-  if (firstPage) {
+  if (data.first_page && (data.page_value !== '' || data.search_value !== '')) {
     return {
       type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE,
       openSessions: sorted,
@@ -152,7 +152,7 @@ export function fetchOpenSessions (data) {
     callApi('sessions/getOpenSessions', 'post', data)
       .then(res => {
         console.log('fetchSessions response', res)
-        dispatch(showOpenChatSessions(res.payload, data.first_page))
+        dispatch(showOpenChatSessions(res.payload, data))
       })
   }
 }

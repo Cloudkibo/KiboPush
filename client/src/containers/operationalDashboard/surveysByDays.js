@@ -75,6 +75,7 @@ class SurveysInfo extends React.Component {
     this.displayData(data.selected, this.props.surveys)
   }
   componentWillReceiveProps (nextProps) {
+    console.log('componentWillReceiveProps in surveys', nextProps)
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
