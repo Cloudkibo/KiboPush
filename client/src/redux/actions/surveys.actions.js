@@ -14,8 +14,8 @@ export function appendSentSeenResponsesData (data) {
     surveys[j].seen = pagesurveyTapped.length // total tapped
     surveys[j].responses = surveys[j].isresponded
   }
-  var newSurvey = surveys.reverse()
-  return newSurvey
+  // var newSurvey = surveys.reverse()
+  return surveys
 }
 
 export function showSurveys (data) {
@@ -77,12 +77,13 @@ export function showSurveyResponse (data) {
 
 export function loadSurveysList (days) {
   // here we will fetch list of subscribers from endpoint
+  console.log('loadSurveysList/days')
   return (dispatch) => {
     callApi(`surveys/all/${days}`).then(res => dispatch(showSurveys(res.payload)))
   }
 }
 export function loadSurveysListNew (data) {
-  console.log('data', data)
+  console.log('data for loadSurveysListNew', data)
   return (dispatch) => {
     callApi(`surveys/allSurveys`, 'post', data).then(res => {
       console.log('response from surveys', res)
@@ -134,7 +135,9 @@ export function submitsurvey (survey) {
 export function createsurvey (survey) {
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
-      .then(res => dispatch(addSurvey(res.payload)))
+      .then(res => {
+        dispatch(addSurvey(res.payload))
+      })
   }
 }
 
@@ -145,13 +148,13 @@ export function loadsurveyresponses (surveyid) {
       .then(res => dispatch(showSurveyResponse(res.payload)))
   }
 }
-export function deleteSurvey (id, msg) {
+export function deleteSurvey (id, msg, data) {
   return (dispatch) => {
     callApi(`surveys/deleteSurvey/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Survey deleted successfully')
-          dispatch(loadSurveysList())
+          dispatch(loadSurveysListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete survey. ${res.description}`)

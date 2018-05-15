@@ -6,6 +6,7 @@ const TemplateBots = require('./bots_template.model')
 const SurveyQuestions = require('./surveyQuestion.model')
 const Category = require('./category.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const mongoose = require('mongoose')
 
 const TAG = 'api/templates/templates.controller.js'
 
@@ -51,7 +52,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplatePolls.find(findCriteria).limit(req.body.number_of_records)
+      TemplatePolls.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -80,7 +81,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplatePolls.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -124,7 +125,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'SurveysCount not found'})
       }
-      TemplateSurveys.find(findCriteria).limit(req.body.number_of_records)
+      TemplateSurveys.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -135,7 +136,7 @@ exports.getAllSurveys = function (req, res) {
         }
         res.status(200).json({
           status: 'success',
-          payload: {surveys: surveys, count: surveys.length > 0 ? surveysCount[0].count : ''}
+          payload: {surveys: surveys, count: surveys.length > 0 ? surveysCount.length > 0 ? surveysCount[0].count : 0 : 0}
         })
       })
     })
@@ -153,7 +154,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplateSurveys.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -640,7 +641,7 @@ exports.getAllBroadcasts = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        TemplateBroadcasts.find(findCriteria).limit(req.body.number_of_records)
+        TemplateBroadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, broadcasts) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -670,7 +671,7 @@ exports.getAllBroadcasts = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        TemplateBroadcasts.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, broadcasts) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)

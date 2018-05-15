@@ -28,8 +28,8 @@ export function appendSentSeenData (data) {
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
     //  broadcasts[j].count = data.count
   }
-  var newBroadcast = broadcasts.reverse()
-  return newBroadcast
+  //  var newBroadcast = broadcasts.reverse()
+  return broadcasts
 }
 
 export function showbroadcasts (data) {
@@ -117,7 +117,7 @@ export function createbroadcast (broadcast) {
         } else {
           dispatch(sendBroadcastFailure())
         }
-        dispatch(loadBroadcastsList())
+        //  dispatch(loadBroadcastsList())
       })
   }
 }
@@ -145,7 +145,9 @@ export function uploadBroadcastfile (filedata) {
 export function editbroadcast (broadcast) {
   return (dispatch) => {
     callApi('broadcasts/edit', 'post', {broadcast: broadcast})
-      .then(res => dispatch(loadBroadcastsList()))
+      .then(res => {
+        //  dispatch(loadBroadcastsList())
+      })
   }
 }
 
@@ -206,7 +208,7 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
           }
         }
         handleSendBroadcast(res)
-        dispatch(loadBroadcastsList())
+        //  dispatch(loadBroadcastsList())
       })
   }
 }

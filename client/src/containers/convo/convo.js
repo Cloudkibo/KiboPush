@@ -119,6 +119,7 @@ class Convo extends React.Component {
 
   handlePageClick (data) {
     this.setState({pageNumber: data.selected})
+    console.log('data.selected', data.selected)
     if (data.selected === 0) {
       this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
     } else {
