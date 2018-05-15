@@ -19,7 +19,8 @@ class BroadcastsInfo extends React.Component {
       selectedFilterValue: 10,
       selectedDays: 10,
       searchValue: '',
-      filter: true
+      filter: true,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
