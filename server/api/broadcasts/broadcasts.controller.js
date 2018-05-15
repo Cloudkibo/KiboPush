@@ -705,7 +705,7 @@ function handleThePagePostsForAutoPosting (event, status) {
         return logger.serverLog(TAG,
           'Internal Server Error on connect')
       }
-    logger.serverLog(TAG, 'listeneres of PAGE POST OF AUTOPOSTING ' + JSON.stringify(autopostings))
+      logger.serverLog(TAG, 'listeneres of PAGE POST OF AUTOPOSTING ' + JSON.stringify(autopostings))
       autopostings.forEach(postingItem => {
         let pagesFindCriteria = {
           userId: postingItem.userId._id,

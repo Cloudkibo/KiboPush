@@ -36,7 +36,7 @@ class CreateBot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.createdBot && nextProps.pages ) {
+    if (nextProps.createdBot && nextProps.pages) {
       this.setState({id: nextProps.createdBot._id, name: nextProps.createdBot.botName, isActive: nextProps.createdBot.isActive})
       console.log('nextProps', nextProps.pages)
       for (var i = 0; i < nextProps.pages.length; i++) {
@@ -56,7 +56,7 @@ class CreateBot extends React.Component {
     this.setState({isActive: e.target.value})
   }
 
-  addTemplate() {
+  addTemplate () {
     this.props.loadPoliticsBotTemplate()
   }
 
@@ -262,7 +262,7 @@ class CreateBot extends React.Component {
                       <br />
                       <div className='col-xl-12'>
                         <button className='btn btn-primary btn-sm'
-                                onClick={this.addTemplate.bind(this)}> Apply Politics Chat Bot Template
+                          onClick={this.addTemplate.bind(this)}> Apply Politics Chat Bot Template
                         </button>
                       </div>
                       <br />

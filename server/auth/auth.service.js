@@ -308,7 +308,7 @@ function fetchPages (url, user) {
       return
     }
     // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
-    // logger.serverLog(TAG, JSON.stringify(resp.body))
+    // logger.serverLogF(TAG, JSON.stringify(resp.body))
 
     const data = resp.body.data
     const cursor = resp.body.paging
@@ -393,8 +393,10 @@ function fetchPages (url, user) {
         }
       })
     })
-    if (cursor.next) {
+    if (cursor && cursor.next) {
       fetchPages(cursor.next, user)
+    } else {
+      logger.serverLog(TAG, 'Parameters are missing.')
     }
   })
 }

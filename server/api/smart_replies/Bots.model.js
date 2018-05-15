@@ -13,7 +13,7 @@ const botSchema = new Schema({
     {
       questions: [String],
       answer: String,
-      intent_name: String,
+      intent_name: String
     }],
   hitCount: Number,
   missCount: Number,

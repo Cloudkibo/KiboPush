@@ -514,16 +514,16 @@ class LiveChat extends React.Component {
                                   this.state.sessionsDataNew && this.state.sessionsDataNew.length > 0
                                   ? (this.state.sessionsDataNew.map((session) => (
                                     <div>
-                                    <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
-                                      <div className='m-widget4__img m-widget4__img--pic'>
-                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
-                                      </div>
-                                      <div className='m-widget4__info'>
-                                        <span className='m-widget4__title'>
-                                          {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
-                                        </span>
-                                        <br />
-                                        {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
+                                      <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                        <div className='m-widget4__img m-widget4__img--pic'>
+                                          <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
+                                        </div>
+                                        <div className='m-widget4__info'>
+                                          <span className='m-widget4__title'>
+                                            {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
+                                          </span>
+                                          <br />
+                                          {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
                                               ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text}</span>
@@ -533,113 +533,113 @@ class LiveChat extends React.Component {
                                             }
                                           </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an image</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent an image</span>
                                             : <span>{session.lastRepliedBy.name} sent an image</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a video</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a video</span>
                                             : <span>{session.lastRepliedBy.name} sent a video</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an audio</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent an audio</span>
                                             : <span>{session.lastRepliedBy.name} sent an audio</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a file</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a file</span>
                                             : <span>{session.lastRepliedBy.name} sent a file</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a card</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a card</span>
                                             : <span>{session.lastRepliedBy.name} sent a card</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gallery</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a gallery</span>
                                             : <span>{session.lastRepliedBy.name} sent a gallery</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gif</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a gif</span>
                                             : <span>{session.lastRepliedBy.name} sent a gif</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a sticker</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a sticker</span>
                                             : <span>{session.lastRepliedBy.name} sent a sticker</span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
-                                        <span className='m-widget4__sub'>
-                                          {!session.lastRepliedBy.type
+                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
+                                          <span className='m-widget4__sub'>
+                                            {!session.lastRepliedBy.type
                                             ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
                                             : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
                                           }
-                                        </span>
+                                          </span>
                                         }
-                                        <br />
-                                        <span className='m-widget4__sub'>
-                                          <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                          <i className='fa fa-calendar' />&nbsp;&nbsp;
-                                          {timeSince(session.lastDateTime)}
-                                        </span>
-                                      </div>
-                                      <div className='m-widget4__ext'>
-                                        {
+                                          <br />
+                                          <span className='m-widget4__sub'>
+                                            <i className='fa fa-facebook-square' />&nbsp;&nbsp;
+                                            {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <i className='fa fa-calendar' />&nbsp;&nbsp;
+                                            {timeSince(session.lastDateTime)}
+                                          </span>
+                                        </div>
+                                        <div className='m-widget4__ext'>
+                                          {
                                           session.unreadCount &&
                                           <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                                             {session.unreadCount}
                                           </a>
                                         }
+                                        </div>
                                       </div>
-                                    </div>
                                     </div>
                                   )))
                                   : <p style={{marginLeft: '30px'}}>No data to display</p>
