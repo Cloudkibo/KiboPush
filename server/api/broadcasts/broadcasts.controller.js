@@ -125,18 +125,26 @@ exports.index = function (req, res) {
       }
       if (req.body.first_page) {
         if (!req.body.filter) {
+          let findCriteria = {
+            companyId: companyUser.companyId,
+            'datetime': req.body.filter_criteria.days !== '0' ? {
+              $gte: new Date(
+                (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            } : {$exists: true}
+          }
           Broadcasts.aggregate([
-            { $match: {companyId: companyUser.companyId} },
+            { $match: findCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
-                console.log(err)
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
@@ -148,7 +156,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
                   })
                 })
             })
@@ -181,7 +189,7 @@ exports.index = function (req, res) {
               } : {$exists: true}
             }
           }
-
+          console.log('filter_criteria', findCriteria)
           Broadcasts.aggregate([
             { $match: findCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
@@ -190,7 +198,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find(findCriteria).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
@@ -212,18 +220,26 @@ exports.index = function (req, res) {
         }
       } else {
         if (!req.body.filter) {
+          let findCriteria = {
+            companyId: companyUser.companyId,
+            'datetime': req.body.filter_criteria.days !== '0' ? {
+              $gte: new Date(
+                (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            } : {$exists: true}
+          }
           Broadcasts.aggregate([
-            { $match: {companyId: companyUser.companyId} },
+            { $match: findCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
-                console.log(err)
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
@@ -277,7 +293,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
@@ -705,7 +721,7 @@ function handleThePagePostsForAutoPosting (event, status) {
         return logger.serverLog(TAG,
           'Internal Server Error on connect')
       }
-    logger.serverLog(TAG, 'listeneres of PAGE POST OF AUTOPOSTING ' + JSON.stringify(autopostings))
+      logger.serverLog(TAG, 'listeneres of PAGE POST OF AUTOPOSTING ' + JSON.stringify(autopostings))
       autopostings.forEach(postingItem => {
         let pagesFindCriteria = {
           userId: postingItem.userId._id,

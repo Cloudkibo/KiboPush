@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequenceNew, createSequence, deleteSequence } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, deleteSequence } from '../../redux/actions/sequence.action'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -30,7 +30,7 @@ class Sequence extends React.Component {
       pageNumber: 0,
       filter: false
     }
-    props.fetchAllSequenceNew({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: ''}})
+    props.fetchAllSequence()
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSequence = this.searchSequence.bind(this)
@@ -95,14 +95,14 @@ class Sequence extends React.Component {
     this.setState({name: e.target.value, error: false})
   }
   displayData (n, sequences) {
-    let offset = n * 10
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 10) > sequences.length) {
+    if ((offset + 5) > sequences.length) {
       limit = sequences.length
     } else {
-      limit = offset + 10
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = sequences[i]
@@ -112,19 +112,19 @@ class Sequence extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
-    if (data.selected === 0) {
-      this.props.fetchAllSequenceNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
-    } else {
-      this.props.fetchAllSequenceNew({last_id: this.props.sequences.length > 0 ? this.props.sequences[this.props.sequences.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
-    }
+    // this.setState({pageNumber: data.selected})
+    // if (data.selected === 0) {
+    //   this.props.fetchAllSequenceNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    // } else {
+    //   this.props.fetchAllSequenceNew({last_id: this.props.sequences.length > 0 ? this.props.sequences[this.props.sequences.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    // }
     this.displayData(data.selected, this.props.sequences)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.sequences && nextProps.count) {
+    if (nextProps.sequences) {
       this.displayData(0, nextProps.sequences)
-      this.setState({ totalLength: nextProps.count })
+      this.setState({ totalLength: nextProps.sequences.length })
     }
   }
 
@@ -132,25 +132,29 @@ class Sequence extends React.Component {
     this.setState({searchValue: event.target.value})
     var filtered = []
     if (event.target.value !== '') {
-      this.setState({filter: true})
-      this.props.fetchAllSequenceNew({last_id: this.props.sequences.length > 0 ? this.props.sequences[this.props.sequences.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value}})
-    //   for (let i = 0; i < this.props.sequences.length; i++) {
-    //     if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase())) {
-    //       filtered.push(this.props.sequences[i])
-    //     }
-    //   }
+      // this.setState({filter: true})
+      // this.props.fetchAllSequenceNew()
+      for (let i = 0; i < this.props.sequences.length; i++) {
+        if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase())) {
+          filtered.push(this.props.sequences[i])
+        }
+      }
     // } else if (event.target.value !== '' && this.state.filterValue !== '') {
     //   for (let i = 0; i < this.props.sequences.length; i++) {
     //     if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
     //       filtered.push(this.props.sequences[i])
     //     }
     //   }
+    // } else {
+    //   // this.setState({filter: false})
+    //   // this.props.fetchAllSequenceNew()
+    // }
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
     } else {
-      this.setState({filter: false})
-      this.props.fetchAllSequenceNew({last_id: this.props.sequences.length > 0 ? this.props.sequences[this.props.sequences.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: ''}})
+      this.displayData(0, this.props.sequences)
+      this.setState({ totalLength: this.props.sequences })
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
@@ -373,8 +377,7 @@ class Sequence extends React.Component {
                                   onPageChange={this.handlePageClick}
                                   containerClassName={'pagination'}
                                   subContainerClassName={'pages pagination'}
-                                  activeClassName={'active'}
-                                  forcePage={this.state.pageNumber} />
+                                  activeClassName={'active'} />
                               </div>
                             </div>
                             : <p>No data to display</p>
@@ -399,15 +402,13 @@ class Sequence extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: (state.sequenceInfo.sequences),
-    count: (state.sequenceInfo.count)
-
+    sequences: (state.sequenceInfo.sequences)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAllSequenceNew: fetchAllSequenceNew,
+    fetchAllSequence: fetchAllSequence,
     createSequence: createSequence,
     deleteSequence: deleteSequence
   }, dispatch)

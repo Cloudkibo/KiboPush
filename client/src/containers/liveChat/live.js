@@ -138,7 +138,7 @@ class LiveChat extends React.Component {
     }
     this.props.fetchUserChats(session._id)
     console.log('session in changeActiveSession', session)
-    //  this.props.markRead(session._id, this.props.openSessions)
+    this.props.markRead(session._id, this.props.openSessions)
     this.props.getSubscriberTags(session.subscriber_id, this.msg)
   }
 

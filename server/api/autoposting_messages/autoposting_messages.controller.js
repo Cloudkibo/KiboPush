@@ -1,5 +1,6 @@
 const AutopostingMessages = require('./autoposting_messages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const mongoose = require('mongoose')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -53,7 +54,7 @@ exports.getMessages = function (req, res) {
     }
     if (req.body.first_page) {
       AutopostingMessages.aggregate([
-        { $match: {companyId: companyUser.companyId, autopostingId: req.params.id} },
+        { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), autopostingId: mongoose.Types.ObjectId(req.params.id)} },
         { $group: { _id: null, count: { $sum: 1 } } }
       ], (err, messagesCount) => {
         if (err) {
@@ -75,7 +76,7 @@ exports.getMessages = function (req, res) {
       })
     } else {
       AutopostingMessages.aggregate([
-        { $match: {companyId: companyUser.companyId, autopostingId: req.params.id} },
+        { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), autopostingId: mongoose.Types.ObjectId(req.params.id)} },
         { $group: { _id: null, count: { $sum: 1 } } }
       ], (err, messagesCount) => {
         if (err) {

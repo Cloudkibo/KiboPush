@@ -127,7 +127,7 @@ exports.allSurveys = function (req, res) {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
           $gte: new Date(
-            (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
+            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
           $lt: new Date(
             (new Date().getTime()))
         } : {$exists: true}
@@ -140,7 +140,7 @@ exports.allSurveys = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Surveys.find(findCriteria).limit(req.body.number_of_records)
+        Surveys.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, surveys) => {
           if (err) {
             return res.status(500).json({
@@ -171,7 +171,7 @@ exports.allSurveys = function (req, res) {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
           $gte: new Date(
-            (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
+            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
           $lt: new Date(
             (new Date().getTime()))
         } : {$exists: true}
@@ -184,7 +184,7 @@ exports.allSurveys = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Surveys.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+        Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, surveys) => {
           if (err) {
             return res.status(500).json({

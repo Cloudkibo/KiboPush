@@ -72,7 +72,7 @@ class BroadcastsInfo extends React.Component {
     console.log('componentWillReceiveProps in broadcastbydays', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.count })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchBroadcasts (event) {

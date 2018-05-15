@@ -3,14 +3,14 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchOpenSessions, fetchCloseSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
 import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
-import { loadPollsList } from './../redux/actions/poll.actions'
-import { loadSurveysList } from './../redux/actions/surveys.actions'
+import { loadPollsListNew } from './../redux/actions/poll.actions'
+import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
 import { loadSubscribersList } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
@@ -81,21 +81,23 @@ socket.on('message', (data) => {
     store.dispatch(loadBroadcastsList())
     store.dispatch(sentVsSeen())
   } else if (data.action === 'poll_created') {
-    store.dispatch(loadPollsList())
+    store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
     store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
-    store.dispatch(loadSurveysList())
+    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
     store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadSubscribersList())
   } else if (['session_assign', 'session_status', 'unsubscribe'].indexOf(data.action) !== -1) {
-    store.dispatch(fetchSessions())
+    store.dispatch(fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
+    store.dispatch(fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
     store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchNotifications())
   } else if (data.action === 'agent_replied') {
-    store.dispatch(fetchSessions())
+    store.dispatch(fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
+    store.dispatch(fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
     store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchUserChats(data.payload.session_id))
   } else if (['sequence_create', 'sequence_update', 'sequence_delete'].indexOf(data.action) > -1) {

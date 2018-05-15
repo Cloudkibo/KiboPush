@@ -34,10 +34,10 @@ export function showSurveys (data) {
 }
 
 export function showSurveysNew (data) {
-  let surveys = data.surveys.reverse()
+  //  let surveys = data.surveys.reverse()
   return {
     type: ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST_NEW,
-    surveys: surveys,
+    surveys: data.surveys,
     count: data.count
   }
 }
@@ -51,10 +51,10 @@ export function showPolls (data) {
 }
 
 export function showPollsNew (data) {
-  let polls = data.polls.reverse()
+  //  let polls = data.polls
   return {
     type: ActionTypes.LOAD_TEMPLATE_POLLS_LIST_NEW,
-    polls: polls,
+    polls: data.polls,
     count: data.count
   }
 }
@@ -90,10 +90,9 @@ export function showBroadcasts (data) {
 }
 
 export function showBroadcastsNew (data) {
-  let broadcasts = data.broadcasts.reverse()
   return {
     type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW,
-    broadcasts: broadcasts,
+    broadcasts: data.broadcasts,
     count: data.count
   }
 }
@@ -191,13 +190,13 @@ export function loadPollDetails (id) {
       .then(res => dispatch(updatePollDetails(res)))
   }
 }
-export function deletePoll (id, msg) {
+export function deletePoll (id, msg, data) {
   return (dispatch) => {
     callApi(`templates/deletePoll/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Poll template deleted')
-          dispatch(loadPollsList())
+          dispatch(loadPollsListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete poll template. ${res.description}`)
@@ -208,13 +207,13 @@ export function deletePoll (id, msg) {
       })
   }
 }
-export function deleteSurvey (id, msg) {
+export function deleteSurvey (id, msg, data) {
   return (dispatch) => {
     callApi(`templates/deleteSurvey/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Survey template deleted')
-          dispatch(loadSurveysList())
+          dispatch(loadSurveysListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete survey template. ${res.description}`)
@@ -291,8 +290,12 @@ export function loadBroadcastsList () {
 }
 
 export function loadBroadcastsListNew (data) {
+  console.log('data for broadcasts', data)
   return (dispatch) => {
-    callApi('templates/getAllBroadcasts', 'post', data).then(res => dispatch(showBroadcastsNew(res.payload)))
+    callApi('templates/getAllBroadcasts', 'post', data).then(res => {
+      console.log('response from loadBroadcastsListNew', res)
+      dispatch(showBroadcastsNew(res.payload))
+    })
   }
 }
 
@@ -303,13 +306,13 @@ export function createBroadcast (broadcast, msg) {
   }
 }
 
-export function deleteBroadcast (id, msg) {
+export function deleteBroadcast (id, msg, data) {
   return (dispatch) => {
     callApi(`templates/deleteBroadcast/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Broadcast template deleted')
-          dispatch(loadBroadcastsList())
+          dispatch(loadBroadcastsListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete broadcast template. ${res.description}`)

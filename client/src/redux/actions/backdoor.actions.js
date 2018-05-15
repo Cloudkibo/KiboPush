@@ -113,7 +113,7 @@ export function updateSessionsGraphData (data) {
 export function updateBroadcastsList (data) {
   return {
     type: ActionTypes.LOAD_BROADCASTS_LIST,
-    data: data.broadcasts.reverse(),
+    data: data.broadcasts,
     count: data.count
   }
 }
@@ -121,7 +121,7 @@ export function updateBroadcastsList (data) {
 export function updatePollList (data) {
   return {
     type: ActionTypes.LOAD_POLLS_LIST,
-    data: data.polls.reverse(),
+    data: data.polls,
     count: data.count
   }
 }
@@ -129,7 +129,7 @@ export function updatePollList (data) {
 export function updateSurveysList (data) {
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST,
-    data: data.surveys.reverse(),
+    data: data.surveys,
     count: data.count
   }
 }
