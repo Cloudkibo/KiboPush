@@ -93,7 +93,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-statistics' />
+              <i className='m-menu__link-icon flaticon-comment' />
               <span className='m-menu__link-text'>Comment Capture</span>
             </Link>
           </li>
