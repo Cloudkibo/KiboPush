@@ -348,7 +348,7 @@ exports.getfbMessage = function (req, res) {
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({pageId: req.body.entry[0].id}, (err, pages) => {
       if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
       pages.forEach((page) => {
         PhoneNumber.update({

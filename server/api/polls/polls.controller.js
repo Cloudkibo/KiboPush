@@ -463,8 +463,8 @@ exports.send = function (req, res) {
         { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
         */
         const messageData = {
-          text: req.body.statement,
-          quick_replies: [
+          text: req.body.statement, // poll question
+          quick_replies: [ // options
             {
               'content_type': 'text',
               'title': req.body.options[0],
