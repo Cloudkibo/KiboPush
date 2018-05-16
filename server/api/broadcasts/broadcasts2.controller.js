@@ -445,12 +445,17 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-
+  logger.serverLog(TAG,
+    `req.files.file ${JSON.stringify(req.files.file.path)}`)
+  logger.serverLog(TAG,
+    `req.files.file ${JSON.stringify(req.files.file.name)}`)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles/' + serverPath,
     err => {
       if (err) {
+        logger.serverLog(TAG,
+          `error in file uploading ${JSON.stringify(err)}`)
         return res.status(500).json({
           status: 'failed',
           description: 'internal server error' + JSON.stringify(err)
