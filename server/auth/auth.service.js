@@ -312,91 +312,94 @@ function fetchPages (url, user) {
 
     const data = resp.body.data
     const cursor = resp.body.paging
-
-    data.forEach((item) => {
-      // logger.serverLog(TAG,
-      //   `foreach ${JSON.stringify(item.name)}`)
-      //  createMenuForPage(item)
-      const options2 = {
-        url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
-        qs: {access_token: item.access_token},
-        method: 'GET'
-      }
-      needle.get(options2.url, options2, (error, fanCount) => {
-        if (error !== null) {
-          return logger.serverLog(TAG, `Error occurred ${error}`)
-        } else {
-          // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
-          //   fanCount.body.fan_count)}`)
-          CompanyUsers.findOne({domain_email: user.domain_email},
-            (err, companyUser) => {
-              if (err) {
-                return logger.serverLog(TAG, {
-                  status: 'failed',
-                  description: `Internal Server Error ${JSON.stringify(err)}`
-                })
-              }
-              if (!companyUser) {
-                return logger.serverLog(TAG, {
-                  status: 'failed',
-                  description: 'The user account does not belong to any company. Please contact support'
-                })
-              }
-              Pages.findOne({
-                pageId: item.id,
-                userId: user._id,
-                companyId: companyUser.companyId
-              }, (err, page) => {
-                if (err) {
-                  logger.serverLog(TAG,
-                    `Internal Server Error ${JSON.stringify(err)}`)
-                }
-                if (!page) {
-                  let payloadPage = {
-                    pageId: item.id,
-                    pageName: item.name,
-                    accessToken: item.access_token,
-                    userId: user._id,
-                    companyId: companyUser.companyId,
-                    likes: fanCount.body.fan_count,
-                    pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
-                    connected: false
-                  }
-                  if (fanCount.body.username) {
-                    payloadPage = _.merge(payloadPage,
-                      {pageUserName: fanCount.body.username})
-                  }
-                  var pageItem = new Pages(payloadPage)
-                  // save model to MongoDB
-                  pageItem.save((err, page) => {
-                    if (err) {
-                      logger.serverLog(TAG, `Error occurred ${err}`)
-                    }
-                    logger.serverLog(TAG,
-                      `Page ${item.name} created with id ${page.pageId}`)
-                  })
-                } else {
-                  page.likes = fanCount.body.fan_count
-                  page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
-                  page.accessToken = item.access_token
-                  if (fanCount.body.username) page.pageUserName = fanCount.body.username
-                  page.save((err) => {
-                    if (err) {
-                      logger.serverLog(TAG,
-                        `Internal Server Error ${JSON.stringify(err)}`)
-                    }
-                    // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
-                  })
-                }
-              })
-            })
+    if (data) {
+      data.forEach((item) => {
+        // logger.serverLog(TAG,
+        //   `foreach ${JSON.stringify(item.name)}`)
+        //  createMenuForPage(item)
+        const options2 = {
+          url: `https://graph.facebook.com/v2.10/${item.id}/?fields=fan_count,username&access_token=${item.access_token}`,
+          qs: {access_token: item.access_token},
+          method: 'GET'
         }
+        needle.get(options2.url, options2, (error, fanCount) => {
+          if (error !== null) {
+            return logger.serverLog(TAG, `Error occurred ${error}`)
+          } else {
+            // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
+            //   fanCount.body.fan_count)}`)
+            CompanyUsers.findOne({domain_email: user.domain_email},
+              (err, companyUser) => {
+                if (err) {
+                  return logger.serverLog(TAG, {
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+                if (!companyUser) {
+                  return logger.serverLog(TAG, {
+                    status: 'failed',
+                    description: 'The user account does not belong to any company. Please contact support'
+                  })
+                }
+                Pages.findOne({
+                  pageId: item.id,
+                  userId: user._id,
+                  companyId: companyUser.companyId
+                }, (err, page) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Internal Server Error ${JSON.stringify(err)}`)
+                  }
+                  if (!page) {
+                    let payloadPage = {
+                      pageId: item.id,
+                      pageName: item.name,
+                      accessToken: item.access_token,
+                      userId: user._id,
+                      companyId: companyUser.companyId,
+                      likes: fanCount.body.fan_count,
+                      pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
+                      connected: false
+                    }
+                    if (fanCount.body.username) {
+                      payloadPage = _.merge(payloadPage,
+                        {pageUserName: fanCount.body.username})
+                    }
+                    var pageItem = new Pages(payloadPage)
+                    // save model to MongoDB
+                    pageItem.save((err, page) => {
+                      if (err) {
+                        logger.serverLog(TAG, `Error occurred ${err}`)
+                      }
+                      logger.serverLog(TAG,
+                        `Page ${item.name} created with id ${page.pageId}`)
+                    })
+                  } else {
+                    page.likes = fanCount.body.fan_count
+                    page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+                    page.accessToken = item.access_token
+                    if (fanCount.body.username) page.pageUserName = fanCount.body.username
+                    page.save((err) => {
+                      if (err) {
+                        logger.serverLog(TAG,
+                          `Internal Server Error ${JSON.stringify(err)}`)
+                      }
+                      // logger.serverLog(TAG, `Likes updated for ${page.pageName}`)
+                    })
+                  }
+                })
+              })
+          }
+        })
       })
-    })
+    } else {
+      logger.serverLog(TAG, 'Empty response from graph API to get pages list data')
+    }
     if (cursor && cursor.next) {
       fetchPages(cursor.next, user)
     } else {
-      logger.serverLog(TAG, 'Parameters are missing.')
+      logger.serverLog(TAG, 'Undefined Cursor from graph API')
     }
   })
 }
