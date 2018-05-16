@@ -99,7 +99,8 @@ class Bot extends React.Component {
   }
 
   updateName (e) {
-    this.setState({name: e.target.value, error: false})
+    var name = e.target.value.replace('-', '')
+    this.setState({name: name, error: false})
   }
 
   searchBot (event) {
@@ -204,7 +205,7 @@ class Bot extends React.Component {
       this.setState({error: true})
     } else {
       var botName = this.state.name.trim()
-      botName = botName.replace(/\s+/g, '_')
+      botName = botName.replace(/\s+/g, '-')
       this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
       browserHistory.push({
         pathname: `/createBot`
@@ -429,7 +430,7 @@ class Bot extends React.Component {
                               <tr key={i} data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}}>
-                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName.split('_').join(' ')}</span></td>
+                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName ? bot.botName.split('-').join(' ') : ''}</span></td>
                                 <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.pageId.pageName}</span></td>
                                 <td data-field='page' className='m-datatable__cell'>
                                   {bot.isActive === 'true'
