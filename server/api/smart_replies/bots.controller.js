@@ -47,27 +47,25 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
       if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
         logger.serverLog(TAG, 'No response found')
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'missCount' : 1}}).exec((err, db_res) => {
-            if (err) {
-              throw err;
-            }
-            else {
-              console.log(db_res);
-            }
-          })
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, db_res) => {
+          if (err) {
+            throw err
+          } else {
+            console.log(db_res)
+          }
+        })
         return {found: false, intent_name: 'Not Found'}
       }
       var intent = JSON.parse(witres.body).entities.intent[0]
       if (intent.confidence > 0.55) {
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc : {'hitCount' : 1}}).exec((err, db_res) => {
-            if (err) {
-              throw err;
-            }
-            else {
-              console.log(db_res);
-            }
-          })
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'hitCount': 1}}).exec((err, db_res) => {
+          if (err) {
+            throw err
+          } else {
+            console.log(db_res)
+          }
+        })
         for (let i = 0; i < bot.payload.length; i++) {
           if (bot.payload[i].intent_name == intent.value) {
             sendMessenger(bot.payload[i].answer, pageId, senderId)
@@ -117,15 +115,15 @@ exports.respond = function (payload) {
     logger.serverLog(TAG, `Payload received is not for bot`)
     return
   }
-  if(!payload.entry){
+  if (!payload.entry) {
     logger.serverLog(TAG, `Payload received is not for bot does not contain entry`)
   	return
   }
-  if(!payload.entry[0].messaging){
+  if (!payload.entry[0].messaging) {
     logger.serverLog(TAG, `Payload received is not for bot does contain messaging field`)
   	return
   }
-  if(!payload.entry[0].messaging[0]){
+  if (!payload.entry[0].messaging[0]) {
     logger.serverLog(TAG, `Payload received is not for bot does not contain messaging array`)
   	return
   }
@@ -133,7 +131,7 @@ exports.respond = function (payload) {
   var pageId = messageDetails.recipient.id
   var senderId = messageDetails.sender.id
 
-  if(!messageDetails.message){
+  if (!messageDetails.message) {
   	return
   }
   if (messageDetails.message.is_echo) {
@@ -149,12 +147,12 @@ exports.respond = function (payload) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-		
+
 		// Return if no bot found
-		if(!bot){
-      logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
-			return
-		}
+      if (!bot) {
+        logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
+        return
+      }
       if (bot.isActive === 'true') {
             // Write the bot response logic here
         logger.serverLog(TAG, 'Responding using the bot as status is Active')
@@ -279,7 +277,7 @@ exports.create = function (req, res) {
               witAppName: uniquebotName,
               isActive: req.body.isActive,
               hitCount: 0,
-              missCount: 0,
+              missCount: 0
             })
 
             bot.save((err, newbot) => {
@@ -367,7 +365,7 @@ exports.delete = function (req, res) {
       }
       logger.serverLog(TAG,
               `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
-      if(bot.length == 0){
+      if (bot.length == 0) {
       	logger.serverLog(TAG,
               `Cannot find a bot to delete`)
       	return
@@ -409,6 +407,4 @@ exports.delete = function (req, res) {
            }
          })
     })
-
-
 }
