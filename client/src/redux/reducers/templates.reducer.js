@@ -32,7 +32,7 @@ export function templatesInfo (state = {}, action) {
     case ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST_NEW:
       return Object.assign({}, state, {
         surveys: action.surveys,
-        count: action.count
+        surveysCount: action.count
       })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST:
       return Object.assign({}, state, {
@@ -41,7 +41,7 @@ export function templatesInfo (state = {}, action) {
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST_NEW:
       return Object.assign({}, state, {
         polls: action.polls,
-        count: action.count
+        pollsCount: action.count
       })
     case ActionTypes.LOAD_TEMPLATE_SURVEY_DETAILS:
       return Object.assign({}, state, {
@@ -59,7 +59,7 @@ export function templatesInfo (state = {}, action) {
     case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW:
       return Object.assign({}, state, {
         broadcasts: action.broadcasts,
-        count: action.count
+        broadcastsCount: action.count
       })
     case ActionTypes.LOAD_TEMPLATE_BROADCAST_DETAILS:
       return Object.assign({}, state, {

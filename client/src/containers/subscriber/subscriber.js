@@ -866,7 +866,7 @@ class Subscriber extends React.Component {
                                         <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
                                           <option key='' value='' disabled>Filter by Status...</option>
                                           <option key='ALL' value=''>ALL</option>
-                                          <option key='subscribed' value={true}>Subscribed</option>
+                                          <option key='subscribed' value>Subscribed</option>
                                           <option key='unsubscribed' value={false}>Unsubscribed</option>
                                         </select>
                                       </div>

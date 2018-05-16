@@ -79,6 +79,8 @@ class templatePolls extends React.Component {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({pollsData: [], pollsDataAll: [], totalLength: 0})
     }
   }
   searchPoll (event) {
@@ -197,7 +199,7 @@ class templatePolls extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deletePoll(this.state.deleteid, this.msg)
+                            this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
@@ -206,8 +208,7 @@ class templatePolls extends React.Component {
                   }
                 </div>
               </div>
-              { this.props.polls && this.props.polls.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+              <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                     <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchPoll(event) }} />
@@ -224,7 +225,7 @@ class templatePolls extends React.Component {
                       <option value='' disabled>Filter by Category...</option>
                       <option value=''>All</option>
                       {
-                        this.props.categories.map((category, i) => (
+                        this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>
                         ))
                       }
@@ -311,13 +312,9 @@ class templatePolls extends React.Component {
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-            }
             </div>
           </div>
         </div>
@@ -329,7 +326,7 @@ class templatePolls extends React.Component {
 function mapStateToProps (state) {
   return {
     polls: state.templatesInfo.polls,
-    count: state.templatesInfo.count,
+    count: state.templatesInfo.pollsCount,
     categories: state.templatesInfo.categories
   }
 }

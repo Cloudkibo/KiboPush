@@ -19,7 +19,8 @@ class BroadcastsInfo extends React.Component {
       selectedFilterValue: 10,
       selectedDays: 10,
       searchValue: '',
-      filter: true
+      filter: true,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -72,7 +73,7 @@ class BroadcastsInfo extends React.Component {
     console.log('componentWillReceiveProps in broadcastbydays', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.count })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchBroadcasts (event) {

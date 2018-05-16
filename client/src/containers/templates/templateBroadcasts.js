@@ -95,6 +95,8 @@ class TemplateBroadcasts extends React.Component {
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({broadcastsData: [], broadcastsDataAll: [], totalLength: 0})
     }
   }
 
@@ -215,7 +217,7 @@ class TemplateBroadcasts extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deleteBroadcast(this.state.deleteid, this.msg)
+                            this.props.deleteBroadcast(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
@@ -224,8 +226,7 @@ class TemplateBroadcasts extends React.Component {
                   }
                 </div>
               </div>
-              { this.props.broadcasts && this.props.broadcasts.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+              <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                     <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchBroadcast(event) }} />
@@ -242,7 +243,7 @@ class TemplateBroadcasts extends React.Component {
                       <option value='' disabled>Filter by Category...</option>
                       <option value=''>All</option>
                       {
-                        this.props.categories.map((category, i) => (
+                        this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>
                         ))
                       }
@@ -357,13 +358,9 @@ class TemplateBroadcasts extends React.Component {
                       activeClassName={'active'}
                       forcePage={this.state.pageNumber} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-            }
             </div>
           </div>
         </div>
@@ -375,7 +372,7 @@ class TemplateBroadcasts extends React.Component {
 function mapStateToProps (state) {
   return {
     broadcasts: state.templatesInfo.broadcasts,
-    count: state.templatesInfo.count,
+    count: state.templatesInfo.broadcastsCount,
     categories: state.templatesInfo.categories
   }
 }
