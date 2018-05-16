@@ -238,7 +238,7 @@ class CreateBot extends React.Component {
                         <div className='form-group' id='titl'>
                           <label className='control-label'>Bot Name:</label>
                           <input className='form-control'
-                            value={this.state.name} disabled />
+                            value={(this.state.name).split('_').join(' ')} disabled />
                         </div>
                       </div>
                       <br />
