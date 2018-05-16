@@ -99,8 +99,7 @@ class Bot extends React.Component {
   }
 
   updateName (e) {
-    let name = e.target.value.trim()
-    this.setState({name: name, error: false})
+    this.setState({name: e.target.value, error: false})
   }
 
   searchBot (event) {
@@ -204,7 +203,8 @@ class Bot extends React.Component {
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
-      var botName = this.state.name.replace(/\s+/g, '_')
+      var botName = this.state.name.trim()
+      botName = botName.replace(/\s+/g, '_')
       this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
       browserHistory.push({
         pathname: `/createBot`
