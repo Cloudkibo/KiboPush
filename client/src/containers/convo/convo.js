@@ -33,7 +33,8 @@ class Convo extends React.Component {
       isShowingModal: false,
       selectedDays: '0',
       searchValue: '',
-      filter: false
+      filter: false,
+      pageNumber: 0
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     props.loadSubscribersList()
@@ -117,7 +118,13 @@ class Convo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    this.setState({pageNumber: data.selected})
+    console.log('data.selected', data.selected)
+    if (data.selected === 0) {
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    } else {
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    }
     this.displayData(data.selected, this.props.broadcasts)
   }
 
@@ -186,7 +193,7 @@ class Convo extends React.Component {
       //   }
       // }
     } else {
-      this.setState({filter: false})
+      //  this.setState({filter: false})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
       //  filtered = this.props.broadcasts
     }
@@ -382,7 +389,7 @@ class Convo extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span >Title</span>
                               </th>
-                              <th data-field='statement' style={{width: 100}}
+                              <th data-field='statement' style={{width: 120}}
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span>Type</span>
                               </th>
@@ -411,7 +418,7 @@ class Convo extends React.Component {
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
-                                <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                <td data-field='type' style={{width: 120, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
                                 <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
                                 <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
                                 <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
@@ -435,6 +442,7 @@ class Convo extends React.Component {
                             pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
+                            forcePage={this.state.pageNumber}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}

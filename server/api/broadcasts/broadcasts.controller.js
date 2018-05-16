@@ -125,18 +125,26 @@ exports.index = function (req, res) {
       }
       if (req.body.first_page) {
         if (!req.body.filter) {
+          let findCriteria = {
+            companyId: companyUser.companyId,
+            'datetime': req.body.filter_criteria.days !== '0' ? {
+              $gte: new Date(
+                (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            } : {$exists: true}
+          }
           Broadcasts.aggregate([
-            { $match: {companyId: companyUser.companyId} },
+            { $match: findCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
-                console.log(err)
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
@@ -148,7 +156,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount[0].count, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
                   })
                 })
             })
@@ -181,7 +189,7 @@ exports.index = function (req, res) {
               } : {$exists: true}
             }
           }
-
+          console.log('filter_criteria', findCriteria)
           Broadcasts.aggregate([
             { $match: findCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
@@ -190,7 +198,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find(findCriteria).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
@@ -212,18 +220,26 @@ exports.index = function (req, res) {
         }
       } else {
         if (!req.body.filter) {
+          let findCriteria = {
+            companyId: companyUser.companyId,
+            'datetime': req.body.filter_criteria.days !== '0' ? {
+              $gte: new Date(
+                (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            } : {$exists: true}
+          }
           Broadcasts.aggregate([
-            { $match: {companyId: companyUser.companyId} },
+            { $match: findCriteria },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
-                console.log(err)
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
@@ -277,7 +293,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Broadcasts.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
             .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
@@ -334,15 +350,11 @@ exports.getfbMessage = function (req, res) {
 // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
   logger.serverLog(TAG,
   `something received from facebook FIRST ${JSON.stringify(req.body)}`)
-  botController.respond(JSON.parse(JSON.stringify(req.body)))
 
-  logger.serverLog(TAG,
-    `something received from facebook ${JSON.stringify(req.body)}`)
+  botController.respond(JSON.parse(JSON.stringify(req.body)))
 
   let subscriberByPhoneNumber = false
   let phoneNumber = ''
-  logger.serverLog(TAG,
-    `something received from facebook ${JSON.stringify(req.body)}`, true)
   if (req.body.entry && req.body.entry[0].messaging &&
     req.body.entry[0].messaging[0] &&
     req.body.entry[0].messaging[0].prior_message &&
@@ -352,7 +364,7 @@ exports.getfbMessage = function (req, res) {
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({pageId: req.body.entry[0].id}, (err, pages) => {
       if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
       pages.forEach((page) => {
         PhoneNumber.update({
@@ -593,10 +605,12 @@ exports.getfbMessage = function (req, res) {
         }
       }
     } else if (payload.changes) {
+      logger.serverLog(TAG, 'This seems to PAGE POST OF AUTOPOSTING')
       const changeEvents = payload.changes
       for (let i = 0; i < changeEvents.length; i++) {
         const event = changeEvents[i]
         if (event.field && event.field === 'feed') {
+          logger.serverLog(TAG, 'This indeed is PAGE POST OF AUTOPOSTING')
           if (event.value.verb === 'add' &&
             (['status', 'photo', 'video', 'share'].indexOf(event.value.item) >
             -1)) {
@@ -699,6 +713,7 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
 }
 
 function handleThePagePostsForAutoPosting (event, status) {
+  logger.serverLog(TAG, 'Going to handle PAGE POST OF AUTOPOSTING')
   AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
     .populate('userId')
     .exec((err, autopostings) => {
@@ -706,6 +721,7 @@ function handleThePagePostsForAutoPosting (event, status) {
         return logger.serverLog(TAG,
           'Internal Server Error on connect')
       }
+      logger.serverLog(TAG, 'listeneres of PAGE POST OF AUTOPOSTING ' + JSON.stringify(autopostings))
       autopostings.forEach(postingItem => {
         let pagesFindCriteria = {
           userId: postingItem.userId._id,
@@ -1152,16 +1168,19 @@ function updateseenstatus (req) {
       }
       LiveChat.findOne({sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id}, (err, chat) => {
         if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-        require('./../../config/socketio').sendMessageToClient({
-          room_id: chat.company_id,
-          body: {
-            action: 'message_seen',
-            payload: {
-              session_id: chat.session_id
+        if (chat) {
+          require('./../../config/socketio').sendMessageToClient({
+            room_id: chat.company_id,
+            body: {
+              action: 'message_seen',
+              payload: {
+                session_id: chat.session_id
+              }
             }
-          }
-        })
+          })
+        }
       })
     })
     // updating seen count for autoposting

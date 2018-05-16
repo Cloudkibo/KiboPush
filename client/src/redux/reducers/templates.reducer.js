@@ -29,9 +29,19 @@ export function templatesInfo (state = {}, action) {
       return Object.assign({}, state, {
         surveys: action.data
       })
+    case ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST_NEW:
+      return Object.assign({}, state, {
+        surveys: action.surveys,
+        surveysCount: action.count
+      })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST:
       return Object.assign({}, state, {
         polls: action.data
+      })
+    case ActionTypes.LOAD_TEMPLATE_POLLS_LIST_NEW:
+      return Object.assign({}, state, {
+        polls: action.polls,
+        pollsCount: action.count
       })
     case ActionTypes.LOAD_TEMPLATE_SURVEY_DETAILS:
       return Object.assign({}, state, {
@@ -45,6 +55,11 @@ export function templatesInfo (state = {}, action) {
     case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST:
       return Object.assign({}, state, {
         broadcasts: action.data
+      })
+    case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW:
+      return Object.assign({}, state, {
+        broadcasts: action.broadcasts,
+        broadcastsCount: action.count
       })
     case ActionTypes.LOAD_TEMPLATE_BROADCAST_DETAILS:
       return Object.assign({}, state, {

@@ -1009,14 +1009,14 @@ exports.saveGreetingText = function (req, res) {
           }
           Pages.findOne(
             {pageId: req.body.pageId, companyId: companyUser.companyId},
-            (err, pages) => {
+            (err, page) => {
               if (err) {
                 res.status(500).json({
                   status: 'Failed',
                   description: err
                 })
               }
-              const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pages.accessToken}`
+              const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
 
               needle.request('post', requesturl, valueForMenu, {json: true},
                 function (err, resp) {

@@ -383,9 +383,11 @@ class CreateConvo extends React.Component {
   }
 
   sendConvo () {
+    //  this.setState({tabActive: 'broadcast'})
     if (this.state.broadcast.length === 0) {
       return
     }
+    this.initTab()
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -440,7 +442,7 @@ class CreateConvo extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
-        this.setState({tabActive: 'broadcast'})
+        //  this.setState({tabActive: 'broadcast'})
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         // this.setState({broadcast: [], list: []})
       }

@@ -10,6 +10,7 @@ const Polls = require('./../polls/Polls.model')
 const Surveys = require('./../surveys/surveys.model')
 const PollResponses = require('./../polls/pollresponse.model')
 const SurveyResponses = require('./../surveys/surveyresponse.model')
+const mongoose = require('mongoose')
 
 let _ = require('lodash')
 exports.allLists = function (req, res) {
@@ -62,15 +63,18 @@ exports.getAll = function (req, res) {
         })
       }
       if (req.body.first_page) {
+        let findCriteria = {
+          companyId: mongoose.Types.ObjectId(companyUser.companyId)
+        }
         Lists.aggregate([
-          { $match: {companyId: companyUser.companyId} },
+          { $match: findCriteria },
           { $group: { _id: null, count: { $sum: 1 } } }
         ], (err, listsCount) => {
           if (err) {
             return res.status(404)
               .json({status: 'failed', description: 'BroadcastsCount not found'})
           }
-          Lists.find({companyId: companyUser.companyId}).limit(req.body.number_of_records)
+          Lists.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
           .exec((err, lists) => {
             if (err) {
               return res.status(500).json({
@@ -83,15 +87,18 @@ exports.getAll = function (req, res) {
           })
         })
       } else {
+        let findCriteria = {
+          companyId: mongoose.Types.ObjectId(companyUser.companyId)
+        }
         Lists.aggregate([
-          { $match: {companyId: companyUser.companyId} },
+          { $match: findCriteria },
           { $group: { _id: null, count: { $sum: 1 } } }
         ], (err, listsCount) => {
           if (err) {
             return res.status(404)
               .json({status: 'failed', description: 'BroadcastsCount not found'})
           }
-          Lists.find({companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+          Lists.find([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
           .exec((err, lists) => {
             if (err) {
               return res.status(500).json({

@@ -12,7 +12,7 @@ const moment = extendMoment(Moment)
 class SurveysInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysByDays(0)
+    props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       SurveyData: [],
       totalLength: 0,
@@ -20,7 +20,10 @@ class SurveysInfo extends React.Component {
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
       selectedFilterValue: 10,
-      selectedDays: 10
+      selectedDays: 10,
+      searchValue: '',
+      filter: true,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -46,14 +49,14 @@ class SurveysInfo extends React.Component {
   }
 
   displayData (n, surveys) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > surveys.length) {
+    if ((offset + 10) > surveys.length) {
       limit = surveys.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = surveys[i]
@@ -63,24 +66,36 @@ class SurveysInfo extends React.Component {
   }
 
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else {
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    }
     this.displayData(data.selected, this.props.surveys)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    console.log('componentWillReceiveProps in surveys', nextProps)
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
     }
   }
   searchSurveys (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.surveys.length; i++) {
-      if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.surveys[i])
-      }
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
     }
-
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // for (let i = 0; i < this.props.surveys.length; i++) {
+    //   if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.surveys[i])
+    //   }
+    // }
+    //
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   onFilter (val) {
     if (!val) {
@@ -95,19 +110,24 @@ class SurveysInfo extends React.Component {
       this.setState({ selectedFilterValue: val })
     }
   }
-  onDaysChange (e) {
-    var defaultVal = 10
-    var value = e.target.value
-    this.setState({selectedDays: value})
-    if (value && value !== '') {
-      if (value.indexOf('.') !== -1) {
-        value = Math.floor(value)
-      }
-      this.props.loadSurveysByDays(value)
-    } else if (value === '') {
-      this.setState({selectedDays: defaultVal})
-      this.props.loadSurveysByDays(defaultVal)
+  onDaysChange (event) {
+    this.setState({selectedDays: event.target.value})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
     }
+    // var defaultVal = 10
+    // var value = e.target.value
+    // this.setState({selectedDays: value})
+    // if (value && value !== '') {
+    //   if (value.indexOf('.') !== -1) {
+    //     value = Math.floor(value)
+    //   }
+    //   this.props.loadSurveysByDays(value)
+    // } else if (value === '') {
+    //   this.setState({selectedDays: defaultVal})
+    //   this.props.loadSurveysByDays(defaultVal)
+    // }
   }
   filterByDays (val) {
     var data = []
@@ -268,13 +288,14 @@ class SurveysInfo extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No search results found. </p>
                 }
@@ -294,7 +315,8 @@ class SurveysInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    surveys: state.backdoorInfo.surveys
+    surveys: state.backdoorInfo.surveys,
+    count: state.backdoorInfo.surveysCount
   }
 }
 

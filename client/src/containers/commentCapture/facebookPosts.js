@@ -34,6 +34,7 @@ class FacebookPosts extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPosts = this.searchPosts.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.getPostText = this.getPostText.bind(this)
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -44,6 +45,32 @@ class FacebookPosts extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Comment Capture'
+  }
+  getPostText (payload) {
+    var text = ''
+    var videoPost = false
+    var imagePost = false
+    for (var i = 0; i < payload.length; i++) {
+      if (payload[i].componentType === 'text') {
+        text = payload[i].text
+        break
+      }
+      if (payload[i].componentType === 'video') {
+        videoPost = true
+      }
+      if (payload[i].componentType === 'image') {
+        imagePost = true
+      }
+    }
+    if (i === payload.length && text === '') {
+      if (videoPost) {
+        text = 'Video'
+      }
+      if (imagePost) {
+        text = 'Image'
+      }
+    }
+    return text
   }
   onEdit (post) {
     this.props.saveCurrentPost(post)
@@ -82,8 +109,11 @@ class FacebookPosts extends React.Component {
     var filtered = []
     if (event.target.value !== '') {
       for (let i = 0; i < this.props.posts.length; i++) {
-        if (this.props.posts[i].payload && this.props.posts[i].payload.toLowerCase().includes(event.target.value.toLowerCase())) {
-          filtered.push(this.props.posts[i])
+        if (this.props.posts[i].payload) {
+          let postText = this.getPostText(this.props.posts[i].payload)
+          if (postText.toLowerCase().includes(event.target.value.toLowerCase())) {
+            filtered.push(this.props.posts[i])
+          }
         }
       }
     } else {
@@ -204,9 +234,9 @@ class FacebookPosts extends React.Component {
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
-                                <td data-field='post' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.payload}</span></td>
+                                <td data-field='post' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{this.getPostText(post.payload)}</span></td>
                                 <td data-field='keywords' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.reply}</span></td>
-                                <td data-field='commentsCount' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{post.commentsCount}</span></td>
+                                <td data-field='commentsCount' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{post.commentsCount ? post.commentCount : '0'}</span></td>
                                 <td data-field='dateCreated' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{handleDate(post.datetime)}</span></td>
                                 <td data-field='actions' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'>
                                   <span>

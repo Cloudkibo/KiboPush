@@ -19,8 +19,8 @@ export function appendSentSeenResponsesData (data) {
       }
     }
   }
-  var newPoll = polls.reverse()
-  return newPoll
+  //  var newPoll = polls.reverse()
+  return polls
 }
 
 export function updatePollsList (data) {
@@ -96,6 +96,7 @@ export function loadPollsList (days) {
   }
 }
 export function loadPollsListNew (data) {
+  console.log('data for polls', data)
   return (dispatch) => {
     callApi(`polls/allPolls`, 'post', data).then(res => {
       console.log('response from allPolls', res)
@@ -193,13 +194,13 @@ export function getAllPollResults (pollid) {
       })
   }
 }
-export function deletePoll (id, msg) {
+export function deletePoll (id, msg, data) {
   return (dispatch) => {
     callApi(`polls/deletePoll/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Poll deleted successfully')
-          dispatch(loadPollsList())
+          dispatch(loadPollsListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete poll. ${res.description}`)

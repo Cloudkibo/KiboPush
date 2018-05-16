@@ -25,7 +25,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    //  this.props.loadSurveysList()
+    props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
     this.state = {
       alertMessage: '',
       alertType: '',
@@ -35,7 +35,8 @@ class Survey extends React.Component {
       isShowingModal: false,
       isShowingModalDelete: false,
       deleteid: '',
-      selectedDays: ''
+      selectedDays: '0',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -53,7 +54,6 @@ class Survey extends React.Component {
   }
   componentWillMount () {
     this.props.loadSubscribersList()
-    this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
     this.props.loadTags()
   }
   showDialog () {
@@ -100,7 +100,12 @@ class Survey extends React.Component {
   }
 
   handlePageClick (data) {
-    this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+    }
     this.displayData(data.selected, this.props.surveys)
   }
 
@@ -313,7 +318,7 @@ class Survey extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deleteSurvey(this.state.deleteid, this.msg)
+                                    this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
@@ -329,7 +334,7 @@ class Survey extends React.Component {
                             Show records for last:&nbsp;&nbsp;
                           </span>
                           <div style={{width: '200px'}}>
-                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
                           </div>
                           <span htmlFor='example-text-input' className='col-form-label'>
                           &nbsp;&nbsp;days
@@ -422,13 +427,15 @@ class Survey extends React.Component {
                       }
                           </tbody>
                         </table>
-                        <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
+                        <ReactPaginate
+                          previousLabel={'previous'}
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={2}
                           pageRangeDisplayed={3}
+                          forcePage={this.state.pageNumber}
                           onPageChange={this.handlePageClick}
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}

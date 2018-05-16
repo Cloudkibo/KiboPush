@@ -10,13 +10,26 @@ export function appendSentSeenData (data) {
 
   for (let j = 0; j < broadcasts.length; j++) {
     let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
-    broadcasts[j].sent = pagebroadcast.length// total sent
-    let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+    let filterBySubscriber = []
+    pagebroadcast.map((c, i) => {
+      if (c.broadcastId === broadcasts[j]._id) {
+        for (var index = 0; index < filterBySubscriber.length; index++) {
+          if (c.subscriberId === filterBySubscriber[index].subscriberId) {
+            break
+          }
+        }
+        if (index === filterBySubscriber.length) {
+          filterBySubscriber.push(c)
+        }
+      }
+    })
+    broadcasts[j].sent = filterBySubscriber.length// total sent
+    let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
     //  broadcasts[j].count = data.count
   }
-  var newBroadcast = broadcasts.reverse()
-  return newBroadcast
+  //  var newBroadcast = broadcasts.reverse()
+  return broadcasts
 }
 
 export function showbroadcasts (data) {
@@ -104,7 +117,7 @@ export function createbroadcast (broadcast) {
         } else {
           dispatch(sendBroadcastFailure())
         }
-        dispatch(loadBroadcastsList())
+        //  dispatch(loadBroadcastsList())
       })
   }
 }
@@ -132,7 +145,9 @@ export function uploadBroadcastfile (filedata) {
 export function editbroadcast (broadcast) {
   return (dispatch) => {
     callApi('broadcasts/edit', 'post', {broadcast: broadcast})
-      .then(res => dispatch(loadBroadcastsList()))
+      .then(res => {
+        //  dispatch(loadBroadcastsList())
+      })
   }
 }
 
@@ -193,7 +208,7 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
           }
         }
         handleSendBroadcast(res)
-        dispatch(loadBroadcastsList())
+        //  dispatch(loadBroadcastsList())
       })
   }
 }

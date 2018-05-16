@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadPollsList, loadCategoriesList, deletePoll } from '../../redux/actions/templates.actions'
+import { loadPollsListNew, loadCategoriesList, deletePoll } from '../../redux/actions/templates.actions'
 import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -12,7 +12,7 @@ import AlertContainer from 'react-alert'
 class templatePolls extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadPollsList()
+    props.loadPollsListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
     props.loadCategoriesList()
     this.state = {
       pollsData: [],
@@ -22,7 +22,9 @@ class templatePolls extends React.Component {
       isShowingModalDelete: false,
       deleteid: '',
       filteredByCategory: [],
-      searchValue: ''
+      searchValue: '',
+      filter: false,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -49,14 +51,14 @@ class templatePolls extends React.Component {
     this.props.saveCurrentPoll(poll)
   }
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 5) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -65,65 +67,79 @@ class templatePolls extends React.Component {
     this.setState({pollsData: data, pollsDataAll: broadcasts})
   }
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    }
     this.displayData(data.selected, this.state.pollsDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.polls) {
+    if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
-      this.setState({ totalLength: nextProps.polls.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({pollsData: [], pollsDataAll: [], totalLength: 0})
     }
   }
   searchPoll (event) {
-    var filtered = []
+    //  var filtered = []
     this.setState({searchValue: event.target.value})
     if (event.target.value !== '') {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        for (let i = 0; i < this.state.filteredByCategory.length; i++) {
-          if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.state.filteredByCategory[i])
-          }
-        }
-      } else {
-        for (let i = 0; i < this.props.polls.length; i++) {
-          if (this.props.polls[i].title && this.props.polls[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.props.polls[i])
-          }
-        }
-      }
-    } else {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        filtered = this.state.filteredByCategory
-      } else {
-        filtered = this.props.polls
-      }
+      this.setState({filter: true})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+    //     for (let i = 0; i < this.state.filteredByCategory.length; i++) {
+    //       if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //         filtered.push(this.state.filteredByCategory[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (let i = 0; i < this.props.polls.length; i++) {
+    //       if (this.props.polls[i].title && this.props.polls[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //         filtered.push(this.props.polls[i])
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+    //     filtered = this.state.filteredByCategory
+    //   } else {
+    //     filtered = this.props.polls
+    //   }
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
-    this.setState({filterValue: e.target.value, searchValue: ''})
-    var filtered = []
+    this.setState({filterValue: e.target.value})
+    //  var filtered = []
     if (e.target.value !== '') {
-      for (let i = 0; i < this.props.polls.length; i++) {
-        if (e.target.value === 'all') {
-          if (this.props.polls[i].category.length > 1) {
-            filtered.push(this.props.polls[i])
-          }
-        } else {
-          for (let j = 0; j < this.props.polls[i].category.length; j++) {
-            if (this.props.polls[i].category[j] === e.target.value) {
-              filtered.push(this.props.polls[i])
-            }
-          }
-        }
-      }
-    } else {
-      filtered = this.props.polls
+      this.setState({filter: true})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     }
-    this.setState({filteredByCategory: filtered})
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   for (let i = 0; i < this.props.polls.length; i++) {
+    //     if (e.target.value === 'all') {
+    //       if (this.props.polls[i].category.length > 1) {
+    //         filtered.push(this.props.polls[i])
+    //       }
+    //     } else {
+    //       for (let j = 0; j < this.props.polls[i].category.length; j++) {
+    //         if (this.props.polls[i].category[j] === e.target.value) {
+    //           filtered.push(this.props.polls[i])
+    //         }
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   filtered = this.props.polls
+    // }
+    // this.setState({filteredByCategory: filtered})
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -183,7 +199,7 @@ class templatePolls extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deletePoll(this.state.deleteid, this.msg)
+                            this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
@@ -192,8 +208,7 @@ class templatePolls extends React.Component {
                   }
                 </div>
               </div>
-              { this.props.polls && this.props.polls.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+              <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                     <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchPoll(event) }} />
@@ -210,7 +225,7 @@ class templatePolls extends React.Component {
                       <option value='' disabled>Filter by Category...</option>
                       <option value=''>All</option>
                       {
-                        this.props.categories.map((category, i) => (
+                        this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>
                         ))
                       }
@@ -297,13 +312,9 @@ class templatePolls extends React.Component {
                       subContainerClassName={'pages pagination'}
                       activeClassName={'active'} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-            }
             </div>
           </div>
         </div>
@@ -315,13 +326,14 @@ class templatePolls extends React.Component {
 function mapStateToProps (state) {
   return {
     polls: state.templatesInfo.polls,
+    count: state.templatesInfo.pollsCount,
     categories: state.templatesInfo.categories
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadPollsList: loadPollsList,
+    {loadPollsListNew: loadPollsListNew,
       loadCategoriesList: loadCategoriesList,
       deletePoll: deletePoll,
       saveCurrentPoll

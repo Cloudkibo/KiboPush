@@ -51,21 +51,23 @@ class OperationalDashboard extends React.Component {
         { value: 'other', label: 'Other' }],
       genderValue: '',
       localeValue: '',
+      searchValue: '',
       selectedValue: 0,
       showTopTenPages: false,
       showReports: false,
       showUsers: false,
       chartData: [],
       selectedDays: 10,
-      openPopover: false
+      openPopover: false,
+      filter: false
     }
     props.loadDataObjectsCount(0)
+    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     props.loadTopPages()
     props.loadBroadcastsGraphData(0)
     props.loadPollsGraphData(0)
     props.loadSurveysGraphData(0)
     props.loadSessionsGraphData(0)
-    props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -81,6 +83,17 @@ class OperationalDashboard extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.sendEmail = this.sendEmail.bind(this)
+    this.loadMore = this.loadMore.bind(this)
+  }
+
+  loadMore () {
+    // let index = this.props.users.length - 1
+    // console.log('this.props.users', this.props.users)
+    // console.log('this.props.users[index]._id', this.props.users[index]._id)
+    // console.log('this.props.users[index][0]._id', this.props.users[index][0]._id)
+    // console.log('addmore', this.props.users[index[0]]._id)
+    //  console.log('this.props.users[this.props.users.length - 1][0]', this.props.users[this.props.users.length - 1].length)
+    this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -137,39 +150,43 @@ class OperationalDashboard extends React.Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.users) {
+    console.log('componentWillReceiveProps in backdoor', nextProps)
+    if (nextProps.users && nextProps.count) {
+      console.log('in nextProps.users')
       this.displayData(0, nextProps.users)
-      this.setState({ totalLength: nextProps.users.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({usersData: [], usersDataAll: []})
     }
-    if (nextProps.dataobjects !== null) {
+    if (nextProps.dataobjects && nextProps.dataobjects !== null) {
       this.displayObjects(0, nextProps.dataobjects)
     }
     if (nextProps.toppages) {
     }
     if (nextProps.broadcastsGraphData) {
       var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
-      if (graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
+      if (graphInfoBroadcast && graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
         var broadcastData = graphInfoBroadcast.broadcastsgraphdata
         broadcastData = this.includeZeroCounts(broadcastData)
       }
     }
     if (nextProps.pollsGraphData) {
       var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
-      if (graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
+      if (graphInfoPolls && graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
         var pollsData = graphInfoPolls.pollsgraphdata
         pollsData = this.includeZeroCounts(pollsData)
       }
     }
     if (nextProps.surveysGraphData) {
       var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
-      if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
+      if (graphInfoSurveys && graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
         var surveysData = graphInfoSurveys.surveysgraphdata
         surveysData = this.includeZeroCounts(surveysData)
       }
     }
     if (nextProps.sessionsGraphData) {
       var graphInfoSessions = nextProps.sessionsGraphData.sessionsGraphInfo
-      if (graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
+      if (graphInfoSessions && graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
         var sessionsData = graphInfoSessions.sessionsgraphdata
         sessionsData = this.includeZeroCounts(sessionsData)
       }
@@ -313,14 +330,19 @@ class OperationalDashboard extends React.Component {
   }
 
   searchUser (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.users.length; i++) {
-      if (this.props.users[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.users[i])
-      }
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // for (let i = 0; i < this.props.users.length; i++) {
+    //   if (this.props.users[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.users[i])
+    //   }
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   getFile () {
@@ -343,71 +365,79 @@ class OperationalDashboard extends React.Component {
     }
   }
   onFilterByGender (e) {
-    var filtered = []
-    if (!e.target.value) {
-      if (this.state.localeValue !== '') {
-        for (var a = 0; a < this.props.users.length; a++) {
-          if (this.props.users[a].locale === this.state.localeValue) {
-            filtered.push(this.props.users[a])
-          }
-        }
-      } else {
-        filtered = this.props.users
-      }
-      this.setState({genderValue: ''})
-    } else {
-      if (this.state.localeValue !== '') {
-        for (var i = 0; i < this.props.users.length; i++) {
-          if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
-            filtered.push(this.props.users[i])
-          }
-        }
-      } else if (e.target.value === 'all') {
-        filtered = this.props.users
-      } else {
-        for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.users[j].gender.toString() === e.target.value.toString()) {
-            filtered.push(this.props.users[j])
-          }
-        }
-      }
-      this.setState({genderValue: e.target.value})
+    //  var filtered = []
+    this.setState({genderValue: e.target.value})
+    if (e.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   if (this.state.localeValue !== '') {
+    //     for (var a = 0; a < this.props.users.length; a++) {
+    //       if (this.props.users[a].locale === this.state.localeValue) {
+    //         filtered.push(this.props.users[a])
+    //       }
+    //     }
+    //   } else {
+    //     filtered = this.props.users
+    //   }
+    //   this.setState({genderValue: ''})
+    // } else {
+    //   if (this.state.localeValue !== '') {
+    //     for (var i = 0; i < this.props.users.length; i++) {
+    //       if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
+    //         filtered.push(this.props.users[i])
+    //       }
+    //     }
+    //   } else if (e.target.value === 'all') {
+    //     filtered = this.props.users
+    //   } else {
+    //     for (var j = 0; j < this.props.users.length; j++) {
+    //       if (this.props.users[j].gender.toString() === e.target.value.toString()) {
+    //         filtered.push(this.props.users[j])
+    //       }
+    //     }
+    //   }
+    //   this.setState({genderValue: e.target.value})
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilterByLocale (data) {
-    var filtered = []
-    if (!data) {
-      if (this.state.genderValue !== '') {
-        for (var a = 0; a < this.props.users.length; a++) {
-          if (this.props.users[a].gender === this.state.genderValue) {
-            filtered.push(this.props.users[a])
-          }
-        }
-      } else {
-        filtered = this.props.users
-      }
-      this.setState({localeValue: ''})
-    } else {
-      if (this.state.genderValue !== '') {
-        for (var i = 0; i < this.props.users.length; i++) {
-          if (this.props.users[i].gender === this.state.genderValue && this.props.users[i].locale === data.value) {
-            filtered.push(this.props.users[i])
-          }
-        }
-      } else {
-        for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.users[j].locale === data.value) {
-            filtered.push(this.props.users[j])
-          }
-        }
-      }
-      this.setState({localeValue: data.value})
+    if (data.value !== '') {
+      this.setState({localeValue: data.value, filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // if (!data) {
+    //   if (this.state.genderValue !== '') {
+    //     for (var a = 0; a < this.props.users.length; a++) {
+    //       if (this.props.users[a].gender === this.state.genderValue) {
+    //         filtered.push(this.props.users[a])
+    //       }
+    //     }
+    //   } else {
+    //     filtered = this.props.users
+    //   }
+    //   this.setState({localeValue: ''})
+    // } else {
+    //   if (this.state.genderValue !== '') {
+    //     for (var i = 0; i < this.props.users.length; i++) {
+    //       if (this.props.users[i].gender === this.state.genderValue && this.props.users[i].locale === data.value) {
+    //         filtered.push(this.props.users[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (var j = 0; j < this.props.users.length; j++) {
+    //       if (this.props.users[j].locale === data.value) {
+    //         filtered.push(this.props.users[j])
+    //       }
+    //     }
+    //   }
+    //   this.setState({localeValue: data.value})
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   sendEmail () {
     this.props.sendEmail(this.msg)
@@ -542,9 +572,15 @@ class OperationalDashboard extends React.Component {
                                                 </button>
                                                </div>
                                              </div>
-                                              ))}
+                                          ))}
                                       </div>
                                       : <div>No Data to display</div>
+                                      }
+                                      {this.state.usersData.length < this.props.count &&
+                                      <center>
+                                        <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                        <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                      </center>
                                       }
                                     </div>
                                   </div>
@@ -582,6 +618,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     users: (state.backdoorInfo.users),
+    count: (state.backdoorInfo.count),
     locales: (state.backdoorInfo.locales),
     currentUser: (state.backdoorInfo.currentUser),
     dataobjects: (state.backdoorInfo.dataobjects),

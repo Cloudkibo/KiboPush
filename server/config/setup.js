@@ -28,15 +28,12 @@ module.exports = function (app, httpapp, config) {
     }
   }
 
-  // todo change for azure in strings: previous was /root/certs/...
-  // new one is /home/kibopushroot/
-
   if (config.env === 'staging') {
     try {
       options = {
-        ca: fs.readFileSync('/home/kibopushroot/certs/gd_bundle-g2-g1.crt'),
-        key: fs.readFileSync('/home/kibopushroot/certs/kibopush.key'),
-        cert: fs.readFileSync('/home/kibopushroot/certs/3b414648bf907e49.crt')
+        ca: fs.readFileSync('/root/certs/gd_bundle-g2-g1.crt'),
+        key: fs.readFileSync('/root/certs/kibopush.key'),
+        cert: fs.readFileSync('/root/certs/3b414648bf907e49.crt')
       }
     } catch (e) {
 

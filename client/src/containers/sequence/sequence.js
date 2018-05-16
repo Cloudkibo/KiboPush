@@ -26,7 +26,9 @@ class Sequence extends React.Component {
       isShowingModal: false,
       deleteid: '',
       name: '',
-      error: false
+      error: false,
+      pageNumber: 0,
+      filter: false
     }
     props.fetchAllSequence()
     this.displayData = this.displayData.bind(this)
@@ -93,14 +95,14 @@ class Sequence extends React.Component {
     this.setState({name: e.target.value, error: false})
   }
   displayData (n, sequences) {
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > sequences.length) {
+    if ((offset + 5) > sequences.length) {
       limit = sequences.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = sequences[i]
@@ -110,6 +112,12 @@ class Sequence extends React.Component {
   }
 
   handlePageClick (data) {
+    // this.setState({pageNumber: data.selected})
+    // if (data.selected === 0) {
+    //   this.props.fetchAllSequenceNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    // } else {
+    //   this.props.fetchAllSequenceNew({last_id: this.props.sequences.length > 0 ? this.props.sequences[this.props.sequences.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+    // }
     this.displayData(data.selected, this.props.sequences)
   }
 
@@ -123,23 +131,30 @@ class Sequence extends React.Component {
   searchSequence (event) {
     this.setState({searchValue: event.target.value})
     var filtered = []
-    if (event.target.value !== '' && this.state.filterValue === '') {
+    if (event.target.value !== '') {
+      // this.setState({filter: true})
+      // this.props.fetchAllSequenceNew()
       for (let i = 0; i < this.props.sequences.length; i++) {
         if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase())) {
           filtered.push(this.props.sequences[i])
         }
       }
-    } else if (event.target.value !== '' && this.state.filterValue !== '') {
-      for (let i = 0; i < this.props.sequences.length; i++) {
-        if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
-          filtered.push(this.props.sequences[i])
-        }
-      }
+    // } else if (event.target.value !== '' && this.state.filterValue !== '') {
+    //   for (let i = 0; i < this.props.sequences.length; i++) {
+    //     if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
+    //       filtered.push(this.props.sequences[i])
+    //     }
+    //   }
+    // } else {
+    //   // this.setState({filter: false})
+    //   // this.props.fetchAllSequenceNew()
+    // }
+      this.displayData(0, filtered)
+      this.setState({ totalLength: filtered.length })
     } else {
-      filtered = this.props.sequences
+      this.displayData(0, this.props.sequences)
+      this.setState({ totalLength: this.props.sequences })
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {

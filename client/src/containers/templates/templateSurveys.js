@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadSurveysList, loadCategoriesList, deleteSurvey } from '../../redux/actions/templates.actions'
+import { loadSurveysListNew, loadCategoriesList, deleteSurvey } from '../../redux/actions/templates.actions'
 import { saveSurveyInformation } from '../../redux/actions/backdoor.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -12,7 +12,7 @@ import AlertContainer from 'react-alert'
 class templateSurveys extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysList()
+    props.loadSurveysListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
     props.loadCategoriesList()
     this.state = {
       surveysData: [],
@@ -22,7 +22,9 @@ class templateSurveys extends React.Component {
       isShowingModalDelete: false,
       deleteid: '',
       filteredByCategory: [],
-      searchValue: ''
+      searchValue: '',
+      filter: false,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -49,14 +51,14 @@ class templateSurveys extends React.Component {
     this.props.saveSurveyInformation(survey)
   }
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 5
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 5) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 5
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -65,65 +67,79 @@ class templateSurveys extends React.Component {
     this.setState({surveysData: data, surveysDataAll: broadcasts})
   }
   handlePageClick (data) {
+    this.setState({pageNumber: data.selected})
+    if (data.selected === 0) {
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    }
     this.displayData(data.selected, this.state.surveysDataAll)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({surveysData: [], surveysDataAll: [], totalLength: 0})
     }
   }
   searchSurvey (event) {
-    var filtered = []
+  //  var filtered = []
     this.setState({searchValue: event.target.value})
     if (event.target.value !== '') {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        for (let i = 0; i < this.state.filteredByCategory.length; i++) {
-          if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.state.filteredByCategory[i])
-          }
-        }
-      } else {
-        for (let i = 0; i < this.props.surveys.length; i++) {
-          if (this.props.surveys[i].title && this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-            filtered.push(this.props.surveys[i])
-          }
-        }
-      }
-    } else {
-      if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
-        filtered = this.state.filteredByCategory
-      } else {
-        filtered = this.props.surveys
-      }
+      this.setState({filter: true})
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+    //     for (let i = 0; i < this.state.filteredByCategory.length; i++) {
+    //       if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //         filtered.push(this.state.filteredByCategory[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (let i = 0; i < this.props.surveys.length; i++) {
+    //       if (this.props.surveys[i].title && this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //         filtered.push(this.props.surveys[i])
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
+    //     filtered = this.state.filteredByCategory
+    //   } else {
+    //     filtered = this.props.surveys
+    //   }
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
-    this.setState({filterValue: e.target.value, searchValue: ''})
-    var filtered = []
+    this.setState({filterValue: e.target.value})
+    //  var filtered = []
     if (e.target.value !== '') {
-      for (let i = 0; i < this.props.surveys.length; i++) {
-        if (e.target.value === 'all') {
-          if (this.props.surveys[i].category.length > 1) {
-            filtered.push(this.props.surveys[i])
-          }
-        } else {
-          for (let j = 0; j < this.props.surveys[i].category.length; j++) {
-            if (this.props.surveys[i].category[j] === e.target.value) {
-              filtered.push(this.props.surveys[i])
-            }
-          }
-        }
-      }
-    } else {
-      filtered = this.props.surveys
+      this.setState({filter: true})
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     }
-    this.setState({filteredByCategory: filtered})
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   for (let i = 0; i < this.props.surveys.length; i++) {
+    //     if (e.target.value === 'all') {
+    //       if (this.props.surveys[i].category.length > 1) {
+    //         filtered.push(this.props.surveys[i])
+    //       }
+    //     } else {
+    //       for (let j = 0; j < this.props.surveys[i].category.length; j++) {
+    //         if (this.props.surveys[i].category[j] === e.target.value) {
+    //           filtered.push(this.props.surveys[i])
+    //         }
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   filtered = this.props.surveys
+    // }
+    // this.setState({filteredByCategory: filtered})
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -184,7 +200,7 @@ class templateSurveys extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deleteSurvey(this.state.deleteid, this.msg)
+                            this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
                             this.closeDialogDelete()
                           }}>Delete
                         </button>
@@ -193,8 +209,7 @@ class templateSurveys extends React.Component {
                   }
                 </div>
               </div>
-              { this.props.surveys && this.props.surveys.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+              <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                     <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchSurvey(event) }} />
@@ -211,7 +226,7 @@ class templateSurveys extends React.Component {
                       <option value='' disabled>Filter by Category...</option>
                       <option value=''>All</option>
                       {
-                        this.props.categories.map((category, i) => (
+                        this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>
                         ))
                       }
@@ -303,21 +318,18 @@ class templateSurveys extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-            }
             </div>
           </div>
         </div>
@@ -329,13 +341,14 @@ class templateSurveys extends React.Component {
 function mapStateToProps (state) {
   return {
     surveys: state.templatesInfo.surveys,
+    count: state.templatesInfo.surveysCount,
     categories: state.templatesInfo.categories
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList,
+    {loadSurveysListNew: loadSurveysListNew,
       loadCategoriesList: loadCategoriesList,
       deleteSurvey: deleteSurvey,
       saveSurveyInformation}, dispatch)

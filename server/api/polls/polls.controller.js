@@ -10,6 +10,7 @@ const Lists = require('../lists/lists.model')
 const Users = require('./../user/Users.model')
 let _ = require('lodash')
 const utility = require('./../broadcasts/broadcasts.utility')
+const mongoose = require('mongoose')
 
 const TAG = 'api/polls/polls.controller.js'
 
@@ -172,7 +173,7 @@ exports.allPolls = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Polls.find(findCriteria).limit(req.body.number_of_records)
+        Polls.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, polls) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -236,7 +237,7 @@ exports.allPolls = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Polls.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+        Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, polls) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -463,8 +464,8 @@ exports.send = function (req, res) {
         { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
         */
         const messageData = {
-          text: req.body.statement,
-          quick_replies: [
+          text: req.body.statement, // poll question
+          quick_replies: [ // options
             {
               'content_type': 'text',
               'title': req.body.options[0],
