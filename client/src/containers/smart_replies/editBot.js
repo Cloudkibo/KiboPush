@@ -39,7 +39,9 @@ class EditBot extends React.Component {
     if (nextProps.showBotDetails) {
       console.log('nextProps bot Details', nextProps.botDetails)
       var botName = nextProps.showBotDetails.botName
-      botName = botName.split('_').join(' ')
+      if (botName) {
+        botName = botName.split('-').join(' ')
+      }
       this.setState({id: nextProps.showBotDetails._id, name: botName, page: nextProps.showBotDetails.pageId.pageName, isActive: nextProps.showBotDetails.isActive, payload: nextProps.showBotDetails.payload})
     }
   }
