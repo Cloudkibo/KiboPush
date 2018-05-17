@@ -313,9 +313,13 @@ export function loadPollsList (id, data) {
 }
 
 export function loadPageSubscribersList (id, data) {
+  console.log('data for loadPageSubscribersList', data)
   return (dispatch) => {
     callApi(`backdoor/getAllSubscribers/${id}`, 'post', data)
-      .then(res => dispatch(updatePageSubscribersList(res.payload)))
+      .then(res => {
+        console.log('response from loadPageSubscribersList', res)
+        dispatch(updatePageSubscribersList(res.payload))
+      })
   }
 }
 
