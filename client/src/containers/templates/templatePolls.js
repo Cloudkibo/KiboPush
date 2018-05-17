@@ -312,7 +312,8 @@ class templatePolls extends React.Component {
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
                   : <p> No data to display </p>
                 }

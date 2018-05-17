@@ -54,7 +54,6 @@ function getWitResponse (message, token, bot, pageId, senderId) {
             if (err) {
               throw err
             } else {
-              // console.log(dbRes)
             }
           })
         return {found: false, intent_name: 'Not Found'}
