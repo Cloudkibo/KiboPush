@@ -545,7 +545,6 @@ exports.subscribeToSequence = function (req, res) {
       // save model to MongoDB
       sequenceSubcriber.save((err, subscriberCreated) => {
         if (err) {
-          console.log(err)
           res.status(500).json({
             status: 'Failed',
             description: 'Failed to insert record'

@@ -5,7 +5,7 @@ const Pages = require('../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const needle = require('needle')
 const TAG = 'api/facebook_posts/facebook_posts.controller.js'
-//  const utility = require('./facebook_posts.utility')
+const utility = require('./facebook_posts.utility')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -128,15 +128,15 @@ exports.create = function (req, res) {
                 `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
               logger.serverLog(TAG,
-              `response from get request ${JSON.stringify(resp.body)}`)
-              const messageData = {
-                message: req.body.payload
-              }
-              console.log('body', req.body.payload)
-              //  let messageData = utility.prepareSendAPIPayload(req.body.payload)
-              console.log('messageData', messageData)
+              `post request ${JSON.stringify(req.body.payload)}`)
+              // const messageData = {
+              //   message: req.body.payload
+              // }
+              let messageData = utility.prepareSendAPIPayload(req.body.payload)
+              logger.serverLog(TAG,
+              `messageData ${JSON.stringify(messageData)}`)
               needle.post(
-                `https://graph.facebook.com/${userPage.pageId}/feed?message=${'Hello Fans'}&access_token=${resp.body.access_token}`,
+                `https://graph.facebook.com/${userPage.pageId}/photos&access_token=${resp.body.access_token}`,
                 messageData, (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, err)
