@@ -147,22 +147,22 @@ export function fetchSessions () {
 }
 
 export function fetchOpenSessions (data) {
-  console.log('fetchOpenSessions', data)
+  console.log('fetchOpenSessions data', data)
   return (dispatch) => {
     callApi('sessions/getOpenSessions', 'post', data)
       .then(res => {
-        console.log('fetchSessions response', res)
+        console.log('fetchOpenSessions response', res)
         dispatch(showOpenChatSessions(res.payload, data))
       })
   }
 }
 
 export function fetchCloseSessions (data) {
-  console.log('fetchCloseSessions', data)
+  console.log('fetchCloseSessions data', data)
   return (dispatch) => {
     callApi('sessions/getClosedSessions', 'post', data)
       .then(res => {
-        console.log('fetchSessions response', res)
+        console.log('fetchCloseSessions response', res)
         dispatch(showCloseChatSessions(res.payload, data.first_page))
       })
   }
