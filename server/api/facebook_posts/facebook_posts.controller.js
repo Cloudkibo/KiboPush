@@ -6,6 +6,8 @@ const Users = require('./../user/Users.model')
 const needle = require('needle')
 const TAG = 'api/facebook_posts/facebook_posts.controller.js'
 const utility = require('./facebook_posts.utility')
+const fs = require('fs')
+const path = require('path')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -138,8 +140,10 @@ exports.create = function (req, res) {
                   messageData.image = true
                   messageData.url = payloadItem.url
                 } else if (payloadItem.componentType === 'video') {
+                  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+                  let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
                   messageData.video = true
-                  messageData.url = payloadItem.url
+                  messageData.source = fileReaderStream
                 }
               })
               logger.serverLog(TAG,
