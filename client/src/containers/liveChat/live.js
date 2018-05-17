@@ -227,6 +227,7 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
 
     if (nextProps.openSessions && nextProps.closeSessions) {
+      console.log('inside')
       this.setState({loading: false})
       this.setState({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions})
       //  this.separateResolvedSessions(nextProps.sessions)

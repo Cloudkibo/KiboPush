@@ -120,6 +120,8 @@ class templatePolls extends React.Component {
     if (e.target.value !== '') {
       this.setState({filter: true})
       this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
+    } else {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: ''}})
     }
     //   for (let i = 0; i < this.props.polls.length; i++) {
     //     if (e.target.value === 'all') {

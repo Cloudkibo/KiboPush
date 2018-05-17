@@ -585,6 +585,8 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: '', status_value: this.state.statusValue}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -608,6 +610,8 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: '', locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -632,6 +636,8 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: '', page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -656,6 +662,8 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: '', tag_value: this.state.filterByTag, status_value: this.state.statusValue}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
@@ -664,7 +672,6 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByStatus (e) {
-    this.setState({statusValue: e.target.value})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackPageFilter(filteredData)
     // filteredData = this.stackGenderFilter(filteredData)
@@ -672,8 +679,12 @@ class Subscriber extends React.Component {
     // filteredData = this.stackLocaleFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '') {
-      this.setState({filter: true})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: e.target.value}})
+      this.setState({filter: true, statusValue: true})
+      if (e.target.value === 'true') {
+        this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: true}})
+      } else {
+        this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: false}})
+      }
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (e.target.value === 'subscribed' && filteredData[k].isSubscribed) {
       //     filtered.push(filteredData[k])
@@ -682,6 +693,9 @@ class Subscriber extends React.Component {
       //   }
       // }
       // filteredData = filtered
+    } else {
+      this.setState({statusValue: false})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: ''}})
     }
     // this.setState({filteredData: filteredData})
     // this.displayData(0, filteredData)
