@@ -66,7 +66,7 @@ class Survey extends React.Component {
   onDaysChange (e) {
     //  var defaultVal = 0
     var value = e.target.value
-    this.setState({selectedDays: value})
+    this.setState({selectedDays: value, pageNumber: 0})
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)

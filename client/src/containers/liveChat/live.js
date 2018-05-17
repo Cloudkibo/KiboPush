@@ -144,8 +144,13 @@ class LiveChat extends React.Component {
 
   handleSearch (e) {
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    if (e.target.value !== '') {
+      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    } else {
+      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+    }
   }
 
   handleSort (value) {
@@ -371,10 +376,6 @@ class LiveChat extends React.Component {
                   className='align-center'>
                   <center><Halogen.RingLoader color='#716aca' /></center>
                 </div>
-                : (this.props.openSessions && this.props.closeSessions && this.props.openSessions.length === 0 && this.props.closeSessions.length === 0
-                ? <div className='col-xl-12'>
-                  <h3>Right now you dont have any chat sessions</h3>
-                </div>
                 : <div className='row'>
                   <div className='col-12'>
                     <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -504,7 +505,9 @@ class LiveChat extends React.Component {
                           </li>
                         </ul>
                       </div>
-                      <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
+                      { this.props.openSessions && this.props.closeSessions && this.props.openSessions.length === 0 && this.props.closeSessions.length === 0
+                      ? <center><p>No data to display</p></center>
+                      : <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
                         <div className='tab-content'>
                           {
                             this.state.tabValue === 'open'
@@ -799,6 +802,7 @@ class LiveChat extends React.Component {
                           }
                         </div>
                       </div>
+                    }
                     </div>
                   </div>
                   {
@@ -820,7 +824,6 @@ class LiveChat extends React.Component {
                     <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                 </div>
-                )
               }
             </div>
           </div>
