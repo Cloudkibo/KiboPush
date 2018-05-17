@@ -132,7 +132,7 @@ exports.create = function (req, res) {
               // const messageData = {
               //   message: req.body.payload
               // }
-              let messageData = utility.prepareSendAPIPayload(req.body.payload)
+              let messageData = utility.prepareSendAPIPayload(req.body.payload[0])
               logger.serverLog(TAG,
               `messageData ${JSON.stringify(messageData)}`)
               needle.post(
