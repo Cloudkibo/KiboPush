@@ -134,7 +134,7 @@ exports.create = function (req, res) {
               logger.serverLog(TAG,
               `messageData ${JSON.stringify(messageData)}`)
               needle.post(
-                `https://graph.facebook.com/${userPage.pageId}/photos&access_token=${resp.body.access_token}`,
+                `https://graph.facebook.com/${userPage.pageId}/photos?access_token=${resp.body.access_token}`,
                 messageData, (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, err)
