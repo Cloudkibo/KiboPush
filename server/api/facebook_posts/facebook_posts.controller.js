@@ -105,8 +105,6 @@ exports.create = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG,
-          `Page found${JSON.stringify(userPage)}`)
           Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
             if (err) {
               return res.status(500).json({
@@ -132,7 +130,7 @@ exports.create = function (req, res) {
               // const messageData = {
               //   message: req.body.payload
               // }
-              let messageData = utility.prepareSendAPIPayload(req.body.payload[0])
+              let messageData = utility.prepareSendAPIPayload(req.body.payload[1])
               logger.serverLog(TAG,
               `messageData ${JSON.stringify(messageData)}`)
               needle.post(
