@@ -79,6 +79,8 @@ class SurveysInfo extends React.Component {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({SurveyData: [], totalLength: 0})
     }
   }
   searchSurveys (event) {
@@ -111,7 +113,7 @@ class SurveysInfo extends React.Component {
     }
   }
   onDaysChange (event) {
-    this.setState({selectedDays: event.target.value})
+    this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
@@ -190,120 +192,115 @@ class SurveysInfo extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
-                { this.props.surveys && this.props.surveys.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                <div className='form-group m-form__group row align-items-center'>
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                    <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchSurveys} />
-                    <span className='m-input-icon__icon m-input-icon__icon--left'>
-                      <span><i className='la la-search' /></span>
-                    </span>
+                <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                  <div className='form-group m-form__group row align-items-center'>
+                    <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                      <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchSurveys} />
+                      <span className='m-input-icon__icon m-input-icon__icon--left'>
+                        <span><i className='la la-search' /></span>
+                      </span>
+                    </div>
                   </div>
+                  {
+                    this.state.SurveyData && this.state.SurveyData.length > 0
+                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table'
+                        id='m-datatable--27866229129' style={{
+                          display: 'block',
+                          height: 'auto',
+                          overflowX: 'auto'
+                        }}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{height: '53px'}}>
+                            <th data-field='title'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Title</span></th>
+                            <th data-field='user'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>User/Company Name</span></th>
+                            <th data-field='page'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Page</span></th>
+                            <th data-field='created'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Created At</span></th>
+                            <th data-field='sent'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Sent</span></th>
+                            <th data-field='seen'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Seen</span></th>
+                            <th data-field='responded'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Responded</span></th>
+                            <th data-field='more'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}} /></th>
+                          </tr>
+                        </thead>
+                        <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                          {
+                            this.state.SurveyData.map((survey, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='title'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{survey.title}</span></td>
+                                { (survey.user[0].plan === 'plan_A' || survey.user[0].plan === 'plan_B')
+                                ? <td data-field='user' className='m-datatable__cell'>
+                                  <span style={{width: '120px'}}>{survey.user[0].name}</span></td>
+                                  : <td data-field='user' className='m-datatable__cell'>
+                                    <span style={{width: '120px'}}>{survey.company[0].companyName}</span></td>}
+                                <td data-field='page' className='m-datatable__cell'>
+                                  <span style={{width: '120px'}}>{survey.page.join(',')}</span></td>
+                                <td data-field='created'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{handleDate(survey.datetime)}</span></td>
+                                <td data-field='sent'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{survey.sent}</span></td>
+                                <td data-field='seen'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{survey.seen}</span></td>
+                                <td data-field='responded'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{survey.responded}</span></td>
+                                <td data-field='more'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>
+                                    <button onClick={() => this.onSurveyClick(survey)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    View
+                                  </button></span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                      <ReactPaginate previousLabel={'previous'}
+                        nextLabel={'next'}
+                        breakLabel={<a>...</a>}
+                        breakClassName={'break-me'}
+                        pageCount={Math.ceil(this.state.totalLength / 10)}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={3}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'}
+                        forcePage={this.state.pageNumber} />
+                    </div>
+                    : <p> No data to display </p>
+                  }
                 </div>
-                {
-                  this.state.SurveyData && this.state.SurveyData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table'
-                      id='m-datatable--27866229129' style={{
-                        display: 'block',
-                        height: 'auto',
-                        overflowX: 'auto'
-                      }}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='title'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Title</span></th>
-                          <th data-field='user'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>User/Company Name</span></th>
-                          <th data-field='page'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Page</span></th>
-                          <th data-field='created'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Created At</span></th>
-                          <th data-field='sent'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Sent</span></th>
-                          <th data-field='seen'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Seen</span></th>
-                          <th data-field='responded'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Responded</span></th>
-                          <th data-field='more'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}} /></th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                        {
-                          this.state.SurveyData.map((survey, i) => (
-                            <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
-                              style={{height: '55px'}} key={i}>
-                              <td data-field='title'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{survey.title}</span></td>
-                              { (survey.user[0].plan === 'plan_A' || survey.user[0].plan === 'plan_B')
-                              ? <td data-field='user' className='m-datatable__cell'>
-                                <span style={{width: '120px'}}>{survey.user[0].name}</span></td>
-                                : <td data-field='user' className='m-datatable__cell'>
-                                  <span style={{width: '120px'}}>{survey.company[0].companyName}</span></td>}
-                              <td data-field='page' className='m-datatable__cell'>
-                                <span style={{width: '120px'}}>{survey.page.join(',')}</span></td>
-                              <td data-field='created'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{handleDate(survey.datetime)}</span></td>
-                              <td data-field='sent'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{survey.sent}</span></td>
-                              <td data-field='seen'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{survey.seen}</span></td>
-                              <td data-field='responded'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{survey.responded}</span></td>
-                              <td data-field='more'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>
-                                  <button onClick={() => this.onSurveyClick(survey)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View
-                                </button></span>
-                              </td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 10)}
-                      marginPagesDisplayed={1}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'}
-                      forcePage={this.state.pageNumber} />
-                  </div>
-                  : <p> No search results found. </p>
-                }
-              </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-              }
               </div>
             </div>
           </div>

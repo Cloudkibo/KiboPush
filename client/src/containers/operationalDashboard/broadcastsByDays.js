@@ -74,6 +74,8 @@ class BroadcastsInfo extends React.Component {
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({BroadcastData: [], totalLength: 0})
     }
   }
   searchBroadcasts (event) {
@@ -81,10 +83,12 @@ class BroadcastsInfo extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+    } else {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: '', days: this.state.selectedDays}})
     }
   }
   onDaysChange (event) {
-    this.setState({selectedDays: event.target.value})
+    this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
@@ -146,9 +150,7 @@ class BroadcastsInfo extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='row align-items-center'>
-                { this.props.broadcasts && this.props.broadcasts.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+              <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                     <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchBroadcasts} />
@@ -247,13 +249,9 @@ class BroadcastsInfo extends React.Component {
                       activeClassName={'active'}
                       forcePage={this.state.pageNumber} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display. </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-              }
               </div>
             </div>
           </div>

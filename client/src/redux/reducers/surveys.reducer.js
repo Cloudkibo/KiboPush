@@ -13,7 +13,7 @@ export function surveysInfo (state = {}, action) {
     case ActionTypes.LOAD_SURVEYS_LIST_NEW:
       return Object.assign({}, state, {
         surveys: action.data,
-        count: action.data
+        count: action.count
       })
     case ActionTypes.ADD_SURVEY:
       return Object.assign({}, state, {

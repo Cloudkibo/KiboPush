@@ -9,9 +9,9 @@ export function addPoll (data, msg) {
 }
 
 export function addSurvey (data, msg) {
-  if (data.status === 'success') {
-    msg.success('Survey created successfully')
-  }
+  // if (data.status === 'success') {
+  // msg.success('Survey created successfully')
+  // }
   return {
     type: ActionTypes.ADD_TEMPLATE_SURVEY,
     data
@@ -119,7 +119,12 @@ export function addConvoTemplate (data, msg) {
 export function createsurvey (survey) {
   return (dispatch) => {
     callApi('templates/createSurvey', 'post', survey)
-      .then(res => dispatch(addSurvey(res)))
+      .then(res => {
+        console.log('response from create survey', res)
+        if (res.status === 'success') {
+          dispatch(addSurvey(res))
+        }
+      })
   }
 }
 
