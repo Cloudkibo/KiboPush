@@ -458,8 +458,6 @@ exports.upload = function (req, res) {
     dir + '/userfiles/' + serverPath,
     err => {
       if (err) {
-        logger.serverLog(TAG,
-          `error in file uploading ${JSON.stringify(err)}`)
         return res.status(500).json({
           status: 'failed',
           description: 'internal server error' + JSON.stringify(err)

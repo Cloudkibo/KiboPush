@@ -156,7 +156,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+                    payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages, last_id: broadcasts[broadcasts.length - 1]._id}
                   })
                 })
             })
@@ -458,7 +458,7 @@ exports.getfbMessage = function (req, res) {
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({pageId: req.body.entry[0].id}, (err, pages) => {
       if (err) {
-        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
       pages.forEach((page) => {
         PhoneNumber.update({
@@ -1262,19 +1262,16 @@ function updateseenstatus (req) {
       }
       LiveChat.findOne({sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id}, (err, chat) => {
         if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-        if (chat) {
-          require('./../../config/socketio').sendMessageToClient({
-            room_id: chat.company_id,
-            body: {
-              action: 'message_seen',
-              payload: {
-                session_id: chat.session_id
-              }
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: chat.company_id,
+          body: {
+            action: 'message_seen',
+            payload: {
+              session_id: chat.session_id
             }
-          })
-        }
+          }
+        })
       })
     })
     // updating seen count for autoposting
