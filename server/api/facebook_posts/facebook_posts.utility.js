@@ -15,7 +15,7 @@ function prepareSendAPIPayload (body) {
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-    let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
+    let fileReaderStream = fs.createReadStream(dir + '/' + body.id)
     payload = {
       'message': JSON.stringify({
         'attachment': {

@@ -12,7 +12,7 @@ import NotificationBadge, {Effect} from 'react-notification-badge'
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
+    props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: {search_value: '', category_value: ''}})
     props.loadCategoriesList()
     this.state = {
       broadcastsData: [],
@@ -82,12 +82,14 @@ class TemplateBroadcasts extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+      this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
     } else {
-      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 5, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.broadcastsDataAll)
   }
 
@@ -105,7 +107,7 @@ class TemplateBroadcasts extends React.Component {
     // var filtered = []
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value, category_value: this.state.filterValue}})
       // if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
       //   for (let i = 0; i < this.state.filteredByCategory.length; i++) {
       //     if (this.state.filteredByCategory[i].title && this.state.filteredByCategory[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
@@ -120,6 +122,7 @@ class TemplateBroadcasts extends React.Component {
       //   }
       // }
     } else {
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: '', category_value: this.state.filterValue}})
       // if (this.state.filteredByCategory && this.state.filteredByCategory.length > 0) {
       //   filtered = this.state.filteredByCategory
       // } else {
@@ -135,9 +138,9 @@ class TemplateBroadcasts extends React.Component {
     // var filtered = []
     if (e.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     } else {
-      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: ''}})
+      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: ''}})
     }
     //   for (let i = 0; i < this.props.broadcasts.length; i++) {
     //     if (e.target.value === 'all') {
@@ -219,7 +222,7 @@ class TemplateBroadcasts extends React.Component {
                         <button style={{float: 'right'}}
                           className='btn btn-primary btn-sm'
                           onClick={() => {
-                            this.props.deleteBroadcast(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: true, filter: false, filter_criteria: {search_value: '', category_value: ''}})
+                            this.props.deleteBroadcast(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: {search_value: '', category_value: ''}})
                             this.closeDialogDelete()
                           }}>Delete
                         </button>

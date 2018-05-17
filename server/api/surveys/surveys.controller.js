@@ -122,7 +122,7 @@ exports.allSurveys = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    if (req.body.first_page) {
+    if (req.body.first_page === 'first') {
       let findCriteria = {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
@@ -166,7 +166,7 @@ exports.allSurveys = function (req, res) {
           })
         })
       })
-    } else {
+    } else if (req.body.first_page === 'next') {
       let findCriteria = {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
@@ -205,6 +205,50 @@ exports.allSurveys = function (req, res) {
               res.status(200).json({
                 status: 'success',
                 payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+              })
+            })
+          })
+        })
+      })
+    } else if (req.body.first_page === 'previous') {
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        'datetime': req.body.days !== '0' ? {
+          $gte: new Date(
+            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
+          $lt: new Date(
+            (new Date().getTime()))
+        } : {$exists: true}
+      }
+      Surveys.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, surveysCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+        .exec((err, surveys) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Surveys not found'})
+            }
+            Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+              if (err2) {
+                return res.status(404)
+                .json({status: 'failed', description: 'responses count not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {surveys: surveys.reverse(), surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
               })
             })
           })
