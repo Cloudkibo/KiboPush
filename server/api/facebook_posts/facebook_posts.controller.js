@@ -8,7 +8,7 @@ const TAG = 'api/facebook_posts/facebook_posts.controller.js'
 const utility = require('./facebook_posts.utility')
 const fs = require('fs')
 const path = require('path')
-
+var FormData = require('form-data')
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -140,12 +140,24 @@ exports.create = function (req, res) {
                   messageData.image = true
                   messageData.url = payloadItem.url
                 } else if (payloadItem.componentType === 'video') {
-                  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-                  let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
+                  //  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+                  let fileReaderStream = fs.createReadStream(payloadItem.url)
                   messageData.video = true
-                  messageData.source = fileReaderStream
+                  messageData.url = fileReaderStream
                 }
               })
+              var form = new FormData()
+              form.append('source', messageData.url)
+              needle.post(
+                `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
+                form, (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG, err)
+                  }
+                  logger.serverLog(TAG,
+                  `response from post on facebook ${JSON.stringify(resp.body)}`)
+                  //  res.status(201).json({status: 'success', payload: postCreated})
+                })
               logger.serverLog(TAG,
               `messageData ${JSON.stringify(messageData)}`)
               if (messageData.image) {
