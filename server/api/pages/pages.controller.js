@@ -159,7 +159,7 @@ exports.getAllpages = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      if (req.body.first_page) {
+      if (req.body.first_page === 'first') {
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -345,7 +345,7 @@ exports.getAllpages = function (req, res) {
             })
           })
         }
-      } else {
+      } else if (req.body.first_page === 'next') {
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -451,6 +451,192 @@ exports.getAllpages = function (req, res) {
                 .json({status: 'failed', description: 'PagesCount not found'})
             }
             Pages.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+            .exec((err, pages) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting pages ${JSON.stringify(err)}`
+                })
+              }
+              Subscribers.aggregate([
+                {$match: {isSubscribed: true}},
+                {
+                  $group: {
+                    _id: {pageId: '$pageId'},
+                    count: {$sum: 1}
+                  }
+                }], (err2, gotSubscribersCount) => {
+                if (err2) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting pages subscriber count ${JSON.stringify(
+                      err2)}`
+                  })
+                }
+                Subscribers.aggregate([
+                  {$match: {isSubscribed: false}},
+                  {
+                    $group: {
+                      _id: {pageId: '$pageId'},
+                      count: {$sum: 1}
+                    }
+                  }], (err2, gotUnSubscribersCount) => {
+                  if (err2) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages subscriber count ${JSON.stringify(
+                        err2)}`
+                    })
+                  }
+                  let pagesPayload = []
+                  for (let i = 0; i < pages.length; i++) {
+                    pagesPayload.push({
+                      _id: pages[i]._id,
+                      pageId: pages[i].pageId,
+                      pageName: pages[i].pageName,
+                      userId: pages[i].userId,
+                      pagePic: pages[i].pagePic,
+                      connected: pages[i].connected,
+                      pageUserName: pages[i].pageUserName,
+                      likes: pages[i].likes,
+                      isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+                      welcomeMessage: pages[i].welcomeMessage,
+                      subscribers: 0,
+                      unsubscribes: 0,
+                      greetingText: pages[i].greetingText
+                    })
+                  }
+                  for (let i = 0; i < pagesPayload.length; i++) {
+                    for (let j = 0; j < gotSubscribersCount.length; j++) {
+                      if (pagesPayload[i]._id.toString() ===
+                        gotSubscribersCount[j]._id.pageId.toString()) {
+                        pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                      }
+                    }
+                  }
+                  for (let i = 0; i < pagesPayload.length; i++) {
+                    for (let j = 0; j < gotUnSubscribersCount.length; j++) {
+                      if (pagesPayload[i]._id.toString() ===
+                        gotUnSubscribersCount[j]._id.pageId.toString()) {
+                        pagesPayload[i].unsubscribes = gotUnSubscribersCount[j].count
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {pages: pagesPayload, count: pagesCount.length > 0 ? pagesCount[0].count : 0, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
+                  })
+                })
+              })
+            })
+          })
+        }
+      } else if (req.body.first_page === 'previous') {
+        if (!req.body.filter) {
+          Pages.aggregate([
+            { $match: {connected: true, companyId: companyUser.companyId} },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, pagesCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'PagesCount not found'})
+            }
+            Pages.find({connected: true, companyId: companyUser.companyId, _id: {$lt: req.body.last_id}}).limit(req.body.number_of_records)
+            .exec((err, pages) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting pages ${JSON.stringify(err)}`
+                })
+              }
+              Subscribers.aggregate([
+                {$match: {isSubscribed: true}},
+                {
+                  $group: {
+                    _id: {pageId: '$pageId'},
+                    count: {$sum: 1}
+                  }
+                }], (err2, gotSubscribersCount) => {
+                if (err2) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting pages subscriber count ${JSON.stringify(
+                      err2)}`
+                  })
+                }
+                Subscribers.aggregate([
+                  {$match: {isSubscribed: false}},
+                  {
+                    $group: {
+                      _id: {pageId: '$pageId'},
+                      count: {$sum: 1}
+                    }
+                  }], (err2, gotUnSubscribersCount) => {
+                  if (err2) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages subscriber count ${JSON.stringify(
+                        err2)}`
+                    })
+                  }
+                  let pagesPayload = []
+                  for (let i = 0; i < pages.length; i++) {
+                    pagesPayload.push({
+                      _id: pages[i]._id,
+                      pageId: pages[i].pageId,
+                      pageName: pages[i].pageName,
+                      userId: pages[i].userId,
+                      pagePic: pages[i].pagePic,
+                      connected: pages[i].connected,
+                      pageUserName: pages[i].pageUserName,
+                      likes: pages[i].likes,
+                      isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+                      welcomeMessage: pages[i].welcomeMessage,
+                      subscribers: 0,
+                      unsubscribes: 0,
+                      greetingText: pages[i].greetingText
+                    })
+                  }
+                  for (let i = 0; i < pagesPayload.length; i++) {
+                    for (let j = 0; j < gotSubscribersCount.length; j++) {
+                      if (pagesPayload[i]._id.toString() ===
+                        gotSubscribersCount[j]._id.pageId.toString()) {
+                        pagesPayload[i].subscribers = gotSubscribersCount[j].count
+                      }
+                    }
+                  }
+                  for (let i = 0; i < pagesPayload.length; i++) {
+                    for (let j = 0; j < gotUnSubscribersCount.length; j++) {
+                      if (pagesPayload[i]._id.toString() ===
+                        gotUnSubscribersCount[j]._id.pageId.toString()) {
+                        pagesPayload[i].unsubscribes = gotUnSubscribersCount[j].count
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {pages: pagesPayload, count: pagesCount.length > 0 ? pagesCount[0].count : 0, last_id: pagesPayload.length > 0 ? pagesPayload[pagesPayload.length - 1]._id : ''}
+                  })
+                })
+              })
+            })
+          })
+        } else {
+          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+          let findCriteria = {
+            connected: true,
+            companyId: companyUser.companyId,
+            pageName: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+          }
+          Pages.aggregate([
+            { $match: findCriteria },
+            { $group: { _id: null, count: { $sum: 1 } } }
+          ], (err, pagesCount) => {
+            if (err) {
+              return res.status(404)
+                .json({status: 'failed', description: 'PagesCount not found'})
+            }
+            Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
             .exec((err, pages) => {
               if (err) {
                 return res.status(404).json({
