@@ -143,7 +143,7 @@ exports.create = function (req, res) {
                   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
                   let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
                   messageData.video = true
-                  messageData.source = fileReaderStream
+                  messageData.url = fileReaderStream
                 }
               })
               logger.serverLog(TAG,
