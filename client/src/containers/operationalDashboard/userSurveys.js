@@ -77,6 +77,8 @@ class SurveysInfo extends React.Component {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({SurveyData: [], totalLength: 0})
     }
   }
   searchSurveys (event) {

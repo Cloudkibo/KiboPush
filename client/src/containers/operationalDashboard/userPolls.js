@@ -77,6 +77,8 @@ class PollsInfo extends React.Component {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({PollData: [], totalLength: 0})
     }
   }
   searchPolls (event) {

@@ -288,6 +288,7 @@ export function loadSessionsGraphData (days) {
 }
 export function loadPagesList (id, data) {
   // here we will fetch list of user pages from endpoint
+  console.log('data for loadPagesList', data)
   return (dispatch) => {
     callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => {
       console.log('response from allpages', res)
