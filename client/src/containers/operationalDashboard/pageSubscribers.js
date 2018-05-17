@@ -15,7 +15,7 @@ class PageSubscribers extends React.Component {
     if (this.props.currentPage) {
       pageName = this.props.currentPage.pageName
       const id = this.props.currentPage._id
-      props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: '', gender_value: '', localeValue: ''}})
+      props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', localeValue: ''}})
     }
     this.state = {
       pageName: pageName,
@@ -57,14 +57,16 @@ class PageSubscribers extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (this.props.currentPage) {
       if (data.selected === 0) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+      } else if (this.state.pageNumber < data.selected) {
+        this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'next', last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
       } else {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+        this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'previous', last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[0]._id : 'none', number_of_records: 10})
       }
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
 
@@ -77,7 +79,7 @@ class PageSubscribers extends React.Component {
   searchSubscribers (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.pageSubscribers.length; i++) {
@@ -100,7 +102,7 @@ class PageSubscribers extends React.Component {
   onFilterByGender (data) {
     this.setState({genderValue: data.value})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, localeValue: this.state.localeValue}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, localeValue: this.state.localeValue}})
     }
     // var filtered = []
     // if (!data) {
@@ -137,7 +139,7 @@ class PageSubscribers extends React.Component {
   onFilterByLocale (data) {
     this.setState({localeValue: data.value})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: data.value}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: data.value}})
     }
     // var filtered = []
     // if (!data) {

@@ -12,7 +12,7 @@ const moment = extendMoment(Moment)
 class SurveysInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', days: 10}})
+    props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       SurveyData: [],
       totalLength: 0,
@@ -66,12 +66,14 @@ class SurveysInfo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else {
-      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
   componentWillReceiveProps (nextProps) {
@@ -87,7 +89,7 @@ class SurveysInfo extends React.Component {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.surveys.length; i++) {
@@ -116,7 +118,7 @@ class SurveysInfo extends React.Component {
     this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
     }
     // var defaultVal = 10
     // var value = e.target.value

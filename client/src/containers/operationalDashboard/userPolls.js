@@ -12,7 +12,7 @@ const moment = extendMoment(Moment)
 class PollsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadPollsList(props.userID, {first_page: true, last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}})
+    props.loadPollsList(props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       PollData: [],
       totalLength: 0,
@@ -63,12 +63,14 @@ class PollsInfo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadPollsList(this.props.userID, {first_page: true, last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+      this.props.loadPollsList(this.props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadPollsList(this.props.userID, {first_page: 'next', last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
     } else {
-      this.props.loadPollsList(this.props.userID, {first_page: false, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+      this.props.loadPollsList(this.props.userID, {first_page: 'previous', last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
   }
   componentWillReceiveProps (nextProps) {
@@ -79,7 +81,7 @@ class PollsInfo extends React.Component {
   }
   searchPolls (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
-    this.props.loadPollsList(this.props.userID, {first_page: true, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedFilterValue}})
+    this.props.loadPollsList(this.props.userID, {first_page: 'first', last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedFilterValue}})
     // var filtered = []
     // for (let i = 0; i < this.props.polls.length; i++) {
     //   if (this.props.polls[i].statement.toLowerCase().includes(event.target.value.toLowerCase())) {
@@ -94,7 +96,7 @@ class PollsInfo extends React.Component {
   onFilter (e) {
     console.log('val in onfilter', e.target.value)
     this.setState({ selectedFilterValue: e.target.value, pageNumber: 0 })
-    this.props.loadPollsList(this.props.userID, {first_page: true, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: e.target.value}})
+    this.props.loadPollsList(this.props.userID, {first_page: 'first', last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: e.target.value}})
     // if (!val) {
     //   this.setState({selectedFilterValue: null})
     //   this.displayData(0, this.props.polls)
