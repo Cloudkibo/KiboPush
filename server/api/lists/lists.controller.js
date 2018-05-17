@@ -98,7 +98,7 @@ exports.getAll = function (req, res) {
             return res.status(404)
               .json({status: 'failed', description: 'BroadcastsCount not found'})
           }
-          Lists.find([{$match: {$and: [{companyId: mongoose.Types.ObjectId(companyUser.companyId)}, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+          Lists.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
           .exec((err, lists) => {
             if (err) {
               return res.status(500).json({

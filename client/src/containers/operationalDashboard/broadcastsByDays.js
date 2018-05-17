@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', days: 10}})
+    props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       BroadcastData: [],
       totalLength: 0,
@@ -61,12 +61,14 @@ class BroadcastsInfo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else {
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
   }
   componentWillReceiveProps (nextProps) {
@@ -82,16 +84,16 @@ class BroadcastsInfo extends React.Component {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
     } else {
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: '', days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: '', days: this.state.selectedDays}})
     }
   }
   onDaysChange (event) {
     this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
     }
     // var defaultVal = 10
     // var value = e.target.value

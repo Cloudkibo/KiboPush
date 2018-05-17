@@ -217,7 +217,7 @@ exports.getAll = function (req, res) {
       if (req.body.first_page) {
         if (!req.body.filter) {
           Subscribers.aggregate([
-            { $match: {companyId: companyUser.companyId, isEnabledByPage: true} },
+            { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), isEnabledByPage: true} },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, subscribersCount) => {
             if (err) {
@@ -285,7 +285,7 @@ exports.getAll = function (req, res) {
         } else {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
           let subscribersFindCriteria = {
-            companyId: companyUser.companyId,
+            companyId: mongoose.Types.ObjectId(companyUser.companyId),
             isEnabledByPage: true,
             $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
             gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
@@ -309,6 +309,7 @@ exports.getAll = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Subscribers not found'})
               }
+              console.log('subscribers', subscribers)
               let subsArray = []
               let subscribersPayload = []
               for (let i = 0; i < subscribers.length; i++) {
@@ -365,7 +366,7 @@ exports.getAll = function (req, res) {
       } else {
         if (!req.body.filter) {
           Subscribers.aggregate([
-            { $match: {companyId: companyUser.companyId, isEnabledByPage: true} },
+            { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), isEnabledByPage: true} },
             { $group: { _id: null, count: { $sum: 1 } } }
           ], (err, subscribersCount) => {
             if (err) {
@@ -434,7 +435,7 @@ exports.getAll = function (req, res) {
         } else {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
           let subscribersFindCriteria = {
-            companyId: companyUser.companyId,
+            companyId: mongoose.Types.ObjectId(companyUser.companyId),
             isEnabledByPage: true,
             $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
             gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
