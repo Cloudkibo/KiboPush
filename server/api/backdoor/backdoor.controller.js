@@ -530,7 +530,7 @@ exports.getAllSubscribers = function (req, res) {
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
   let findCriteria = {
-    pageId: req.params.pageid,
+    pageId: mongoose.Types.ObjectId(req.params.pageid),
     $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
     gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
     locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true}

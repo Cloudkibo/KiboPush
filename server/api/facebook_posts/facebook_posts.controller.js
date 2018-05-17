@@ -130,19 +130,65 @@ exports.create = function (req, res) {
               // const messageData = {
               //   message: req.body.payload
               // }
-              let messageData = utility.prepareSendAPIPayload(req.body.payload[1])
+              let messageData = {}
+              req.body.payload.map(payloadItem => {
+                if (payloadItem.componentType === 'text') {
+                  messageData.message = payloadItem.text
+                } else if (payloadItem.componentType === 'image') {
+                  messageData.image = true
+                  messageData.url = payloadItem.url
+                } else if (payloadItem.componentType === 'video') {
+                  messageData.video = true
+                  messageData.url = payloadItem.url
+                }
+              })
               logger.serverLog(TAG,
               `messageData ${JSON.stringify(messageData)}`)
-              needle.post(
-                `https://graph.facebook.com/${userPage.pageId}/photos?access_token=${resp.body.access_token}`,
-                messageData, (err, resp) => {
-                  if (err) {
-                    logger.serverLog(TAG, err)
-                  }
-                  logger.serverLog(TAG,
-                  `response from post on facebook ${JSON.stringify(resp.body)}`)
-                  res.status(201).json({status: 'success', payload: postCreated})
-                })
+              if (messageData.image) {
+                needle.post(
+                  `https://graph.facebook.com/${userPage.pageId}/photos?access_token=${resp.body.access_token}`,
+                  messageData, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG,
+                    `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    res.status(201).json({status: 'success', payload: postCreated})
+                  })
+              } else if (messageData.video) {
+                needle.post(
+                  `https://graph.facebook.com/${userPage.pageId}/videos?access_token=${resp.body.access_token}`,
+                  messageData, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG,
+                    `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    res.status(201).json({status: 'success', payload: postCreated})
+                  })
+              } else {
+                needle.post(
+                  `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
+                  messageData, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG,
+                    `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    res.status(201).json({status: 'success', payload: postCreated})
+                  })
+              }
+              //  let messageData = utility.prepareSendAPIPayload(req.body.payload[1])
+              // needle.post(
+              //   `https://graph.facebook.com/${userPage.pageId}/photos?access_token=${resp.body.access_token}`,
+              //   messageData, (err, resp) => {
+              //     if (err) {
+              //       logger.serverLog(TAG, err)
+              //     }
+              //     logger.serverLog(TAG,
+              //     `response from post on facebook ${JSON.stringify(resp.body)}`)
+              //     res.status(201).json({status: 'success', payload: postCreated})
+              //   })
             })
           })
         })

@@ -15,7 +15,7 @@ class PageSubscribers extends React.Component {
     if (this.props.currentPage) {
       pageName = this.props.currentPage.pageName
       const id = this.props.currentPage._id
-      props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', localeValue: ''}})
+      props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     }
     this.state = {
       pageName: pageName,
@@ -59,11 +59,11 @@ class PageSubscribers extends React.Component {
   handlePageClick (data) {
     if (this.props.currentPage) {
       if (data.selected === 0) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
       } else if (this.state.pageNumber < data.selected) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
       } else {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
       }
     }
     this.setState({pageNumber: data.selected})
@@ -81,7 +81,7 @@ class PageSubscribers extends React.Component {
   searchSubscribers (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, localeValue: this.state.localeValue}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.pageSubscribers.length; i++) {
@@ -104,7 +104,7 @@ class PageSubscribers extends React.Component {
   onFilterByGender (data) {
     this.setState({genderValue: data.value})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, localeValue: this.state.localeValue}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue}})
     }
     // var filtered = []
     // if (!data) {
@@ -141,7 +141,7 @@ class PageSubscribers extends React.Component {
   onFilterByLocale (data) {
     this.setState({localeValue: data.value})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, localeValue: data.value}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
     }
     // var filtered = []
     // if (!data) {
@@ -216,7 +216,7 @@ class PageSubscribers extends React.Component {
                                     <div
                                       className='m-form__group m-form__group--inline'>
                                       <div className='m-input-icon m-input-icon--left'>
-                                        <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
+                                        <input type='text' placeholder='Search Subscribers...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
                                         <span className='m-input-icon__icon m-input-icon__icon--left'>
                                           <span>
                                             <i className='la la-search' />
@@ -351,7 +351,7 @@ class PageSubscribers extends React.Component {
                                   activeClassName={'active'}
                                   forcePage={this.state.pageNumber} />
                               </div>
-                              : <p> No search results found. </p>
+                              : <p> No data to display </p>
                           }
                         </div>
                       </div>

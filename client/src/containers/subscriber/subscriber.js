@@ -52,7 +52,6 @@ class Subscriber extends React.Component {
       showEditModal: false,
       subscriber: {},
       filter: false,
-      pageNumber: 0,
       status_value: ''
     }
     props.allLocales()
@@ -462,7 +461,7 @@ class Subscriber extends React.Component {
   handlePageClick (data) {
     if (data.selected === 0) {
       this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
-    } else if (this.state.pageNumber < data.selected) {
+    } else if (this.state.pageSelected < data.selected) {
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
     } else {
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
@@ -1183,7 +1182,7 @@ class Subscriber extends React.Component {
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
                             activeClassName={'active'}
-                            forceSelected={this.state.pageSelected} />
+                            forcePage={this.state.pageSelected} />
 
                         </div>
                         : <div className='table-responsive'>
