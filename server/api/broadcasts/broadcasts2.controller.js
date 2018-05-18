@@ -445,7 +445,14 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-
+  logger.serverLog(TAG,
+    `req.files.file ${JSON.stringify(req.files.file.path)}`)
+  logger.serverLog(TAG,
+    `req.files.file ${JSON.stringify(req.files.file.name)}`)
+  logger.serverLog(TAG,
+    `dir ${JSON.stringify(dir)}`)
+  logger.serverLog(TAG,
+    `serverPath ${JSON.stringify(serverPath)}`)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles/' + serverPath,

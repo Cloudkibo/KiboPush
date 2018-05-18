@@ -65,7 +65,7 @@ class Convo extends React.Component {
           selectedDays: '0'
         })
       }
-      this.setState({filter: true})
+      this.setState({filter: true, pageNumber: 0})
       this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: value}})
       //  this.props.loadBroadcastsList(value)
     } else if (value === '') {

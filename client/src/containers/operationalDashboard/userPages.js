@@ -30,107 +30,102 @@ class PagesInfo extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
-                { this.props.pagesData && this.props.pagesData.length
-              ? <div className='col-lg-12 col-md-12'>
-                <div className='m-input-icon m-input-icon--left'>
-                  <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />
-                  <span className='m-input-icon__icon m-input-icon__icon--left'>
-                    <span><i className='la la-search' /></span>
-                  </span>
-                </div>
-                {
-                  this.props.pages && this.props.pages.length > 0
-                 ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                   <table className='m-datatable__table'
-                     id='m-datatable--27866229129' style={{
-                       display: 'block',
-                       height: 'auto',
-                       overflowX: 'auto'
-                     }}>
-                     <thead className='m-datatable__head'>
-                       <tr className='m-datatable__row'
-                         style={{height: '53px'}}>
-                         <th data-field='pages'
-                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                           <span style={{width: '150px'}}>Pages</span>
-                         </th>
-                         <th data-field='likes'
-                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                           <span style={{width: '150px'}}>Likes</span>
-                         </th>
-                         <th data-field='subscribers'
-                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                           <span style={{width: '150px'}}>Subscribers</span>
-                         </th>
-                         <th data-field='connected'
-                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                           <span style={{width: '150px'}}>Connected</span>
-                         </th>
-                         <th data-field='more'
-                           className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                           <span style={{width: '150px'}} /></th>
-                       </tr>
-                     </thead>
-                     <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                       {
-                       this.props.pages.map((page, i) => (
-                         <tr data-row={i}
-                           className='m-datatable__row m-datatable__row--even'
-                           style={{height: '55px'}} key={i}>
-                           <td data-field='pages'
-                             className='m-datatable__cell'>
-                             <span
-                               style={{width: '150px'}}>{page.pageName}</span>
-                           </td>
-                           <td data-field='likes'
-                             className='m-datatable__cell'>
-                             <span
-                               style={{width: '150px'}}>{page.likes}</span>
-                           </td>
-                           <td data-field='subscribers'
-                             className='m-datatable__cell'>
-                             <span
-                               style={{width: '150px'}}>{page.subscribers}</span>
-                           </td>
-                           <td data-field='connected'
-                             className='m-datatable__cell'>
-                             <span
-                               style={{width: '150px'}}>{page.connected ? 'true' : 'false'}</span>
-                           </td>
-                           <td data-field='more'
-                             className='m-datatable__cell'>
-                             <span
-                               style={{width: '150px'}}>
-                               <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
-                               See Subscribers
-                             </Link>
-                             </span>
-                           </td>
+                <div className='col-lg-12 col-md-12'>
+                  <div className='m-input-icon m-input-icon--left'>
+                    <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />
+                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                      <span><i className='la la-search' /></span>
+                    </span>
+                  </div>
+                  {
+                    this.props.pages && this.props.pages.length > 0
+                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                     <table className='m-datatable__table'
+                       id='m-datatable--27866229129' style={{
+                         display: 'block',
+                         height: 'auto',
+                         overflowX: 'auto'
+                       }}>
+                       <thead className='m-datatable__head'>
+                         <tr className='m-datatable__row'
+                           style={{height: '53px'}}>
+                           <th data-field='pages'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}}>Pages</span>
+                           </th>
+                           <th data-field='likes'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}}>Likes</span>
+                           </th>
+                           <th data-field='subscribers'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}}>Subscribers</span>
+                           </th>
+                           <th data-field='connected'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}}>Connected</span>
+                           </th>
+                           <th data-field='more'
+                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                             <span style={{width: '150px'}} /></th>
                          </tr>
-                       ))
-                      }
-                     </tbody>
-                   </table>
-                   <ReactPaginate previousLabel={'previous'}
-                     nextLabel={'next'}
-                     breakLabel={<a>...</a>}
-                     breakClassName={'break-me'}
-                     pageCount={Math.ceil(this.props.length / 10)}
-                     marginPagesDisplayed={1}
-                     pageRangeDisplayed={3}
-                     onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
-                     containerClassName={'pagination'}
-                     subContainerClassName={'pages pagination'}
-                     activeClassName={'active'}
-                     forcePage={this.props.pageNumber} />
-                 </div>
-                : <p> No search results found. </p>
-              }
-              </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-            }
+                       </thead>
+                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                         {
+                         this.props.pages.map((page, i) => (
+                           <tr data-row={i}
+                             className='m-datatable__row m-datatable__row--even'
+                             style={{height: '55px'}} key={i}>
+                             <td data-field='pages'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>{page.pageName}</span>
+                             </td>
+                             <td data-field='likes'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>{page.likes}</span>
+                             </td>
+                             <td data-field='subscribers'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>{page.subscribers}</span>
+                             </td>
+                             <td data-field='connected'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>{page.connected ? 'true' : 'false'}</span>
+                             </td>
+                             <td data-field='more'
+                               className='m-datatable__cell'>
+                               <span
+                                 style={{width: '150px'}}>
+                                 <Link onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='btn btn-primary btn-sm'>
+                                 See Subscribers
+                               </Link>
+                               </span>
+                             </td>
+                           </tr>
+                         ))
+                        }
+                       </tbody>
+                     </table>
+                     <ReactPaginate previousLabel={'previous'}
+                       nextLabel={'next'}
+                       breakLabel={<a>...</a>}
+                       breakClassName={'break-me'}
+                       pageCount={Math.ceil(this.props.length / 10)}
+                       marginPagesDisplayed={1}
+                       pageRangeDisplayed={3}
+                       onPageChange={(data) => { data.name = 'pages'; this.props.handleClickEvent(data) }}
+                       containerClassName={'pagination'}
+                       subContainerClassName={'pages pagination'}
+                       activeClassName={'active'}
+                       forcePage={this.props.pageNumber} />
+                   </div>
+                  : <p> No data to display </p>
+                }
+                </div>
               </div>
             </div>
           </div>

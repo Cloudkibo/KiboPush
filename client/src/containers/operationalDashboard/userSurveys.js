@@ -92,7 +92,7 @@ class SurveysInfo extends React.Component {
   }
   onFilter (e) {
     console.log('val in survey', e.target.value)
-    this.setState({ selectedFilterValue: e.target.value })
+    this.setState({ selectedFilterValue: e.target.value, pageNumber: 0 })
     this.props.loadSurveysList(this.props.userID, {first_page: true, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: e.target.value}})
 
     // if (!val) {
