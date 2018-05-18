@@ -52,7 +52,7 @@ exports.getMessages = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    if (req.body.first_page) {
+    if (req.body.first_page === 'first') {
       AutopostingMessages.aggregate([
         { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), autopostingId: mongoose.Types.ObjectId(req.params.id)} },
         { $group: { _id: null, count: { $sum: 1 } } }
@@ -74,7 +74,7 @@ exports.getMessages = function (req, res) {
           })
         })
       })
-    } else {
+    } else if (req.body.first_page === 'next') {
       AutopostingMessages.aggregate([
         { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), autopostingId: mongoose.Types.ObjectId(req.params.id)} },
         { $group: { _id: null, count: { $sum: 1 } } }
@@ -84,6 +84,28 @@ exports.getMessages = function (req, res) {
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
         AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+        .populate('pageId companyId autopostingId')
+        .exec((err, autopostingMessages) => {
+          if (err) {
+            return res.status(500)
+            .json({status: 'failed', description: 'Autoposting query failed'})
+          }
+          res.status(200).json({
+            status: 'success',
+            payload: {messages: autopostingMessages, count: messagesCount.length > 0 ? messagesCount[0].count : 0}
+          })
+        })
+      })
+    } else if (req.body.first_page === 'previous') {
+      AutopostingMessages.aggregate([
+        { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), autopostingId: mongoose.Types.ObjectId(req.params.id)} },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, messagesCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        AutopostingMessages.find({companyId: companyUser.companyId, autopostingId: req.params.id, _id: {$lt: req.body.last_id}}).limit(req.body.number_of_records)
         .populate('pageId companyId autopostingId')
         .exec((err, autopostingMessages) => {
           if (err) {

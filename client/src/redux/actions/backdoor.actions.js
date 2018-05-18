@@ -288,6 +288,7 @@ export function loadSessionsGraphData (days) {
 }
 export function loadPagesList (id, data) {
   // here we will fetch list of user pages from endpoint
+  console.log('data for loadPagesList', data)
   return (dispatch) => {
     callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => {
       console.log('response from allpages', res)
@@ -312,9 +313,13 @@ export function loadPollsList (id, data) {
 }
 
 export function loadPageSubscribersList (id, data) {
+  console.log('data for loadPageSubscribersList', data)
   return (dispatch) => {
     callApi(`backdoor/getAllSubscribers/${id}`, 'post', data)
-      .then(res => dispatch(updatePageSubscribersList(res.payload)))
+      .then(res => {
+        console.log('response from loadPageSubscribersList', res)
+        dispatch(updatePageSubscribersList(res.payload))
+      })
   }
 }
 

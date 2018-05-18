@@ -256,7 +256,6 @@ exports.create = function (req, res) {
               plan: plan
             })
 
-            // console.log(req.body)
             accountData.save(function (err, user) {
               if (err) {
                 return res.status(422).json({
@@ -381,7 +380,6 @@ exports.create = function (req, res) {
                       `Internal Server Error on sending email : ${JSON.stringify(
                         err)}`)
                   }
-                  // console.log(json);
                 })
 
                 var email2 = new sendgrid.Email({
@@ -416,7 +414,6 @@ exports.create = function (req, res) {
                       logger.serverLog(TAG,
                         `Internal Server Error on sending email : ${err}`)
                     }
-                    // console.log(json);
                   })
                 }
               })
@@ -458,7 +455,6 @@ exports.create = function (req, res) {
           plan: plan
         })
 
-        // console.log(req.body)
         accountData.save(function (err, user) {
           if (err) {
             return res.status(422).json({
@@ -567,7 +563,6 @@ exports.create = function (req, res) {
                   `Internal Server Error on sending email : ${JSON.stringify(
                     err)}`)
               }
-              // console.log(json);
             })
 
             var email2 = new sendgrid.Email({
@@ -599,7 +594,6 @@ exports.create = function (req, res) {
                   logger.serverLog(TAG,
                     `Internal Server Error on sending email : ${err}`)
                 }
-                // console.log(json);
               })
             }
           })
@@ -647,7 +641,6 @@ exports.joinCompany = function (req, res) {
         plan: plan
       })
 
-      // console.log(req.body)
       accountData.save(function (err, user) {
         if (err) {
           return res.status(422).json({
@@ -767,7 +760,6 @@ exports.joinCompany = function (req, res) {
               `Internal Server Error on sending email : ${JSON.stringify(
                 err)}`)
           }
-          // console.log(json);
         })
 
         var email2 = new sendgrid.Email({
@@ -803,7 +795,6 @@ exports.joinCompany = function (req, res) {
               `Internal Server Error on sending email : ${JSON.stringify(
                 err)}`)
           }
-          // console.log(json);
         })
       })
     })
