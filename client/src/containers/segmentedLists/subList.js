@@ -23,6 +23,10 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
               filteredData.push(obj)
             }
           }
+        } else if (field === 'phoneNumber') {
+          if (obj[field] && obj[field] !== '' && obj[field] === text) {
+            filteredData.push(obj)
+          }
         } else if (obj[field] !== '' && obj[field].toLowerCase() === text.toLowerCase()) {
           filteredData.push(obj)
         }
@@ -49,6 +53,10 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
               filteredData.push(obj)
             }
           }
+        } else if (field === 'phoneNumber') {
+          if (obj[field] && obj[field] !== '' && obj[field].includes(text)) {
+            filteredData.push(obj)
+          }
         } else if (obj[field] !== '' && obj[field].toLowerCase().includes(text.toLowerCase())) {
           filteredData.push(obj)
         }
@@ -74,6 +82,13 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
             let tag = obj.tags[i]
             let subText = tag.substring(0, text.length)
             if (subText.toLowerCase() === text.toLowerCase()) {
+              filteredData.push(obj)
+            }
+          }
+        } else if (field === 'phoneNumber') {
+          if (obj[field]) {
+            var phone = obj[field].substring(0, text.length)
+            if (phone === text) {
               filteredData.push(obj)
             }
           }
