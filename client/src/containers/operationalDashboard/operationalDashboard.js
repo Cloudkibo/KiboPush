@@ -87,12 +87,6 @@ class OperationalDashboard extends React.Component {
   }
 
   loadMore () {
-    // let index = this.props.users.length - 1
-    // console.log('this.props.users', this.props.users)
-    // console.log('this.props.users[index]._id', this.props.users[index]._id)
-    // console.log('this.props.users[index][0]._id', this.props.users[index][0]._id)
-    // console.log('addmore', this.props.users[index[0]]._id)
-    //  console.log('this.props.users[this.props.users.length - 1][0]', this.props.users[this.props.users.length - 1].length)
     this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
   }
   scrollToTop () {
