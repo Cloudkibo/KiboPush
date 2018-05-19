@@ -88,21 +88,23 @@ class SegmentedList extends React.Component {
   }
 
   displayData (n, lists) {
-    console.log('in displayData', lists)
-    let offset = n * 10
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 10) > lists.length) {
-      limit = lists.length
-    } else {
-      limit = offset + 10
+    if (lists) {
+      console.log('in displayData', lists)
+      let offset = n * 10
+      let data = []
+      let limit
+      let index = 0
+      if ((offset + 10) > lists.length) {
+        limit = lists.length
+      } else {
+        limit = offset + 10
+      }
+      for (var i = offset; i < limit; i++) {
+        data[index] = lists[i]
+        index++
+      }
+      this.setState({customerLists: data})
     }
-    for (var i = offset; i < limit; i++) {
-      data[index] = lists[i]
-      index++
-    }
-    this.setState({customerLists: data})
   }
 
   render () {
