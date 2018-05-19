@@ -52,18 +52,6 @@ class InviteSubscribers extends React.Component {
         selectPage: this.props.pages[0]
       })
     }
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Invite Subscribers'
   }
 

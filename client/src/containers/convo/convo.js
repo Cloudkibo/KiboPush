@@ -208,7 +208,7 @@ class Convo extends React.Component {
     // var filtered = []
     if (e.target.value !== '') {
       this.setState({filter: true})
-      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
+      this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
       // for (let i = 0; i < this.props.broadcasts.length; i++) {
       //   if (e.target.value === 'miscellaneous') {
       //     if (this.props.broadcasts[i].payload.length > 1) {
