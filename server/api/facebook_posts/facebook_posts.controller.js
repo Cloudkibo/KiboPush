@@ -140,10 +140,12 @@ exports.create = function (req, res) {
                   messageData.url = payloadItem.url
                 } else if (payloadItem.componentType === 'video') {
                   //  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-                  let url = payloadItem.url + '&f=filename.mov'
-                  let fileReaderStream = fs.createReadStream(url)
+                  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+                  let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
+                  //  let url = payloadItem.url + '&f=filename.mov'
+                  //  let fileReaderStream = fs.createReadStream(url)
                   messageData.video = true
-                  messageData.source = fileReaderStream
+                  messageData.filedata = fileReaderStream
                 }
               })
               // var form = new FormData()
