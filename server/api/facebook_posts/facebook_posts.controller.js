@@ -141,11 +141,11 @@ exports.create = function (req, res) {
                 } else if (payloadItem.componentType === 'video') {
                   //  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
                   let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-                  let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
+                  //  let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
                   //  let url = payloadItem.url + '&f=filename.mov'
                   //  let fileReaderStream = fs.createReadStream(url)
                   messageData.video = true
-                  messageData.filedata = fileReaderStream
+                  messageData.source = dir + '/' + payloadItem.id
                 }
               })
               // var form = new FormData()
