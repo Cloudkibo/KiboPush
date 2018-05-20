@@ -145,7 +145,7 @@ exports.create = function (req, res) {
                   //  let url = payloadItem.url + '&f=filename.mov'
                   //  let fileReaderStream = fs.createReadStream(url)
                   messageData.video = true
-                  messageData.source = dir + '/' + payloadItem.id
+                  messageData.file_url = payloadItem.url
                 }
               })
               // var form = new FormData()
