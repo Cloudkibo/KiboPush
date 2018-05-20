@@ -5,7 +5,6 @@ const Pages = require('../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const needle = require('needle')
 const TAG = 'api/facebook_posts/facebook_posts.controller.js'
-const utility = require('./facebook_posts.utility')
 const fs = require('fs')
 const path = require('path')
 var FormData = require('form-data')
@@ -148,16 +147,16 @@ exports.create = function (req, res) {
               })
               var form = new FormData()
               form.append('source', messageData.url)
-              needle.post(
-                `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
-                form, (err, resp) => {
-                  if (err) {
-                    logger.serverLog(TAG, err)
-                  }
-                  logger.serverLog(TAG,
-                  `response from post on facebook ${JSON.stringify(resp.body)}`)
-                  //  res.status(201).json({status: 'success', payload: postCreated})
-                })
+              // needle.post(
+              //   `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
+              //   form, (err, resp) => {
+              //     if (err) {
+              //       logger.serverLog(TAG, err)
+              //     }
+              //     logger.serverLog(TAG,
+              //     `response from post on facebook ${JSON.stringify(resp.body)}`)
+              //     //  res.status(201).json({status: 'success', payload: postCreated})
+              //   })
               logger.serverLog(TAG,
               `messageData ${JSON.stringify(messageData)}`)
               if (messageData.image) {

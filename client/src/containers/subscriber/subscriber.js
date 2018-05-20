@@ -573,6 +573,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackPageFilter(filteredData)
     // filteredData = this.stackStatusFilter(filteredData)
     //  var filtered = []
+    console.log('e.target.value', e.target.value)
     if (e.target.value !== '') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: e.target.value, status_value: this.state.status_value}})
@@ -869,7 +870,7 @@ class Subscriber extends React.Component {
                                         <option key='ALL' value=''>ALL</option>
                                         {
                                           this.state.options.map((tag, i) => (
-                                            <option key={i} value={tag._id}>{tag.label}</option>
+                                            <option key={i} value={tag.value}>{tag.label}</option>
                                           ))
                                         }
                                       </select>
