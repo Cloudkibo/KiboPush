@@ -140,13 +140,14 @@ exports.create = function (req, res) {
                   messageData.url = payloadItem.url
                 } else if (payloadItem.componentType === 'video') {
                   //  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
-                  let fileReaderStream = fs.createReadStream(payloadItem.url)
+                  let url = payloadItem.url + '&f=filename.mov'
+                  let fileReaderStream = fs.createReadStream(url)
                   messageData.video = true
-                  messageData.url = fileReaderStream
+                  messageData.source = fileReaderStream
                 }
               })
-              var form = new FormData()
-              form.append('source', messageData.url)
+              // var form = new FormData()
+              // form.append('source', messageData.url)
               // needle.post(
               //   `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
               //   form, (err, resp) => {
