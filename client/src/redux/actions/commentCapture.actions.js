@@ -7,7 +7,7 @@ export function showAllPosts (data) {
   console.log('Data Fetched From posts', data)
   return {
     type: ActionTypes.SHOW_FACEBOOK_POSTS,
-    data
+    data: data.reverse()
   }
 }
 export function saveCurrentPost (data) {

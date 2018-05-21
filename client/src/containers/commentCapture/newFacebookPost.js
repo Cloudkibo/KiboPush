@@ -46,7 +46,6 @@ class FacebookPosts extends React.Component {
       loading: false,
       facebookPost: [],
       isVideo: false,
-      isImage: false,
       videoPost: false,
       showImages: false,
       showVideo: false
@@ -157,12 +156,6 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     })
-    if (attachments.length < 1) {
-      this.setState({
-        isVideo: false,
-        isImage: false
-      })
-    }
   }
   handleUpload (res, fileData) {
     this.setState({
@@ -187,14 +180,8 @@ class FacebookPosts extends React.Component {
         facebookPost: post
       })
       if (fileData.get('componentType') === 'video') {
-        this.setStsta({
-          isVideo: true,
-          isImage: false
-        })
-      } else if (fileData.get('componentType') === 'image') {
-        this.setStsta({
-          isVideo: false,
-          isImage: true
+        this.setStatus({
+          isVideo: true
         })
       }
     }
@@ -549,8 +536,7 @@ class FacebookPosts extends React.Component {
                                   <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
                                 </span>
                               </span>
-                              { this.state.isImage === false
-                              ? <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
+                              <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
                                 <span>
                                   <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                     this.refs.selectImage.click()
@@ -559,14 +545,7 @@ class FacebookPosts extends React.Component {
                                 <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
                                   ref='selectImage' style={styles.inputf} />
                               </span>
-                              : <span className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
-                                <span>
-                                  <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} disabled />
-                                </span>
-                              </span>
-                              }
-                              { this.state.isVideo === false
-                              ? <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                              <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                 <span>
                                   <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                     this.refs.selectVideo.click()
@@ -575,12 +554,6 @@ class FacebookPosts extends React.Component {
                                 <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
                                   ref='selectVideo' style={styles.inputf} />
                               </span>
-                              : <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                                <span>
-                                  <i className='fa fa-file-video-o' style={{cursor: 'pointer', color: 'gray'}} disabled />
-                                </span>
-                              </span>
-                              }
                               <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
                                 <PopoverBody>
                                   <div>
