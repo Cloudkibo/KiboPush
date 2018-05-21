@@ -9,6 +9,13 @@ export function showBotsList (data) {
   }
 }
 
+export function showAnalytics (data) {
+  return {
+    type: ActionTypes.SHOW_ANALYTICS,
+    data
+  }
+}
+
 export function showBotsListNew (data) {
   return {
     type: ActionTypes.SHOW_BOTS_NEW,
@@ -48,6 +55,23 @@ export function loadBotsList () {
         if (res.status === 'success') {
           console.log('List the sequence of bots', res.payload)
           dispatch(showBotsList(res.payload))
+        } else {
+          console.log('Something went wrong in fetching bots', JSON.stringify(res))
+        }
+      }).catch((err) => {
+        console.log('In catch cant process bot list', err)
+      })
+  }
+}
+
+export function loadAnalytics () {
+  return (dispatch) => {
+    callApi('bots/analytics')
+      .then(res => {
+        console.log('Response from server', JSON.stringify(res))
+        if (res.status === 'success') {
+          console.log('List the sequence of bots', res.payload)
+          dispatch(showAnalytics(res.payload))
         } else {
           console.log('Something went wrong in fetching bots', JSON.stringify(res))
         }
