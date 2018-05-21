@@ -308,11 +308,6 @@ class CreatePoll extends React.Component {
     if (this.props.tags) {
       this.initializeTagSelect(this.props.tags)
     }
-    if (nextProps.pollCreated) {
-      this.props.history.push({
-        pathname: '/poll'
-      })
-    }
   }
   handlePageChange (value) {
     var temp = value.split(',')
@@ -535,6 +530,9 @@ class CreatePoll extends React.Component {
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <button className='btn btn-primary' onClick={() => {
                                       this.createPoll()
+                                      this.props.history.push({
+                                        pathname: '/poll'
+                                      })
                                     }}>
                                       Save
                                     </button>
