@@ -46,6 +46,7 @@ class FacebookPosts extends React.Component {
       loading: false,
       facebookPost: [],
       isVideo: false,
+      isImage: false,
       videoPost: false,
       showImages: false,
       showVideo: false
@@ -158,7 +159,8 @@ class FacebookPosts extends React.Component {
     })
     if (attachments.length < 1) {
       this.setState({
-        isVideo: false
+        isVideo: false,
+        isImage: false
       })
     }
   }
@@ -173,41 +175,27 @@ class FacebookPosts extends React.Component {
     }
     if (res.status === 'success') {
       var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
+      var attachment = []
+      attachment.push(attachComponent)
+      var post = []
+      if (this.state.postText !== '') {
+        post.push({componentType: 'text', text: this.state.postText})
+      }
+      post.push(attachComponent)
+      this.setState({
+        attachments: attachment,
+        facebookPost: post
+      })
       if (fileData.get('componentType') === 'video') {
-        var videoAttachment = []
-        videoAttachment.push(attachComponent)
-        var videoPost = []
-        if (this.state.postText !== '') {
-          videoPost.push({componentType: 'text', text: this.state.postText})
-        }
-        videoPost.push(attachComponent)
-        this.setState({
-          attachments: videoAttachment,
-          facebookPost: videoPost,
-          isVideo: true
+        this.setStsta({
+          isVideo: true,
+          isImage: false
         })
-      } else {
-        if (this.state.isVideo) {
-          var facebookPostTemp = []
-          if (this.state.postText !== '') {
-            facebookPostTemp.push({componentType: 'text', text: this.state.postText})
-          }
-          facebookPostTemp.push({componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url})
-          this.setState({
-            attachments: [{componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}],
-            facebookPost: facebookPostTemp,
-            isVideo: false
-          })
-        } else {
-          var attachments = this.state.attachments
-          var facebookPost = this.state.facebookPost
-          attachments.push(attachComponent)
-          facebookPost.push(attachComponent)
-          this.setState({
-            attachments: attachments,
-            facebookPost: facebookPost
-          })
-        }
+      } else if (fileData.get('componentType') === 'image') {
+        this.setStsta({
+          isVideo: false,
+          isImage: true
+        })
       }
     }
     console.log('res.payload', res.paylaod)
@@ -561,7 +549,8 @@ class FacebookPosts extends React.Component {
                                   <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
                                 </span>
                               </span>
-                              <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
+                              { this.state.isImage === false
+                              ? <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
                                 <span>
                                   <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                     this.refs.selectImage.click()
@@ -570,6 +559,12 @@ class FacebookPosts extends React.Component {
                                 <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
                                   ref='selectImage' style={styles.inputf} />
                               </span>
+                              : <span className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
+                                <span>
+                                  <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} disabled />
+                                </span>
+                              </span>
+                              }
                               { this.state.isVideo === false
                               ? <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                 <span>
