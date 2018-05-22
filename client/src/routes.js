@@ -102,7 +102,7 @@ import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
-import WaitingReplyList from './containers/smart_replies/WaitingReplyList'
+import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 
 import auth from './utility/auth.service'
 
