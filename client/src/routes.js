@@ -102,6 +102,7 @@ import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
+import WaitingReplyList from './containers/smart_replies/WaitingReplyList'
 
 import auth from './utility/auth.service'
 
@@ -234,6 +235,7 @@ const routes = (
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
+    <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
 
   </Route>
 
