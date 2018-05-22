@@ -289,6 +289,17 @@ class LiveChat extends React.Component {
       }
       this.props.resetUnreadSession()
     }
+    if (this.props.location.state && this.props.location.state.subscriberToRespond) {
+      console.log('Subscriber To Respond', this.props.location.state.subscriberToRespond)
+      var sessions = nextProps.openSessions
+      var subscriber = this.props.location.state.subscriberToRespond
+      for (let j = 0; j < sessions.length; j++) {
+        if (sessions[j].subscriber_id._id === subscriber._id) {
+          this.setState({activeSession: sessions[j]})
+          break
+        }
+      }
+    }
 
     if (nextProps.userChat.length > this.props.userChat.length) {
       var sess = this.state.sessionsDataNew

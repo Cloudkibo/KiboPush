@@ -26,7 +26,7 @@ class Sidebar extends Component {
       polls: true,
       livechat: true,
       autoposting: true,
-      persistentMenu: false,
+      persistentMenu: true,
       pages: true,
       subscribers: true,
       subscribeToMessenger: true,
@@ -442,6 +442,12 @@ class Sidebar extends Component {
                 </a>
               </li>
               }
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-icon flaticon-cogwheel' />
+                  <span className='m-menu__link-text'>Waiting Response</span>
+                </Link>
+              </li>
             </ul>
           </div>
 

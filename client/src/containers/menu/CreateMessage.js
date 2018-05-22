@@ -76,7 +76,10 @@ class CreateMessage extends React.Component {
       default:
         break
     }
-    return JSON.parse(payload)
+    if (payload.length > 0) {
+      return JSON.parse(payload)
+    }
+    return payload
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
