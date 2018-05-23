@@ -301,7 +301,7 @@ class LiveChat extends React.Component {
       }
     }
 
-    if (nextProps.userChat.length > this.props.userChat.length) {
+    if (nextProps.userChat && this.props.userChat && nextProps.userChat.length > this.props.userChat.length) {
       var sess = this.state.sessionsDataNew
       for (var j = 0; j < sess.length; j++) {
         if (sess[j]._id === nextProps.userChat[0].session_id) {
