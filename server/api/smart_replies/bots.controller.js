@@ -47,7 +47,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
           'Error Occured In Getting Response From WIT.AI app')
       }
 
-      logger.serverLog(TAG, `Response from Wit AI Bot ${JSON.stringify(JSON.parse(witres.body))}`)
+      logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
       if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
         logger.serverLog(TAG, 'No response found')
         Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, db_res) => {
