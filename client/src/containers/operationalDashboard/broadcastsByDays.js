@@ -180,9 +180,6 @@ class BroadcastsInfo extends React.Component {
                           <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}}>Seen</span></th>
-                          <th data-field='more'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}} /></th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
@@ -214,14 +211,6 @@ class BroadcastsInfo extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '120px'}}>{broadcast.seen}</span></td>
-                              <td data-field='more'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>
-                                  <button onClick={() => this.onBroadcastClick(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View
-                                </button></span>
-                              </td>
                             </tr>
                           ))
                         }

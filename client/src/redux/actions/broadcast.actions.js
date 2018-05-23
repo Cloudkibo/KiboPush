@@ -6,26 +6,26 @@ export const API_URL = '/api'
 export function appendSentSeenData (data) {
   // we will have broadcast and page_broadcast_pages
   let broadcasts = data.broadcasts
-  let pagebroadcasts = data.broadcastpages
+  //  let pagebroadcasts = data.broadcastpages
 
   for (let j = 0; j < broadcasts.length; j++) {
-    let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
-    let filterBySubscriber = []
-    pagebroadcast.map((c, i) => {
-      if (c.broadcastId === broadcasts[j]._id) {
-        for (var index = 0; index < filterBySubscriber.length; index++) {
-          if (c.subscriberId === filterBySubscriber[index].subscriberId) {
-            break
-          }
-        }
-        if (index === filterBySubscriber.length) {
-          filterBySubscriber.push(c)
-        }
-      }
-    })
-    broadcasts[j].sent = filterBySubscriber.length// total sent
-    let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
-    broadcasts[j].seen = pagebroadcastTapped.length // total tapped
+    //  let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
+    // let filterBySubscriber = []
+    // pagebroadcast.map((c, i) => {
+    //   if (c.broadcastId === broadcasts[j]._id) {
+    //     for (var index = 0; index < filterBySubscriber.length; index++) {
+    //       if (c.subscriberId === filterBySubscriber[index].subscriberId) {
+    //         break
+    //       }
+    //     }
+    //     if (index === filterBySubscriber.length) {
+    //       filterBySubscriber.push(c)
+    //     }
+    //   }
+    // })
+    // broadcasts[j].sent = filterBySubscriber.length// total sent
+    // let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
+    // broadcasts[j].seen = pagebroadcastTapped.length // total tapped
     //  broadcasts[j].count = data.count
   }
   //  var newBroadcast = broadcasts.reverse()
@@ -35,7 +35,7 @@ export function appendSentSeenData (data) {
 export function showbroadcasts (data) {
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    broadcasts: appendSentSeenData(data),
+    broadcasts: data.broadcasts,
     count: data.count
   }
 }

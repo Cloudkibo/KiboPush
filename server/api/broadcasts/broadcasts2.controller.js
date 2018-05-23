@@ -11,7 +11,7 @@ const URL = require('./../URLforClickedCount/URL.model')
 
 // const PollResponse = require('../polls/pollresponse.model')
 // const SurveyResponse = require('../surveys/surveyresponse.model')
-const BroadcastPage = require('../page_broadcast/page_broadcast.model')
+//  const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 // const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
@@ -194,8 +194,10 @@ exports.sendConversation = function (req, res) {
             return res.status(404)
             .json({status: 'failed', description: 'Pages not found'})
           }
-
+          let pageIds = []
+          let subscriberSenderIds = []
           pages.forEach(page => {
+            pageIds.push(page.pageId)
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
@@ -234,9 +236,19 @@ exports.sendConversation = function (req, res) {
                   if (err) {
                     return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
-                  req.body.payload.forEach(payloadItem => {
+                  req.body.payload.forEach((payloadItem, index) => {
                     utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                      taggedSubscribers.forEach(subscriber => {
+                      taggedSubscribers.forEach((subscriber, i) => {
+                        subscriberSenderIds.push(subscriber.senderId)
+                        if (pageIds.length === pages.length && i === taggedSubscribers.length - 1 && index === req.body.payload.length - 1) {
+                          Broadcasts.update({_id: broadcast._id},
+                            {sent: subscriberSenderIds.length, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds},
+                            {multi: true}, (err, updated) => {
+                              if (err) {
+                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                              }
+                            })
+                        }
                         Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                           if (err) {
                             return logger.serverLog(TAG,
@@ -264,51 +276,50 @@ exports.sendConversation = function (req, res) {
                           })
                         })
                         // update broadcast sent field
-                        let pagebroadcast = new BroadcastPage({
-                          pageId: page.pageId,
-                          userId: req.user._id,
-                          subscriberId: subscriber.senderId,
-                          broadcastId: broadcast._id,
-                          seen: false,
-                          companyId: companyUser.companyId
-                        })
-
-                        pagebroadcast.save((err2, savedpagebroadcast) => {
-                          if (err2) {
-                            logger.serverLog(TAG, {
-                              status: 'failed',
-                              description: 'PageBroadcast create failed',
-                              err2
-                            })
-                          }
-                          let messageData = utility.prepareSendAPIPayload(
-                            subscriber.senderId,
-                            payloadItem)
-                          request(
-                            {
-                              'method': 'POST',
-                              'json': true,
-                              'formData': messageData,
-                              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                              page.accessToken
-                            },
-                            function (err, resp) {
-                              if (err) {
-                                return logger.serverLog(TAG,
-                                  `At send message broadcast ${JSON.stringify(err)}`)
+                        // let pagebroadcast = new BroadcastPage({
+                        //   pageId: page.pageId,
+                        //   userId: req.user._id,
+                        //   subscriberId: subscriber.senderId,
+                        //   broadcastId: broadcast._id,
+                        //   seen: false,
+                        //   companyId: companyUser.companyId
+                        // })
+                        //
+                        // pagebroadcast.save((err2, savedpagebroadcast) => {
+                        //   if (err2) {
+                        //     logger.serverLog(TAG, {
+                        //       status: 'failed',
+                        //       description: 'PageBroadcast create failed',
+                        //       err2
+                        //     })
+                        //   }
+                        let messageData = utility.prepareSendAPIPayload(
+                          subscriber.senderId,
+                          payloadItem)
+                        request(
+                          {
+                            'method': 'POST',
+                            'json': true,
+                            'formData': messageData,
+                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                            page.accessToken
+                          },
+                          function (err, resp) {
+                            if (err) {
+                              return logger.serverLog(TAG,
+                                `At send message broadcast ${JSON.stringify(err)}`)
+                            } else {
+                              if (resp.statusCode !== 200) {
+                                logger.serverLog(TAG,
+                                  `At send message broadcast response ${JSON.stringify(
+                                    resp)}`)
                               } else {
-                                if (resp.statusCode !== 200) {
-                                  logger.serverLog(TAG,
-                                    `At send message broadcast response ${JSON.stringify(
-                                      resp)}`)
-                                } else {
-                                  logger.serverLog(TAG,
-                                    `At send message broadcast response ${JSON.stringify(
-                                      resp.body.message_id)}`)
-                                }
+                                logger.serverLog(TAG,
+                                  `At send message broadcast response ${JSON.stringify(
+                                    resp.body.message_id)}`)
                               }
-                            })
-                        })
+                            }
+                          })
                       })
                     })
                   })
@@ -338,9 +349,19 @@ exports.sendConversation = function (req, res) {
                 if (err) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-                newPayload.forEach(payloadItem => {
+                newPayload.forEach((payloadItem, index) => {
                   utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                    taggedSubscribers.forEach(subscriber => {
+                    taggedSubscribers.forEach((subscriber, i) => {
+                      subscriberSenderIds.push(subscriber.senderId)
+                      if (pageIds.length === pages.length && i === taggedSubscribers.length - 1 && index === newPayload.length - 1) {
+                        Broadcasts.update({_id: broadcast._id},
+                          {sent: subscriberSenderIds.length, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds},
+                          {multi: true}, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
+                      }
                       Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -368,51 +389,50 @@ exports.sendConversation = function (req, res) {
                         })
                       })
                       // update broadcast sent field
-                      let pagebroadcast = new BroadcastPage({
-                        pageId: page.pageId,
-                        userId: req.user._id,
-                        subscriberId: subscriber.senderId,
-                        broadcastId: broadcast._id,
-                        seen: false,
-                        companyId: companyUser.companyId
-                      })
-
-                      pagebroadcast.save((err2, savedpagebroadcast) => {
-                        if (err2) {
-                          logger.serverLog(TAG, {
-                            status: 'failed',
-                            description: 'PageBroadcast create failed',
-                            err2
-                          })
-                        }
-                        let messageData = utility.prepareSendAPIPayload(
-                          subscriber.senderId,
-                          payloadItem)
-                        request(
-                          {
-                            'method': 'POST',
-                            'json': true,
-                            'formData': messageData,
-                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                            page.accessToken
-                          },
-                          function (err, resp) {
-                            if (err) {
-                              return logger.serverLog(TAG,
-                                `At send message broadcast ${JSON.stringify(err)}`)
+                      // let pagebroadcast = new BroadcastPage({
+                      //   pageId: page.pageId,
+                      //   userId: req.user._id,
+                      //   subscriberId: subscriber.senderId,
+                      //   broadcastId: broadcast._id,
+                      //   seen: false,
+                      //   companyId: companyUser.companyId
+                      // })
+                      //
+                      // pagebroadcast.save((err2, savedpagebroadcast) => {
+                      //   if (err2) {
+                      //     logger.serverLog(TAG, {
+                      //       status: 'failed',
+                      //       description: 'PageBroadcast create failed',
+                      //       err2
+                      //     })
+                      //   }
+                      let messageData = utility.prepareSendAPIPayload(
+                        subscriber.senderId,
+                        payloadItem)
+                      request(
+                        {
+                          'method': 'POST',
+                          'json': true,
+                          'formData': messageData,
+                          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                          page.accessToken
+                        },
+                        function (err, resp) {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `At send message broadcast ${JSON.stringify(err)}`)
+                          } else {
+                            if (resp.statusCode !== 200) {
+                              logger.serverLog(TAG,
+                                `At send message broadcast response ${JSON.stringify(
+                                  resp)}`)
                             } else {
-                              if (resp.statusCode !== 200) {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp)}`)
-                              } else {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp.body.message_id)}`)
-                              }
+                              logger.serverLog(TAG,
+                                `At send message broadcast response ${JSON.stringify(
+                                  resp.body.message_id)}`)
                             }
-                          })
-                      })
+                          }
+                        })
                     })
                   })
                 })

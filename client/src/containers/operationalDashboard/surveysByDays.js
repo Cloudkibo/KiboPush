@@ -222,9 +222,6 @@ class SurveysInfo extends React.Component {
                             <th data-field='responded'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{width: '120px'}}>Responded</span></th>
-                            <th data-field='more'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '120px'}} /></th>
                           </tr>
                         </thead>
                         <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
@@ -260,14 +257,6 @@ class SurveysInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '120px'}}>{survey.responded}</span></td>
-                                <td data-field='more'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{width: '120px'}}>
-                                    <button onClick={() => this.onSurveyClick(survey)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                    View
-                                  </button></span>
-                                </td>
                               </tr>
                             ))
                           }

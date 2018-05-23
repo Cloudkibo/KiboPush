@@ -13,8 +13,9 @@ const Pages = require('../pages/Pages.model')
 const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
-const PollPage = require('../page_poll/page_poll.model')
-const SurveyPage = require('../page_survey/page_survey.model')
+//  const PollPage = require('../page_poll/page_poll.model')
+const Polls = require('../polls/Polls.model')
+//  const SurveyPage = require('../page_survey/page_survey.model')
 const Surveys = require('../surveys/surveys.model')
 const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
@@ -148,17 +149,10 @@ exports.index = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'BroadcastPage not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
-                  })
-                })
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0}
+              })
             })
           })
         } else {
@@ -203,17 +197,10 @@ exports.index = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
-                  })
-                })
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0}
+              })
             })
           })
         }
@@ -242,17 +229,10 @@ exports.index = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'BroadcastPage not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
-                  })
-                })
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0}
+              })
             })
           })
         } else {
@@ -298,17 +278,10 @@ exports.index = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
-                  })
-                })
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0}
+              })
             })
           })
         }
@@ -337,17 +310,10 @@ exports.index = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'BroadcastPage not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
-                  })
-                })
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0}
+              })
             })
           })
         } else {
@@ -393,17 +359,10 @@ exports.index = function (req, res) {
                 return res.status(404)
                   .json({status: 'failed', description: 'Broadcasts not found'})
               }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
-                  })
-                })
+              res.status(200).json({
+                status: 'success',
+                payload: {broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0}
+              })
             })
           })
         }
@@ -1224,25 +1183,25 @@ function addAdminAsSubscriber (payload) {
 }
 
 function updateseenstatus (req) {
-  BroadcastPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
-    {seen: true},
+  Surveys.update(
+    {pageIds: req.recipient.id, subscriberSenderIds: req.sender.id},
+    {$inc: {seen: 1}},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
-  PollPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
-    {seen: true},
+  Polls.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {$inc: {seen: 1}},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
-  SurveyPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
-    {seen: true},
+  Broadcasts.update(
+    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {$inc: {seen: 1}},
     {multi: true}, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
