@@ -47,6 +47,12 @@ export function applyBotTemplate (data) {
   }
 }
 
+export function showWaitingReplyList (data) {
+  return {
+    type: ActionTypes.SHOW_WAITING_REPLY_LIST,
+    data
+  }
+}
 export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
@@ -165,6 +171,17 @@ export function loadPoliticsBotTemplate () {
     .then(res => {
       if (res.status === 'success') {
         dispatch(applyBotTemplate(res.payload))
+      }
+    })
+  }
+}
+
+export function loadWaitingReplyList () {
+  return (dispatch) => {
+    callApi('bots/waitingReply')
+    .then(res => {
+      if (res.status === 'success') {
+        dispatch(showWaitingReplyList(res.payload))
       }
     })
   }

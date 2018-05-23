@@ -13,6 +13,12 @@ router.get('/',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.index)
 
+router.get('/waitingReply',
+  auth.isAuthenticated(),
+  // auth.doesPlanPermitsThisAction('workflows'),
+  // auth.doesRolePermitsThisAction('workflowPermission'),
+  controller.waitingReply)
+
 router.post('/create',
   auth.isAuthenticated(),
   // auth.doesPlanPermitsThisAction('workflows'),
