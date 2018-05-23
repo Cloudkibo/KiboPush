@@ -27,6 +27,10 @@ export function botsInfo (state = {}, action) {
       return Object.assign({}, state, {
         botTemplate: action.data
       })
+    case ActionTypes.SHOW_WAITING_REPLY_LIST:
+      return Object.assign({}, state, {
+        waitingReplyList: action.data
+      })
     default:
       return state
   }

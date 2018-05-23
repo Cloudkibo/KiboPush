@@ -1042,7 +1042,7 @@ class ChatBox extends React.Component {
                                           </div>
                                         </div>
                                       </div>
-                                      : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                      : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div className='m-messenger__message-content'>
                                         <div className='m-messenger__message-username'>
                                           {this.props.currentSession.subscriber_id.firstName} reacted
@@ -1370,7 +1370,7 @@ class ChatBox extends React.Component {
                                           }
                                         </div>
                                       )
-                                      : msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                      : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
                                       ? <div>
                                         <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
