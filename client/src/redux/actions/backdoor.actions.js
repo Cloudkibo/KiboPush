@@ -14,6 +14,8 @@ export function getLocales (data) {
         tempLocale.push(data[i].locale)
       }
     }
+    console.log('locale', locale)
+    return locale
   }
 }
 

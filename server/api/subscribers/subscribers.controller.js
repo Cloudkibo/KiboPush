@@ -353,9 +353,19 @@ exports.getAll = function (req, res) {
                       }
                     }
                   }
+                  let payload = []
+                  if (req.body.filter_criteria.tag_value !== '') {
+                    for (let j = 0; j < subscribersPayload.length; j++) {
+                      if (subscribersPayload[j].tags && subscribersPayload[j].tags.length > 0) {
+                        payload.push(subscribersPayload[j])
+                      }
+                    }
+                  } else {
+                    payload = subscribersPayload
+                  }
                   res.status(200).json({
                     status: 'success',
-                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                    payload: {subscribers: payload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
                   })
                 })
             })
@@ -501,9 +511,19 @@ exports.getAll = function (req, res) {
                       }
                     }
                   }
+                  let payload = []
+                  if (req.body.filter_criteria.tag_value !== '') {
+                    for (let j = 0; j < subscribersPayload.length; j++) {
+                      if (subscribersPayload[j].tags && subscribersPayload[j].tags.length > 0) {
+                        payload.push(subscribersPayload[j])
+                      }
+                    }
+                  } else {
+                    payload = subscribersPayload
+                  }
                   res.status(200).json({
                     status: 'success',
-                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                    payload: {subscribers: payload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
                   })
                 })
             })
@@ -649,9 +669,19 @@ exports.getAll = function (req, res) {
                       }
                     }
                   }
+                  let payload = []
+                  if (req.body.filter_criteria.tag_value !== '') {
+                    for (let j = 0; j < subscribersPayload.length; j++) {
+                      if (subscribersPayload[j].tags && subscribersPayload[j].tags.length > 0) {
+                        payload.push(subscribersPayload[j])
+                      }
+                    }
+                  } else {
+                    payload = subscribersPayload
+                  }
                   res.status(200).json({
                     status: 'success',
-                    payload: {subscribers: subscribersPayload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
+                    payload: {subscribers: payload, count: subscribersPayload.length > 0 ? subscribersCount[0].count : ''}
                   })
                 })
             })
