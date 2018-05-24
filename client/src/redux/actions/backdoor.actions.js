@@ -37,6 +37,14 @@ export function updateUsersList (data, originalData) {
   }
 }
 
+export function updateAllLocales (data) {
+  console.log('Data Fetched From backdoor', data)
+  return {
+    type: ActionTypes.LOAD_LOCALES_LIST_BACKDOOR,
+    data
+  }
+}
+
 export function updateDataObjectsCount (data) {
   return {
     type: ActionTypes.LOAD_DATA_OBJECTS_LIST,
@@ -366,5 +374,10 @@ export function sendEmail (msg) {
           msg.error('Email not sent')
         }
       })
+  }
+}
+export function allLocales () {
+  return (dispatch) => {
+    callApi('backdoor/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }

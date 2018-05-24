@@ -3491,3 +3491,18 @@ exports.sendEmail = function (req, res) {
   return res.status(200)
     .json({status: 'success'})
 }
+exports.allLocales = function (req, res) {
+  Users.distinct('facebookInfo.locale',
+  (err, locales) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: locales
+    })
+  })
+}

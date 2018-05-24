@@ -25,14 +25,14 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         users: [...state.users, ...action.data],
         //  users: action.data,
-        locales: action.locale,
+        //  locales: action.locale,
         count: action.count
       })
     case ActionTypes.LOAD_USERS_LIST_FILTERS:
       return Object.assign({}, state, {
         //  users: [...state.users, action.data],
         users: action.data,
-        locales: action.locale,
+        //  locales: action.locale,
         count: action.count
       })
 
@@ -146,6 +146,10 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         surveys: action.surveys,
         surveysCount: action.count
+      })
+    case ActionTypes.LOAD_LOCALES_LIST_BACKDOOR:
+      return Object.assign({}, state, {
+        locales: action.data
       })
 
     default:
