@@ -68,7 +68,7 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      if (req.body.filter) {
+      if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
         let usersPayloadData = []
         for (let i = 0; i < usersData.length; i++) {
           if (usersData[i].facebookInfo) {
@@ -84,8 +84,6 @@ exports.getAllUsers = function (req, res) {
               if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
                 usersPayloadData.push(usersData[i])
               }
-            } else {
-              usersPayloadData = usersData
             }
           }
         }
@@ -99,7 +97,7 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        if (req.body.filter) {
+        if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
           let usersPayload = []
           for (let i = 0; i < users.length; i++) {
             if (users[i].facebookInfo) {
