@@ -146,22 +146,24 @@ exports.respond = function (payload) {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
-    Bots.findOne({pageId: page._id}, (err, bot) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
+    if (page && page._id) {
+      Bots.findOne({pageId: page._id}, (err, bot) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
 
-		// Return if no bot found
-      if (!bot) {
-        logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
-        return
-      }
-      if (bot.isActive === 'true') {
-            // Write the bot response logic here
-        logger.serverLog(TAG, 'Responding using the bot as status is Active')
-        getWitResponse(text, bot.witToken, bot, pageId, senderId)
-      }
-    })
+  		// Return if no bot found
+        if (!bot) {
+          logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
+          return
+        }
+        if (bot.isActive === 'true') {
+              // Write the bot response logic here
+          logger.serverLog(TAG, 'Responding using the bot as status is Active')
+          getWitResponse(text, bot.witToken, bot, pageId, senderId)
+        }
+      })
+    }
   })
 }
 
