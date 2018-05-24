@@ -1192,7 +1192,7 @@ function updateseenstatus (req) {
       }
     })
   Polls.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {pageIds: req.recipient.id, subscriberSenderIds: req.sender.id},
     {$inc: {seen: 1}},
     {multi: true}, (err, updated) => {
       if (err) {
@@ -1200,7 +1200,7 @@ function updateseenstatus (req) {
       }
     })
   Broadcasts.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id},
+    {pageIds: req.recipient.id, subscriberSenderIds: req.sender.id},
     {$inc: {seen: 1}},
     {multi: true}, (err, updated) => {
       if (err) {
