@@ -53,7 +53,8 @@ const subscriberSchema = new Schema({
     type: Boolean,
     default: true
   },
-  datetime: { type: Date, default: Date.now }
+  datetime: { type: Date, default: Date.now },
+  lastSeen: { type: Date, default: Date.now }
 })
 
 module.exports = mongoose.model('subscribers', subscriberSchema)

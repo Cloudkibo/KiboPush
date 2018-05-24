@@ -39,6 +39,22 @@ router.get('/subscriptionDate', (req, res) => {
   })
 })
 
+router.get('/lastSeenDate', (req, res) => {
+  Subscribers.find({}, (err, subscribers) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    subscribers.forEach((subscriber) => {
+      Subscribers.update({_id: subscriber._id}, {lastSeen: subscriber.datetime}, (err, subs) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+      })
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
 router.get('/unSubscribedBy', (req, res) => {
   Subscribers.update({}, {unSubscribedBy: 'subscriber'}, {multi: true}, (err, subs) => {
     if (err) {
