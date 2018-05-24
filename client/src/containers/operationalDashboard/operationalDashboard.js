@@ -404,8 +404,9 @@ class OperationalDashboard extends React.Component {
   }
 
   onFilterByLocale (e) {
+    this.setState({localeValue: e.target.value})
     if (e.target.value !== '') {
-      this.setState({localeValue: e.target.value, filter: true})
+      this.setState({filter: true})
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
     } else {
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})

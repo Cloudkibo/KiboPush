@@ -68,7 +68,6 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      console.log('users', usersData.length)
       if (req.body.filter) {
         let usersPayloadData = []
         for (let i = 0; i < usersData.length; i++) {
@@ -99,7 +98,7 @@ exports.getAllUsers = function (req, res) {
             status: 'failed',
             description: `Error in getting users ${JSON.stringify(err)}`
           })
-        } console.log('users', users.length)
+        }
         if (req.body.filter) {
           let usersPayload = []
           for (let i = 0; i < users.length; i++) {
