@@ -55,7 +55,6 @@ class CreatePoll extends React.Component {
       option1: '',
       option2: '',
       option3: '',
-      steps: [],
       selectedRadio: '',
       listSelected: '',
       isList: false,

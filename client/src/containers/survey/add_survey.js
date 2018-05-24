@@ -61,7 +61,6 @@ class AddSurvey extends React.Component {
       localeValue: [],
       tagValue: [],
       surveyValue: [],
-      steps: [],
       showDropDown: false,
       selectedRadio: '',
       listSelected: '',

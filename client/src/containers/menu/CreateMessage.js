@@ -340,12 +340,6 @@ class CreateMessage extends React.Component {
 
     return (
       <div>
-        {
-          /*
-        !(this.props.user && this.props.user.convoTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-        */
-      }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
