@@ -68,7 +68,6 @@ class CreateConvo extends React.Component {
       isShowingModalGuideLines: false,
       isShowingModalResetAlert: false,
       convoTitle: 'Broadcast Title',
-      steps: [],
       showMessengerModal: false,
       selectedRadio: '',
       listSelected: '',
@@ -685,13 +684,6 @@ class CreateConvo extends React.Component {
 
     return (
       <div>
-        {
-          /*
-           !(this.props.user && this.props.user.convoTourSeen) &&
-           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-
-           */
-        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}

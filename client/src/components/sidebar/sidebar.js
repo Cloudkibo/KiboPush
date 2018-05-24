@@ -15,7 +15,6 @@ class Sidebar extends Component {
     super(props, context)
     this.state = {
       isShowingModal: false,
-      steps: [],
       activeSession: '',
       currentProfile: {},
       loading: true,

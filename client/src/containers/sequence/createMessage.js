@@ -342,17 +342,9 @@ class CreateMessage extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-//    const { disabled, stayOpen } = this.state
 
     return (
       <div>
-        {
-          /*
-           !(this.props.user && this.props.user.convoTourSeen) &&
-           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-
-           */
-        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
