@@ -68,6 +68,7 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
+      logger.serverLog(TAG, `usersData ${JSON.stringify(usersData)}`)
       if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
         let usersPayloadData = []
         for (let i = 0; i < usersData.length; i++) {
@@ -89,6 +90,7 @@ exports.getAllUsers = function (req, res) {
         }
         usersData = usersPayloadData
       }
+      logger.serverLog(TAG, `usersData after ${JSON.stringify(usersData)}`)
       Users.find(findCriteria).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
@@ -138,7 +140,7 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      if (req.body.filter) {
+      if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
         let usersPayloadData
         for (let i = 0; i < usersData.length; i++) {
           if (usersData[i].facebookInfo) {
@@ -169,7 +171,7 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        if (req.body.filter) {
+        if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
           let usersPayload = []
           for (let i = 0; i < users.length; i++) {
             if (users[i].facebookInfo) {
