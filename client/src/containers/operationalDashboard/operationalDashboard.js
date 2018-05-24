@@ -514,7 +514,7 @@ class OperationalDashboard extends React.Component {
                                   }
                                 </select>
                                 <br />
-                                <select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale}>
+                                <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale}>
                                   <option key='' value='' disabled>Filter by Locale...</option>
                                   <option key='ALL' value=''>ALL</option>
                                   {
