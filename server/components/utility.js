@@ -37,5 +37,101 @@ function setupPlans () {
   })
 }
 
+let request = require('request')
+let crypto = require('crypto')
+let username = 'demo.cloudkibo.api'
+let apiKey = 'b64228a5-cb5f-f1d4-c7ef-5a3a45f40586'
+let dbMode = '1'
+let password = apiKey + '|' + dbMode
+let ngp_api = require('./../api/api_ngp/api_ngp.model')
+
+function test () {
+  var options = {
+    headers: { 'Content-type': 'application/json' },
+    auth: {
+      user: username,
+      password: password
+    },
+    json: {
+      'message': 'Hello, world'
+    },
+    uri: 'https://api.securevan.com/v4/echoes'
+  }
+  request.post(options, function (err, res, body) {
+    if (err) {
+      console.dir(err)
+      return
+    }
+    console.dir(res.statusCode)
+    console.dir(body)
+  })
+}
+// vanIds to check: 101097013, 101097014
+function addVanSupporter (payload) {
+  ngp_api.findOne({company_id: payload.companyId}, (err, ngp_payload) => {
+    if (err) {
+      return logger.serverLog(TAG, 'Internal Server Error on VAN Supporter GET ' + JSON.stringify(err))
+    }
+    if (ngp_payload && ngp_payload.enabled) {
+      var today = new Date()
+      var uid = crypto.randomBytes(5).toString('hex')
+      let tokenString = 'f' + uid + '' + today.getFullYear() + '' +
+        (today.getMonth() + 1) + '' + today.getDate() + '' +
+        today.getHours() + '' + today.getMinutes() + '' +
+        today.getSeconds()
+      var options = {
+        headers: { 'Content-type': 'application/json' },
+        auth: {
+          user: ngp_payload.app_id,
+          password: ngp_payload.app_secret + '|' + dbMode
+        },
+        json: {
+          'firstName': payload.firstName,
+          'lastName': payload.lastName,
+          'sex': payload.sex,
+          'emails': [{
+            'email': '' + tokenString + '@gotham.city.us',
+            'type': 'P',
+            'isPreferred': true
+          }]
+        },
+        uri: 'https://api.securevan.com/v4/people/findOrCreate'
+      }
+      request.post(options, function (err, res, body) {
+        if (err) {
+          console.dir(err)
+          logger.serverLog(TAG, 'Internal Server Error on VAN Supporter API CALL ' + JSON.stringify(err))
+          return
+        }
+        logger.serverLog(TAG, 'Added subscriber to VAN')
+        console.dir(res.statusCode)
+        console.dir(body)
+      })
+    }
+  })
+}
+
+function findVanSupport () {
+  var options = {
+    headers: { 'Content-type': 'application/json' },
+    auth: {
+      user: username,
+      password: password
+    },
+    uri: 'https://api.securevan.com/v4/people/101097014?$expand=emails'
+  }
+  request.get(options, function (err, res, body) {
+    if (err) {
+      console.dir(err)
+      return
+    }
+    console.dir(res.statusCode)
+    console.dir(body)
+  })
+}
+
 exports.validateUrl = validateUrl
 exports.setupPlans = setupPlans
+exports.test = test
+exports.addVanSupporter = addVanSupporter
+exports.findVanSupport = findVanSupport

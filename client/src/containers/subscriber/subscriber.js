@@ -38,10 +38,12 @@ class Subscriber extends React.Component {
       selectedSubscribers: [],
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
+      popoverAddTagOpenIndividual: false,
       popoverRemoveTagOpen: false,
       openSubscribeToSequence: false,
       openUnsubscribeToSequence: false,
       addTag: '',
+      addTagIndividual: '',
       removeTag: '',
       sequenceValue: '',
       options: [],
@@ -52,7 +54,8 @@ class Subscriber extends React.Component {
       showEditModal: false,
       subscriber: {},
       filter: false,
-      status_value: ''
+      status_value: '',
+      saveEnableIndividual: false
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -60,9 +63,11 @@ class Subscriber extends React.Component {
     props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
     props.loadTags()
     this.handleAdd = this.handleAdd.bind(this)
+    this.handleAddIndividual = this.handleAddIndividual.bind(this)
     this.handleRemove = this.handleRemove.bind(this)
     this.toggleTag = this.toggleTag.bind(this)
     this.toggleAdd = this.toggleAdd.bind(this)
+    this.toggleAddIndividual = this.toggleAddIndividual.bind(this)
     this.toggleRemove = this.toggleRemove.bind(this)
     this.toggleSubscribe = this.toggleSubscribe.bind(this)
     this.toggleUnSubscribe = this.toggleUnSubscribe.bind(this)
@@ -80,6 +85,7 @@ class Subscriber extends React.Component {
     this.prepareExportData = this.prepareExportData.bind(this)
     this.handleSubscriberClick = this.handleSubscriberClick.bind(this)
     this.showAddTag = this.showAddTag.bind(this)
+    this.showAddTagIndiviual = this.showAddTagIndiviual.bind(this)
     this.showRemoveTag = this.showRemoveTag.bind(this)
     this.addTags = this.addTags.bind(this)
     this.handleSaveTags = this.handleSaveTags.bind(this)
@@ -99,6 +105,7 @@ class Subscriber extends React.Component {
     this.setSubscriber = this.setSubscriber.bind(this)
     this.getDate = this.getDate.bind(this)
     this.removeSequence = this.removeSequence.bind(this)
+    this.removeTagIndividual = this.removeTagIndividual.bind(this)
   }
 
   getDate (datetime) {
@@ -121,6 +128,46 @@ class Subscriber extends React.Component {
   closeEditModal () {
     this.setState({showEditModal: false})
     this.props.loadAllSubscribersList()
+  }
+  handleAddIndividual (value) {
+    var index = 0
+    if (value) {
+      for (var i = 0; i < this.props.tags.length; i++) {
+        if (this.props.tags[i].tag !== value.label) {
+          index++
+        }
+      }
+      if (index === this.props.tags.length) {
+        this.props.createTag(value.label, this.handleCreateTag, this.msg)
+      } else {
+        this.setState({
+          saveEnableIndividual: true,
+          addTagIndividual: value
+        })
+      }
+    } else {
+      this.setState({
+        saveEnableIndividual: false,
+        addTagIndividual: value
+      })
+    }
+  }
+  removeTagIndividual (e, tag) {
+    var subscribers = []
+    var tagId = ''
+    var payload = {}
+    subscribers.push(this.state.subscriber._id)
+    for (let i = 0; i < this.state.options.length; i++) {
+      if (this.state.options[i].label === tag) {
+        tagId = this.state.options[i].value
+        break
+      }
+    }
+    if (tagId !== '' && subscribers.length > 0) {
+      payload.subscribers = subscribers
+      payload.tagId = tagId
+      this.props.unassignTags(payload, this.handleSaveTags, this.msg)
+    }
   }
   handleAdd (value) {
     var index = 0
@@ -205,6 +252,27 @@ class Subscriber extends React.Component {
       }
     }
   }
+  addTagsIndividual (subscriber) {
+    var payload = {}
+    var subscribers = []
+    if (this.state.subscriber && this.state.subscriber.tags) {
+      for (let i = 0; i < this.state.subscriber.tags.length; i++) {
+        if (this.state.subscriber.tags[i] === this.state.addTagIndividual.label) {
+          return this.msg.error('Tag is already assigned')
+        }
+      }
+    }
+    subscribers.push(subscriber._id)
+    payload.subscribers = subscribers
+    payload.tagId = this.state.addTagIndividual.value
+    if (payload.subscribers.length > 0) {
+      this.props.assignTags(payload, this.handleSaveTags, this.msg)
+    } else {
+      if (this.msg) {
+        this.msg.error('Select relevant subscribers')
+      }
+    }
+  }
 
   subscribeToSequence () {
     let subscribers = []
@@ -245,7 +313,7 @@ class Subscriber extends React.Component {
   }
 
   handleSaveTags () {
-    this.props.loadAllSubscribersList()
+    this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
     this.setState({
       selectAllChecked: false
     })
@@ -289,6 +357,11 @@ class Subscriber extends React.Component {
       popoverAddTagOpen: !this.state.popoverAddTagOpen
     })
   }
+  toggleAddIndividual () {
+    this.setState({
+      popoverAddTagOpenIndividual: !this.state.popoverAddTagOpenIndividual
+    })
+  }
   toggleRemove () {
     this.setState({
       popoverRemoveTagOpen: !this.state.popoverRemoveTagOpen
@@ -308,6 +381,12 @@ class Subscriber extends React.Component {
     this.setState({
       addTag: null,
       popoverAddTagOpen: true
+    })
+  }
+  showAddTagIndiviual () {
+    this.setState({
+      addTagIndividual: null,
+      popoverAddTagOpenIndividual: true
     })
   }
   showRemoveTag () {
@@ -475,6 +554,15 @@ class Subscriber extends React.Component {
     if (nextProps.subscribers && nextProps.count) {
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count })
+      if (this.state.subscriber && this.state.subscriber._id) {
+        for (let i = 0; i < nextProps.subscribers.length; i++) {
+          if (nextProps.subscribers[i]._id === this.state.subscriber._id) {
+            this.setState({
+              subscriber: nextProps.subscribers[i]
+            })
+          }
+        }
+      }
     } else {
       this.setState({subscribersData: [], subscribersDataAll: [], totalLength: 0})
     }
@@ -944,7 +1032,7 @@ class Subscriber extends React.Component {
                                               placeholder='Add User Tags'
                                             />
                                           </div>
-                                          {this.state.saveEnable
+                                          {this.state.saveEnableIndividual
                                           ? <div className='col-12'>
                                             <button style={{float: 'right', margin: '15px'}}
                                               className='btn btn-primary btn-sm'
@@ -1293,23 +1381,57 @@ class Subscriber extends React.Component {
                                 </div>
                               </div>
                               <br />
+                              <div className='row'>
+                                <span style={{fontWeight: 600, marginLeft: '15px'}}>User Tags:</span>
+                                <a id='assignIndividualTag' style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</a>
+                              </div>
                               {
-                                this.props.tags && this.props.tags.length > 0 &&
-                                <div className='row'>
-                                  <span style={{fontWeight: 600, marginLeft: '15px'}}>User Tags:</span>
-                                  <a style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px'}}><i className='la la-plus' /> Add Tags</a>
-                                </div>
-                              }
-                              {
-                                this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0 &&
-                                <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
+                                ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
                                   {
                                     this.state.subscriber.tags.map((tag, i) => (
-                                      <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{tag} <i style={{cursor: 'pointer'}} onClick={() => { this.removeSequence(tag) }} className='la la-close' /></button>
+                                      <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{tag} <i style={{cursor: 'pointer'}} onClick={(e) => { this.removeTagIndividual(e, tag) }} className='la la-close' /></button>
                                     ))
                                   }
                                 </div>
+                                : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                  <span> No Tags Assigned</span>
+                                </div>
                               }
+                              <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddTagOpenIndividual} target='assignIndividualTag' toggle={this.toggleAddIndividual}>
+                                <PopoverHeader>Add Tags</PopoverHeader>
+                                <PopoverBody>
+                                  <div className='row' style={{minWidth: '250px'}}>
+                                    <div className='col-12'>
+                                      <label>Select Tags</label>
+                                      <Select.Creatable
+                                        options={this.state.options}
+                                        onChange={this.handleAddIndividual}
+                                        value={this.state.addTagIndividual}
+                                        placeholder='Add User Tags'
+                                      />
+                                    </div>
+                                    {this.state.saveEnableIndividual
+                                    ? <div className='col-12'>
+                                      <button style={{float: 'right', margin: '15px'}}
+                                        className='btn btn-primary btn-sm'
+                                        onClick={() => {
+                                          this.addTagsIndividual(this.state.subscriber)
+                                          this.toggleAddIndividual()
+                                        }}>Save
+                                      </button>
+                                    </div>
+                                    : <div className='col-12'>
+                                      <button style={{float: 'right', margin: '15px'}}
+                                        className='btn btn-primary btn-sm'
+                                        disabled>
+                                         Save
+                                      </button>
+                                    </div>
+                                  }
+                                  </div>
+                                </PopoverBody>
+                              </Popover>
                               {
                                 this.props.sequences && this.props.sequences.length > 0 &&
                                 <div className='row'>

@@ -100,6 +100,99 @@ export function getAPI (API) {
   }
 }
 
+/*
+NGP API WORK STARTS
+ */
+
+export function enableSuccessNGP (data) {
+  return {
+    type: ActionTypes.ENABLE_SUCCESS_NGP,
+    data
+  }
+}
+
+export function disableSuccessNGP (data) {
+  return {
+    type: ActionTypes.DISABLE_SUCCESS_NGP,
+    data
+  }
+}
+
+export function saveSuccessNGP (data) {
+  return {
+    type: ActionTypes.RESET_SUCCESS_NGP,
+    data
+  }
+}
+
+export function getAPISuccessNGP (data) {
+  return {
+    type: ActionTypes.GET_API_SUCCESS_NGP,
+    data
+  }
+}
+
+export function getAPIFailureNGP (data) {
+  return {
+    type: ActionTypes.GET_API_FAILURE_NGP,
+    data
+  }
+}
+
+export function enableNGP (API) {
+  return (dispatch) => {
+    callApi('api_ngp/enable', 'post', API)
+    .then(res => {
+      if (res.status === 'success') {
+        console.log('enable ngp', res.payload)
+        dispatch(enableSuccessNGP(res.payload))
+      }
+    })
+  }
+}
+export function disableNGP (API) {
+  return (dispatch) => {
+    callApi('api_ngp/disable', 'post', API)
+    .then(res => {
+      if (res.status === 'success') {
+        console.log('disable', res.payload)
+        dispatch(disableSuccessNGP(res.payload))
+      }
+    })
+  }
+}
+
+export function saveNGP (API) {
+  console.log(API)
+  return (dispatch) => {
+    callApi('api_ngp/save', 'post', API)
+    .then(res => {
+      if (res.status === 'success') {
+        console.log('reset', res.payload)
+        dispatch(saveSuccessNGP(res.payload))
+      }
+    })
+  }
+}
+
+export function getNGP (API) {
+  return (dispatch) => {
+    callApi('api_ngp/', 'post', API)
+    .then(res => {
+      if (res.status === 'success') {
+        console.log('reset', res.payload)
+        dispatch(getAPISuccessNGP(res.payload))
+      } else if (res.status === 'failed') {
+        dispatch(getAPIFailureNGP(res.description))
+      }
+    })
+  }
+}
+
+/*
+NGP API WORK ENDS
+ */
+
 export function changePass (data, msg) {
   return (dispatch) => {
     callApi('reset_password/change', 'post', data)
