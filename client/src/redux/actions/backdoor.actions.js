@@ -5,13 +5,13 @@ export const API_URL = '/api'
 
 export function getLocales (data) {
   if (data.length > 0) {
-    var locale = [{ value: data[0].locale, label: data[0].locale }]
-    var tempLocale = [data[0].locale]
+    var locale = [{ value: data[0].facebookInfo.locale, label: data[0].facebookInfo.locale }]
+    var tempLocale = [data[0].facebookInfo.locale]
     for (var i = 1; i < data.length; i++) {
-      if (tempLocale.indexOf(data[i].locale) === -1) {
-        var temp = { value: data[i].locale, label: data[i].locale }
+      if (data[i].facebookInfo && tempLocale.indexOf(data[i].facebookInfo.locale) === -1) {
+        var temp = { value: data[i].facebookInfo.locale, label: data[i].facebookInfo.locale }
         locale.push(temp)
-        tempLocale.push(data[i].locale)
+        tempLocale.push(data[i].facebookInfo.locale)
       }
     }
     console.log('locale', locale)
