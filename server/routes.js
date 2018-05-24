@@ -36,6 +36,7 @@ module.exports = function (app) {
   app.use('/api/sessions', require('./api/sessions'))
   app.use('/api/menu', require('./api/menu'))
   app.use('/api/api_settings', require('./api/api_settings'))
+  app.use('/api/api_ngp', require('./api/api_ngp'))
   app.use('/api/templates', require('./api/templates'))
   app.use('/api/URL', require('./api/URLforClickedCount'))
   app.use('/api/teams', require('./api/teams'))
@@ -54,6 +55,7 @@ module.exports = function (app) {
   app.use('/migrations', require('./api/migrations'))
 
   app.use('/auth', require('./auth'))
+
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
       {expires: new Date(Date.now() + 900000)})

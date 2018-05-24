@@ -565,6 +565,12 @@ exports.getfbMessage = function (req, res) {
                             if (err) logger.serverLog(TAG, err)
                             if (subscriber === null) {
                               // subsriber not found, create subscriber
+                              require('./../../components/utility').addVanSupporter({
+                                firstName: payload.firstName,
+                                lastName: payload.lastName,
+                                sex: payload.gender === 'male' ? 'M' : 'F',
+                                companyId: payload.companyId
+                              })
                               Subscribers.create(payload,
                                 (err2, subscriberCreated) => {
                                   if (err2) {
