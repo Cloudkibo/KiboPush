@@ -69,9 +69,11 @@ class Settings extends React.Component {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
+      this.setState({showAPI: false, resetPassword: true})
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
-    } else if (plan === 'plan_C') {
+    } else if (plan === 'plan_D') {
+      this.setState({showAPI: false, resetPassword: true})
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
@@ -109,6 +111,10 @@ class Settings extends React.Component {
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
     }
+  }
+  componentDidUpdate () {
+    console.log('in componentDidUpdate', this.state.saveState)
+    this.initializeSwitch(this.state.buttonState)
   }
   changeType (e) {
     if (this.state.type === 'password') {
@@ -262,7 +268,7 @@ class Settings extends React.Component {
                         <li className='m-nav__section m--hide'>
                           <span className='m-nav__section-text'>Section</span>
                         </li>
-                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
                           <li className='m-nav__item'>
                             <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
                               <i className='m-nav__link-icon flaticon-share' />

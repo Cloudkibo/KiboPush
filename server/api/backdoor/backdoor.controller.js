@@ -68,6 +68,7 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
+      console.log('users', usersData.length)
       if (req.body.filter) {
         let usersPayloadData = []
         for (let i = 0; i < usersData.length; i++) {
@@ -84,6 +85,8 @@ exports.getAllUsers = function (req, res) {
               if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
                 usersPayloadData.push(usersData[i])
               }
+            } else {
+              usersPayloadData = usersData
             }
           }
         }
@@ -96,7 +99,8 @@ exports.getAllUsers = function (req, res) {
             status: 'failed',
             description: `Error in getting users ${JSON.stringify(err)}`
           })
-        } if (req.body.filter) {
+        } console.log('users', users.length)
+        if (req.body.filter) {
           let usersPayload = []
           for (let i = 0; i < users.length; i++) {
             if (users[i].facebookInfo) {
@@ -112,6 +116,8 @@ exports.getAllUsers = function (req, res) {
                 if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
                   usersPayload.push(users[i])
                 }
+              } else {
+                usersPayload = users
               }
             }
           }
@@ -151,6 +157,8 @@ exports.getAllUsers = function (req, res) {
               if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
                 usersPayloadData.push(usersData[i])
               }
+            } else {
+              usersPayloadData = usersData
             }
           }
         }
@@ -180,6 +188,8 @@ exports.getAllUsers = function (req, res) {
                 if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
                   usersPayload.push(users[i])
                 }
+              } else {
+                usersPayload = users
               }
             }
           }
