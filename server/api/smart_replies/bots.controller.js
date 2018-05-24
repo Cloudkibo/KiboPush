@@ -152,7 +152,7 @@ exports.respond = function (payload) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
 
-  		// Return if no bot found
+  	 	// Return if no bot found
         if (!bot) {
           logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
           return
