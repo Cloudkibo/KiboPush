@@ -124,7 +124,7 @@ exports.getAllUsers = function (req, res) {
         }
         res.status(200).json({
           status: 'success',
-          payload: {users: users, count: usersData.length}
+          payload: {users: usersData.length > 10 ? usersData.slice(0, 9) : usersData, count: usersData.length}
         })
       })
     })
@@ -196,7 +196,7 @@ exports.getAllUsers = function (req, res) {
         }
         res.status(200).json({
           status: 'success',
-          payload: {users: users, count: usersData.length}
+          payload: {users: usersData.length > 10 ? usersData.slice(0, 9) : usersData, count: usersData.length}
         })
       })
     })
