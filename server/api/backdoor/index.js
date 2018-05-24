@@ -40,5 +40,6 @@ router.post('/getAllSurveys', auth.isAuthorizedSuperUser(), controller.getAllSur
 router.get('/pollsByDays/:days', auth.isAuthorizedSuperUser(), controller.pollsByDays)
 router.post('/getAllPolls', auth.isAuthorizedSuperUser(), controller.getAllPolls) // pagination
 router.get('/sendEmail', auth.isAuthorizedSuperUser(), controller.sendEmail)
+router.get('/allLocales', auth.isAuthorizedSuperUser(), controller.allLocales)
 
 module.exports = router
