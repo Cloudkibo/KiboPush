@@ -113,3 +113,20 @@ export function allLocales () {
     callApi('subscribers/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
+
+export function unSubscribe (data, handleSubscription) {
+  return (dispatch) => {
+    callApi('sessions/unSubscribe', 'post', data).then(res => {
+      handleSubscription(res, 'unsub')
+    })
+  }
+}
+
+export function subscribe (id, handleSubscription) {
+  return (dispatch) => {
+    callApi(`subscribers/subscribeBack/${id}`)
+      .then(res => {
+        handleSubscription(res, 'sub')
+      })
+  }
+}
