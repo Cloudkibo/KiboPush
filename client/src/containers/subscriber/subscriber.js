@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { loadAllSubscribersListNew, allLocales } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -42,6 +42,8 @@ class Subscriber extends React.Component {
       popoverRemoveTagOpen: false,
       openSubscribeToSequence: false,
       openUnsubscribeToSequence: false,
+      popoverAddSeqInd: false,
+      seqValueInd: '',
       addTag: '',
       addTagIndividual: '',
       removeTag: '',
@@ -55,7 +57,9 @@ class Subscriber extends React.Component {
       subscriber: {},
       filter: false,
       status_value: '',
-      saveEnableIndividual: false
+      saveEnableIndividual: false,
+      saveEnableSeq: false,
+      saveEnableSeqInd: false
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -106,6 +110,13 @@ class Subscriber extends React.Component {
     this.getDate = this.getDate.bind(this)
     this.removeSequence = this.removeSequence.bind(this)
     this.removeTagIndividual = this.removeTagIndividual.bind(this)
+    this.subscribe = this.subscribe.bind(this)
+    this.unSubscribe = this.unSubscribe.bind(this)
+    this.handleSubscription = this.handleSubscription.bind(this)
+    this.toggleSeqInd = this.toggleSeqInd.bind(this)
+    this.addSeqInd = this.addSeqInd.bind(this)
+    this.handleSequenceInd = this.handleSequenceInd.bind(this)
+    this.handleSeqResponse = this.handleSeqResponse.bind(this)
   }
 
   getDate (datetime) {
@@ -117,7 +128,36 @@ class Subscriber extends React.Component {
 
     return [dayofweek, date, month, year, d.toLocaleTimeString()].join(' ')
   }
-
+  subscribe () {
+    if (this.state.subscriber._id) {
+      this.props.subscribe(this.state.subscriber._id, this.handleSubscription, this.msg)
+    }
+  }
+  unSubscribe () {
+    var payload = {}
+    payload.page_id = this.state.subscriber.pageId ? this.state.subscriber.pageId._id : null
+    payload.subscriber_id = this.state.subscriber._id
+    if (payload.page_id && payload.subscriber_id) {
+      this.props.unSubscribe(payload, this.handleSubscription, this.msg)
+    }
+  }
+  handleSubscription (res, action) {
+    if (res.status === 'success') {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
+      if (action === 'sub') {
+        this.msg.success('Subscribed Successfully')
+      }
+      if (action === 'unsub') {
+        this.msg.success('UnSubscribed Successfully')
+      }
+    } else {
+      if (res.description) {
+        this.msg.error(`Unable to apply subscription. ${res.description}`)
+      } else {
+        this.msg.error(`Unable to apply subscription.`)
+      }
+    }
+  }
   openEditModal () {
     this.setState({showEditModal: true})
   }
@@ -193,7 +233,10 @@ class Subscriber extends React.Component {
     }
   }
   handleSequence (obj) {
-    this.setState({sequenceValue: obj.value, saveEnable: true})
+    this.setState({sequenceValue: obj.value, saveEnableSeq: true})
+  }
+  handleSequenceInd (obj) {
+    this.setState({seqValueInd: obj.value, saveEnableSeqInd: true})
   }
   handleCreateTag () {
     this.setState({
@@ -294,7 +337,7 @@ class Subscriber extends React.Component {
       sequenceId: sequenceId,
       subscriberIds: [this.state.subscriber._id]
     }
-    this.props.unsubscribeToSequence(data)
+    this.props.unsubscribeToSequence(data, this.msg, this.handleSeqResponse)
   }
 
   unsubscribeToSequence () {
@@ -337,6 +380,37 @@ class Subscriber extends React.Component {
   }
   componentDidUpdate () {
   }
+  toggleSeqInd () {
+    this.setState({
+      popoverAddSeqInd: !this.state.popoverAddSeqInd,
+      seqValueInd: '',
+      saveEnableSeqInd: false
+    })
+  }
+  addSeqInd (subscriber) {
+    let subscribers = []
+    if (this.props.subscriberSequences) {
+      for (let i = 0; i < this.props.subscriberSequences.length; i++) {
+        if (this.props.subscriberSequences[i].sequenceId._id === this.state.seqValueInd) {
+          return this.msg.error('Sequence is already subscribed')
+        }
+      }
+    }
+    subscribers.push(subscriber._id)
+    let data = {
+      sequenceId: this.state.seqValueInd,
+      subscriberIds: subscribers
+    }
+    this.props.subscribeToSequence(data, this.msg, this.handleSeqResponse)
+    this.setState({selectAllChecked: false, seqValueInd: ''})
+  }
+  handleSeqResponse (res) {
+    if (res.status === 'success') {
+      if (this.state.subscriber && this.state.subscriber._id) {
+        this.props.getSubscriberSequences(this.state.subscriber._id)
+      }
+    }
+  }
   toggleTag () {
     this.setState({
       dropdownActionOpen: !this.state.dropdownActionOpen
@@ -359,7 +433,8 @@ class Subscriber extends React.Component {
   }
   toggleAddIndividual () {
     this.setState({
-      popoverAddTagOpenIndividual: !this.state.popoverAddTagOpenIndividual
+      popoverAddTagOpenIndividual: !this.state.popoverAddTagOpenIndividual,
+      saveEnableIndividual: false
     })
   }
   toggleRemove () {
@@ -1032,7 +1107,7 @@ class Subscriber extends React.Component {
                                               placeholder='Add User Tags'
                                             />
                                           </div>
-                                          {this.state.saveEnableIndividual
+                                          {this.state.saveEnable
                                           ? <div className='col-12'>
                                             <button style={{float: 'right', margin: '15px'}}
                                               className='btn btn-primary btn-sm'
@@ -1091,7 +1166,7 @@ class Subscriber extends React.Component {
                                               placeholder='Select Sequence...'
                                             />
                                           </div>
-                                          {this.state.saveEnable
+                                          {this.state.saveEnableSeq
                                           ? <div className='col-12'>
                                             <button style={{float: 'right', margin: '15px'}}
                                               className='btn btn-primary btn-sm'
@@ -1312,8 +1387,18 @@ class Subscriber extends React.Component {
                                 <div style={{paddingLeft: '30px'}} className='col-md-9'>
                                   {
                                     this.state.subscriber.isSubscribed
-                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-check-circle' />  subscribed <a style={{color: 'blue', textDecoration: 'underline'}}> {'(Unsubscribe)'}</a></span>
-                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-times-circle' />  unsubscribed <a style={{color: 'blue', textDecoration: 'underline'}}> {'(Subscribe)'}</a></span>
+                                    ? <div style={{display: 'block', marginTop: '5px'}}>
+                                      <i style={{fontWeight: 'bold'}} className='la la-check-circle' />
+                                        subscribed
+                                      <a onClick={this.unSubscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Unsubscribe)'}</a>
+                                    </div>
+                                    : <div style={{display: 'block', marginTop: '5px'}}>
+                                      <i style={{fontWeight: 'bold'}} className='la la-times-circle' />
+                                      unsubscribed
+                                      { this.state.subscriber.unsubsribed_by === 'admin' &&
+                                        <a onClick={this.subscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Subscribe)'}</a>
+                                      }
+                                    </div>
                                   }
                                   {
                                     this.state.subscriber.gender && this.state.subscriber.gender === 'male'
@@ -1326,14 +1411,12 @@ class Subscriber extends React.Component {
                                     : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-globe' /></span>
                                   }
                                   {
-                                    this.state.subscriber.email
-                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /> {this.state.subscriber.email}</span>
-                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /></span>
+                                    this.state.subscriber.email &&
+                                    <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-envelope' /> {this.state.subscriber.email}</span>
                                   }
                                   {
-                                    this.state.subscriber.phoneNumber
-                                    ? <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /> {this.state.subscriber.phoneNumber}</span>
-                                    : <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /></span>
+                                    this.state.subscriber.phoneNumber &&
+                                    <span style={{display: 'block', marginTop: '5px'}}><i style={{fontWeight: 'bold'}} className='la la-phone' /> {this.state.subscriber.phoneNumber}</span>
                                   }
                                 </div>
                               </div>
@@ -1432,23 +1515,57 @@ class Subscriber extends React.Component {
                                   </div>
                                 </PopoverBody>
                               </Popover>
+                              <div className='row'>
+                                <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
+                                <a id='subSeqInd' onClick={this.toggleSeqInd} style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '175px'}}> Subscribe</a>
+                              </div>
                               {
-                                this.props.sequences && this.props.sequences.length > 0 &&
-                                <div className='row'>
-                                  <span style={{fontWeight: 600, marginLeft: '15px'}}>Subscribed to Sequences:</span>
-                                  <a style={{cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '150px'}}> Subscribe</a>
-                                </div>
-                              }
-                              {
-                                this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0 &&
-                                <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                this.props.sequences && this.props.sequences.length > 0 && this.props.subscriberSequences && this.props.subscriberSequences.length > 0
+                                ? <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
                                   {
                                     this.props.subscriberSequences.map((seq, i) => (
                                       <button key={i} style={{marginRight: '5px', marginBottom: '15px'}} className='btn m-btn--pill btn-success btn-sm'>{seq.sequenceId.name} <i style={{cursor: 'pointer'}} onClick={() => { this.removeSequence(seq.sequenceId._id) }} className='la la-close' /></button>
                                     ))
                                   }
                                 </div>
+                                : <div style={{padding: '15px', maxHeight: '120px'}} className='row'>
+                                  <span> No Sequences Subcribed</span>
+                                </div>
                               }
+                              <Popover placement='left' className='subscriberPopover' isOpen={this.state.popoverAddSeqInd} target='subSeqInd' toggle={this.toggleSeqInd}>
+                                <PopoverHeader>Subscribe Sequence</PopoverHeader>
+                                <PopoverBody>
+                                  <div className='row' style={{minWidth: '250px'}}>
+                                    <div className='col-12'>
+                                      <label>Select Sequences</label>
+                                      <Select
+                                        options={this.state.sequenceOptions}
+                                        onChange={this.handleSequenceInd}
+                                        value={this.state.seqValueInd}
+                                        placeholder='Select Sequence'
+                                      />
+                                    </div>
+                                    {this.state.saveEnableSeqInd
+                                    ? <div className='col-12'>
+                                      <button style={{float: 'right', margin: '15px'}}
+                                        className='btn btn-primary btn-sm'
+                                        onClick={() => {
+                                          this.addSeqInd(this.state.subscriber)
+                                          this.toggleSeqInd()
+                                        }}>Save
+                                      </button>
+                                    </div>
+                                    : <div className='col-12'>
+                                      <button style={{float: 'right', margin: '15px'}}
+                                        className='btn btn-primary btn-sm'
+                                        disabled>
+                                         Save
+                                      </button>
+                                    </div>
+                                  }
+                                  </div>
+                                </PopoverBody>
+                              </Popover>
                             </div>
                           </div>
                           <div className='modal-footer' />
@@ -1490,7 +1607,9 @@ function mapDispatchToProps (dispatch) {
     fetchAllSequence: fetchAllSequence,
     subscribeToSequence: subscribeToSequence,
     unsubscribeToSequence: unsubscribeToSequence,
-    getSubscriberSequences: getSubscriberSequences
+    getSubscriberSequences: getSubscriberSequences,
+    subscribe: subscribe,
+    unSubscribe: unSubscribe
   },
     dispatch)
 }
