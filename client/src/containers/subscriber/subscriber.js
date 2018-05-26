@@ -992,7 +992,7 @@ class Subscriber extends React.Component {
                                         <option key='' value='' disabled>Filter by Page...</option>
                                         <option key='ALL' value=''>ALL</option>
                                         {
-                                          this.props.pages.map((page, i) => (
+                                          this.props.pages && this.props.pages.map((page, i) => (
                                             <option key={i} value={page._id}>{page.pageName}</option>
                                           ))
                                         }
