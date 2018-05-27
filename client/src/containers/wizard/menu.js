@@ -66,7 +66,7 @@ class Menu extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.show = this.show.bind(this)
     props.fetchMenu()
-    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
+    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.props.pages.length > 0) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
     }
   }

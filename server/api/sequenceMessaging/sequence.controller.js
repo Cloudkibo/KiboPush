@@ -594,7 +594,7 @@ exports.unsubscribeToSequence = function (req, res) {
     req.body.subscriberIds.forEach(subscriberId => {
       SequenceSubscribers.update(
       {sequenceId: req.body.sequenceId, subscriberId: subscriberId},
-      {status: 'unsubscribed'}, (err, updated) => {
+      {status: 'unsubscribed'}, {multi: true}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
