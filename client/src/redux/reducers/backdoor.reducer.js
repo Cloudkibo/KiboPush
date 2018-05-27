@@ -62,7 +62,7 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
         pageSubscribers: action.data,
-        locales: action.locale,
+        //  locales: action.locale,
         subscribersCount: action.count
       })
 

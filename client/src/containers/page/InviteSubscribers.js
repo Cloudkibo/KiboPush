@@ -41,16 +41,18 @@ class InviteSubscribers extends React.Component {
         fblink: `https://m.me/${this.props.location.state.pageId}`,
         selectPage: this.props.location.state
       })
-    } else if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
+    } else if (this.props.pages && this.props.pages.length > 0 && this.props.pages[0].pageUserName) {
       this.setState({
         fblink: `https://m.me/${this.props.pages[0].pageUserName}`,
         selectPage: this.props.pages[0]
       })
     } else {
-      this.setState({
-        fblink: `https://m.me/${this.props.pages[0].pageId}`,
-        selectPage: this.props.pages[0]
-      })
+      if (this.props.pages && this.props.pages.length > 0) {
+        this.setState({
+          fblink: `https://m.me/${this.props.pages[0].pageId}`,
+          selectPage: this.props.pages[0]
+        })
+      }
     }
     document.title = 'KiboPush | Invite Subscribers'
   }

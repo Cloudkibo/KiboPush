@@ -2,7 +2,7 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import ReactPaginate from 'react-paginate'
-import { loadPageSubscribersList } from '../../redux/actions/backdoor.actions'
+import { loadPageSubscribersList, allLocales } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
@@ -12,6 +12,7 @@ class PageSubscribers extends React.Component {
     super(props, context)
     // const pageId = this.props.params.pageId
     let pageName = ''
+    props.allLocales()
     if (this.props.currentPage) {
       pageName = this.props.currentPage.pageName
       const id = this.props.currentPage._id
@@ -22,6 +23,7 @@ class PageSubscribers extends React.Component {
       pageSubscribersData: [],
       pageSubscribersDataAll: [],
       totalLength: 0,
+      localeOptions: [],
       genders: [
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
@@ -77,6 +79,13 @@ class PageSubscribers extends React.Component {
     } else {
       this.setState({pageSubscribersData: [], pageSubscribersDataAll: [], totalLength: 0})
     }
+    var localeOptions = []
+    if (nextProps.locales) {
+      for (let i = 0; i < nextProps.locales.length; i++) {
+        localeOptions.push({value: nextProps.locales[i], label: nextProps.locales[i]})
+      }
+      this.setState({localeOptions: localeOptions})
+    }
   }
   searchSubscribers (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
@@ -102,9 +111,14 @@ class PageSubscribers extends React.Component {
   }
 
   onFilterByGender (data) {
-    this.setState({genderValue: data.value})
-    if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue}})
+    if (data) {
+      this.setState({genderValue: data.value})
+      if (this.props.currentPage) {
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue}})
+      }
+    } else {
+      this.setState({genderValue: ''})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
     }
     // var filtered = []
     // if (!data) {
@@ -139,9 +153,15 @@ class PageSubscribers extends React.Component {
   }
 
   onFilterByLocale (data) {
-    this.setState({localeValue: data.value})
-    if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
+    console.log('data', data)
+    if (data) {
+      this.setState({localeValue: data.value})
+      if (this.props.currentPage) {
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
+      }
+    } else {
+      this.setState({localeValue: ''})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
     }
     // var filtered = []
     // if (!data) {
@@ -259,7 +279,7 @@ class PageSubscribers extends React.Component {
                                       <div className='m-form__control'>
                                         <Select
                                           name='form-field-name'
-                                          options={this.props.locales}
+                                          options={this.state.localeOptions}
                                           onChange={this.onFilterByLocale}
                                           placeholder='Filter by locale...'
                                           value={this.state.localeValue}
@@ -379,7 +399,8 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPageSubscribersList: loadPageSubscribersList},
+  return bindActionCreators({loadPageSubscribersList: loadPageSubscribersList,
+    allLocales: allLocales},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PageSubscribers)

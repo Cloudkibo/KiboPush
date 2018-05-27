@@ -157,7 +157,7 @@ export function updatePageSubscribersList (data) {
   return {
     type: ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST,
     data: data.subscribers,
-    locale: getLocales(data.subscribers),
+    //  locale: getLocales(data.subscribers),
     count: data.count
   }
 }

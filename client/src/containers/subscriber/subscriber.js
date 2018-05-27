@@ -337,6 +337,7 @@ class Subscriber extends React.Component {
       sequenceId: sequenceId,
       subscriberIds: [this.state.subscriber._id]
     }
+    console.log('removeSequence', data)
     this.props.unsubscribeToSequence(data, this.msg, this.handleSeqResponse)
   }
 
