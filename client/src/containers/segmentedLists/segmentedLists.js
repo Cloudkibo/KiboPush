@@ -31,7 +31,7 @@ class SegmentedList extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     props.loadMyPagesList()
-    props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
+    props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.clearCurrentList()
   }
   scrollToTop () {
@@ -60,13 +60,15 @@ class SegmentedList extends React.Component {
     this.scrollToTop()
   }
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
+      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next'})
     } else {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: false})
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous'})
     }
-    this.displayData(data.selected, this.props.polls)
+    this.setState({pageNumber: data.selected})
+    this.displayData(data.selected, this.props.customerLists)
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists && nextProps.count) {
@@ -86,21 +88,23 @@ class SegmentedList extends React.Component {
   }
 
   displayData (n, lists) {
-    console.log('in displayData', lists)
-    let offset = n * 10
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 10) > lists.length) {
-      limit = lists.length
-    } else {
-      limit = offset + 10
+    if (lists) {
+      console.log('in displayData', lists)
+      let offset = n * 10
+      let data = []
+      let limit
+      let index = 0
+      if ((offset + 10) > lists.length) {
+        limit = lists.length
+      } else {
+        limit = offset + 10
+      }
+      for (var i = offset; i < limit; i++) {
+        data[index] = lists[i]
+        index++
+      }
+      this.setState({customerLists: data})
     }
-    for (var i = offset; i < limit; i++) {
-      data[index] = lists[i]
-      index++
-    }
-    this.setState({customerLists: data})
   }
 
   render () {

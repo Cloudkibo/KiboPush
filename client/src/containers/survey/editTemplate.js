@@ -63,7 +63,6 @@ class EditTemplate extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
-      steps: [],
       showDropDown: false,
       selectedRadio: '',
       listSelected: '',

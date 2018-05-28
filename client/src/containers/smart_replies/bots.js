@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot, deleteBot } from '../../redux/actions/smart_replies.actions'
+import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -17,6 +17,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 class Bot extends React.Component {
   constructor (props, context) {
     props.loadBotsList()
+    props.loadAnalytics()
     props.loadMyPagesList()
     super(props, context)
     this.state = {
@@ -99,7 +100,7 @@ class Bot extends React.Component {
   }
 
   updateName (e) {
-    let name = e.target.value.trim()
+    var name = e.target.value.replace('-', '')
     this.setState({name: name, error: false})
   }
 
@@ -204,7 +205,8 @@ class Bot extends React.Component {
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
-      var botName = this.state.name.replace(/\s+/g, '_')
+      var botName = this.state.name.trim()
+      botName = botName.replace(/\s+/g, '-')
       this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
       browserHistory.push({
         pathname: `/createBot`
@@ -261,6 +263,53 @@ class Bot extends React.Component {
                   Bots might take 30mins to 1 hour to train. Please test the bot after 1 hour to see if it is working
                 </div>
               </div>
+              {this.props.analytics &&
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='row m-row--full-height'>
+                    <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                      <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
+                        <div className='m-portlet__body'>
+                          <div className='m-widget26'>
+                            <div className='m-widget26__number'>{this.props.analytics.totalQueries}
+                              <small>
+                                Total Queries
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                      <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+                        <div className='m-portlet__body'>
+                          <div className='m-widget26'>
+                            <div className='m-widget26__number'>{this.props.analytics.responded}
+                              <small>
+                                Responded
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                      <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+                        <div className='m-portlet__body'>
+                          <div className='m-widget26'>
+                            <div className='m-widget26__number'>{this.props.analytics.notResponded}
+                              <small>
+                                Not Responded
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
               <div className='row'>
                 <div className='col-xl-12'>
                   <div className='m-portlet'>
@@ -429,7 +478,7 @@ class Bot extends React.Component {
                               <tr key={i} data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}}>
-                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName.split('_').join(' ')}</span></td>
+                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName ? bot.botName.split('-').join(' ') : ''}</span></td>
                                 <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.pageId.pageName}</span></td>
                                 <td data-field='page' className='m-datatable__cell'>
                                   {bot.isActive === 'true'
@@ -517,8 +566,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     bots: (state.botsInfo.bots),
-    count: (state.botsInfo.count)
-
+    count: (state.botsInfo.count),
+    analytics: (state.botsInfo.analytics)
   }
 }
 
@@ -528,7 +577,8 @@ function mapDispatchToProps (dispatch) {
       loadBotsList: loadBotsList,
       loadMyPagesList: loadMyPagesList,
       createBot: createBot,
-      deleteBot: deleteBot
+      deleteBot: deleteBot,
+      loadAnalytics: loadAnalytics
     },
     dispatch)
 }

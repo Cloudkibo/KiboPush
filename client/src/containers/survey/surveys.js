@@ -25,7 +25,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
+    props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
     this.state = {
       alertMessage: '',
       alertType: '',
@@ -66,7 +66,7 @@ class Survey extends React.Component {
   onDaysChange (e) {
     //  var defaultVal = 0
     var value = e.target.value
-    this.setState({selectedDays: value})
+    this.setState({selectedDays: value, pageNumber: 0})
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -76,10 +76,10 @@ class Survey extends React.Component {
           selectedDays: ''
         })
       }
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: value})
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: value})
     } else if (value === '') {
       this.setState({selectedDays: ''})
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
     }
   }
   displayData (n, surveys) {
@@ -100,12 +100,14 @@ class Survey extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
     } else {
-      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
 
@@ -318,7 +320,7 @@ class Survey extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+                                    this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>

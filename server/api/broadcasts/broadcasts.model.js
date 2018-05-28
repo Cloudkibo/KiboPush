@@ -26,7 +26,11 @@ let broadcastSchema = new Schema({
   userId: { type: Schema.ObjectId, ref: 'users' },
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   datetime: { type: Date, default: Date.now },
-  clicks: {type: Number, default: 0}
+  clicks: {type: Number, default: 0},
+  sent: {type: Number, default: 0}, // sent count
+  seen: {type: Number, default: 0},
+  subscriberSenderIds: [String],
+  pageIds: [String]
 })
 
 module.exports = mongoose.model('broadcasts', broadcastSchema)

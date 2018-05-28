@@ -5,7 +5,7 @@ const express = require('express')
 
 const router = express.Router()
 
-const controller = require('./api_settings.controller')
+const controller = require('./api_ngp.controller')
 const auth = require('../../auth/auth.service')
 
 router.post('/',
@@ -26,10 +26,10 @@ router.post('/disable',
   // auth.doesRolePermitsThisAction('apiPermission'),
   controller.disable)
 
-router.post('/reset',
+router.post('/save',
   auth.isAuthenticated(),
   // auth.doesPlanPermitsThisAction('api'),
   // auth.doesRolePermitsThisAction('apiPermission'),
-  controller.reset)
+  controller.save)
 
 module.exports = router

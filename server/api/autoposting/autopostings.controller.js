@@ -111,10 +111,10 @@ exports.create = function (req, res) {
             TwitterUtility.findUser(screenName, (err, data) => {
               if (err) {
                 logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
-                return res.status(403).json({
-                  status: 'Failed',
-                  description: err
-                })
+                // return res.status(403).json({
+                //   status: 'Failed',
+                //   description: err
+                // })
               }
               autoPostingPayload.accountUniqueName = data.screen_name
               let payload = {

@@ -66,23 +66,12 @@ class Menu extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.show = this.show.bind(this)
     props.fetchMenu()
-    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
+    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.props.pages.length > 0) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
     }
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     document.title = 'KiboPush | Menu'
 
     var compProp = this.props

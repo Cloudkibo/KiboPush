@@ -58,8 +58,8 @@ class LiveChat extends React.Component {
       tabValue: 'open',
       filter: false
     }
-    props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
-    props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
+    props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
+    props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
     props.loadTeamsList()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
@@ -88,11 +88,11 @@ class LiveChat extends React.Component {
   }
 
   loadMoreOpen () {
-    this.props.fetchOpenSessions({first_page: false, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: false, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   loadMoreClose () {
-    this.props.fetchCloseSessions({first_page: false, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: false, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   changeActiveSessionFromChatbox () {
@@ -144,20 +144,25 @@ class LiveChat extends React.Component {
 
   handleSearch (e) {
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    if (e.target.value !== '') {
+      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    } else {
+      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+    }
   }
 
   handleSort (value) {
     this.setState({sortValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   handleFilter (value) {
     this.setState({filterValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 4, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
     // if (value !== this.state.filterValue) {
     //   this.setState({filterValue: value}, function () {
     //     this.filterSession()
@@ -222,6 +227,7 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
 
     if (nextProps.openSessions && nextProps.closeSessions) {
+      console.log('inside')
       this.setState({loading: false})
       this.setState({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions})
       //  this.separateResolvedSessions(nextProps.sessions)
@@ -283,8 +289,19 @@ class LiveChat extends React.Component {
       }
       this.props.resetUnreadSession()
     }
+    if (this.props.location.state && this.props.location.state.subscriberToRespond) {
+      console.log('Subscriber To Respond', this.props.location.state.subscriberToRespond)
+      var sessions = nextProps.openSessions
+      var subscriber = this.props.location.state.subscriberToRespond
+      for (let j = 0; j < sessions.length; j++) {
+        if (sessions[j].subscriber_id._id === subscriber._id) {
+          this.setState({activeSession: sessions[j]})
+          break
+        }
+      }
+    }
 
-    if (nextProps.userChat.length > this.props.userChat.length) {
+    if (nextProps.userChat && this.props.userChat && nextProps.userChat.length > this.props.userChat.length) {
       var sess = this.state.sessionsDataNew
       for (var j = 0; j < sess.length; j++) {
         if (sess[j]._id === nextProps.userChat[0].session_id) {
@@ -319,12 +336,12 @@ class LiveChat extends React.Component {
         })
 
         if (isPresent) {
-          this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-          this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+          this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+          this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
           this.props.resetSocket()
         } else {
-          this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-          this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+          this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+          this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
           this.props.resetSocket()
         }
       }
@@ -370,10 +387,6 @@ class LiveChat extends React.Component {
                 ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
                   className='align-center'>
                   <center><Halogen.RingLoader color='#716aca' /></center>
-                </div>
-                : (this.props.openSessions && this.props.closeSessions && this.props.openSessions.length === 0 && this.props.closeSessions.length === 0
-                ? <div className='col-xl-12'>
-                  <h3>Right now you dont have any chat sessions</h3>
                 </div>
                 : <div className='row'>
                   <div className='col-12'>
@@ -504,7 +517,9 @@ class LiveChat extends React.Component {
                           </li>
                         </ul>
                       </div>
-                      <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
+                      { this.props.openSessions && this.props.closeSessions && this.props.openSessions.length === 0 && this.props.closeSessions.length === 0
+                      ? <center><p>No data to display</p></center>
+                      : <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
                         <div className='tab-content'>
                           {
                             this.state.tabValue === 'open'
@@ -799,6 +814,7 @@ class LiveChat extends React.Component {
                           }
                         </div>
                       </div>
+                    }
                     </div>
                   </div>
                   {
@@ -820,7 +836,6 @@ class LiveChat extends React.Component {
                     <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                 </div>
-                )
               }
             </div>
           </div>

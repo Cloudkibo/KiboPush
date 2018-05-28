@@ -156,11 +156,6 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     })
-    if (attachments.length < 1) {
-      this.setState({
-        isVideo: false
-      })
-    }
   }
   handleUpload (res, fileData) {
     this.setState({
@@ -173,41 +168,21 @@ class FacebookPosts extends React.Component {
     }
     if (res.status === 'success') {
       var attachComponent = {componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}
+      var attachment = []
+      attachment.push(attachComponent)
+      var post = []
+      if (this.state.postText !== '') {
+        post.push({componentType: 'text', text: this.state.postText})
+      }
+      post.push(attachComponent)
+      this.setState({
+        attachments: attachment,
+        facebookPost: post
+      })
       if (fileData.get('componentType') === 'video') {
-        var videoAttachment = []
-        videoAttachment.push(attachComponent)
-        var videoPost = []
-        if (this.state.postText !== '') {
-          videoPost.push({componentType: 'text', text: this.state.postText})
-        }
-        videoPost.push(attachComponent)
-        this.setState({
-          attachments: videoAttachment,
-          facebookPost: videoPost,
+        this.setStatus({
           isVideo: true
         })
-      } else {
-        if (this.state.isVideo) {
-          var facebookPostTemp = []
-          if (this.state.postText !== '') {
-            facebookPostTemp.push({componentType: 'text', text: this.state.postText})
-          }
-          facebookPostTemp.push({componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url})
-          this.setState({
-            attachments: [{componentType: fileData.get('componentType'), id: res.payload.id, url: res.payload.url}],
-            facebookPost: facebookPostTemp,
-            isVideo: false
-          })
-        } else {
-          var attachments = this.state.attachments
-          var facebookPost = this.state.facebookPost
-          attachments.push(attachComponent)
-          facebookPost.push(attachComponent)
-          this.setState({
-            attachments: attachments,
-            facebookPost: facebookPost
-          })
-        }
       }
     }
     console.log('res.payload', res.paylaod)
@@ -570,8 +545,7 @@ class FacebookPosts extends React.Component {
                                 <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
                                   ref='selectImage' style={styles.inputf} />
                               </span>
-                              { this.state.isVideo === false
-                              ? <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                              <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
                                 <span>
                                   <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
                                     this.refs.selectVideo.click()
@@ -580,12 +554,6 @@ class FacebookPosts extends React.Component {
                                 <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
                                   ref='selectVideo' style={styles.inputf} />
                               </span>
-                              : <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                                <span>
-                                  <i className='fa fa-file-video-o' style={{cursor: 'pointer', color: 'gray'}} disabled />
-                                </span>
-                              </span>
-                              }
                               <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
                                 <PopoverBody>
                                   <div>

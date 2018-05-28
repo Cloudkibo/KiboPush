@@ -29,7 +29,6 @@ class InviteMembers extends React.Component {
       name: '',
       email: '',
       role: '',
-      steps: [],
       alertMessage: '',
       alertType: '',
       timeout: 3000

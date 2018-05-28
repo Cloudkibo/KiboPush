@@ -37,7 +37,11 @@ class CreateBot extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.createdBot && nextProps.pages) {
-      this.setState({id: nextProps.createdBot._id, name: nextProps.createdBot.botName, isActive: nextProps.createdBot.isActive})
+      var botName = nextProps.createdBot.botName
+      if (botName) {
+        botName = botName.split('-').join(' ')
+      }
+      this.setState({id: nextProps.createdBot._id, name: botName, isActive: nextProps.createdBot.isActive})
       console.log('nextProps', nextProps.pages)
       for (var i = 0; i < nextProps.pages.length; i++) {
         if (nextProps.pages[i]._id === nextProps.createdBot.pageId) {
@@ -238,7 +242,7 @@ class CreateBot extends React.Component {
                         <div className='form-group' id='titl'>
                           <label className='control-label'>Bot Name:</label>
                           <input className='form-control'
-                            value={(this.state.name).split('_').join(' ')} disabled />
+                            value={this.state.name} disabled />
                         </div>
                       </div>
                       <br />

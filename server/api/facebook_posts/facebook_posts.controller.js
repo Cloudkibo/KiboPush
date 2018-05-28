@@ -5,8 +5,9 @@ const Pages = require('../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const needle = require('needle')
 const TAG = 'api/facebook_posts/facebook_posts.controller.js'
-//  const utility = require('./facebook_posts.utility')
-
+const fs = require('fs')
+const path = require('path')
+var FormData = require('form-data')
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -105,8 +106,6 @@ exports.create = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          logger.serverLog(TAG,
-          `Page found${JSON.stringify(userPage)}`)
           Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
             if (err) {
               return res.status(500).json({
@@ -128,23 +127,87 @@ exports.create = function (req, res) {
                 `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
               logger.serverLog(TAG,
-              `response from get request ${JSON.stringify(resp.body)}`)
-              const messageData = {
-                message: req.body.payload
+              `post request ${JSON.stringify(req.body.payload)}`)
+              // const messageData = {
+              //   message: req.body.payload
+              // }
+              let messageData = {}
+              req.body.payload.map(payloadItem => {
+                if (payloadItem.componentType === 'text') {
+                  messageData.message = payloadItem.text
+                } else if (payloadItem.componentType === 'image') {
+                  messageData.image = true
+                  messageData.url = payloadItem.url
+                } else if (payloadItem.componentType === 'video') {
+                  //  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+                  //  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+                  //  let fileReaderStream = fs.createReadStream(dir + '/' + payloadItem.id)
+                  //  let url = payloadItem.url + '&f=filename.mov'
+                  //  let fileReaderStream = fs.createReadStream(url)
+                  messageData.description = messageData.message
+                  messageData.video = true
+                  messageData.file_url = payloadItem.url
+                }
+              })
+              // var form = new FormData()
+              // form.append('source', messageData.url)
+              // needle.post(
+              //   `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
+              //   form, (err, resp) => {
+              //     if (err) {
+              //       logger.serverLog(TAG, err)
+              //     }
+              //     logger.serverLog(TAG,
+              //     `response from post on facebook ${JSON.stringify(resp.body)}`)
+              //     //  res.status(201).json({status: 'success', payload: postCreated})
+              //   })
+              logger.serverLog(TAG,
+              `messageData ${JSON.stringify(messageData)}`)
+              if (messageData.image) {
+                needle.post(
+                  `https://graph.facebook.com/${userPage.pageId}/photos?access_token=${resp.body.access_token}`,
+                  messageData, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG,
+                    `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    res.status(201).json({status: 'success', payload: postCreated})
+                  })
+              } else if (messageData.video) {
+                needle.post(
+                  `https://graph.facebook.com/${userPage.pageId}/videos?access_token=${resp.body.access_token}`,
+                  messageData, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG,
+                    `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    res.status(201).json({status: 'success', payload: postCreated})
+                  })
+              } else {
+                needle.post(
+                  `https://graph.facebook.com/${userPage.pageId}/feed?access_token=${resp.body.access_token}`,
+                  messageData, (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG,
+                    `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    res.status(201).json({status: 'success', payload: postCreated})
+                  })
               }
-              console.log('body', req.body.payload)
-              //  let messageData = utility.prepareSendAPIPayload(req.body.payload)
-              console.log('messageData', messageData)
-              needle.post(
-                `https://graph.facebook.com/${userPage.pageId}/feed?message=${'Hello Fans'}&access_token=${resp.body.access_token}`,
-                messageData, (err, resp) => {
-                  if (err) {
-                    logger.serverLog(TAG, err)
-                  }
-                  logger.serverLog(TAG,
-                  `response from post on facebook ${JSON.stringify(resp.body)}`)
-                  res.status(201).json({status: 'success', payload: postCreated})
-                })
+              //  let messageData = utility.prepareSendAPIPayload(req.body.payload[1])
+              // needle.post(
+              //   `https://graph.facebook.com/${userPage.pageId}/photos?access_token=${resp.body.access_token}`,
+              //   messageData, (err, resp) => {
+              //     if (err) {
+              //       logger.serverLog(TAG, err)
+              //     }
+              //     logger.serverLog(TAG,
+              //     `response from post on facebook ${JSON.stringify(resp.body)}`)
+              //     res.status(201).json({status: 'success', payload: postCreated})
+              //   })
             })
           })
         })

@@ -9,6 +9,13 @@ export function showBotsList (data) {
   }
 }
 
+export function showAnalytics (data) {
+  return {
+    type: ActionTypes.SHOW_ANALYTICS,
+    data
+  }
+}
+
 export function showBotsListNew (data) {
   return {
     type: ActionTypes.SHOW_BOTS_NEW,
@@ -40,6 +47,12 @@ export function applyBotTemplate (data) {
   }
 }
 
+export function showWaitingReplyList (data) {
+  return {
+    type: ActionTypes.SHOW_WAITING_REPLY_LIST,
+    data
+  }
+}
 export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
@@ -48,6 +61,23 @@ export function loadBotsList () {
         if (res.status === 'success') {
           console.log('List the sequence of bots', res.payload)
           dispatch(showBotsList(res.payload))
+        } else {
+          console.log('Something went wrong in fetching bots', JSON.stringify(res))
+        }
+      }).catch((err) => {
+        console.log('In catch cant process bot list', err)
+      })
+  }
+}
+
+export function loadAnalytics () {
+  return (dispatch) => {
+    callApi('bots/analytics')
+      .then(res => {
+        console.log('Response from server', JSON.stringify(res))
+        if (res.status === 'success') {
+          console.log('List the sequence of bots', res.payload)
+          dispatch(showAnalytics(res.payload))
         } else {
           console.log('Something went wrong in fetching bots', JSON.stringify(res))
         }
@@ -141,6 +171,17 @@ export function loadPoliticsBotTemplate () {
     .then(res => {
       if (res.status === 'success') {
         dispatch(applyBotTemplate(res.payload))
+      }
+    })
+  }
+}
+
+export function loadWaitingReplyList () {
+  return (dispatch) => {
+    callApi('bots/waitingReply')
+    .then(res => {
+      if (res.status === 'success') {
+        dispatch(showWaitingReplyList(res.payload))
       }
     })
   }

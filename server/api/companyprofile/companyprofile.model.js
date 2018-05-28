@@ -3,6 +3,7 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
+
 var CompanyprofileSchema = new Schema({
 
   companyName: String,

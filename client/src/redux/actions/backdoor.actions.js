@@ -5,15 +5,17 @@ export const API_URL = '/api'
 
 export function getLocales (data) {
   if (data.length > 0) {
-    var locale = [{ value: data[0].locale, label: data[0].locale }]
-    var tempLocale = [data[0].locale]
+    var locale = [{ value: data[0].facebookInfo.locale, label: data[0].facebookInfo.locale }]
+    var tempLocale = [data[0].facebookInfo.locale]
     for (var i = 1; i < data.length; i++) {
-      if (tempLocale.indexOf(data[i].locale) === -1) {
-        var temp = { value: data[i].locale, label: data[i].locale }
+      if (data[i].facebookInfo && tempLocale.indexOf(data[i].facebookInfo.locale) === -1) {
+        var temp = { value: data[i].facebookInfo.locale, label: data[i].facebookInfo.locale }
         locale.push(temp)
-        tempLocale.push(data[i].locale)
+        tempLocale.push(data[i].facebookInfo.locale)
       }
     }
+    console.log('locale', locale)
+    return locale
   }
 }
 
@@ -32,6 +34,14 @@ export function updateUsersList (data, originalData) {
       count: data.count,
       locale: getLocales(data.users)
     }
+  }
+}
+
+export function updateAllLocales (data) {
+  console.log('Data Fetched From backdoor', data)
+  return {
+    type: ActionTypes.LOAD_LOCALES_LIST_BACKDOOR,
+    data
   }
 }
 
@@ -147,7 +157,7 @@ export function updatePageSubscribersList (data) {
   return {
     type: ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST,
     data: data.subscribers,
-    locale: getLocales(data.subscribers),
+    //  locale: getLocales(data.subscribers),
     count: data.count
   }
 }
@@ -288,6 +298,7 @@ export function loadSessionsGraphData (days) {
 }
 export function loadPagesList (id, data) {
   // here we will fetch list of user pages from endpoint
+  console.log('data for loadPagesList', data)
   return (dispatch) => {
     callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => {
       console.log('response from allpages', res)
@@ -312,9 +323,13 @@ export function loadPollsList (id, data) {
 }
 
 export function loadPageSubscribersList (id, data) {
+  console.log('data for loadPageSubscribersList', data)
   return (dispatch) => {
     callApi(`backdoor/getAllSubscribers/${id}`, 'post', data)
-      .then(res => dispatch(updatePageSubscribersList(res.payload)))
+      .then(res => {
+        console.log('response from loadPageSubscribersList', res)
+        dispatch(updatePageSubscribersList(res.payload))
+      })
   }
 }
 
@@ -359,5 +374,10 @@ export function sendEmail (msg) {
           msg.error('Email not sent')
         }
       })
+  }
+}
+export function allLocales () {
+  return (dispatch) => {
+    callApi('backdoor/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }

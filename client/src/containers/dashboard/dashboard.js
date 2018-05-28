@@ -40,7 +40,6 @@ class Dashboard extends React.Component {
 
     this.state = {
       isShowingModal: false,
-      steps: [],
       sentseendata1: [],
       chartData: [],
       selectedDays: 10,

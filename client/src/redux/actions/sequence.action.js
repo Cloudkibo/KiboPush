@@ -151,7 +151,7 @@ export function fetchAllMessages (id) {
   }
 }
 
-export function subscribeToSequence (data, msg) {
+export function subscribeToSequence (data, msg, handleSeqResponse) {
   return (dispatch) => {
     callApi(`sequenceMessaging/subscribeToSequence`, 'post', data)
       .then(res => {
@@ -161,11 +161,14 @@ export function subscribeToSequence (data, msg) {
           console.log(res.description)
           msg.error('Failed to subscribe to sequence!')
         }
+        if (handleSeqResponse) {
+          handleSeqResponse(res)
+        }
       })
   }
 }
 
-export function unsubscribeToSequence (data, msg) {
+export function unsubscribeToSequence (data, msg, handleSeqResponse) {
   return (dispatch) => {
     callApi(`sequenceMessaging/unsubscribeToSequence`, 'post', data)
       .then(res => {
@@ -174,6 +177,9 @@ export function unsubscribeToSequence (data, msg) {
           dispatch(getSubscriberSequences(data.subscriberIds[0]))
         } else {
           msg.error('Failed to unsubscribe to sequence!')
+        }
+        if (handleSeqResponse) {
+          handleSeqResponse(res)
         }
       })
   }

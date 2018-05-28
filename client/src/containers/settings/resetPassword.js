@@ -107,7 +107,7 @@ class ResetPassword extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Reset Password
+                    Change Password
                   </span>
                 </li>
               </ul>

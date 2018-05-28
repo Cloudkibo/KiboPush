@@ -8,6 +8,13 @@ const Subscribers = require('./../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const Users = require('./../user/Users.model')
+const Polls = require('./../polls/Polls.model')
+const Surveys = require('./../surveys/surveys.model')
+const Broadcasts = require('./../broadcasts/broadcasts.model')
+const PagePolls = require('./../page_poll/page_poll.model')
+const PageSurveys = require('./../page_survey/page_survey.model')
+const PageBroadcasts = require('./../page_broadcast/page_broadcast.model')
+const mongoose = require('mongoose')
 
 const logger = require('../../components/logger')
 const TAG = 'api/thing/index'
@@ -23,6 +30,22 @@ router.get('/subscriptionDate', (req, res) => {
     }
     sessions.forEach((session) => {
       Subscribers.update({_id: session.subscriber_id}, {datetime: session.request_time}, (err, subs) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+      })
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
+router.get('/lastSeenDate', (req, res) => {
+  Subscribers.find({}, (err, subscribers) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    subscribers.forEach((subscriber) => {
+      Subscribers.update({_id: subscriber._id}, {lastSeen: subscriber.datetime}, (err, subs) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
@@ -56,6 +79,141 @@ router.get('/updateSessions', (req, res) => {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
           LiveChat.update({company_id: profile._id}, {replied_by: {id: profile.ownerId, name: user.name, type: 'agent'}}, {multi: true}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG, `UPDATED ${JSON.stringify(updated)}`)
+          })
+        })
+      })
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
+router.get('/updatePolls', (req, res) => {
+  Polls.find({}, (err, polls) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    let pageIds = []
+    let subscriberSenderIds = []
+    polls.forEach((poll) => {
+      PagePolls.find({pollId: poll._id}, (err, pagePolls) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        pagePolls.forEach((pagePoll) => {
+          if (exists(pageIds, pagePoll.pageId) === false) {
+            pageIds.push(pagePoll.pageId)
+          }
+          if (exists(subscriberSenderIds, pagePoll.subscriberId) === false) {
+            subscriberSenderIds.push(pagePoll.subscriberId)
+          }
+        })
+        PagePolls.aggregate([
+          { $match: { pollId: mongoose.Types.ObjectId(poll._id), seen: true } },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err, seenCount) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            // return res.status(404)
+            //   .json({status: 'failed', description: 'BroadcastsCount not found'})
+          }
+          Polls.update({_id: poll._id}, {sent: pagePolls.length, seen: seenCount && seenCount.length > 0 ? seenCount[0].count : 0, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds}, {multi: true}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG, `UPDATED ${JSON.stringify(updated)}`)
+          })
+        })
+      })
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
+router.get('/updateSurveys', (req, res) => {
+  Surveys.find({}, (err, surveys) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    let pageIds = []
+    let subscriberSenderIds = []
+    surveys.forEach((survey) => {
+      PageSurveys.find({surveyId: survey._id}, (err, pageSurveys) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        pageSurveys.forEach((pageSurvey) => {
+          if (exists(pageIds, pageSurvey.pageId) === false) {
+            pageIds.push(pageSurvey.pageId)
+          }
+          if (exists(subscriberSenderIds, pageSurvey.subscriberId) === false) {
+            subscriberSenderIds.push(pageSurvey.subscriberId)
+          }
+        })
+        PageSurveys.aggregate([
+          { $match: { surveyId: mongoose.Types.ObjectId(survey._id), seen: true } },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err, seenCount) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            // return res.status(404)
+            //   .json({status: 'failed', description: 'BroadcastsCount not found'})
+          }
+          Surveys.update({_id: survey._id}, {sent: pageSurveys.length, seen: seenCount && seenCount.length > 0 ? seenCount[0].count : 0, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds}, {multi: true}, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG, `UPDATED ${JSON.stringify(updated)}`)
+          })
+        })
+      })
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
+function exists (list, content) {
+  for (let i = 0; i < list.length; i++) {
+    if (JSON.stringify(list[i]) === JSON.stringify(content)) {
+      return true
+    }
+  }
+  return false
+}
+
+router.get('/updateBroadcasts', (req, res) => {
+  Broadcasts.find({}, (err, broadcasts) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    let pageIds = []
+    let subscriberSenderIds = []
+    broadcasts.forEach((broadcast) => {
+      PageBroadcasts.find({broadcastId: broadcast._id}, (err, pageBroadcasts) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        pageBroadcasts.forEach((pageBroadcast) => {
+          if (exists(pageIds, pageBroadcast.pageId) === false) {
+            pageIds.push(pageBroadcast.pageId)
+          }
+          if (exists(subscriberSenderIds, pageBroadcast.subscriberId) === false) {
+            subscriberSenderIds.push(pageBroadcast.subscriberId)
+          }
+        })
+        PageBroadcasts.aggregate([
+          { $match: { broadcastId: mongoose.Types.ObjectId(broadcast._id), seen: true } },
+          { $group: { _id: null, count: { $sum: 1 } } }
+        ], (err, seenCount) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            // return res.status(404)
+            //   .json({status: 'failed', description: 'BroadcastsCount not found'})
+          }
+          Broadcasts.update({_id: broadcast._id}, {sent: pageBroadcasts.length, seen: seenCount && seenCount.length > 0 ? seenCount[0].count : 0, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds}, {multi: true}, (err, updated) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }

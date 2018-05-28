@@ -11,7 +11,6 @@ import BroadcastsByDays from './broadcastsByDays'
 import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
 import Reports from './reports'
-import Select from 'react-select'
 //  import ListItem from './ListItem'
 import moment from 'moment'
 import { Link } from 'react-router'
@@ -26,7 +25,8 @@ import {
   loadPollsGraphData,
   loadSurveysGraphData,
   loadSessionsGraphData,
-  sendEmail
+  sendEmail,
+  allLocales
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -61,6 +61,7 @@ class OperationalDashboard extends React.Component {
       openPopover: false,
       filter: false
     }
+    props.allLocales()
     props.loadDataObjectsCount(0)
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     props.loadTopPages()
@@ -87,12 +88,6 @@ class OperationalDashboard extends React.Component {
   }
 
   loadMore () {
-    // let index = this.props.users.length - 1
-    // console.log('this.props.users', this.props.users)
-    // console.log('this.props.users[index]._id', this.props.users[index]._id)
-    // console.log('this.props.users[index][0]._id', this.props.users[index][0]._id)
-    // console.log('addmore', this.props.users[index[0]]._id)
-    //  console.log('this.props.users[this.props.users.length - 1][0]', this.props.users[this.props.users.length - 1].length)
     this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
   }
   scrollToTop () {
@@ -334,6 +329,8 @@ class OperationalDashboard extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+    } else {
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.users.length; i++) {
@@ -370,6 +367,8 @@ class OperationalDashboard extends React.Component {
     if (e.target.value !== '') {
       this.setState({filter: true})
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
+    } else {
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
     }
     //   if (this.state.localeValue !== '') {
     //     for (var a = 0; a < this.props.users.length; a++) {
@@ -403,10 +402,13 @@ class OperationalDashboard extends React.Component {
     // this.setState({ totalLength: filtered.length })
   }
 
-  onFilterByLocale (data) {
-    if (data.value !== '') {
-      this.setState({localeValue: data.value, filter: true})
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
+  onFilterByLocale (e) {
+    this.setState({localeValue: e.target.value})
+    if (e.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
+    } else {
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
     }
     // var filtered = []
     // if (!data) {
@@ -512,13 +514,15 @@ class OperationalDashboard extends React.Component {
                                   }
                                 </select>
                                 <br />
-                                <Select
-                                  name='form-field-name'
-                                  options={this.props.locales}
-                                  onChange={this.onFilterByLocale}
-                                  placeholder='Filter by locale...'
-                                  value={this.state.localeValue}
-                                />
+                                <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale}>
+                                  <option key='' value='' disabled>Filter by Locale...</option>
+                                  <option key='ALL' value=''>ALL</option>
+                                  {
+                                    this.props.locales && this.props.locales.map((locale, i) => (
+                                      <option key={i} value={locale}>{locale}</option>
+                                    ))
+                                  }
+                                </select>
                               </Popover>
                             </div>
                           </li>
@@ -640,7 +644,8 @@ function mapDispatchToProps (dispatch) {
     loadSurveysGraphData: loadSurveysGraphData,
     loadPollsGraphData: loadPollsGraphData,
     loadSessionsGraphData: loadSessionsGraphData,
-    sendEmail: sendEmail},
+    sendEmail: sendEmail,
+    allLocales: allLocales},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)

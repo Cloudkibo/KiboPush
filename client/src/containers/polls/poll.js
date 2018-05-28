@@ -28,7 +28,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Poll extends React.Component {
   constructor (props, context) {
     props.loadSubscribersList()
-    props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'})
+    props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
     props.loadTags()
     super(props, context)
     this.state = {
@@ -64,7 +64,7 @@ class Poll extends React.Component {
   onDaysChange (e) {
     //  var defaultVal = 0
     var value = e.target.value
-    this.setState({selectedDays: value})
+    this.setState({selectedDays: value, pageNumber: 0})
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -74,10 +74,10 @@ class Poll extends React.Component {
           selectedDays: ''
         })
       }
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: true, days: value})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: value})
     } else if (value === '') {
       this.setState({selectedDays: ''})
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: true, days: '0'})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: '0'})
     }
   }
   showDialogDelete (id) {
@@ -112,12 +112,14 @@ class Poll extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
     } else {
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: false, days: this.state.selectedDays})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
   }
 
@@ -331,7 +333,7 @@ class Poll extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: true, days: this.state.selectedDays})
+                                    this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>

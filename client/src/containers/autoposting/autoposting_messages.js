@@ -21,7 +21,7 @@ class AutopostingMessages extends React.Component {
       totalLength: 0,
       pageNumber: 0
     }
-    props.loadAutopostingMessages(props.location.state.id, {first_page: true, last_id: 'none', number_of_records: 10})
+    props.loadAutopostingMessages(props.location.state.id, {first_page: 'first', last_id: 'none', number_of_records: 10})
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
   }
@@ -53,12 +53,14 @@ class AutopostingMessages extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadAutopostingMessages(props.location.state.id, {first_page: true, last_id: 'none', number_of_records: 10})
+      this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'first', last_id: 'none', number_of_records: 10})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'next', last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
     } else {
-      this.props.loadAutopostingMessages(props.location.state.id, {first_page: false, last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[this.props.autoposting_messages.length - 1]._id : 'none', number_of_records: 10})
+      this.props.loadAutopostingMessages(props.location.state.id, {first_page: 'previous', last_id: this.props.autoposting_messages.length > 0 ? this.props.autoposting_messages[0]._id : 'none', number_of_records: 10})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.autoposting_messages)
   }
 

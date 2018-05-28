@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 class PollsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', days: 10}})
+    props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       PollData: [],
       totalLength: 0,
@@ -27,20 +27,6 @@ class PollsInfo extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.onPollClick = this.onPollClick.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
-  }
-
-  componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
   }
 
   displayData (n, polls) {
@@ -61,25 +47,29 @@ class PollsInfo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else {
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.polls && nextProps.count) {
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({PollData: [], totalLength: 0})
     }
   }
   searchPolls (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.polls.length; i++) {
@@ -105,10 +95,10 @@ class PollsInfo extends React.Component {
     }
   }
   onDaysChange (event) {
-    this.setState({selectedDays: event.target.value})
+    this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
     }
     // var defaultVal = 10
     // var value = e.target.value
@@ -169,120 +159,104 @@ class PollsInfo extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
-                { this.props.polls && this.props.polls.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                <div className='form-group m-form__group row align-items-center'>
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                    <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchPolls} />
-                    <span className='m-input-icon__icon m-input-icon__icon--left'>
-                      <span><i className='la la-search' /></span>
-                    </span>
+                <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                  <div className='form-group m-form__group row align-items-center'>
+                    <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                      <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchPolls} />
+                      <span className='m-input-icon__icon m-input-icon__icon--left'>
+                        <span><i className='la la-search' /></span>
+                      </span>
+                    </div>
                   </div>
+                  {
+                    this.state.PollData && this.state.PollData.length > 0
+                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table'
+                        id='m-datatable--27866229129' style={{
+                          display: 'block',
+                          height: 'auto',
+                          overflowX: 'auto'
+                        }}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{height: '53px'}}>
+                            <th data-field='title'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Title</span></th>
+                            <th data-field='user'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>User/Company Name</span></th>
+                            <th data-field='page'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Page</span></th>
+                            <th data-field='created'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Created At</span></th>
+                            <th data-field='sent'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Sent</span></th>
+                            <th data-field='seen'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Seen</span></th>
+                            <th data-field='responded'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '120px'}}>Responded</span></th>
+                          </tr>
+                        </thead>
+                        <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                          {
+                            this.state.PollData.map((poll, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='title'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{poll.statement}</span></td>
+                                { (poll.user[0].plan === 'plan_A' || poll.user[0].plan === 'plan_B')
+                              ? <td data-field='user' className='m-datatable__cell'>
+                                <span style={{width: '120px'}}>{poll.user[0].name}</span></td>
+                                : <td data-field='user' className='m-datatable__cell'>
+                                  <span style={{width: '120px'}}>{poll.company[0].companyName}</span></td>}
+                                <td data-field='page' className='m-datatable__cell'>
+                                  <span style={{width: '120px'}}>{poll.page.join(',')}</span></td>
+                                <td data-field='created'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{handleDate(poll.datetime)}</span></td>
+                                <td data-field='sent'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{poll.sent}</span></td>
+                                <td data-field='seen'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{poll.seen}</span></td>
+                                <td data-field='responded'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '120px'}}>{poll.responded}</span></td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                      <ReactPaginate previousLabel={'previous'}
+                        nextLabel={'next'}
+                        breakLabel={<a>...</a>}
+                        breakClassName={'break-me'}
+                        pageCount={Math.ceil(this.state.totalLength / 10)}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={3}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'}
+                        forcePage={this.state.pageNumber} />
+                    </div>
+                    : <p> No data to display </p>
+                  }
                 </div>
-                {
-                  this.state.PollData && this.state.PollData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table'
-                      id='m-datatable--27866229129' style={{
-                        display: 'block',
-                        height: 'auto',
-                        overflowX: 'auto'
-                      }}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='title'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Title</span></th>
-                          <th data-field='user'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>User/Company Name</span></th>
-                          <th data-field='page'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Page</span></th>
-                          <th data-field='created'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Created At</span></th>
-                          <th data-field='sent'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Sent</span></th>
-                          <th data-field='seen'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Seen</span></th>
-                          <th data-field='responded'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Responded</span></th>
-                          <th data-field='more'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}} /></th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                        {
-                          this.state.PollData.map((poll, i) => (
-                            <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
-                              style={{height: '55px'}} key={i}>
-                              <td data-field='title'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{poll.statement}</span></td>
-                              { (poll.user[0].plan === 'plan_A' || poll.user[0].plan === 'plan_B')
-                            ? <td data-field='user' className='m-datatable__cell'>
-                              <span style={{width: '120px'}}>{poll.user[0].name}</span></td>
-                              : <td data-field='user' className='m-datatable__cell'>
-                                <span style={{width: '120px'}}>{poll.company[0].companyName}</span></td>}
-                              <td data-field='page' className='m-datatable__cell'>
-                                <span style={{width: '120px'}}>{poll.page.join(',')}</span></td>
-                              <td data-field='created'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{handleDate(poll.datetime)}</span></td>
-                              <td data-field='sent'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{poll.sent}</span></td>
-                              <td data-field='seen'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{poll.seen}</span></td>
-                              <td data-field='responded'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>{poll.responded}</span></td>
-                              <td data-field='more'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>
-                                  <button onClick={() => this.onPollClick(poll)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View
-                                </button></span>
-                              </td>
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 10)}
-                      marginPagesDisplayed={1}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'}
-                      forcePage={this.state.pageNumber} />
-                  </div>
-                  : <p> No search results found. </p>
-                }
-              </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-              }
               </div>
             </div>
           </div>

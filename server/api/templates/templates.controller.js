@@ -38,7 +38,7 @@ exports.getAllPolls = function (req, res) {
     }
   }
   */
-  if (req.body.first_page) {
+  if (req.body.first_page === 'first') {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -67,7 +67,7 @@ exports.getAllPolls = function (req, res) {
         })
       })
     })
-  } else {
+  } else if (req.body.first_page === 'next') {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -96,6 +96,35 @@ exports.getAllPolls = function (req, res) {
         })
       })
     })
+  } else if (req.body.first_page === 'previous') {
+    let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+    let findCriteria = {
+      title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+    }
+    TemplatePolls.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, pollsCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'PollsCount not found'})
+      }
+      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      .exec((err, polls) => {
+        if (err) {
+          logger.serverLog(TAG, `Error: ${err}`)
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {polls: polls.reverse(), count: polls.length > 0 ? pollsCount[0].count : ''}
+        })
+      })
+    })
   }
 }
 
@@ -111,7 +140,7 @@ exports.getAllSurveys = function (req, res) {
     }
   }
   */
-  if (req.body.first_page) {
+  if (req.body.first_page === 'first') {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -140,7 +169,7 @@ exports.getAllSurveys = function (req, res) {
         })
       })
     })
-  } else {
+  } else if (req.body.first_page === 'next') {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -166,6 +195,35 @@ exports.getAllSurveys = function (req, res) {
         res.status(200).json({
           status: 'success',
           payload: {surveys: surveys, count: surveys.length > 0 ? surveysCount[0].count : ''}
+        })
+      })
+    })
+  } else if (req.body.first_page === 'previous') {
+    let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+    let findCriteria = {
+      title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+    }
+    TemplateSurveys.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, surveysCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'PollsCount not found'})
+      }
+      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      .exec((err, surveys) => {
+        if (err) {
+          logger.serverLog(TAG, `Error: ${err}`)
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {surveys: surveys.reverse(), count: surveys.length > 0 ? surveysCount[0].count : ''}
         })
       })
     })
@@ -626,7 +684,7 @@ exports.getAllBroadcasts = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    if (req.body.first_page) {
+    if (req.body.first_page === 'first') {
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -656,7 +714,7 @@ exports.getAllBroadcasts = function (req, res) {
           })
         })
       })
-    } else {
+    } else if (req.body.first_page === 'next') {
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -683,6 +741,36 @@ exports.getAllBroadcasts = function (req, res) {
           res.status(200).json({
             status: 'success',
             payload: {broadcasts: broadcasts, count: broadcasts.length > 0 ? broadcastsCount[0].count : ''}
+          })
+        })
+      })
+    } else if (req.body.first_page === 'previous') {
+      let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+      let findCriteria = {
+        '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
+        title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+        category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
+      }
+      TemplateBroadcasts.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+        .exec((err, broadcasts) => {
+          if (err) {
+            logger.serverLog(TAG, `Error: ${err}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error${JSON.stringify(err)}`
+            })
+          }
+          res.status(200).json({
+            status: 'success',
+            payload: {broadcasts: broadcasts.reverse(), count: broadcasts.length > 0 ? broadcastsCount[0].count : ''}
           })
         })
       })

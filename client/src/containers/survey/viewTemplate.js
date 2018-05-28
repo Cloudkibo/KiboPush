@@ -47,17 +47,6 @@ class viewSurvey extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     if (this.props.currentSurvey) {
       const id = this.props.currentSurvey._id
       this.props.loadSurveyDetails(id)
@@ -100,7 +89,7 @@ class viewSurvey extends React.Component {
                         <ul className='list-group'>
                           {
                             this.props.questions &&
-                            this.props.questions.map((c) => (
+                            this.props.questions.map((c, i) => (
                               <div className='card'>
                                 <li
                                   className='list-group-item'
@@ -108,7 +97,7 @@ class viewSurvey extends React.Component {
                                   key={c._id}
                                 >
                                   <strong>Q. {c.statement}</strong>
-                                  {c.options.map((d) => (
+                                  {c.options.map((d, j) => (
                                     <div className='m-section__content'>
                                       <div data-code-preview='true' data-code-html='true' data-code-js='false'>
                                         <div className='m-demo__preview'>
@@ -116,7 +105,7 @@ class viewSurvey extends React.Component {
                                             <div className='m-list-timeline__items'>
                                               <div className='m-list-timeline__item'>
                                                 <span className='m-list-timeline__badge m-list-timeline__badge--success' />
-                                                <span className='m-list-timeline__text'>
+                                                <span className='m-list-timeline__text' key={j}>
                                                   {d}
                                                 </span>
                                               </div>

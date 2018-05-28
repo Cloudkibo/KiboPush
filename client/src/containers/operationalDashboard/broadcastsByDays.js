@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', days: 10}})
+    props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       BroadcastData: [],
       totalLength: 0,
@@ -30,17 +30,6 @@ class BroadcastsInfo extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
   }
 
   displayData (n, broadcasts) {
@@ -61,12 +50,14 @@ class BroadcastsInfo extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else {
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
   }
   componentWillReceiveProps (nextProps) {
@@ -74,20 +65,24 @@ class BroadcastsInfo extends React.Component {
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({BroadcastData: [], totalLength: 0})
     }
   }
   searchBroadcasts (event) {
     this.setState({searchValue: event.target.value.toLowerCase()})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+    } else {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: '', days: this.state.selectedDays}})
     }
   }
   onDaysChange (event) {
-    this.setState({selectedDays: event.target.value})
+    this.setState({selectedDays: event.target.value, pageNumber: 0})
     if (event.target.value !== '') {
       this.setState({filter: true})
-      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
     }
     // var defaultVal = 10
     // var value = e.target.value
@@ -146,9 +141,7 @@ class BroadcastsInfo extends React.Component {
               </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='row align-items-center'>
-                { this.props.broadcasts && this.props.broadcasts.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+              <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
                     <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchBroadcasts} />
@@ -187,9 +180,6 @@ class BroadcastsInfo extends React.Component {
                           <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}}>Seen</span></th>
-                          <th data-field='more'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}} /></th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
@@ -221,14 +211,6 @@ class BroadcastsInfo extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '120px'}}>{broadcast.seen}</span></td>
-                              <td data-field='more'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '120px'}}>
-                                  <button onClick={() => this.onBroadcastClick(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View
-                                </button></span>
-                              </td>
                             </tr>
                           ))
                         }
@@ -247,13 +229,9 @@ class BroadcastsInfo extends React.Component {
                       activeClassName={'active'}
                       forcePage={this.state.pageNumber} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display. </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-              }
               </div>
             </div>
           </div>

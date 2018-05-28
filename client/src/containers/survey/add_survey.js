@@ -61,7 +61,6 @@ class AddSurvey extends React.Component {
       localeValue: [],
       tagValue: [],
       surveyValue: [],
-      steps: [],
       showDropDown: false,
       selectedRadio: '',
       listSelected: '',
@@ -103,8 +102,10 @@ class AddSurvey extends React.Component {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
     let surveyOptions = []
-    for (var j = 0; j < this.props.surveys.length; j++) {
-      surveyOptions[j] = {id: this.props.surveys[j]._id, text: this.props.surveys[j].title}
+    if (this.props.survey) {
+      for (var j = 0; j < this.props.surveys.length; j++) {
+        surveyOptions[j] = {id: this.props.surveys[j]._id, text: this.props.surveys[j].title}
+      }
     }
     this.setState({page: {options: options}, survey: {options: surveyOptions}})
     this.initializeGenderSelect(this.state.Gender.options)
