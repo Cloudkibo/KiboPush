@@ -102,13 +102,6 @@ class PageSubscribers extends React.Component {
     // this.setState({ totalLength: this.state.pageSubscribersData.length })
   }
 
-  backToUserDetails () {
-    const user = this.props.currentUser
-    this.props.history.push({
-      pathname: `/userDetails`,
-      state: user
-    })
-  }
 
   onFilterByGender (data) {
     if (data) {
@@ -193,6 +186,20 @@ class PageSubscribers extends React.Component {
     // }
     // this.displayData(0, filtered)
     // this.setState({ totalLength: filtered.length })
+  }
+
+  backToUserDetails () {
+    if (this.props.location.state && this.props.location.state.module === 'top10pages') {
+      this.props.history.push({
+        pathname: `/operationalDashboard`
+      })
+    } else {
+      const user = this.props.currentUser
+      this.props.history.push({
+        pathname: `/userDetails`,
+        state: user
+      })
+    }
   }
 
   render () {
@@ -378,6 +385,10 @@ class PageSubscribers extends React.Component {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div style={{'overflow': 'auto'}}>
+                <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
+                </button>
               </div>
             </div>
           </div>

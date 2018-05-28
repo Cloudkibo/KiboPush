@@ -8,6 +8,7 @@ import PollsInfo from './userPolls'
 import { loadPagesList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -105,6 +106,10 @@ class UserDetails extends React.Component {
               <BroadcastsInfo userID={this.props.location.state._id} />
               <SurveysInfo userID={this.props.location.state._id} />
               <PollsInfo userID={this.props.location.state._id} />
+              <div style={{'overflow': 'auto'}}>
+                <Link to='/operationalDashboard' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
+                </Link>
+              </div>
             </div>
           </div>
         </div>
