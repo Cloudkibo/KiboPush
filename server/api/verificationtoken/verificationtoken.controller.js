@@ -161,5 +161,21 @@ exports.resend = function (req, res) {
       }
       res.status(201).json({ status: 'success', description: 'Verification email has been sent' })
     })
+
+    let mailchimp = require('mailchimp-api-v3')('2d154e5f15ca18180d52c40ad6e5971e-us12')
+
+    mailchimp.post({
+      path: '/lists/5a4e866849/members',
+      body: {
+        email_address: req.user.email,
+        status: 'subscribed'
+      }
+    }, function (err, result) {
+      if (err) {
+        logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
+      } else {
+        logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
+      }
+    })
   })
 }
