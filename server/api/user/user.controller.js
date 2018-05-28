@@ -337,6 +337,9 @@ exports.create = function (req, res) {
                   path: '/lists/5a4e866849/members',
                   body: {
                     email_address: req.body.email,
+                    merge_fields: {
+                      FNAME: req.body.name
+                    },
                     status: 'subscribed'
                   }
                 }, function (err, result) {
