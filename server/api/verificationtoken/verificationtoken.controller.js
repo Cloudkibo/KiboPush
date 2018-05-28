@@ -171,7 +171,7 @@ exports.resend = function (req, res) {
       body: {
         email_address: req.user.email,
         merge_fields: {
-          FNAME: req.body.name
+          FNAME: req.user.name
         },
         status: 'subscribed'
       }
