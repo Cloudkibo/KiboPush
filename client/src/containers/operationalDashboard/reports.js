@@ -42,7 +42,8 @@ class Reports extends React.Component {
           </div>
           <div className='m-portlet__body'>
             <div className='tab-content'>
-              <center>
+              {this.props.lineChartData && this.props.lineChartData.length > 0
+              ? <center>
                 <LineChart width={600} height={300} data={this.props.lineChartData}>
                   <XAxis dataKey='date' />
                   <YAxis />
@@ -55,6 +56,10 @@ class Reports extends React.Component {
                   <Line type='monotone' dataKey='sessionscount' name='Sessions' stroke='#A11644' activeDot={{r: 8}} />
                 </LineChart>
               </center>
+               : <center>
+                No data for selected number of days
+              </center>
+            }
             </div>
           </div>
         </div>

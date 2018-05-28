@@ -59,7 +59,9 @@ exports.getAllUsers = function (req, res) {
   if (req.body.first_page) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
-      name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+      name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      'facebookInfo.locale': req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
+      'facebookInfo.gender': req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true}
     }
     Users.find(findCriteria).exec((err, usersData) => {
       if (err) {
@@ -69,29 +71,29 @@ exports.getAllUsers = function (req, res) {
         })
       }
       logger.serverLog(TAG, `usersData ${JSON.stringify(usersData)}`)
-      if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-        let usersPayloadData = []
-        for (let i = 0; i < usersData.length; i++) {
-          if (usersData[i].facebookInfo) {
-            if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-                usersPayloadData.push(usersData[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-              if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayloadData.push(usersData[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayloadData.push(usersData[i])
-              }
-            }
-          }
-        }
-        usersData = usersPayloadData
-      }
-      logger.serverLog(TAG, `usersData after ${JSON.stringify(usersData)}`)
-      Users.find(findCriteria).limit(req.body.number_of_records)
+      // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
+      //   let usersPayloadData = []
+      //   for (let i = 0; i < usersData.length; i++) {
+      //     if (usersData[i].facebookInfo) {
+      //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+      //           usersPayloadData.push(usersData[i])
+      //         }
+      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+      //         if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+      //           usersPayloadData.push(usersData[i])
+      //         }
+      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+      //           usersPayloadData.push(usersData[i])
+      //         }
+      //       }
+      //     }
+      //   }
+      //   usersData = usersPayloadData
+      // }
+      // logger.serverLog(TAG, `usersData after ${JSON.stringify(usersData)}`)
+      Users.aggregate([{$match: findCriteria}, {$sort: {createdAt: -1}}]).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
           return res.status(404).json({
@@ -99,39 +101,41 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-          let usersPayload = []
-          for (let i = 0; i < users.length; i++) {
-            if (users[i].facebookInfo) {
-              if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-                  usersPayload.push(users[i])
-                }
-              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-                if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                  usersPayload.push(users[i])
-                }
-              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                  usersPayload.push(users[i])
-                }
-              } else {
-                usersPayload = users
-              }
-            }
-          }
-          users = usersPayload
-        }
+        // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
+        //   let usersPayload = []
+        //   for (let i = 0; i < users.length; i++) {
+        //     if (users[i].facebookInfo) {
+        //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+        //           usersPayload.push(users[i])
+        //         }
+        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+        //         if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+        //           usersPayload.push(users[i])
+        //         }
+        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+        //           usersPayload.push(users[i])
+        //         }
+        //       } else {
+        //         usersPayload = users
+        //       }
+        //     }
+        //   }
+        //   users = usersPayload
+        // }
         res.status(200).json({
           status: 'success',
-          payload: {users: usersData.length > 10 ? usersData.slice(0, 9) : usersData, count: usersData.length}
+          payload: {users: users, count: usersData.length}
         })
       })
     })
   } else {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
-      name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+      name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+      'facebookInfo.locale': req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
+      'facebookInfo.gender': req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true}
     }
     Users.find(findCriteria).exec((err, usersData) => {
       if (err) {
@@ -140,30 +144,30 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-        let usersPayloadData
-        for (let i = 0; i < usersData.length; i++) {
-          if (usersData[i].facebookInfo) {
-            if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-                usersPayloadData.push(usersData[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-              if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayloadData.push(usersData[i])
-              }
-            } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-              if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                usersPayloadData.push(usersData[i])
-              }
-            } else {
-              usersPayloadData = usersData
-            }
-          }
-        }
-        usersData = usersPayloadData
-      }
-      Users.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
+      //   let usersPayloadData
+      //   for (let i = 0; i < usersData.length; i++) {
+      //     if (usersData[i].facebookInfo) {
+      //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+      //           usersPayloadData.push(usersData[i])
+      //         }
+      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+      //         if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+      //           usersPayloadData.push(usersData[i])
+      //         }
+      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+      //           usersPayloadData.push(usersData[i])
+      //         }
+      //       } else {
+      //         usersPayloadData = usersData
+      //       }
+      //     }
+      //   }
+      //   usersData = usersPayloadData
+      // }
+      Users.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {createdAt: -1}}]).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
           return res.status(404).json({
@@ -171,32 +175,32 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-          let usersPayload = []
-          for (let i = 0; i < users.length; i++) {
-            if (users[i].facebookInfo) {
-              if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-                  usersPayload.push(users[i])
-                }
-              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-                if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                  usersPayload.push(users[i])
-                }
-              } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-                if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-                  usersPayload.push(users[i])
-                }
-              } else {
-                usersPayload = users
-              }
-            }
-          }
-          users = usersPayload
-        }
+        // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
+        //   let usersPayload = []
+        //   for (let i = 0; i < users.length; i++) {
+        //     if (users[i].facebookInfo) {
+        //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
+        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
+        //           usersPayload.push(users[i])
+        //         }
+        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
+        //         if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+        //           usersPayload.push(users[i])
+        //         }
+        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
+        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
+        //           usersPayload.push(users[i])
+        //         }
+        //       } else {
+        //         usersPayload = users
+        //       }
+        //     }
+        //   }
+        //   users = usersPayload
+        // }
         res.status(200).json({
           status: 'success',
-          payload: {users: usersData.length > 10 ? usersData.slice(0, 9) : usersData, count: usersData.length}
+          payload: {users: users, count: usersData.length}
         })
       })
     })

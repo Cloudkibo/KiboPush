@@ -14,7 +14,7 @@ class top10pages extends React.Component {
   }
   render () {
     return (
-      <div className='col-xl-6'>
+      <div className='col-xl-12'>
         <div className='m-portlet m-portlet--full-height '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-caption'>
@@ -58,8 +58,8 @@ class top10pages extends React.Component {
                                    <br />
                                    <span className='m-widget4__sub'>
                                   Likes: {page.likes}
-                                   </span>
-                                   <span className='m-widget4__sub' style={{float: 'right', marginRight: '100px'}}>
+                                   </span>&nbsp;&nbsp;&nbsp;
+                                   <span className='m-widget4__sub'>
                                   Subscribers: {page.subscribers}
                                    </span>
                                  </div>
