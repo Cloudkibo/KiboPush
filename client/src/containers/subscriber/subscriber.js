@@ -167,7 +167,7 @@ class Subscriber extends React.Component {
   }
   closeEditModal () {
     this.setState({showEditModal: false})
-    this.props.loadAllSubscribersList()
+    this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
   }
   handleAddIndividual (value) {
     var index = 0
@@ -1396,7 +1396,7 @@ class Subscriber extends React.Component {
                                     : <div style={{display: 'block', marginTop: '5px'}}>
                                       <i style={{fontWeight: 'bold'}} className='la la-times-circle' />
                                       unsubscribed
-                                      { this.state.subscriber.unsubsribed_by !== 'subscriber' &&
+                                      { this.state.subscriber.unSubscribedBy !== 'subscriber' &&
                                         <a onClick={this.subscribe} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}> {'(Subscribe)'}</a>
                                       }
                                     </div>
