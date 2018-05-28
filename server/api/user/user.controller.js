@@ -17,6 +17,8 @@ const _ = require('lodash')
 let crypto = require('crypto')
 const logger = require('../../components/logger')
 
+const MailChimp = require('mailchimp-api-v3')
+
 const TAG = 'api/user/user.controller.js'
 
 exports.index = function (req, res) {
@@ -329,7 +331,7 @@ exports.create = function (req, res) {
                   }
                 })
 
-                let mailchimp = require('mailchimp-api-v3')('2d154e5f15ca18180d52c40ad6e5971e-us12')
+                let mailchimp = new MailChimp('2d154e5f15ca18180d52c40ad6e5971e-us12')
 
                 mailchimp.post({
                   path: '/lists/5a4e866849/members',
