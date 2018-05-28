@@ -5,6 +5,7 @@ import Header from '../../components/header/header'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   loadCustomerListsNew, saveCurrentList, deleteList, clearCurrentList
 } from '../../redux/actions/customerLists.actions'
@@ -31,6 +32,7 @@ class SegmentedList extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     props.loadMyPagesList()
+    props.loadSubscribersList()
     props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.clearCurrentList()
   }
@@ -126,6 +128,14 @@ class SegmentedList extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              {
+                this.props.subscribers && this.props.subscribers.length === 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to create segmented subscribers lists and broadcast message, polls and surveys.
+                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
+                </div>
+              }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
                   <i className='flaticon-technology m--font-accent' />
@@ -146,7 +156,9 @@ class SegmentedList extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        {
+                        this.props.subscribers && this.props.subscribers.length > 0
+                        ? <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
                             <i className='la la-plus' />
                             <span>
@@ -154,6 +166,15 @@ class SegmentedList extends React.Component {
                             </span>
                           </span>
                         </Link>
+                      : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Create Segmented Subscribers List
+                          </span>
+                        </span>
+                      </Link>
+                      }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -281,7 +302,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
-    count: (state.listsInfo.count)
+    count: (state.listsInfo.count),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -290,7 +312,8 @@ function mapDispatchToProps (dispatch) {
     loadCustomerListsNew: loadCustomerListsNew,
     saveCurrentList: saveCurrentList,
     deleteList: deleteList,
-    clearCurrentList: clearCurrentList
+    clearCurrentList: clearCurrentList,
+    loadSubscribersList: loadSubscribersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SegmentedList)

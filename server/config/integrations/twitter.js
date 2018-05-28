@@ -44,7 +44,7 @@ function connect () {
           {follow: arrUsers})
 
         stream.on('tweet', tweet => {
-          if (tweet.in_reply_to_status_id !== null || tweet.in_reply_to_user_id !== null || tweet.in_reply_to_screen_name !== null || tweet.retweeted_status !== null) {
+          if (tweet.in_reply_to_status_id !== null || tweet.in_reply_to_user_id !== null || tweet.in_reply_to_screen_name !== null) {
             return
           }
           // logger.serverLog(TAG, `Tweet received : ${JSON.stringify(tweet.user.screen_name)}`)

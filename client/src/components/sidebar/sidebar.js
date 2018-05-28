@@ -40,7 +40,8 @@ class Sidebar extends Component {
       commentCapture: true,
       smartReplies: true,
       templates: true,
-      sequenceMessaging: true
+      sequenceMessaging: true,
+      waitingResponse: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -441,12 +442,14 @@ class Sidebar extends Component {
                 </a>
               </li>
               }
+              {this.state.waitingResponse &&
               <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                 <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
                   <i className='m-menu__link-icon flaticon-cogwheel' />
                   <span className='m-menu__link-text'>Waiting Response</span>
                 </Link>
               </li>
+             }
             </ul>
           </div>
 
