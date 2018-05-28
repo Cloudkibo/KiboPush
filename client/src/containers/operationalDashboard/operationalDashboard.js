@@ -477,7 +477,7 @@ class OperationalDashboard extends React.Component {
               </div>
               <div className='row'>
                 <Top10pages pagesData={this.props.toppages} />
-                <div className='col-xl-6'>
+                <div className='col-xl-12'>
                   <div className='m-portlet m-portlet--full-height '>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -565,8 +565,8 @@ class OperationalDashboard extends React.Component {
                                                  <br />
                                                  <span className='m-widget4__sub'>
                                                     Gender: {user.facebookInfo ? user.facebookInfo.gender : ''}
-                                                 </span>
-                                                 <span className='m-widget4__sub' style={{float: 'right'}}>
+                                                 </span>&nbsp;&nbsp;&nbsp;
+                                                 <span className='m-widget4__sub'>
                                                     Locale: {user.facebookInfo ? user.facebookInfo.locale : ''}
                                                  </span>
                                                </div>
@@ -604,6 +604,16 @@ class OperationalDashboard extends React.Component {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className='m-accordion__item'>
+                <div className='m-accordion__item-head collapsed'>
+                  <a className='m-card-profile__email m-link'>
+                    <span className='m-accordion__item-title'>Assign to team</span>
+                    <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
+                      <i className='la la-plus' />
+                    </span>
+                  </a>
                 </div>
               </div>
               <BroadcastsByDays />

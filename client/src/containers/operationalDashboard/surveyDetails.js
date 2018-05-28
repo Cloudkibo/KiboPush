@@ -5,7 +5,6 @@ import { loadSurveyDetails } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Response from '../survey/Response'
-import ReactPaginate from 'react-paginate'
 
 class SurveyDetails extends React.Component {
   constructor (props, context) {
@@ -163,7 +162,7 @@ class SurveyDetails extends React.Component {
                   </div>
                 </div>
               </div>
-              {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
+              { /* this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
               <div className='row'>
 
                 <div
@@ -316,7 +315,7 @@ class SurveyDetails extends React.Component {
                   </div>
                 </div>
               </div>
-              }
+              */ }
               <div style={{'overflow': 'auto'}}>
                 <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
                 </button>
