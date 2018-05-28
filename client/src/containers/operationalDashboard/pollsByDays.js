@@ -75,6 +75,8 @@ class PollsInfo extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+    } else {
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: this.state.selectedDays}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.polls.length; i++) {
@@ -104,6 +106,8 @@ class PollsInfo extends React.Component {
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+    } else {
+      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: ''}})
     }
     // var defaultVal = 10
     // var value = e.target.value
