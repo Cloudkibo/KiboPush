@@ -59,7 +59,8 @@ class OperationalDashboard extends React.Component {
       chartData: [],
       selectedDays: 10,
       openPopover: false,
-      filter: false
+      filter: false,
+      showBroadcasts: false
     }
     props.allLocales()
     props.loadDataObjectsCount(0)
@@ -85,6 +86,11 @@ class OperationalDashboard extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.sendEmail = this.sendEmail.bind(this)
     this.loadMore = this.loadMore.bind(this)
+    this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
+  }
+
+  toggleAssignTeam () {
+    this.setState({showBroadcasts: !this.state.showBroadcasts})
   }
 
   loadMore () {
@@ -604,16 +610,6 @@ class OperationalDashboard extends React.Component {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className='m-accordion__item'>
-                <div className='m-accordion__item-head collapsed'>
-                  <a className='m-card-profile__email m-link'>
-                    <span className='m-accordion__item-title'>Assign to team</span>
-                    <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
-                      <i className='la la-plus' />
-                    </span>
-                  </a>
                 </div>
               </div>
               <BroadcastsByDays />

@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 class PollsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
+    //  props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       PollData: [],
       totalLength: 0,
@@ -19,7 +19,8 @@ class PollsInfo extends React.Component {
       selectedFilterValue: 10,
       selectedDays: 10,
       filter: true,
-      searchValue: ''
+      searchValue: '',
+      showPolls: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -27,8 +28,12 @@ class PollsInfo extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.onPollClick = this.onPollClick.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.toggle = this.toggle.bind(this)
   }
-
+  toggle () {
+    this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
+    this.setState({showPolls: !this.state.showPolls})
+  }
   displayData (n, polls) {
     let offset = n * 10
     let data = []
@@ -139,32 +144,34 @@ class PollsInfo extends React.Component {
                 <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
-                  <li className='nav-item m-tabs__item'>
-                    <form className='m-form m-form--fit m-form--label-align-right'>
-                      <div className='form-group m-form__group row'>
-                        <label htmlFor='example-text-input' className='col-form-label'>
-                          Show records for last:&nbsp;&nbsp;
-                        </label>
-                        <div>
-                          <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
-                        </div>
-                        <label htmlFor='example-text-input' className='col-form-label'>
-                        &nbsp;&nbsp;days
-                      </label>
-                      </div>
-                    </form>
+                  <li className='m-portlet__nav-item'>
+                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                      {this.state.showPolls
+                      ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
+                    : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
+                  }
+                    </a>
                   </li>
                 </ul>
               </div>
             </div>
+            {this.state.showPolls &&
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
                 <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                  <div className='form-group m-form__group row align-items-center'>
-                    <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                      <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchPolls} />
-                      <span className='m-input-icon__icon m-input-icon__icon--left'>
-                        <span><i className='la la-search' /></span>
+                  <div className='form-row'>
+                    <div className='form-group col-md-6' ><input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchPolls} />
+                      <span className='m-input-icon__icon m-input-icon__icon--left' />
+                    </div>
+                    <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                      <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                        Show records for last:&nbsp;&nbsp;
+                      </span>
+                      <div style={{width: '200px'}}>
+                        <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                      </div>
+                      <span htmlFor='example-text-input' className='col-form-label'>
+                      &nbsp;&nbsp;days
                       </span>
                     </div>
                   </div>
@@ -270,6 +277,7 @@ class PollsInfo extends React.Component {
                 </div>
               </div>
             </div>
+          }
           </div>
         </div>
       </div>
