@@ -683,6 +683,12 @@ class OperationalDashboard extends React.Component {
                                       </div>
                                         : <div>No Data to display</div>
                                         }
+                                    {this.state.usersData.length < this.props.count &&
+                                    <center>
+                                      <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                      <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                    </center>
+                                    }
                                   </div>
                                 </div>
                               </div>
