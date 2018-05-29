@@ -120,22 +120,24 @@ class LiveChat extends React.Component {
 
   changeActiveSession (session) {
     this.setState({activeSession: session})
-    var temp = this.state.sessionsDataNew
-    for (var i = 0; i < temp.length; i++) {
-      if (temp[i]._id === session._id && temp[i].unreadCount) {
-        temp[i] = {
-          company_id: temp[i].company_id,
-          last_activity_time: temp[i].last_activity_time,
-          page_id: temp[i].page_id,
-          request_time: temp[i].request_time,
-          status: temp[i].status,
-          subscriber_id: temp[i].subscriber_id,
-          _id: temp[i]._id
+    if (this.state.tabValue === 'open') {
+      var temp = this.state.sessionsDataNew
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i]._id === session._id && temp[i].unreadCount) {
+          delete temp[i].unreadCount
+          this.setState({sessionsDataNew: temp})
         }
-        this.setState({sessionsDataNew: temp})
-        //  this.separateResolvedSessions(temp)
+      }
+    } else {
+      var tempClose = this.state.sessionsDataResolved
+      for (var j = 0; j < tempClose.length; j++) {
+        if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
+          delete tempClose[j].unreadCount
+          this.setState({sessionsDataResolved: tempClose})
+        }
       }
     }
+
     this.props.fetchUserChats(session._id)
     console.log('session in changeActiveSession', session)
     this.props.markRead(session._id, this.props.openSessions)
@@ -230,7 +232,6 @@ class LiveChat extends React.Component {
       console.log('inside')
       this.setState({loading: false})
       this.setState({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions})
-      //  this.separateResolvedSessions(nextProps.sessions)
       if (this.props.location.state && this.state.activeSession === '') {
         let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
         let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
@@ -241,22 +242,23 @@ class LiveChat extends React.Component {
           this.setState({tabValue: 'closed'})
         }
       } else if (this.state.activeSession === '') {
+        console.log('activeSession in empty')
+        console.log('openSessions', nextProps.openSessions)
+        console.log('closeSessions', nextProps.closeSessions)
         if (this.state.tabValue === 'open') {
-          let newSessions = nextProps.openSessions.filter(session => session.status === 'new')
-          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : ''})
+          this.setState({activeSession: nextProps.openSessions.length > 0 ? nextProps.openSessions[0] : ''})
         } else {
-          let resolvedSessions = nextProps.closeSessions.filter(session => session.status === 'resolved')
-          this.setState({activeSession: resolvedSessions.length > 0 ? resolvedSessions[0] : ''})
+          this.setState({activeSession: nextProps.closeSessions.length > 0 ? nextProps.closeSessions[0] : ''})
         }
       } else if (nextProps.activeSession && nextProps.activeSession !== '') {
-        for (let x = 0; nextProps.openSessions.length; x++) {
-          if (nextProps.openSessions[x]._id === nextProps.activeSession) {
+        for (let x = 0; x < nextProps.openSessions.length; x++) {
+          if (nextProps.openSessions[x]._id === nextProps.activeSession._id) {
             this.setState({activeSession: nextProps.openSessions[x]})
             break
           }
         }
-        for (let y = 0; nextProps.closeSessions.length; y++) {
-          if (nextProps.closeSessions[y]._id === nextProps.activeSession) {
+        for (let y = 0; y < nextProps.closeSessions.length; y++) {
+          if (nextProps.closeSessions[y]._id === nextProps.activeSession._id) {
             this.setState({activeSession: nextProps.closeSessions[y]})
             break
           }
@@ -528,8 +530,8 @@ class LiveChat extends React.Component {
                                 {
                                   this.state.sessionsDataNew && this.state.sessionsDataNew.length > 0
                                   ? (this.state.sessionsDataNew.map((session) => (
-                                    <div>
-                                      <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                    <div key={session._id}>
+                                      <div style={session._id === (this.state.activeSession !== '' && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                         <div className='m-widget4__img m-widget4__img--pic'>
                                           <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                         </div>
@@ -672,8 +674,8 @@ class LiveChat extends React.Component {
                                 {
                                   this.state.sessionsDataResolved && this.state.sessionsDataResolved.length > 0
                                   ? (this.state.sessionsDataResolved.map((session) => (
-                                    <div>
-                                      <div key={session._id} style={session._id === this.state.activeSession._id ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                    <div key={session._id}>
+                                      <div style={session._id === (this.state.activeSession !== '' && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                         <div className='m-widget4__img m-widget4__img--pic'>
                                           <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                         </div>

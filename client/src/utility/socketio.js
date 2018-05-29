@@ -91,6 +91,7 @@ socket.on('message', (data) => {
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadSubscribersList())
   } else if (['session_assign', 'session_status', 'unsubscribe'].indexOf(data.action) !== -1) {
+    console.log('fetching sessions in socket')
     store.dispatch(fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
     store.dispatch(fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
     store.dispatch(setActiveSession(data.payload.session_id))

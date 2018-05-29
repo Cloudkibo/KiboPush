@@ -573,8 +573,8 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     console.log('componentDidUpdate')
-    //  this.scrollToBottom()
-    //  this.scrollToTop()
+    this.scrollToBottom()
+    this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -664,7 +664,7 @@ class ChatBox extends React.Component {
     } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'new') {
       this.msg.error('You can not reopen chat session. Only agents who are part of assigned team can reopen chat session.')
     } else {
-      this.props.changeStatus({_id: id, status: status}, this.props.changeActiveSessionFromChatbox)
+      this.props.changeStatus({_id: id, status: status}, {openSessions: this.props.openSessions, closeSessions: this.props.closeSessions}, this.props.changeActiveSessionFromChatbox)
       if (status === 'resolved' && this.props.currentSession.is_assigned) {
         if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
           let notificationsData = {
@@ -1415,7 +1415,7 @@ class ChatBox extends React.Component {
                               </div>
                             ))
                         }
-                        <div style={{float: 'left', clear: 'both'}}
+                        <div style={{height: '50px', float: 'left', clear: 'both'}}
                           ref={(el) => { this.messagesEnd = el }} />
                       </div>
                     </div>
@@ -1656,6 +1656,8 @@ function mapStateToProps (state) {
   return {
     userChat: (state.liveChat.userChat),
     sessions: (state.liveChat.sessions),
+    openSessions: (state.liveChat.openSessions),
+    closeSessions: (state.liveChat.closeSessions),
     urlValue: (state.liveChat.urlValue),
     loadingUrl: (state.liveChat.loadingUrl),
     urlMeta: (state.liveChat.urlMeta),
