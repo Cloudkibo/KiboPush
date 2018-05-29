@@ -60,7 +60,7 @@ class top10pages extends React.Component {
                                       <span className='m-widget5__author'>
                                         User:&nbsp;&nbsp;
                                       </span>
-                                      <span className='m-widget5__info-label'>
+                                      <span className='m-widget5__info-author m--font-info'>
                                         {page.userName}
                                       </span>
                                     </div>

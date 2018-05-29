@@ -1,7 +1,6 @@
 /**
  * Created by sojharo on 25/09/2017.
  */
-
 const logger = require('../../components/logger')
 const TAG = 'api/backdoor/backdoor.controller.js'
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
@@ -123,9 +122,10 @@ exports.getAllUsers = function (req, res) {
                   subscribers: subscribers.length
                 })
                 if (usersPayload.length === users.length) {
+                  let sorted = sortBy(usersPayload, 'createdAt')
                   res.status(200).json({
                     status: 'success',
-                    payload: {users: usersPayload, count: usersData.length}
+                    payload: {users: sorted.reverse(), count: usersData.length}
                   })
                 }
               })
@@ -253,9 +253,10 @@ exports.getAllUsers = function (req, res) {
                   subscribers: subscribers.length
                 })
                 if (usersPayload.length === users.length) {
+                  let sorted = sortBy(usersPayload, 'createdAt')
                   res.status(200).json({
                     status: 'success',
-                    payload: {users: usersPayload, count: usersData.length}
+                    payload: {users: sorted.reverse(), count: usersData.length}
                   })
                 }
               })
@@ -1371,16 +1372,98 @@ exports.uploadFile = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    let usersPayload = []
-    for (let i = 0; i < users.length; i++) {
-      usersPayload.push({
-        Name: users[i].name,
-        Gender: users[i].facebookInfo ? users[i].facebookInfo.gender : '',
-        Email: users[i].email,
-        Locale: users[i].facebookInfo ? users[i].facebookInfo.locale : '',
-        Timezone: users[i].facebookInfo ? users[i].facebookInfo.timezone : ''
-      })
-    }
+    Pages.find({}, (err, pages) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting pages ${JSON.stringify(err)}`
+        })
+      }
+
+      let usersPayload = []
+      for (let i = 0; i < pages.length; i++) {
+        for (let j = 0; j < users.length; j++) {
+          if (pages[i].userId.toString() === users[j]._id.toString()) {
+            Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting pages ${JSON.stringify(err)}`
+                })
+              }
+              Broadcasts.find({pageIds: pages[i].pageId}, (err, broadcasts) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting pages ${JSON.stringify(err)}`
+                  })
+                }
+                Surveys.find({pageIds: pages[i].pageId}, (err, surveys) => {
+                  if (err) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages ${JSON.stringify(err)}`
+                    })
+                  }
+                  Polls.find({pageIds: pages[i].pageId}, (err, polls) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting pages ${JSON.stringify(err)}`
+                      })
+                    }
+                    LiveChat.find({sender_id: pages[i]._id}, (err, liveChat) => {
+                      if (err) {
+                        return res.status(404).json({
+                          status: 'failed',
+                          description: `Error in getting pages ${JSON.stringify(err)}`
+                        })
+                      }
+                      console.log('liveChat', liveChat)
+                      usersPayload.push({
+                        Page: pages[i].pageName,
+                        isConnected: pages[i].connected,
+                        Name: users[j].name,
+                        Gender: users[j].facebookInfo ? users[j].facebookInfo.gender : '',
+                        Email: users[j].email,
+                        Locale: users[j].facebookInfo ? users[j].facebookInfo.locale : '',
+                        CreatedAt: users[j].createdAt,
+                        Likes: pages[i].likes,
+                        Subscribers: subscribers.length,
+                        BroadcastsSent: broadcasts.length,
+                        SurveysSent: surveys.length,
+                        PollsSent: polls.length,
+                        lastMessaged: liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
+                      })
+                      if (pages.length === usersPayload.length) {
+                        console.log('usersPa', usersPayload.length)
+                        var info = usersPayload
+                        var keys = []
+                        var val = info[0]
+
+                        for (var k in val) {
+                          var subKey = k
+                          keys.push(subKey)
+                        }
+                        json2csv({ data: info, fields: keys }, function (err, csv) {
+                          if (err) {
+                            logger.serverLog(TAG,
+                                          `Error at exporting csv file ${JSON.stringify(err)}`)
+                          }
+                          res.status(200).json({
+                            status: 'success',
+                            payload: csv
+                          })
+                        })
+                      }
+                    })
+                  })
+                })
+              })
+            })
+          }
+        }
+      }
     //  let dir = path.resolve(__dirname, './my-file.csv')
     // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
     // csvdata.write(dir, usersPayload,
@@ -1406,22 +1489,25 @@ exports.uploadFile = function (req, res) {
     //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
     // }
     // fs.unlinkSync(dir)
-
-    var info = usersPayload
-    var keys = []
-    var val = info[0]
-
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      }
-      res.status(200).json({
-        status: 'success',
-        payload: csv
-      })
+  //   console.log('usersPa', usersPayload.length)
+  //   var info = usersPayload
+  //     var keys = []
+  //     var val = info[0]
+  //
+  //     for (var j in val) {
+  //       var subKey = j
+  //       keys.push(subKey)
+  //     }
+  //     json2csv({ data: info, fields: keys }, function (err, csv) {
+  //       if (err) {
+  //         logger.serverLog(TAG,
+  //                       `Error at exporting csv file ${JSON.stringify(err)}`)
+  //       }
+  //     res.status(200).json({
+  //       status: 'success',
+  //       payload: csv
+  //     })
+  //   })
     })
   })
 }

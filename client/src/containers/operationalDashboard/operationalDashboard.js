@@ -14,7 +14,7 @@ import Reports from './reports'
 //  import ListItem from './ListItem'
 import moment from 'moment'
 import { Link } from 'react-router'
-//  import Popover from 'react-simple-popover'
+import Popover from 'react-simple-popover'
 import {
   loadUsersList,
   loadDataObjectsCount,
@@ -507,11 +507,10 @@ class OperationalDashboard extends React.Component {
                               </span>
                             </div>
                           </li>
-                          <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                            <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                              <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
-                            </a>
-                            {
+                          <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
+                            <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
+                              <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='flaticon flaticon-more' /> </Link>
+                              {/*
                                   this.state.showDropDown &&
                                   <div className='m-dropdown__wrapper'>
                                     <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
@@ -561,33 +560,50 @@ class OperationalDashboard extends React.Component {
                                       </div>
                                     </div>
                                   </div>
-                                }
-                            {/* <Popover
+                                */}
+                              <Popover
                                 style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
                                 placement='bottom'
                                 target={this.target}
                                 show={this.state.openPopover}
                                 onHide={this.handleClose} >
-                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
-                                  <option value='' disabled>Filter by gender...</option>
-                                  <option value=''>All</option>
-                                  {
-                                    this.state.genders.map((gender, i) => (
-                                      <option value={gender.value}>{gender.label}</option>
-                                    ))
-                                  }
-                                </select>
+                                <div>
+                                  <label style={{color: '#716aca'}}>Filters:</label>
+                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
+                                    <option value='' disabled>Filter by gender...</option>
+                                    <option value=''>All</option>
+                                    {
+                                      this.state.genders.map((gender, i) => (
+                                        <option value={gender.value}>{gender.label}</option>
+                                      ))
+                                    }
+                                  </select>
+                                  <br />
+                                  <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale} style={{marginTop: '10px', width: '155px'}}>
+                                    <option key='' value='' disabled>Filter by Locale...</option>
+                                    <option key='ALL' value=''>ALL</option>
+                                    {
+                                      this.props.locales && this.props.locales.map((locale, i) => (
+                                        <option key={i} value={locale}>{locale}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
                                 <br />
-                                <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale}>
-                                  <option key='' value='' disabled>Filter by Locale...</option>
-                                  <option key='ALL' value=''>ALL</option>
-                                  {
-                                    this.props.locales && this.props.locales.map((locale, i) => (
-                                      <option key={i} value={locale}>{locale}</option>
-                                    ))
-                                  }
-                                </select>
-                              </Popover>*/}
+                                <div>
+                                  <label style={{color: '#716aca'}}>Actions:</label>
+                                  <br />
+                                  <i className='la la-download' />&nbsp;<a onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                    Download Data
+                                  </a>
+                                  <br />
+                                  <i className='la la-envelope-o' />&nbsp;<a onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                    Send Weekly Email
+                                  </a>
+                                  <br />
+                                </div>
+                              </Popover>
+                            </div>
                           </li>
                         </ul>
                       </div>
@@ -606,7 +622,7 @@ class OperationalDashboard extends React.Component {
                                         { this.state.usersData.map((user, i) => (
                                           <div className='m-widget5__item' key={i}>
                                             <div className='m-widget5__pic'>
-                                              <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/users.jpg'} style={{height: '100px'}} />
+                                              <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
                                             </div>
                                             <div className='m-widget5__content'>
                                               <h4 className='m-widget5__title'>
