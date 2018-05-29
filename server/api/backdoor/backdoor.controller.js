@@ -1,7 +1,6 @@
 /**
  * Created by sojharo on 25/09/2017.
  */
-
 const logger = require('../../components/logger')
 const TAG = 'api/backdoor/backdoor.controller.js'
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
@@ -70,7 +69,6 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      logger.serverLog(TAG, `usersData ${JSON.stringify(usersData)}`)
       // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
       //   let usersPayloadData = []
       //   for (let i = 0; i < usersData.length; i++) {
@@ -101,6 +99,44 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
+        let usersPayload = []
+        if (users.length > 0) {
+          users.forEach((user) => {
+            let pageIds = []
+            Pages.find({userId: user._id, connected: true}, (err, pages) => {
+              if (err) {
+              }
+              for (let i = 0; i < pages.length; i++) {
+                pageIds.push(pages[i]._id)
+              }
+              Subscribers.find({pageId: pageIds, isSubscribed: true, isEnabledByPage: true}, (err, subscribers) => {
+                if (err) {
+                }
+                usersPayload.push({
+                  _id: user._id,
+                  name: user.name,
+                  email: user.email,
+                  facebookInfo: user.facebookInfo ? user.facebookInfo : null,
+                  createdAt: user.createdAt,
+                  pages: pages.length,
+                  subscribers: subscribers.length
+                })
+                if (usersPayload.length === users.length) {
+                  let sorted = sortBy(usersPayload, 'createdAt')
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {users: sorted.reverse(), count: usersData.length}
+                  })
+                }
+              })
+            })
+          })
+        } else {
+          res.status(200).json({
+            status: 'success',
+            payload: {users: [], count: usersData.length}
+          })
+        }
         // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
         //   let usersPayload = []
         //   for (let i = 0; i < users.length; i++) {
@@ -124,10 +160,6 @@ exports.getAllUsers = function (req, res) {
         //   }
         //   users = usersPayload
         // }
-        res.status(200).json({
-          status: 'success',
-          payload: {users: users, count: usersData.length}
-        })
       })
     })
   } else {
@@ -198,10 +230,44 @@ exports.getAllUsers = function (req, res) {
         //   }
         //   users = usersPayload
         // }
-        res.status(200).json({
-          status: 'success',
-          payload: {users: users, count: usersData.length}
-        })
+        let usersPayload = []
+        if (users.length > 0) {
+          users.forEach((user) => {
+            let pageIds = []
+            Pages.find({userId: user._id, connected: true}, (err, pages) => {
+              if (err) {
+              }
+              for (let i = 0; i < pages.length; i++) {
+                pageIds.push(pages[i]._id)
+              }
+              Subscribers.find({pageId: pageIds, isSubscribed: true, isEnabledByPage: true}, (err, subscribers) => {
+                if (err) {
+                }
+                usersPayload.push({
+                  _id: user._id,
+                  name: user.name,
+                  email: user.email,
+                  facebookInfo: user.facebookInfo ? user.facebookInfo : null,
+                  createdAt: user.createdAt,
+                  pages: pages.length,
+                  subscribers: subscribers.length
+                })
+                if (usersPayload.length === users.length) {
+                  let sorted = sortBy(usersPayload, 'createdAt')
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {users: sorted.reverse(), count: usersData.length}
+                  })
+                }
+              })
+            })
+          })
+        } else {
+          res.status(200).json({
+            status: 'success',
+            payload: {users: [], count: usersData.length}
+          })
+        }
       })
     })
   }
@@ -1006,7 +1072,7 @@ exports.surveyDetails = function (req, res) {
 }
 
 exports.toppages = function (req, res) {
-  Pages.find({connected: true}, (err, pages) => {
+  Pages.find({connected: true}).populate('userId').exec((err, pages) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
@@ -1038,7 +1104,8 @@ exports.toppages = function (req, res) {
           connected: pages[i].connected,
           pageUserName: pages[i].pageUserName,
           likes: pages[i].likes,
-          subscribers: 0
+          subscribers: 0,
+          userName: pages[i].userId.name
         })
       }
       for (let i = 0; i < pagesPayload.length; i++) {
@@ -1305,16 +1372,98 @@ exports.uploadFile = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    let usersPayload = []
-    for (let i = 0; i < users.length; i++) {
-      usersPayload.push({
-        Name: users[i].name,
-        Gender: users[i].facebookInfo ? users[i].facebookInfo.gender : '',
-        Email: users[i].email,
-        Locale: users[i].facebookInfo ? users[i].facebookInfo.locale : '',
-        Timezone: users[i].facebookInfo ? users[i].facebookInfo.timezone : ''
-      })
-    }
+    Pages.find({}, (err, pages) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting pages ${JSON.stringify(err)}`
+        })
+      }
+
+      let usersPayload = []
+      for (let i = 0; i < pages.length; i++) {
+        for (let j = 0; j < users.length; j++) {
+          if (pages[i].userId.toString() === users[j]._id.toString()) {
+            Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: `Error in getting pages ${JSON.stringify(err)}`
+                })
+              }
+              Broadcasts.find({pageIds: pages[i].pageId}, (err, broadcasts) => {
+                if (err) {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: `Error in getting pages ${JSON.stringify(err)}`
+                  })
+                }
+                Surveys.find({pageIds: pages[i].pageId}, (err, surveys) => {
+                  if (err) {
+                    return res.status(404).json({
+                      status: 'failed',
+                      description: `Error in getting pages ${JSON.stringify(err)}`
+                    })
+                  }
+                  Polls.find({pageIds: pages[i].pageId}, (err, polls) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting pages ${JSON.stringify(err)}`
+                      })
+                    }
+                    LiveChat.find({sender_id: pages[i]._id}, (err, liveChat) => {
+                      if (err) {
+                        return res.status(404).json({
+                          status: 'failed',
+                          description: `Error in getting pages ${JSON.stringify(err)}`
+                        })
+                      }
+                      console.log('liveChat', liveChat)
+                      usersPayload.push({
+                        Page: pages[i].pageName,
+                        isConnected: pages[i].connected,
+                        Name: users[j].name,
+                        Gender: users[j].facebookInfo ? users[j].facebookInfo.gender : '',
+                        Email: users[j].email,
+                        Locale: users[j].facebookInfo ? users[j].facebookInfo.locale : '',
+                        CreatedAt: users[j].createdAt,
+                        Likes: pages[i].likes,
+                        Subscribers: subscribers.length,
+                        BroadcastsSent: broadcasts.length,
+                        SurveysSent: surveys.length,
+                        PollsSent: polls.length,
+                        lastMessaged: liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
+                      })
+                      if (pages.length === usersPayload.length) {
+                        console.log('usersPa', usersPayload.length)
+                        var info = usersPayload
+                        var keys = []
+                        var val = info[0]
+
+                        for (var k in val) {
+                          var subKey = k
+                          keys.push(subKey)
+                        }
+                        json2csv({ data: info, fields: keys }, function (err, csv) {
+                          if (err) {
+                            logger.serverLog(TAG,
+                                          `Error at exporting csv file ${JSON.stringify(err)}`)
+                          }
+                          res.status(200).json({
+                            status: 'success',
+                            payload: csv
+                          })
+                        })
+                      }
+                    })
+                  })
+                })
+              })
+            })
+          }
+        }
+      }
     //  let dir = path.resolve(__dirname, './my-file.csv')
     // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
     // csvdata.write(dir, usersPayload,
@@ -1340,22 +1489,25 @@ exports.uploadFile = function (req, res) {
     //     .json({status: 'failed', payload: 'Not Found ' + JSON.stringify(err)})
     // }
     // fs.unlinkSync(dir)
-
-    var info = usersPayload
-    var keys = []
-    var val = info[0]
-
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      }
-      res.status(200).json({
-        status: 'success',
-        payload: csv
-      })
+  //   console.log('usersPa', usersPayload.length)
+  //   var info = usersPayload
+  //     var keys = []
+  //     var val = info[0]
+  //
+  //     for (var j in val) {
+  //       var subKey = j
+  //       keys.push(subKey)
+  //     }
+  //     json2csv({ data: info, fields: keys }, function (err, csv) {
+  //       if (err) {
+  //         logger.serverLog(TAG,
+  //                       `Error at exporting csv file ${JSON.stringify(err)}`)
+  //       }
+  //     res.status(200).json({
+  //       status: 'success',
+  //       payload: csv
+  //     })
+  //   })
     })
   })
 }

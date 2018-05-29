@@ -168,6 +168,11 @@ class Dashboard extends React.Component {
         this.setChartData(nextprops.graphData)
       }
     }
+    if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+      browserHistory.push({
+        pathname: '/addPageWizard'
+      })
+    }
   }
   setChartData (graphData) {
     if (graphData.broadcastsgraphdata && graphData.broadcastsgraphdata.length > 0) {
@@ -350,8 +355,8 @@ class Dashboard extends React.Component {
               (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
             ? null
             : <div>
-              {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen && (this.props.pages && this.props.pages.length > 0) &&
-              <GettingStarted pages={this.props.pages} />}
+              {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
+              <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
           <div className='row'>

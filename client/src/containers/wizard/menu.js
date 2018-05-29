@@ -758,12 +758,12 @@ class Menu extends React.Component {
                                 </Link>
                               </div>
                               <div className='col-lg-6 m--align-right'>
-                                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
+                                <Link to='/finish' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
-                                    <span>Finish</span>&nbsp;&nbsp;
+                                    <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
                                   </span>
-                                </button>
+                                </Link>
                               </div>
                             </div>
                           </div>
