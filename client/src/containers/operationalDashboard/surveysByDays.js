@@ -227,13 +227,13 @@ class SurveysInfo extends React.Component {
                               <span style={{width: '120px'}}>Created At</span></th>
                             <th data-field='sent'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '120px'}}>Sent</span></th>
+                              <span style={{width: '50px'}}>Sent</span></th>
                             <th data-field='seen'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '120px'}}>Seen</span></th>
+                              <span style={{width: '50px'}}>Seen</span></th>
                             <th data-field='responded'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '120px'}}>Responded</span></th>
+                              <span style={{width: '100px'}}>Responded</span></th>
                             <th data-field='more'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{width: '120px'}} /></th>
@@ -263,15 +263,15 @@ class SurveysInfo extends React.Component {
                                 <td data-field='sent'
                                   className='m-datatable__cell'>
                                   <span
-                                    style={{width: '120px'}}>{survey.sent}</span></td>
+                                    style={{width: '50px'}}>{survey.sent}</span></td>
                                 <td data-field='seen'
                                   className='m-datatable__cell'>
                                   <span
-                                    style={{width: '120px'}}>{survey.seen}</span></td>
+                                    style={{width: '50px'}}>{survey.seen}</span></td>
                                 <td data-field='responded'
                                   className='m-datatable__cell'>
                                   <span
-                                    style={{width: '120px'}}>{survey.responded}</span></td>
+                                    style={{width: '100px'}}>{survey.responded}</span></td>
                                 <td data-field='more'
                                   className='m-datatable__cell'>
                                   <span

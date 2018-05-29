@@ -1105,7 +1105,7 @@ exports.toppages = function (req, res) {
           pageUserName: pages[i].pageUserName,
           likes: pages[i].likes,
           subscribers: 0,
-          userName: pages[i].userId.name
+          userName: pages[i].userId
         })
       }
       for (let i = 0; i < pagesPayload.length; i++) {
