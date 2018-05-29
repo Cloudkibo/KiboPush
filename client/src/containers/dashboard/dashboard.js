@@ -356,7 +356,7 @@ class Dashboard extends React.Component {
             ? null
             : <div>
               {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
-              <GettingStarted pages={this.props.pages} />*/}
+              <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
           <div className='row'>

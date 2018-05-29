@@ -104,10 +104,16 @@ class AddPage extends React.Component {
                           </div>
                         </div>
                         <div className='m-portlet__body'>
-                          <div className='form-group m-form__group row'>
-                            <label style={{fontWeight: 'normal'}}>This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
-                            To connect the pages click on connect buttons.</label>
-                          </div>
+                          {
+                            this.props.otherPages && this.props.otherPages.length > 0
+                            ? <div className='form-group m-form__group row'>
+                              <label style={{fontWeight: 'normal'}}>This page will help you connect your Facebook pages. You will not be able to use any of the features of KiboPush unless you connect any Facebook pages.
+                              To connect the pages click on connect buttons.</label>
+                            </div>
+                            : <div className='form-group m-form__group row'>
+                              <label style={{fontWeight: 'normal'}}>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</label>
+                            </div>
+                          }
                           <div className='tab-content'>
                             <div className='tab-pane active m-scrollable' role='tabpanel'>
                               <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -162,12 +168,20 @@ class AddPage extends React.Component {
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' />
                               <div className='col-lg-6 m--align-right'>
-                                <Link to='/inviteUsingLinkWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                { this.props.otherPages && this.props.otherPages.length > 0
+                               ? <Link to='/inviteUsingLinkWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                 <span>
+                                   <span>Next</span>&nbsp;&nbsp;
+                                   <i className='la la-arrow-right' />
+                                 </span>
+                               </Link>
+                                : <Link className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled>
                                   <span>
                                     <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
                                   </span>
                                 </Link>
+                               }
                               </div>
                             </div>
                           </div>
