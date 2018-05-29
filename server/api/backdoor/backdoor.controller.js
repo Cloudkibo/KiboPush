@@ -70,7 +70,6 @@ exports.getAllUsers = function (req, res) {
           description: `Error in getting users ${JSON.stringify(err)}`
         })
       }
-      logger.serverLog(TAG, `usersData ${JSON.stringify(usersData)}`)
       // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
       //   let usersPayloadData = []
       //   for (let i = 0; i < usersData.length; i++) {
@@ -101,6 +100,43 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
+        let usersPayload = []
+        if (users.length > 0) {
+          users.forEach((user) => {
+            let pageIds = []
+            Pages.find({userId: user._id, connected: true}, (err, pages) => {
+              if (err) {
+              }
+              for (let i = 0; i < pages.length; i++) {
+                pageIds.push(pages[i]._id)
+              }
+              Subscribers.find({pageId: pageIds, isSubscribed: true, isEnabledByPage: true}, (err, subscribers) => {
+                if (err) {
+                }
+                usersPayload.push({
+                  _id: user._id,
+                  name: user.name,
+                  email: user.email,
+                  facebookInfo: user.facebookInfo ? user.facebookInfo : null,
+                  createdAt: user.createdAt,
+                  pages: pages.length,
+                  subscribers: subscribers.length
+                })
+                if (usersPayload.length === users.length) {
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {users: usersPayload, count: usersData.length}
+                  })
+                }
+              })
+            })
+          })
+        } else {
+          res.status(200).json({
+            status: 'success',
+            payload: {users: [], count: usersData.length}
+          })
+        }
         // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
         //   let usersPayload = []
         //   for (let i = 0; i < users.length; i++) {
@@ -124,10 +160,6 @@ exports.getAllUsers = function (req, res) {
         //   }
         //   users = usersPayload
         // }
-        res.status(200).json({
-          status: 'success',
-          payload: {users: users, count: usersData.length}
-        })
       })
     })
   } else {
@@ -198,10 +230,43 @@ exports.getAllUsers = function (req, res) {
         //   }
         //   users = usersPayload
         // }
-        res.status(200).json({
-          status: 'success',
-          payload: {users: users, count: usersData.length}
-        })
+        let usersPayload = []
+        if (users.length > 0) {
+          users.forEach((user) => {
+            let pageIds = []
+            Pages.find({userId: user._id, connected: true}, (err, pages) => {
+              if (err) {
+              }
+              for (let i = 0; i < pages.length; i++) {
+                pageIds.push(pages[i]._id)
+              }
+              Subscribers.find({pageId: pageIds, isSubscribed: true, isEnabledByPage: true}, (err, subscribers) => {
+                if (err) {
+                }
+                usersPayload.push({
+                  _id: user._id,
+                  name: user.name,
+                  email: user.email,
+                  facebookInfo: user.facebookInfo ? user.facebookInfo : null,
+                  createdAt: user.createdAt,
+                  pages: pages.length,
+                  subscribers: subscribers.length
+                })
+                if (usersPayload.length === users.length) {
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {users: usersPayload, count: usersData.length}
+                  })
+                }
+              })
+            })
+          })
+        } else {
+          res.status(200).json({
+            status: 'success',
+            payload: {users: [], count: usersData.length}
+          })
+        }
       })
     })
   }
@@ -1006,7 +1071,7 @@ exports.surveyDetails = function (req, res) {
 }
 
 exports.toppages = function (req, res) {
-  Pages.find({connected: true}, (err, pages) => {
+  Pages.find({connected: true}).populate('userId').exec((err, pages) => {
     if (err) {
       return res.status(404).json({
         status: 'failed',
@@ -1038,7 +1103,8 @@ exports.toppages = function (req, res) {
           connected: pages[i].connected,
           pageUserName: pages[i].pageUserName,
           likes: pages[i].likes,
-          subscribers: 0
+          subscribers: 0,
+          userName: pages[i].userId.name
         })
       }
       for (let i = 0; i < pagesPayload.length; i++) {
