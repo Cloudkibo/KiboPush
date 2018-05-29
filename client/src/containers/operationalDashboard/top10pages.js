@@ -1,13 +1,14 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
-import { savePageInformation } from '../../redux/actions/backdoor.actions'
+import { savePageInformation, saveUserInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 class top10pages extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onPageClick = this.onPageClick.bind(this)
+    this.goToBroadcasts = this.goToBroadcasts.bind(this)
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
@@ -15,6 +16,14 @@ class top10pages extends React.Component {
       pathname: `/pageSubscribers`,
       state: {module: 'top10pages'}
     })
+  }
+  goToBroadcasts (user) {
+    this.props.saveUserInformation(user)
+    browserHistory.push({
+      pathname: `/userDetails`,
+      state: user
+    })
+    // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
   render () {
     console.log('pagesData', this.props.pagesData)
@@ -60,8 +69,8 @@ class top10pages extends React.Component {
                                       <span className='m-widget5__author'>
                                         User:&nbsp;&nbsp;
                                       </span>
-                                      <span className='m-widget5__info-author m--font-info'>
-                                        {page.userName}
+                                      <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(page.userName)} style={{cursor: 'pointer'}}>
+                                        {page.userName.name}
                                       </span>
                                     </div>
                                   </div>
@@ -171,7 +180,8 @@ class top10pages extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    savePageInformation: savePageInformation
+    savePageInformation: savePageInformation,
+    saveUserInformation: saveUserInformation
   }, dispatch)
 }
 export default connect(null, mapDispatchToProps)(top10pages)

@@ -18,7 +18,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
-import GettingStarted from './gettingStarted'
+//  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import Reports from '../operationalDashboard/reports'
@@ -356,7 +356,7 @@ class Dashboard extends React.Component {
             ? null
             : <div>
               {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
-              <GettingStarted pages={this.props.pages} />*/}
+              <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
           <div className='row'>
