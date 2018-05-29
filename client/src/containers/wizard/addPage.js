@@ -111,7 +111,7 @@ class AddPage extends React.Component {
                               To connect the pages click on connect buttons.</label>
                             </div>
                             : <div className='form-group m-form__group row'>
-                              <label style={{fontWeight: 'normal'}}>You have no pages on your Facebook to connect.</label>
+                              <label style={{fontWeight: 'normal'}}>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</label>
                             </div>
                           }
                           <div className='tab-content'>
