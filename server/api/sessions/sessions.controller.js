@@ -902,9 +902,47 @@ exports.show = function (req, res) {
           // todo limit this
           session.set('chats', JSON.parse(JSON.stringify(chats)),
             {strict: false})
-          return res.status(200).json({
-            status: 'success',
-            payload: session
+          LiveChat.aggregate([
+            {$match: {status: 'unseen', format: 'facebook'}},
+            {$sort: { datetime: 1 }}
+          ], (err2, gotUnreadCount) => {
+            if (err2) {
+              return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            for (let i = 0; i < gotUnreadCount.length; i++) {
+              if (session._id.toString() === gotUnreadCount[i]._id.toString()) {
+                session.set('unreadCount',
+                  gotUnreadCount[i].count,
+                  {strict: false})
+              }
+            }
+            LiveChat.aggregate([
+              {$sort: { datetime: 1 }},
+              {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
+            ], (err2, gotLastMessage) => {
+              if (err2) {
+                return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+              }
+              for (let a = 0; a < gotLastMessage.length; a++) {
+                if (session._id.toString() === gotLastMessage[a]._id.toString()) {
+                  session.set('lastPayload',
+                    gotLastMessage[a].payload,
+                    {strict: false})
+                  session.set('lastRepliedBy',
+                    gotLastMessage[a].replied_by,
+                    {strict: false})
+                  session.set('lastDateTime',
+                    gotLastMessage[a].datetime,
+                    {strict: false})
+                }
+              }
+              return res.status(200).json({
+                status: 'success',
+                payload: session
+              })
+            })
           })
         })
       } else {
