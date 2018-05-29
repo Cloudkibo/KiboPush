@@ -39,18 +39,7 @@ function rank (items, prop) {
 class Response extends React.Component {
   constructor (props, context) {
     super(props, context)
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    let addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
+    var addScript = document.createElement('script')
     addScript.setAttribute('src', '../../../js/Chart.min.js')
     document.body.appendChild(addScript)
 
