@@ -211,7 +211,7 @@ class PollsInfo extends React.Component {
                               <span style={{width: '50px'}}>Seen</span></th>
                             <th data-field='responded'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '50px'}}>Responded</span></th>
+                              <span style={{width: '100px'}}>Responded</span></th>
                             <th data-field='more'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{width: '120px'}} /></th>
@@ -249,7 +249,7 @@ class PollsInfo extends React.Component {
                                 <td data-field='responded'
                                   className='m-datatable__cell'>
                                   <span
-                                    style={{width: '50px'}}>{poll.responded}</span></td>
+                                    style={{width: '100px'}}>{poll.responded}</span></td>
                                 <td data-field='more'
                                   className='m-datatable__cell'>
                                   <span
