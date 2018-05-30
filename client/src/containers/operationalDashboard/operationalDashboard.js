@@ -778,8 +778,6 @@ class OperationalDashboard extends React.Component {
               <BroadcastsByDays />
               <SurveysByDays />
               <PollsByDays />
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.sendEmail}>Send Weekly Email
-              </button>
             </div>
           </div>
         </div>
