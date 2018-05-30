@@ -73,6 +73,13 @@ class Image extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
