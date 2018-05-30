@@ -121,7 +121,15 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+    let dataToSend = ''
     let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
+    let fileWriterStream = fs.createWriteStream(dir + '/' + body.fileurl.name)
+    fileReaderStream.pipe(fileWriterStream)
+    if (body.componentType === 'file') {
+      dataToSend = fileWriterStream
+    } else {
+      dataToSend = fileReaderStream
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -133,7 +141,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'payload': {}
         }
       }),
-      'filedata': fileReaderStream
+      'filedata': dataToSend
     }
     return payload
     // todo test this one. we are not removing as we need to keep it for live chat

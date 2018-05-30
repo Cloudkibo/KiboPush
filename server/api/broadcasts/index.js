@@ -52,4 +52,10 @@ router.get('/:id',
   auth.doesRolePermitsThisAction('broadcastPermission'),
   controller.show)
 
+router.post('/deleteFiles',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller.deleteFiles)
+
 module.exports = router
