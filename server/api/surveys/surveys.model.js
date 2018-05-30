@@ -20,11 +20,7 @@ const surveySchema = new Schema({
   segmentationSurvey: [String],
   isList: { type: Boolean, default: false },
   segmentationList: [String],
-  isresponded: { type: Number, default: 0 },
-  sent: {type: Number, default: 0}, // sent count
-  seen: {type: Number, default: 0},
-  subscriberSenderIds: [String],
-  pageIds: [String]
+  isresponded: { type: Number, default: 0 }
 })
 
 module.exports = mongoose.model('surveys', surveySchema)

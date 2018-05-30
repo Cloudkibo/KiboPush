@@ -366,7 +366,7 @@ class Survey extends React.Component {
                                 <td>{survey.description}</td>
                                 <td>{handleDate(survey.datetime)}</td>
                                 <td>{survey.sent}</td>
-                                <td>{survey.seen.length}</td>
+                                <td>{survey.seen}</td>
                                 <td>{survey.responses}</td>
                                 <td>
                                   <button className='btn btn-primary btn-sm'
