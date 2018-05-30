@@ -20,11 +20,7 @@ const pollSchema = new Schema({
   segmentationTags: [String],
   isList: { type: Boolean, default: false },
   segmentationList: [String],
-  segmentationPoll: [String],
-  sent: {type: Number, default: 0}, // sent count
-  seen: {type: Number, default: 0},
-  subscriberSenderIds: [String],
-  pageIds: [String]
+  segmentationPoll: [String]
 
 })
 

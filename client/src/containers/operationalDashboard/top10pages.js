@@ -32,7 +32,7 @@ class top10pages extends React.Component {
     for (let i = 0; i < this.props.pagesData.length; i += 2) {
       table.push(<div className='row'>
         <div className='col-md-6'>
-          <div className='m-widget5__item' key={i}>
+          <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
             <div className='m-widget5__pic' style={{verticalAlign: 'middle'}}>
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i].pagePic) ? this.props.pagesData[i].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
@@ -77,8 +77,8 @@ class top10pages extends React.Component {
           </div>
         </div>
         {this.props.pagesData[i + 1] &&
-        <div className='col-md-6'>
-          <div className='m-widget5__item' key={i}>
+        <div className='col-md-6' style={{borderLeft: '.07rem dashed #ebedf2'}}>
+          <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
             <div className='m-widget5__pic' style={{verticalAlign: 'middle'}}>
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i + 1].pagePic) ? this.props.pagesData[i + 1].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>

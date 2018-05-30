@@ -621,7 +621,7 @@ class OperationalDashboard extends React.Component {
                                       this.state.usersData && this.state.usersData.length > 0
                                       ? <div className='m-widget5'>
                                         { this.state.usersData.map((user, i) => (
-                                          <div className='m-widget5__item' key={i}>
+                                          <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
                                             <div className='m-widget5__pic'>
                                               <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
                                             </div>

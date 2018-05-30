@@ -148,14 +148,20 @@ exports.allSurveys = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-            if (err2) {
+          SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+            if (err) {
               return res.status(404)
-              .json({status: 'failed', description: 'responses count not found'})
+              .json({status: 'failed', description: 'Surveys not found'})
             }
-            res.status(200).json({
-              status: 'success',
-              payload: {surveys: surveys, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+            Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+              if (err2) {
+                return res.status(404)
+                .json({status: 'failed', description: 'responses count not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+              })
             })
           })
         })
@@ -186,14 +192,20 @@ exports.allSurveys = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-            if (err2) {
+          SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+            if (err) {
               return res.status(404)
-              .json({status: 'failed', description: 'responses count not found'})
+              .json({status: 'failed', description: 'Surveys not found'})
             }
-            res.status(200).json({
-              status: 'success',
-              payload: {surveys: surveys, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+            Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+              if (err2) {
+                return res.status(404)
+                .json({status: 'failed', description: 'responses count not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+              })
             })
           })
         })
@@ -224,14 +236,20 @@ exports.allSurveys = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-            if (err2) {
+          SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+            if (err) {
               return res.status(404)
-              .json({status: 'failed', description: 'responses count not found'})
+              .json({status: 'failed', description: 'Surveys not found'})
             }
-            res.status(200).json({
-              status: 'success',
-              payload: {surveys: surveys.reverse(), responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+            Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+              if (err2) {
+                return res.status(404)
+                .json({status: 'failed', description: 'responses count not found'})
+              }
+              res.status(200).json({
+                status: 'success',
+                payload: {surveys: surveys.reverse(), surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+              })
             })
           })
         })
@@ -593,12 +611,7 @@ exports.send = function (req, res) {
                     description: `Internal Server Error ${JSON.stringify(err)}`
                   })
                 }
-                let pageIds = survey.pageIds
-                let subscriberSenderIds = survey.subscriberSenderIds
                 for (let z = 0; z < pages.length; z++) {
-                  if (exists(pageIds, pages[z].pageId) === false) {
-                    pageIds.push(pages[z].pageId)
-                  }
                   if (req.body.isList === true) {
                     let ListFindCriteria = {}
                     ListFindCriteria = _.merge(ListFindCriteria,
@@ -651,7 +664,6 @@ exports.send = function (req, res) {
                             utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
                               for (let j = 0; j < subscribers.length; j++) {
-                                subscriberSenderIds.push(subscribers[j].senderId)
                                 const messageData = {
                                   attachment: {
                                     type: 'template',
@@ -667,15 +679,6 @@ exports.send = function (req, res) {
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                   message: messageData
                                 }
-                                if (z === pages.length - 1 && j === subscribers.length - 1) {
-                                  Surveys.update({_id: req.body._id},
-                                    {sent: subscriberSenderIds.length, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds},
-                                    {multi: true}, (err, updated) => {
-                                      if (err) {
-                                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                      }
-                                    })
-                                }
                                 needle.post(
                                   `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                   data, (err, resp) => {
@@ -685,24 +688,24 @@ exports.send = function (req, res) {
                                         description: JSON.stringify(err)
                                       })
                                     }
-                                    // let surveyPage = new SurveyPage({
-                                    //   pageId: pages[z].pageId,
-                                    //   userId: req.user._id,
-                                    //   subscriberId: subscribers[j].senderId,
-                                    //   surveyId: req.body._id,
-                                    //   seen: false,
-                                    //   companyId: companyUser.companyId
-                                    // })
-                                    //
-                                    // surveyPage.save((err2) => {
-                                    //   if (err2) {
-                                    //     logger.serverLog(TAG, {
-                                    //       status: 'failed',
-                                    //       description: 'PollBroadcast create failed',
-                                    //       err2
-                                    //     })
-                                    //   }
-                                    // })
+                                    let surveyPage = new SurveyPage({
+                                      pageId: pages[z].pageId,
+                                      userId: req.user._id,
+                                      subscriberId: subscribers[j].senderId,
+                                      surveyId: req.body._id,
+                                      seen: false,
+                                      companyId: companyUser.companyId
+                                    })
+
+                                    surveyPage.save((err2) => {
+                                      if (err2) {
+                                        logger.serverLog(TAG, {
+                                          status: 'failed',
+                                          description: 'PollBroadcast create failed',
+                                          err2
+                                        })
+                                      }
+                                    })
                                   })
                               }
                             })
@@ -751,7 +754,6 @@ exports.send = function (req, res) {
                           utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                             subscribers = repliedSubscribers
                             for (let j = 0; j < subscribers.length; j++) {
-                              subscriberSenderIds.push(subscribers[j].senderId)
                               const messageData = {
                                 attachment: {
                                   type: 'template',
@@ -767,16 +769,6 @@ exports.send = function (req, res) {
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
-
-                              if (z === pages.length - 1 && j === subscribers.length - 1) {
-                                Surveys.update({_id: req.body._id},
-                                  {sent: subscriberSenderIds.length, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds},
-                                  {multi: true}, (err, updated) => {
-                                    if (err) {
-                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                    }
-                                  })
-                              }
                               needle.post(
                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                 data, (err, resp) => {
@@ -786,23 +778,23 @@ exports.send = function (req, res) {
                                       description: JSON.stringify(err)
                                     })
                                   }
-                                  // let surveyPage = new SurveyPage({
-                                  //   pageId: pages[z].pageId,
-                                  //   userId: req.user._id,
-                                  //   subscriberId: subscribers[j].senderId,
-                                  //   surveyId: req.body._id,
-                                  //   seen: false,
-                                  //   companyId: companyUser.companyId
-                                  // })
-                                  //
-                                  // surveyPage.save((err2) => {
-                                  //   if (err2) {
-                                  //     logger.serverLog(TAG, {
-                                  //       status: 'failed',
-                                  //       description: 'PollBroadcast create failed',
-                                  //       err2
-                                  //     })
-                                  //   }
+                                  let surveyPage = new SurveyPage({
+                                    pageId: pages[z].pageId,
+                                    userId: req.user._id,
+                                    subscriberId: subscribers[j].senderId,
+                                    surveyId: req.body._id,
+                                    seen: false,
+                                    companyId: companyUser.companyId
+                                  })
+
+                                  surveyPage.save((err2) => {
+                                    if (err2) {
+                                      logger.serverLog(TAG, {
+                                        status: 'failed',
+                                        description: 'PollBroadcast create failed',
+                                        err2
+                                      })
+                                    }
                                     // not using now
                                     // Sessions.findOne({
                                     //   subscriber_id: subscribers[j]._id,
@@ -839,7 +831,7 @@ exports.send = function (req, res) {
                                     //       'Chat message saved for surveys sent')
                                     //   })
                                     // })
-                                  // })
+                                  })
                                 })
                             }
                           })
@@ -1026,10 +1018,7 @@ exports.sendSurvey = function (req, res) {
                       description: `Internal Server Error ${JSON.stringify(err)}`
                     })
                   }
-                  let pageIds = []
-                  let subscriberSenderIds = []
                   for (let z = 0; z < pages.length; z++) {
-                    pageIds.push(pages[z].pageId)
                     if (req.body.isList === true) {
                       let ListFindCriteria = {}
                       ListFindCriteria = _.merge(ListFindCriteria,
@@ -1081,7 +1070,6 @@ exports.sendSurvey = function (req, res) {
                               utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                                 subscribers = repliedSubscribers
                                 for (let j = 0; j < subscribers.length; j++) {
-                                  subscriberSenderIds.push(subscribers[j].senderId)
                                   const messageData = {
                                     attachment: {
                                       type: 'template',
@@ -1097,15 +1085,6 @@ exports.sendSurvey = function (req, res) {
                                     recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                     message: messageData
                                   }
-                                  if (pageIds.length === pages.length && j === subscribers.length - 1) {
-                                    Surveys.update({_id: survey._id},
-                                      {sent: subscriberSenderIds.length, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds},
-                                      {multi: true}, (err, updated) => {
-                                        if (err) {
-                                          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                        }
-                                      })
-                                  }
                                   needle.post(
                                     `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                     data, (err, resp) => {
@@ -1115,24 +1094,24 @@ exports.sendSurvey = function (req, res) {
                                           description: JSON.stringify(err)
                                         })
                                       }
-                                      // let surveyPage = new SurveyPage({
-                                      //   pageId: pages[z].pageId,
-                                      //   userId: req.user._id,
-                                      //   subscriberId: subscribers[j].senderId,
-                                      //   surveyId: survey._id,
-                                      //   seen: false,
-                                      //   companyId: companyUser.companyId
-                                      // })
-                                      //
-                                      // surveyPage.save((err2) => {
-                                      //   if (err2) {
-                                      //     logger.serverLog(TAG, {
-                                      //       status: 'failed',
-                                      //       description: 'PollBroadcast create failed',
-                                      //       err2
-                                      //     })
-                                      //   }
-                                      // })
+                                      let surveyPage = new SurveyPage({
+                                        pageId: pages[z].pageId,
+                                        userId: req.user._id,
+                                        subscriberId: subscribers[j].senderId,
+                                        surveyId: survey._id,
+                                        seen: false,
+                                        companyId: companyUser.companyId
+                                      })
+
+                                      surveyPage.save((err2) => {
+                                        if (err2) {
+                                          logger.serverLog(TAG, {
+                                            status: 'failed',
+                                            description: 'PollBroadcast create failed',
+                                            err2
+                                          })
+                                        }
+                                      })
                                     })
                                 }
                               })
@@ -1181,7 +1160,6 @@ exports.sendSurvey = function (req, res) {
                             utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
                               for (let j = 0; j < subscribers.length; j++) {
-                                subscriberSenderIds.push(subscribers[j].senderId)
                                 const messageData = {
                                   attachment: {
                                     type: 'template',
@@ -1197,15 +1175,6 @@ exports.sendSurvey = function (req, res) {
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                   message: messageData
                                 }
-                                if (pageIds.length === pages.length && j === subscribers.length - 1) {
-                                  Surveys.update({_id: survey._id},
-                                    {sent: subscriberSenderIds.length, pageIds: pageIds, subscriberSenderIds: subscriberSenderIds},
-                                    {multi: true}, (err, updated) => {
-                                      if (err) {
-                                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                      }
-                                    })
-                                }
                                 needle.post(
                                   `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                   data, (err, resp) => {
@@ -1215,24 +1184,24 @@ exports.sendSurvey = function (req, res) {
                                         description: JSON.stringify(err)
                                       })
                                     }
-                                    // let surveyPage = new SurveyPage({
-                                    //   pageId: pages[z].pageId,
-                                    //   userId: req.user._id,
-                                    //   subscriberId: subscribers[j].senderId,
-                                    //   surveyId: survey._id,
-                                    //   seen: false,
-                                    //   companyId: companyUser.companyId
-                                    // })
-                                    //
-                                    // surveyPage.save((err2) => {
-                                    //   if (err2) {
-                                    //     logger.serverLog(TAG, {
-                                    //       status: 'failed',
-                                    //       description: 'PollBroadcast create failed',
-                                    //       err2
-                                    //     })
-                                    //   }
-                                    // })
+                                    let surveyPage = new SurveyPage({
+                                      pageId: pages[z].pageId,
+                                      userId: req.user._id,
+                                      subscriberId: subscribers[j].senderId,
+                                      surveyId: survey._id,
+                                      seen: false,
+                                      companyId: companyUser.companyId
+                                    })
+
+                                    surveyPage.save((err2) => {
+                                      if (err2) {
+                                        logger.serverLog(TAG, {
+                                          status: 'failed',
+                                          description: 'PollBroadcast create failed',
+                                          err2
+                                        })
+                                      }
+                                    })
                                   })
                               }
                             })
