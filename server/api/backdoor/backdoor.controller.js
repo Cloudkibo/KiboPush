@@ -3677,6 +3677,22 @@ exports.deletePages = function (req, res) {
       if (!pages[i].userId) {
         console.log(pages[i]._id)
         logger.serverLog(TAG, `usersData after ${JSON.stringify(pages[i]._id)}`)
+        Pages.findById(pages[i]._id, (err, poll) => {
+          if (err) {
+            return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+          }
+          if (!poll) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Record not found'})
+          }
+          poll.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
       }
     }
     res.status(200).json({
