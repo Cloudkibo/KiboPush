@@ -492,6 +492,7 @@ exports.upload = function (req, res) {
         status: 'success',
         payload: {
           id: serverPath,
+          name: req.files.file.name,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         }
       })
@@ -509,6 +510,21 @@ exports.download = function (req, res) {
     res.status(404)
       .json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
   }
+}
+
+exports.deleteFiles = function (req, res) {
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+  req.body.forEach((file, i) => {
+    fs.unlink(dir + '/' + file, (err) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `delete file, err = ${JSON.stringify(err)}`)
+      } else if (i === req.body.length - 1) {
+        res.status(404)
+          .json({status: 'success', payload: 'Files deleted successfully!'})
+      }
+    })
+  })
 }
 
 exports.delete = function (req, res) {
