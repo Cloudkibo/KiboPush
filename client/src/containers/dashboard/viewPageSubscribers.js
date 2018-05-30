@@ -2,10 +2,11 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import ReactPaginate from 'react-paginate'
-import { loadPageSubscribersList, allLocales } from '../../redux/actions/backdoor.actions'
+import { loadPageSubscribersList, allLocales } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
+import { Link } from 'react-router'
 
 class ViewPageSubscribers extends React.Component {
   constructor (props, context) {
@@ -36,7 +37,6 @@ class ViewPageSubscribers extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSubscribers = this.searchSubscribers.bind(this)
-    this.backToUserDetails = this.backToUserDetails.bind(this)
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
   }
@@ -100,14 +100,6 @@ class ViewPageSubscribers extends React.Component {
     // }
     // this.displayData(0, filtered)
     // this.setState({ totalLength: this.state.pageSubscribersData.length })
-  }
-
-  backToUserDetails () {
-    const user = this.props.currentUser
-    this.props.history.push({
-      pathname: `/userDetails`,
-      state: user
-    })
   }
 
   onFilterByGender (data) {
@@ -379,6 +371,10 @@ class ViewPageSubscribers extends React.Component {
                   </div>
                 </div>
               </div>
+              <div style={{'overflow': 'auto'}}>
+                <Link className='btn btn-primary btn-sm' to='/dashboard' style={{ float: 'right', marginRight: '5px' }}>Back
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -390,9 +386,9 @@ class ViewPageSubscribers extends React.Component {
 function mapStateToProps (state) {
   console.log('in mapStateToProps for pageSubscribers', state)
   return {
-    pageSubscribers: (state.backdoorInfo.pageSubscribers),
-    count: (state.backdoorInfo.subscribersCount),
-    locales: (state.backdoorInfo.locales),
+    pageSubscribers: (state.dashboardInfo.pageSubscribers),
+    count: (state.dashboardInfo.subscribersCount),
+    locales: (state.dashboardInfo.locales),
     currentUser: (state.backdoorInfo.currentUser),
     currentPage: (state.backdoorInfo.currentPage)
   }

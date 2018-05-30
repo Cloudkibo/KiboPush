@@ -7,7 +7,13 @@ export function updateDashboard (data) {
     data
   }
 }
-
+export function updateAllLocales (data) {
+  console.log('Data Fetched From Subscribers', data)
+  return {
+    type: ActionTypes.LOAD_LOCALES_LIST_DASHBOARD,
+    data
+  }
+}
 export function updatePageSubscribersList (data) {
   return {
     type: ActionTypes.VIEW_PAGE_SUBSCRIBERS_LIST_DASHBOARD,
@@ -72,5 +78,11 @@ export function loadPageSubscribersList (id, data) {
         console.log('response from loadPageSubscribersList', res)
         dispatch(updatePageSubscribersList(res.payload))
       })
+  }
+}
+
+export function allLocales () {
+  return (dispatch) => {
+    callApi('subscribers/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
