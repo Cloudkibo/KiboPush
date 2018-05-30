@@ -71,6 +71,12 @@ class Card extends React.Component {
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
+    if (file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+      if (this.props.handleCard) {
+        this.props.handleCard({error: 'invalid image'})
+      }
+      return
+    }
     var reader = new FileReader()
     reader.readAsDataURL(file)
 
