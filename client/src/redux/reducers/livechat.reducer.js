@@ -33,20 +33,20 @@ export function liveChat (state = initialState, action) {
 
     case ActionTypes.SHOW_CLOSE_CHAT_SESSIONS:
       return Object.assign({}, state, {
-        closeSessions: action.closeSessions,
+        closeSessions: [...state.closeSessions, ...action.closeSessions],
         closeCount: action.count
       })
 
     case ActionTypes.SHOW_CLOSE_CHAT_SESSIONS_OVERWRITE:
       return Object.assign({}, state, {
-        closeSessions: [...state.closeSessions, ...action.closeSessions],
+        closeSessions: action.closeSessions,
         count: action.count
       })
 
     case ActionTypes.UPDATE_CHAT_SESSIONS:
       return Object.assign({}, state, {
-        sessions: action.sessions,
-        changedStatus: ''
+        openSessions: action.openSessions,
+        closeSessions: action.closeSessions
       })
 
     case ActionTypes.SHOW_USER_CHAT:

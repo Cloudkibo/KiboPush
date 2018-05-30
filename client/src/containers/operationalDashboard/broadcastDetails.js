@@ -3,7 +3,6 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import { Link } from 'react-router'
-import ReactPaginate from 'react-paginate'
 
 class ViewBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -92,7 +91,7 @@ class ViewBroadcastTemplate extends React.Component {
                   <h3>Title: {this.props.location.state.title}</h3>
                   <Link to='/operationalDashboard' style={{lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
                   <br /><br />
-                  {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
+                  { /* this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
                     <div className='row'>
 
                       <div
@@ -228,7 +227,7 @@ class ViewBroadcastTemplate extends React.Component {
                         </div>
                       </div>
                     </div>
-                    }
+                    */ }
                 </div>
                 <div className='col-xl-4'>
                   <ViewMessage payload={this.props.location.state.payload} />

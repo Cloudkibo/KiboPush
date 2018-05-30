@@ -174,7 +174,7 @@ class Settings extends React.Component {
   initializeSwitchNGP (state) {
     var self = this
     /* eslint-disable */
-    $("[name='switch']").bootstrapSwitch({
+    $("[name='switch-NGP']").bootstrapSwitch({
       /* eslint-enable */
       onText: 'Enabled',
       offText: 'Disabled',
@@ -182,7 +182,7 @@ class Settings extends React.Component {
       state: state
     })
     /* eslint-disable */
-    $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+    $('input[name="switch-NGP"]').on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
       self.setState({ngpButtonState: state})
       if (state === true) {
@@ -522,7 +522,7 @@ class Settings extends React.Component {
                               <div className='col-lg-4 col-md-4 col-sm-4'>
                                 <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
                                   <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
-                                    <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
+                                    <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
                                   </div>
                                 </div>
                               </div>

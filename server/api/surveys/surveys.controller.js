@@ -651,9 +651,7 @@ exports.send = function (req, res) {
                             utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
                               for (let j = 0; j < subscribers.length; j++) {
-                                if (exists(subscriberSenderIds, subscribers[j].senderId) === false) {
-                                  subscriberSenderIds.push(subscribers[j].senderId)
-                                }
+                                subscriberSenderIds.push(subscribers[j].senderId)
                                 const messageData = {
                                   attachment: {
                                     type: 'template',
@@ -753,9 +751,7 @@ exports.send = function (req, res) {
                           utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                             subscribers = repliedSubscribers
                             for (let j = 0; j < subscribers.length; j++) {
-                              if (exists(subscriberSenderIds, subscribers[j].senderId) === false) {
-                                subscriberSenderIds.push(subscribers[j].senderId)
-                              }
+                              subscriberSenderIds.push(subscribers[j].senderId)
                               const messageData = {
                                 attachment: {
                                   type: 'template',

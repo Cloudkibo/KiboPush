@@ -65,17 +65,6 @@ class Card extends React.Component {
     }
   }
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     this.updateCardDetails(this.props)
   }
 
@@ -226,8 +215,8 @@ class Card extends React.Component {
 
           </div>
           <div>
-            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
+            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
+            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {

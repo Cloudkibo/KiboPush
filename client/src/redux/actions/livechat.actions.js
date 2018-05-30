@@ -53,16 +53,35 @@ export function showCloseChatSessions (sessions, firstPage) {
     count: sessions.count
   }
 }
-export function updateChatSessions (session, sessions) {
-  var temp = sessions
-  for (var i = 0; i < temp.length; i++) {
-    if (temp[i]._id === session._id) {
-      temp[i] = session
+export function updateChatSessions (session, sessions, status) {
+  let openSessions = sessions.openSessions
+  let closeSessions = sessions.closeSessions
+  if (status === 'resolved') {
+    closeSessions.push(session)
+    for (let i = 0; i < openSessions.length; i++) {
+      if (session._id === openSessions[i]._id) {
+        openSessions.splice(i, 1)
+      }
     }
+    openSessions = openSessions.sort(function (a, b) {
+      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    })
+  } else {
+    openSessions.push(session)
+    for (let i = 0; i < closeSessions.length; i++) {
+      if (session._id === closeSessions[i]._id) {
+        closeSessions.splice(i, 1)
+      }
+    }
+    closeSessions = closeSessions.sort(function (a, b) {
+      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    })
   }
+
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
-    sessions
+    openSessions,
+    closeSessions
   }
 }
 
@@ -168,10 +187,10 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchSingleSession (sessionid, sessions) {
+export function fetchSingleSession (sessionid, sessions, status) {
   return (dispatch) => {
     callApi(`sessions/${sessionid}`)
-      .then(res => dispatch(updateChatSessions(res.payload, sessions)))
+      .then(res => dispatch(updateChatSessions(res.payload, sessions, status)))
   }
 }
 
@@ -246,10 +265,11 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data, handleActiveSession) {
+export function changeStatus (data, sessions, handleActiveSession) {
+  console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      dispatch(fetchSessions())
+      // dispatch(fetchSingleSession(data._id, sessions, data.status))
       handleActiveSession()
     })
   }

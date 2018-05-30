@@ -8,7 +8,6 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { loadPollDetails } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 
 class ViewPollDetail extends React.Component {
   constructor (props, context) {
@@ -267,7 +266,7 @@ class ViewPollDetail extends React.Component {
                 </div>
               </div>
               <br />
-              {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
+              { /* this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
               <div className='row'>
 
                 <div
@@ -420,7 +419,7 @@ class ViewPollDetail extends React.Component {
                   </div>
                 </div>
               </div>
-              }
+              */ }
               <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                 <button className='btn btn-primary' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
                 </button>
