@@ -11,6 +11,7 @@ import ForgotPassword from './containers/login/resetPassword'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
+import ViewPageSubscribers from './containers/dashboard/viewPageSubscribers'
 import MainMenu from './containers/menu/menu'
 import CreateMessage from './containers/menu/CreateMessage'
 import GrowthTools from './containers/GrowthTools/growthTools'
@@ -236,7 +237,7 @@ const routes = (
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
-
+    <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
   </Route>
 
 )

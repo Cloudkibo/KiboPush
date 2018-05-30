@@ -4,8 +4,13 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'r
 class Reports extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
-
+  onKeyDown (e) {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+    }
+  }
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
@@ -28,7 +33,7 @@ class Reports extends React.Component {
                           Show records for last:&nbsp;&nbsp;
                         </label>
                         <div>
-                          <input id='example-text-input' type='number' min='0' step='1' value={this.props.selectedDays} className='form-control' onChange={this.props.onDaysChange} />
+                          <input id='example-text-input' type='number' min='0' step='1' value={this.props.selectedDays} className='form-control' onKeyDown={this.onKeyDown} onChange={this.props.onDaysChange} />
                         </div>
                         <label htmlFor='example-text-input' className='col-form-label'>
                         &nbsp;&nbsp;days
