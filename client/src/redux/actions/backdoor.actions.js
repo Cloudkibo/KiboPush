@@ -360,6 +360,7 @@ export function downloadFile () {
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
     .then(function (data) {
+      console.log('response ftom downloadFile', data.status)
       fileDownload(data.payload, 'users.csv')
     })
   }
