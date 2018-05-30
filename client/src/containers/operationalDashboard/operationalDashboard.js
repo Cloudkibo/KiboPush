@@ -355,6 +355,7 @@ class OperationalDashboard extends React.Component {
   }
 
   getFile () {
+    console.log('getFile')
     this.props.downloadFile()
   }
 

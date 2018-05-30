@@ -1419,7 +1419,6 @@ exports.uploadFile = function (req, res) {
                           description: `Error in getting pages ${JSON.stringify(err)}`
                         })
                       }
-                      console.log('liveChat', liveChat)
                       usersPayload.push({
                         Page: pages[i].pageName,
                         isConnected: pages[i].connected,
@@ -1436,7 +1435,6 @@ exports.uploadFile = function (req, res) {
                         lastMessaged: liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                       })
                       if (pages.length === usersPayload.length) {
-                        console.log('usersPa', usersPayload.length)
                         var info = usersPayload
                         var keys = []
                         var val = info[0]
