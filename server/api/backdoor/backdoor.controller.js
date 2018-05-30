@@ -3676,6 +3676,7 @@ exports.deletePages = function (req, res) {
     for (let i = 0; i < pages.length; i++) {
       if (!pages[i].userId) {
         console.log(pages[i]._id)
+        logger.serverLog(TAG, `usersData after ${JSON.stringify(pages[i]._id)}`)
       }
     }
     res.status(200).json({
