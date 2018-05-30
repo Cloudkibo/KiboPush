@@ -1434,10 +1434,10 @@ exports.uploadFile = function (req, res) {
                         Locale: users[j].facebookInfo ? users[j].facebookInfo.locale : '',
                         CreatedAt: users[j].createdAt,
                         Likes: pages[i].likes,
-                        Subscribers: subscribers.length,
-                        Broadcasts: broadcasts.length,
-                        Surveys: surveys.length,
-                        Polls: polls.length,
+                        Subscribers: subscribers && subscribers.length > 0 ? subscribers.length : 0,
+                        Broadcasts: broadcasts && broadcasts.length > 0 ? broadcasts.length : 0,
+                        Surveys: surveys && surveys.length > 0 ? surveys.length : 0,
+                        Polls: polls && polls.length > 0 ? polls.length : 0,
                         lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                       })
                       if (pages.length === usersPayload.length) {
@@ -3662,6 +3662,24 @@ exports.allLocales = function (req, res) {
     res.status(200).json({
       status: 'success',
       payload: locales
+    })
+  })
+}
+exports.deletePages = function (req, res) {
+  Pages.find({}).populate('userId').exec((err, pages) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    for (let i = 0; i < pages.length; i++) {
+      if (!pages[i].userId) {
+        console.log(pages[i]._id)
+      }
+    }
+    res.status(200).json({
+      status: 'success'
     })
   })
 }
