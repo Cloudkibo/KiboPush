@@ -10,6 +10,7 @@ import Card from './Card'
 import Slider from 'react-slick'
 import RightArrow from './RightArrow'
 import LeftArrow from './LeftArrow'
+import AlertContainer from 'react-alert'
 
 class Gallery extends React.Component {
   constructor (props, context) {
@@ -95,6 +96,7 @@ class Gallery extends React.Component {
     }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

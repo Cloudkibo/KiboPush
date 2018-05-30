@@ -16,6 +16,7 @@ import {
 import Halogen from 'halogen'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -74,6 +75,7 @@ class Image extends React.Component {
   render () {
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
