@@ -51,10 +51,10 @@ router.get('/graphData/:days',
   auth.doesRolePermitsThisAction('dashboardPermission'),
   controller.graphData)
 
-router.get('/getAllSubscribers/:id',
+router.post('/getAllSubscribers/:pageid',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('dashboard'),
   auth.doesRolePermitsThisAction('dashboardPermission'),
-  controller.graphData)
+  controller.getAllSubscribers)
 
 module.exports = router

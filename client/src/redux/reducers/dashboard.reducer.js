@@ -48,6 +48,10 @@ export function dashboardInfo (state = initialState, action) {
         //  locales: action.locale,
         subscribersCount: action.count
       })
+    case ActionTypes.LOAD_LOCALES_LIST_DASHBOARD:
+      return Object.assign({}, state, {
+        locales: action.data
+      })
     default:
       return state
   }
