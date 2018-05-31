@@ -105,7 +105,9 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
     logger.serverLog(TAG, `Inside Image ${JSON.stringify(body.componentType)}`)
+    logger.serverLog(TAG, `Body File Url ${JSON.stringify(body.fileurl.id)}`)
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+    logger.serverLog(TAG, `Dir ${JSON.stringify(dir)}`)
     let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
     logger.serverLog(TAG, `fileReaderStream${JSON.stringify(fileReaderStream)}`)
     payload = {
