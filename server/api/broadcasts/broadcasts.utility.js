@@ -74,7 +74,7 @@ function validateInput (body) {
 
 function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
   let payload = {}
-  
+  logger.serverLog(TAG, `body ${JSON.stringify(body)}`)
   if (body.componentType === 'text' && !body.buttons) {
     payload = {
       'recipient': JSON.stringify({
@@ -104,6 +104,7 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
       body.componentType) > -1) {
+    logger.serverLog(TAG, `Inside Image ${JSON.stringify(body.componentType)}`)
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
     let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
     payload = {
@@ -118,6 +119,7 @@ function prepareSendAPIPayload (subscriberId, body, isForLiveChat) {
       }),
       'filedata': fileReaderStream
     }
+    logger.serverLog(TAG, `payload ${JSON.stringify(payload)}`)
     return payload
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
