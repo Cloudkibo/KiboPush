@@ -31,11 +31,30 @@ router.get('/stats',
   auth.doesPlanPermitsThisAction('dashboard'),
   auth.doesRolePermitsThisAction('dashboardPermission'),
   controller.stats)
+
+router.get('/toppages',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('dashboard'),
+  auth.doesRolePermitsThisAction('dashboardPermission'),
+  controller.toppages)
+
 // todo remove this, after discuss - this id will be userid, this is bad code
 router.get('/:id',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('dashboard'),
   auth.doesRolePermitsThisAction('dashboardPermission'),
   controller.index)
+
+router.get('/graphData/:days',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('dashboard'),
+  auth.doesRolePermitsThisAction('dashboardPermission'),
+  controller.graphData)
+
+router.post('/getAllSubscribers/:pageid',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('dashboard'),
+  auth.doesRolePermitsThisAction('dashboardPermission'),
+  controller.getAllSubscribers)
 
 module.exports = router

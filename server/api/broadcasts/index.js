@@ -10,7 +10,13 @@ const auth = require('../../auth/auth.service')
 const multiparty = require('connect-multiparty')
 const multipartyMiddleware = multiparty()
 
-router.get('/',
+router.get('/all/:days',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller.indexx)
+
+router.post('/allBroadcasts',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),
@@ -45,5 +51,11 @@ router.get('/:id',
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),
   controller.show)
+
+router.post('/deleteFiles',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller2.deleteFiles)
 
 module.exports = router

@@ -5,12 +5,18 @@
 // eslint-disable-next-line no-unused-vars
 const logger = require('../../components/logger')
 // eslint-disable-next-line no-unused-vars
-const TAG = 'api/api_settings/api_settings.controller.js'
+const TAG = 'api/api_settings/api_ngp.controller.js'
 
 const ApiSettings = require('./api_settings.model')
 const crypto = require('crypto')
+const _ = require('lodash')
 
 exports.index = function (req, res) {
+  if (!_.has(req.body, 'company_id')) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing. company_id is required'})
+  }
+
   ApiSettings.findOne({company_id: req.body.company_id}, (err, settings) => {
     if (err) {
       return res.status(500)
@@ -31,6 +37,11 @@ exports.index = function (req, res) {
 }
 
 exports.enable = function (req, res) {
+  if (!_.has(req.body, 'company_id')) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing. company_id is required'})
+  }
+
   ApiSettings.findOne({company_id: req.body.company_id}, (err, settings) => {
     if (err) {
       return res.status(500)
@@ -72,6 +83,11 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
+  if (!_.has(req.body, 'company_id')) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing. company_id is required'})
+  }
+
   ApiSettings.findOne({company_id: req.body.company_id}, (err, settings) => {
     if (err) {
       return res.status(500)
@@ -99,6 +115,11 @@ exports.disable = function (req, res) {
 }
 
 exports.reset = function (req, res) {
+  if (!_.has(req.body, 'company_id')) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Parameters are missing. company_id is required'})
+  }
+
   ApiSettings.findOne({company_id: req.body.company_id}, (err, settings) => {
     if (err) {
       return res.status(500)

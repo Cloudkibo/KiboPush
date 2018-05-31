@@ -17,6 +17,13 @@ router.post('/upload',
   multipartyMiddleware,
   controller.upload)
 
+router.post('/sendMessage',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('customer_matching'),
+  auth.doesRolePermitsThisAction('customerMatchingPermission'),
+  multipartyMiddleware,
+  controller.sendMessage)
+
 router.post('/sendNumbers',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('customer_matching'),

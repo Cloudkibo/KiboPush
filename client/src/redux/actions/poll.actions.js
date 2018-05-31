@@ -19,8 +19,9 @@ export function appendSentSeenResponsesData (data) {
       }
     }
   }
-  var newPoll = polls.reverse()
-  return newPoll
+  //  var newPoll = polls.reverse()
+  console.log('appendSentSeenResponsesData', polls)
+  return polls
 }
 
 export function updatePollsList (data) {
@@ -29,7 +30,13 @@ export function updatePollsList (data) {
     data: appendSentSeenResponsesData(data)
   }
 }
-
+export function updatePollsListNew (data) {
+  return {
+    type: ActionTypes.FETCH_POLLS_LIST_NEW,
+    data: appendSentSeenResponsesData(data),
+    count: data.count
+  }
+}
 export function createPoll (data) {
   return {
     type: ActionTypes.ADD_POLL,
@@ -77,12 +84,27 @@ export function showresponsesfull (data) {
   }
 }
 
-export function loadPollsList () {
-  return (dispatch) => {
-    callApi('polls').then(res => dispatch(updatePollsList(res.payload)))
+export function getAllResponses (data) {
+  return {
+    type: ActionTypes.GET_ALL_POLL_RESPONSES,
+    data
   }
 }
 
+export function loadPollsList (days) {
+  return (dispatch) => {
+    callApi(`polls/all/${days}`).then(res => dispatch(updatePollsList(res.payload)))
+  }
+}
+export function loadPollsListNew (data) {
+  console.log('data for polls', data)
+  return (dispatch) => {
+    callApi(`polls/allPolls`, 'post', data).then(res => {
+      console.log('response from allPolls', res)
+      dispatch(updatePollsListNew(res.payload))
+    })
+  }
+}
 export function sendpoll (poll, msg) {
   return (dispatch) => {
     callApi('polls/send', 'post', poll)
@@ -164,13 +186,22 @@ export function getpollresults (pollid) {
       })
   }
 }
-export function deletePoll (id, msg) {
+
+export function getAllPollResults (pollid) {
+  return (dispatch) => {
+    callApi(`polls/allResponses/`)
+      .then(res => {
+        dispatch(getAllResponses(res.payload))
+      })
+  }
+}
+export function deletePoll (id, msg, data) {
   return (dispatch) => {
     callApi(`polls/deletePoll/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Poll deleted successfully')
-          dispatch(loadPollsList())
+          dispatch(loadPollsListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete poll. ${res.description}`)

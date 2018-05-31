@@ -9,7 +9,7 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
-  loadSurveysList,
+  loadSurveysListNew,
   sendsurvey,
   deleteSurvey
 } from '../../redux/actions/surveys.actions'
@@ -25,7 +25,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Survey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    //  this.props.loadSurveysList()
+    props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
     this.state = {
       alertMessage: '',
       alertType: '',
@@ -34,7 +34,9 @@ class Survey extends React.Component {
       sent: false,
       isShowingModal: false,
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      selectedDays: '0',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -44,6 +46,7 @@ class Survey extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.sendSurvey = this.sendSurvey.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
   }
 
   componentDidMount () {
@@ -51,7 +54,6 @@ class Survey extends React.Component {
   }
   componentWillMount () {
     this.props.loadSubscribersList()
-    this.props.loadSurveysList()
     this.props.loadTags()
   }
   showDialog () {
@@ -61,15 +63,34 @@ class Survey extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+  onDaysChange (e) {
+    //  var defaultVal = 0
+    var value = e.target.value
+    this.setState({selectedDays: value, pageNumber: 0})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      if (value === '0') {
+        this.setState({
+          selectedDays: ''
+        })
+      }
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: value})
+    } else if (value === '') {
+      this.setState({selectedDays: ''})
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
+    }
+  }
   displayData (n, surveys) {
-    let offset = n * 5
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > surveys.length) {
+    if ((offset + 10) > surveys.length) {
       limit = surveys.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = surveys[i]
@@ -79,6 +100,14 @@ class Survey extends React.Component {
   }
 
   handlePageClick (data) {
+    if (data.selected === 0) {
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
+    } else {
+      this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
 
@@ -90,9 +119,9 @@ class Survey extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -291,13 +320,27 @@ class Survey extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deleteSurvey(this.state.deleteid, this.msg)
+                                    this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
                               </ModalDialog>
                             </ModalContainer>
                           }
+                        </div>
+                      </div>
+                      <div className='form-row'>
+                        <div className='form-group col-md-6' />
+                        <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                          <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                            Show records for last:&nbsp;&nbsp;
+                          </span>
+                          <div style={{width: '200px'}}>
+                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                          </div>
+                          <span htmlFor='example-text-input' className='col-form-label'>
+                          &nbsp;&nbsp;days
+                          </span>
                         </div>
                       </div>
                       { this.state.surveysData && this.state.surveysData.length > 0
@@ -386,13 +429,15 @@ class Survey extends React.Component {
                       }
                           </tbody>
                         </table>
-                        <ReactPaginate className='m-datatable__pager-nav' previousLabel={'previous'}
+                        <ReactPaginate
+                          previousLabel={'previous'}
                           nextLabel={'next'}
                           breakLabel={<a>...</a>}
                           breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 5)}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
                           marginPagesDisplayed={2}
                           pageRangeDisplayed={3}
+                          forcePage={this.state.pageNumber}
                           onPageChange={this.handlePageClick}
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}
@@ -416,8 +461,10 @@ class Survey extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('survey state', state)
   return {
     surveys: (state.surveysInfo.surveys),
+    count: (state.surveysInfo.count),
     subscribers: (state.subscribersInfo.subscribers),
     successMessage: (state.surveysInfo.successMessage),
     errorMessage: (state.surveysInfo.errorMessage),
@@ -430,6 +477,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadSurveysList: loadSurveysList, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags}, dispatch)
+    {loadSurveysListNew: loadSurveysListNew, sendsurvey: sendsurvey, loadSubscribersList: loadSubscribersList, deleteSurvey: deleteSurvey, loadTags: loadTags}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Survey)

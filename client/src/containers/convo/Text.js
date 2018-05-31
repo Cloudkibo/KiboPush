@@ -81,8 +81,7 @@ class Text extends React.Component {
   editButton (obj) {
     var temp = this.state.button.map((elm, index) => {
       if (index === obj.id) {
-        elm.title = obj.title
-        elm.url = obj.url
+        elm = obj.button
       }
       return elm
     })
@@ -160,7 +159,7 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={this.props.id + '-' + index} data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState
         ? <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>

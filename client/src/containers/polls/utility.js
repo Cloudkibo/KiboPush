@@ -1,13 +1,14 @@
 import _ from 'underscore'
 
-export function checkConditions (pageValue, genderValue, localeValue, tagValue, subscribers) {
+export function checkConditions (pageValue, genderValue, localeValue, tagValue, subscribers, polls) {
   let subscribersMatchPages = []
   let subscribersMatchLocale = []
   let subscribersMatchGender = []
   let subscribersMatchTag = []
+  let subscribersMatchPolls = []
 
   // Need to add tagValue.length === 0 once tags are complete
-  if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0) {
+  if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0 && (!polls || (polls && polls.selectedPolls.length === 0))) {
     return true
   }
   if (pageValue.length > 0) {
@@ -49,7 +50,26 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
       }
     }
   }
-  if (intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender, subscribersMatchTag).length === 0) {
+  console.log('polls', polls)
+  if (polls && polls.selectedPolls.length > 0) {
+    for (let p = 0; p < polls.selectedPolls.length; p++) {
+      console.log('polls.selectedPolls[p]', polls.selectedPolls[p])
+      for (let q = 0; q < polls.pollResponses.length; q++) {
+        console.log('polls.pollResponses[q]', polls.pollResponses[q])
+        if (polls.pollResponses[q].pollId === polls.selectedPolls[p]) {
+          console.log('found poll', polls.pollResponses[q])
+          for (let o = 0; o < subscribers.length; o++) {
+            console.log('subscriber ' + o, subscribers[o])
+            if (subscribers[o]._id === polls.pollResponses[q].subscriberId) {
+              subscribersMatchPolls.push(subscribers[o])
+            }
+          }
+        }
+      }
+    }
+  }
+  console.log('subscribersMatchPolls', subscribersMatchPolls)
+  if (intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender, subscribersMatchTag, subscribersMatchPolls).length === 0) {
     return false
   }
   return true

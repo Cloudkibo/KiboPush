@@ -3,6 +3,7 @@
  */
 
 const logger = require('../../components/logger')
+const Sessions = require('../sessions/sessions.model')
 const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
@@ -17,6 +18,9 @@ const PollResponse = require('../polls/pollresponse.model')
 const PollPage = require('../page_poll/page_poll.model')
 const mongoose = require('mongoose')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const sortBy = require('sort-array')
+
+let _ = require('lodash')
 
 exports.index = function (req, res) {
   const data = {}
@@ -445,4 +449,275 @@ exports.stats = function (req, res) {
             })
         })
     })
+}
+exports.graphData = function (req, res) {
+  var days = 0
+  if (req.params.days === '0') {
+    days = 10
+  } else {
+    days = req.params.days
+  }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Broadcasts.aggregate([
+      {
+        $match: { companyId: companyUser.companyId,
+          'datetime': {
+            $gte: new Date(
+              (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+            $lt: new Date(
+              (new Date().getTime()))
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+          count: {$sum: 1}}
+      }], (err, broadcastsgraphdata) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting surveys count ${JSON.stringify(err)}`
+        })
+      }
+      Polls.aggregate([
+        {
+          $match: { companyId: companyUser.companyId,
+            'datetime': {
+              $gte: new Date(
+                (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+              $lt: new Date(
+                (new Date().getTime()))
+            }
+          }
+        },
+        {
+          $group: {
+            _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+            count: {$sum: 1}}
+        }], (err, pollsgraphdata) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting surveys count ${JSON.stringify(err)}`
+          })
+        }
+        Surveys.aggregate([
+          {
+            $match: { companyId: companyUser.companyId,
+              'datetime': {
+                $gte: new Date(
+                  (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                $lt: new Date(
+                  (new Date().getTime()))
+              }
+            }
+          },
+          {
+            $group: {
+              _id: {'year': {$year: '$datetime'}, 'month': {$month: '$datetime'}, 'day': {$dayOfMonth: '$datetime'}},
+              count: {$sum: 1}}
+          }], (err, surveysgraphdata) => {
+          if (err) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting surveys count ${JSON.stringify(err)}`
+            })
+          }
+          Sessions.aggregate([
+            {
+              $match: {
+                'request_time': {
+                  $gte: new Date(
+                    (new Date().getTime() - (days * 24 * 60 * 60 * 1000))),
+                  $lt: new Date(
+                    (new Date().getTime()))
+                }
+              }
+            },
+            {
+              $group: {
+                _id: {'year': {$year: '$request_time'}, 'month': {$month: '$request_time'}, 'day': {$dayOfMonth: '$request_time'}, 'company': '$company_id'},
+                count: {$sum: 1}}
+            }], (err, sessionsgraphdata) => {
+            if (err) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting sessions count ${JSON.stringify(err)}`
+              })
+            }
+            let temp2 = []
+            for (let i = 0; i < sessionsgraphdata.length; i++) {
+              if (JSON.stringify(sessionsgraphdata[i]._id.company) === JSON.stringify(companyUser.companyId)) {
+                temp2.push(sessionsgraphdata[i])
+              }
+            }
+            return res.status(200)
+              .json({status: 'success', payload: {broadcastsgraphdata: broadcastsgraphdata, pollsgraphdata: pollsgraphdata, surveysgraphdata: surveysgraphdata, sessionsgraphdata: temp2}})
+          })
+        })
+      })
+    })
+  })
+}
+
+exports.toppages = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Pages.find({connected: true, companyId: companyUser.companyId}, (err, pages) => {
+      if (err) {
+        return res.status(404).json({
+          status: 'failed',
+          description: `Error in getting pages ${JSON.stringify(err)}`
+        })
+      }
+      Subscribers.aggregate([
+        {$match: {companyId: companyUser.companyId}}, {
+          $group: {
+            _id: {pageId: '$pageId'},
+            count: {$sum: 1}
+          }
+        }], (err2, gotSubscribersCount) => {
+        if (err2) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting pages subscriber count ${JSON.stringify(
+              err2)}`
+          })
+        }
+        let pagesPayload = []
+        for (let i = 0; i < pages.length; i++) {
+          pagesPayload.push({
+            _id: pages[i]._id,
+            pageId: pages[i].pageId,
+            pageName: pages[i].pageName,
+            userId: pages[i].userId,
+            pagePic: pages[i].pagePic,
+            connected: pages[i].connected,
+            pageUserName: pages[i].pageUserName,
+            likes: pages[i].likes,
+            subscribers: 0
+          })
+        }
+        for (let i = 0; i < pagesPayload.length; i++) {
+          for (let j = 0; j < gotSubscribersCount.length; j++) {
+            if (pagesPayload[i]._id.toString() ===
+              gotSubscribersCount[j]._id.pageId.toString()) {
+              pagesPayload[i].subscribers = gotSubscribersCount[j].count
+            }
+          }
+        }
+        let sorted = sortBy(pagesPayload, 'subscribers')
+        let top10 = _.takeRight(sorted, 10)
+        top10 = top10.reverse()
+        res.status(200).json({
+          status: 'success',
+          payload: top10
+        })
+      })
+    })
+  })
+}
+
+exports.getAllSubscribers = function (req, res) {
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  let findCriteria = {
+    pageId: mongoose.Types.ObjectId(req.params.pageid),
+    $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
+    gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
+    locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true}
+  }
+  if (req.body.first_page === 'first') {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Ssubscribers not found'})
+      }
+      Subscribers.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  } else if (req.body.first_page === 'next') {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Subscribers.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  } else if (req.body.first_page === 'previous') {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Subscribers.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  }
 }

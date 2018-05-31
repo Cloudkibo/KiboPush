@@ -8,15 +8,19 @@ import PollsInfo from './userPolls'
 import { loadPagesList } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    const userID = this.props.location.state._id
-    props.loadPagesList(userID)
+    if (this.props.location.state) {
+      const userID = this.props.location.state._id
+      props.loadPagesList(userID, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''})
+    }
     this.state = {
       pagesData: [],
-      totalLength: 0
+      totalLength: 0,
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)
@@ -24,26 +28,32 @@ class UserDetails extends React.Component {
   }
 
   search (event, name) {
-    var filtered = []
-    for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.pages[i])
-      }
+    if (event.target.value !== '') {
+      this.setState({searchValue: event.target.value.toLowerCase()})
+      this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: event.target.value.toLowerCase()})
+    } else {
+      this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: ''})
     }
-
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // for (let i = 0; i < this.props.pages.length; i++) {
+    //   if (this.props.pages[i].pageName.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.pages[i])
+    //   }
+    // }
+    //
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   displayData (n, pages) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > pages.length) {
+    if ((offset + 10) > pages.length) {
       limit = pages.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = pages[i]
@@ -53,13 +63,24 @@ class UserDetails extends React.Component {
   }
 
   handleClickEvent (data) {
+    if (data.selected === 0) {
+      this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: this.state.searchValue})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadPagesList(this.props.location.state._id, {first_page: 'next', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: this.state.searchValue})
+    } else {
+      this.props.loadPagesList(this.props.location.state._id, {first_page: 'previous', last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, search_value: this.state.searchValue})
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.pages)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.pages) {
+    console.log('nextProps in allpages', nextProps)
+    if (nextProps.pages && nextProps.count) {
       this.displayData(0, nextProps.pages)
-      this.setState({ totalLength: nextProps.pages.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({pagesData: [], totalLength: 0})
     }
   }
 
@@ -83,10 +104,14 @@ class UserDetails extends React.Component {
               </div>
             </div>
             <div className='m-content'>
-              <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
+              <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
               <BroadcastsInfo userID={this.props.location.state._id} />
               <SurveysInfo userID={this.props.location.state._id} />
               <PollsInfo userID={this.props.location.state._id} />
+              <div style={{'overflow': 'auto'}}>
+                <Link to='/operationalDashboard' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -97,7 +122,8 @@ class UserDetails extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    pages: state.backdoorInfo.pages
+    pages: state.backdoorInfo.pages,
+    count: state.backdoorInfo.pagesCount
   }
 }
 

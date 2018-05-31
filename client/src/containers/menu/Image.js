@@ -16,6 +16,7 @@ import {
 import Halogen from 'halogen'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -31,17 +32,6 @@ class Image extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     if (this.props.image && this.props.image !== '') {
       this.setState({imgSrc: this.props.image, showPreview: true})
     }
@@ -52,6 +42,10 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     var file = this.refs.file.files[0]
+    if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+      this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      return
+    }
     var reader = new FileReader()
     reader.readAsDataURL(file)
 
@@ -79,8 +73,16 @@ class Image extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

@@ -41,29 +41,19 @@ class InviteSubscribers extends React.Component {
         fblink: `https://m.me/${this.props.location.state.pageId}`,
         selectPage: this.props.location.state
       })
-    } else if (this.props.pages && this.props.pages[0].pageUserName && this.props.pages.length > 0) {
+    } else if (this.props.pages && this.props.pages.length > 0 && this.props.pages[0].pageUserName) {
       this.setState({
         fblink: `https://m.me/${this.props.pages[0].pageUserName}`,
         selectPage: this.props.pages[0]
       })
     } else {
-      this.setState({
-        fblink: `https://m.me/${this.props.pages[0].pageId}`,
-        selectPage: this.props.pages[0]
-      })
+      if (this.props.pages && this.props.pages.length > 0) {
+        this.setState({
+          fblink: `https://m.me/${this.props.pages[0].pageId}`,
+          selectPage: this.props.pages[0]
+        })
+      }
     }
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     document.title = 'KiboPush | Invite Subscribers'
   }
 

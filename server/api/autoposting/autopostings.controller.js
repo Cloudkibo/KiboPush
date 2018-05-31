@@ -66,204 +66,221 @@ exports.create = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    AutoPosting.find(
-      {companyId: companyUser.companyId, subscriptionUrl: req.body.subscriptionUrl},
-      (error, gotData) => {
+    AutoPosting.count(
+      {companyId: companyUser.companyId, subscriptionType: req.body.subscriptionType},
+      (error, gotCount) => {
         if (error) {
-          res.status(500).json({
+          return res.status(500).json({
             status: 'failed',
             description: 'Internal Server Error'
           })
         }
-        if (gotData.length > 0) {
+        if (gotCount > 0 && !companyUser.enableMoreAutoPostingIntegration) {
           res.status(403).json({
             status: 'Failed',
-            description: 'Cannot add duplicate accounts.'
+            description: 'Cannot add more integrations. Please contact support or remove existing ones'
           })
         } else {
-          let autoPostingPayload = {
-            userId: req.user._id,
-            companyId: companyUser.companyId,
-            subscriptionUrl: req.body.subscriptionUrl,
-            subscriptionType: req.body.subscriptionType,
-            accountTitle: req.body.accountTitle
-          }
-          if (req.body.isSegmented) {
-            autoPostingPayload.isSegmented = true
-            autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
-              ? req.body.pageIds
-              : null
-            autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-              ? req.body.segmentationGender
-              : null
-            autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-              ? req.body.segmentationLocale
-              : null
-            autoPostingPayload.segmentationTags = (req.body.segmentationTags)
-              ? req.body.segmentationTags
-              : null
-          }
-          if (req.body.subscriptionType === 'twitter') {
-            let url = req.body.subscriptionUrl
-            let urlAfterDot = url.substring(url.indexOf('.') + 1)
-            let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
-            if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
-            TwitterUtility.findUser(screenName, (err, data) => {
-              if (err) {
-                logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
-                return res.status(403).json({
-                  status: 'Failed',
-                  description: err
+          AutoPosting.find(
+            {companyId: companyUser.companyId, subscriptionUrl: req.body.subscriptionUrl},
+            (error, gotData) => {
+              if (error) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'Internal Server Error'
                 })
               }
-              autoPostingPayload.accountUniqueName = data.screen_name
-              let payload = {
-                id: data.id,
-                name: data.name,
-                screen_name: data.screen_name,
-                profile_image_url: data.profile_image_url_https
-              }
-              autoPostingPayload.payload = payload
-              const autoPosting = new AutoPosting(autoPostingPayload)
-              autoPosting.save((err, createdRecord) => {
-                if (err) {
-                  res.status(500).json({
-                    status: 'Failed',
-                    error: err,
-                    description: 'Failed to insert record'
-                  })
-                } else {
-                  TwitterUtility.restart()
-                  res.status(201)
-                  .json({status: 'success', payload: createdRecord})
-                  require('./../../config/socketio').sendMessageToClient({
-                    room_id: companyUser.companyId,
-                    body: {
-                      action: 'autoposting_created',
-                      payload: {
-                        autoposting_id: createdRecord._id,
-                        user_id: req.user._id,
-                        user_name: req.user.name,
-                        payload: createdRecord
-                      }
-                    }
-                  })
-                }
-              })
-            })
-          } else if (req.body.subscriptionType === 'facebook') {
-            let url = req.body.subscriptionUrl
-            let urlAfterDot = url.substring(url.indexOf('.') + 1)
-            let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
-            while (screenName.indexOf('-') > -1) screenName = screenName.substring(screenName.indexOf('-') + 1)
-            if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
-            Page.findOne({
-              userId: req.user._id,
-              $or: [{pageId: screenName}, {pageUserName: screenName}]
-            }, (err, pageInfo) => {
-              if (err) {
-                logger.serverLog(TAG, `Facebook URL parse Error ${err}`)
-                return res.status(403).json({
+              if (gotData.length > 0) {
+                res.status(403).json({
                   status: 'Failed',
-                  description: err
-                })
-              }
-              if (!pageInfo) {
-                return res.status(404).json({
-                  status: 'Failed',
-                  description: 'Cannot add this page or page not found'
-                })
-              }
-              let autoPostingPayload = {
-                userId: req.user._id,
-                companyId: companyUser.companyId,
-                subscriptionUrl: req.body.subscriptionUrl,
-                subscriptionType: req.body.subscriptionType,
-                accountTitle: req.body.accountTitle,
-                accountUniqueName: pageInfo.pageId
-              }
-              if (req.body.isSegmented) {
-                autoPostingPayload.isSegmented = true
-                autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
-                  ? req.body.pageIds
-                  : null
-                autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-                  ? req.body.segmentationGender
-                  : null
-                autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-                  ? req.body.segmentationLocale
-                  : null
-                autoPostingPayload.segmentationTags = (req.body.segmentationTags)
-                  ? req.body.segmentationTags
-                  : null
-              }
-              const autoPosting = new AutoPosting(autoPostingPayload)
-              autoPosting.save((err, createdRecord) => {
-                if (err) {
-                  res.status(500).json({
-                    status: 'Failed',
-                    error: err,
-                    description: 'Failed to insert record'
-                  })
-                } else {
-                  res.status(201)
-                  .json({status: 'success', payload: createdRecord})
-                  require('./../../config/socketio').sendMessageToClient({
-                    room_id: companyUser.companyId,
-                    body: {
-                      action: 'autoposting_created',
-                      payload: {
-                        autoposting_id: createdRecord._id,
-                        user_id: req.user._id,
-                        user_name: req.user.name,
-                        payload: createdRecord
-                      }
-                    }
-                  })
-                }
-              })
-            })
-          } else if (req.body.subscriptionType === 'youtube') {
-            // URL https://www.youtube.com/channel/UCcQnaQ0sHD9A0GXKcXBVE-Q
-            let url = req.body.subscriptionUrl
-            let urlAfterDot = url.substring(url.indexOf('.') + 1)
-            let firstParse = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
-            let channelName = firstParse.substring(firstParse.indexOf('/') + 1)
-            let autoPostingPayload = {
-              userId: req.user._id,
-              companyId: companyUser.companyId,
-              subscriptionUrl: req.body.subscriptionUrl,
-              subscriptionType: req.body.subscriptionType,
-              accountTitle: req.body.accountTitle,
-              accountUniqueName: channelName
-            }
-            if (req.body.isSegmented) {
-              autoPostingPayload.isSegmented = true
-              autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
-                ? req.body.pageIds
-                : null
-              autoPostingPayload.segmentationGender = (req.body.segmentationGender)
-                ? req.body.segmentationGender
-                : null
-              autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
-                ? req.body.segmentationLocale
-                : null
-              autoPostingPayload.segmentationTags = (req.body.segmentationTags)
-                ? req.body.segmentationTags
-                : null
-            }
-            const autoPosting = new AutoPosting(autoPostingPayload)
-            autoPosting.save((err, createdRecord) => {
-              if (err) {
-                res.status(500).json({
-                  status: 'Failed',
-                  description: 'Failed to insert record'
+                  description: 'Cannot add duplicate accounts.'
                 })
               } else {
-                res.status(201).json({status: 'success', payload: createdRecord})
+                let autoPostingPayload = {
+                  userId: req.user._id,
+                  companyId: companyUser.companyId,
+                  subscriptionUrl: req.body.subscriptionUrl,
+                  subscriptionType: req.body.subscriptionType,
+                  accountTitle: req.body.accountTitle
+                }
+                if (req.body.isSegmented) {
+                  autoPostingPayload.isSegmented = true
+                  autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+                    ? req.body.pageIds
+                    : null
+                  autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+                    ? req.body.segmentationGender
+                    : null
+                  autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+                    ? req.body.segmentationLocale
+                    : null
+                  autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+                    ? req.body.segmentationTags
+                    : null
+                }
+                if (req.body.subscriptionType === 'twitter') {
+                  let url = req.body.subscriptionUrl
+                  let urlAfterDot = url.substring(url.indexOf('.') + 1)
+                  let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+                  if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
+                  TwitterUtility.findUser(screenName, (err, data) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Twitter URL parse Error ${err}`)
+                      // return res.status(403).json({
+                      //   status: 'Failed',
+                      //   description: err
+                      // })
+                    }
+                    autoPostingPayload.accountUniqueName = data.screen_name
+                    let payload = {
+                      id: data.id,
+                      name: data.name,
+                      screen_name: data.screen_name,
+                      profile_image_url: data.profile_image_url_https
+                    }
+                    autoPostingPayload.payload = payload
+                    const autoPosting = new AutoPosting(autoPostingPayload)
+                    autoPosting.save((err, createdRecord) => {
+                      if (err) {
+                        res.status(500).json({
+                          status: 'Failed',
+                          error: err,
+                          description: 'Failed to insert record'
+                        })
+                      } else {
+                        TwitterUtility.restart()
+                        res.status(201)
+                        .json({status: 'success', payload: createdRecord})
+                        require('./../../config/socketio').sendMessageToClient({
+                          room_id: companyUser.companyId,
+                          body: {
+                            action: 'autoposting_created',
+                            payload: {
+                              autoposting_id: createdRecord._id,
+                              user_id: req.user._id,
+                              user_name: req.user.name,
+                              payload: createdRecord
+                            }
+                          }
+                        })
+                      }
+                    })
+                  })
+                } else if (req.body.subscriptionType === 'facebook') {
+                  let url = req.body.subscriptionUrl
+                  let urlAfterDot = url.substring(url.indexOf('.') + 1)
+                  let screenName = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+                  while (screenName.indexOf('-') > -1) screenName = screenName.substring(screenName.indexOf('-') + 1)
+                  if (screenName.indexOf('/') > -1) screenName = screenName.substring(0, screenName.length - 1)
+                  Page.findOne({
+                    userId: req.user._id,
+                    $or: [{pageId: screenName}, {pageUserName: screenName}]
+                  }, (err, pageInfo) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Facebook URL parse Error ${err}`)
+                      return res.status(403).json({
+                        status: 'Failed',
+                        description: err
+                      })
+                    }
+                    if (!pageInfo) {
+                      return res.status(404).json({
+                        status: 'Failed',
+                        description: 'Cannot add this page or page not found'
+                      })
+                    }
+                    let autoPostingPayload = {
+                      userId: req.user._id,
+                      companyId: companyUser.companyId,
+                      subscriptionUrl: req.body.subscriptionUrl,
+                      subscriptionType: req.body.subscriptionType,
+                      accountTitle: req.body.accountTitle,
+                      accountUniqueName: pageInfo.pageId
+                    }
+                    if (req.body.isSegmented) {
+                      autoPostingPayload.isSegmented = true
+                      autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+                        ? req.body.pageIds
+                        : null
+                      autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+                        ? req.body.segmentationGender
+                        : null
+                      autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+                        ? req.body.segmentationLocale
+                        : null
+                      autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+                        ? req.body.segmentationTags
+                        : null
+                    }
+                    const autoPosting = new AutoPosting(autoPostingPayload)
+                    autoPosting.save((err, createdRecord) => {
+                      if (err) {
+                        res.status(500).json({
+                          status: 'Failed',
+                          error: err,
+                          description: 'Failed to insert record'
+                        })
+                      } else {
+                        res.status(201)
+                        .json({status: 'success', payload: createdRecord})
+                        require('./../../config/socketio').sendMessageToClient({
+                          room_id: companyUser.companyId,
+                          body: {
+                            action: 'autoposting_created',
+                            payload: {
+                              autoposting_id: createdRecord._id,
+                              user_id: req.user._id,
+                              user_name: req.user.name,
+                              payload: createdRecord
+                            }
+                          }
+                        })
+                      }
+                    })
+                  })
+                } else if (req.body.subscriptionType === 'youtube') {
+                  // URL https://www.youtube.com/channel/UCcQnaQ0sHD9A0GXKcXBVE-Q
+                  let url = req.body.subscriptionUrl
+                  let urlAfterDot = url.substring(url.indexOf('.') + 1)
+                  let firstParse = urlAfterDot.substring(urlAfterDot.indexOf('/') + 1)
+                  let channelName = firstParse.substring(firstParse.indexOf('/') + 1)
+                  let autoPostingPayload = {
+                    userId: req.user._id,
+                    companyId: companyUser.companyId,
+                    subscriptionUrl: req.body.subscriptionUrl,
+                    subscriptionType: req.body.subscriptionType,
+                    accountTitle: req.body.accountTitle,
+                    accountUniqueName: channelName
+                  }
+                  if (req.body.isSegmented) {
+                    autoPostingPayload.isSegmented = true
+                    autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+                      ? req.body.pageIds
+                      : null
+                    autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+                      ? req.body.segmentationGender
+                      : null
+                    autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+                      ? req.body.segmentationLocale
+                      : null
+                    autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+                      ? req.body.segmentationTags
+                      : null
+                  }
+                  const autoPosting = new AutoPosting(autoPostingPayload)
+                  autoPosting.save((err, createdRecord) => {
+                    if (err) {
+                      res.status(500).json({
+                        status: 'Failed',
+                        description: 'Failed to insert record'
+                      })
+                    } else {
+                      res.status(201).json({status: 'success', payload: createdRecord})
+                    }
+                  })
+                }
               }
             })
-          }
         }
       })
   })

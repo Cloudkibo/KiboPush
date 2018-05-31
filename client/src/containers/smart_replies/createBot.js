@@ -7,38 +7,61 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import {editBot, updateStatus} from '../../redux/actions/smart_replies.actions'
+import {editBot, updateStatus, loadPoliticsBotTemplate} from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class CreateBot extends React.Component {
   constructor (props) {
     super(props)
+    props.loadMyPagesList()
     this.state = {
       id: '',
       name: '',
       page: '',
+      pagePic: '',
       payload: [],
       isActive: true
     }
     this.createUI = this.createUI.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.createBot = this.createBot.bind(this)
+    this.addTemplate = this.addTemplate.bind(this)
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Create Workflows'
+    document.title = 'KiboPush | Create Bot'
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.createdBot) {
-      this.setState({id: nextProps._id, name: nextProps.botName, page: nextProps.pageId.pageName, isActive: nextProps.isActive})
+    if (nextProps.createdBot && nextProps.pages) {
+      var botName = nextProps.createdBot.botName
+      if (botName) {
+        botName = botName.split('-').join(' ')
+      }
+      this.setState({id: nextProps.createdBot._id, name: botName, isActive: nextProps.createdBot.isActive})
+      console.log('nextProps', nextProps.pages)
+      for (var i = 0; i < nextProps.pages.length; i++) {
+        if (nextProps.pages[i]._id === nextProps.createdBot.pageId) {
+          this.setState({page: nextProps.pages[i].pageName, pagePic: nextProps.pages[i].pagePic})
+        }
+      }
+    }
+    if (nextProps.botTemplate) {
+      console.log('nextProps for bot', nextProps.botTemplate)
+      this.setState({payload: nextProps.botTemplate})
+      console.log(this.state)
     }
   }
 
   changeStatus (e) {
     this.setState({isActive: e.target.value})
+  }
+
+  addTemplate () {
+    this.props.loadPoliticsBotTemplate()
   }
 
   createUI () {
@@ -120,7 +143,8 @@ class CreateBot extends React.Component {
     let questions = ['', '', '']
     botQuestions.push({
       'questions': questions,
-      'answer': ''
+      'answer': '',
+      'intent_name': ''
     })
     this.setState({payload: botQuestions})
   }
@@ -150,13 +174,14 @@ class CreateBot extends React.Component {
   handleAnswerChange (i, event) {
     let payload = this.state.payload
     payload[i].answer = event.target.value
+    payload[i].intent_name = 'q' + (i + 1)
     this.setState({payload: payload})
   }
 
   createBot () {
     console.log('payload', this.state.payload)
     if (this.state.payload.length === 0) {
-      this.msg.error('Please enter one question atleast')
+      this.msg.error('Please enter a question')
       return
     } else {
       for (var i = 0; i < this.state.payload.length; i++) {
@@ -166,13 +191,13 @@ class CreateBot extends React.Component {
         } else {
           for (var j = 0; j < this.state.payload[i].questions.length; j++) {
             if (this.state.payload[i].questions[j] === '') {
-              this.msg.error('You must enter atleast 3 variations of a question')
+              this.msg.error('One of the fields for questions is empty. Please fill all fields')
               return
             }
           }
         }
         if (this.state.payload[i].answer === '') {
-          this.msg.error('You must enter answer of all the questions')
+          this.msg.error('You must enter answer of the questions')
           return
         }
       }
@@ -222,20 +247,27 @@ class CreateBot extends React.Component {
                       </div>
                       <br />
                       <div className='col-xl-12'>
-                        <label>Assigned to Page:</label>
+                        <label>Assigned to Page:</label>&nbsp;&nbsp;
                         {this.props.createdBot && this.props.createdBot.pageId &&
                         <span>
-                          <img alt='pic' style={{height: '30px'}} src={(this.props.createdBot.pageId.pagePic) ? this.props.createdBot.pageId.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                          <span>{this.props.createdBot.pageId.pageName}</span>
+                          <img alt='pic' style={{height: '30px'}} src={(this.state.pagePic) ? this.state.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                          <span>{this.state.page}</span>
                         </span>
                       }
                       </div>
+                      <br />
                       <div className='col-xl-12'>
                         <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
                         <select className='custom-select' id='m_form_type' value={this.state.isActive} onChange={this.changeStatus} style={{width: '500px'}}>
                           <option key='2' value='true'>Active</option>
                           <option key='3' value='false'>Disabled</option>
                         </select>
+                      </div>
+                      <br />
+                      <div className='col-xl-12'>
+                        <button className='btn btn-primary btn-sm'
+                          onClick={this.addTemplate.bind(this)}> Apply Politics Chat Bot Template
+                        </button>
                       </div>
                       <br />
                       <div className='col-xl-12'>
@@ -275,7 +307,9 @@ class CreateBot extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    createdBot: (state.botsInfo.createdBot)
+    botTemplate: (state.botsInfo.botTemplate),
+    createdBot: (state.botsInfo.createdBot),
+    pages: (state.pagesInfo.pages)
   }
 }
 
@@ -283,7 +317,9 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       editBot: editBot,
-      updateStatus: updateStatus
+      updateStatus: updateStatus,
+      loadMyPagesList: loadMyPagesList,
+      loadPoliticsBotTemplate: loadPoliticsBotTemplate
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateBot)

@@ -66,23 +66,12 @@ class Menu extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.show = this.show.bind(this)
     props.fetchMenu()
-    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages) {
+    if (!(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.props.pages.length > 0) {
       props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
     }
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     document.title = 'KiboPush | Menu'
 
     var compProp = this.props
@@ -518,7 +507,7 @@ class Menu extends React.Component {
                 <div className='m-portlet__body m-portlet__body--no-padding'>
                   <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                     <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='7' />
+                      <Sidebar step='6' />
                       <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                         <div className='m-portlet__head'>
                           <div className='m-portlet__head-caption'>
@@ -761,7 +750,7 @@ class Menu extends React.Component {
                           <div className='m-form__actions'>
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' >
-                                <Link to='/workflowWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <Link to='/autopostingWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <i className='la la-arrow-left' />
                                     <span>Back</span>&nbsp;&nbsp;
@@ -769,12 +758,12 @@ class Menu extends React.Component {
                                 </Link>
                               </div>
                               <div className='col-lg-6 m--align-right'>
-                                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
+                                <Link to='/finish' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
-                                    <span>Finish</span>&nbsp;&nbsp;
+                                    <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
                                   </span>
-                                </button>
+                                </Link>
                               </div>
                             </div>
                           </div>

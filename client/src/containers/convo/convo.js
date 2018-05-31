@@ -13,7 +13,7 @@ import {
   addBroadcast,
   clearAlertMessage,
   loadBroadcastsList,
-  sendbroadcast
+  sendbroadcast, allBroadcasts
 } from '../../redux/actions/broadcast.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -30,10 +30,13 @@ class Convo extends React.Component {
       broadcastsData: [],
       totalLength: 0,
       filterValue: '',
-      isShowingModal: false
-
+      isShowingModal: false,
+      selectedDays: '0',
+      searchValue: '',
+      filter: false,
+      pageNumber: 0
     }
-    props.loadBroadcastsList()
+    props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     props.loadSubscribersList()
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -43,6 +46,32 @@ class Convo extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+  }
+  onDaysChange (e) {
+    // this.setState({
+    //   filterValue: '',
+    //   searchValue: ''
+    // })
+    //  var defaultVal = 0
+    var value = e.target.value
+    this.setState({selectedDays: value})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      if (value === '0') {
+        this.setState({
+          selectedDays: '0'
+        })
+      }
+      this.setState({filter: true, pageNumber: 0})
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: value}})
+      //  this.props.loadBroadcastsList(value)
+    } else if (value === '') {
+      this.setState({selectedDays: '0', filter: false})
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: '0'}})
+    }
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -55,31 +84,20 @@ class Convo extends React.Component {
     this.setState({isShowingModal: false})
   }
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
-    // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
-    // document.body.appendChild(addScript)
-    // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
-    // document.body.appendChild(addScript)
     this.scrollToTop()
 
     document.title = 'KiboPush | Broadcast'
   }
 
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 10) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -89,6 +107,15 @@ class Convo extends React.Component {
   }
 
   handlePageClick (data) {
+    console.log('data.selected', data.selected)
+    if (data.selected === 0) {
+      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    } else {
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
   }
 
@@ -120,7 +147,10 @@ class Convo extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.length })
+      //  this.setState({ totalLength: nextProps.broadcasts.length })
+    }
+    if (nextProps.count) {
+      this.setState({ totalLength: nextProps.count })
     }
     this.sendBroadcast = this.sendBroadcast.bind(this)
     if (nextProps.successMessage) {
@@ -141,40 +171,51 @@ class Convo extends React.Component {
     }
   }
   searchBroadcast (event) {
-    var filtered = []
+    this.setState({
+      searchValue: event.target.value
+    })
+    //  var filtered = []
     if (event.target.value !== '') {
-      for (let i = 0; i < this.props.broadcasts.length; i++) {
-        if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-          filtered.push(this.props.broadcasts[i])
-        }
-      }
+      this.setState({filter: true})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
+      // for (let i = 0; i < this.props.broadcasts.length; i++) {
+      //   if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+      //     filtered.push(this.props.broadcasts[i])
+      //   }
+      // }
     } else {
-      filtered = this.props.broadcasts
+      //  this.setState({filter: false})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
+      //  filtered = this.props.broadcasts
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
     this.setState({filterValue: e.target.value})
-    var filtered = []
+    // var filtered = []
     if (e.target.value !== '') {
-      for (let i = 0; i < this.props.broadcasts.length; i++) {
-        if (e.target.value === 'miscellaneous') {
-          if (this.props.broadcasts[i].payload.length > 1) {
-            filtered.push(this.props.broadcasts[i])
-          }
-        } else {
-          if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
-            filtered.push(this.props.broadcasts[i])
-          }
-        }
-      }
+      this.setState({filter: true})
+      this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
+      // for (let i = 0; i < this.props.broadcasts.length; i++) {
+      //   if (e.target.value === 'miscellaneous') {
+      //     if (this.props.broadcasts[i].payload.length > 1) {
+      //       filtered.push(this.props.broadcasts[i])
+      //     }
+      //   } else {
+      //     if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
+      //       filtered.push(this.props.broadcasts[i])
+      //     }
+      //   }
+      // }
     } else {
-      filtered = this.props.broadcasts
+      this.setState({filter: false})
+      this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
+      // filtered = this.props.broadcasts
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -298,10 +339,10 @@ class Convo extends React.Component {
                         </div>
                       </div>
                       <div className='form-row'>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-8'>
-                          <input type='text' placeholder='Search broadcasts by title' className='form-control' onChange={this.searchBroadcast} />
+                        <div style={{display: 'inline-block'}} className='form-group col-md-3'>
+                          <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
                         </div>
-                        <div style={{display: 'inline-block'}} className='form-group col-md-4'>
+                        <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                           <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
                             <option value='' disabled>Filter by type...</option>
                             <option value='text'>text</option>
@@ -314,6 +355,17 @@ class Convo extends React.Component {
                             <option value='miscellaneous'>miscellaneous</option>
                             <option value=''>all</option>
                           </select>
+                        </div>
+                        <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                          <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                            Show records for last:&nbsp;&nbsp;
+                          </span>
+                          <div style={{width: '200px'}}>
+                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                          </div>
+                          <span htmlFor='example-text-input' className='col-form-label'>
+                          &nbsp;&nbsp;days
+                          </span>
                         </div>
                       </div>
                       <div>
@@ -328,7 +380,7 @@ class Convo extends React.Component {
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span >Title</span>
                               </th>
-                              <th data-field='statement' style={{width: 100}}
+                              <th data-field='statement' style={{width: 120}}
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span>Type</span>
                               </th>
@@ -357,7 +409,7 @@ class Convo extends React.Component {
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
-                                <td data-field='statement' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                <td data-field='type' style={{width: 120, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
                                 <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
                                 <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
                                 <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
@@ -378,9 +430,10 @@ class Convo extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
+                            forcePage={this.state.pageNumber}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
@@ -410,6 +463,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
+    count: (state.broadcastsInfo.count),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
     subscribers: (state.subscribersInfo.subscribers)
@@ -422,7 +476,8 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersList: loadSubscribersList,
+    allBroadcasts: allBroadcasts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Convo)

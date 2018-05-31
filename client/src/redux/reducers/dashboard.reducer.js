@@ -13,7 +13,14 @@ const initialState = {
       messages: 0,
       surveys: 0
     }
-  }
+  },
+  graphData: {
+    broadcastsgraphdata: [],
+    pollsgraphdata: [],
+    surveysgraphdata: [],
+    sessionsgraphdata: []
+  },
+  topPages: []
 }
 
 export function dashboardInfo (state = initialState, action) {
@@ -27,7 +34,24 @@ export function dashboardInfo (state = initialState, action) {
       return Object.assign({}, state, {
         sentseendata: action.data
       })
-
+    case ActionTypes.UPDATE_GRAPH_DATA:
+      return Object.assign({}, state, {
+        graphData: action.data
+      })
+    case ActionTypes.UPDATE_TOP_PAGES:
+      return Object.assign({}, state, {
+        topPages: action.data
+      })
+    case ActionTypes.VIEW_PAGE_SUBSCRIBERS_LIST_DASHBOARD:
+      return Object.assign({}, state, {
+        pageSubscribers: action.data,
+        //  locales: action.locale,
+        subscribersCount: action.count
+      })
+    case ActionTypes.LOAD_LOCALES_LIST_DASHBOARD:
+      return Object.assign({}, state, {
+        locales: action.data
+      })
     default:
       return state
   }

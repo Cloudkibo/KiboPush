@@ -3,6 +3,21 @@ import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
+export function deleteFiles (data) {
+  let files = []
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].componentType === 'file') {
+      files.push(data[i].fileurl.name)
+    }
+  }
+  if (files.length > 0) {
+    return (dispatch) => {
+      callApi('broadcasts/deleteFiles', 'post', files)
+        .then(res => {})
+    }
+  }
+}
+
 export function appendSentSeenData (data) {
   // we will have broadcast and page_broadcast_pages
   let broadcasts = data.broadcasts
@@ -10,18 +25,32 @@ export function appendSentSeenData (data) {
 
   for (let j = 0; j < broadcasts.length; j++) {
     let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
-    broadcasts[j].sent = pagebroadcast.length// total sent
-    let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
+    let filterBySubscriber = []
+    pagebroadcast.map((c, i) => {
+      if (c.broadcastId === broadcasts[j]._id) {
+        for (var index = 0; index < filterBySubscriber.length; index++) {
+          if (c.subscriberId === filterBySubscriber[index].subscriberId) {
+            break
+          }
+        }
+        if (index === filterBySubscriber.length) {
+          filterBySubscriber.push(c)
+        }
+      }
+    })
+    broadcasts[j].sent = filterBySubscriber.length// total sent
+    let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
     broadcasts[j].seen = pagebroadcastTapped.length // total tapped
   }
-  var newBroadcast = broadcasts.reverse()
-  return newBroadcast
+  //  var newBroadcast = broadcasts.reverse()
+  return broadcasts
 }
 
 export function showbroadcasts (data) {
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    broadcasts: appendSentSeenData(data)
+    broadcasts: appendSentSeenData(data),
+    count: data.count
   }
 }
 
@@ -72,9 +101,24 @@ export function clearAlertMessage () {
   }
 }
 
-export function loadBroadcastsList () {
+export function loadBroadcastsList (days) {
   return (dispatch) => {
-    callApi('broadcasts').then(res => dispatch(showbroadcasts(res.payload)))
+    callApi(`broadcasts/all/${days}`).then(res => dispatch(showbroadcasts(res.payload)))
+  }
+}
+
+export function allBroadcasts (broadcast) {
+  console.log('broadcast', broadcast)
+  return (dispatch) => {
+    callApi('broadcasts/allBroadcasts', 'post', broadcast)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('allBroadcasts', res.payload)
+          dispatch(showbroadcasts(res.payload))
+        } else {
+          console.log('error', res)
+        }
+      })
   }
 }
 
@@ -87,7 +131,7 @@ export function createbroadcast (broadcast) {
         } else {
           dispatch(sendBroadcastFailure())
         }
-        dispatch(loadBroadcastsList())
+        //  dispatch(loadBroadcastsList())
       })
   }
 }
@@ -115,7 +159,9 @@ export function uploadBroadcastfile (filedata) {
 export function editbroadcast (broadcast) {
   return (dispatch) => {
     callApi('broadcasts/edit', 'post', {broadcast: broadcast})
-      .then(res => dispatch(loadBroadcastsList()))
+      .then(res => {
+        //  dispatch(loadBroadcastsList())
+      })
   }
 }
 
@@ -176,7 +222,7 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
           }
         }
         handleSendBroadcast(res)
-        dispatch(loadBroadcastsList())
+        //  dispatch(loadBroadcastsList())
       })
   }
 }

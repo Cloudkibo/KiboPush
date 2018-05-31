@@ -83,3 +83,15 @@ export function saveMenu (data, handleSaveMenu, msg) {
     })
   }
 }
+export function removeMenu (data, handleRemoveMenu, msg) {
+  return (dispatch) => {
+    callApi('menu/create', 'post', data).then(res => {
+      if (res.status === 'success') {
+        msg.success('Menu has been reset')
+        handleRemoveMenu()
+      } else {
+        msg.error('Failed to reset menu')
+      }
+    })
+  }
+}

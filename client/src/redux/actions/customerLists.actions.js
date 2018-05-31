@@ -11,6 +11,42 @@ export function showCustomerLists (data) {
   }
 }
 
+export function showCustomerListsNew (data) {
+  return {
+    type: ActionTypes.LOAD_CUSTOMER_LISTS_NEW,
+    lists: data.lists,
+    count: data.count
+  }
+}
+
+export function getRepliedPollSubscribers () {
+  return (dispatch) => {
+    callApi('lists/repliedPollSubscribers')
+      .then(res => dispatch(showRepliedPollSubscribers(res.payload)))
+  }
+}
+
+export function getRepliedSurveySubscribers () {
+  return (dispatch) => {
+    callApi('lists/repliedSurveySubscribers')
+      .then(res => dispatch(showRepliedSurveySubscribers(res.payload)))
+  }
+}
+
+export function showRepliedSurveySubscribers (data) {
+  return {
+    type: ActionTypes.LOAD_REPLIED_SURVEY_SUBSCRIBERS,
+    data
+  }
+}
+
+export function showRepliedPollSubscribers (data) {
+  return {
+    type: ActionTypes.LOAD_REPLIED_POLL_SUBSCRIBERS,
+    data
+  }
+}
+
 export function showListDetails (data) {
   return {
     type: ActionTypes.LOAD_LIST_DETAILS,
@@ -46,6 +82,17 @@ export function loadCustomerLists () {
   }
 }
 
+export function loadCustomerListsNew (data) {
+  console.log('data', data)
+  return (dispatch) => {
+    callApi('lists/getAll', 'post', data)
+      .then(res => {
+        console.log('response from lists', res)
+        dispatch(showCustomerListsNew(res.payload))
+      })
+  }
+}
+
 export function getParentList (id, handleResponse, msg) {
   return (dispatch) => {
     callApi(`lists/viewList/${id}`)
@@ -70,6 +117,9 @@ export function loadListDetails (id) {
         console.log('loadListDetails response', res)
         if (res.status === 'success') {
           dispatch(showListDetails(res.payload))
+        } else {
+          var list = []
+          dispatch(showListDetails(list))
         }
       })
   }

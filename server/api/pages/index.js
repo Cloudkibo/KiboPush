@@ -23,6 +23,12 @@ router.get('/allpages',
   auth.doesRolePermitsThisAction('pagesAccessPermission'),
   controller.allpages)
 
+router.post('/allConnectedPages',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_pages'),
+  auth.doesRolePermitsThisAction('pagesAccessPermission'),
+  controller.getAllpages)
+
 router.get('/otherPages',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('manage_pages'),

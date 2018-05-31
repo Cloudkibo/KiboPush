@@ -9,7 +9,7 @@ import { browserHistory } from 'react-router'
 class BroadcastsInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadBroadcastsByDays(0)
+    //  props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       BroadcastData: [],
       totalLength: 0,
@@ -17,38 +17,37 @@ class BroadcastsInfo extends React.Component {
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
       selectedFilterValue: 10,
-      selectedDays: 10
+      selectedDays: 10,
+      searchValue: '',
+      filter: true,
+      pageNumber: 0,
+      showBroadcasts: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchBroadcasts = this.searchBroadcasts.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.toggle = this.toggle.bind(this)
+  }
+
+  toggle () {
+    this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: '', days: 10}})
+    this.setState({showBroadcasts: !this.state.showBroadcasts})
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
   }
 
   displayData (n, broadcasts) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > broadcasts.length) {
+    if ((offset + 10) > broadcasts.length) {
       limit = broadcasts.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = broadcasts[i]
@@ -58,38 +57,54 @@ class BroadcastsInfo extends React.Component {
   }
 
   handlePageClick (data) {
+    if (data.selected === 0) {
+      this.props.loadBroadcastsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    } else {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.broadcasts)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.broadcasts) {
+    console.log('componentWillReceiveProps in broadcastbydays', nextProps)
+    if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.broadcasts.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({BroadcastData: [], totalLength: 0})
     }
   }
   searchBroadcasts (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.broadcasts.length; i++) {
-      if (this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.broadcasts[i])
-      }
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedDays}})
+    } else {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: '', days: this.state.selectedDays}})
     }
-
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
-  onDaysChange (e) {
-    var defaultVal = 10
-    var value = e.target.value
-    this.setState({selectedDays: value})
-    if (value && value !== '') {
-      if (value.indexOf('.') !== -1) {
-        value = Math.floor(value)
-      }
-      this.props.loadBroadcastsByDays(value)
-    } else if (value === '') {
-      this.setState({selectedDays: defaultVal})
-      this.props.loadBroadcastsByDays(defaultVal)
+  onDaysChange (event) {
+    this.setState({selectedDays: event.target.value, pageNumber: 0})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: event.target.value}})
+    } else {
+      this.props.loadBroadcastsByDays({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, days: ''}})
     }
+    // var defaultVal = 10
+    // var value = e.target.value
+    // this.setState({selectedDays: value})
+    // if (value && value !== '') {
+    //   if (value.indexOf('.') !== -1) {
+    //     value = Math.floor(value)
+    //   }
+    //   this.props.loadBroadcastsByDays(value)
+    // } else if (value === '') {
+    //   this.setState({selectedDays: defaultVal})
+    //   this.props.loadBroadcastsByDays(defaultVal)
+    // }
   }
   onBroadcastClick (broadcast) {
     browserHistory.push({
@@ -116,33 +131,33 @@ class BroadcastsInfo extends React.Component {
                 <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
-                  <li className='nav-item m-tabs__item'>
-                    <form className='m-form m-form--fit m-form--label-align-right'>
-                      <div className='form-group m-form__group row'>
-                        <label htmlFor='example-text-input' className='col-form-label'>
-                          Show records for last:&nbsp;&nbsp;
-                        </label>
-                        <div>
-                          <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
-                        </div>
-                        <label htmlFor='example-text-input' className='col-form-label'>
-                        &nbsp;&nbsp;days
-                      </label>
-                      </div>
-                    </form>
+                  <li className='m-portlet__nav-item'>
+                    <a data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                      {this.state.showBroadcasts
+                      ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
+                    : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
+                  }
+                    </a>
                   </li>
                 </ul>
               </div>
             </div>
+            {this.state.showBroadcasts &&
             <div className='m-portlet__body'>
-              <div className='row align-items-center'>
-                { this.props.broadcasts && this.props.broadcasts.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                <div className='form-group m-form__group row align-items-center'>
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                    <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchBroadcasts} />
-                    <span className='m-input-icon__icon m-input-icon__icon--left'>
-                      <span><i className='la la-search' /></span>
+              <div className='row align-items-center'> <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                <div className='form-row'>
+                  <div className='form-group col-md-6' ><input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchBroadcasts} />
+                    <span className='m-input-icon__icon m-input-icon__icon--left' />
+                  </div>
+                  <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                    <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                      Show records for last:&nbsp;&nbsp;
+                    </span>
+                    <div style={{width: '200px'}}>
+                      <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                    </div>
+                    <span htmlFor='example-text-input' className='col-form-label'>
+                    &nbsp;&nbsp;days
                     </span>
                   </div>
                 </div>
@@ -172,10 +187,10 @@ class BroadcastsInfo extends React.Component {
                             <span style={{width: '120px'}}>Created At</span></th>
                           <th data-field='sent'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Sent</span></th>
+                            <span style={{width: '50px'}}>Sent</span></th>
                           <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '120px'}}>Seen</span></th>
+                            <span style={{width: '50px'}}>Seen</span></th>
                           <th data-field='more'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '120px'}} /></th>
@@ -205,17 +220,17 @@ class BroadcastsInfo extends React.Component {
                               <td data-field='sent'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '120px'}}>{broadcast.sent}</span></td>
+                                  style={{width: '50px'}}>{broadcast.sent}</span></td>
                               <td data-field='seen'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '120px'}}>{broadcast.seen}</span></td>
+                                  style={{width: '50px'}}>{broadcast.seen}</span></td>
                               <td data-field='more'
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '120px'}}>
                                   <button onClick={() => this.onBroadcastClick(broadcast)} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View
+                                    View
                                 </button></span>
                               </td>
                             </tr>
@@ -227,23 +242,21 @@ class BroadcastsInfo extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
                       containerClassName={'pagination'}
                       subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      activeClassName={'active'}
+                      forcePage={this.state.pageNumber} />
                   </div>
-                  : <p> No search results found. </p>
+                  : <p> No data to display. </p>
                 }
               </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-              }
               </div>
             </div>
+          }
           </div>
         </div>
       </div>
@@ -253,7 +266,8 @@ class BroadcastsInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    broadcasts: state.backdoorInfo.broadcasts
+    broadcasts: state.backdoorInfo.broadcasts,
+    count: state.backdoorInfo.broadcastsCount
   }
 }
 

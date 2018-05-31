@@ -10,6 +10,11 @@ export function surveysInfo (state = {}, action) {
       return Object.assign({}, state, {
         surveys: action.data
       })
+    case ActionTypes.LOAD_SURVEYS_LIST_NEW:
+      return Object.assign({}, state, {
+        surveys: action.data,
+        count: action.count
+      })
     case ActionTypes.ADD_SURVEY:
       return Object.assign({}, state, {
         surveyCreated: action.data

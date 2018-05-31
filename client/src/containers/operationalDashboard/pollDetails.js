@@ -8,7 +8,6 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { loadPollDetails } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 
 class ViewPollDetail extends React.Component {
   constructor (props, context) {
@@ -29,21 +28,6 @@ class ViewPollDetail extends React.Component {
   }
 
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/Chart.min.js')
-    document.body.appendChild(addScript)
-
     if (this.props.location.state) {
       this.props.loadPollDetails(this.props.location.state._id)
       this.displayData(0, this.props.location.state.data.subscriber)
@@ -267,7 +251,7 @@ class ViewPollDetail extends React.Component {
                 </div>
               </div>
               <br />
-              {this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
+              { /* this.props.location.state && this.props.location.state.data.subscriber.length > 0 &&
               <div className='row'>
 
                 <div
@@ -420,7 +404,7 @@ class ViewPollDetail extends React.Component {
                   </div>
                 </div>
               </div>
-              }
+              */ }
               <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                 <button className='btn btn-primary' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
                 </button>

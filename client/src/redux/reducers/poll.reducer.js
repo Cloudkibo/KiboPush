@@ -6,9 +6,18 @@ import * as ActionTypes from '../constants/constants'
 
 export function pollsInfo (state = {}, action) {
   switch (action.type) {
+    case ActionTypes.GET_ALL_POLL_RESPONSES:
+      return Object.assign({}, state, {
+        allResponses: action.data
+      })
     case ActionTypes.FETCH_POLLS_LIST:
       return Object.assign({}, state, {
         polls: action.data
+      })
+    case ActionTypes.FETCH_POLLS_LIST_NEW:
+      return Object.assign({}, state, {
+        polls: action.data,
+        count: action.count
       })
     case ActionTypes.ADD_POLL:
       return Object.assign({}, state, {

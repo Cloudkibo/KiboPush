@@ -32,8 +32,8 @@ class WelcomeMessage extends React.Component {
     /* eslint-disable */
     $(temp).bootstrapSwitch({
       /* eslint-enable */
-      onText: 'Enabled',
-      offText: 'Disabled',
+      onText: 'Yes',
+      offText: 'No',
       offColor: 'danger',
       state: state
     })

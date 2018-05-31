@@ -5,7 +5,7 @@ import callApi from '../../utility/api.caller.service'
 export function appendSentSeenResponsesData (data) {
   let surveys = data.surveys
   let pagesurveys = data.surveypages
-  // let responsesCount = data.responsesCount
+  //  let responsesCount = data.responsesCount
 
   for (let j = 0; j < surveys.length; j++) {
     let pagesurvey = pagesurveys.filter((c) => c.surveyId === surveys[j]._id)
@@ -14,14 +14,22 @@ export function appendSentSeenResponsesData (data) {
     surveys[j].seen = pagesurveyTapped.length // total tapped
     surveys[j].responses = surveys[j].isresponded
   }
-  var newSurvey = surveys.reverse()
-  return newSurvey
+  // var newSurvey = surveys.reverse()
+  return surveys
 }
 
 export function showSurveys (data) {
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST,
     data: appendSentSeenResponsesData(data)
+  }
+}
+
+export function showSurveysNew (data) {
+  return {
+    type: ActionTypes.LOAD_SURVEYS_LIST_NEW,
+    data: appendSentSeenResponsesData(data),
+    count: data.count
   }
 }
 
@@ -67,10 +75,20 @@ export function showSurveyResponse (data) {
   }
 }
 
-export function loadSurveysList () {
+export function loadSurveysList (days) {
   // here we will fetch list of subscribers from endpoint
+  console.log('loadSurveysList/days')
   return (dispatch) => {
-    callApi('surveys').then(res => dispatch(showSurveys(res.payload)))
+    callApi(`surveys/all/${days}`).then(res => dispatch(showSurveys(res.payload)))
+  }
+}
+export function loadSurveysListNew (data) {
+  console.log('data for loadSurveysListNew', data)
+  return (dispatch) => {
+    callApi(`surveys/allSurveys`, 'post', data).then(res => {
+      console.log('response from surveys', res)
+      dispatch(showSurveysNew(res.payload))
+    })
   }
 }
 export function sendsurvey (survey, msg) {
@@ -117,7 +135,9 @@ export function submitsurvey (survey) {
 export function createsurvey (survey) {
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
-      .then(res => dispatch(addSurvey(res.payload)))
+      .then(res => {
+        dispatch(addSurvey(res.payload))
+      })
   }
 }
 
@@ -128,13 +148,13 @@ export function loadsurveyresponses (surveyid) {
       .then(res => dispatch(showSurveyResponse(res.payload)))
   }
 }
-export function deleteSurvey (id, msg) {
+export function deleteSurvey (id, msg, data) {
   return (dispatch) => {
     callApi(`surveys/deleteSurvey/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Survey deleted successfully')
-          dispatch(loadSurveysList())
+          dispatch(loadSurveysListNew(data))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete survey. ${res.description}`)

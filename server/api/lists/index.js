@@ -17,6 +17,10 @@ router.get('/allLists',
   // auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.allLists)
 
+router.post('/getAll',
+  auth.isAuthenticated(),
+  controller.getAll)
+
 // todo remove this, this is not being used, discuss
 router.post('/createList',
   auth.isAuthenticated(),
@@ -41,4 +45,14 @@ router.delete('/deleteList/:id',
     // auth.doesPlanPermitsThisAction('customer_matching'),
     // auth.doesRolePermitsThisAction('customerMatchingPermission'),
     controller.deleteList)
+router.get('/repliedPollSubscribers',
+    auth.isAuthenticated(),
+    // auth.doesPlanPermitsThisAction('customer_matching'),
+    // auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.repliedPollSubscribers)
+router.get('/repliedSurveySubscribers',
+    auth.isAuthenticated(),
+    // auth.doesPlanPermitsThisAction('customer_matching'),
+    // auth.doesRolePermitsThisAction('customerMatchingPermission'),
+    controller.repliedSurveySubscribers)
 module.exports = router

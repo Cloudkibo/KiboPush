@@ -10,10 +10,11 @@ import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addPoll,
-  loadPollsList,
+  loadPollsListNew,
   sendpoll,
   clearAlertMessage,
-  deletePoll
+  deletePoll,
+  getAllPollResults
 } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
@@ -27,7 +28,7 @@ import {loadTags} from '../../redux/actions/tags.actions'
 class Poll extends React.Component {
   constructor (props, context) {
     props.loadSubscribersList()
-    props.loadPollsList()
+    props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
     props.loadTags()
     super(props, context)
     this.state = {
@@ -37,7 +38,9 @@ class Poll extends React.Component {
       totalLength: 0,
       isShowingModal: false,
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      selectedDays: '0',
+      pageNumber: 0
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.displayData = this.displayData.bind(this)
@@ -48,6 +51,8 @@ class Poll extends React.Component {
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.sendPoll = this.sendPoll.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+    this.props.getAllPollResults()
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -55,6 +60,25 @@ class Poll extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  onDaysChange (e) {
+    //  var defaultVal = 0
+    var value = e.target.value
+    this.setState({selectedDays: value, pageNumber: 0})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
+      }
+      if (value === '0') {
+        this.setState({
+          selectedDays: ''
+        })
+      }
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: value})
+    } else if (value === '') {
+      this.setState({selectedDays: ''})
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', days: '0'})
+    }
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -70,14 +94,15 @@ class Poll extends React.Component {
   }
 
   displayData (n, polls) {
-    let offset = n * 5
+    console.log('in displayData', polls)
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > polls.length) {
+    if ((offset + 10) > polls.length) {
       limit = polls.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = polls[i]
@@ -87,14 +112,22 @@ class Poll extends React.Component {
   }
 
   handlePageClick (data) {
+    if (data.selected === 0) {
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
+    } else {
+      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.polls && nextProps.polls.length > 0) {
+    if (nextProps.polls && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
-      this.setState({ totalLength: nextProps.polls.length })
+      this.setState({ totalLength: nextProps.count })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -153,14 +186,20 @@ class Poll extends React.Component {
 
   sendPoll (poll) {
     let segmentationValues = []
-    for (let i = 0; i < poll.segmentationTags.length; i++) {
-      for (let j = 0; j < this.props.tags.length; j++) {
-        if (poll.segmentationTags[i] === this.props.tags[j]._id) {
-          segmentationValues.push(this.props.tags[j].tag)
+    if (poll.segmentationTags && poll.segmentationTags.length > 0) {
+      for (let i = 0; i < poll.segmentationTags.length; i++) {
+        for (let j = 0; j < this.props.tags.length; j++) {
+          if (poll.segmentationTags[i] === this.props.tags[j]._id) {
+            segmentationValues.push(this.props.tags[j].tag)
+          }
         }
       }
     }
-    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, segmentationValues, this.props.subscribers)
+    let polls = {
+      pollResponses: this.props.allResponses,
+      selectedPolls: poll.segmentationPoll
+    }
+    var res = checkConditions(poll.segmentationPageIds, poll.segmentationGender, poll.segmentationLocale, segmentationValues, this.props.subscribers, polls)
     if (res === false) {
       this.msg.error('No subscribers match the selected criteria')
     } else {
@@ -168,6 +207,7 @@ class Poll extends React.Component {
     }
   }
   render () {
+    console.log('poll props', this.props)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -293,13 +333,27 @@ class Poll extends React.Component {
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deletePoll(this.state.deleteid, this.msg)
+                                    this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
                               </ModalDialog>
                             </ModalContainer>
                           }
+                        </div>
+                      </div>
+                      <div className='form-row'>
+                        <div className='form-group col-md-6' />
+                        <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                          <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                            Show records for last:&nbsp;&nbsp;
+                          </span>
+                          <div style={{width: '200px'}}>
+                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                          </div>
+                          <span htmlFor='example-text-input' className='col-form-label'>
+                          &nbsp;&nbsp;days
+                          </span>
                         </div>
                       </div>
                       { this.state.pollsData && this.state.pollsData.length > 0
@@ -410,13 +464,14 @@ class Poll extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
-                            activeClassName={'active'} />
+                            activeClassName={'active'}
+                            forcePage={this.state.pageNumber} />
                         </div>
                       </div>
                       : <span>
@@ -436,20 +491,24 @@ class Poll extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('poll state', state)
   return {
     polls: (state.pollsInfo.polls),
+    count: (state.pollsInfo.count),
     successMessage: (state.pollsInfo.successMessage),
     errorMessage: (state.pollsInfo.errorMessage),
     subscribers: (state.subscribersInfo.subscribers),
     user: (state.basicInfo.user),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    allResponses: (state.pollsInfo.allResponses)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadPollsList: loadPollsList,
+      loadPollsListNew: loadPollsListNew,
+      getAllPollResults: getAllPollResults,
       addPoll: addPoll,
       sendpoll: sendpoll,
       clearAlertMessage: clearAlertMessage,

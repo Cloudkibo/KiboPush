@@ -76,7 +76,10 @@ class CreateMessage extends React.Component {
       default:
         break
     }
-    return JSON.parse(payload)
+    if (payload.length > 0) {
+      return JSON.parse(payload)
+    }
+    return payload
   }
   componentDidMount () {
     document.title = 'KiboPush | Menu'
@@ -174,6 +177,12 @@ class CreateMessage extends React.Component {
   }
 
   handleCard (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      }
+      return
+    }
     var temp = this.state.message
     var isPresent = false
     temp.map((data, i) => {
@@ -329,7 +338,7 @@ class CreateMessage extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -337,12 +346,6 @@ class CreateMessage extends React.Component {
 
     return (
       <div>
-        {
-          /*
-        !(this.props.user && this.props.user.convoTourSeen) &&
-        <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-        */
-      }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>

@@ -11,6 +11,7 @@ import ForgotPassword from './containers/login/resetPassword'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
+import ViewPageSubscribers from './containers/dashboard/viewPageSubscribers'
 import MainMenu from './containers/menu/menu'
 import CreateMessage from './containers/menu/CreateMessage'
 import GrowthTools from './containers/GrowthTools/growthTools'
@@ -29,9 +30,6 @@ import SubmitSurvey from './containers/survey/SubmitSurvey'
 import ViewSurveyDetail from './containers/survey/ViewSurveyDetail'
 import AddSurvey from './containers/survey/add_survey'
 import SurveyResult from './containers/survey/SurveyResult'
-import CreateWorkflow from './containers/workflows/CreateWorkflow'
-import EditWorkflow from './containers/workflows/EditWorkflow'
-import Workflows from './containers/workflows/Workflows'
 import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import PollResult from './containers/polls/PollResult'
@@ -91,14 +89,23 @@ import InviteUsingLinkWizard from './containers/wizard/inviteUsingLink'
 import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
-import WorkflowWizard from './containers/wizard/workflow'
 import MenuWizard from './containers/wizard/menu'
-import FinishWizard from './containers/wizard/finish'
+import Finish from './containers/wizard/finish'
 import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
 import Bots from './containers/smart_replies/bots'
 import CreateBot from './containers/smart_replies/createBot'
+import EditBot from './containers/smart_replies/editBot'
+import ViewBot from './containers/smart_replies/viewBot'
+import Sequence from './containers/sequence/sequence'
+import ViewMessage from './containers/sequence/viewMessage'
+import CreateMessageSeq from './containers/sequence/createMessage'
+import EditSequence from './containers/sequence/editSequence'
+import FacebookPosts from './containers/commentCapture/facebookPosts'
+import FacebookPost from './containers/commentCapture/newFacebookPost'
+import WaitingReplyList from './containers/smart_replies/waitingReplyList'
+
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
@@ -145,10 +152,7 @@ const routes = (
     <Route path='/addPages' component={AddPage} onEnter={requireAuth} />
     <Route path='/surveys' component={Surveys} onEnter={requireAuth} />
     <Route path='/createBroadcast' component={CreateConvo} onEnter={requireAuth} />
-    <Route path='/createWorkflow' component={CreateWorkflow} onEnter={requireAuth} />
-    <Route path='/workflows' component={Workflows} onEnter={requireAuth} />
     <Route path='/createPoll' component={CreatePoll} onEnter={requireAuth} />
-    <Route path='/editWorkflow' component={EditWorkflow} onEnter={requireAuth} />
     <Route path='/poll' component={Poll} onEnter={requireAuth} />
     <Route path='/stats' component={Stats} />
     <Route path='/subscribeToMessenger' component={SubscribeToMessenger} onEnter={requireAuth} />
@@ -216,9 +220,8 @@ const routes = (
     <Route path='/greetingTextWizard' component={GreetingTextWizard} onEnter={requireAuth} />
     <Route path='/welcomeMessageWizard' component={WelcomeMessageWizard} onEnter={requireAuth} />
     <Route path='/autopostingWizard' component={AutopostingWizard} onEnter={requireAuth} />
-    <Route path='/workflowWizard' component={WorkflowWizard} onEnter={requireAuth} />
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
-    <Route path='/finishWizard' component={FinishWizard} onEnter={requireAuth} />
+    <Route path='/finish' component={Finish} onEnter={requireAuth} />
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
     <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
     <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />
@@ -227,6 +230,16 @@ const routes = (
     <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
     <Route path='/bots' component={Bots} onEnter={requireAuth} />
     <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
+    <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
+    <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />
+    <Route path='/sequenceMessaging' component={Sequence} onEnter={requireAuth} />
+    <Route path='/viewMessage' component={ViewMessage} onEnter={requireAuth} />
+    <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
+    <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
+    <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
+    <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
+    <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
+    <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
   </Route>
 
 )

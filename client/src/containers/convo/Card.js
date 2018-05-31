@@ -11,6 +11,7 @@ import EditButton from './EditButton'
 import Halogen from 'halogen'
 import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
+import AlertContainer from 'react-alert'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -68,21 +69,29 @@ class Card extends React.Component {
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
-    var reader = new FileReader()
-    reader.readAsDataURL(file)
+    if (file) {
+      if (file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+        if (this.props.handleCard) {
+          this.props.handleCard({error: 'invalid image'})
+        }
+        return
+      }
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
 
-    reader.onloadend = function (e) {
-      // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
-      this.setState({
-        imgSrc: [reader.result]
-      })
-    }.bind(this)
-    this.setState({loading: true})
-    this.props.uploadImage(file, {fileurl: '',
-      fileName: file.name,
-      type: file.type,
-      image_url: '',
-      size: file.size}, this.updateImageUrl, this.setLoading)
+      reader.onloadend = function (e) {
+        // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
+        this.setState({
+          imgSrc: [reader.result]
+        })
+      }.bind(this)
+      this.setState({loading: true})
+      this.props.uploadImage(file, {fileurl: '',
+        fileName: file.name,
+        type: file.type,
+        image_url: '',
+        size: file.size}, this.updateImageUrl, this.setLoading)
+    }
   }
 
   handleChange (event) {
@@ -136,8 +145,7 @@ class Card extends React.Component {
   editButton (obj) {
     var temp = this.state.button.map((elm, index) => {
       if (index === obj.id) {
-        elm.title = obj.title
-        elm.url = obj.url
+        elm = obj.button
       }
       return elm
     })
@@ -191,8 +199,16 @@ class Card extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
@@ -205,6 +221,8 @@ class Card extends React.Component {
               type='file'
               name='user[image]'
               multiple='true'
+              accept='image/*'
+              title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
 
             {
@@ -215,12 +233,12 @@ class Card extends React.Component {
 
           </div>
           <div>
-            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
+            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
+            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, title: obj.title, url: obj.url}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />

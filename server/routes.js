@@ -21,7 +21,6 @@ module.exports = function (app) {
   app.use('/api/broadcasts', require('./api/broadcasts'))
   app.use('/api/backdoor', require('./api/backdoor'))
   app.use('/api/polls', require('./api/polls'))
-  app.use('/api/workflows', require('./api/workflows'))
   app.use('/api/bots', require('./api/smart_replies'))
   app.use('/api/subscribers', require('./api/subscribers'))
   app.use('/api/pages', require('./api/pages'))
@@ -37,6 +36,7 @@ module.exports = function (app) {
   app.use('/api/sessions', require('./api/sessions'))
   app.use('/api/menu', require('./api/menu'))
   app.use('/api/api_settings', require('./api/api_settings'))
+  app.use('/api/api_ngp', require('./api/api_ngp'))
   app.use('/api/templates', require('./api/templates'))
   app.use('/api/URL', require('./api/URLforClickedCount'))
   app.use('/api/teams', require('./api/teams'))
@@ -49,14 +49,19 @@ module.exports = function (app) {
   app.use('/api/adminsubscriptions', require('./api/pageadminsubscriptions'))
   app.use('/api/tags', require('./api/tags'))
   app.use('/api/notifications', require('./api/notifications'))
+  app.use('/api/sequenceMessaging', require('./api/sequenceMessaging'))
+  app.use('/api/post', require('./api/facebook_posts'))
+  app.use('/api/ip2country', require('./api/ipcountry'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/migrations', require('./api/migrations'))
 
   app.use('/auth', require('./auth'))
+
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
       {expires: new Date(Date.now() + 900000)})
-    res.sendFile(path.join(config.root, 'client/index.html'))
+    // res.sendFile(path.join(config.root, 'client/index.html'))
+    res.render('main', { environment: env })
   })
 
   app.get('/dashboard2', (req, res) => {

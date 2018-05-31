@@ -68,7 +68,6 @@ class CreateConvo extends React.Component {
       isShowingModalGuideLines: false,
       isShowingModalResetAlert: false,
       convoTitle: 'Broadcast Title',
-      steps: [],
       showMessengerModal: false,
       selectedRadio: '',
       listSelected: '',
@@ -298,6 +297,12 @@ class CreateConvo extends React.Component {
   }
 
   handleCard (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      }
+      return
+    }
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -377,9 +382,11 @@ class CreateConvo extends React.Component {
   }
 
   sendConvo () {
+    //  this.setState({tabActive: 'broadcast'})
     if (this.state.broadcast.length === 0) {
       return
     }
+    this.initTab()
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -434,6 +441,7 @@ class CreateConvo extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
+        //  this.setState({tabActive: 'broadcast'})
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         // this.setState({broadcast: [], list: []})
       }
@@ -676,13 +684,6 @@ class CreateConvo extends React.Component {
 
     return (
       <div>
-        {
-          /*
-           !(this.props.user && this.props.user.convoTourSeen) &&
-           <Joyride ref='joyride' run steps={this.state.steps} scrollToSteps debug={false} type={'continuous'} callback={this.tourFinished} showStepsProgress showSkipButton />
-
-           */
-        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}

@@ -9,12 +9,13 @@ import { browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { enable, disable, reset, getAPI, saveSwitchState } from '../../redux/actions/settings.actions'
+import { enable, disable, reset, getAPI, saveSwitchState, getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
 import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
+import ChatWidget from './chatWidget'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
@@ -25,40 +26,62 @@ class Settings extends React.Component {
       type: 'password',
       APIKey: '',
       APISecret: '',
+      NGPKey: '',
+      NGPSecret: '',
       buttonText: 'Show',
       disable: true,
+      ngpDisable: true,
       buttonState: '',
+      ngpButtonState: '',
       count: 1,
       count1: 0,
+      count_ngp: 1,
+      count1_ngp: 0,
       firstTime: true,
+      firstTimeNGP: true,
       resetPassword: false,
       showAPI: true,
+      showNGP: false,
       saveState: null,
+      saveStateNGP: null,
       showGreetingMessage: false,
       showSubscribeToMessenger: false,
       showWelcomeMessage: false,
+      chatWidget: false,
       planInfo: ''
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
+    this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
     this.setReset = this.setReset.bind(this)
     this.setResetPass = this.setResetPass.bind(this)
     this.setAPI = this.setAPI.bind(this)
+    this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
+    this.setChatWidget = this.setChatWidget.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
+    this.handleNGPKeyChange = this.handleNGPKeyChange.bind(this)
+    this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
-      this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
+      this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'welcome') {
-      this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
+      this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
     }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
+    this.props.getNGP({company_id: this.props.user.companyId})
+  }
+  handleNGPKeyChange (event) {
+    this.setState({NGPKey: event.target.value})
+  }
+  handleNGPSecretChange (event) {
+    this.setState({NGPSecret: event.target.value})
   }
   getPlanInfo (plan) {
     var planInfo
@@ -66,9 +89,11 @@ class Settings extends React.Component {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
+      this.setState({showAPI: false, resetPassword: true})
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
-    } else if (plan === 'plan_C') {
+    } else if (plan === 'plan_D') {
+      this.setState({showAPI: false, resetPassword: true})
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
@@ -77,22 +102,28 @@ class Settings extends React.Component {
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: true, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+  }
+  setNGP () {
+    this.setState({showAPI: false, showNGP: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setResetPass () {
-    this.setState({showAPI: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setGreetingMessage () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setConnectFb () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+  }
+  setChatWidget () {
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: true})
   }
   setSubscribeToMessenger () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false})
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false, chatWidget: false})
   }
   setWelcomeMessage () {
-    this.setState({showAPI: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true, chatWidget: false})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -103,6 +134,11 @@ class Settings extends React.Component {
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
     }
+  }
+  componentDidUpdate () {
+    console.log('in componentDidUpdate', this.state.saveState)
+    this.initializeSwitch(this.state.buttonState)
+    this.initializeSwitchNGP(this.state.ngpButtonState)
   }
   changeType (e) {
     if (this.state.type === 'password') {
@@ -135,9 +171,40 @@ class Settings extends React.Component {
       }
     })
   }
+  initializeSwitchNGP (state) {
+    var self = this
+    /* eslint-disable */
+    $("[name='switch-NGP']").bootstrapSwitch({
+      /* eslint-enable */
+      onText: 'Enabled',
+      offText: 'Disabled',
+      offColor: 'danger',
+      state: state
+    })
+    /* eslint-disable */
+    $('input[name="switch-NGP"]').on('switchChange.bootstrapSwitch', function (event, state) {
+      /* eslint-enable */
+      self.setState({ngpButtonState: state})
+      if (state === true) {
+        self.setState({ngpDisable: false, ngpButtonState: true})
+        self.props.enableNGP({company_id: self.props.user.companyId})
+      } else {
+        self.setState({ngpDisable: true, ngpButtonState: false})
+        self.props.disableNGP({company_id: self.props.user.companyId})
+      }
+    })
+  }
   setReset (e) {
     e.preventDefault()
     this.props.reset({company_id: this.props.user._id})
+  }
+  saveNGPBtn (e) {
+    e.preventDefault()
+    this.props.saveNGP({
+      company_id: this.props.user.companyId,
+      app_id: this.state.NGPKey,
+      app_secret: this.state.NGPSecret
+    })
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.user && nextProps.user.emailVerified === false &&
@@ -149,6 +216,9 @@ class Settings extends React.Component {
     if (nextProps.user) {
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
+    }
+    if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
+      this.setResetPass()
     }
     if (nextProps.apiEnable) {
       if (this.state.disable === false) {
@@ -183,6 +253,45 @@ class Settings extends React.Component {
         this.setState({saveState: false})
       }
     }
+    /*
+    NGP Work Starts
+    */
+    if (nextProps.apiEnableNGP) {
+      if (this.state.ngpDisable === false) {
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret})
+      }
+    }
+    if (nextProps.apiDisableNGP) {
+      if (this.state.ngpDisable === true) {
+        this.setState({NGPKey: '', NGPSecret: ''})
+      }
+    }
+    if (nextProps.resetDataNGP) {
+      if (this.state.ngpDisable === false) {
+        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret})
+      } else {
+        this.setState({NGPKey: '', NGPSecret: ''})
+      }
+    }
+    if (nextProps.apiSuccessNGP) {
+      if (this.state.count_ngp === 1) {
+        this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
+        if (this.state.count1_ngp !== 1) {
+          this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
+          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
+        }
+        this.setState({count_ngp: 2})
+      }
+    } else if (nextProps.apiFailureNGP) {
+      if (this.state.firstTimeNGP === true) {
+        this.initializeSwitchNGP(false)
+        this.setState({NGPKey: '', NGPSecret: '', ngpButtonState: false, firstTimeNGP: false, count1_ngp: 1})
+        this.setState({saveStateNGP: false})
+      }
+    }
+    /*
+     NGP Work Ends
+     */
   }
   render () {
     return (
@@ -253,18 +362,28 @@ class Settings extends React.Component {
                         <li className='m-nav__section m--hide'>
                           <span className='m-nav__section-text'>Section</span>
                         </li>
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-share' />
-                            <span className='m-nav__link-text'>API</span>
-                          </a>
-                        </li>
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
+                          <li className='m-nav__item'>
+                            <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                              <i className='m-nav__link-icon flaticon-share' />
+                              <span className='m-nav__link-text'>API</span>
+                            </a>
+                          </li>
+                        }
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-lock-1' />
-                            <span className='m-nav__link-text'>Reset Password</span>
+                            <span className='m-nav__link-text'>Change Password</span>
                           </a>
                         </li>
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-share' />
+                            <span className='m-nav__link-text'>NGP Integration</span>
+                          </a>
+                        </li>
+                        }
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-exclamation' />
@@ -288,6 +407,14 @@ class Settings extends React.Component {
                           <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon fa fa-facebook' />
                             <span className='m-nav__link-text'>Connect with Facebook</span>
+                          </a>
+                        </li>
+                      }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon la la-plug' />
+                            <span className='m-nav__link-text'>Add KiboPush Widget</span>
                           </a>
                         </li>
                       }
@@ -366,6 +493,74 @@ class Settings extends React.Component {
                   </div>
                 </div>
                 }
+                { this.state.showNGP &&
+                <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <span className='nav-link m-tabs__link active'>
+                              <i className='flaticon-share m--hide' />
+                              NGP Integration
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className='tab-content'>
+                      <div className='tab-pane active' id='m_user_profile_tab_1'>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group m--margin-top-10 m--hide'>
+                              <div className='alert m-alert m-alert--default' role='alert'>
+                                The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
+                              </div>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <div className='col-lg-8 col-md-8 col-sm-12' />
+                              <div className='col-lg-4 col-md-4 col-sm-4'>
+                                <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                                  <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
+                                    <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <br /><br />
+                            {
+                              this.state.NGPKey &&
+                                <div>
+                                  <div className='form-group m-form__group row'>
+                                    <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
+                                    <div className='col-7 input-group'>
+                                      <input className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
+                                    </div>
+                                  </div>
+                                  <div className='form-group m-form__group row'>
+                                    <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                                      NGP API Key
+                                    </label>
+                                    <div className='col-7 input-group'>
+                                      <input className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                    </div>
+                                  </div>
+                                </div>
+                            }
+                            <br />
+                            {
+                              this.state.NGPKey &&
+                              <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
+                            }
+                            <br />
+                          </div>
+                        </form>
+                      </div>
+                      <div className='tab-pane active' id='m_user_profile_tab_2' />
+                    </div>
+                  </div>
+                </div>
+                }
                 { this.state.resetPassword &&
                   <ResetPassword />
                 }
@@ -380,6 +575,9 @@ class Settings extends React.Component {
                 }
                 { this.state.connectFb &&
                   <ConnectFb />
+                }
+                { this.state.chatWidget &&
+                  <ChatWidget />
                 }
               </div>
             </div>
@@ -397,6 +595,11 @@ function mapStateToProps (state) {
     resetData: (state.settingsInfo.resetData),
     apiSuccess: (state.settingsInfo.apiSuccess),
     apiFailure: (state.settingsInfo.apiFailure),
+    apiEnableNGP: (state.settingsInfo.apiEnableNGP),
+    apiDisableNGP: (state.settingsInfo.apiDisableNGP),
+    resetDataNGP: (state.settingsInfo.resetDataNGP),
+    apiSuccessNGP: (state.settingsInfo.apiSuccessNGP),
+    apiFailureNGP: (state.settingsInfo.apiFailureNGP),
     switchState: (state.settingsInfo.switchState)
   }
 }
@@ -408,6 +611,10 @@ function mapDispatchToProps (dispatch) {
     disable: disable,
     reset: reset,
     getAPI: getAPI,
+    getNGP: getNGP,
+    enableNGP: enableNGP,
+    disableNGP: disableNGP,
+    saveNGP: saveNGP,
     saveSwitchState: saveSwitchState
   }, dispatch)
 }

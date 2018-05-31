@@ -10,7 +10,8 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { Picker } from 'emoji-mart'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import Popover from 'react-simple-popover'
+// import Popover from 'react-simple-popover'
+import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from './viewScreen'
 
@@ -44,13 +45,13 @@ class GreetingMessage extends React.Component {
     this.onGreetingMessageChange = this.onGreetingMessageChange.bind(this)
     this.viewGreetingMessage = this.viewGreetingMessage.bind(this)
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
-    this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
     this.showUserOptions = this.showUserOptions.bind(this)
-    this.closeUserOptions = this.closeUserOptions.bind(this)
     this.getName = this.getName.bind(this)
     this.showPreviewDialog = this.showPreviewDialog.bind(this)
     this.closePreviewDialog = this.closePreviewDialog.bind(this)
     this.selectPage = this.selectPage.bind(this)
+    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
+    this.toggleUserOptions = this.toggleUserOptions.bind(this)
     props.loadMyPagesList()
   }
   showPreviewDialog () {
@@ -129,16 +130,14 @@ class GreetingMessage extends React.Component {
   showEmojiPicker () {
     this.setState({showEmojiPicker: true})
   }
-
-  closeEmojiPicker () {
-    this.setState({showEmojiPicker: false})
+  toggleEmojiPicker () {
+    this.setState({showEmojiPicker: !this.state.showEmojiPicker})
+  }
+  toggleUserOptions () {
+    this.setState({showUserOptions: !this.state.showUserOptions})
   }
   showUserOptions () {
     this.setState({showUserOptions: true})
-  }
-
-  closeUserOptions () {
-    this.setState({showUserOptions: false})
   }
 
   setEmoji (emoji) {
@@ -194,39 +193,28 @@ class GreetingMessage extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Popover
-          style={{paddingBottom: '100px', left: '12px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative', height: '100px'}}
-          placement='left'
-          height='390px'
-          target={this.target}
-          show={this.state.showEmojiPicker}
-          onHide={this.closeEmojiPicker}
-        >
-          <div>
-            <Picker
-              style={{paddingBottom: '100px', marginRight: '12px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
-              emojiSize={24}
-              perLine={7}
-              skin={1}
-              set='facebook'
-              custom={[]}
-              autoFocus={false}
-              showPreview={false}
-              onClick={(emoji, event) => this.setEmoji(emoji)}
-            />
-          </div>
+        <Popover placement='left' isOpen={this.state.showEmojiPicker} className='greetingPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
+          <PopoverBody>
+            <div>
+              <Picker
+                emojiSize={24}
+                perLine={6}
+                skin={1}
+                set='facebook'
+                custom={[]}
+                autoFocus={false}
+                showPreview={false}
+                onClick={(emoji, event) => this.setEmoji(emoji)}
+              />
+            </div>
+          </PopoverBody>
         </Popover>
-        <Popover
-          style={{paddingBottom: '100px', left: '18px', paddingRight: '20px', height: '100px', width: 'auto', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, position: 'relative', lineHeight: '25px'}}
-          placement='left'
-          height='100px'
-          target={this.userOptions}
-          show={this.state.showUserOptions}
-          onHide={this.closeUserOptions}
-        >
-          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
-          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
-          <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+        <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
+          <PopoverBody>
+            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
+            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
+            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+          </PopoverBody>
         </Popover>
         {
           this.state.showPreview &&
@@ -290,7 +278,7 @@ class GreetingMessage extends React.Component {
                             onChange={this.onGreetingMessageChange} />
                         </div>
                         <div className='m-messenger__form-tools pull-right messengerTools'>
-                          <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                          <div id='emogiPicker' ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
                             <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                               <i style={{
                                 fontSize: '20px',
@@ -304,7 +292,7 @@ class GreetingMessage extends React.Component {
                               }} className='greetingMessage fa fa-smile-o' />
                             </i>
                           </div>
-                          <div ref={(c) => { this.userOptions = c }} style={{display: 'inline-block'}} data-tip='options'>
+                          <div id='userOptions' ref={(c) => { this.userOptions = c }} style={{display: 'inline-block'}} data-tip='options'>
                             <i onClick={this.showUserOptions} style={styles.iconclass}>
                               <i style={{
                                 fontSize: '20px',

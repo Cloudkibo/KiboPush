@@ -23,8 +23,17 @@ export function backdoorInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_USERS_LIST:
       return Object.assign({}, state, {
+        users: [...state.users, ...action.data],
+        //  users: action.data,
+        //  locales: action.locale,
+        count: action.count
+      })
+    case ActionTypes.LOAD_USERS_LIST_FILTERS:
+      return Object.assign({}, state, {
+        //  users: [...state.users, action.data],
         users: action.data,
-        locales: action.locale
+        //  locales: action.locale,
+        count: action.count
       })
 
     case ActionTypes.LOAD_DATA_OBJECTS_LIST:
@@ -33,34 +42,40 @@ export function backdoorInfo (state = initialState, action) {
       })
 
     case ActionTypes.LOAD_TOP_PAGES_LIST:
+      console.log('loadTopPages', action.data)
       return Object.assign({}, state, {
         toppages: action.data
       })
 
     case ActionTypes.LOAD_BACKDOOR_PAGES_LIST:
       return Object.assign({}, state, {
-        pages: action.data
+        pages: action.data,
+        pagesCount: action.count
       })
 
     case ActionTypes.LOAD_BROADCASTS_LIST:
       return Object.assign({}, state, {
-        broadcasts: action.data
+        broadcasts: action.data,
+        broadcastsUserCount: action.count
       })
 
     case ActionTypes.LOAD_PAGE_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
         pageSubscribers: action.data,
-        locales: action.locale
+        //  locales: action.locale,
+        subscribersCount: action.count
       })
 
     case ActionTypes.LOAD_POLLS_LIST:
       return Object.assign({}, state, {
-        polls: action.data
+        polls: action.data,
+        pollsUserCount: action.count
       })
 
     case ActionTypes.LOAD_SURVEYS_LIST:
       return Object.assign({}, state, {
-        surveys: action.data
+        surveys: action.data,
+        surveysUserCount: action.count
       })
 
     case ActionTypes.LOAD_SURVEY_DETAILS:
@@ -117,17 +132,24 @@ export function backdoorInfo (state = initialState, action) {
 
     case ActionTypes.UPDATE_BROADCASTS_BY_DAYS:
       return Object.assign({}, state, {
-        broadcasts: action.data
+        broadcasts: action.broadcasts,
+        broadcastsCount: action.count
       })
 
     case ActionTypes.UPDATE_POLLS_BY_DAYS:
       return Object.assign({}, state, {
-        polls: action.data
+        polls: action.polls,
+        pollsCount: action.count
       })
 
     case ActionTypes.UPDATE_SURVEYS_BY_DAYS:
       return Object.assign({}, state, {
-        surveys: action.data
+        surveys: action.surveys,
+        surveysCount: action.count
+      })
+    case ActionTypes.LOAD_LOCALES_LIST_BACKDOOR:
+      return Object.assign({}, state, {
+        locales: action.data
       })
 
     default:

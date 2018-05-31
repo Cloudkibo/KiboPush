@@ -23,7 +23,6 @@ export function growthToolsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         nonSubscribersData: action.data
       })
-
     default:
       return state
   }

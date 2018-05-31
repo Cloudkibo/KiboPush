@@ -41,7 +41,7 @@ exports.sendConversation = function (req, res) {
   if (!utility.validateInput(req.body)) {
     logger.serverLog(TAG, 'Parameters are missing.')
     return res.status(400)
-    .json({status: 'failed', description: 'Parameters or components are missing'})
+    .json({status: 'failed', description: 'Please fill all the required fields'})
   }
 
   if (req.body.self) {
@@ -445,7 +445,14 @@ exports.upload = function (req, res) {
       description: 'No file submitted'
     })
   }
-
+  logger.serverLog(TAG,
+    `req.files.file ${JSON.stringify(req.files.file.path)}`)
+  logger.serverLog(TAG,
+    `req.files.file ${JSON.stringify(req.files.file.name)}`)
+  logger.serverLog(TAG,
+    `dir ${JSON.stringify(dir)}`)
+  logger.serverLog(TAG,
+    `serverPath ${JSON.stringify(serverPath)}`)
   fs.rename(
     req.files.file.path,
     dir + '/userfiles/' + serverPath,
@@ -465,6 +472,7 @@ exports.upload = function (req, res) {
         status: 'success',
         payload: {
           id: serverPath,
+          name: req.files.file.name,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         }
       })
@@ -482,6 +490,21 @@ exports.download = function (req, res) {
     res.status(404)
       .json({status: 'success', payload: 'Not Found ' + JSON.stringify(err)})
   }
+}
+
+exports.deleteFiles = function (req, res) {
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+  req.body.forEach((file, i) => {
+    fs.unlink(dir + '/' + file, (err) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `delete file, err = ${JSON.stringify(err)}`)
+      } else if (i === req.body.length - 1) {
+        res.status(404)
+          .json({status: 'success', payload: 'Files deleted successfully!'})
+      }
+    })
+  })
 }
 
 exports.delete = function (req, res) {

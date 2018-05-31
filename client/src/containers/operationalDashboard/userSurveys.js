@@ -12,14 +12,16 @@ const moment = extendMoment(Moment)
 class SurveysInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.loadSurveysList(props.userID)
+    props.loadSurveysList(props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}})
     this.state = {
       SurveyData: [],
       totalLength: 0,
       filterOptions: [
         { value: 10, label: '10 days' },
         { value: 30, label: '30 days' }],
-      selectedFilterValue: 10
+      selectedFilterValue: 10,
+      searchValue: '',
+      pageNumber: 0
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -29,29 +31,15 @@ class SurveysInfo extends React.Component {
     this.onSurveyClick = this.onSurveyClick.bind(this)
   }
 
-  componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-  }
-
   displayData (n, surveys) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > surveys.length) {
+    if ((offset + 10) > surveys.length) {
       limit = surveys.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = surveys[i]
@@ -61,37 +49,53 @@ class SurveysInfo extends React.Component {
   }
 
   handlePageClick (data) {
+    if (data.selected === 0) {
+      this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadSurveysList(this.props.userID, {first_page: 'next', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+    } else {
+      this.props.loadSurveysList(this.props.userID, {first_page: 'previous', last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedFilterValue}})
+    }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.surveys) {
+    if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
-      this.setState({ totalLength: nextProps.surveys.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({SurveyData: [], totalLength: 0})
     }
   }
   searchSurveys (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.surveys.length; i++) {
-      if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.surveys[i])
-      }
-    }
-
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: event.target.value.toLowerCase(), days: this.state.selectedFilterValue}})
+    // var filtered = []
+    // for (let i = 0; i < this.props.surveys.length; i++) {
+    //   if (this.props.surveys[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.surveys[i])
+    //   }
+    // }
+    //
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
-  onFilter (val) {
-    if (!val) {
-      this.setState({selectedFilterValue: null})
-      this.displayData(0, this.props.surveys)
-      this.setState({ totalLength: this.props.surveys.length })
-    } else if (val.value === 10) {
-      this.filterByDays(10)
-      this.setState({ selectedFilterValue: val })
-    } else if (val.value === 30) {
-      this.filterByDays(30)
-      this.setState({ selectedFilterValue: val })
-    }
+  onFilter (e) {
+    console.log('val in survey', e.target.value)
+    this.setState({ selectedFilterValue: e.target.value, pageNumber: 0 })
+    this.props.loadSurveysList(this.props.userID, {first_page: 'first', last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, days: e.target.value}})
+
+    // if (!val) {
+    //   this.setState({selectedFilterValue: null})
+    //   this.displayData(0, this.props.surveys)
+    //   this.setState({ totalLength: this.props.surveys.length })
+    // } else if (val.value === 10) {
+    //   this.filterByDays(10)
+    //   this.setState({ selectedFilterValue: val })
+    // } else if (val.value === 30) {
+    //   this.filterByDays(30)
+    //   this.setState({ selectedFilterValue: val })
+    // }
   }
 
   filterByDays (val) {
@@ -131,105 +135,101 @@ class SurveysInfo extends React.Component {
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
-                { this.props.surveys && this.props.surveys.length > 0
-              ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                <div className='form-group m-form__group row align-items-center'>
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                    <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchSurveys} />
-                    <span className='m-input-icon__icon m-input-icon__icon--left'>
-                      <span><i className='la la-search' /></span>
-                    </span>
-                  </div>
-                  <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-                  <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
-                    <div className='m-form__label'>
-                      <label>Filter by Last:&nbsp;&nbsp;</label>
+                <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                  <div className='form-group m-form__group row align-items-center'>
+                    <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                      <input type='text' placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={this.searchSurveys} />
+                      <span className='m-input-icon__icon m-input-icon__icon--left'>
+                        <span><i className='la la-search' /></span>
+                      </span>
                     </div>
-                    <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedFilterValue} onChange={this.onFilter}>
-                      {
-                        this.state.filterOptions.map((locale, i) => (
-                          <option value={locale.value}>{locale.label}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-                </div>
-                {
-                  this.state.SurveyData && this.state.SurveyData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table'
-                      id='m-datatable--27866229129' style={{
-                        display: 'block',
-                        height: 'auto',
-                        overflowX: 'auto'
-                      }}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='title'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Title</span></th>
-                          <th data-field='description'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Descripton</span></th>
-                          <th data-field='created'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Created at</span></th>
-                          <th data-field='more'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}} /></th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                    <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                    <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
+                      <div className='m-form__label'>
+                        <label>Filter by Last:&nbsp;&nbsp;</label>
+                      </div>
+                      <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedFilterValue} onChange={this.onFilter}>
                         {
-                          this.state.SurveyData.map((survey, i) => (
-                            <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
-                              style={{height: '55px'}} key={i}>
-                              <td data-field='title'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}>{survey.title}</span></td>
-                              <td data-field='description'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}>{survey.description}</span></td>
-                              <td data-field='created'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}>{handleDate(survey.datetime)}</span></td>
-                              <td data-field='more'
-                                className='m-datatable__cell'>
-                                <span
-                                  style={{width: '150px'}}>
-                                  <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View Survey
-                                </Link></span>
-                              </td>
-                            </tr>
+                          this.state.filterOptions.map((locale, i) => (
+                            <option value={locale.value}>{locale.label}</option>
                           ))
                         }
-                      </tbody>
-                    </table>
-                    <ReactPaginate previousLabel={'previous'}
-                      nextLabel={'next'}
-                      breakLabel={<a>...</a>}
-                      breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
-                      marginPagesDisplayed={1}
-                      pageRangeDisplayed={3}
-                      onPageChange={this.handlePageClick}
-                      containerClassName={'pagination'}
-                      subContainerClassName={'pages pagination'}
-                      activeClassName={'active'} />
+                      </select>
+                    </div>
                   </div>
-                  : <p> No search results found. </p>
-                }
-              </div>
-              : <div className='table-responsive'>
-                <p> No data to display </p>
-              </div>
-              }
+                  {
+                    this.state.SurveyData && this.state.SurveyData.length > 0
+                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table'
+                        id='m-datatable--27866229129' style={{
+                          display: 'block',
+                          height: 'auto',
+                          overflowX: 'auto'
+                        }}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{height: '53px'}}>
+                            <th data-field='title'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>Title</span></th>
+                            <th data-field='description'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>Descripton</span></th>
+                            <th data-field='created'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>Created at</span></th>
+                            <th data-field='more'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}} /></th>
+                          </tr>
+                        </thead>
+                        <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                          {
+                            this.state.SurveyData.map((survey, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='title'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '150px'}}>{survey.title}</span></td>
+                                <td data-field='description'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '150px'}}>{survey.description}</span></td>
+                                <td data-field='created'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '150px'}}>{handleDate(survey.datetime)}</span></td>
+                                <td data-field='more'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '150px'}}>
+                                    <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/surveyDetails'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    View Survey
+                                  </Link></span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                      <ReactPaginate previousLabel={'previous'}
+                        nextLabel={'next'}
+                        breakLabel={<a>...</a>}
+                        breakClassName={'break-me'}
+                        pageCount={Math.ceil(this.state.totalLength / 10)}
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={3}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'}
+                        forcePage={this.state.pageNumber} />
+                    </div>
+                    : <p> No data to display. </p>
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -241,7 +241,9 @@ class SurveysInfo extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    surveys: state.backdoorInfo.surveys
+    surveys: state.backdoorInfo.surveys,
+    count: state.backdoorInfo.surveysUserCount
+
   }
 }
 

@@ -37,6 +37,9 @@ class AddSurvey extends React.Component {
       page: {
         options: []
       },
+      survey: {
+        options: []
+      },
       Gender: {
         options: [{id: 'male', text: 'male'},
                   {id: 'female', text: 'female'},
@@ -57,7 +60,7 @@ class AddSurvey extends React.Component {
       genderValue: [],
       localeValue: [],
       tagValue: [],
-      steps: [],
+      surveyValue: [],
       showDropDown: false,
       selectedRadio: '',
       listSelected: '',
@@ -70,11 +73,21 @@ class AddSurvey extends React.Component {
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
+    this.initializeSurveySelect = this.initializeSurveySelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+  }
+  showDropDown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -88,10 +101,17 @@ class AddSurvey extends React.Component {
     for (var i = 0; i < this.props.pages.length; i++) {
       options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
     }
-    this.setState({page: {options: options}})
+    let surveyOptions = []
+    if (this.props.survey) {
+      for (var j = 0; j < this.props.surveys.length; j++) {
+        surveyOptions[j] = {id: this.props.surveys[j]._id, text: this.props.surveys[j].title}
+      }
+    }
+    this.setState({page: {options: options}, survey: {options: surveyOptions}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    this.initializeSurveySelect(surveyOptions)
   }
   initializeListSelect (lists) {
     var self = this
@@ -235,6 +255,33 @@ class AddSurvey extends React.Component {
     })
   }
 
+  initializeSurveySelect (surveyOptions) {
+    var self = this
+    console.log('surveyOptions', surveyOptions)
+    /* eslint-disable */
+    $('#selectSurvey').select2({
+    /* eslint-enable */
+      data: surveyOptions,
+      placeholder: 'Select Survey',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectSurvey').on('change', function (e) {
+    /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ surveyValue: selected })
+      }
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists) {
       let options = []
@@ -331,7 +378,7 @@ class AddSurvey extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.surveyValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
@@ -355,6 +402,7 @@ class AddSurvey extends React.Component {
           segmentationPageIds: this.state.pageValue,
           segmentationGender: this.state.genderValue,
           segmentationLocale: this.state.localeValue,
+          segmentationSurvey: this.state.surveyValue,
           segmentationTags: tagIDs,
           isList: isListValue,
           segmentationList: this.state.listSelected
@@ -635,7 +683,7 @@ class AddSurvey extends React.Component {
       }
       var isSegmentedValue = false
       if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 ||
-                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+                    this.state.localeValue.length > 0 || this.state.tagValue.length > 0 || this.state.surveyValue.length > 0) {
         isSegmentedValue = true
       }
       if (flag === 0 && this.state.title !== '' &&
@@ -663,6 +711,7 @@ class AddSurvey extends React.Component {
             segmentationPageIds: this.state.pageValue,
             segmentationGender: this.state.genderValue,
             segmentationLocale: this.state.localeValue,
+            segmentationSurvey: this.state.surveyValue,
             segmentationTags: tagIDs,
             isList: isListValue,
             segmentationList: this.state.listSelected
@@ -839,8 +888,31 @@ class AddSurvey extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                             </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                            </div>
+                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <div className='col-lg-8 col-md-8 col-sm-8'>
+                                <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                              </div>
+                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                                  <i className='la la-info-circle' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
                             </div>
                           </div>
                           : <div className='m-form'>
@@ -850,8 +922,31 @@ class AddSurvey extends React.Component {
                             <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                             </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                               <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+                            </div>
+                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                              <div className='col-lg-8 col-md-8 col-sm-8'>
+                                <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
+                              </div>
+                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                                  <i className='la la-info-circle' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
                             </div>
                           </div>
                           }

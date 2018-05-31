@@ -65,38 +65,35 @@ class Card extends React.Component {
     }
   }
   componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
     this.updateCardDetails(this.props)
   }
 
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
-    var reader = new FileReader()
-    reader.readAsDataURL(file)
+    if (file) {
+      if (file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+        if (this.props.handleCard) {
+          this.props.handleCard({error: 'invalid image'})
+        }
+        return
+      }
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
 
-    reader.onloadend = function (e) {
-      // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
-      this.setState({
-        imgSrc: [reader.result]
-      })
-    }.bind(this)
-    this.setState({loading: true})
-    this.props.uploadImage(file, {fileurl: '',
-      fileName: file.name,
-      type: file.type,
-      image_url: '',
-      size: file.size}, this.updateImageUrl, this.setLoading)
+      reader.onloadend = function (e) {
+        // this.props.handleCard({id: this.props.id, title: this.state.title, subtitle: this.state.subtitle, imgSrc: [reader.result]})
+        this.setState({
+          imgSrc: [reader.result]
+        })
+      }.bind(this)
+      this.setState({loading: true})
+      this.props.uploadImage(file, {fileurl: '',
+        fileName: file.name,
+        type: file.type,
+        image_url: '',
+        size: file.size}, this.updateImageUrl, this.setLoading)
+    }
   }
 
   handleChange (event) {
@@ -226,8 +223,8 @@ class Card extends React.Component {
 
           </div>
           <div>
-            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' />
-            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' />
+            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
+            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {

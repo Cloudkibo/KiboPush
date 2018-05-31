@@ -15,22 +15,86 @@ export function showChatSessions (sessions) {
   }
 }
 
-export function updateChatSessions (session, sessions) {
-  var temp = sessions
-  for (var i = 0; i < temp.length; i++) {
-    if (temp[i]._id === session._id) {
-      temp[i] = session
+export function showOpenChatSessions (sessions, data) {
+  var sorted = sessions.openSessions.sort(function (a, b) {
+    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+  })
+  console.log('sorted sessions', sorted)
+  if (data.first_page && (data.page_value !== '' || data.search_value !== '')) {
+    return {
+      type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE,
+      openSessions: sorted,
+      count: sessions.count
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_OPEN_CHAT_SESSIONS,
+      openSessions: sorted,
+      count: sessions.count
+    }
+  }
+}
+
+export function showCloseChatSessions (sessions, firstPage) {
+  var sorted = sessions.closedSessions.sort(function (a, b) {
+    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+  })
+  console.log('sorted sessions', sorted)
+  if (firstPage) {
+    return {
+      type: ActionTypes.SHOW_CLOSE_CHAT_SESSIONS_OVERWRITE,
+      closeSessions: sorted,
+      count: sessions.count
     }
   }
   return {
+    type: ActionTypes.SHOW_CLOSE_CHAT_SESSIONS,
+    closeSessions: sorted,
+    count: sessions.count
+  }
+}
+export function updateChatSessions (session, sessions, status) {
+  let openSessions = sessions.openSessions
+  let closeSessions = sessions.closeSessions
+  if (status === 'resolved') {
+    closeSessions.push(session)
+    for (let i = 0; i < openSessions.length; i++) {
+      if (session._id === openSessions[i]._id) {
+        openSessions.splice(i, 1)
+      }
+    }
+    openSessions = openSessions.sort(function (a, b) {
+      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    })
+  } else {
+    openSessions.push(session)
+    for (let i = 0; i < closeSessions.length; i++) {
+      if (session._id === closeSessions[i]._id) {
+        closeSessions.splice(i, 1)
+      }
+    }
+    closeSessions = closeSessions.sort(function (a, b) {
+      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+    })
+  }
+
+  return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
-    sessions
+    openSessions,
+    closeSessions
   }
 }
 
 export function socketUpdate (data) {
   return {
     type: ActionTypes.SOCKET_UPDATE,
+    data
+  }
+}
+
+export function socketUpdateSeen (data) {
+  return {
+    type: ActionTypes.SOCKET_UPDATE_SEEN,
     data
   }
 }
@@ -101,10 +165,32 @@ export function fetchSessions () {
   }
 }
 
-export function fetchSingleSession (sessionid, sessions) {
+export function fetchOpenSessions (data) {
+  console.log('fetchOpenSessions data', data)
+  return (dispatch) => {
+    callApi('sessions/getOpenSessions', 'post', data)
+      .then(res => {
+        console.log('fetchOpenSessions response', res)
+        dispatch(showOpenChatSessions(res.payload, data))
+      })
+  }
+}
+
+export function fetchCloseSessions (data) {
+  console.log('fetchCloseSessions data', data)
+  return (dispatch) => {
+    callApi('sessions/getClosedSessions', 'post', data)
+      .then(res => {
+        console.log('fetchCloseSessions response', res)
+        dispatch(showCloseChatSessions(res.payload, data.first_page))
+      })
+  }
+}
+
+export function fetchSingleSession (sessionid, sessions, status) {
   return (dispatch) => {
     callApi(`sessions/${sessionid}`)
-      .then(res => dispatch(updateChatSessions(res.payload, sessions)))
+      .then(res => dispatch(updateChatSessions(res.payload, sessions, status)))
   }
 }
 
@@ -179,10 +265,11 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data, handleActiveSession) {
+export function changeStatus (data, sessions, handleActiveSession) {
+  console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      dispatch(fetchSessions())
+      // dispatch(fetchSingleSession(data._id, sessions, data.status))
       handleActiveSession()
     })
   }

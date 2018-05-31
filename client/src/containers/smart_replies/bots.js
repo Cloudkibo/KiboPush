@@ -7,7 +7,7 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot } from '../../redux/actions/smart_replies.actions'
+import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -17,6 +17,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 class Bot extends React.Component {
   constructor (props, context) {
     props.loadBotsList()
+    props.loadAnalytics()
     props.loadMyPagesList()
     super(props, context)
     this.state = {
@@ -30,7 +31,10 @@ class Bot extends React.Component {
       isActive: true,
       error: false,
       filterValue: '',
-      searchValue: ''
+      searchValue: '',
+      createBotDialogButton: false,
+      pageNumber: 0,
+      filter: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -69,14 +73,14 @@ class Bot extends React.Component {
   }
 
   displayData (n, bots) {
-    let offset = n * 5
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 5) > bots.length) {
+    if ((offset + 10) > bots.length) {
       limit = bots.length
     } else {
-      limit = offset + 5
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = bots[i]
@@ -86,17 +90,26 @@ class Bot extends React.Component {
   }
 
   handlePageClick (data) {
+    // this.setState({pageSelected: data.selected})
+    // if (data.selected === 0) {
+    //   this.props.loadBotsListNew({last_id: 'none', number_of_records: 10, first_page: true, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
+    // } else {
+    //   this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, page_value: this.state.filterValue}})
+    // }
     this.displayData(data.selected, this.props.bots)
   }
 
   updateName (e) {
-    this.setState({name: e.target.value, error: false})
+    var name = e.target.value.replace('-', '')
+    this.setState({name: name, error: false})
   }
 
   searchBot (event) {
     this.setState({searchValue: event.target.value})
     var filtered = []
     if (event.target.value !== '' && this.state.filterValue === '') {
+      // this.setState({filter: true})
+      // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value, page_value: this.state.filterValue}})
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase())) {
           filtered.push(this.props.bots[i])
@@ -118,7 +131,9 @@ class Bot extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value !== '' && this.state.searchValue === '') {
+    if (e.target.value && this.state.searchValue === '') {
+      // this.setState({filter: true})
+      // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].pageId._id === e.target.value) {
           filtered.push(this.props.bots[i])
@@ -138,8 +153,8 @@ class Bot extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
-      // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
     }
@@ -171,18 +186,18 @@ class Bot extends React.Component {
     this.setState({isActive: e.target.value})
   }
 
-  gotoView (poll) {
+  gotoView (bot) {
     this.props.history.push({
-      pathname: `/pollResult`,
-      state: poll
+      pathname: `/viewBot`,
+      state: bot
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
 
-  gotoEdit (poll) {
+  gotoEdit (bot) {
     this.props.history.push({
-      pathname: `/pollView`,
-      state: poll
+      pathname: `/editBot`,
+      state: bot
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
@@ -190,7 +205,9 @@ class Bot extends React.Component {
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
-      this.props.createBot({botName: this.state.name, pageId: this.state.pageId, isActive: this.state.isActive})
+      var botName = this.state.name.trim()
+      botName = botName.replace(/\s+/g, '-')
+      this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
       browserHistory.push({
         pathname: `/createBot`
       })
@@ -237,6 +254,62 @@ class Bot extends React.Component {
                   Or check out this <a>video tutorial</a>
                 </div>
               </div>
+
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Bots might take 30mins to 1 hour to train. Please test the bot after 1 hour to see if it is working
+                </div>
+              </div>
+              {this.props.analytics &&
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='row m-row--full-height'>
+                    <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                      <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
+                        <div className='m-portlet__body'>
+                          <div className='m-widget26'>
+                            <div className='m-widget26__number'>{this.props.analytics.totalQueries}
+                              <small>
+                                Total Queries
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                      <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+                        <div className='m-portlet__body'>
+                          <div className='m-widget26'>
+                            <div className='m-widget26__number'>{this.props.analytics.responded}
+                              <small>
+                                Responded
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-sm-4 col-md-4 col-lg-4' style={{height: 'fit-content'}}>
+                      <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
+                        <div className='m-portlet__body'>
+                          <div className='m-widget26'>
+                            <div className='m-widget26__number'>{this.props.analytics.notResponded}
+                              <small>
+                                Not Responded
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
               <div className='row'>
                 <div className='col-xl-12'>
                   <div className='m-portlet'>
@@ -316,7 +389,7 @@ class Bot extends React.Component {
                                 </div>
                                 <div style={{width: '100%', textAlign: 'center'}}>
                                   <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
-                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                                    <button className='btn btn-primary' disabled={this.state.createBotDialogButton} onClick={() => this.gotoCreate()}>
                                       Create
                                     </button>
                                   </div>
@@ -324,27 +397,27 @@ class Bot extends React.Component {
                               </ModalDialog>
                             </ModalContainer>
                           }
-                          {/*
+                          {
                             this.state.isShowingModalDelete &&
                             <ModalContainer style={{width: '500px'}}
                               onClose={this.closeDialogDelete}>
                               <ModalDialog style={{width: '500px'}}
                                 onClose={this.closeDialogDelete}>
-                                <h3>Delete Poll</h3>
-                                <p>Are you sure you want to delete this poll?</p>
+                                <h3>Delete Bot</h3>
+                                <p>Are you sure you want to delete this bot?</p>
                                 <button style={{float: 'right'}}
                                   className='btn btn-primary btn-sm'
                                   onClick={() => {
-                                    this.props.deletePoll(this.state.deleteid, this.msg)
+                                    this.props.deleteBot(this.state.deleteid, this.msg)
                                     this.closeDialogDelete()
                                   }}>Delete
                                 </button>
                               </ModalDialog>
                             </ModalContainer>
-                          */}
+                          }
                         </div>
                         <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                          <input type='text' placeholder='Search bots by name ...' className='form-control m-input m-input--solid' onChange={this.searchBots} />
+                          <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
                           <span className='m-input-icon__icon m-input-icon__icon--left'>
                             <span><i className='la la-search' /></span>
                           </span>
@@ -375,55 +448,75 @@ class Bot extends React.Component {
                               style={{height: '53px'}}>
                               <th data-field='name'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Name</span>
+                                <span style={{width: '125px'}}>Name</span>
                               </th>
                               <th data-field='page'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Page</span>
+                                <span style={{width: '125px'}}>Page</span>
                               </th>
                               <th data-field='status'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Status</span>
+                                <span style={{width: '125px'}}>Status</span>
+                              </th>
+                              <th data-field='status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '125px'}}>Answered Queries</span>
+                              </th>
+                              <th data-field='status'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{width: '125px'}}>Unanswered Queries</span>
                               </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Actions</span>
+                                <span style={{width: '175px'}}>Actions</span>
                               </th>
                             </tr>
                           </thead>
-                          <tbody className='m-datatable__body'>
+                          <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                             {
                             this.state.botsData.map((bot, i) => (
-                              <tr data-row={i}
+                              <tr key={i} data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
-                                style={{height: '55px'}} key={i}>
-                                <td data-field='name' className='m-datatable__cell'><span style={{width: '100px'}}>{bot.botName}</span></td>
-                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{bot.pageId.pageName}</span></td>
-                                <td data-field='status' className='m-datatable__cell'>
-                                  {bot.isActive === true
-                                    ? <span style={{width: '50px'}}>Active</span>
-                                    : <span style={{width: '50px'}}>Disabled</span>
+                                style={{height: '55px'}}>
+                                <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.botName ? bot.botName.split('-').join(' ') : ''}</span></td>
+                                <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{bot.pageId.pageName}</span></td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  {bot.isActive === 'true'
+                                    ? <span style={{width: '125px'}}>Active</span>
+                                    : <span style={{width: '125px'}}>Disabled</span>
+                                  }
+                                </td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  { (bot.hitCount)
+                                    ? <span style={{width: '125px'}}>{ bot.hitCount}</span>
+                                    : <span style={{width: '125px'}}>0</span>
+                                  }
+                                </td>
+                                <td data-field='page' className='m-datatable__cell'>
+                                  { (bot.missCount)
+                                    ? <span style={{width: '125px'}}>{ bot.missCount}</span>
+                                    : <span style={{width: '125px'}}>0</span>
                                   }
                                 </td>
                                 <td data-field='actions' className='m-datatable__cell'>
                                   {this.props.user && this.props.user.role !== 'agent'
-                                  ? <span style={{width: '200px'}}>
+                                  ? <span style={{width: '175px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoView(bot)}>
+                                      onClick={() => this.gotoView(bot._id)}>
                                       View
                                     </button>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoEdit(bot)}>Edit
+                                      onClick={() => this.gotoEdit(bot._id)}>Edit
                                     </button>
-                                    <button className='btn btn-sm' disabled
+                                    <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.showDialogDelete(bot._id)}>
                                       Delete
                                     </button>
                                   </span>
-                                  : <span style={{width: '200px'}}>
+                                  : <span style={{width: '175px'}}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.gotoView(bot)}>
@@ -442,7 +535,7 @@ class Bot extends React.Component {
                             nextLabel={'next'}
                             breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 5)}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={3}
                             onPageChange={this.handlePageClick}
@@ -468,10 +561,13 @@ class Bot extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state', state)
   return {
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    bots: (state.botsInfo.bots)
+    bots: (state.botsInfo.bots),
+    count: (state.botsInfo.count),
+    analytics: (state.botsInfo.analytics)
   }
 }
 
@@ -480,7 +576,9 @@ function mapDispatchToProps (dispatch) {
     {
       loadBotsList: loadBotsList,
       loadMyPagesList: loadMyPagesList,
-      createBot: createBot
+      createBot: createBot,
+      deleteBot: deleteBot,
+      loadAnalytics: loadAnalytics
     },
     dispatch)
 }

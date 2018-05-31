@@ -11,7 +11,6 @@ import BroadcastsByDays from './broadcastsByDays'
 import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
 import Reports from './reports'
-import Select from 'react-select'
 //  import ListItem from './ListItem'
 import moment from 'moment'
 import { Link } from 'react-router'
@@ -26,7 +25,8 @@ import {
   loadPollsGraphData,
   loadSurveysGraphData,
   loadSessionsGraphData,
-  sendEmail
+  sendEmail,
+  allLocales
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -51,21 +51,26 @@ class OperationalDashboard extends React.Component {
         { value: 'other', label: 'Other' }],
       genderValue: '',
       localeValue: '',
+      searchValue: '',
       selectedValue: 0,
       showTopTenPages: false,
       showReports: false,
       showUsers: false,
       chartData: [],
       selectedDays: 10,
-      openPopover: false
+      openPopover: false,
+      filter: false,
+      showBroadcasts: false,
+      showDropDown: false
     }
+    props.allLocales()
     props.loadDataObjectsCount(0)
+    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     props.loadTopPages()
     props.loadBroadcastsGraphData(0)
     props.loadPollsGraphData(0)
     props.loadSurveysGraphData(0)
     props.loadSessionsGraphData(0)
-    props.loadUsersList()
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -81,6 +86,21 @@ class OperationalDashboard extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.sendEmail = this.sendEmail.bind(this)
+    this.loadMore = this.loadMore.bind(this)
+    this.showDropdown = this.showDropdown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+  }
+
+  showDropdown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
+
+  loadMore () {
+    this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -130,46 +150,50 @@ class OperationalDashboard extends React.Component {
       this.props.loadPollsGraphData(value)
       this.props.loadSurveysGraphData(value)
     } else if (value === '') {
-      this.setState({selectedDays: defaultVal})
+      this.setState({selectedDays: ''})
       this.props.loadBroadcastsGraphData(defaultVal)
       this.props.loadPollsGraphData(defaultVal)
       this.props.loadSurveysGraphData(defaultVal)
     }
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.users) {
+    console.log('componentWillReceiveProps in backdoor', nextProps)
+    if (nextProps.users && nextProps.count) {
+      console.log('in nextProps.users')
       this.displayData(0, nextProps.users)
-      this.setState({ totalLength: nextProps.users.length })
+      this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({usersData: [], usersDataAll: []})
     }
-    if (nextProps.dataobjects !== null) {
+    if (nextProps.dataobjects && nextProps.dataobjects !== null) {
       this.displayObjects(0, nextProps.dataobjects)
     }
     if (nextProps.toppages) {
     }
     if (nextProps.broadcastsGraphData) {
       var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
-      if (graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
+      if (graphInfoBroadcast && graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
         var broadcastData = graphInfoBroadcast.broadcastsgraphdata
         broadcastData = this.includeZeroCounts(broadcastData)
       }
     }
     if (nextProps.pollsGraphData) {
       var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
-      if (graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
+      if (graphInfoPolls && graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
         var pollsData = graphInfoPolls.pollsgraphdata
         pollsData = this.includeZeroCounts(pollsData)
       }
     }
     if (nextProps.surveysGraphData) {
       var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
-      if (graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
+      if (graphInfoSurveys && graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
         var surveysData = graphInfoSurveys.surveysgraphdata
         surveysData = this.includeZeroCounts(surveysData)
       }
     }
     if (nextProps.sessionsGraphData) {
       var graphInfoSessions = nextProps.sessionsGraphData.sessionsGraphInfo
-      if (graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
+      if (graphInfoSessions && graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
         var sessionsData = graphInfoSessions.sessionsgraphdata
         sessionsData = this.includeZeroCounts(sessionsData)
       }
@@ -179,7 +203,7 @@ class OperationalDashboard extends React.Component {
   }
   includeZeroCounts (data) {
     var dataArray = []
-    var days = this.state.selectedDays
+    var days = this.state.selectedDays !== '' ? this.state.selectedDays : '10'
     var index = 0
     var varDate = moment()
     for (var i = 0; i < days; i++) {
@@ -313,17 +337,25 @@ class OperationalDashboard extends React.Component {
   }
 
   searchUser (event) {
-    var filtered = []
-    for (let i = 0; i < this.props.users.length; i++) {
-      if (this.props.users[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
-        filtered.push(this.props.users[i])
-      }
+    this.setState({searchValue: event.target.value.toLowerCase()})
+    if (event.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+    } else {
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // for (let i = 0; i < this.props.users.length; i++) {
+    //   if (this.props.users[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
+    //     filtered.push(this.props.users[i])
+    //   }
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
   getFile () {
+    console.log('getFile')
     this.props.downloadFile()
   }
 
@@ -343,71 +375,84 @@ class OperationalDashboard extends React.Component {
     }
   }
   onFilterByGender (e) {
-    var filtered = []
-    if (!e.target.value) {
-      if (this.state.localeValue !== '') {
-        for (var a = 0; a < this.props.users.length; a++) {
-          if (this.props.users[a].locale === this.state.localeValue) {
-            filtered.push(this.props.users[a])
-          }
-        }
-      } else {
-        filtered = this.props.users
-      }
-      this.setState({genderValue: ''})
+    //  var filtered = []
+    this.setState({genderValue: e.target.value})
+    if (e.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
     } else {
-      if (this.state.localeValue !== '') {
-        for (var i = 0; i < this.props.users.length; i++) {
-          if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
-            filtered.push(this.props.users[i])
-          }
-        }
-      } else if (e.target.value === 'all') {
-        filtered = this.props.users
-      } else {
-        for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.users[j].gender.toString() === e.target.value.toString()) {
-            filtered.push(this.props.users[j])
-          }
-        }
-      }
-      this.setState({genderValue: e.target.value})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    //   if (this.state.localeValue !== '') {
+    //     for (var a = 0; a < this.props.users.length; a++) {
+    //       if (this.props.users[a].locale === this.state.localeValue) {
+    //         filtered.push(this.props.users[a])
+    //       }
+    //     }
+    //   } else {
+    //     filtered = this.props.users
+    //   }
+    //   this.setState({genderValue: ''})
+    // } else {
+    //   if (this.state.localeValue !== '') {
+    //     for (var i = 0; i < this.props.users.length; i++) {
+    //       if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
+    //         filtered.push(this.props.users[i])
+    //       }
+    //     }
+    //   } else if (e.target.value === 'all') {
+    //     filtered = this.props.users
+    //   } else {
+    //     for (var j = 0; j < this.props.users.length; j++) {
+    //       if (this.props.users[j].gender.toString() === e.target.value.toString()) {
+    //         filtered.push(this.props.users[j])
+    //       }
+    //     }
+    //   }
+    //   this.setState({genderValue: e.target.value})
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
 
-  onFilterByLocale (data) {
-    var filtered = []
-    if (!data) {
-      if (this.state.genderValue !== '') {
-        for (var a = 0; a < this.props.users.length; a++) {
-          if (this.props.users[a].gender === this.state.genderValue) {
-            filtered.push(this.props.users[a])
-          }
-        }
-      } else {
-        filtered = this.props.users
-      }
-      this.setState({localeValue: ''})
+  onFilterByLocale (e) {
+    this.setState({localeValue: e.target.value})
+    if (e.target.value !== '') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
     } else {
-      if (this.state.genderValue !== '') {
-        for (var i = 0; i < this.props.users.length; i++) {
-          if (this.props.users[i].gender === this.state.genderValue && this.props.users[i].locale === data.value) {
-            filtered.push(this.props.users[i])
-          }
-        }
-      } else {
-        for (var j = 0; j < this.props.users.length; j++) {
-          if (this.props.users[j].locale === data.value) {
-            filtered.push(this.props.users[j])
-          }
-        }
-      }
-      this.setState({localeValue: data.value})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
+    // var filtered = []
+    // if (!data) {
+    //   if (this.state.genderValue !== '') {
+    //     for (var a = 0; a < this.props.users.length; a++) {
+    //       if (this.props.users[a].gender === this.state.genderValue) {
+    //         filtered.push(this.props.users[a])
+    //       }
+    //     }
+    //   } else {
+    //     filtered = this.props.users
+    //   }
+    //   this.setState({localeValue: ''})
+    // } else {
+    //   if (this.state.genderValue !== '') {
+    //     for (var i = 0; i < this.props.users.length; i++) {
+    //       if (this.props.users[i].gender === this.state.genderValue && this.props.users[i].locale === data.value) {
+    //         filtered.push(this.props.users[i])
+    //       }
+    //     }
+    //   } else {
+    //     for (var j = 0; j < this.props.users.length; j++) {
+    //       if (this.props.users[j].locale === data.value) {
+    //         filtered.push(this.props.users[j])
+    //       }
+    //     }
+    //   }
+    //   this.setState({localeValue: data.value})
+    // }
+    // this.displayData(0, filtered)
+    // this.setState({ totalLength: filtered.length })
   }
   sendEmail () {
     this.props.sendEmail(this.msg)
@@ -445,7 +490,7 @@ class OperationalDashboard extends React.Component {
               </div>
               <div className='row'>
                 <Top10pages pagesData={this.props.toppages} />
-                <div className='col-xl-6'>
+                <div className='col-xl-12'>
                   <div className='m-portlet m-portlet--full-height '>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
@@ -466,29 +511,98 @@ class OperationalDashboard extends React.Component {
                           <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
                             <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
                               <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='flaticon flaticon-more' /> </Link>
+                              {/*
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper'>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <ul className='m-nav'>
+                                            <li className='m-nav__section m-nav__section--first'>
+                                              <span className='m-nav__section-text'>
+                                                Actions:
+                                              </span>
+                                            </li>
+                                            <li className='m-nav__item'>
+                                              <a onClick={this.getFile} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                Download Data
+                                              </a>
+                                            </li>
+                                            <li className='m-nav__item'>
+                                              <a onClick={this.sendEmail} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                Send Weekly Email
+                                              </a>
+                                            </li>
+                                            <li className='m-nav__section m-nav__section--first'>
+                                              <span className='m-nav__section-text'>
+                                                Filter by:
+                                              </span>
+                                            </li>
+                                                <li className='m-nav__item'>
+                                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
+                                                    <option value='' disabled>Filter by gender...</option>
+                                                    <option value=''>All</option>
+                                                    {
+                                                      this.state.genders.map((gender, i) => (
+                                                        <option value={gender.value}>{gender.label}</option>
+                                                      ))
+                                                    }
+                                                  </select>
+                                                </li>
+                                            <li className='m-nav__separator m-nav__separator--fit' />
+                                            <li className='m-nav__item'>
+                                              <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                  Cancel
+                                                </a>
+                                            </li>
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                */}
                               <Popover
                                 style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
                                 placement='bottom'
                                 target={this.target}
                                 show={this.state.openPopover}
                                 onHide={this.handleClose} >
-                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
-                                  <option value='' disabled>Filter by gender...</option>
-                                  <option value=''>All</option>
-                                  {
-                                    this.state.genders.map((gender, i) => (
-                                      <option value={gender.value}>{gender.label}</option>
-                                    ))
-                                  }
-                                </select>
+                                <div>
+                                  <label style={{color: '#716aca'}}>Filters:</label>
+                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
+                                    <option value='' disabled>Filter by gender...</option>
+                                    <option value=''>All</option>
+                                    {
+                                      this.state.genders.map((gender, i) => (
+                                        <option value={gender.value}>{gender.label}</option>
+                                      ))
+                                    }
+                                  </select>
+                                  <br />
+                                  <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale} style={{marginTop: '10px', width: '155px'}}>
+                                    <option key='' value='' disabled>Filter by Locale...</option>
+                                    <option key='ALL' value=''>ALL</option>
+                                    {
+                                      this.props.locales && this.props.locales.map((locale, i) => (
+                                        <option key={i} value={locale}>{locale}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
                                 <br />
-                                <Select
-                                  name='form-field-name'
-                                  options={this.props.locales}
-                                  onChange={this.onFilterByLocale}
-                                  placeholder='Filter by locale...'
-                                  value={this.state.localeValue}
-                                />
+                                <div>
+                                  <label style={{color: '#716aca'}}>Actions:</label>
+                                  <br />
+                                  <i className='la la-download' />&nbsp;<a onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                    Download Data
+                                  </a>
+                                  <br />
+                                  <i className='la la-envelope-o' />&nbsp;<a onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                    Send Weekly Email
+                                  </a>
+                                  <br />
+                                </div>
                               </Popover>
                             </div>
                           </li>
@@ -496,6 +610,95 @@ class OperationalDashboard extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
+                      <div className='tab-content'>
+                        <div className='tab-pane active m-scrollable' role='tabpanel'>
+                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                            <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                              <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                                <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                                  <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
+                                    {
+                                      this.state.usersData && this.state.usersData.length > 0
+                                      ? <div className='m-widget5'>
+                                        { this.state.usersData.map((user, i) => (
+                                          <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
+                                            <div className='m-widget5__pic'>
+                                              <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
+                                            </div>
+                                            <div className='m-widget5__content'>
+                                              <h4 className='m-widget5__title'>
+                                                {user.name}
+                                              </h4>
+                                              {user.email &&
+                                              <span className='m-widget5__desc'>
+                                                <b>Email:</b> {user.email}
+                                              </span>
+                                              }
+                                              <br />
+                                              <span className='m-widget5__desc'>
+                                                <b>Created At:</b> {this.handleDate(user.createdAt)}
+                                              </span>
+                                              <div className='m-widget5__info'>
+                                                <span className='m-widget5__author'>
+                                                  Gender:&nbsp;
+                                                </span>
+                                                <span className='m-widget5__info-author m--font-info'>
+                                                  {user.facebookInfo ? user.facebookInfo.gender : ''}
+                                                </span>
+                                                <span className='m-widget5__info-label'>
+                                                Locale:&nbsp;
+                                                </span>
+                                                <span className='m-widget5__info-author m--font-info'>
+                                                  {user.facebookInfo ? user.facebookInfo.locale : ''}
+                                                </span>
+                                              </div>
+                                            </div>
+                                            <div className='m-widget5__stats1'>
+                                              <span className='m-widget5__number'>
+                                                {user.pages}
+                                              </span>
+                                              <br />
+                                              <span className='m-widget5__sales'>
+                                                Connected Pages
+                                              </span>
+                                            </div>
+                                            <div className='m-widget5__stats2'>
+                                              <span className='m-widget5__number'>
+                                                {user.subscribers}
+                                              </span>
+                                              <br />
+                                              <span className='m-widget5__votes'>
+                                                Total Subscribers
+                                              </span>
+                                            </div>
+                                            <div className='m-widget5__stats2'>
+                                              <br />
+                                              <span className='m-widget5__votes'>
+                                                <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                                 See more
+                                               </button>
+                                              </span>
+                                            </div>
+                                          </div>
+                                            ))}
+                                      </div>
+                                        : <div>No Data to display</div>
+                                        }
+                                    {this.state.usersData.length < this.props.count &&
+                                    <center>
+                                      <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                      <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                    </center>
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <div className='m-portlet__body'>
                       <div className='tab-content'>
                         <div className='tab-pane active m-scrollable' role='tabpanel'>
                           <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -531,8 +734,8 @@ class OperationalDashboard extends React.Component {
                                                  <br />
                                                  <span className='m-widget4__sub'>
                                                     Gender: {user.facebookInfo ? user.facebookInfo.gender : ''}
-                                                 </span>
-                                                 <span className='m-widget4__sub' style={{float: 'right'}}>
+                                                 </span>&nbsp;&nbsp;&nbsp;
+                                                 <span className='m-widget4__sub'>
                                                     Locale: {user.facebookInfo ? user.facebookInfo.locale : ''}
                                                  </span>
                                                </div>
@@ -542,9 +745,15 @@ class OperationalDashboard extends React.Component {
                                                 </button>
                                                </div>
                                              </div>
-                                              ))}
+                                          ))}
                                       </div>
                                       : <div>No Data to display</div>
+                                      }
+                                      {this.state.usersData.length < this.props.count &&
+                                      <center>
+                                        <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                        <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                      </center>
                                       }
                                     </div>
                                   </div>
@@ -562,15 +771,13 @@ class OperationalDashboard extends React.Component {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
               <BroadcastsByDays />
               <SurveysByDays />
               <PollsByDays />
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.sendEmail}>Send Weekly Email
-              </button>
             </div>
           </div>
         </div>
@@ -582,6 +789,7 @@ function mapStateToProps (state) {
   console.log('in mapStateToProps', state)
   return {
     users: (state.backdoorInfo.users),
+    count: (state.backdoorInfo.count),
     locales: (state.backdoorInfo.locales),
     currentUser: (state.backdoorInfo.currentUser),
     dataobjects: (state.backdoorInfo.dataobjects),
@@ -603,7 +811,8 @@ function mapDispatchToProps (dispatch) {
     loadSurveysGraphData: loadSurveysGraphData,
     loadPollsGraphData: loadPollsGraphData,
     loadSessionsGraphData: loadSessionsGraphData,
-    sendEmail: sendEmail},
+    sendEmail: sendEmail,
+    allLocales: allLocales},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)

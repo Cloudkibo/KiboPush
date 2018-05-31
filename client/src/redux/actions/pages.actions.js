@@ -11,6 +11,14 @@ export function updatePagesList (data) {
   }
 }
 
+export function updatePagesListNew (data) {
+  return {
+    type: ActionTypes.LOAD_PAGES_LIST_NEW,
+    pages: data.pages,
+    count: data.count
+  }
+}
+
 export function updateOtherPages (data) {
   return {
     type: ActionTypes.FETCH_PAGES_LIST,
@@ -36,8 +44,18 @@ export function loadMyPagesList () {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allpages`).then(res => {
-      console.log('res.payload', res.payload)
+      console.log('res.payload', res)
       dispatch(updatePagesList(res.payload))
+    })
+  }
+}
+
+export function loadMyPagesListNew (data) {
+  // var userid = ''// this will be the _id of user object
+  return (dispatch) => {
+    callApi(`pages/allConnectedPages`, 'post', data).then(res => {
+      console.log('res.payload', res)
+      dispatch(updatePagesListNew(res.payload))
     })
   }
 }

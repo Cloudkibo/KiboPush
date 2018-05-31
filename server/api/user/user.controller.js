@@ -17,6 +17,8 @@ const _ = require('lodash')
 let crypto = require('crypto')
 const logger = require('../../components/logger')
 
+const MailChimp = require('mailchimp-api-v3')
+
 const TAG = 'api/user/user.controller.js'
 
 exports.index = function (req, res) {
@@ -104,7 +106,6 @@ exports.updateChecks = function (req, res) {
 
     if (req.body.getStartedSeen) user.getStartedSeen = req.body.getStartedSeen
     if (req.body.dashboardTourSeen) user.dashboardTourSeen = req.body.dashboardTourSeen
-    if (req.body.workFlowsTourSeen) user.workFlowsTourSeen = req.body.workFlowsTourSeen
     if (req.body.surveyTourSeen) user.surveyTourSeen = req.body.surveyTourSeen
     if (req.body.convoTourSeen) user.convoTourSeen = req.body.convoTourSeen
     if (req.body.pollTourSeen) user.pollTourSeen = req.body.pollTourSeen
@@ -127,10 +128,82 @@ exports.updateChecks = function (req, res) {
   })
 }
 
+exports.updateMode = function (req, res) {
+  Users.findOne({_id: req.body._id}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!user) {
+      return res.status(404)
+        .json({status: 'failed', description: 'User not found'})
+    }
+
+    user.advancedMode = req.body.advancedMode
+    user.save((err) => {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      CompanyUsers.findOne({userId: req.body._id}, (err, companyUser) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        if (!companyUser) {
+          return res.status(404).json({
+            status: 'failed',
+            description: 'The user account does not belong to any company. Please contact support'
+          })
+        }
+        Permissions.findOne({userId: req.body._id}, (err, permissions) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (!permissions) {
+            return res.status(404).json({
+              status: 'failed',
+              description: 'Permissions not set for this user. Please contact support'
+            })
+          }
+          Plans.findOne({}, (err, plan) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (!plan) {
+              return res.status(404).json({
+                status: 'failed',
+                description: 'Fatal Error, plan not set for this user. Please contact support'
+              })
+            }
+            user = user.toObject()
+            user.companyId = companyUser.companyId
+            user.permissions = permissions
+            user.currentPlan = user.plan
+            user.plan = plan[user.plan]
+            res.status(200).json({status: 'success', payload: user})
+          })
+        })
+      })
+    })
+  })
+}
+
 /**
  * Creates a new user
  */
 exports.create = function (req, res) {
+  logger.serverLog(TAG, 'Creating new user')
   let parametersMissing = false
 
   if (!_.has(req.body, 'email')) parametersMissing = true
@@ -185,7 +258,6 @@ exports.create = function (req, res) {
               plan: plan
             })
 
-            // console.log(req.body)
             accountData.save(function (err, user) {
               if (err) {
                 return res.status(422).json({
@@ -259,6 +331,25 @@ exports.create = function (req, res) {
                   }
                 })
 
+                let mailchimp = new MailChimp('2d154e5f15ca18180d52c40ad6e5971e-us12')
+
+                mailchimp.post({
+                  path: '/lists/5a4e866849/members',
+                  body: {
+                    email_address: req.body.email,
+                    merge_fields: {
+                      FNAME: req.body.name
+                    },
+                    status: 'subscribed'
+                  }
+                }, function (err, result) {
+                  if (err) {
+                    logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
+                  }
+                })
+
                 let sendgrid = require('sendgrid')(config.sendgrid.username,
                   config.sendgrid.password)
 
@@ -294,7 +385,6 @@ exports.create = function (req, res) {
                       `Internal Server Error on sending email : ${JSON.stringify(
                         err)}`)
                   }
-                  // console.log(json);
                 })
 
                 var email2 = new sendgrid.Email({
@@ -329,7 +419,6 @@ exports.create = function (req, res) {
                       logger.serverLog(TAG,
                         `Internal Server Error on sending email : ${err}`)
                     }
-                    // console.log(json);
                   })
                 }
               })
@@ -371,7 +460,6 @@ exports.create = function (req, res) {
           plan: plan
         })
 
-        // console.log(req.body)
         accountData.save(function (err, user) {
           if (err) {
             return res.status(422).json({
@@ -480,7 +568,6 @@ exports.create = function (req, res) {
                   `Internal Server Error on sending email : ${JSON.stringify(
                     err)}`)
               }
-              // console.log(json);
             })
 
             var email2 = new sendgrid.Email({
@@ -512,7 +599,6 @@ exports.create = function (req, res) {
                   logger.serverLog(TAG,
                     `Internal Server Error on sending email : ${err}`)
                 }
-                // console.log(json);
               })
             }
           })
@@ -560,7 +646,6 @@ exports.joinCompany = function (req, res) {
         plan: plan
       })
 
-      // console.log(req.body)
       accountData.save(function (err, user) {
         if (err) {
           return res.status(422).json({
@@ -680,7 +765,6 @@ exports.joinCompany = function (req, res) {
               `Internal Server Error on sending email : ${JSON.stringify(
                 err)}`)
           }
-          // console.log(json);
         })
 
         var email2 = new sendgrid.Email({
@@ -716,7 +800,6 @@ exports.joinCompany = function (req, res) {
               `Internal Server Error on sending email : ${JSON.stringify(
                 err)}`)
           }
-          // console.log(json);
         })
       })
     })

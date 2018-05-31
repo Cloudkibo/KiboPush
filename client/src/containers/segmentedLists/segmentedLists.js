@@ -5,9 +5,11 @@ import Header from '../../components/header/header'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
+import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
-  loadCustomerLists, saveCurrentList, deleteList, clearCurrentList
+  loadCustomerListsNew, saveCurrentList, deleteList, clearCurrentList
 } from '../../redux/actions/customerLists.actions'
+import ReactPaginate from 'react-paginate'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
@@ -20,13 +22,18 @@ class SegmentedList extends React.Component {
     this.state = {
       isShowingModalDelete: false,
       deleteid: '',
-      customerLists: []
+      customerLists: [],
+      totalLength: 0,
+      pageNumber: 0
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.saveCurrentList = this.saveCurrentList.bind(this)
+    this.displayData = this.displayData.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
     props.loadMyPagesList()
-    props.loadCustomerLists()
+    props.loadSubscribersList()
+    props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.clearCurrentList()
   }
   scrollToTop () {
@@ -54,8 +61,19 @@ class SegmentedList extends React.Component {
   componentDidMount () {
     this.scrollToTop()
   }
+  handlePageClick (data) {
+    if (data.selected === 0) {
+      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next'})
+    } else {
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous'})
+    }
+    this.setState({pageNumber: data.selected})
+    this.displayData(data.selected, this.props.customerLists)
+  }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.customerLists) {
+    if (nextProps.customerLists && nextProps.count) {
       var lists = []
       for (var i = 0; i < nextProps.customerLists.length; i++) {
         if (!(nextProps.customerLists[i].initialList)) {
@@ -66,7 +84,28 @@ class SegmentedList extends React.Component {
           }
         }
       }
-      this.setState({customerLists: lists})
+      this.displayData(0, lists)
+      this.setState({ totalLength: nextProps.count })
+    }
+  }
+
+  displayData (n, lists) {
+    if (lists) {
+      console.log('in displayData', lists)
+      let offset = n * 10
+      let data = []
+      let limit
+      let index = 0
+      if ((offset + 10) > lists.length) {
+        limit = lists.length
+      } else {
+        limit = offset + 10
+      }
+      for (var i = offset; i < limit; i++) {
+        data[index] = lists[i]
+        index++
+      }
+      this.setState({customerLists: data})
     }
   }
 
@@ -89,6 +128,14 @@ class SegmentedList extends React.Component {
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              {
+                this.props.subscribers && this.props.subscribers.length === 0 &&
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Subscribers</h4>
+                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to create segmented subscribers lists and broadcast message, polls and surveys.
+                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
+                </div>
+              }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>
                   <i className='flaticon-technology m--font-accent' />
@@ -109,7 +156,9 @@ class SegmentedList extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        {
+                        this.props.subscribers && this.props.subscribers.length > 0
+                        ? <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
                             <i className='la la-plus' />
                             <span>
@@ -117,6 +166,15 @@ class SegmentedList extends React.Component {
                             </span>
                           </span>
                         </Link>
+                      : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Create Segmented Subscribers List
+                          </span>
+                        </span>
+                      </Link>
+                      }
                       </div>
                     </div>
                     <div className='m-portlet__body'>
@@ -209,6 +267,20 @@ class SegmentedList extends React.Component {
                               }
                             </tbody>
                           </table>
+                          <div className='pagination'>
+                            <ReactPaginate previousLabel={'previous'}
+                              nextLabel={'next'}
+                              breakLabel={<a>...</a>}
+                              breakClassName={'break-me'}
+                              pageCount={Math.ceil(this.state.totalLength / 10)}
+                              marginPagesDisplayed={2}
+                              pageRangeDisplayed={3}
+                              onPageChange={this.handlePageClick}
+                              containerClassName={'pagination'}
+                              subContainerClassName={'pages pagination'}
+                              activeClassName={'active'}
+                              forcePage={this.state.pageNumber} />
+                          </div>
                         </div>
                       </div>
                     : <div className='table-responsive'>
@@ -229,16 +301,19 @@ class SegmentedList extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    customerLists: (state.listsInfo.customerLists)
+    customerLists: (state.listsInfo.customerLists),
+    count: (state.listsInfo.count),
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
-    loadCustomerLists: loadCustomerLists,
+    loadCustomerListsNew: loadCustomerListsNew,
     saveCurrentList: saveCurrentList,
     deleteList: deleteList,
-    clearCurrentList: clearCurrentList
+    clearCurrentList: clearCurrentList,
+    loadSubscribersList: loadSubscribersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SegmentedList)

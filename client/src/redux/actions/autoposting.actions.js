@@ -44,12 +44,13 @@ export function editAutopostingFailure (message) {
 }
 
 export function showAutopostingMessages (data) {
-  var sorted = data.sort(function (a, b) {
-    return new Date(b.datetime) - new Date(a.datetime)
-  })
+  // var sorted = data.messages.sort(function (a, b) {
+  //   return new Date(b.datetime) - new Date(a.datetime)
+  // })
   return {
     type: ActionTypes.FETCH_AUTOPOSTING_MESSAGES_LIST,
-    autoposting_messages: sorted
+    autoposting_messages: data.messages,
+    count: data.count
   }
 }
 
@@ -96,11 +97,11 @@ export function editautoposting (data) {
   }
 }
 
-export function loadAutopostingMessages (id) {
+export function loadAutopostingMessages (id, data) {
   return (dispatch) => {
-    callApi(`autoposting_messages/${id}`)
+    callApi(`autoposting_messages/getMessages/${id}`, 'post', data)
       .then(res => {
-        console.log(res)
+        console.log('response from getMessages', res)
         if (res.status === 'success') {
           dispatch(showAutopostingMessages(res.payload))
         }
