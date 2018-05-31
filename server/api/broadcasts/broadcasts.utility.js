@@ -144,7 +144,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
       }),
       'filedata': dataToSend
     }
-    logger.serverLog(TAG, `body ${JSON.stringify(body)}`)
+    logger.serverLog(TAG, `payload sendAPI ${JSON.stringify(payload)}`)
     return payload
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
@@ -164,7 +164,6 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
         }
       })
     }
-
   } else if (body.componentType === 'card') {
     payload = {
       'messaging_type': messageType,
