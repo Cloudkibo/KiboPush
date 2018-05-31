@@ -208,6 +208,7 @@ function prepareSendAPIPayloadList (subscriberId, body, isForLiveChat) {
       body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
     let fileReaderStream = fs.createReadStream(dir + '/' + body.fileurl.id)
+    logger.serverLog(TAG, `Before payload sendAPI ${JSON.stringify(payload)}`)
     payload = {
       'recipient': JSON.stringify({
         'phone_number': subscriberId
@@ -220,6 +221,7 @@ function prepareSendAPIPayloadList (subscriberId, body, isForLiveChat) {
       }),
       'filedata': fileReaderStream
     }
+    logger.serverLog(TAG, `After payload sendAPI ${JSON.stringify(payload)}`)
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
   } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
