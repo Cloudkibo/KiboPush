@@ -56,6 +56,6 @@ router.post('/deleteFiles',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),
-  controller.deleteFiles)
+  controller2.deleteFiles)
 
 module.exports = router
