@@ -114,6 +114,7 @@ class BroadcastsInfo extends React.Component {
   }
 
   render () {
+    console.log('broadcastsByDays state', this.state)
     return (
       <div className='row'>
         <div
