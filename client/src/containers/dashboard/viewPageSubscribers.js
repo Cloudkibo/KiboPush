@@ -188,6 +188,15 @@ class ViewPageSubscribers extends React.Component {
   }
 
   render () {
+    var subscribedStyle = {
+      width: '150px',
+      overflow: 'inherit'
+    }
+    var unsubscribedStyle = {
+      width: '150px',
+      overflow: 'inherit',
+      color: '#b2bbc1'
+    }
     return (
       <div>
         <Header />
@@ -297,21 +306,25 @@ class ViewPageSubscribers extends React.Component {
                                   <thead className='m-datatable__head'>
                                     <tr className='m-datatable__row'
                                       style={{height: '53px'}}>
-                                      <th data-field='pages'
+                                      <th data-field='picture'
                                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                         <span style={{width: '150px'}}>Profile Pic</span>
                                       </th>
-                                      <th data-field='likes'
+                                      <th data-field='name'
                                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                         <span style={{width: '150px'}}>Subscriber Name</span>
                                       </th>
-                                      <th data-field='subscribers'
+                                      <th data-field='gender'
                                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                         <span style={{width: '150px'}}>Gender</span>
                                       </th>
-                                      <th data-field='connected'
+                                      <th data-field='locale'
                                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                         <span style={{width: '150px'}}>Locale</span>
+                                      </th>
+                                      <th data-field='status'
+                                        className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                        <span style={{width: '150px'}}>Status</span>
                                       </th>
                                     </tr>
                                   </thead>
@@ -321,29 +334,36 @@ class ViewPageSubscribers extends React.Component {
                                         <tr data-row={i}
                                           className='m-datatable__row m-datatable__row--even'
                                           style={{height: '55px'}} key={i}>
-                                          <td data-field='pages'
+                                          <td data-field='picture'
                                             className='m-datatable__cell'>
                                             <span
-                                              style={{width: '150px'}}>
+                                              style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
                                               <img alt='pic'
                                                 src={(subscriber.profilePic) ? subscriber.profilePic : ''}
                                                 className='img-circle' width='60' height='60' />
                                             </span>
                                           </td>
-                                          <td data-field='likes'
+                                          <td data-field='name'
                                             className='m-datatable__cell'>
                                             <span
-                                              style={{width: '150px'}}>{subscriber.firstName}{' '}{subscriber.lastName}</span>
+                                              style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName}{' '}{subscriber.lastName}</span>
                                           </td>
-                                          <td data-field='subscribers'
+                                          <td data-field='gender'
                                             className='m-datatable__cell'>
                                             <span
-                                              style={{width: '150px'}}>{subscriber.gender}</span>
+                                              style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.gender}</span>
                                           </td>
-                                          <td data-field='connected'
+                                          <td data-field='locale'
                                             className='m-datatable__cell'>
                                             <span
-                                              style={{width: '150px'}}>{subscriber.locale}</span>
+                                              style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.locale}</span>
+                                          </td>
+                                          <td data-field='status'
+                                            className='m-datatable__cell'>
+                                            <span
+                                              style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                              {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                            </span>
                                           </td>
                                         </tr>
                                   ))
