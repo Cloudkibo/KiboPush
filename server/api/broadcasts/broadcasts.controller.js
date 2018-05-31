@@ -1325,6 +1325,7 @@ function updateseenstatus (req) {
 function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   parsedData.forEach(payloadItem => {
+    logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
     let messageData = utility.prepareSendAPIPayload(
       req.sender.id, payloadItem, true)
     logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)

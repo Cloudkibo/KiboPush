@@ -89,6 +89,7 @@ function validateInput (body) {
 function prepareSendAPIPayload (subscriberId, body, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
+  logger.serverLog(TAG, `body ${JSON.stringify(body)}`)
   if (body.componentType === 'text' && !body.buttons) {
     payload = {
       'messaging_type': messageType,
@@ -143,6 +144,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
       }),
       'filedata': dataToSend
     }
+    logger.serverLog(TAG, `body ${JSON.stringify(body)}`)
     return payload
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
@@ -162,6 +164,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
         }
       })
     }
+
   } else if (body.componentType === 'card') {
     payload = {
       'messaging_type': messageType,
