@@ -641,3 +641,83 @@ exports.toppages = function (req, res) {
     })
   })
 }
+
+exports.getAllSubscribers = function (req, res) {
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  let findCriteria = {
+    pageId: mongoose.Types.ObjectId(req.params.pageid),
+    $or: [{firstName: {$regex: search}}, {lastName: {$regex: search}}],
+    gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
+    locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true}
+  }
+  if (req.body.first_page === 'first') {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'Ssubscribers not found'})
+      }
+      Subscribers.find(findCriteria).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  } else if (req.body.first_page === 'next') {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Subscribers.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  } else if (req.body.first_page === 'previous') {
+    Subscribers.aggregate([
+      { $match: findCriteria },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ], (err, subscribersCount) => {
+      if (err) {
+        return res.status(404)
+          .json({status: 'failed', description: 'BroadcastsCount not found'})
+      }
+      Subscribers.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
+      .exec((err, subscribers) => {
+        if (err) {
+          return res.status(404).json({
+            status: 'failed',
+            description: `Error in getting subscribers ${JSON.stringify(err)}`
+          })
+        }
+        res.status(200).json({
+          status: 'success',
+          payload: {subscribers: subscribers, count: subscribers.length > 0 ? subscribersCount[0].count : ''}
+        })
+      })
+    })
+  }
+}

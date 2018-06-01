@@ -491,7 +491,7 @@ paths:
           schema:
              $ref: '#/definitions/Response404'
   /broadcasts/allBroadcasts:
-    get:
+    post:
       description: Gives the data of all braodcasts of a particular user
       consumes:
         - application/json
@@ -971,54 +971,27 @@ paths:
           description: The file to upload
           type: file
           required: true
-      responses:
-        '201':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-               type: string
-               description: success
-              description:
-                type: string
-                description: Contacts were invited to your messenger
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-             
-  /growthtools/sendMessage/:
-    post:
-      description: Sends a message to the phone numbers contained in file
-      consumes:
-          - multipart/form-data
-      produces:
-        - application/json
-      parameters:
-        - name: growthtool
-          in: body
-          description: Message details
+        - name: text
+          in: formData
+          description: The message text
+          type: string
           required: true
-          schema:
-            type: object
-            properties:
-              fileName:
-                type: string
-                description: name of the file
-              path:
-                type: string
-                description: path of the file
-              pageId: 
-                type: string
-                description: id of the page
-              text:
-                type: string
-                description: text of the message
+        - name: pageid
+          in: formData
+          description: The id of the page
+          type: string
+          required: true
+        - name: nameColumn
+          in: formData
+          description: list of names
+          type: string
+          required: true
+        - name: phoneColumn
+          in: formData
+          description: list of phone numbers
+          type: string
+          required: true
+        
       responses:
         '201':
           description: OK
@@ -1039,7 +1012,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /growthtools/sendNumbers/:
     post:
       description: Sends a message to the phone numbers entered
@@ -1116,7 +1089,7 @@ paths:
           schema:
              $ref: '#/definitions/Response500'
               
-  /growthtools/pendingSubscriptions/:name/:
+  /growthtools/pendingSubscription/:name/:
     get:
       description: Retrieves phone of a particular file that haven't subscribed yet
       consumes:
@@ -1751,7 +1724,7 @@ paths:
           schema:
              $ref: '#/definitions/Response500'
   /sessions/:
-    post:
+    get:
       description: Returns all the sessions of a partiular user
       consumes:
           - application/json
@@ -1777,6 +1750,112 @@ paths:
                 type: object
                 $ref: '#/definitions/Session'
 
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+             
+  /sessions/getOpenSessions:
+    post:
+      description: Returns all open sessions of a partiular user
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: session
+          in: body
+          description: session information
+          required: true
+          schema:
+            type: object
+            properties:
+              filter:
+                type: boolean
+                description: whether a filter has been applied
+              first_page:
+                type: boolean
+                description: whether it is the first page
+              number_of_records:
+                type: number
+                description: number of sessions to retrieve
+              page_value:
+                type: string
+                description: page id
+              filter_criteria:
+                type: object
+                properties:
+                  search_value: 
+                    type: string
+                  sort_value:
+                    type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              open_sessions:
+                type: array
+                items:
+                  $ref: '#/definitions/Session'
+              count:
+                type: number
+                description: number of sessions retrieved
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+             
+  /sessions/getClosedSessions:
+    post:
+      description: Returns all closed sessions of a partiular user
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: session
+          in: body
+          description: session information
+          required: true
+          schema:
+            type: object
+            properties:
+              filter:
+                type: boolean
+                description: whether a filter has been applied
+              first_page:
+                type: boolean
+                description: whether it is the first page
+              number_of_records:
+                type: number
+                description: number of sessions to retrieve
+              page_value:
+                type: string
+                description: page id
+              filter_criteria:
+                type: object
+                properties:
+                  search_value: 
+                    type: string
+                  sort_value:
+                    type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              closed_sessions:
+                type: array
+                items:
+                  $ref: '#/definitions/Session'
+              count:
+                type: number
+                description: number of sessions retrieved
         '500':
           description: failed
           schema:
@@ -2049,10 +2128,10 @@ paths:
           schema:
             type: object
             properties:
-              pageId:
+              page_id:
                 type: string
                 description: Id of the page the subscriber belongs to
-              subscriberId:
+              subscriber_id:
                 type: string
                 description: Id of the subscriber
       responses:
@@ -2091,28 +2170,9 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-  /subscribers/all:
-    get:
-      description: Gives all the subscribers of all the pages of a user
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: array
-            items:
-              type: object
-              $ref: '#/definitions/Subscriber'
-        '404':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response404'
   /subscribers/subscribeBack/:id:
     get:
-      description: Gives all the subscribers of all the pages of a user
+      description: Subscribes the given user again
       consumes:
         - application/json
       produces:
@@ -2563,62 +2623,6 @@ paths:
           description: failed
           schema:
            $ref: '#/definitions/Response404'
-  /users/joinCompany:
-    post:
-      description: adds user to the company
-      consumes:
-        - application/json
-        - application/x-www-form-urlencoded
-      produces:
-        - application/json
-      parameters:
-        - name: user
-          in: body
-          description: User details
-          required: true
-          schema:
-            type: object
-            properties:
-              email: 
-                type: string
-                description: user's email
-              password: 
-                type: string
-                description: user's password
-              name:
-                type: string
-                description: user's name
-              token:
-                type: string
-                description: company's invitation token
-      responses:
-        '201':
-          description: OK
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                description: success
-              token:
-                type: string
-                description: authentication token
-        '500':
-          description: failed
-          schema:
-             $ref: '#/definitions/Response500'
-        '400':
-          description: failed
-          schema:
-           $ref: '#/definitions/Response400'
-        '404':
-          description: failed
-          schema:
-           $ref: '#/definitions/Response404'
-        '422':
-          description: failed
-          schema:
-           $ref: '#/definitions/Response422'
   /users/fbAppId:
     get:
       description: Get the user's facebook client id
@@ -3389,7 +3393,7 @@ paths:
              $ref: '#/definitions/Response404'
              
   /lists/repliedPollSubscribers:
-    post:
+    get:
       description: retrieves all subscribers that replied to a poll
       consumes:
           - application/json
@@ -3472,7 +3476,7 @@ paths:
           schema:
              $ref: '#/definitions/Response404'
   /lists/repliedSurveySubscribers:
-    post:
+    get:
       description: retrieves all subscribers that replied to a survey
       consumes:
           - application/json
@@ -4640,9 +4644,9 @@ paths:
           schema:
             type: object
             properties:
-              sequenceId: 
+              _id: 
                 type: string
-                description: id of the sequence
+                description: id of the previously created message
               payload:
                 type: array
                 items:
@@ -4781,7 +4785,7 @@ paths:
           schema:
              $ref: '#/definitions/Response404'
              
-  /sequenceMessaging/deleteMessage:
+  /sequenceMessaging/deleteMessage/:id:
     delete:
       description: Deletes message of a particular sequence
       consumes:
@@ -4924,7 +4928,7 @@ paths:
              $ref: '#/definitions/Response404'
              
   /sequenceMessaging/subscriberSequences/:id:
-    post:
+    get:
       description: Gets a particular subscriber sequence
       consumes:
         - application/json
@@ -6035,6 +6039,8 @@ definitions:
         type: string
         description: The date and time at which the session is created
         readOnly: true
+      replied_by:
+        type: object
   Category:
     type: object
     description: This table is used to store categories for templates
@@ -6397,6 +6403,10 @@ definitions:
       datetime:
         type: string
         description: date and time of the creation of this bot
+      hitCount:
+        type: number
+      missCount:
+        type: number
       payload:
         type: array
         description: array of questions and answers of the bot

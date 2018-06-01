@@ -3,30 +3,44 @@ import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
+export function deleteFiles (data) {
+  let files = []
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].componentType === 'file') {
+      files.push(data[i].fileurl.name)
+    }
+  }
+  if (files.length > 0) {
+    return (dispatch) => {
+      callApi('broadcasts/deleteFiles', 'post', files)
+        .then(res => {})
+    }
+  }
+}
+
 export function appendSentSeenData (data) {
   // we will have broadcast and page_broadcast_pages
   let broadcasts = data.broadcasts
-  //  let pagebroadcasts = data.broadcastpages
+  let pagebroadcasts = data.broadcastpages
 
   for (let j = 0; j < broadcasts.length; j++) {
-    //  let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
-    // let filterBySubscriber = []
-    // pagebroadcast.map((c, i) => {
-    //   if (c.broadcastId === broadcasts[j]._id) {
-    //     for (var index = 0; index < filterBySubscriber.length; index++) {
-    //       if (c.subscriberId === filterBySubscriber[index].subscriberId) {
-    //         break
-    //       }
-    //     }
-    //     if (index === filterBySubscriber.length) {
-    //       filterBySubscriber.push(c)
-    //     }
-    //   }
-    // })
-    // broadcasts[j].sent = filterBySubscriber.length// total sent
-    // let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
-    // broadcasts[j].seen = pagebroadcastTapped.length // total tapped
-    //  broadcasts[j].count = data.count
+    let pagebroadcast = pagebroadcasts.filter((c) => c.broadcastId === broadcasts[j]._id)
+    let filterBySubscriber = []
+    pagebroadcast.map((c, i) => {
+      if (c.broadcastId === broadcasts[j]._id) {
+        for (var index = 0; index < filterBySubscriber.length; index++) {
+          if (c.subscriberId === filterBySubscriber[index].subscriberId) {
+            break
+          }
+        }
+        if (index === filterBySubscriber.length) {
+          filterBySubscriber.push(c)
+        }
+      }
+    })
+    broadcasts[j].sent = filterBySubscriber.length// total sent
+    let pagebroadcastTapped = filterBySubscriber.filter((c) => c.seen === true)
+    broadcasts[j].seen = pagebroadcastTapped.length // total tapped
   }
   //  var newBroadcast = broadcasts.reverse()
   return broadcasts
@@ -35,7 +49,7 @@ export function appendSentSeenData (data) {
 export function showbroadcasts (data) {
   return {
     type: ActionTypes.FETCH_BROADCASTS_LIST,
-    broadcasts: data.broadcasts,
+    broadcasts: appendSentSeenData(data),
     count: data.count
   }
 }

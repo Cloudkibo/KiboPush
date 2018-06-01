@@ -114,6 +114,7 @@ class BroadcastsInfo extends React.Component {
   }
 
   render () {
+    console.log('broadcastsByDays state', this.state)
     return (
       <div className='row'>
         <div
@@ -206,7 +207,7 @@ class BroadcastsInfo extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '120px'}}>{broadcast.title}</span></td>
-                              { (broadcast.user[0].plan === 'plan_A' || broadcast.user[0].plan === 'plan_B')
+                              { broadcast.user[0] && (broadcast.user[0].plan === 'plan_A' || broadcast.user[0].plan === 'plan_B')
                             ? <td data-field='user' className='m-datatable__cell'>
                               <span style={{width: '120px'}}>{broadcast.user[0].name}</span></td>
                               : <td data-field='user' className='m-datatable__cell'>

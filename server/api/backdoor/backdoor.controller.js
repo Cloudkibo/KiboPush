@@ -1419,7 +1419,12 @@ exports.uploadFile = function (req, res) {
                           description: `Error in getting pages ${JSON.stringify(err)}`
                         })
                       }
-                      console.log('liveChat', liveChat)
+                      logger.serverLog(TAG, `Subscribers ${JSON.stringify(subscribers.length)}`)
+                      logger.serverLog(TAG, `Broadcasts ${JSON.stringify(Broadcasts.length)}`)
+                      logger.serverLog(TAG, `SUrveys ${JSON.stringify(surveys.length)}`)
+                      logger.serverLog(TAG, `Polls ${JSON.stringify(subscribers.length)}`)
+                      logger.serverLog(TAG, `LiveChat ${JSON.stringify(liveChat.length)}`)
+
                       usersPayload.push({
                         Page: pages[i].pageName,
                         isConnected: pages[i].connected,
@@ -1429,14 +1434,13 @@ exports.uploadFile = function (req, res) {
                         Locale: users[j].facebookInfo ? users[j].facebookInfo.locale : '',
                         CreatedAt: users[j].createdAt,
                         Likes: pages[i].likes,
-                        Subscribers: subscribers.length,
-                        BroadcastsSent: broadcasts.length,
-                        SurveysSent: surveys.length,
-                        PollsSent: polls.length,
-                        lastMessaged: liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
+                        Subscribers: subscribers && subscribers.length > 0 ? subscribers.length : 0,
+                        Broadcasts: broadcasts && broadcasts.length > 0 ? broadcasts.length : 0,
+                        Surveys: surveys && surveys.length > 0 ? surveys.length : 0,
+                        Polls: polls && polls.length > 0 ? polls.length : 0,
+                        lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                       })
                       if (pages.length === usersPayload.length) {
-                        console.log('usersPa', usersPayload.length)
                         var info = usersPayload
                         var keys = []
                         var val = info[0]
@@ -3658,6 +3662,41 @@ exports.allLocales = function (req, res) {
     res.status(200).json({
       status: 'success',
       payload: locales
+    })
+  })
+}
+exports.deletePages = function (req, res) {
+  Pages.find({}).populate('userId').exec((err, pages) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    for (let i = 0; i < pages.length; i++) {
+      if (!pages[i].userId) {
+        console.log(pages[i]._id)
+        logger.serverLog(TAG, `usersData after ${JSON.stringify(pages[i]._id)}`)
+        Pages.findById(pages[i]._id, (err, poll) => {
+          if (err) {
+            return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+          }
+          if (!poll) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Record not found'})
+          }
+          poll.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    }
+    res.status(200).json({
+      status: 'success'
     })
   })
 }

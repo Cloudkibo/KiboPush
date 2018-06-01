@@ -3,13 +3,13 @@ import callApi from '../../utility/api.caller.service'
 
 export function appendSentSeenResponsesData (data) {
   let polls = data.polls
-  //  let pagepolls = data.pollpages
+  let pagepolls = data.pollpages
   let responsesCount = data.responsesCount
   for (let j = 0; j < polls.length; j++) {
-    //  let pagepoll = pagepolls.filter((c) => c.pollId === polls[j]._id)
-    //  polls[j].sent = pagepoll.length// total sent
-    //  let pagepollTapped = pagepoll.filter((c) => c.seen === true)
-    //  polls[j].seen = pagepollTapped.length // total tapped
+    let pagepoll = pagepolls.filter((c) => c.pollId === polls[j]._id)
+    polls[j].sent = pagepoll.length// total sent
+    let pagepollTapped = pagepoll.filter((c) => c.seen === true)
+    polls[j].seen = pagepollTapped.length // total tapped
     for (let i = 0; i < responsesCount.length; i++) {
       if (responsesCount[i]._id === polls[j]._id) {
         polls[j].responses = responsesCount[i].count

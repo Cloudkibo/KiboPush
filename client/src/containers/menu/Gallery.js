@@ -10,6 +10,7 @@ import Card from './Card'
 import Slider from 'react-slick'
 import RightArrow from './RightArrow'
 import LeftArrow from './LeftArrow'
+import AlertContainer from 'react-alert'
 
 class Gallery extends React.Component {
   constructor (props, context) {
@@ -57,6 +58,12 @@ class Gallery extends React.Component {
   }
 
   handleCard (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      }
+      return
+    }
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data) => {
@@ -76,6 +83,13 @@ class Gallery extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     var settings = {
       arrows: true,
       dots: true,
@@ -89,6 +103,7 @@ class Gallery extends React.Component {
     }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', right: '-10px', top: '-5px', zIndex: 6, marginTop: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />

@@ -42,6 +42,16 @@ export function dashboardInfo (state = initialState, action) {
       return Object.assign({}, state, {
         topPages: action.data
       })
+    case ActionTypes.VIEW_PAGE_SUBSCRIBERS_LIST_DASHBOARD:
+      return Object.assign({}, state, {
+        pageSubscribers: action.data,
+        //  locales: action.locale,
+        subscribersCount: action.count
+      })
+    case ActionTypes.LOAD_LOCALES_LIST_DASHBOARD:
+      return Object.assign({}, state, {
+        locales: action.data
+      })
     default:
       return state
   }

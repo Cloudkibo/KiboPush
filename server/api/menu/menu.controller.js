@@ -77,7 +77,10 @@ exports.create = function (req, res) {
     return res.status(400)
       .json({status: 'failed', description: 'Parameters are missing'})
   }
-
+  logger.serverLog(TAG,
+    `JSON structure ${JSON.stringify(req.body.jsonStructure)}`)
+  logger.serverLog(TAG,
+    `Payload ${JSON.stringify(req.body.payload)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({

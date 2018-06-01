@@ -7,6 +7,22 @@ export function updateDashboard (data) {
     data
   }
 }
+export function updateAllLocales (data) {
+  console.log('Data Fetched From Subscribers', data)
+  return {
+    type: ActionTypes.LOAD_LOCALES_LIST_DASHBOARD,
+    data
+  }
+}
+export function updatePageSubscribersList (data) {
+  return {
+    type: ActionTypes.VIEW_PAGE_SUBSCRIBERS_LIST_DASHBOARD,
+    data: data.subscribers,
+    //  locale: getLocales(data.subscribers),
+    count: data.count
+  }
+}
+
 export function updateGraphData (data) {
   return {
     type: ActionTypes.UPDATE_GRAPH_DATA,
@@ -51,5 +67,22 @@ export function loadTopPages () {
   return (dispatch) => {
     callApi(`dashboard/topPages/`)
       .then(res => dispatch(updateTopPages(res.payload)))
+  }
+}
+
+export function loadPageSubscribersList (id, data) {
+  console.log('data for loadPageSubscribersList', data)
+  return (dispatch) => {
+    callApi(`dashboard/getAllSubscribers/${id}`, 'post', data)
+      .then(res => {
+        console.log('response from loadPageSubscribersList', res)
+        dispatch(updatePageSubscribersList(res.payload))
+      })
+  }
+}
+
+export function allLocales () {
+  return (dispatch) => {
+    callApi('subscribers/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
