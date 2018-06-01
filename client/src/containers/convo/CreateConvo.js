@@ -729,7 +729,7 @@ class CreateConvo extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
-                              <button className='btn btn-primary' onClick={this.onNext}>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
                                 Next
                               </button>
                             </div>
@@ -743,7 +743,7 @@ class CreateConvo extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
                                 Test
                               </button>
-                              <button id='send' onClick={this.sendConvo} disabled={(this.state.broadcast.length === 0)} className='btn btn-primary'>
+                              <button id='send' onClick={this.sendConvo} className='btn btn-primary'>
                                 Send
                               </button>
                             </div>
@@ -757,9 +757,12 @@ class CreateConvo extends React.Component {
                               <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             {
-                              this.props.location.state.module === 'convo' &&
+                              this.props.location.state && this.props.location.state.module === 'convo' &&
                               <li>
-                                <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                { this.state.broadcast.length > 0
+                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                  : <a>Targeting </a>
+                                }
                               </li>
                             }
                           </ul>
@@ -954,6 +957,12 @@ class CreateConvo extends React.Component {
                               this.props.location.state.module === 'convo' &&
                               <div className='tab-pane' id='tab_2'>
                                 <div className='row'>
+                                  <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+                                    <i className='flaticon-exclamation m--font-brand' />
+                                    <span style={{marginLeft: '10px'}}>
+                                      If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
+                                    </span>
+                                  </div>
                                   <div className='col-12' style={{paddingLeft: '20px'}}>
                                     <label>Select Page:</label>
                                     <div className='form-group m-form__group'>
