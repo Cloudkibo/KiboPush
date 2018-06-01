@@ -98,6 +98,7 @@ class Image extends React.Component {
                 type='file'
                 name='user[image]'
                 multiple='true'
+                accept='image/*'
                 onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
               {
                 (this.state.imgSrc === '')

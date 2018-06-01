@@ -249,7 +249,7 @@ class SurveysInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '120px'}}>{survey.title}</span></td>
-                                { (survey.user[0].plan === 'plan_A' || survey.user[0].plan === 'plan_B')
+                                { survey.user[0] && (survey.user[0].plan === 'plan_A' || survey.user[0].plan === 'plan_B')
                                 ? <td data-field='user' className='m-datatable__cell'>
                                   <span style={{width: '120px'}}>{survey.user[0].name}</span></td>
                                   : <td data-field='user' className='m-datatable__cell'>

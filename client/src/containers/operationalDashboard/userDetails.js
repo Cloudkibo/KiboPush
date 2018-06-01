@@ -13,8 +13,10 @@ import { Link } from 'react-router'
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
-    const userID = this.props.location.state._id
-    props.loadPagesList(userID, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''})
+    if (this.props.location.state) {
+      const userID = this.props.location.state._id
+      props.loadPagesList(userID, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''})
+    }
     this.state = {
       pagesData: [],
       totalLength: 0,
