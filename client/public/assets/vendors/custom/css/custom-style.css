@@ -212,3 +212,6 @@ a.broadcastTabs.active {
 .postIcons:hover {
   color: blue !important
 }
+.hideSegmentation {
+  display: none
+}

@@ -7,6 +7,7 @@ const Sessions = require('./../sessions/sessions.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
+const Pages = require('./../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const Polls = require('./../polls/Polls.model')
 const Surveys = require('./../surveys/surveys.model')
@@ -21,6 +22,25 @@ const TAG = 'api/thing/index'
 
 router.get('/', (req, res) => {
   res.status(200).json({status: 'success', payload: []})
+})
+
+router.get('/pagesAndUsers', (req, res) => {
+  Pages.find({connected: true}).populate('userId').exec((err, pagesGot) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    let payload = []
+    for (var i=0; i<pagesGot.length; i++) {
+      payload.push({
+        pageId : pagesGot[i].pageId,
+        pageUrl : 'https://m.me/' + pagesGot[i].pageId,
+        pageName: pagesGot[i].pageName,
+        userName : pagesGot[i].userId.name,
+        userEmail : pagesGot[i].userId.email,
+      })
+    }
+    res.status(200).json(payload)
+  })
 })
 
 router.get('/subscriptionDate', (req, res) => {

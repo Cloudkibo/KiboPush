@@ -110,6 +110,7 @@ class CreateConvo extends React.Component {
     this.initTab = this.initTab.bind(this)
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
+    this.resetTarget = this.resetTarget.bind(this)
     props.loadCustomerLists()
   }
 //  sddsdfas
@@ -132,6 +133,27 @@ class CreateConvo extends React.Component {
     $('[href="#tab_1"]').tab('show')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
+  }
+  resetTarget () {
+    this.setState({
+      pageValue: [],
+      genderValue: [],
+      localeValue: [],
+      selectedRadio: '',
+      listSelected: '',
+      isList: false,
+      lists: [],
+      tagValue: []
+    })
+      /* eslint-disable */
+    $('.selectSegmentation').addClass('hideSegmentation')
+    $('.selectList').addClass('hideSegmentation')
+    $('#selectLists').addClass('hideSegmentation')
+    $('#selectPage').val('').trigger('change')
+    $('#selectGender').val('').trigger('change')
+    $('#selectLocale').val('').trigger('change')
+    $('#selectTags').val('').trigger('change')
+      /* eslint-enable */
   }
   initTab () {
     /* eslint-disable */
@@ -156,6 +178,7 @@ class CreateConvo extends React.Component {
     this.initTab()
     if (res.status === 'success') {
       this.setState({broadcast: [], list: []})
+      this.resetTarget()
     }
   }
   scrollToTop () {
@@ -175,6 +198,10 @@ class CreateConvo extends React.Component {
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    /* eslint-disable */
+    $('.selectSegmentation').addClass('hideSegmentation')
+    $('.selectList').addClass('hideSegmentation')
+    /* eslint-enable */
     this.initTab()
     // if (this.props.pages.length > 0) {
     //   var temp = []
@@ -442,6 +469,7 @@ class CreateConvo extends React.Component {
           isList: isListValue
         }
         //  this.setState({tabActive: 'broadcast'})
+        console.log('Sending Broadcast', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         // this.setState({broadcast: [], list: []})
       }
@@ -668,7 +696,15 @@ class CreateConvo extends React.Component {
     })
     if (e.currentTarget.value === 'list') {
       this.setState({genderValue: [], localeValue: [], isList: true})
+      /* eslint-disable */
+      $('.selectSegmentation').addClass('hideSegmentation')
+      $('.selectList').removeClass('hideSegmentation')
+      /* eslint-enable */
     } if (e.currentTarget.value === 'segmentation') {
+      /* eslint-disable */
+      $('.selectSegmentation').removeClass('hideSegmentation')
+      $('.selectList').addClass('hideSegmentation')
+      /* eslint-enable */
       this.setState({listSelected: [], isList: false})
     }
   }
@@ -729,7 +765,7 @@ class CreateConvo extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
-                              <button className='btn btn-primary' onClick={this.onNext}>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
                                 Next
                               </button>
                             </div>
@@ -743,7 +779,7 @@ class CreateConvo extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} disabled={(this.state.pageValue === '' || (this.state.broadcast.length === 0))} onClick={this.testConvo}>
                                 Test
                               </button>
-                              <button id='send' onClick={this.sendConvo} disabled={(this.state.broadcast.length === 0)} className='btn btn-primary'>
+                              <button id='send' onClick={this.sendConvo} className='btn btn-primary'>
                                 Send
                               </button>
                             </div>
@@ -757,9 +793,12 @@ class CreateConvo extends React.Component {
                               <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             {
-                              this.props.location.state.module === 'convo' &&
+                              this.props.location.state && this.props.location.state.module === 'convo' &&
                               <li>
-                                <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                { this.state.broadcast.length > 0
+                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                  : <a>Targeting </a>
+                                }
                               </li>
                             }
                           </ul>
@@ -954,6 +993,12 @@ class CreateConvo extends React.Component {
                               this.props.location.state.module === 'convo' &&
                               <div className='tab-pane' id='tab_2'>
                                 <div className='row'>
+                                  <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+                                    <i className='flaticon-exclamation m--font-brand' />
+                                    <span style={{marginLeft: '10px'}}>
+                                      If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
+                                    </span>
+                                  </div>
                                   <div className='col-12' style={{paddingLeft: '20px'}}>
                                     <label>Select Page:</label>
                                     <div className='form-group m-form__group'>
@@ -971,7 +1016,7 @@ class CreateConvo extends React.Component {
                                         <label>Apply Basic Segmentation</label>
                                       </div>
                                       { this.state.selectedRadio === 'segmentation'
-                                        ? <div className='m-form'>
+                                        ? <div className='m-form selectSegmentation '>
                                           <div className='form-group m-form__group'>
                                             <select id='selectGender' style={{minWidth: 75 + '%'}} />
                                           </div>
@@ -982,7 +1027,7 @@ class CreateConvo extends React.Component {
                                             <select id='selectTags' style={{minWidth: 75 + '%'}} />
                                           </div>
                                         </div>
-                                      : <div className='m-form'>
+                                      : <div className='m-form selectSegmentation hideSegmentation'>
                                         <div className='form-group m-form__group'>
                                           <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
                                         </div>
@@ -1017,10 +1062,10 @@ class CreateConvo extends React.Component {
                                       }
                                       <div className='m-form'>
                                         { this.state.selectedRadio === 'list'
-                                      ? <div className='form-group m-form__group'>
+                                      ? <div className='selectList form-group m-form__group'>
                                         <select id='selectLists' style={{minWidth: 75 + '%'}} />
                                       </div>
-                                      : <div className='form-group m-form__group'>
+                                      : <div className='selectList form-group m-form__group'>
                                         <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
                                       </div>
                                       }
