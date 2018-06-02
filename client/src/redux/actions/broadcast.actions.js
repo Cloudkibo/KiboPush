@@ -168,6 +168,7 @@ export function editbroadcast (broadcast) {
 }
 
 export function sendbroadcast (broadcast) {
+  console.log('sendbroadcast', broadcast)
   return (dispatch) => {
     callApi('broadcasts/send', 'post', broadcast).then(res => {
       if (res.status === 'success') {
