@@ -465,8 +465,8 @@ exports.upload = function (req, res) {
       }
       // saving this file to send files with its original name
       // it will be deleted once it is successfully sent
-      fs.rename(
-        req.files.file.path,
+      fs.copyFile(
+        dir + '/userfiles/' + serverPath,
         dir + '/userfiles/' + req.files.file.name,
         err => {
           if (err) {
