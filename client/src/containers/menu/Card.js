@@ -213,6 +213,7 @@ class Card extends React.Component {
               type='file'
               name='user[image]'
               multiple='true'
+              accept='image/*'
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
 
             {
