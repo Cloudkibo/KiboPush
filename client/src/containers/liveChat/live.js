@@ -58,8 +58,8 @@ class LiveChat extends React.Component {
       tabValue: 'open',
       filter: false
     }
-    props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
-    props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
+    props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
+    props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
     props.loadTeamsList()
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
