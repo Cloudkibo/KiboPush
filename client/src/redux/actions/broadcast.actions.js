@@ -13,7 +13,9 @@ export function deleteFiles (data) {
   if (files.length > 0) {
     return (dispatch) => {
       callApi('broadcasts/deleteFiles', 'post', files)
-        .then(res => {})
+        .then(res => {
+          console.log(res.payload)
+        })
     }
   }
 }
