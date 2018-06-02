@@ -463,19 +463,33 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
-      logger.serverLog(TAG,
-        `file uploaded, sending response now: ${JSON.stringify({
-          id: serverPath,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`
-        })}`)
-      return res.status(201).json({
-        status: 'success',
-        payload: {
-          id: serverPath,
-          name: req.files.file.name,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+      // saving this file to send files with its original name
+      // it will be deleted once it is successfully sent
+      fs.rename(
+        req.files.file.path,
+        dir + '/userfiles/' + req.files.file.name,
+        err => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: 'internal server error' + JSON.stringify(err)
+            })
+          }
+          logger.serverLog(TAG,
+            `file uploaded, sending response now: ${JSON.stringify({
+              id: serverPath,
+              url: `${config.domain}/api/broadcasts/download/${serverPath}`
+            })}`)
+          return res.status(201).json({
+            status: 'success',
+            payload: {
+              id: serverPath,
+              name: req.files.file.name,
+              url: `${config.domain}/api/broadcasts/download/${serverPath}`
+            }
+          })
         }
-      })
+      )
     }
   )
 }
