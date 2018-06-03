@@ -976,7 +976,7 @@ paths:
           description: The message text
           type: string
           required: true
-        - name: pageid
+        - name: pageId
           in: formData
           description: The id of the page
           type: string
@@ -5815,6 +5815,8 @@ definitions:
         type: string
         description: The date and time when the message is sent
         readOnly: true
+      replied_by:
+        type: string
   Menu:
     type: object
     description: This table is used to store main menu details
