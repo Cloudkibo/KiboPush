@@ -128,7 +128,7 @@ class WelcomeMessage extends React.Component {
                                              <span className='m-widget4__sub'>
                                                <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
                                                  <div className='bootstrap-switch-container'>
-                                                   <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={page.isWelcomeMessageEnabled} />
+                                                   <input data-switch='true' type='checkbox' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={page.isWelcomeMessageEnabled} />
                                                  </div>
                                                </div>
                                              </span>
