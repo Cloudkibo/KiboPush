@@ -243,14 +243,14 @@ class Settings extends React.Component {
       if (this.state.count === 1) {
         this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
         if (this.state.count1 !== 1) {
-          this.initializeSwitch(nextProps.apiSuccess.enabled)
+          // this.initializeSwitch(nextProps.apiSuccess.enabled)
           this.setState({saveState: nextProps.apiSuccess.enabled})
         }
         this.setState({count: 2})
       }
     } else if (nextProps.apiFailure) {
       if (this.state.firstTime === true) {
-        this.initializeSwitch(false)
+        // this.initializeSwitch(false)
         this.setState({APIKey: '', APISecret: '', buttonState: false, firstTime: false, count1: 1})
         this.setState({saveState: false})
       }
