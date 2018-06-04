@@ -19,6 +19,7 @@ class WelcomeMessage extends React.Component {
       totalLength: 0,
       filterValue: ''
     }
+    this.switchInitialized = false
     props.loadMyPagesList()
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
@@ -27,24 +28,26 @@ class WelcomeMessage extends React.Component {
   }
 
   initializeSwitch (state, id) {
-    var self = this
-    var temp = '#' + id
-    /* eslint-disable */
-    $(temp).bootstrapSwitch({
-      /* eslint-enable */
-      onText: 'Yes',
-      offText: 'No',
-      offColor: 'danger',
-      state: state
-    })
-    /* eslint-disable */
-    $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
-      if (state === true) {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
-      } else {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
-      }
-    })
+    if (!this.switchInitialized) {
+      var self = this
+      var temp = '#' + id
+      /* eslint-disable */
+      $(temp).bootstrapSwitch({
+        /* eslint-enable */
+        onText: 'Yes',
+        offText: 'No',
+        offColor: 'danger',
+        state: state
+      })
+      /* eslint-disable */
+      $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
+        if (state === true) {
+          self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
+        } else {
+          self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
+        }
+      })
+    }
   }
 
   gotoCreate (page) {
@@ -125,6 +128,7 @@ class WelcomeMessage extends React.Component {
                                                  </div>
                                                </div>
                                                {this.initializeSwitch(page.isWelcomeMessageEnabled, page._id)}
+                                               {(i == this.props.pages.length-1) ? (this.switchInitialized = true) : null}
                                              </span>
                                            </div>
                                            <div className='m-widget4__ext'>
