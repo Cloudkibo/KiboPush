@@ -784,33 +784,28 @@ function updateList (phoneNumber, sender, page) {
 function sendCommentReply (body) {
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
-  }, (err, post) => {
+  }).populate('pageId userId').exec((err, post) => {
     if (err) {
     }
-    Pages.find({pageId: body.entry[0].id, connected: true}).populate('userId').exec((err, pages) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-      logger.serverLog(TAG,
-      `response from comment on facebook ${JSON.stringify(pages[0])}`)
-      needle.get(
-        `https://graph.facebook.com/v2.10/${pages[0].pageId}?fields=access_token&access_token=${pages[0].userId.facebookInfo.fbToken}`,
-        (err, resp) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-          let messageData = {message: post.reply}
-          needle.post(
-            `https://graph.facebook.com/${body.entry[0].changes[0].comment_id}/private_replies?access_token=${resp.body.access_token}`,
-            messageData, (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG, err)
-              }
-              logger.serverLog(TAG,
-              `response from comment on facebook ${JSON.stringify(resp.body)}`)
-            })
-        })
-    })
+    logger.serverLog(TAG,
+    `response from comment on facebook ${JSON.stringify(post)}`)
+    needle.get(
+      `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
+      (err, resp) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        let messageData = {message: post.reply}
+        needle.post(
+          `https://graph.facebook.com/${body.entry[0].changes[0].comment_id}/private_replies?access_token=${resp.body.access_token}`,
+          messageData, (err, resp) => {
+            if (err) {
+              logger.serverLog(TAG, err)
+            }
+            logger.serverLog(TAG,
+            `response from comment on facebook ${JSON.stringify(resp.body)}`)
+          })
+      })
   })
 }
 

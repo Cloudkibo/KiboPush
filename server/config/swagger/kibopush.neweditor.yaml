@@ -220,7 +220,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /autoposting_messages/:id:
     get:
       description: Gets a particular autoposting message
@@ -245,7 +245,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-  
+
   /bots:
     get:
       description: Gets all bots of the logged in user
@@ -253,7 +253,7 @@ paths:
         - application/json
       produces:
         - application/json
-      responses: 
+      responses:
         '200':
           description: OK
           schema:
@@ -294,7 +294,7 @@ paths:
           description: whether this bot is active
           type: boolean
           required: true
-      responses: 
+      responses:
         '200':
           description: OK
           schema:
@@ -329,13 +329,13 @@ paths:
             properties:
               botId:
                 type: string
-                description: id of the bot 
+                description: id of the bot
               payload:
                 description: question and answers of bot
                 items:
                   type: object
                   properties:
-                    questions: 
+                    questions:
                       type: array
                       description: array of questions
                       items:
@@ -343,7 +343,7 @@ paths:
                     answer:
                       type: string
                       description: answer of questions
-      responses: 
+      responses:
         '200':
           description: OK
           schema:
@@ -374,11 +374,11 @@ paths:
             properties:
               botId:
                 type: string
-                description: id of the bot 
+                description: id of the bot
               isActive:
                 type: boolean
                 description: whether this bot is active
-      responses: 
+      responses:
         '200':
           description: OK
           schema:
@@ -409,8 +409,8 @@ paths:
             properties:
               botId:
                 type: string
-                description: id of the bot 
-      responses: 
+                description: id of the bot
+      responses:
         '200':
           description: OK
           schema:
@@ -443,8 +443,8 @@ paths:
             properties:
               botId:
                 type: string
-                description: id of the bot 
-      responses: 
+                description: id of the bot
+      responses:
         '200':
           description: OK
           schema:
@@ -885,10 +885,10 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /livechat/updateUrl:
     post:
-      description: updates an existing message 
+      description: updates an existing message
       consumes:
           - application/json
           - application/x-www-form-urlencoded
@@ -901,10 +901,10 @@ paths:
           required: true
           schema:
             type: object
-            properties: 
+            properties:
               urlmeta:
                 type: object
-                description: url metadata in the message 
+                description: url metadata in the message
       responses:
         '200':
           description: OK
@@ -936,7 +936,7 @@ paths:
           required: true
           schema:
             type: object
-            properties: 
+            properties:
               url:
                 type: string
                 description: the url the message contains
@@ -956,7 +956,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-  
+
 
   /growthtools/upload/:
     post:
@@ -991,7 +991,7 @@ paths:
           description: list of phone numbers
           type: string
           required: true
-        
+
       responses:
         '201':
           description: OK
@@ -1032,7 +1032,7 @@ paths:
                 type: array
                 items:
                   type: string
-              pageId: 
+              pageId:
                 type: string
                 description: id of the page
               text:
@@ -1058,7 +1058,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /growthtools/retrievePhoneNumbers/:
     get:
       description: Retrieves phone numbers of subscribers
@@ -1088,7 +1088,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-              
+
   /growthtools/pendingSubscription/:name/:
     get:
       description: Retrieves phone of a particular file that haven't subscribed yet
@@ -1140,9 +1140,9 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-        
-      
-        
+
+
+
   /livechat/:session_id:
     get:
       description: Gives the chats of a particular session
@@ -1180,8 +1180,8 @@ paths:
           description: page info
           schema:
             type: object
-            properties: 
-              _id: 
+            properties:
+              _id:
                 type: string
                 description: page Id
               welcomeMessage:
@@ -1189,7 +1189,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    id: 
+                    id:
                       type: number
                     componentType:
                       type: string
@@ -1206,8 +1206,8 @@ paths:
                description: success
               payload:
                 type: object
-                properties: 
-                  _id: 
+                properties:
+                  _id:
                     type: string
                     description: page Id
                   welcomeMessage:
@@ -1215,7 +1215,7 @@ paths:
                     items:
                       type: object
                       properties:
-                        id: 
+                        id:
                           type: number
                         componentType:
                           type: string
@@ -1238,8 +1238,8 @@ paths:
           description: page info
           schema:
             type: object
-            properties: 
-              _id: 
+            properties:
+              _id:
                 type: string
                 description: page Id
               isWelcomeMessageEnabled:
@@ -1256,8 +1256,8 @@ paths:
                description: success
               payload:
                 type: object
-                properties: 
-                  _id: 
+                properties:
+                  _id:
                     type: string
                     description: page Id
                   isWelcomeMessageEnabled:
@@ -1267,7 +1267,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /pages/saveGreetingText:
     post:
       description: Saves greeting text to a page
@@ -1281,8 +1281,8 @@ paths:
           description: page info
           schema:
             type: object
-            properties: 
-              pageId: 
+            properties:
+              pageId:
                 type: string
                 description: page Id
               greetingText:
@@ -1299,8 +1299,8 @@ paths:
                description: success
               payload:
                 type: object
-                properties: 
-                  pageId: 
+                properties:
+                  pageId:
                     type: string
                     description: page Id
                   greetingText:
@@ -1754,7 +1754,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /sessions/getOpenSessions:
     post:
       description: Returns all open sessions of a partiular user
@@ -1786,7 +1786,7 @@ paths:
               filter_criteria:
                 type: object
                 properties:
-                  search_value: 
+                  search_value:
                     type: string
                   sort_value:
                     type: string
@@ -1807,7 +1807,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-             
+
   /sessions/getClosedSessions:
     post:
       description: Returns all closed sessions of a partiular user
@@ -1839,7 +1839,7 @@ paths:
               filter_criteria:
                 type: object
                 properties:
-                  search_value: 
+                  search_value:
                     type: string
                   sort_value:
                     type: string
@@ -3391,7 +3391,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /lists/repliedPollSubscribers:
     get:
       description: retrieves all subscribers that replied to a poll
@@ -4545,7 +4545,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/allMessages/:id:
     get:
       description: Gets all messages of a particular sequence
@@ -4575,7 +4575,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/createMessage:
     post:
       description: Gets all messages of a particular sequence
@@ -4591,7 +4591,7 @@ paths:
           schema:
             type: object
             properties:
-              sequenceId: 
+              sequenceId:
                 type: string
                 description: id of the sequence
               schedule:
@@ -4628,7 +4628,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/editMessage:
     post:
       description: Edits a message of a particular sequence
@@ -4644,7 +4644,7 @@ paths:
           schema:
             type: object
             properties:
-              _id: 
+              _id:
                 type: string
                 description: id of the previously created message
               payload:
@@ -4672,7 +4672,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/setSchedule:
     post:
       description: Gets all messages of a particular sequence
@@ -4688,7 +4688,7 @@ paths:
           schema:
             type: object
             properties:
-              messageId: 
+              messageId:
                 type: string
                 description: id of the sequence message
               date:
@@ -4716,7 +4716,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/setStatus:
     post:
       description: Sets status of a particular message
@@ -4732,7 +4732,7 @@ paths:
           schema:
             type: object
             properties:
-              messageId: 
+              messageId:
                 type: string
                 description: id of the message
               isActive:
@@ -4757,7 +4757,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/deleteSequence/:id:
     delete:
       description: Deletes a particular sequence
@@ -4784,7 +4784,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/deleteMessage/:id:
     delete:
       description: Deletes message of a particular sequence
@@ -4811,7 +4811,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/createSequence:
     post:
       description: Creates a new sequence
@@ -4849,7 +4849,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/editSequence:
     post:
       description: Edits a particular sequence
@@ -4865,7 +4865,7 @@ paths:
           schema:
             type: object
             properties:
-              sequenceId: 
+              sequenceId:
                 type: string
                 description: id of the sequence
               name:
@@ -4890,7 +4890,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/allSequences:
     get:
       description: Gets all messages of a particular sequence
@@ -4926,7 +4926,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/subscriberSequences/:id:
     get:
       description: Gets a particular subscriber sequence
@@ -4953,7 +4953,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/subscribeToSequence:
     post:
       description: Subscribes all given subscribers to the given sequence
@@ -4969,7 +4969,7 @@ paths:
           schema:
             type: object
             properties:
-              sequenceId: 
+              sequenceId:
                 type: string
                 description: id of the sequence
               subscriberIds:
@@ -4997,10 +4997,10 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-                          
+
   /sequenceMessaging/unsubscribeToSequence:
     post:
-      description: Unsubscribes all given subscribers from the given sequence 
+      description: Unsubscribes all given subscribers from the given sequence
       consumes:
         - application/json
       produces:
@@ -5013,7 +5013,7 @@ paths:
           schema:
             type: object
             properties:
-              sequenceId: 
+              sequenceId:
                 type: string
                 description: id of the sequence
               subscriberIds:
@@ -5041,7 +5041,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /sequenceMessaging/testScheduler:
     post:
       description: Tests creation of sequence
@@ -5079,6 +5079,160 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+
+  /post:
+    get:
+      description: gives all the facebook posts
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/FacebookPost'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /post/:id:
+    get:
+      description: gives a particular facebook post
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/FacebookPost'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /post/create/:
+    post:
+      description: creates a new facebook post
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: post
+          in: body
+          required: true
+          description: Post details
+          schema:
+            $ref: '#/definitions/FacebookPost'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/FacebookPost'
+                description: The newly created post
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /post/edit/:
+    post:
+      description: Edit an already created Facebook Post
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: postId
+          in: formData
+          description: The unique id of the post to edit
+          type: string
+        - name: includedKeywords
+          in: formData
+          description: The keywords of the post
+          type: array
+          items:
+            type: string
+          required: true
+        - name: excludedKeywords
+          in: formData
+          description: The keywords of the post
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/FacebookPost'
+                description: The newly created autopost
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+  /post/delete/:id:
+    delete:
+      description: Delete a facebook post
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
 ################################################################################
 #                                 Definitions                                  #
@@ -6327,7 +6481,7 @@ definitions:
         type: string
       role:
         type: string
-        
+
   Autoposting_Message:
     type: object
     description: This table is used to store autoposting message information
@@ -6351,7 +6505,7 @@ definitions:
         autoposting_id:
           type: string
           description: unique id of autoposting channel
-        sent: 
+        sent:
           type: number
           description: number of messages sent
         seen:
@@ -6376,7 +6530,7 @@ definitions:
   Bot:
     type: object
     description: This table is used to store bot information
-    properties: 
+    properties:
       _id:
         type: string
         description: The unique id of the record
@@ -6412,10 +6566,10 @@ definitions:
       payload:
         type: array
         description: array of questions and answers of the bot
-        items: 
+        items:
           type: object
           properties:
-            questions: 
+            questions:
               type: array
               description: array of questions
               items:
@@ -6426,7 +6580,7 @@ definitions:
             answer:
               type: string
               description: answer of questions
-              
+
   Sequence:
     type: object
     description: This table is used to store seauence information
@@ -6443,7 +6597,7 @@ definitions:
       userId:
         type: string
         description: user id
-      datetime: 
+      datetime:
         type: string
         description: date and time of creation of the sequence
   SequenceMessage:
@@ -6478,7 +6632,7 @@ definitions:
         type: number
       isActive:
         type: boolean
-        
+
   SequenceSubscriber:
     type: object
     description: This table is used to store sequence subscribers
@@ -6498,7 +6652,58 @@ definitions:
       datetime:
         type: string
         description: date and time of when this subscriber subscribed
-  
+
+  FacebookPost:
+    type: object
+    description: This table is used to store facebook posts information
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+        readOnly: true
+      pageId:
+        type: string
+        description: the id of the page to post from
+      companyId:
+        type: string
+        description: company id of the company that the user belongs to
+        readOnly: true
+      userId:
+        type: string
+        description: user id
+        readOnly: true
+      datetime:
+        type: string
+        description: date and time of creation of the post
+        readOnly: true
+      payload:
+          type: array
+          items:
+            type: object
+            description: the content of the post
+      reply:
+        type: string
+        description: reply to the comment on the post
+      includedKeywords:
+        type: array
+        items:
+          type: string
+          description: reply only if these keywords are present in the comment
+      excludedKeywords:
+        type: array
+        items:
+          type: string
+          description: do not reply if these keywords are present in the comment
+      post_id:
+        type: string
+        description: id of the post
+        readOnly: true
+      count:
+        type: number
+        description: the number of comments on the post
+        readOnly: true
+
+
   Response500:
     type: object
     properties:
@@ -6548,7 +6753,7 @@ definitions:
       description:
         type: string
         description: Parameters missing
-  
+
   Response422:
     type: object
     properties:
@@ -6558,4 +6763,3 @@ definitions:
       description:
         type: string
         description: profile user save error
-      
