@@ -25,7 +25,7 @@ import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { timeSince } from './utilities'
-// import Notification from 'react-web-notification'
+import { registerAction } from '../../utility/socketio'
 var _ = require('lodash/core')
 
 const styles = {
@@ -85,14 +85,22 @@ class LiveChat extends React.Component {
     if (!this.state.ignore) {
       this.setState({ignore: true})
     }
+    var compProp = this.props
+    registerAction({
+      event: 'agent_replied',
+      action: function (data) {
+        compProp.fetchSingleSession(data.session_id, {appendTo: 'open', deleteFrom: 'close'})
+        compProp.fetchUserChats(data.session_id)
+      }
+    })
   }
 
   loadMoreOpen () {
-    this.props.fetchOpenSessions({first_page: false, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: false, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   loadMoreClose () {
-    this.props.fetchCloseSessions({first_page: false, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: false, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: this.state.filter, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   changeActiveSessionFromChatbox () {
@@ -229,7 +237,6 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
 
     if (nextProps.openSessions && nextProps.closeSessions) {
-      console.log('inside')
       this.setState({loading: false})
       this.setState({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions})
       if (this.props.location.state && this.state.activeSession === '') {
@@ -242,9 +249,6 @@ class LiveChat extends React.Component {
           this.setState({tabValue: 'closed'})
         }
       } else if (this.state.activeSession === '') {
-        console.log('activeSession in empty')
-        console.log('openSessions', nextProps.openSessions)
-        console.log('closeSessions', nextProps.closeSessions)
         if (this.state.tabValue === 'open') {
           this.setState({activeSession: nextProps.openSessions.length > 0 ? nextProps.openSessions[0] : ''})
         } else {
@@ -330,22 +334,8 @@ class LiveChat extends React.Component {
         this.props.fetchUserChats(nextProps.socketSession)
         this.props.resetSocket()
       } else if (nextProps.socketSession !== '') {
-        var isPresent = false
-        nextProps.sessions.map((sess) => {
-          if (sess._id === nextProps.socketSession) {
-            isPresent = true
-          }
-        })
-
-        if (isPresent) {
-          this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-          this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-          this.props.resetSocket()
-        } else {
-          this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-          this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 5, filter: this.state.filter, filter_criteria: {sort_value: 1, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-          this.props.resetSocket()
-        }
+        this.props.fetchSingleSession(nextProps.socketSession, {appendTo: 'open', deleteFrom: 'close'})
+        this.props.resetSocket()
       }
     }
   }

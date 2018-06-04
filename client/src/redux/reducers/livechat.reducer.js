@@ -44,9 +44,34 @@ export function liveChat (state = initialState, action) {
       })
 
     case ActionTypes.UPDATE_CHAT_SESSIONS:
+      let openSessions = state.openSessions
+      let closeSessions = state.closeSessions
+      if (action.appendDeleteInfo.deleteFrom === 'open') {
+        for (let i = 0; i < openSessions.length; i++) {
+          if (action.session._id === openSessions[i]._id) {
+            openSessions.splice(i, 1)
+          }
+        }
+      } else if (action.appendDeleteInfo.deleteFrom === 'close') {
+        for (let i = 0; i < closeSessions.length; i++) {
+          if (action.session._id === closeSessions[i]._id) {
+            closeSessions.splice(i, 1)
+          }
+        }
+      } else if (action.appendDeleteInfo.appendTo === 'open') {
+        openSessions.push(action.session)
+      } else if (action.appendDeleteInfo.appendTo === 'close') {
+        closeSessions.push(action.session)
+      }
+      openSessions = openSessions.sort(function (a, b) {
+        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+      })
+      closeSessions = closeSessions.sort(function (a, b) {
+        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+      })
       return Object.assign({}, state, {
-        openSessions: action.openSessions,
-        closeSessions: action.closeSessions
+        openSessions: openSessions,
+        closeSessions: closeSessions
       })
 
     case ActionTypes.SHOW_USER_CHAT:
