@@ -23,6 +23,7 @@ const AutoPosting = require('../autoposting/autopostings.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const FacebookPosts = require('./../facebook_posts/facebook_posts.model')
 const PageAdminSubscriptions = require(
   './../pageadminsubscriptions/pageadminsubscriptions.model')
 const Users = require('./../user/Users.model')
@@ -477,6 +478,14 @@ exports.getfbMessage = function (req, res) {
     })
   }
 
+  if (req.body.entry && req.body.entry[0].changes &&
+    req.body.entry[0].changes[0] &&
+    req.body.entry[0].changes[0].value &&
+    req.body.entry[0].changes[0].value.item ===
+    'comment') {
+    sendCommentReply(req.body)
+  }
+
   if (req.body.entry && req.body.entry[0].messaging &&
     req.body.entry[0].messaging[0] && req.body.entry[0].messaging[0].message &&
     req.body.entry[0].messaging[0].message.quick_reply) {
@@ -709,7 +718,7 @@ exports.getfbMessage = function (req, res) {
           if (event.value.verb === 'add' &&
             (['status', 'photo', 'video', 'share'].indexOf(event.value.item) >
             -1)) {
-            if (event.value.item === 'share') {
+            if (event.value.item === 'share' && event.value.link) {
               og(event.value.link, (err, meta) => {
                 if (err) {
                   logger.serverLog(TAG, `Error: ${err}`)
@@ -769,6 +778,39 @@ function updateList (phoneNumber, sender, page) {
             })
         })
     }
+  })
+}
+
+function sendCommentReply (body) {
+  FacebookPosts.findOne({
+    post_id: body.entry[0].changes[0].value.post_id
+  }, (err, post) => {
+    if (err) {
+    }
+    Pages.find({pageId: body.entry[0].id, connected: true}).populate('userId').exec((err, pages) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      logger.serverLog(TAG,
+      `response from comment on facebook ${JSON.stringify(pages[0])}`)
+      needle.get(
+        `https://graph.facebook.com/v2.10/${pages[0].pageId}?fields=access_token&access_token=${pages[0].userId.facebookInfo.fbToken}`,
+        (err, resp) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          let messageData = {message: post.reply}
+          needle.post(
+            `https://graph.facebook.com/${body.entry[0].changes[0].comment_id}/private_replies?access_token=${resp.body.access_token}`,
+            messageData, (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG, err)
+              }
+              logger.serverLog(TAG,
+              `response from comment on facebook ${JSON.stringify(resp.body)}`)
+            })
+        })
+    })
   })
 }
 
@@ -1248,7 +1290,6 @@ function updateseenstatus (req) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      console.log('updated', updated)
     })
   LiveChat.update(
     {
