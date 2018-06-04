@@ -53,35 +53,11 @@ export function showCloseChatSessions (sessions, firstPage) {
     count: sessions.count
   }
 }
-export function updateChatSessions (session, sessions, status) {
-  let openSessions = sessions.openSessions
-  let closeSessions = sessions.closeSessions
-  if (status === 'resolved') {
-    closeSessions.push(session)
-    for (let i = 0; i < openSessions.length; i++) {
-      if (session._id === openSessions[i]._id) {
-        openSessions.splice(i, 1)
-      }
-    }
-    openSessions = openSessions.sort(function (a, b) {
-      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-    })
-  } else {
-    openSessions.push(session)
-    for (let i = 0; i < closeSessions.length; i++) {
-      if (session._id === closeSessions[i]._id) {
-        closeSessions.splice(i, 1)
-      }
-    }
-    closeSessions = closeSessions.sort(function (a, b) {
-      return new Date(b.last_activity_time) - new Date(a.last_activity_time)
-    })
-  }
-
+export function updateChatSessions (session, appendDeleteInfo) {
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
-    openSessions,
-    closeSessions
+    session,
+    appendDeleteInfo
   }
 }
 
@@ -187,10 +163,10 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchSingleSession (sessionid, sessions, status) {
+export function fetchSingleSession (sessionid, appendDeleteInfo) {
   return (dispatch) => {
     callApi(`sessions/${sessionid}`)
-      .then(res => dispatch(updateChatSessions(res.payload, sessions, status)))
+      .then(res => dispatch(updateChatSessions(res.payload, appendDeleteInfo)))
   }
 }
 
