@@ -5,9 +5,6 @@ const Pages = require('../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const needle = require('needle')
 const TAG = 'api/facebook_posts/facebook_posts.controller.js'
-const fs = require('fs')
-const path = require('path')
-var FormData = require('form-data')
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -172,7 +169,12 @@ exports.create = function (req, res) {
                     }
                     logger.serverLog(TAG,
                     `response from post on facebook ${JSON.stringify(resp.body)}`)
-                    res.status(201).json({status: 'success', payload: postCreated})
+                    FacebookPosts.update(
+                      {_id: postCreated._id}, {post_id: resp.body.id}, (err2, updated) => {
+                        if (err) {
+                        }
+                        res.status(201).json({status: 'success', payload: postCreated})
+                      })
                   })
               } else if (messageData.video) {
                 needle.post(
@@ -183,7 +185,12 @@ exports.create = function (req, res) {
                     }
                     logger.serverLog(TAG,
                     `response from post on facebook ${JSON.stringify(resp.body)}`)
-                    res.status(201).json({status: 'success', payload: postCreated})
+                    FacebookPosts.update(
+                      {_id: postCreated._id}, {post_id: resp.body.id}, (err2, updated) => {
+                        if (err) {
+                        }
+                        res.status(201).json({status: 'success', payload: postCreated})
+                      })
                   })
               } else {
                 needle.post(
@@ -194,7 +201,12 @@ exports.create = function (req, res) {
                     }
                     logger.serverLog(TAG,
                     `response from post on facebook ${JSON.stringify(resp.body)}`)
-                    res.status(201).json({status: 'success', payload: postCreated})
+                    FacebookPosts.update(
+                      {_id: postCreated._id}, {post_id: resp.body.id}, (err2, updated) => {
+                        if (err) {
+                        }
+                        res.status(201).json({status: 'success', payload: postCreated})
+                      })
                   })
               }
               //  let messageData = utility.prepareSendAPIPayload(req.body.payload[1])
