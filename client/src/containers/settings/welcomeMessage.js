@@ -18,12 +18,14 @@ class WelcomeMessage extends React.Component {
       filterValue: ''
     }
     props.loadMyPagesList()
+    this.switchInitialized = false
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
     this.gotoView = this.gotoView.bind(this)
   }
   componentDidMount () {
+    console.log('welcomeMessage componentDidMount')
     if (this.props.pages) {
       for (var i = 0; i < this.props.pages.length; i++) {
         this.initializeSwitch(this.props.pages[i].isWelcomeMessageEnabled, this.props.pages[i]._id)
@@ -31,26 +33,28 @@ class WelcomeMessage extends React.Component {
     }
   }
   initializeSwitch (state, id) {
-    var self = this
-    var temp = '#' + id
-    /* eslint-disable */
-    $(temp).bootstrapSwitch({
-      /* eslint-enable */
-      onText: 'Enabled',
-      offText: 'Disabled',
-      offColor: 'danger',
-      state: state
-    })
-    /* eslint-disable */
-    $(temp).on('switchChange.bootstrapSwitch', function (event) {
-      /* eslint-enable */
-      var state = event.target.checked
-      if (state === true) {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
-      } else {
-        self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
-      }
-    })
+    if (!this.switchInitialized) {
+      var self = this
+      var temp = '#' + id
+      /* eslint-disable */
+      $(temp).bootstrapSwitch({
+        /* eslint-enable */
+        onText: 'Enabled',
+        offText: 'Disabled',
+        offColor: 'danger',
+        state: state
+      })
+      /* eslint-disable */
+      $(temp).on('switchChange.bootstrapSwitch', function (event) {
+        /* eslint-enable */
+        var state = event.target.checked
+        if (state === true) {
+          self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: true})
+        } else {
+          self.props.isWelcomeMessageEnabled({_id: event.target.attributes.id.nodeValue, isWelcomeMessageEnabled: false})
+        }
+      })
+    }
   }
 
   gotoCreate (page) {
