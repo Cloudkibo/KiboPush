@@ -28,6 +28,7 @@ class WelcomeMessage extends React.Component {
   }
 
   initializeSwitch (state, id) {
+    console.log('switchInitalized', this.switchInitialized)
     if (!this.switchInitialized) {
       var self = this
       var temp = '#' + id
