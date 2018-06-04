@@ -13,7 +13,6 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
-import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import {createWelcomeMessage} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
@@ -26,6 +25,7 @@ import File from './File'
 import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
+import Targeting from './Targeting'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -41,23 +41,6 @@ class CreateConvo extends React.Component {
     this.state = {
       list: [],
       broadcast: [],
-      page: {
-        options: []
-      },
-      Gender: {
-        options: [{id: 'male', text: 'male'},
-          {id: 'female', text: 'female'},
-          {id: 'other', text: 'other'}
-        ]
-      },
-      Locale: {
-        options: [{id: 'en_US', text: 'en_US'},
-          {id: 'af_ZA', text: 'af_ZA'},
-          {id: 'ar_AR', text: 'ar_AR'},
-          {id: 'az_AZ', text: 'az_AZ'},
-          {id: 'pa_IN', text: 'pa_IN'}
-        ]
-      },
       stayOpen: false,
       disabled: false,
       pageValue: [],
@@ -73,7 +56,8 @@ class CreateConvo extends React.Component {
       listSelected: '',
       isList: false,
       lists: [],
-      tabActive: 'broadcast'
+      tabActive: 'broadcast',
+      resetTarget: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -83,11 +67,6 @@ class CreateConvo extends React.Component {
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
-    this.initializePageSelect = this.initializePageSelect.bind(this)
-    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
-    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
-    this.initializeTagSelect = this.initializeTagSelect.bind(this)
-    this.initializeListSelect = this.initializeListSelect.bind(this)
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -98,28 +77,18 @@ class CreateConvo extends React.Component {
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
     this.newConvo = this.newConvo.bind(this)
-    this.handleGenderChange = this.handleGenderChange.bind(this)
-    this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
     this.goBack = this.goBack.bind(this)
-    this.handleRadioButton = this.handleRadioButton.bind(this)
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
-    this.resetTarget = this.resetTarget.bind(this)
-    props.loadCustomerLists()
+    this.handleTargetValue = this.handleTargetValue.bind(this)
   }
-//  sddsdfas
-  componentWillMount () {
-    // this.props.loadMyPagesList();
-    // if(this.props.pages.length > 0){
-    //   this.setState({pageValue: this.props.pages[0].pageId})
-    // }
-  }
+
   onNext () {
     /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
@@ -134,26 +103,15 @@ class CreateConvo extends React.Component {
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
-  resetTarget () {
+
+  handleTargetValue (targeting) {
     this.setState({
-      pageValue: [],
-      genderValue: [],
-      localeValue: [],
-      selectedRadio: '',
-      listSelected: '',
-      isList: false,
-      lists: [],
-      tagValue: []
+      listSelected: targeting.listSelected,
+      pageValue: targeting.pageValue,
+      genderValue: targeting.genderValue,
+      localeValue: targeting.localeValue,
+      tagValue: targeting.tagValue
     })
-      /* eslint-disable */
-    $('.selectSegmentation').addClass('hideSegmentation')
-    $('.selectList').addClass('hideSegmentation')
-    $('#selectLists').addClass('hideSegmentation')
-    $('#selectPage').val('').trigger('change')
-    $('#selectGender').val('').trigger('change')
-    $('#selectLocale').val('').trigger('change')
-    $('#selectTags').val('').trigger('change')
-      /* eslint-enable */
   }
   initTab () {
     /* eslint-disable */
@@ -175,10 +133,9 @@ class CreateConvo extends React.Component {
     this.setState({tabActive: 'target'})
   }
   handleSendBroadcast (res) {
-    this.initTab()
     if (res.status === 'success') {
-      this.setState({broadcast: [], list: []})
-      this.resetTarget()
+      this.initTab()
+      this.setState({broadcast: [], list: [], resetTarget: true})
     }
   }
   scrollToTop () {
@@ -187,29 +144,7 @@ class CreateConvo extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
     this.scrollToTop()
-    let options = []
-    if (this.props.pages) {
-      for (var i = 0; i < this.props.pages.length; i++) {
-        options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
-      }
-    }
-
-    this.setState({page: {options: options}})
-    this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
-    this.initializePageSelect(options)
-    /* eslint-disable */
-    $('.selectSegmentation').addClass('hideSegmentation')
-    $('.selectList').addClass('hideSegmentation')
-    /* eslint-enable */
     this.initTab()
-    // if (this.props.pages.length > 0) {
-    //   var temp = []
-    //   for (var j = 0; j < this.props.pages.length; j++) {
-    //     temp.push(this.props.pages[j].pageId)
-    //   }
-    //   this.setState({pageValue: temp})
-    // }
 
     var compProp = this.props
     var comp = this
@@ -226,29 +161,6 @@ class CreateConvo extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
     }
-    if (nextProps.customerLists) {
-      let options = []
-      for (var j = 0; j < nextProps.customerLists.length; j++) {
-        if (!(nextProps.customerLists[j].initialList)) {
-          options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
-        } else {
-          if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
-            options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
-          }
-        }
-      }
-      this.setState({lists: options})
-      this.initializeListSelect(options)
-      if (options.length === 0) {
-        this.state.selectedRadio = 'segmentation'
-      }
-    }
-    if (this.props.tags) {
-      this.initializeTagSelect(this.props.tags)
-    }
-    // if(nextProps.pages.length > 0){
-    //   this.setState({pageValue: nextProps.pages[0].pageId})
-    // }
   }
   showGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: true})
@@ -287,16 +199,6 @@ class CreateConvo extends React.Component {
       pathname: `/broadcasts`
 
     })
-  }
-
-  handleGenderChange (value) {
-    var temp = value.split(',')
-    this.setState({ genderValue: temp })
-  }
-
-  handleLocaleChange (value) {
-    var temp = value.split(',')
-    this.setState({ localeValue: temp })
   }
 
   handleText (obj) {
@@ -413,7 +315,6 @@ class CreateConvo extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
-    this.initTab()
     var isListValue = false
     if (this.state.listSelected.length > 0) {
       isListValue = true
@@ -425,16 +326,20 @@ class CreateConvo extends React.Component {
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
+          this.initTab()
           return this.msg.error('Card must have at least one button.')
         } else if (this.state.broadcast[i].buttons.length === 0) {
+          this.initTab()
           return this.msg.error('Card must have at least one button.')
         }
       }
       if (this.state.broadcast[i].componentType === 'gallery') {
         for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
           if (!this.state.broadcast[i].cards[j].buttons) {
+            this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
           } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
           }
         }
@@ -536,178 +441,12 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: [], list: []})
   }
 
-  initializeListSelect (lists) {
-    var self = this
-    /* eslint-disable */
-    $('#selectLists').select2({
-    /* eslint-enable */
-      data: lists,
-      placeholder: 'Select Lists',
-      allowClear: true,
-      tags: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectLists').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ listSelected: selected })
-      }
-    })
-
-    /* eslint-disable */
-    $('#selectLists').val('').trigger('change')
-    /* eslint-enable */
-  }
-  initializePageSelect (pageOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectPage').select2({
-      /* eslint-enable */
-      data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
-      allowClear: true,
-      multiple: true
-    })
-
-    // this.setState({pageValue: pageOptions[0].id})
-
-    /* eslint-disable */
-    $('#selectPage').on('change', function (e) {
-      /* eslint-enable */
-      // var selectedIndex = e.target.selectedIndex
-      // if (selectedIndex !== '-1') {
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ pageValue: selected })
-      }
-    })
-  }
-
-  initializeGenderSelect (genderOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectGender').select2({
-      /* eslint-enable */
-      data: genderOptions,
-      placeholder: 'Select Gender',
-      allowClear: true,
-      multiple: true
-    })
-
-    /* eslint-disable */
-    $('#selectGender').on('change', function (e) {
-      /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ genderValue: selected })
-      }
-    })
-  }
-
-  initializeLocaleSelect (localeOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectLocale').select2({
-      /* eslint-enable */
-      data: localeOptions,
-      placeholder: 'Select Locale',
-      allowClear: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectLocale').on('change', function (e) {
-      /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ localeValue: selected })
-      }
-    })
-  }
-
-  initializeTagSelect (tagOptions) {
-    let remappedOptions = []
-
-    for (let i = 0; i < tagOptions.length; i++) {
-      let temp = {
-        id: tagOptions[i].tag,
-        text: tagOptions[i].tag
-      }
-      remappedOptions[i] = temp
-    }
-    var self = this
-      /* eslint-disable */
-    $('#selectTags').select2({
-      /* eslint-enable */
-      data: remappedOptions,
-      placeholder: 'Select Tags',
-      allowClear: true,
-      multiple: true
-    })
-      /* eslint-disable */
-    $('#selectTags').on('change', function (e) {
-      /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ tagValue: selected })
-      }
-    })
-  }
-
   goBack () {
     this.props.history.push({
       pathname: `/welcomeMessage`
     })
   }
-  handleRadioButton (e) {
-    this.setState({
-      selectedRadio: e.currentTarget.value
-    })
-    if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: [], isList: true})
-      /* eslint-disable */
-      $('.selectSegmentation').addClass('hideSegmentation')
-      $('.selectList').removeClass('hideSegmentation')
-      /* eslint-enable */
-    } if (e.currentTarget.value === 'segmentation') {
-      /* eslint-disable */
-      $('.selectSegmentation').removeClass('hideSegmentation')
-      $('.selectList').addClass('hideSegmentation')
-      /* eslint-enable */
-      this.setState({listSelected: [], isList: false})
-    }
-  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -992,87 +731,7 @@ class CreateConvo extends React.Component {
                             {
                               this.props.location.state.module === 'convo' &&
                               <div className='tab-pane' id='tab_2'>
-                                <div className='row'>
-                                  <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
-                                    <i className='flaticon-exclamation m--font-brand' />
-                                    <span style={{marginLeft: '10px'}}>
-                                      If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
-                                    </span>
-                                  </div>
-                                  <div className='col-12' style={{paddingLeft: '20px'}}>
-                                    <label>Select Page:</label>
-                                    <div className='form-group m-form__group'>
-                                      <select id='selectPage' style={{width: 200 + '%'}} />
-                                    </div>
-                                    <label>Select Segmentation:</label>
-                                    <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                                      <div className='radio'>
-                                        <input id='segmentAll'
-                                          type='radio'
-                                          value='segmentation'
-                                          name='segmentationType'
-                                          onChange={this.handleRadioButton}
-                                          checked={this.state.selectedRadio === 'segmentation'} />
-                                        <label>Apply Basic Segmentation</label>
-                                      </div>
-                                      { this.state.selectedRadio === 'segmentation'
-                                        ? <div className='m-form selectSegmentation '>
-                                          <div className='form-group m-form__group'>
-                                            <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                                          </div>
-                                          <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                                            <select id='selectLocale' style={{minWidth: 75 + '%'}} />
-                                          </div>
-                                          <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                                            <select id='selectTags' style={{minWidth: 75 + '%'}} />
-                                          </div>
-                                        </div>
-                                      : <div className='m-form selectSegmentation hideSegmentation'>
-                                        <div className='form-group m-form__group'>
-                                          <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
-                                        </div>
-                                        <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                                          <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
-                                        </div>
-                                        <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                                          <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
-                                        </div>
-                                      </div>
-                                      }
-                                      { (this.state.lists.length === 0)
-                                      ? <div className='radio'>
-                                        <input id='segmentList'
-                                          type='radio'
-                                          value='list'
-                                          name='segmentationType'
-                                          disabled />
-                                        <label>Use Segmented Subscribers List</label>
-                                        <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                                      </div>
-                                      : <div className='radio'>
-                                        <input id='segmentList'
-                                          type='radio'
-                                          value='list'
-                                          name='segmentationType'
-                                          onChange={this.handleRadioButton}
-                                          checked={this.state.selectedRadio === 'list'} />
-                                        <label>Use Segmented Subscribers List</label>
-                                        <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                                      </div>
-                                      }
-                                      <div className='m-form'>
-                                        { this.state.selectedRadio === 'list'
-                                      ? <div className='selectList form-group m-form__group'>
-                                        <select id='selectLists' style={{minWidth: 75 + '%'}} />
-                                      </div>
-                                      : <div className='selectList form-group m-form__group'>
-                                        <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
-                                      </div>
-                                      }
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} />
                               </div>
                               }
                           </div>
@@ -1100,7 +759,6 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     fbAppId: state.basicInfo.fbAppId,
     adminPageSubscription: state.basicInfo.adminPageSubscription,
-    customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers),
     tags: (state.tagsInfo.tags)
   }
@@ -1120,7 +778,6 @@ function mapDispatchToProps (dispatch) {
       getFbAppId: getFbAppId,
       createWelcomeMessage: createWelcomeMessage,
       getAdminSubscriptions: getAdminSubscriptions,
-      loadCustomerLists: loadCustomerLists,
       loadTags: loadTags
     },
     dispatch)
