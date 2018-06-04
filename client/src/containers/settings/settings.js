@@ -134,11 +134,11 @@ class Settings extends React.Component {
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
     }
-  }
-  componentDidUpdate () {
-    console.log('in componentDidUpdate', this.state.saveState)
     this.initializeSwitch(this.state.buttonState)
     this.initializeSwitchNGP(this.state.ngpButtonState)
+  }
+  componentDidUpdate () {
+    console.log('in componentDidUpdate')
   }
   changeType (e) {
     if (this.state.type === 'password') {
