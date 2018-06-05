@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchOpenSessions, fetchCloseSessions, fetchUserChats, setActiveSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchSingleSession, setActiveSession } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -90,17 +90,14 @@ socket.on('message', (data) => {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadSubscribersList())
-  } else if (['session_assign', 'session_status', 'unsubscribe'].indexOf(data.action) !== -1) {
-    console.log('fetching sessions in socket')
-    store.dispatch(fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
-    store.dispatch(fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
+  } else if (data.action === 'session_status') {
+    if (data.payload.status === 'new') {
+      store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))
+    } else {
+      store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'close', deleteFrom: 'open'}))
+    }
     store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchNotifications())
-  } else if (data.action === 'agent_replied') {
-    store.dispatch(fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
-    store.dispatch(fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 4, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}}))
-    store.dispatch(setActiveSession(data.payload.session_id))
-    store.dispatch(fetchUserChats(data.payload.session_id))
   } else if (['sequence_create', 'sequence_update', 'sequence_delete'].indexOf(data.action) > -1) {
     store.dispatch(fetchAllSequence())
   }

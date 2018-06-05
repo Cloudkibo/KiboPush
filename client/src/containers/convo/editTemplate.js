@@ -13,11 +13,11 @@ import {
   uploadBroadcastfile,
   sendBroadcast
 } from '../../redux/actions/broadcast.actions'
-import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { createWelcomeMessage } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
+import { checkConditions } from '../polls/utility'
 import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
@@ -25,12 +25,12 @@ import File from './File'
 import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
+import Targeting from './Targeting'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import _ from 'underscore'
 import { Link } from 'react-router'
 import { registerAction } from '../../utility/socketio'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -41,23 +41,6 @@ class EditTemplate extends React.Component {
     this.state = {
       list: [],
       broadcast: [],
-      page: {
-        options: []
-      },
-      Gender: {
-        options: [{id: 'male', text: 'male'},
-          {id: 'female', text: 'female'},
-          {id: 'other', text: 'other'}
-        ]
-      },
-      Locale: {
-        options: [{id: 'en_US', text: 'en_US'},
-          {id: 'af_ZA', text: 'af_ZA'},
-          {id: 'ar_AR', text: 'ar_AR'},
-          {id: 'az_AZ', text: 'az_AZ'},
-          {id: 'pa_IN', text: 'pa_IN'}
-        ]
-      },
       stayOpen: false,
       disabled: false,
       pageValue: [],
@@ -68,7 +51,6 @@ class EditTemplate extends React.Component {
       showMessengerModal: false,
       isShowingModalGuideLines: false,
       stay: false,
-      selectedRadio: '',
       listSelected: '',
       isList: false,
       lists: [],
@@ -78,7 +60,6 @@ class EditTemplate extends React.Component {
     props.getFbAppId()
     props.getAdminSubscriptions()
     props.loadSubscribersList()
-    props.loadCustomerLists()
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
     } else if (props.currentBroadcast) {
@@ -87,9 +68,6 @@ class EditTemplate extends React.Component {
     }
     this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
     this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
-    this.initializePageSelect = this.initializePageSelect.bind(this)
-    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
-    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -102,22 +80,18 @@ class EditTemplate extends React.Component {
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
-    this.handleGenderChange = this.handleGenderChange.bind(this)
-    this.handleLocaleChange = this.handleLocaleChange.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.renameTitle = this.renameTitle.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
     this.backToTemplates = this.backToTemplates.bind(this)
-    this.handleRadioButton = this.handleRadioButton.bind(this)
-    this.initializeListSelect = this.initializeListSelect.bind(this)
-    this.checkConditions = this.checkConditions.bind(this)
     this.goBack = this.goBack.bind(this)
     this.onNext = this.onNext.bind(this)
     this.onPrevious = this.onPrevious.bind(this)
     this.initTab = this.initTab.bind(this)
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
+    this.handleTargetValue = this.handleTargetValue.bind(this)
   }
 //  sddsdfas
   componentWillMount () {
@@ -143,6 +117,15 @@ class EditTemplate extends React.Component {
   }
   closeGuideLinesDialog () {
     this.setState({isShowingModalGuideLines: false})
+  }
+  handleTargetValue (targeting) {
+    this.setState({
+      listSelected: targeting.listSelected,
+      pageValue: targeting.pageValue,
+      genderValue: targeting.genderValue,
+      localeValue: targeting.localeValue,
+      tagValue: targeting.tagValue
+    })
   }
   onNext () {
     /* eslint-disable */
@@ -177,81 +160,7 @@ class EditTemplate extends React.Component {
     /* eslint-enable */
     this.setState({tabActive: 'target'})
   }
-  checkConditions (pageValue, genderValue, localeValue) {
-    let subscribersMatchPages = []
-    let subscribersMatchLocale = []
-    let subscribersMatchGender = []
-    if (pageValue.length > 0) {
-      for (var i = 0; i < pageValue.length; i++) {
-        for (var j = 0; j < this.props.subscribers.length; j++) {
-          if (this.props.subscribers[j].pageId.pageId === pageValue[i]) {
-            subscribersMatchPages.push(this.props.subscribers[j])
-          }
-        }
-      }
-    }
-    if (genderValue.length > 0) {
-      for (var k = 0; k < this.props.subscribers.length; k++) {
-        for (var l = 0; l < genderValue.length; l++) {
-          if (this.props.subscribers[k].gender === genderValue[l]) {
-            subscribersMatchGender.push(this.props.subscribers[k])
-          }
-        }
-      }
-    }
-    if (localeValue.length > 0) {
-      for (var m = 0; m < this.props.subscribers.length; m++) {
-        for (var n = 0; n < localeValue.length; n++) {
-          if (this.props.subscribers[m].locale === localeValue[n]) {
-            subscribersMatchLocale.push(this.props.subscribers[m])
-          }
-        }
-      }
-    }
-    if (pageValue.length > 0 && genderValue.length > 0 && localeValue.length > 0) {
-      var result = _.intersection(subscribersMatchPages, subscribersMatchLocale, subscribersMatchGender)
-      if (result.length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && genderValue.length) {
-      if (_.intersection(subscribersMatchPages, subscribersMatchGender).length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && localeValue.length) {
-      if (_.intersection(subscribersMatchPages, subscribersMatchLocale).length === 0) {
-        return false
-      }
-    } else if (genderValue.length > 0 && localeValue.length) {
-      if (_.intersection(subscribersMatchGender, subscribersMatchLocale).length === 0) {
-        return false
-      }
-    } else if (pageValue.length > 0 && subscribersMatchPages.length === 0) {
-      return false
-    } else if (genderValue.length > 0 && subscribersMatchGender.length === 0) {
-      return false
-    } else if (localeValue.length > 0 && subscribersMatchLocale.length === 0) {
-      return false
-    }
-    return true
-  }
   componentWillReceiveProps (nextprops) {
-    if (nextprops.customerLists) {
-      let options = []
-      for (var j = 0; j < nextprops.customerLists.length; j++) {
-        if (!(nextprops.customerLists[j].initialList)) {
-          options.push({id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName})
-        } else {
-          if (nextprops.customerLists[j].content && nextprops.customerLists[j].content.length > 0) {
-            options.push({id: nextprops.customerLists[j]._id, text: nextprops.customerLists[j].listName})
-          }
-        }
-      }
-      this.setState({lists: options})
-      this.initializeListSelect(options)
-      if (options.length === 0) {
-        this.state.selectedRadio = 'segmentation'
-      }
-    }
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
     } else if (nextprops.broadcastDetails) {
@@ -310,15 +219,6 @@ class EditTemplate extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast'
     this.scrollToTop()
-    let options = []
-    for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
-    }
-
-    this.setState({page: {options: options}})
-    this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
-    this.initializePageSelect(options)
     this.initTab()
     // if (this.props.pages.length > 0) {
     //   var temp = []
@@ -357,16 +257,6 @@ class EditTemplate extends React.Component {
     }
     this.setState({convoTitle: this.titleConvo.value})
     this.closeDialog()
-  }
-
-  handleGenderChange (value) {
-    var temp = value.split(',')
-    this.setState({ genderValue: temp })
-  }
-
-  handleLocaleChange (value) {
-    var temp = value.split(',')
-    this.setState({ localeValue: temp })
   }
 
   handleText (obj) {
@@ -482,7 +372,6 @@ class EditTemplate extends React.Component {
     if (this.state.broadcast.length === 0) {
       return
     }
-    this.initTab()
     //  this.setState({tabActive: 'broadcast'})
     var isListValue = false
     if (this.state.listSelected.length > 0) {
@@ -495,16 +384,20 @@ class EditTemplate extends React.Component {
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
+          this.initTab()
           return this.msg.error('Card must have at least one button.')
         } else if (this.state.broadcast[i].buttons.length === 0) {
+          this.initTab()
           return this.msg.error('Card must have at least one button.')
         }
       }
       if (this.state.broadcast[i].componentType === 'gallery') {
         for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
           if (!this.state.broadcast[i].cards[j].buttons) {
+            this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
           } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
           }
         }
@@ -514,7 +407,7 @@ class EditTemplate extends React.Component {
       console.log('broadcast state', this.state.broadcast)
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var res = this.checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue)
+      var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
@@ -530,6 +423,7 @@ class EditTemplate extends React.Component {
           segmentationList: this.state.listSelected,
           isList: isListValue
         }
+        console.log('Sending Broadcast', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
         //  this.setState({broadcast: [], list: []})
       }
@@ -587,118 +481,7 @@ class EditTemplate extends React.Component {
   newConvo () {
     this.setState({broadcast: [], list: []})
   }
-  initializeListSelect (lists) {
-    var self = this
-    /* eslint-disable */
-    $('#selectLists').select2({
-    /* eslint-enable */
-      data: lists,
-      placeholder: 'Select Lists',
-      allowClear: true,
-      tags: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectLists').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ listSelected: selected })
-      }
-    })
-    /* eslint-disable */
-    $('#selectLists').val('').trigger('change')
-    /* eslint-enable */
-  }
-  initializePageSelect (pageOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectPage').select2({
-      /* eslint-enable */
-      data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
-      allowClear: true,
-      multiple: true
-    })
 
-    // this.setState({pageValue: pageOptions[0].id})
-
-    /* eslint-disable */
-    $('#selectPage').on('change', function (e) {
-      /* eslint-enable */
-      // var selectedIndex = e.target.selectedIndex
-      // if (selectedIndex !== '-1') {
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ pageValue: selected })
-      }
-    })
-  }
-  initializeGenderSelect (genderOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectGender').select2({
-    /* eslint-enable */
-      data: genderOptions,
-      placeholder: 'Select Gender',
-      allowClear: true,
-      multiple: true
-    })
-
-    console.log('In Initialize Gender Select', genderOptions)
-    /* eslint-disable */
-    $('#selectGender').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ genderValue: selected })
-      }
-    })
-  }
-
-  initializeLocaleSelect (localeOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectLocale').select2({
-    /* eslint-enable */
-      data: localeOptions,
-      placeholder: 'Select Locale',
-      allowClear: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectLocale').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ localeValue: selected })
-      }
-    })
-  }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
@@ -708,16 +491,7 @@ class EditTemplate extends React.Component {
       state: {module: 'welcome'}
     })
   }
-  handleRadioButton (e) {
-    this.setState({
-      selectedRadio: e.currentTarget.value
-    })
-    if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: [], isList: true})
-    } if (e.currentTarget.value === 'segmentation') {
-      this.setState({listSelected: [], isList: false})
-    }
-  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -1004,75 +778,7 @@ class EditTemplate extends React.Component {
                             </div>
                             { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                             <div className='tab-pane' id='tab_2'>
-                              <div className='row'>
-                                <div className='col-12' style={{paddingLeft: '20px'}}>
-                                  <label>Select Page:</label>
-                                  <div className='form-group m-form__group'>
-                                    <select id='selectPage' style={{minWidth: 75 + '%'}} />
-                                  </div>
-                                  <label>Select Segmentation:</label>
-                                  <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                                    <div className='radio'>
-                                      <input id='segmentAll'
-                                        type='radio'
-                                        value='segmentation'
-                                        name='segmentationType'
-                                        onChange={this.handleRadioButton}
-                                        checked={this.state.selectedRadio === 'segmentation'} />
-                                      <label>Apply Basic Segmentation</label>
-                                    </div>
-                                    { this.state.selectedRadio === 'segmentation'
-                                      ? <div className='m-form'>
-                                        <div className='form-group m-form__group'>
-                                          <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                                        </div>
-                                        <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                                          <select id='selectLocale' style={{minWidth: 75 + '%'}} />
-                                        </div>
-                                      </div>
-                                    : <div className='m-form'>
-                                      <div className='form-group m-form__group'>
-                                        <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
-                                      </div>
-                                      <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                                        <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
-                                      </div>
-                                    </div>
-                                    }
-                                    { this.state.lists.length === 0
-                                    ? <div className='radio'>
-                                      <input id='segmentList'
-                                        type='radio'
-                                        value='list'
-                                        name='segmentationType'
-                                        disabled />
-                                      <label>Use Segmented Subscribers List</label>
-                                      <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                                    </div>
-                                    : <div className='radio'>
-                                      <input id='segmentList'
-                                        type='radio'
-                                        value='list'
-                                        name='segmentationType'
-                                        onChange={this.handleRadioButton}
-                                        checked={this.state.selectedRadio === 'list'} />
-                                      <label>Use Segmented Subscribers List</label>
-                                      <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                                    </div>
-                                    }
-                                    <div className='m-form'>
-                                      { this.state.selectedRadio === 'list'
-                                    ? <div className='form-group m-form__group'>
-                                      <select id='selectLists' style={{minWidth: 75 + '%'}} />
-                                    </div>
-                                    : <div className='form-group m-form__group'>
-                                      <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
-                                    </div>
-                                    }
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} />
                             </div>
                             }
                           </div>
@@ -1100,7 +806,6 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     broadcastDetails: (state.templatesInfo.broadcastDetails),
     currentBroadcast: (state.templatesInfo.currentBroadcast),
-    customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers),
     fbAppId: state.basicInfo.fbAppId,
     adminPageSubscription: state.basicInfo.adminPageSubscription
@@ -1119,7 +824,6 @@ function mapDispatchToProps (dispatch) {
       loadBroadcastDetails: loadBroadcastDetails,
       saveBroadcastInformation: saveBroadcastInformation,
       createWelcomeMessage: createWelcomeMessage,
-      loadCustomerLists: loadCustomerLists,
       loadSubscribersList: loadSubscribersList,
       getAdminSubscriptions: getAdminSubscriptions,
       getFbAppId: getFbAppId

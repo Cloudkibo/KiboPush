@@ -13,7 +13,9 @@ export function deleteFiles (data) {
   if (files.length > 0) {
     return (dispatch) => {
       callApi('broadcasts/deleteFiles', 'post', files)
-        .then(res => {})
+        .then(res => {
+          console.log(res.payload)
+        })
     }
   }
 }
@@ -166,6 +168,7 @@ export function editbroadcast (broadcast) {
 }
 
 export function sendbroadcast (broadcast) {
+  console.log('sendbroadcast', broadcast)
   return (dispatch) => {
     callApi('broadcasts/send', 'post', broadcast).then(res => {
       if (res.status === 'success') {

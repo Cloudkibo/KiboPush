@@ -2326,7 +2326,7 @@ exports.getAllSurveys = function (req, res) {
                       for (let m = 0; m < responsesurvey.length; m++) {
                         let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[m].subscriberId))
                         for (let o = 0; o < subscriberData.length; o++) {
-                          if (JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
+                          if (subscriberData.length > 0 && subscriberNew.length > 0 && JSON.stringify(subscriberData[o]._id) === JSON.stringify(subscriberNew[0]._id)) {
                             subscriberData[o].responded = true
                             responded = responded + 1
                           }

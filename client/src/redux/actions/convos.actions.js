@@ -13,9 +13,13 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
-      fileInfo.fileurl = res.payload
-      setLoading()
-      handleFunction(fileInfo)
+      if (res.status === 'success') {
+        fileInfo.fileurl = res.payload
+        setLoading()
+        handleFunction(fileInfo)
+      } else {
+        console.log(res.description)
+      }
     })
   }
 }

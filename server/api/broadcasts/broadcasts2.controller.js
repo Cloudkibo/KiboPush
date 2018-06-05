@@ -463,6 +463,11 @@ exports.upload = function (req, res) {
           description: 'internal server error' + JSON.stringify(err)
         })
       }
+      // saving this file to send files with its original name
+      // it will be deleted once it is successfully sent
+      let readData = fs.createReadStream(dir + '/userfiles/' + serverPath)
+      let writeData = fs.createWriteStream(dir + '/userfiles/' + req.files.file.name)
+      readData.pipe(writeData)
       logger.serverLog(TAG,
         `file uploaded, sending response now: ${JSON.stringify({
           id: serverPath,

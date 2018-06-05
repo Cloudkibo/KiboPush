@@ -14,7 +14,9 @@ let facebookPostSchema = new Schema({
   payload: Schema.Types.Mixed,
   reply: String,
   includedKeywords: [String],
-  excludedKeywords: [String]
+  excludedKeywords: [String],
+  post_id: String,
+  count: {type: Number, default: 0}
 })
 
 module.exports = mongoose.model('facebook_posts', facebookPostSchema)

@@ -1394,7 +1394,7 @@
             "required": true
           },
           {
-            "name": "pageid",
+            "name": "pageId",
             "in": "formData",
             "description": "The id of the page",
             "type": "string",
@@ -7491,6 +7491,234 @@
           }
         }
       }
+    },
+    "/post": {
+      "get": {
+        "description": "gives all the facebook posts",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/FacebookPost"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/post/:id": {
+      "get": {
+        "description": "gives a particular facebook post",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/FacebookPost"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/post/create/": {
+      "post": {
+        "description": "creates a new facebook post",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "post",
+            "in": "body",
+            "required": true,
+            "description": "Post details",
+            "schema": {
+              "$ref": "#/definitions/FacebookPost"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/FacebookPost",
+                  "description": "The newly created post"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/post/edit/": {
+      "post": {
+        "description": "Edit an already created Facebook Post",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "formData",
+            "description": "The unique id of the post to edit",
+            "type": "string"
+          },
+          {
+            "name": "includedKeywords",
+            "in": "formData",
+            "description": "The keywords of the post",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "excludedKeywords",
+            "in": "formData",
+            "description": "The keywords of the post",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/FacebookPost",
+                  "description": "The newly created autopost"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/post/delete/:id": {
+      "delete": {
+        "description": "Delete a facebook post",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -8459,6 +8687,9 @@
           "type": "string",
           "description": "The date and time when the message is sent",
           "readOnly": true
+        },
+        "replied_by": {
+          "type": "string"
         }
       }
     },
@@ -9384,6 +9615,71 @@
         "datetime": {
           "type": "string",
           "description": "date and time of when this subscriber subscribed"
+        }
+      }
+    },
+    "FacebookPost": {
+      "type": "object",
+      "description": "This table is used to store facebook posts information",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "unique id of the record",
+          "readOnly": true
+        },
+        "pageId": {
+          "type": "string",
+          "description": "the id of the page to post from"
+        },
+        "companyId": {
+          "type": "string",
+          "description": "company id of the company that the user belongs to",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "string",
+          "description": "user id",
+          "readOnly": true
+        },
+        "datetime": {
+          "type": "string",
+          "description": "date and time of creation of the post",
+          "readOnly": true
+        },
+        "payload": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "the content of the post"
+          }
+        },
+        "reply": {
+          "type": "string",
+          "description": "reply to the comment on the post"
+        },
+        "includedKeywords": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "reply only if these keywords are present in the comment"
+          }
+        },
+        "excludedKeywords": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "do not reply if these keywords are present in the comment"
+          }
+        },
+        "post_id": {
+          "type": "string",
+          "description": "id of the post",
+          "readOnly": true
+        },
+        "count": {
+          "type": "number",
+          "description": "the number of comments on the post",
+          "readOnly": true
         }
       }
     },
