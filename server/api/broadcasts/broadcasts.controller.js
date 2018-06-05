@@ -1381,7 +1381,6 @@ function sendReply (req) {
     logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
     let messageData = utility.prepareSendAPIPayload(
       req.sender.id, payloadItem, true)
-    logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
     Pages.find({pageId: req.recipient.id}, (err, pages) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
