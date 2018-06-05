@@ -811,7 +811,7 @@ function sendCommentReply (body) {
               if (body.entry[0].changes[0].value.post_id.message) {
                 if (post.includedKeywords && post.includedKeywords.length > 0) {
                   for (let i = 0; i < post.includedKeywords.length; i++) {
-                    if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i])) {
+                    if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
                       index = 2
                       break
                     }
