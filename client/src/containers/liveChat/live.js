@@ -89,6 +89,7 @@ class LiveChat extends React.Component {
     registerAction({
       event: 'agent_replied',
       action: function (data) {
+        console.log('data coming', data)
         compProp.fetchSingleSession(data.session_id, {appendTo: 'open', deleteFrom: 'close'})
         compProp.fetchUserChats(data.session_id)
       }

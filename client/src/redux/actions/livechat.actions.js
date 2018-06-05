@@ -241,11 +241,15 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data, sessions, handleActiveSession) {
+export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      // dispatch(fetchSingleSession(data._id, sessions, data.status))
+      if (data.status === 'new') {
+        dispatch(fetchSingleSession(data._id, {appendTo: 'open', deleteFrom: 'close'}))
+      } else {
+        dispatch(fetchSingleSession(data._id, {appendTo: 'close', deleteFrom: 'open'}))
+      }
       handleActiveSession()
     })
   }
