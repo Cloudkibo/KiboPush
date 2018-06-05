@@ -778,7 +778,7 @@ class EditTemplate extends React.Component {
                             </div>
                             { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                             <div className='tab-pane' id='tab_2'>
-                              <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} />
+                              <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
                             </div>
                             }
                           </div>

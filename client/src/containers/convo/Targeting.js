@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
+import { getAllPollResults } from '../../redux/actions/poll.actions'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -26,6 +27,9 @@ class Targeting extends React.Component {
       page: {
         options: []
       },
+      survey: {
+        options: []
+      },
       pageValue: [],
       genderValue: [],
       localeValue: [],
@@ -33,15 +37,22 @@ class Targeting extends React.Component {
       selectedRadio: '',
       listSelected: '',
       isList: false,
-      lists: []
+      lists: [],
+      showDropDownSurvey: false,
+      showDropDownPoll: false,
+      pollValue: [],
+      surveyValue: []
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
     this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
     this.initializeTagSelect = this.initializeTagSelect.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
+    this.initializePollSelect = this.initializePollSelect.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.resetTargeting = this.resetTargeting.bind(this)
+    this.showDropDownSurvey = this.showDropDownSurvey.bind(this)
+    this.showDropDownPoll = this.showDropDownPoll.bind(this)
     props.loadTags()
     props.loadCustomerLists()
   }
@@ -55,15 +66,45 @@ class Targeting extends React.Component {
         options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
       }
     }
-
+    let pollOptions = []
+    if (this.props.polls) {
+      for (var j = 0; j < this.props.polls.length; j++) {
+        pollOptions[j] = {id: this.props.polls[j]._id, text: this.props.polls[j].statement}
+      }
+    }
+    let surveyOptions = []
+    if (this.props.survey) {
+      for (var k = 0; k < this.props.surveys.length; k++) {
+        surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
+      }
+    }
+    this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
     this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
+    this.initializePollSelect(pollOptions)
+    this.initializeSurveySelect(surveyOptions)
     /* eslint-disable */
     $('.selectSegmentation').addClass('hideSegmentation')
     $('.selectList').addClass('hideSegmentation')
+    if (this.props.component !== 'poll') {
+      $('.pollFilter').addClass('hideSegmentation')
+    }
+    if (this.props.component !== 'survey') {
+      $('.surveyFilter').addClass('hideSegmentation')
+    }
     /* eslint-enable */
+  }
+  showDropDownSurvey () {
+    this.setState({
+      showDropDownSurvey: true
+    })
+  }
+  showDropDownPoll () {
+    this.setState({
+      showDropDownPoll: true
+    })
   }
   resetTargeting () {
     this.setState({
@@ -74,17 +115,93 @@ class Targeting extends React.Component {
       listSelected: '',
       isList: false,
       lists: [],
-      tagValue: []
+      tagValue: [],
+      pollValue: [],
+      surveyValue: []
     })
       /* eslint-disable */
     $('.selectSegmentation').addClass('hideSegmentation')
     $('.selectList').addClass('hideSegmentation')
-    $('#selectLists').addClass('hideSegmentation')
+    $('#selectLists').val('').trigger('change')
     $('#selectPage').val('').trigger('change')
     $('#selectGender').val('').trigger('change')
     $('#selectLocale').val('').trigger('change')
     $('#selectTags').val('').trigger('change')
+    $('#selectPoll').val('').trigger('change')
+    $('#selectSurvey').val('').trigger('change')
       /* eslint-enable */
+  }
+
+  initializeSurveySelect (surveyOptions) {
+    var self = this
+    console.log('surveyOptions', surveyOptions)
+    /* eslint-disable */
+    $('#selectSurvey').select2({
+    /* eslint-enable */
+      data: surveyOptions,
+      placeholder: 'Select Survey',
+      allowClear: true,
+      multiple: true
+    })
+    /* eslint-disable */
+    $('#selectSurvey').on('change', function (e) {
+    /* eslint-enable */
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ surveyValue: selected })
+        self.props.handleTargetValue({
+          listSelected: self.state.listSelected,
+          pageValue: self.state.pageValue,
+          genderValue: self.state.genderValue,
+          localeValue: self.state.localeValue,
+          tagValue: self.state.tagValue,
+          pollValue: self.state.pollValue,
+          surveyValue: selected
+        })
+      }
+    })
+  }
+
+  initializePollSelect (pollOptions) {
+    var self = this
+     /* eslint-disable */
+     $('#selectPoll').select2({
+     /* eslint-enable */
+       data: pollOptions,
+       placeholder: 'Select Poll',
+       allowClear: true,
+       multiple: true
+     })
+     /* eslint-disable */
+     $('#selectPoll').on('change', function (e) {
+     /* eslint-enable */
+       var selectedIndex = e.target.selectedIndex
+       if (selectedIndex !== '-1') {
+         var selectedOptions = e.target.selectedOptions
+         var selected = []
+         for (var i = 0; i < selectedOptions.length; i++) {
+           var selectedOption = selectedOptions[i].value
+           selected.push(selectedOption)
+         }
+         self.setState({ pollValue: selected })
+         console.log('pollValue', self.state.pollValue)
+         self.props.handleTargetValue({
+           listSelected: self.state.listSelected,
+           pageValue: self.state.pageValue,
+           genderValue: self.state.genderValue,
+           localeValue: self.state.localeValue,
+           tagValue: self.state.tagValue,
+           pollValue: selected,
+           surveyValue: self.state.surveyValue
+         })
+       }
+     })
   }
   initializeListSelect (lists) {
     var self = this
@@ -114,7 +231,9 @@ class Targeting extends React.Component {
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
           localeValue: self.state.localeValue,
-          tagValue: self.state.tagValue
+          tagValue: self.state.tagValue,
+          pollValue: self.state.pollValue,
+          surveyValue: self.state.surveyValue
         })
       }
     })
@@ -129,7 +248,7 @@ class Targeting extends React.Component {
     $('#selectPage').select2({
       /* eslint-enable */
       data: pageOptions,
-      placeholder: 'Select Pages - Default: All Pages',
+      placeholder: this.props.component === 'broadcast' ? 'Select Pages - Default: All Pages' : 'Default: All Pages',
       allowClear: true,
       multiple: true
     })
@@ -155,7 +274,9 @@ class Targeting extends React.Component {
           pageValue: selected,
           genderValue: self.state.genderValue,
           localeValue: self.state.localeValue,
-          tagValue: self.state.tagValue
+          tagValue: self.state.tagValue,
+          pollValue: self.state.pollValue,
+          surveyValue: self.state.surveyValue
         })
       }
     })
@@ -189,7 +310,9 @@ class Targeting extends React.Component {
           pageValue: self.state.pageValue,
           genderValue: selected,
           localeValue: self.state.localeValue,
-          tagValue: self.state.tagValue
+          tagValue: self.state.tagValue,
+          pollValue: self.state.pollValue,
+          surveyValue: self.state.surveyValue
         })
       }
     })
@@ -222,7 +345,9 @@ class Targeting extends React.Component {
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
           localeValue: selected,
-          tagValue: self.state.tagValue
+          tagValue: self.state.tagValue,
+          pollValue: self.state.pollValue,
+          surveyValue: self.state.surveyValue
         })
       }
     })
@@ -264,7 +389,9 @@ class Targeting extends React.Component {
           pageValue: self.state.pageValue,
           genderValue: self.state.genderValue,
           localeValue: self.state.localeValue,
-          tagValue: selected
+          tagValue: selected,
+          pollValue: self.state.pollValue,
+          surveyValue: self.state.surveyValue
         })
       }
     })
@@ -274,8 +401,14 @@ class Targeting extends React.Component {
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: [], tagValue: [], isList: true})
+      this.setState({genderValue: [], localeValue: [], tagValue: [], isList: true, pollValue: [], surveyValue: []})
       /* eslint-disable */
+      $('#selectPage').val('').trigger('change')
+      $('#selectGender').val('').trigger('change')
+      $('#selectLocale').val('').trigger('change')
+      $('#selectTags').val('').trigger('change')
+      $('#selectPoll').val('').trigger('change')
+      $('#selectSurvey').val('').trigger('change')
       $('.selectSegmentation').addClass('hideSegmentation')
       $('.selectList').removeClass('hideSegmentation')
       /* eslint-enable */
@@ -283,6 +416,7 @@ class Targeting extends React.Component {
       /* eslint-disable */
       $('.selectSegmentation').removeClass('hideSegmentation')
       $('.selectList').addClass('hideSegmentation')
+      $('#selectLists').val('').trigger('change')
       /* eslint-enable */
       this.setState({listSelected: [], isList: false})
     }
@@ -318,9 +452,18 @@ class Targeting extends React.Component {
       <div className='row'>
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
           <i className='flaticon-exclamation m--font-brand' />
-          <span style={{marginLeft: '10px'}}>
+          { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
           </span>
+          }
+          { this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+            If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
+          </span>
+          }
+          { this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+            If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
+          </span>
+          }
         </div>
         <div className='col-12' style={{paddingLeft: '20px'}}>
           <label>Select Page:</label>
@@ -346,8 +489,54 @@ class Targeting extends React.Component {
                 <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                   <select id='selectLocale' style={{minWidth: 75 + '%'}} />
                 </div>
-                <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                   <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                </div>
+                <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                  <div className='col-lg-8 col-md-8 col-sm-8'>
+                    <select id='selectPoll' style={{minWidth: 75 + '%'}} />
+                  </div>
+                  <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
+                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <i className='la la-info-circle' />
+                    </a>
+                    {
+                      this.state.showDropDownPoll &&
+                      <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                        <div className='m-dropdown__inner'>
+                          <div className='m-dropdown__body'>
+                            <div className='m-dropdown__content'>
+                              <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+                <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                  <div className='col-lg-8 col-md-8 col-sm-8'>
+                    <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                  </div>
+                  <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
+                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <i className='la la-info-circle' />
+                    </a>
+                    {
+                     this.state.showDropDownSurvey &&
+                     <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                       <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                       <div className='m-dropdown__inner'>
+                         <div className='m-dropdown__body'>
+                           <div className='m-dropdown__content'>
+                             <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   }
+                  </div>
                 </div>
               </div>
             : <div className='m-form selectSegmentation hideSegmentation'>
@@ -357,8 +546,54 @@ class Targeting extends React.Component {
               <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
                 <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
               </div>
-              <div className='form-group m-form__group' style={{marginTop: '-18px', marginBottom: '20px'}}>
+              <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
                 <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+              </div>
+              <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                <div className='col-lg-8 col-md-8 col-sm-8'>
+                  <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
+                </div>
+                <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
+                  <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    <i className='la la-info-circle' />
+                  </a>
+                  {
+                    this.state.showDropDownPoll &&
+                    <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                      <div className='m-dropdown__inner'>
+                        <div className='m-dropdown__body'>
+                          <div className='m-dropdown__content'>
+                            <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                <div className='col-lg-8 col-md-8 col-sm-8'>
+                  <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
+                </div>
+                <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
+                  <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    <i className='la la-info-circle' />
+                  </a>
+                  {
+                    this.state.showDropDownSurvey &&
+                    <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                      <div className='m-dropdown__inner'>
+                        <div className='m-dropdown__body'>
+                          <div className='m-dropdown__content'>
+                            <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
             }
@@ -405,12 +640,15 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    polls: (state.pollsInfo.polls),
+    surveys: (state.surveysInfo.surveys)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    getAllPollResults: getAllPollResults,
     loadCustomerLists: loadCustomerLists,
     loadTags: loadTags
   }, dispatch)
