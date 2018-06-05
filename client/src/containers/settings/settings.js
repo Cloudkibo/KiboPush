@@ -149,6 +149,7 @@ class Settings extends React.Component {
     e.preventDefault()
   }
   initializeSwitch (state) {
+    console.log('initializingSwitch settings')
     var self = this
     /* eslint-disable */
     $("[name='switch']").bootstrapSwitch({
