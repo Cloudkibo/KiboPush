@@ -782,12 +782,13 @@ function updateList (phoneNumber, sender, page) {
 }
 
 function sendCommentReply (body) {
+  let index = 1
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
   }).populate('pageId userId').exec((err, post) => {
     if (err) {
     }
-    FacebookPosts.update({post_id: body.entry[0].changes[0].value.post_id}, {$inc: {count: 1}}, (err, post) => {
+    FacebookPosts.update({post_id: body.entry[0].changes[0].value.post_id}, {$inc: {count: 1}}, (err, updated) => {
       if (err) {
       }
       logger.serverLog(TAG,
@@ -807,6 +808,18 @@ function sendCommentReply (body) {
               }
               logger.serverLog(TAG,
               `response from comment on facebook ${JSON.stringify(resp.body)}`)
+              if (body.entry[0].changes[0].value.post_id.message) {
+                if (post.includedKeywords && post.includedKeywords.length > 0) {
+                  for (let i = 0; i < post.includedKeywords.length; i++) {
+                    if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i])) {
+                      index = 2
+                      break
+                    }
+                  }
+                }
+              }
+              logger.serverLog(TAG,
+              `value of index ${JSON.stringify(index)}`)
             })
         })
     })
