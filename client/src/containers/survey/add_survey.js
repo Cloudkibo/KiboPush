@@ -72,21 +72,6 @@ class AddSurvey extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Add Survey'
-    let options = []
-    for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
-    }
-    let surveyOptions = []
-    if (this.props.survey) {
-      for (var j = 0; j < this.props.surveys.length; j++) {
-        surveyOptions[j] = {id: this.props.surveys[j]._id, text: this.props.surveys[j].title}
-      }
-    }
-    this.setState({page: {options: options}, survey: {options: surveyOptions}})
-    this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
-    this.initializePageSelect(options)
-    this.initializeSurveySelect(surveyOptions)
   }
 
   componentWillReceiveProps (nextProps) {
