@@ -54,7 +54,8 @@ class EditTemplate extends React.Component {
       listSelected: '',
       isList: false,
       lists: [],
-      tabActive: 'broadcast'
+      tabActive: 'broadcast',
+      resetTarget: false
     }
     props.getuserdetails()
     props.getFbAppId()
