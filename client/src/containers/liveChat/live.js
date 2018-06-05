@@ -236,6 +236,7 @@ class LiveChat extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     this.setState({ignore: true})
+    console.log('nextProps in live', nextProps)
 
     if (nextProps.openSessions && nextProps.closeSessions) {
       this.setState({loading: false})
