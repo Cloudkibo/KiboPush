@@ -73,11 +73,12 @@ class Targeting extends React.Component {
       }
     }
     let surveyOptions = []
-    if (this.props.survey) {
+    if (this.props.surveys) {
       for (var k = 0; k < this.props.surveys.length; k++) {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
+    console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
@@ -637,6 +638,7 @@ class Targeting extends React.Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('state in targeting', state)
   return {
     pages: (state.pagesInfo.pages),
     customerLists: (state.listsInfo.customerLists),
