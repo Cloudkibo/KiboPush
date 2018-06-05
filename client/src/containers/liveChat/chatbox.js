@@ -664,7 +664,7 @@ class ChatBox extends React.Component {
     } else if (this.state.disabledValue && this.props.currentSession.assigned_to.type === 'team' && status === 'new') {
       this.msg.error('You can not reopen chat session. Only agents who are part of assigned team can reopen chat session.')
     } else {
-      this.props.changeStatus({_id: id, status: status}, this.props.changeActiveSessionFromChatbox)
+      this.props.changeStatus({_id: id, status: status}, {openSessions: this.props.openSessions, closeSessions: this.props.closeSessions}, this.props.changeActiveSessionFromChatbox)
       if (status === 'resolved' && this.props.currentSession.is_assigned) {
         if (this.props.currentSession.assigned_to.type === 'agent' && this.props.currentSession.assigned_to.id !== this.props.user._id) {
           let notificationsData = {
