@@ -27,7 +27,12 @@ class createPoll extends React.Component {
       option1: '',
       option2: '',
       option3: '',
-      alertMessage: ''
+      alertMessage: '',
+      pageValue: [],
+      genderValue: [],
+      localeValue: [],
+      tagValue: [],
+      pollValue: []
     }
     this.createPoll = this.createPoll.bind(this)
     this.initializeCategorySelect = this.initializeCategorySelect.bind(this)

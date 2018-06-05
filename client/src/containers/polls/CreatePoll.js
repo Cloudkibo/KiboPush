@@ -7,16 +7,16 @@ import { Alert } from 'react-bs-notifier'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { addPoll, loadPollsList, sendpoll, sendPollDirectly, getAllPollResults } from '../../redux/actions/poll.actions'
+import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
+import Targeting from '../convo/Targeting'
 
 class CreatePoll extends React.Component {
   constructor (props, context) {
@@ -24,87 +24,36 @@ class CreatePoll extends React.Component {
     this.createPoll = this.createPoll.bind(this)
     props.getuserdetails()
     props.loadSubscribersList()
-    props.loadCustomerLists()
     props.loadTags()
     this.state = {
-      page: {
-        options: []
-      },
-      Gender: {
-        options: [{id: 'male', text: 'male'},
-                  {id: 'female', text: 'female'},
-                  {id: 'other', text: 'other'}
-        ]
-      },
-      Locale: {
-        options: [{id: 'en_US', text: 'en_US'},
-                  {id: 'af_ZA', text: 'af_ZA'},
-                  {id: 'ar_AR', text: 'ar_AR'},
-                  {id: 'az_AZ', text: 'az_AZ'},
-                  {id: 'pa_IN', text: 'pa_IN'}
-        ]
-      },
       stayOpen: false,
       disabled: false,
-      pageValue: [],
-      genderValue: [],
-      localeValue: [],
-      tagValue: [],
       alert: false,
       statement: '',
       option1: '',
       option2: '',
       option3: '',
-      selectedRadio: '',
       listSelected: '',
       isList: false,
       isShowingModal: false,
       lists: [],
-      pollValue: [],
-      showDropDown: false
+      resetTarget: false,
+      pageValue: [],
+      genderValue: [],
+      localeValue: [],
+      tagValue: [],
+      pollValue: []
     }
     this.updateStatment = this.updateStatment.bind(this)
     this.updateOptions = this.updateOptions.bind(this)
-    this.handlePageChange = this.handlePageChange.bind(this)
-    this.handleGenderChange = this.handleGenderChange.bind(this)
-    this.handleLocaleChange = this.handleLocaleChange.bind(this)
-    this.initializePageSelect = this.initializePageSelect.bind(this)
-    this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
-    this.initializeTagSelect = this.initializeTagSelect.bind(this)
-    this.initializeLocaleSelect = this.initializeLocaleSelect.bind(this)
-    this.handleRadioButton = this.handleRadioButton.bind(this)
-    this.initializeListSelect = this.initializeListSelect.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
-    this.showDropDown = this.showDropDown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
-    this.initializePollSelect = this.initializePollSelect.bind(this)
-  }
-  showDropDown () {
-    this.setState({showDropDown: true})
-  }
-
-  hideDropDown () {
-    this.setState({showDropDown: false})
+    this.handleTargetValue = this.handleTargetValue.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | Create Poll'
-    let options = []
-    for (var i = 0; i < this.props.pages.length; i++) {
-      options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
-    }
-    let pollOptions = []
-    for (var j = 0; j < this.props.polls.length; j++) {
-      pollOptions[j] = {id: this.props.polls[j]._id, text: this.props.polls[j].statement}
-    }
-    this.props.getAllPollResults()
-    this.setState({page: {options: options}})
-    this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
-    this.initializePageSelect(options)
-    this.initializePollSelect(pollOptions)
   }
 
   showDialog () {
@@ -114,214 +63,17 @@ class CreatePoll extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
-
-  initializePollSelect (pollOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectPoll').select2({
-    /* eslint-enable */
-      data: pollOptions,
-      placeholder: 'Select Poll',
-      allowClear: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectPoll').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ pollValue: selected })
-        console.log('pollValue', self.state.pollValue)
-      }
-    })
-  }
-  initializeListSelect (lists) {
-    var self = this
-    /* eslint-disable */
-    $('#selectLists').select2({
-    /* eslint-enable */
-      data: lists,
-      placeholder: 'Select Lists',
-      allowClear: true,
-      tags: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectLists').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ listSelected: selected })
-      }
-    })
-
-      /* eslint-disable */
-    $('#selectLists').val('').trigger('change')
-      /* eslint-enable */
-  }
-  initializePageSelect (pageOptions) {
-    var self = this
-      /* eslint-disable */
-    $('#selectPage').select2({
-      /* eslint-enable */
-      data: pageOptions,
-      placeholder: 'Default: All Pages',
-      allowClear: true,
-      multiple: true
-    })
-      /* eslint-disable */
-    $('#selectPage').on('change', function (e) {
-      /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ pageValue: selected })
-      }
+  handleTargetValue (targeting) {
+    this.setState({
+      listSelected: targeting.listSelected,
+      pageValue: targeting.pageValue,
+      genderValue: targeting.genderValue,
+      localeValue: targeting.localeValue,
+      tagValue: targeting.tagValue,
+      pollValue: targeting.pollValue
     })
   }
 
-  initializeGenderSelect (genderOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectGender').select2({
-    /* eslint-enable */
-      data: genderOptions,
-      placeholder: 'Select Gender',
-      allowClear: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectGender').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ genderValue: selected })
-      }
-    })
-  }
-
-  initializeTagSelect (tagOptions) {
-    let remappedOptions = []
-
-    for (let i = 0; i < tagOptions.length; i++) {
-      let temp = {
-        id: tagOptions[i].tag,
-        text: tagOptions[i].tag
-      }
-      remappedOptions[i] = temp
-    }
-    var self = this
-      /* eslint-disable */
-    $('#selectTags').select2({
-      /* eslint-enable */
-      data: remappedOptions,
-      placeholder: 'Select Tags',
-      allowClear: true,
-      multiple: true
-    })
-      /* eslint-disable */
-    $('#selectTags').on('change', function (e) {
-      /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ tagValue: selected })
-      }
-    })
-      /* eslint-disable */
-    $('#selectTags').val('').trigger('change')
-      /* eslint-enable */
-  }
-
-  initializeLocaleSelect (localeOptions) {
-    var self = this
-    /* eslint-disable */
-    $('#selectLocale').select2({
-    /* eslint-enable */
-      data: localeOptions,
-      placeholder: 'Select Locale',
-      allowClear: true,
-      multiple: true
-    })
-    /* eslint-disable */
-    $('#selectLocale').on('change', function (e) {
-    /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
-      if (selectedIndex !== '-1') {
-        var selectedOptions = e.target.selectedOptions
-        var selected = []
-        for (var i = 0; i < selectedOptions.length; i++) {
-          var selectedOption = selectedOptions[i].value
-          selected.push(selectedOption)
-        }
-        self.setState({ localeValue: selected })
-      }
-    })
-  }
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.customerLists) {
-      let options = []
-      for (var j = 0; j < nextProps.customerLists.length; j++) {
-        if (!(nextProps.customerLists[j].initialList)) {
-          options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
-        } else {
-          if (nextProps.customerLists[j].content && nextProps.customerLists[j].content.length > 0) {
-            options.push({id: nextProps.customerLists[j]._id, text: nextProps.customerLists[j].listName})
-          }
-        }
-      }
-      this.setState({lists: options})
-      this.initializeListSelect(options)
-      if (options.length === 0) {
-        this.state.selectedRadio = 'segmentation'
-      }
-    }
-    if (this.props.tags) {
-      this.initializeTagSelect(this.props.tags)
-    }
-  }
-  handlePageChange (value) {
-    var temp = value.split(',')
-    this.setState({ pageValue: temp })
-  }
-
-  handleGenderChange (value) {
-    var temp = value.split(',')
-    this.setState({ genderValue: temp })
-  }
-
-  handleLocaleChange (value) {
-    var temp = value.split(',')
-    this.setState({ localeValue: temp })
-  }
   createPoll () {
     var isListValue = false
     if (this.state.listSelected.length > 0) {
@@ -354,7 +106,7 @@ class CreatePoll extends React.Component {
           }
         }
       }
-      this.props.addPoll('', {
+      var data = {
         platform: 'Facebook',
         datetime: Date.now(),
         statement: this.state.statement,
@@ -368,7 +120,9 @@ class CreatePoll extends React.Component {
         segmentationPoll: this.state.pollValue,
         isList: isListValue,
         segmentationList: this.state.listSelected
-      })
+      }
+      console.log('Adding Poll', data)
+      this.props.addPoll('', data)
     }
   }
 
@@ -393,24 +147,6 @@ class CreatePoll extends React.Component {
     }
   }
 
-  handleRadioButton (e) {
-    this.setState({
-      selectedRadio: e.currentTarget.value
-    })
-    if (e.currentTarget.value === 'list') {
-      this.setState({genderValue: [], localeValue: [], tagValue: []})
-      /* eslint-disable */
-        $('#selectLocale').val('').trigger('change')
-        $('#selectGender').val('').trigger('change')
-        $('#selectTags').val('').trigger('change')
-      /* eslint-enable */
-    } if (e.currentTarget.value === 'segmentation') {
-      this.setState({listSelected: [], isList: false})
-      /* eslint-disable */
-        $('#selectLists').val('').trigger('change')
-      /* eslint-enable */
-    }
-  }
   goToSend () {
     var isListValue = false
     if (this.state.listSelected.length > 0) {
@@ -451,7 +187,7 @@ class CreatePoll extends React.Component {
             }
           }
         }
-        this.props.sendPollDirectly({
+        var data = {
           platform: 'Facebook',
           datetime: Date.now(),
           statement: this.state.statement,
@@ -465,7 +201,9 @@ class CreatePoll extends React.Component {
           isList: isListValue,
           segmentationPoll: this.state.pollValue,
           segmentationList: this.state.listSelected
-        }, this.msg)
+        }
+        console.log('Sending Poll', data)
+        this.props.sendPollDirectly(data, this.msg)
       }
     }
   }
@@ -613,119 +351,7 @@ class CreatePoll extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__body'>
-                      <label>Select Page:</label>
-                      <div className='form-group m-form__group'>
-                        <select id='selectPage' style={{minWidth: 75 + '%'}} />
-                      </div>
-                      <label>Select Segmentation:</label>
-                      <div className='radio-buttons' style={{marginLeft: '20px'}}>
-                        <div className='radio'>
-                          <input id='segmentAll'
-                            type='radio'
-                            value='segmentation'
-                            name='segmentationType'
-                            onChange={this.handleRadioButton}
-                            checked={this.state.selectedRadio === 'segmentation'} />
-                          <label>Apply Basic Segmentation</label>
-                          { this.state.selectedRadio === 'segmentation'
-                          ? <div className='m-form'>
-                            <div className='form-group m-form__group' style={{marginTop: '10px'}}>
-                              <select id='selectGender' style={{minWidth: 75 + '%'}} />
-                            </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
-                              <select id='selectLocale' style={{minWidth: 75 + '%'}} />
-                            </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
-                              <select id='selectTags' style={{minWidth: 75 + '%'}} />
-                            </div>
-                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                              <div className='col-lg-8 col-md-8 col-sm-8'>
-                                <select id='selectPoll' style={{minWidth: 75 + '%'}} />
-                              </div>
-                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
-                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                                  <i className='la la-info-circle' />
-                                </a>
-                                {
-                                  this.state.showDropDown &&
-                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
-                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                                    <div className='m-dropdown__inner'>
-                                      <div className='m-dropdown__body'>
-                                        <div className='m-dropdown__content'>
-                                          <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          </div>
-                          : <div className='m-form'>
-                            <div className='form-group m-form__group' style={{marginTop: '10px'}}>
-                              <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
-                            </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
-                              <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
-                            </div>
-                            <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
-                              <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
-                            </div>
-                            <div className='form-group m-form__group row' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                              <div className='col-lg-8 col-md-8 col-sm-8'>
-                                <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
-                              </div>
-                              <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
-                                <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                                  <i className='la la-info-circle' />
-                                </a>
-                                {
-                                  this.state.showDropDown &&
-                                  <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
-                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                                    <div className='m-dropdown__inner'>
-                                      <div className='m-dropdown__body'>
-                                        <div className='m-dropdown__content'>
-                                          <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          </div>
-                          }
-                        </div>
-                        { this.state.lists.length === 0
-                        ? <div className='radio'>
-                          <input id='segmentList'
-                            type='radio'
-                            value='list'
-                            name='segmentationType'
-                            disabled />
-                          <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                        </div>
-                        : <div className='radio'>
-                          <input id='segmentList'
-                            type='radio'
-                            value='list'
-                            name='segmentationType'
-                            onChange={this.handleRadioButton}
-                            checked={this.state.selectedRadio === 'list'} />
-                          <label>Use Segmented Subscribers List</label>
-                          <div style={{marginLeft: '20px'}}><Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-                        </div>
-                      }
-                        <div className='m-form'>
-                          { this.state.selectedRadio === 'list'
-                          ? <div className='form-group m-form__group'><select id='selectLists' /></div>
-                          : <div className='form-group m-form__group'><select id='selectLists' disabled /></div>
-                          }
-                        </div>
-                      </div>
+                      <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='poll' />
                     </div>
                   </div>
                 </div>
@@ -744,7 +370,6 @@ function mapStateToProps (state) {
     pollCreated: (state.pollsInfo.pollCreated),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    customerLists: (state.listsInfo.customerLists),
     subscribers: (state.subscribersInfo.subscribers),
     tags: (state.tagsInfo.tags),
     polls: (state.pollsInfo.polls),
@@ -754,11 +379,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getAllPollResults: getAllPollResults,
     loadPollsList: loadPollsList,
     addPoll: addPoll,
     getuserdetails: getuserdetails,
-    loadCustomerLists: loadCustomerLists,
     sendpoll: sendpoll,
     loadSubscribersList: loadSubscribersList,
     sendPollDirectly: sendPollDirectly,
