@@ -13,7 +13,6 @@ import { fetchOpenSessions, fetchCloseSessions,
   resetSocket,
   resetUnreadSession,
   showChatSessions,
-  resetActiveSession,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -67,11 +66,9 @@ class LiveChat extends React.Component {
     this.handleSearch = this.handleSearch.bind(this)
     this.handleSort = this.handleSort.bind(this)
     this.handleFilter = this.handleFilter.bind(this)
-    this.filterSession = this.filterSession.bind(this)
     this.showDropdown = this.showDropdown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.changeTab = this.changeTab.bind(this)
-    this.separateResolvedSessions = this.separateResolvedSessions.bind(this)
     this.changeActiveSessionFromChatbox = this.changeActiveSessionFromChatbox.bind(this)
     this.loadMoreOpen = this.loadMoreOpen.bind(this)
     this.loadMoreClose = this.loadMoreClose.bind(this)
@@ -89,8 +86,9 @@ class LiveChat extends React.Component {
     registerAction({
       event: 'agent_replied',
       action: function (data) {
-        compProp.fetchSingleSession(data.session_id, {appendTo: 'open', deleteFrom: 'close'})
-        compProp.fetchUserChats(data.session_id)
+        if (data.user_id !== this.props.user._id && this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.activeSession._id === data.session_id) {
+          compProp.fetchUserChats(data.session_id)
+        }
       }
     })
   }
@@ -105,7 +103,7 @@ class LiveChat extends React.Component {
 
   changeActiveSessionFromChatbox () {
     console.log('in changeActiveSessionFromChatbox')
-    this.setState({activeSession: ''})
+    this.setState({activeSession: 'none'})
   }
 
   changeTab (value) {
@@ -114,16 +112,6 @@ class LiveChat extends React.Component {
     } else {
       this.setState({tabValue: 'closed'})
     }
-  }
-
-  separateResolvedSessions (sessions) {
-    let newSessions = sessions.filter(session => session.status === 'new')
-    let resolvedSessions = sessions.filter(session => session.status === 'resolved')
-
-    this.setState({
-      sessionsDataNew: newSessions,
-      sessionsDataResolved: resolvedSessions
-    })
   }
 
   changeActiveSession (session) {
@@ -148,81 +136,31 @@ class LiveChat extends React.Component {
 
     this.props.fetchUserChats(session._id)
     console.log('session in changeActiveSession', session)
-    this.props.markRead(session._id, this.props.openSessions)
+    this.props.markRead(session._id)
     this.props.getSubscriberTags(session.subscriber_id, this.msg)
   }
 
   handleSearch (e) {
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
     if (e.target.value !== '') {
-      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
     } else {
-      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
-      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
     }
   }
 
   handleSort (value) {
     this.setState({sortValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   handleFilter (value) {
     this.setState({filterValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 5, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
-    // if (value !== this.state.filterValue) {
-    //   this.setState({filterValue: value}, function () {
-    //     this.filterSession()
-    //   })
-    // } else {
-    //   this.setState({filterValue: ''}, function () {
-    //     this.filterSession()
-    //   })
-    //  }
-  }
-
-  filterSession () {
-    var temp = this.props.sessions
-
-    // For Search
-    if (this.state.searchValue !== '') {
-      var search = this.state.searchValue
-      temp = _.filter(temp, function (item) {
-        var name = item.subscriber_id.firstName + ' ' + item.subscriber_id.lastName
-        if (name.toLowerCase().indexOf(search.toLowerCase()) > -1) {
-          return item
-        }
-      })
-    }
-
-    // For Sort
-    if (this.state.sortValue !== '') {
-      if (this.state.sortValue === 'old') {
-        temp = temp.sort(function (a, b) {
-          return (a.request_time < b.request_time) ? -1 : ((a.request_time > b.request_time) ? 1 : 0)
-        })
-      } else {
-        temp = temp.sort(function (a, b) {
-          return (a.request_time > b.request_time) ? -1 : ((a.request_time < b.request_time) ? 1 : 0)
-        })
-      }
-    }
-
-    // For Filter
-    if (this.state.filterValue !== '') {
-      var filterValue = this.state.filterValue
-      temp = _.filter(temp, function (item) {
-        if (item.page_id.pageId === filterValue) {
-          return item
-        }
-      })
-    }
-
-    this.setState({sessionsData: temp})
-    this.separateResolvedSessions(temp)
+    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
   }
 
   showDropdown () {
@@ -237,8 +175,10 @@ class LiveChat extends React.Component {
     this.setState({ignore: true})
 
     if (nextProps.openSessions && nextProps.closeSessions) {
+      console.log('open sessions', nextProps.openSessions)
+      console.log('close sessions', nextProps.closeSessions)
       this.setState({loading: false})
-      this.setState({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions})
+      this.setState((state) => ({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions}))
       if (this.props.location.state && this.state.activeSession === '') {
         let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
         let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
@@ -254,29 +194,7 @@ class LiveChat extends React.Component {
         } else {
           this.setState({activeSession: nextProps.closeSessions.length > 0 ? nextProps.closeSessions[0] : ''})
         }
-      } else if (nextProps.activeSession && nextProps.activeSession !== '') {
-        for (let x = 0; x < nextProps.openSessions.length; x++) {
-          if (nextProps.openSessions[x]._id === nextProps.activeSession._id) {
-            this.setState({activeSession: nextProps.openSessions[x]})
-            break
-          }
-        }
-        for (let y = 0; y < nextProps.closeSessions.length; y++) {
-          if (nextProps.closeSessions[y]._id === nextProps.activeSession._id) {
-            this.setState({activeSession: nextProps.closeSessions[y]})
-            break
-          }
-        }
-        this.props.resetActiveSession()
       }
-      // } else if (nextProps.changedStatus) {
-      //   for (var b = 0; b < nextProps.sessions.length; b++) {
-      //     if (nextProps.sessions[b].status === 'new') {
-      //       this.setState({activeSession: nextProps.sessions[b]})
-      //       break
-      //     }
-      //   }
-      // }
     }
     if (!nextProps.subscriberTags) {
       if (nextProps.openSessions[0] && nextProps.openSessions[0].subscriber_id) {
@@ -287,9 +205,9 @@ class LiveChat extends React.Component {
     }
     if (nextProps.unreadSession && this.state.sessionsDataNew.length > 0) {
       var temp = this.state.sessionsDataNew
-      for (var i = 0; i < temp.length; i++) {
-        if (temp[i]._id === nextProps.unreadSession) {
-          temp[i].unreadCount = temp[i].unreadCount ? temp[i].unreadCount + 1 : 1
+      for (var z = 0; z < temp.length; z++) {
+        if (temp[z]._id === nextProps.unreadSession) {
+          temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
           this.setState({sessionsDataNew: temp})
         }
       }
@@ -521,7 +439,7 @@ class LiveChat extends React.Component {
                                   this.state.sessionsDataNew && this.state.sessionsDataNew.length > 0
                                   ? (this.state.sessionsDataNew.map((session) => (
                                     <div key={session._id}>
-                                      <div style={session._id === (this.state.activeSession !== '' && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                      <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                         <div className='m-widget4__img m-widget4__img--pic'>
                                           <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                         </div>
@@ -665,7 +583,7 @@ class LiveChat extends React.Component {
                                   this.state.sessionsDataResolved && this.state.sessionsDataResolved.length > 0
                                   ? (this.state.sessionsDataResolved.map((session) => (
                                     <div key={session._id}>
-                                      <div style={session._id === (this.state.activeSession !== '' && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                      <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                         <div className='m-widget4__img m-widget4__img--pic'>
                                           <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
                                         </div>
@@ -810,7 +728,7 @@ class LiveChat extends React.Component {
                     </div>
                   </div>
                   {
-                    this.state.activeSession === '' &&
+                    (this.state.activeSession === '' || this.state.activeSession === 'none') &&
                     <div className='col-xl-8'>
                       <div className='m-portlet m-portlet--full-height'>
                         <div style={{textAlign: 'center'}} className='m-portlet__body'>
@@ -820,11 +738,11 @@ class LiveChat extends React.Component {
                     </div>
                   }
                   {
-                    this.state.activeSession !== '' &&
+                    this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
                     <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                   {
-                    this.state.activeSession !== '' &&
+                    this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
                     <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                 </div>
@@ -918,8 +836,7 @@ function mapDispatchToProps (dispatch) {
     markRead: markRead,
     showChatSessions: showChatSessions,
     loadTeamsList: loadTeamsList,
-    getSubscriberTags: getSubscriberTags,
-    resetActiveSession: resetActiveSession
+    getSubscriberTags: getSubscriberTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
