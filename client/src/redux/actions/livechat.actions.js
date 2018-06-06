@@ -131,15 +131,15 @@ export function showChangeStatus (data) {
   }
 }
 
-export function fetchSessions () {
-  return (dispatch) => {
-    callApi('sessions')
-      .then(res => {
-        console.log('fetchSessions response', res)
-        dispatch(showChatSessions(res.payload))
-      })
-  }
-}
+// export function fetchSessions () {
+//   return (dispatch) => {
+//     callApi('sessions')
+//       .then(res => {
+//         console.log('fetchSessions response', res)
+//         dispatch(showChatSessions(res.payload))
+//       })
+//   }
+// }
 
 export function fetchOpenSessions (data) {
   console.log('fetchOpenSessions data', data)
@@ -214,7 +214,7 @@ export function sendAttachment (data, handleSendAttachment) {
 export function sendChatMessage (data) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
-      dispatch(fetchSessions())
+      // dispatch(fetchSessions())
     })
   }
 }
@@ -233,7 +233,7 @@ export function fetchUrlMeta (url) {
   }
 }
 
-export function markRead (sessionid, sessions) {
+export function markRead (sessionid) {
   return (dispatch) => {
     callApi(`sessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
@@ -241,11 +241,15 @@ export function markRead (sessionid, sessions) {
   }
 }
 
-export function changeStatus (data, sessions, handleActiveSession) {
+export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      // dispatch(fetchSingleSession(data._id, sessions, data.status))
+      if (data.status === 'new') {
+        dispatch(fetchSingleSession(data._id, {appendTo: 'open', deleteFrom: 'close'}))
+      } else {
+        dispatch(fetchSingleSession(data._id, {appendTo: 'close', deleteFrom: 'open'}))
+      }
       handleActiveSession()
     })
   }
@@ -254,7 +258,7 @@ export function changeStatus (data, sessions, handleActiveSession) {
 export function unSubscribe (data) {
   return (dispatch) => {
     callApi('sessions/unSubscribe', 'post', data).then(res => {
-      dispatch(fetchSessions())
+      // dispatch(fetchSessions())
     })
   }
 }
@@ -262,7 +266,7 @@ export function unSubscribe (data) {
 export function assignToAgent (data) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
-      dispatch(fetchSessions())
+      // dispatch(fetchSessions())
     })
   }
 }
@@ -277,7 +281,7 @@ export function assignToTeam (data) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
-      dispatch(fetchSessions())
+      // dispatch(fetchSessions())
     })
   }
 }

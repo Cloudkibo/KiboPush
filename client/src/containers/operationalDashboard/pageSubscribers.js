@@ -102,7 +102,6 @@ class PageSubscribers extends React.Component {
     // this.setState({ totalLength: this.state.pageSubscribersData.length })
   }
 
-
   onFilterByGender (data) {
     if (data) {
       this.setState({genderValue: data.value})

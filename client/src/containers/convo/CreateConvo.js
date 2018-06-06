@@ -130,7 +130,7 @@ class CreateConvo extends React.Component {
     /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'target'})
+    this.setState({tabActive: 'target', resetTarget: false})
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
@@ -731,7 +731,7 @@ class CreateConvo extends React.Component {
                             {
                               this.props.location.state.module === 'convo' &&
                               <div className='tab-pane' id='tab_2'>
-                                <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} />
+                                <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
                               </div>
                               }
                           </div>

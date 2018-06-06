@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSingleSession, setActiveSession } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateSeen, fetchSingleSession } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -96,7 +96,6 @@ socket.on('message', (data) => {
     } else {
       store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'close', deleteFrom: 'open'}))
     }
-    store.dispatch(setActiveSession(data.payload.session_id))
     store.dispatch(fetchNotifications())
   } else if (['sequence_create', 'sequence_update', 'sequence_delete'].indexOf(data.action) > -1) {
     store.dispatch(fetchAllSequence())
