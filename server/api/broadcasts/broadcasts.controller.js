@@ -1404,43 +1404,44 @@ function sendReply (req) {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
-      logger.serverLog(TAG, 'Page got from MENU RESPONSE ' + JSON.stringify(pages))
-      request(
-        {
-          'method': 'POST',
-          'json': true,
-          'formData': messageData,
-          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-          pages[0].accessToken
-        },
-        function (err, res) {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At send message reply for menu ${JSON.stringify(err)}`)
-          } else {
-            logger.serverLog(TAG,
-              `At send reply response ${JSON.stringify(
-                res)}`)
+      pages.forEach((page) => {
+        request(
+          {
+            'method': 'POST',
+            'json': true,
+            'formData': messageData,
+            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+            page.accessToken
+          },
+          function (err, res) {
+            if (err) {
+              return logger.serverLog(TAG,
+                `At send message reply for menu ${JSON.stringify(err)}`)
+            } else {
+              logger.serverLog(TAG,
+                `At send reply response ${JSON.stringify(
+                  res)}`)
 
-            let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
-              config.facebook.clientSecret)
-
-            FBExtension.extendShortToken(pages[0].userId.facebookInfo.fbToken).then((error) => {
-              logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
-            }).fail((response) => {
-              logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
-              let accessToken = response.access_token
-              Users.update({_id: pages[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
-                if (err) {
-                  return logger.serverLog(TAG,
-                    `At update user fb token ${JSON.stringify(err)}`)
-                }
-                logger.serverLog(TAG, 'done with token update')
-                logger.serverLog(TAG, result)
-              })
-            })
-          }
-        })
+              // let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+              //   config.facebook.clientSecret)
+              //
+              // FBExtension.extendShortToken(pages[0].userId.facebookInfo.fbToken).then((error) => {
+              //   logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
+              // }).fail((response) => {
+              //   logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
+              //   let accessToken = response.access_token
+              //   Users.update({_id: pages[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
+              //     if (err) {
+              //       return logger.serverLog(TAG,
+              //         `At update user fb token ${JSON.stringify(err)}`)
+              //     }
+              //     logger.serverLog(TAG, 'done with token update')
+              //     logger.serverLog(TAG, result)
+              //   })
+              // })
+            }
+          })
+      })
     })
   })
 }
