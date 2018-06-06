@@ -1377,6 +1377,8 @@ function updateseenstatus (req) {
   //   })
 }
 
+const PassportFacebookExtension = require('passport-facebook-extension')
+
 function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   parsedData.forEach(payloadItem => {
@@ -1403,6 +1405,15 @@ function sendReply (req) {
             logger.serverLog(TAG,
               `At send reply response ${JSON.stringify(
                 res)}`)
+
+            let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+              config.facebook.clientSecret)
+
+            FBExtension.extendShortToken(pages[0].accessToken).then((error) => {
+              logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
+            }).fail((response) => {
+              logger.serverLog(TAG, 'token refreshed ' + JSON.stringify())
+            })
           }
         })
     })
