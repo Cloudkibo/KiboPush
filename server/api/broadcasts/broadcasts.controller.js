@@ -741,6 +741,19 @@ exports.getfbMessage = function (req, res) {
     }
   }
 
+  if (req.body.object && req.body.object === 'permissions' && req.body.entry && req.body.entry[0].changes &&
+    req.body.entry[0].changes[0] &&
+    req.body.entry[0].changes[0].field && req.body.entry[0].changes[0].field === 'connected' &&
+    req.body.entry[0].changes[0].verb) {
+    let isDisconnected = req.body.entry[0].changes[0].verb !== 'granted'
+    Users.update({'facebookInfo.fbId': req.body.entry[0].id}, {$set: {disconnected: isDisconnected}}, (err, user) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      } else {
+        logger.serverLog(TAG, `USER DISCONNECTED ${JSON.stringify(user)}`)
+      }
+    })
+  }
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
 function updateList (phoneNumber, sender, page) {
