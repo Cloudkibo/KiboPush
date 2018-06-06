@@ -152,7 +152,7 @@ class EditTemplate extends React.Component {
     /* eslint-disable */
     $('[href="#tab_2"]').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'broadcast'})
+    this.setState({tabActive: 'broadcast', resetTarget: false})
   }
   onTargetClick () {
     /* eslint-disable */
