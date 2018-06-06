@@ -58,10 +58,27 @@ export function liveChat (state = initialState, action) {
             closeSessions.splice(i, 1)
           }
         }
-      } else if (action.appendDeleteInfo.appendTo === 'open') {
-        openSessions.push(action.session)
+      }
+      if (action.appendDeleteInfo.appendTo === 'open') {
+        let openCount = 0
+        for (let j = 0; j < openSessions.length; j++) {
+          if (action.session._id === openSessions[j]._id) {
+            openCount = 1
+          }
+        }
+        if (openCount === 0) {
+          openSessions.push(action.session)
+        }
       } else if (action.appendDeleteInfo.appendTo === 'close') {
-        closeSessions.push(action.session)
+        let closeCount = 0
+        for (let j = 0; j < closeSessions.length; j++) {
+          if (action.session._id === closeSessions[j]._id) {
+            closeCount = 1
+          }
+        }
+        if (closeCount === 0) {
+          closeSessions.push(action.session)
+        }
       }
       openSessions = openSessions.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
