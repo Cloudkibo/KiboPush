@@ -135,6 +135,7 @@
     "react-simple-popover": "^0.2.0",
     "react-slick": "^0.15.4",
     "react-stickydiv": "^3.4.20",
+    "react-stripe-elements": "^2.0.0",
     "react-textarea-autosize": "^5.1.0",
     "react-title-component": "^1.0.1",
     "react-tooltip": "^3.3.0",
