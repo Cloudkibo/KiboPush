@@ -741,6 +741,19 @@ exports.getfbMessage = function (req, res) {
     }
   }
 
+  if (req.body.object && req.body.object === 'permissions' && req.body.entry && req.body.entry[0].changes &&
+    req.body.entry[0].changes[0] &&
+    req.body.entry[0].changes[0].field && req.body.entry[0].changes[0].field === 'connected' &&
+    req.body.entry[0].changes[0].verb) {
+    let isDisconnected = req.body.entry[0].changes[0].verb !== 'granted'
+    Users.update({'facebookInfo.fbId': req.body.entry[0].id}, {$set: {disconnected: isDisconnected}}, (err, user) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      } else {
+        logger.serverLog(TAG, `USER DISCONNECTED ${JSON.stringify(user)}`)
+      }
+    })
+  }
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
 function updateList (phoneNumber, sender, page) {
@@ -793,35 +806,37 @@ function sendCommentReply (body) {
       }
       logger.serverLog(TAG,
       `response from comment on facebook ${JSON.stringify(post)}`)
-      needle.get(
-        `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
-        (err, resp) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-          let messageData = {message: post.reply}
-          needle.post(
-            `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
-            messageData, (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG, err)
-              }
-              logger.serverLog(TAG,
-              `response from comment on facebook ${JSON.stringify(resp.body)}`)
-              if (body.entry[0].changes[0].value.post_id.message) {
-                if (post.includedKeywords && post.includedKeywords.length > 0) {
-                  for (let i = 0; i < post.includedKeywords.length; i++) {
-                    if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
-                      index = 2
-                      break
+      if (post && post.pageId) {
+        needle.get(
+          `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
+          (err, resp) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            let messageData = {message: post.reply}
+            needle.post(
+              `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
+              messageData, (err, resp) => {
+                if (err) {
+                  logger.serverLog(TAG, err)
+                }
+                logger.serverLog(TAG,
+                `response from comment on facebook ${JSON.stringify(resp.body)}`)
+                if (body.entry[0].changes[0].value.post_id.message) {
+                  if (post.includedKeywords && post.includedKeywords.length > 0) {
+                    for (let i = 0; i < post.includedKeywords.length; i++) {
+                      if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+                        index = 2
+                        break
+                      }
                     }
                   }
                 }
-              }
-              logger.serverLog(TAG,
-              `value of index ${JSON.stringify(index)}`)
-            })
-        })
+                logger.serverLog(TAG,
+                `value of index ${JSON.stringify(index)}`)
+              })
+          })
+      }
     })
   })
 }
@@ -1381,7 +1396,6 @@ function sendReply (req) {
     logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
     let messageData = utility.prepareSendAPIPayload(
       req.sender.id, payloadItem, true)
-    logger.serverLog(TAG, `utility ${JSON.stringify(messageData)}`)
     Pages.find({pageId: req.recipient.id}, (err, pages) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
