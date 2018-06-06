@@ -1400,7 +1400,7 @@ function sendReply (req) {
     logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
     let messageData = utility.prepareSendAPIPayload(
       req.sender.id, payloadItem, true)
-    Pages.find({pageId: req.recipient.id}, (err, pages) => {
+    Pages.find({pageId: req.recipient.id}).populate('userId').exec((err, pages) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
@@ -1424,12 +1424,12 @@ function sendReply (req) {
             let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
               config.facebook.clientSecret)
 
-            FBExtension.extendShortToken(pages[0].accessToken).then((error) => {
+            FBExtension.extendShortToken(pages[0].userId.facebookInfo.fbToken).then((error) => {
               logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
             }).fail((response) => {
               logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
               let accessToken = response.access_token
-              Users.update({_id: page[0].userId}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
+              Users.update({_id: page[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
                 if (err) {
                   return logger.serverLog(TAG,
                     `At update user fb token ${JSON.stringify(err)}`)
