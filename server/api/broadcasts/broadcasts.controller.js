@@ -1404,6 +1404,7 @@ function sendReply (req) {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
+      logger.serverLog(TAG, 'Page got from MENU RESPONSE ' + JSON.stringify(pages))
       request(
         {
           'method': 'POST',
@@ -1429,7 +1430,7 @@ function sendReply (req) {
             }).fail((response) => {
               logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
               let accessToken = response.access_token
-              Users.update({_id: page[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
+              Users.update({_id: pages[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
                 if (err) {
                   return logger.serverLog(TAG,
                     `At update user fb token ${JSON.stringify(err)}`)
