@@ -130,7 +130,7 @@ class CreateConvo extends React.Component {
     /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'target'})
+    this.setState({tabActive: 'target', resetTarget: false})
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
