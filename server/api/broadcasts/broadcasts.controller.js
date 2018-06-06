@@ -1415,7 +1415,7 @@ function sendReply (req) {
         function (err, res) {
           if (err) {
             return logger.serverLog(TAG,
-              `At send test message broadcast ${JSON.stringify(err)}`)
+              `At send message reply for menu ${JSON.stringify(err)}`)
           } else {
             logger.serverLog(TAG,
               `At send reply response ${JSON.stringify(
@@ -1427,7 +1427,16 @@ function sendReply (req) {
             FBExtension.extendShortToken(pages[0].accessToken).then((error) => {
               logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
             }).fail((response) => {
-              logger.serverLog(TAG, 'token refreshed ' + JSON.stringify())
+              logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
+              let accessToken = response.access_token
+              Users.update({_id: page[0].userId}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At update user fb token ${JSON.stringify(err)}`)
+                }
+                logger.serverLog(TAG, 'done with token update')
+                logger.serverLog(TAG, result)
+              })
             })
           }
         })
