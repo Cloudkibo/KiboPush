@@ -3666,37 +3666,91 @@ exports.allLocales = function (req, res) {
   })
 }
 exports.deletePages = function (req, res) {
-  Pages.find({}).populate('userId').exec((err, pages) => {
+  Surveys.find({}).exec((err, surveys) => {
     if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: `Internal Server Error ${JSON.stringify(err)}`
+    }
+    for (let i = 0; i < surveys.length; i++) {
+      SurveyPage.find({surveyId: surveys[i]._id}, (err, surveypages) => {
+        if (err) {
+        }
+        if (!surveypages) {
+          Surveys.findById(surveys[i]._id, (err, survey) => {
+            if (err) {
+              return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            if (!survey) {
+              return res.status(404)
+                .json({status: 'failed', description: 'Record not found'})
+            }
+            survey.remove((err2) => {
+              if (err2) {
+                return res.status(500)
+                  .json({status: 'failed', description: 'poll update failed'})
+              }
+            })
+          })
+        }
       })
     }
-    for (let i = 0; i < pages.length; i++) {
-      if (!pages[i].userId) {
-        console.log(pages[i]._id)
-        logger.serverLog(TAG, `usersData after ${JSON.stringify(pages[i]._id)}`)
-        Pages.findById(pages[i]._id, (err, poll) => {
-          if (err) {
-            return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          if (!poll) {
-            return res.status(404)
-              .json({status: 'failed', description: 'Record not found'})
-          }
-          poll.remove((err2) => {
-            if (err2) {
-              return res.status(500)
-                .json({status: 'failed', description: 'poll update failed'})
-            }
-          })
-        })
-      }
+  })
+  Polls.find({}).exec((err, polls) => {
+    if (err) {
     }
-    res.status(200).json({
-      status: 'success'
-    })
+    for (let i = 0; i < polls.length; i++) {
+      PollPage.find({pollId: polls[i]._id}, (err, pollpages) => {
+        if (err) {
+        }
+        if (!pollpages) {
+          Polls.findById(polls[i]._id, (err, poll) => {
+            if (err) {
+              return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            if (!poll) {
+              return res.status(404)
+                .json({status: 'failed', description: 'Record not found'})
+            }
+            poll.remove((err2) => {
+              if (err2) {
+                return res.status(500)
+                  .json({status: 'failed', description: 'poll update failed'})
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+  Broadcasts.find({}).exec((err, broadcasts) => {
+    if (err) {
+    }
+    for (let i = 0; i < broadcasts.length; i++) {
+      BroadcastPage.find({broadcastId: broadcasts[i]._id}, (err, broadcastpages) => {
+        if (err) {
+        }
+        if (!broadcastpages) {
+          Broadcasts.findById(broadcasts[i]._id, (err, broadcast) => {
+            if (err) {
+              return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            if (!broadcast) {
+              return res.status(404)
+                .json({status: 'failed', description: 'Record not found'})
+            }
+            broadcast.remove((err2) => {
+              if (err2) {
+                return res.status(500)
+                  .json({status: 'failed', description: 'poll update failed'})
+              }
+            })
+          })
+        }
+      })
+    }
+  })
+  res.status(200).json({
+    status: 'success'
   })
 }
