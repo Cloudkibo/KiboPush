@@ -78,7 +78,7 @@ exports.sendConversation = function (req, res) {
         }
 
         pages.forEach(page => {
-          req.body.payload.forEach((payloadItem, index) => {
+          req.body.payload.forEach(payloadItem => {
             PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}, (err, subscriptionUser) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -93,7 +93,7 @@ exports.sendConversation = function (req, res) {
                 `Payload for Messenger Send API for test: ${JSON.stringify(
                   messageData)}`)
 
-              setTimeout(request(
+              request(
                 {
                   'method': 'POST',
                   'json': true,
@@ -110,7 +110,7 @@ exports.sendConversation = function (req, res) {
                       `At send test message broadcast response ${JSON.stringify(
                         res)}`)
                   }
-                }), 1000 * index)
+                })
             })
           })
         })
