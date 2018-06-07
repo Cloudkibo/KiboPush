@@ -78,7 +78,7 @@ exports.sendConversation = function (req, res) {
         }
 
         pages.forEach(page => {
-          req.body.payload.forEach(payloadItem => {
+          for (let i = 0; i < req.body.payload.length; i++) {
             PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}, (err, subscriptionUser) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -87,7 +87,7 @@ exports.sendConversation = function (req, res) {
               }
               let messageData = utility.prepareSendAPIPayload(
                 subscriptionUser.subscriberId,
-                payloadItem, false)
+                req.body.payload[i], false)
 
               logger.serverLog(TAG,
                 `Payload for Messenger Send API for test: ${JSON.stringify(
@@ -112,7 +112,42 @@ exports.sendConversation = function (req, res) {
                   }
                 })
             })
-          })
+          }
+          // req.body.payload.forEach(payloadItem => {
+          //   PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}, (err, subscriptionUser) => {
+          //     if (err) {
+          //       logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+          //       return res.status(404)
+          //       .json({status: 'failed', description: 'Pages subscription id not found'})
+          //     }
+          //     let messageData = utility.prepareSendAPIPayload(
+          //       subscriptionUser.subscriberId,
+          //       payloadItem, false)
+          //
+          //     logger.serverLog(TAG,
+          //       `Payload for Messenger Send API for test: ${JSON.stringify(
+          //         messageData)}`)
+          //
+          //     request(
+          //       {
+          //         'method': 'POST',
+          //         'json': true,
+          //         'formData': messageData,
+          //         'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+          //         page.accessToken
+          //       },
+          //       function (err, res) {
+          //         if (err) {
+          //           return logger.serverLog(TAG,
+          //             `At send test message broadcast ${JSON.stringify(err)}`)
+          //         } else {
+          //           logger.serverLog(TAG,
+          //             `At send test message broadcast response ${JSON.stringify(
+          //               res)}`)
+          //         }
+          //       })
+          //   })
+          // })
         })
       })
       return res.status(200)
