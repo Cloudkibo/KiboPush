@@ -25,7 +25,6 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { timeSince } from './utilities'
 import { registerAction } from '../../utility/socketio'
-var _ = require('lodash/core')
 
 const styles = {
   sessionStyle: {
@@ -46,9 +45,6 @@ class LiveChat extends React.Component {
       activeSession: '',
       loading: true,
       ignore: true,
-      sessionsData: [],
-      sessionsDataNew: [],
-      sessionsDataResolved: [],
       searchValue: '',
       filterValue: '',
       sortValue: 1,
@@ -117,19 +113,17 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     this.setState({activeSession: session})
     if (this.state.tabValue === 'open') {
-      var temp = this.state.sessionsDataNew
+      var temp = this.props.openSessions
       for (var i = 0; i < temp.length; i++) {
         if (temp[i]._id === session._id && temp[i].unreadCount) {
           delete temp[i].unreadCount
-          this.setState({sessionsDataNew: temp})
         }
       }
     } else {
-      var tempClose = this.state.sessionsDataResolved
+      var tempClose = this.props.closeSessions
       for (var j = 0; j < tempClose.length; j++) {
         if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
           delete tempClose[j].unreadCount
-          this.setState({sessionsDataResolved: tempClose})
         }
       }
     }
@@ -177,8 +171,8 @@ class LiveChat extends React.Component {
     if (nextProps.openSessions && nextProps.closeSessions) {
       console.log('open sessions', nextProps.openSessions)
       console.log('close sessions', nextProps.closeSessions)
+      console.log(nextProps.openCount + ' : ' + nextProps.closeCount)
       this.setState({loading: false})
-      this.setState((state) => ({sessionsDataNew: nextProps.openSessions, sessionsDataResolved: nextProps.closeSessions}))
       if (this.props.location.state && this.state.activeSession === '') {
         let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
         let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
@@ -203,12 +197,11 @@ class LiveChat extends React.Component {
         this.props.getSubscriberTags(nextProps.closeSessions[0].subscriber_id._id)
       }
     }
-    if (nextProps.unreadSession && this.state.sessionsDataNew.length > 0) {
-      var temp = this.state.sessionsDataNew
+    if (nextProps.unreadSession && this.props.openSessions.length > 0) {
+      var temp = this.props.openSessions
       for (var z = 0; z < temp.length; z++) {
         if (temp[z]._id === nextProps.unreadSession) {
           temp[z].unreadCount = temp[z].unreadCount ? temp[z].unreadCount + 1 : 1
-          this.setState({sessionsDataNew: temp})
         }
       }
       this.props.resetUnreadSession()
@@ -226,7 +219,7 @@ class LiveChat extends React.Component {
     }
 
     if (nextProps.userChat && this.props.userChat && nextProps.userChat.length > this.props.userChat.length) {
-      var sess = this.state.sessionsDataNew
+      var sess = this.props.openSessions
       for (var j = 0; j < sess.length; j++) {
         if (sess[j]._id === nextProps.userChat[0].session_id) {
           sess[j] = {
@@ -241,8 +234,6 @@ class LiveChat extends React.Component {
             lastDateTime: nextProps.userChat[0].lastDateTime,
             lastRepliedBy: nextProps.userChat[0].lastRepliedBy
           }
-          this.setState({sessionsDataNew: sess})
-          //  this.separateResolvedSessions(sess)
         }
       }
     }
@@ -436,8 +427,8 @@ class LiveChat extends React.Component {
                             ? <div className='tab-pane active' id='m_widget4_tab1_content'>
                               <div className='m-widget4'>
                                 {
-                                  this.state.sessionsDataNew && this.state.sessionsDataNew.length > 0
-                                  ? (this.state.sessionsDataNew.map((session) => (
+                                  this.props.openSessions && this.props.openSessions.length > 0
+                                  ? (this.props.openSessions.map((session) => (
                                     <div key={session._id}>
                                       <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                         <div className='m-widget4__img m-widget4__img--pic'>
@@ -569,7 +560,7 @@ class LiveChat extends React.Component {
                                   )))
                                   : <p style={{marginLeft: '30px'}}>No data to display</p>
                                 }
-                                {this.state.sessionsDataNew.length < this.props.openCount &&
+                                {this.props.openSessions.length < this.props.openCount &&
                                 <center>
                                   <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
                                   <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreOpen}>Load More</a>
@@ -580,8 +571,8 @@ class LiveChat extends React.Component {
                             : <div className='tab-pane active' id='m_widget4_tab1_content'>
                               <div className='m-widget4'>
                                 {
-                                  this.state.sessionsDataResolved && this.state.sessionsDataResolved.length > 0
-                                  ? (this.state.sessionsDataResolved.map((session) => (
+                                  this.props.closeSessions && this.props.closeSessions.length > 0
+                                  ? (this.props.closeSessions.map((session) => (
                                     <div key={session._id}>
                                       <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
                                         <div className='m-widget4__img m-widget4__img--pic'>
@@ -713,7 +704,7 @@ class LiveChat extends React.Component {
                                     )))
                                   : <p style={{marginLeft: '30px'}}>No data to display</p>
                                 }
-                                {this.state.sessionsDataResolved.length < this.props.closeCount &&
+                                {this.props.closeSessions.length < this.props.closeCount &&
                                 <center>
                                   <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
                                   <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>

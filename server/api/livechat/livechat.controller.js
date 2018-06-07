@@ -83,7 +83,7 @@ exports.create = function (req, res) {
     chatMessage.save((err, chatMessage) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Broadcasts not created'})
+          .json({status: 'failed', description: 'Message not created'})
       }
 
       Sessions.findOne({_id: req.body.session_id})
@@ -92,7 +92,7 @@ exports.create = function (req, res) {
           if (err) {
             logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
             return res.status(404)
-              .json({status: 'failed', description: 'Pages not found'})
+              .json({status: 'failed', description: 'Session not found'})
           }
 
           Subscribers.findOne({_id: req.body.recipient_id}, (err, subscriber) => {
@@ -103,7 +103,7 @@ exports.create = function (req, res) {
             session.last_activity_time = Date.now()
             session.save((err) => {
               if (err) {
-                return logger.serverLog(TAG, `Live Chat Payload Being Sent ${JSON.stringify(req.body.payload)}`)
+                return logger.serverLog(TAG, `Error at saving session ${JSON.stringify(err)}`)
               }
               logger.serverLog(TAG, `Payload from the client ${JSON.stringify(req.body.payload)}`)
               let messageData = utility.prepareSendAPIPayload(
