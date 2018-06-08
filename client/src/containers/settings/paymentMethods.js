@@ -122,6 +122,17 @@ class PaymentMethods extends React.Component {
   change () {
     this.setState({change: true})
   }
+  handleSubmit (ev) {
+    ev.preventDefault()
+    console.log('ev', ev)
+    //if (this.props.stripe) {
+      this.props.stripe
+        .createToken({name: 'Jenny Rosen'})
+        .then((payload) => console.log('[token]', payload))
+  //  } else {
+  //    console.log("Stripe.js hasn't loaded yet.")
+  //  }
+  }
   render () {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
@@ -230,48 +241,23 @@ class PaymentMethods extends React.Component {
                                   <StripeProvider apiKey="pk_test_12345">
                                     <Elements>
                                   <form onSubmit={this.handleSubmit}>
-                          <label>
-                            Card number
-                          </label>
-                          <CardNumberElement
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            onFocus={handleFocus}
-                            onReady={handleReady}
-                            {...createOptions(this.props.fontSize)}
-                          /><br />
-                          <label>
-          Expiration date
-        </label>
-        <CardExpiryElement
-          onBlur={handleBlur}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onReady={handleReady}
-          {...createOptions(this.props.fontSize)}
-        /><br />
-        <label>
-          CVC
-        </label>
-        <CardCVCElement
-          onBlur={handleBlur}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onReady={handleReady}
-          {...createOptions(this.props.fontSize)}
-        /><br />
-        <label>
-          Postal code
-        </label>
-        <PostalCodeElement
-          onBlur={handleBlur}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onReady={handleReady}
-          {...createOptions(this.props.fontSize)}
-        /><br />
-      <button className='btn btn-primary'>Pay</button>
-
+                                    <label>Email Address:</label>
+                                    <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} id='generalSearch' />
+                                    <br />
+                                  <label>
+                    Card details:
+                                      </label>
+                    <CardElement
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      onFocus={handleFocus}
+                      onReady={handleReady}
+                      {...createOptions(this.props.fontSize)}
+                    />
+                  <br /><br />
+                  <center>
+                  <button className='btn btn-primary'>Pay $10.00</button>
+                  </center>
                         </form>
                       </Elements>
                     </StripeProvider>}
