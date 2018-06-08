@@ -37,7 +37,7 @@ class top10pages extends React.Component {
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i].pagePic) ? this.props.pagesData[i].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
-              <h4 className='m-widget5__title'>
+              <h4 className='m-widget5__title substring-toppages'>
                 {this.props.pagesData[i].pageName}
               </h4>
               <div className='m-widget5__info'>
@@ -45,8 +45,8 @@ class top10pages extends React.Component {
                   User:
                 </span>
                 <br />
-                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer'}}>
-                  {this.props.pagesData[i].userName.name.length > 13 ? this.props.pagesData[i].userName.name.slice(0, 13) + '...' : this.props.pagesData[i].userName.name}
+                <span className='m-widget5__info-author m--font-info substring-toppages' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer'}} >
+                  {this.props.pagesData[i].userName.name}
                 </span>
               </div>
             </div>
@@ -76,7 +76,7 @@ class top10pages extends React.Component {
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i + 1].pagePic) ? this.props.pagesData[i + 1].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
-              <h4 className='m-widget5__title'>
+              <h4 className='m-widget5__title substring-toppages'>
                 {this.props.pagesData[i + 1].pageName}
               </h4>
               <div className='m-widget5__info'>
@@ -84,8 +84,8 @@ class top10pages extends React.Component {
                   User:
                 </span>
                 <br />
-                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer'}}>
-                  {this.props.pagesData[i + 1].userName.name.length > 13 ? this.props.pagesData[i + 1].userName.name.slice(0, 13) + '...' : this.props.pagesData[i + 1].userName.name}
+                <span className='m-widget5__info-author m--font-info substring-toppages' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer'}}>
+                  {this.props.pagesData[i + 1].userName.name}
                 </span>
               </div>
             </div>
