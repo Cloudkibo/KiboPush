@@ -373,6 +373,7 @@ class ChatBox extends React.Component {
         type: this.state.attachmentType,
         fileurl: {
           id: this.state.uploadedId,
+          name: this.state.attachment.name,
           url: this.state.uploadedUrl
         }
       }

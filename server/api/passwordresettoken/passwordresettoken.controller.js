@@ -97,47 +97,50 @@ exports.reset = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
+    logger.serverLog(TAG,
+    `Password Reset Token ${JSON.stringify(doc)}`)
     if (!doc) {
       res.sendFile(
         path.join(config.root, 'client/pages/change_password_failed.html'))
     }
-
-    User.findOne({_id: doc.userId}, function (err, user) {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!user) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'User does not exist'
-        })
-      }
-
-      user.password = String(req.body.new_password)
-      user.save(function (err) {
+    if (doc) {
+      User.findOne({_id: doc.userId}, function (err, user) {
         if (err) {
           return res.status(500).json({
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        Passwordresettoken.remove({token: token}, function (err, doc) {
+        if (!user) {
+          return res.status(404).json({
+            status: 'failed',
+            description: 'User does not exist'
+          })
+        }
+
+        user.password = String(req.body.new_password)
+        user.save(function (err) {
           if (err) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          res.status(200).json({
-            status: 'success',
-            description: 'Password successfully changed. Please login with your new password.'
+          Passwordresettoken.remove({token: token}, function (err, doc) {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            res.status(200).json({
+              status: 'success',
+              description: 'Password successfully changed. Please login with your new password.'
+            })
           })
         })
       })
-    })
+    }
   })
 }
 
