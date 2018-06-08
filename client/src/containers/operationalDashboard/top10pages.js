@@ -37,22 +37,15 @@ class top10pages extends React.Component {
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i].pagePic) ? this.props.pagesData[i].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
-              <h4 className='m-widget5__title'>
+              <h4 className='m-widget5__title substring-toppages'>
                 {this.props.pagesData[i].pageName}
               </h4>
-              {this.props.pagesData[i].pageUserName
-              ? <span className='m-widget5__desc'>
-                <b>Page Username:</b> {this.props.pagesData[i].pageUserName}
-              </span>
-              : <span className='m-widget5__desc'>
-                <b>PageId:</b> {this.props.pagesData[i].pageId}
-              </span>
-              }
               <div className='m-widget5__info'>
                 <span className='m-widget5__author'>
-                  User:&nbsp;&nbsp;
+                  User:
                 </span>
-                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer'}}>
+                <br />
+                <span className='m-widget5__info-author m--font-info substring-toppages' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer'}} >
                   {this.props.pagesData[i].userName.name}
                 </span>
               </div>
@@ -83,22 +76,15 @@ class top10pages extends React.Component {
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i + 1].pagePic) ? this.props.pagesData[i + 1].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
-              <h4 className='m-widget5__title'>
+              <h4 className='m-widget5__title substring-toppages'>
                 {this.props.pagesData[i + 1].pageName}
               </h4>
-              {this.props.pagesData[i + 1].pageUserName
-              ? <span className='m-widget5__desc'>
-                <b>Page Username:</b> {this.props.pagesData[i + 1].pageUserName}
-              </span>
-              : <span className='m-widget5__desc'>
-                <b>PageId:</b> {this.props.pagesData[i + 1].pageId}
-              </span>
-              }
               <div className='m-widget5__info'>
                 <span className='m-widget5__author'>
-                  User:&nbsp;&nbsp;
+                  User:
                 </span>
-                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer'}}>
+                <br />
+                <span className='m-widget5__info-author m--font-info substring-toppages' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer'}}>
                   {this.props.pagesData[i + 1].userName.name}
                 </span>
               </div>

@@ -8,6 +8,14 @@
   line-height: 70px;
 }
 
+.substring-toppages {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
 .m-accordion.m-accordion--default .m-accordion__item {
   border: 1px solid #ebedf2;
   margin-bottom: 1rem;

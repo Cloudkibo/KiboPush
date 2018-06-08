@@ -646,7 +646,8 @@ exports.getfbMessage = function (req, res) {
                                 Subscribers.update({senderId: sender}, {
                                   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
                                   isSubscribedByPhoneNumber: true,
-                                  isSubscribed: true
+                                  isSubscribed: true,
+                                  isEnabledByPage: true
                                 }, (err, subscriber) => {
                                   if (err) return logger.serverLog(TAG, err)
                                   logger.serverLog(TAG, subscriber)
@@ -655,7 +656,8 @@ exports.getfbMessage = function (req, res) {
                                 // subscribing the subscriber again in case he
                                 // or she unsubscribed and removed chat
                                 Subscribers.update({senderId: sender}, {
-                                  isSubscribed: true
+                                  isSubscribed: true,
+                                  isEnabledByPage: true
                                 }, (err, subscriber) => {
                                   if (err) return logger.serverLog(TAG, err)
                                   logger.serverLog(TAG, subscriber)
@@ -1400,7 +1402,7 @@ function sendReply (req) {
     logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
     let messageData = utility.prepareSendAPIPayload(
       req.sender.id, payloadItem, true)
-    Pages.find({pageId: req.recipient.id}).populate('userId').exec((err, pages) => {
+    Pages.find({pageId: req.recipient.id, connected: true}).populate('userId').exec((err, pages) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }

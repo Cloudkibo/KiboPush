@@ -5,7 +5,9 @@ const initialState = {
   socketData: {},
   userChat: [],
   openSessions: [],
-  closeSessions: []
+  closeSessions: [],
+  openCount: 0,
+  closeCount: 0
 }
 
 export function liveChat (state = initialState, action) {
@@ -44,51 +46,57 @@ export function liveChat (state = initialState, action) {
       })
 
     case ActionTypes.UPDATE_CHAT_SESSIONS:
-      let openSessions = state.openSessions
-      let closeSessions = state.closeSessions
+      let openSess = state.openSessions
+      let closeSess = state.closeSessions
       if (action.appendDeleteInfo.deleteFrom === 'open') {
-        for (let i = 0; i < openSessions.length; i++) {
-          if (action.session._id === openSessions[i]._id) {
-            openSessions.splice(i, 1)
+        for (let i = 0; i < openSess.length; i++) {
+          if (action.session._id === openSess[i]._id) {
+            openSess.splice(i, 1)
           }
         }
       } else if (action.appendDeleteInfo.deleteFrom === 'close') {
-        for (let i = 0; i < closeSessions.length; i++) {
-          if (action.session._id === closeSessions[i]._id) {
-            closeSessions.splice(i, 1)
+        for (let i = 0; i < closeSess.length; i++) {
+          if (action.session._id === closeSess[i]._id) {
+            closeSess.splice(i, 1)
           }
         }
       }
       if (action.appendDeleteInfo.appendTo === 'open') {
         let openCount = 0
-        for (let j = 0; j < openSessions.length; j++) {
-          if (action.session._id === openSessions[j]._id) {
+        for (let j = 0; j < openSess.length; j++) {
+          if (action.session._id === openSess[j]._id) {
             openCount = 1
           }
         }
         if (openCount === 0) {
-          openSessions.push(action.session)
+          openSess.push(action.session)
         }
       } else if (action.appendDeleteInfo.appendTo === 'close') {
         let closeCount = 0
-        for (let j = 0; j < closeSessions.length; j++) {
-          if (action.session._id === closeSessions[j]._id) {
+        for (let j = 0; j < closeSess.length; j++) {
+          if (action.session._id === closeSess[j]._id) {
             closeCount = 1
           }
         }
         if (closeCount === 0) {
-          closeSessions.push(action.session)
+          closeSess.push(action.session)
         }
       }
-      openSessions = openSessions.sort(function (a, b) {
+      openSess = openSess.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
-      closeSessions = closeSessions.sort(function (a, b) {
+      closeSess = closeSess.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
       return Object.assign({}, state, {
-        openSessions: openSessions,
-        closeSessions: closeSessions
+        openSessions: openSess,
+        closeSessions: closeSess,
+        openCount: action.appendDeleteInfo.appendTo === 'open'
+                    ? (state.openCount + 1) : action.appendDeleteInfo.deleteFrom === 'open'
+                    ? (state.openCount - 1) : state.openCount,
+        closeCount: action.appendDeleteInfo.appendTo === 'close'
+                    ? (state.closeCount + 1) : action.appendDeleteInfo.deleteFrom === 'close'
+                    ? (state.closeCount - 1) : state.closeCount
       })
 
     case ActionTypes.SHOW_USER_CHAT:

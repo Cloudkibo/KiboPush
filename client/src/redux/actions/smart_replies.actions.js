@@ -144,6 +144,7 @@ export function deleteBot (id, msg) {
   return (dispatch) => {
     callApi('bots/delete/', 'post', {botId: id})
       .then(res => {
+        console.log('response from deleteBot', res)
         if (res.status === 'success') {
           dispatch(loadBotsList())
           msg.success('Bot deleted successfully')

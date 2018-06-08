@@ -15,6 +15,8 @@ import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
 import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
+import Billing from './billing'
+import PaymentMethods from './paymentMethods'
 import ChatWidget from './chatWidget'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -47,6 +49,8 @@ class Settings extends React.Component {
       showGreetingMessage: false,
       showSubscribeToMessenger: false,
       showWelcomeMessage: false,
+      showBilling: false,
+      showPaymentMethods: false,
       chatWidget: false,
       planInfo: ''
     }
@@ -61,6 +65,8 @@ class Settings extends React.Component {
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
+    this.setBilling = this.setBilling.bind(this)
+    this.setPayementMethods = this.setPayementMethods.bind(this)
     this.setChatWidget = this.setChatWidget.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.handleNGPKeyChange = this.handleNGPKeyChange.bind(this)
@@ -116,6 +122,12 @@ class Settings extends React.Component {
   }
   setGreetingMessage () {
     this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+  }
+  setBilling () {
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: true, showPaymentMethods: false})
+  }
+  setPayementMethods () {
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: true})
   }
   setConnectFb () {
     this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
@@ -423,6 +435,18 @@ class Settings extends React.Component {
                           </a>
                         </li>
                       }
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon fa fa-cc-mastercard' />
+                            <span className='m-nav__link-text'>Payment Methods</span>
+                          </a>
+                        </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon fa fa-money' />
+                            <span className='m-nav__link-text'>Billing</span>
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -583,6 +607,12 @@ class Settings extends React.Component {
                 }
                 { this.state.chatWidget &&
                   <ChatWidget />
+                }
+                { this.state.showBilling &&
+                  <Billing />
+                }
+                { this.state.showPaymentMethods &&
+                  <PaymentMethods />
                 }
               </div>
             </div>
