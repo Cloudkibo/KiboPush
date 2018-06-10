@@ -108,6 +108,7 @@
     "react-files": "^2.4.3",
     "react-gif-picker": "^1.0.0",
     "react-giphy-picker": "^1.0.0",
+    "react-google-recaptcha": "^0.11.1",
     "react-grid-layout": "^0.15.2",
     "react-icons": "^2.2.3",
     "react-icons-kit": "^1.0.7",
