@@ -62,7 +62,7 @@ class top10pages extends React.Component {
               <br />
               <span className='m-widget5__votes'>
                 <Link onClick={(e) => { let pageSelected = this.props.pagesData[i]; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 See Subscribers
+                 Subscribers
                </Link>
               </span>
             </div>
@@ -101,7 +101,7 @@ class top10pages extends React.Component {
               <br />
               <span className='m-widget5__votes'>
                 <Link onClick={(e) => { let pageSelected = this.props.pagesData[i + 1]; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 See Subscribers
+                 Subscribers
                </Link>
               </span>
             </div>
