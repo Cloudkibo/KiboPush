@@ -1,28 +1,29 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
+import { browserHistory } from 'react-router'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import {StripeProvider, Elements, CardElement, CardNumberElement, CardExpiryElement, CardCVCElement, PostalCodeElement, PaymentRequestButtonElement} from 'react-stripe-elements'
+import ReCAPTCHA from 'react-google-recaptcha'
+import {StripeProvider, Elements, CardElement} from 'react-stripe-elements'
 const handleBlur = () => {
-  console.log('[blur]');
-};
+  console.log('[blur]')
+}
 const handleChange = (change) => {
-  console.log('[change]', change);
-};
+  console.log('[change]', change)
+}
 const handleClick = () => {
-  console.log('[click]');
-};
+  console.log('[click]')
+}
 const handleFocus = () => {
-  console.log('[focus]');
-};
+  console.log('[focus]')
+}
 const handleReady = () => {
-  console.log('[ready]');
-};
+  console.log('[ready]')
+}
 
 const createOptions = (fontSize, padding) => {
   return {
@@ -33,17 +34,16 @@ const createOptions = (fontSize, padding) => {
         letterSpacing: '0.025em',
         fontFamily: 'Source Code Pro, monospace',
         '::placeholder': {
-          color: '#aab7c4',
+          color: '#aab7c4'
         },
-        padding,
+        padding
       },
       invalid: {
-        color: '#9e2146',
-      },
-    },
-  };
-};
-
+        color: '#9e2146'
+      }
+    }
+  }
+}
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -125,10 +125,10 @@ class PaymentMethods extends React.Component {
   handleSubmit (ev) {
     ev.preventDefault()
     console.log('ev', ev)
-    //if (this.props.stripe) {
-      this.props.stripe
-        .createToken({name: 'Jenny Rosen'})
-        .then((payload) => console.log('[token]', payload))
+    //  if (this.props.stripe) {
+    this.props.stripe
+      .createToken({name: 'Jenny Rosen'})
+      .then((payload) => console.log('[token]', payload))
   //  } else {
   //    console.log("Stripe.js hasn't loaded yet.")
   //  }
@@ -176,9 +176,9 @@ class PaymentMethods extends React.Component {
                                 <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                                   <div className='tab-pane active' id='m_widget4_tab1_content'>
                                     {
-                                      this.props.pages && this.props.pages.length > 0
-                                    ? <div className='m-widget4' >
-                                      {
+                                      this.props.pages && this.props.pages.length > 0 &&
+                                      <div className='m-widget4' >
+                                        {
                                        this.props.pages.map((page, i) => (
                                          <div className='m-widget4__item' key={i}>
                                            <div className='m-widget4__img m-widget4__img--pic'>
@@ -209,11 +209,7 @@ class PaymentMethods extends React.Component {
                                            </div>
                                          </div>
                                       ))}
-                                    </div>
-                                      : <div className='alert alert-success'>
-                                        <h4 className='block'>0 Connected Pages</h4>
-                                          You do not have any connected pages. You need to connect facebook pages to set the welcome message for them. Please click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages
-                                        </div>
+                                      </div>
                                     }
                                   </div>
                                 </div>
@@ -238,29 +234,31 @@ class PaymentMethods extends React.Component {
                             <div className='modal-body'>
                               <div className='col-12'>
                                 {this.state.change &&
-                                  <StripeProvider apiKey="pk_test_12345">
+                                  <StripeProvider apiKey='pk_test_12345'>
                                     <Elements>
-                                  <form onSubmit={this.handleSubmit}>
-                                    <label>Email Address:</label>
-                                    <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} id='generalSearch' />
-                                    <br />
-                                  <label>
-                    Card details:
-                                      </label>
-                    <CardElement
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      onFocus={handleFocus}
-                      onReady={handleReady}
-                      {...createOptions(this.props.fontSize)}
-                    />
-                  <br /><br />
-                  <center>
-                  <button className='btn btn-primary'>Pay $10.00</button>
-                  </center>
-                        </form>
-                      </Elements>
-                    </StripeProvider>}
+                                      <form onSubmit={this.handleSubmit}>
+                                        <label>Email Address:</label>
+                                        <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} id='generalSearch' />
+                                        <br />
+                                        <label>
+                                          Card details:
+                                        </label>
+                                        <CardElement
+                                          onBlur={handleBlur}
+                                          onChange={handleChange}
+                                          onFocus={handleFocus}
+                                          onReady={handleReady}
+                                          {...createOptions(this.props.fontSize)}
+                                        />
+                                        <br /><br />
+                                        <ReCAPTCHA ref='recaptcha' sitekey='6LckQ14UAAAAAFH2D15YXxH9o9EQvYP3fRsL2YOU' />
+                                        <br /><br />
+                                        <center>
+                                          <button className='btn btn-primary'>Pay $10.00</button>
+                                        </center>
+                                      </form>
+                                    </Elements>
+                                  </StripeProvider>}
                               </div>
                             </div>
                           </div>
