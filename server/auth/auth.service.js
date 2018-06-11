@@ -17,6 +17,8 @@ const Pages = require('../api/pages/Pages.model')
 const CompanyUsers = require('../api/companyuser/companyuser.model')
 const _ = require('lodash')
 
+const PassportFacebookExtension = require('passport-facebook-extension')
+
 const logger = require('../components/logger')
 
 const TAG = 'auth/auth.service.js'
@@ -51,8 +53,30 @@ function isAuthenticated () {
             .json({status: 'failed', description: 'Unauthorized'})
         }
 
-        req.user = user
-        next()
+        logger.serverLog(TAG, `User authenticated: ${JSON.stringify(user)}`)
+
+        if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
+          let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+            config.facebook.clientSecret)
+
+          // todo do this for permissions error
+          FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
+            .then(permissions => {
+              logger.serverLog(TAG,
+                `Permissions given: ${JSON.stringify(permissions)}`)
+              req.user = user
+              next()
+            })
+            .fail(e => {
+              logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
+              user.permissionsRevoked = true
+              req.user = user
+              next()
+            })
+        } else {
+          req.user = user
+          next()
+        }
       })
     })
 }
@@ -121,7 +145,14 @@ function doesPlanPermitsThisAction (action) {
             description: 'Fatal Error. Plan not set. Please contact support.'
           })
       }
-      if (plan[req.user.plan][action]) {
+      console.log(req.user)
+      if (!req.user) {
+        res.status(403)
+          .json({
+            status: 'failed',
+            description: 'Permissions Error'
+          })
+      } else if (plan[req.user.plan][action]) {
         next()
       } else {
         res.status(403)
