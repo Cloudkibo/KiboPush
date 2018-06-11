@@ -4,7 +4,7 @@
  */
 
 import React, {Component} from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -388,6 +388,9 @@ class Sidebar extends Component {
   }
 
   render () {
+    if (this.props.user && this.props.permissionsRevoked) {
+      browserHistory.push('/dashboard')
+    }
     return (
       <div>
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
@@ -399,58 +402,61 @@ class Sidebar extends Component {
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
-            <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-              {this.showOperationalDashboard()}
-              {this.showDashboard()}
-              {this.showBroadcastsItem()}
-              {this.showCommentCapture()}
-              {this.showSurveysItem()}
-              {this.showPollsItem()}
-              {this.showSmartRespliesItem()}
-              {this.showLiveChatItem()}
-              {this.showAutoPostingItem()}
-              {this.showPersistentMenuItem()}
-              {this.showPagesItem()}
-              {this.showSubscribersItem()}
-              {this.showSequenceMessaging()}
-              {this.showCreatePhoneList()}
-              {this.showInviteMembersItem()}
-              {this.showMembersItem()}
-              {this.showTeams()}
-              {this.showBroadcastTemplates()}
-              {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-list-3' />
-                  <span className='m-menu__link-text'>Invite using phone number</span>
-                </Link>
-              </li>
+            {
+              this.props.user && !this.props.permissionsRevoked &&
+              <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+                {this.showOperationalDashboard()}
+                {this.showDashboard()}
+                {this.showBroadcastsItem()}
+                {this.showCommentCapture()}
+                {this.showSurveysItem()}
+                {this.showPollsItem()}
+                {this.showSmartRespliesItem()}
+                {this.showLiveChatItem()}
+                {this.showAutoPostingItem()}
+                {this.showPersistentMenuItem()}
+                {this.showPagesItem()}
+                {this.showSubscribersItem()}
+                {this.showSequenceMessaging()}
+                {this.showCreatePhoneList()}
+                {this.showInviteMembersItem()}
+                {this.showMembersItem()}
+                {this.showTeams()}
+                {this.showBroadcastTemplates()}
+                {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-list-3' />
+                    <span className='m-menu__link-text'>Invite using phone number</span>
+                  </Link>
+                </li>
               }
-              {this.state.settings &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/settings' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-cogwheel' />
-                  <span className='m-menu__link-text'>Settings</span>
-                </Link>
-              </li>
+                {this.state.settings &&
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/settings' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-cogwheel' />
+                    <span className='m-menu__link-text'>Settings</span>
+                  </Link>
+                </li>
               }
-              {this.state.userGuide &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-info' />
-                  <span className='m-menu__link-text'>User Guide</span>
-                </a>
-              </li>
+                {this.state.userGuide &&
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-info' />
+                    <span className='m-menu__link-text'>User Guide</span>
+                  </a>
+                </li>
               }
-              {this.state.waitingResponse &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-cogwheel' />
-                  <span className='m-menu__link-text'>Waiting Response</span>
-                </Link>
-              </li>
+                {this.state.waitingResponse &&
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-cogwheel' />
+                    <span className='m-menu__link-text'>Waiting Response</span>
+                  </Link>
+                </li>
              }
-            </ul>
+              </ul>
+            }
           </div>
 
         </div>
