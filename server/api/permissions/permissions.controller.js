@@ -20,7 +20,6 @@ exports.fetchPermissions = function (req, res) {
           }
           Permissions
           .find({ companyId: companyUser.companyId })
-          .populate('companyId')
           .populate('userId')
           .exec(
                 (err, permissions) => {
