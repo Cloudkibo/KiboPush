@@ -7,21 +7,37 @@ import Header from '../../components/header/header'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
 class Menu extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.loadMyPagesList()
     this.state = {
+      openPopover: false,
       menuItems: [{
-        title: 'First Menu',
-        submenu: []
+        title: 'Menu Item',
+        submenu: [{
+          title: 'Sub Menu',
+          nestedMenu: [{
+            title: 'Nested Menu'
+          }]
+        }]
       }],
-      selectPage: {}
+      selectPage: {},
+      selectedIndex: 'item-0'
     }
 
     this.pageChange = this.pageChange.bind(this)
     this.selectPage = this.selectPage.bind(this)
+    this.handleToggle = this.handleToggle.bind(this)
+    this.selectIndex = this.selectIndex.bind(this)
+    this.addMenu = this.addMenu.bind(this)
+    this.removeMenu = this.removeMenu.bind(this)
+    this.addSubMenu = this.addSubMenu.bind(this)
+    this.removeSubMenu = this.removeSubMenu.bind(this)
+    this.addNestedMenu = this.addNestedMenu.bind(this)
+    this.removeNestedMenu = this.removeNestedMenu.bind(this)
   }
 
   componentDidMount () {
@@ -42,7 +58,15 @@ class Menu extends React.Component {
       // write logic to select page
     }
   }
-
+  selectIndex (e, index) {
+    this.setState({
+      selectedIndex: index
+    })
+    console.log('Selected Index', this.state.selectedIndex)
+  }
+  handleToggle () {
+    this.setState({openPopover: !this.state.openPopover})
+  }
   pageChange (event) {
     if (event.target.value !== -1) {
       let page
@@ -74,6 +98,83 @@ class Menu extends React.Component {
       })
     }
   }
+  addMenu () {
+    var menuItems = this.state.menuItems
+    var newMenu = {
+      title: 'Menu Item',
+      submenu: []
+    }
+    menuItems.push(newMenu)
+    this.setState({
+      menuItems: this.state.menuItems
+    })
+  }
+  addSubMenu (index) {
+    var menuItems = this.state.menuItems
+    var newSubmenu = {
+      title: 'Sub Menu',
+      nestedMenu: []
+    }
+    for (let i = 0; i < menuItems.length; i++) {
+      if (i === index) {
+        var submenu = menuItems[i].submenu
+        submenu.push(newSubmenu)
+      }
+    }
+    this.setState({
+      menuItems: this.state.menuItems
+    })
+  }
+  removeSubMenu (index, subIndex) {
+    var subItems = []
+    for (let i = 0; i < this.state.menuItems[index].submenu.length; i++) {
+      if (subIndex !== i) {
+        subItems.push(this.state.menuItems[index].submenu[i])
+      }
+    }
+
+    var menuItems = this.state.menuItems
+    menuItems[index].submenu = subItems
+    this.setState({
+      menuItems: menuItems
+    })
+  }
+  removeMenu (index) {
+    var menuItems = []
+    for (let i = 0; i < this.state.menuItems.length; i++) {
+      if (index !== i) {
+        menuItems.push(this.state.menuItems[i])
+      }
+    }
+    this.setState({
+      menuItems: menuItems
+    })
+  }
+  addNestedMenu (index, subIndex) {
+    var menuItems = this.state.menuItems
+    var newNestedMenu = {
+      title: 'Nested Menu',
+      nestedMenu: []
+    }
+    menuItems[index].submenu[subIndex].nestedMenu.push(newNestedMenu)
+    this.setState({
+      menuItems: this.state.menuItems
+    })
+  }
+  removeNestedMenu (index, subIndex, nestedIndex) {
+    var nestedItems = []
+    for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].nestedMenu.length; i++) {
+      if (subIndex !== i) {
+        nestedItems.push(this.state.menuItems[index].submenu[subIndex].nestedMenu[i])
+      }
+    }
+
+    var menuItems = this.state.menuItems
+    menuItems[index].submenu[subIndex].nestedMenu = nestedItems
+    this.setState({
+      menuItems: menuItems
+    })
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -86,6 +187,14 @@ class Menu extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
+          <PopoverHeader><strong>Add Button</strong></PopoverHeader>
+          <PopoverBody>
+            <div>
+              PopoverBody
+            </div>
+          </PopoverBody>
+        </Popover>
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -138,45 +247,70 @@ class Menu extends React.Component {
                     </div>
                   </div>
                   <div className='row' style={{display: 'block', marginTop: '40px', padding: '20px'}}>
-                    {
-                      this.state.menuItems.map((items, index) => {
-                        return (
-                          <div>
-                            <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
-                              <input type='text' className='form-control m-input menuInput' value={items.title} />
-                              <span className='m-input-icon__icon m-input-icon__icon--right'>
-                                <span>
-                                  <i className='fa fa-times-circle' />
+                    <div className='container'>
+                      {
+                        this.state.menuItems.map((item, index) => {
+                          return (
+                            <div>
+                              <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
+                                <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={item.title} />
+                                <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
+                                  <span>
+                                    <i className='fa fa-times-circle' />
+                                  </span>
                                 </span>
-                              </span>
+                              </div>
+                              {item.submenu.map((subItem, subindex) => {
+                                return (
+                                  <div>
+                                    <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px'}}>
+                                      <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={subItem.title} />
+                                      <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
+                                        <span>
+                                          <i className='fa fa-times-circle' />
+                                        </span>
+                                      </span>
+                                    </div>
+                                    {
+                                      subItem.nestedMenu.map((nestedItem, nestedIndex) => {
+                                        return (
+                                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
+                                            <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
+                                            <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
+                                              <span>
+                                                <i className='fa fa-times-circle' />
+                                              </span>
+                                            </span>
+                                          </div>
+                                        )
+                                      })
+                                    }
+                                    { subItem.nestedMenu.length < 5 &&
+                                      <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
+                                        <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
+                                      </div>
+                                    }
+                                  </div>
+                                )
+                              })
+                            }
+                              { item.submenu.length < 5 &&
+                                <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
+                                  <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
+                                </div>
+                              }
                             </div>
-                            <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{marginLeft: '30px'}}>
-                              <input type='text' className='form-control m-input menuInput' value='Sub Menu' />
-                              <span className='m-input-icon__icon m-input-icon__icon--right'>
-                                <span>
-                                  <i className='fa fa-times-circle' />
-                                </span>
-                              </span>
-                            </div>
-                            <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{marginLeft: '60px'}}>
-                              <input type='text' className='form-control m-input menuInput' value='Nested Menu' />
-                              <span className='m-input-icon__icon m-input-icon__icon--right'>
-                                <span>
-                                  <i className='fa fa-times-circle' />
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        )
-                      })
-                   }
-                    { this.state.menuItems.length === 1 &&
-                      <div className='col-6 menuDiv' style={{marginLeft: '-15px'}}>
-                        <button className='addMenu' >+ Add Menu </button>
+                          )
+                        })
+                     }
+                      { this.state.menuItems.length === 1 &&
+                        <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                          <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
+                        </div>
+                      }
+                      <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                        <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' />
                       </div>
-                    }
-                    <div className='col-6 menuDiv' style={{marginLeft: '-15px'}}>
-                      <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' />
                     </div>
                   </div>
                 </div>
