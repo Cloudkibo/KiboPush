@@ -79,7 +79,7 @@ class PagesInfo extends React.Component {
                              <td data-field='pages'
                                className='m-datatable__cell'>
                                <a
-                                 style={{width: '150px'}}
+                                 style={{width: '150px', display: 'block'}}
                                  href={'http://m.me/' + page.pageId}
                                  target='_blank'>{page.pageName}</a>
                              </td>
