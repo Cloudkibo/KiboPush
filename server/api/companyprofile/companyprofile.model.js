@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
-var stripeCustomer = require('stripecustomer')
+var stripeCustomer = require('./stripecustomer')
 var config = require('../../config/environment/index')
 
 var CompanyprofileSchema = new Schema({

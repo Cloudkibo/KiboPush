@@ -157,6 +157,7 @@
     "socket.io-client": "^1.7.4",
     "socketio-jwt": "^2.3.5",
     "sort-array": "^2.0.0",
+    "stripe": "^6.1.1",
     "superagent": "^3.6.3",
     "swagger-tools": "^0.10.3",
     "sweetalert": "^2.1.0",
