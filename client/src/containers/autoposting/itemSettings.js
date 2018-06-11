@@ -56,6 +56,7 @@ class ItemSettings extends React.Component {
   }
 
   componentDidMount () {
+    this.props.loadTags()
     let options = []
     for (let i = 0; i < this.props.pages.length; i++) {
       if (this.props.location.state.item.segmentationPageIds !== '') {
