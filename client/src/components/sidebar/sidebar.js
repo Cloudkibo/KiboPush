@@ -38,7 +38,7 @@ class Sidebar extends Component {
       welcomeMessage: true,
       createPhoneList: true,
       commentCapture: true,
-      smartReplies: true,
+      smartReplies: false,
       templates: true,
       sequenceMessaging: true,
       waitingResponse: false
