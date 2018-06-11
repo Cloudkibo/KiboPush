@@ -131,6 +131,7 @@ class Dashboard extends React.Component {
     }
   }
   componentWillReceiveProps (nextprops) {
+    console.log('in componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.user.emailVerified === false &&
       (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
       browserHistory.push({
@@ -159,6 +160,11 @@ class Dashboard extends React.Component {
       if (nextprops.user) {
         joinRoom(nextprops.user.companyId)
       }
+      if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        browserHistory.push({
+          pathname: '/addPageWizard'
+        })
+      }
       if (nextprops.sentseendata) {
         var temp = []
         temp.push(nextprops.sentseendata)
@@ -167,11 +173,6 @@ class Dashboard extends React.Component {
       if (nextprops.graphData) {
         this.setChartData(nextprops.graphData)
       }
-    }
-    if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-      browserHistory.push({
-        pathname: '/addPageWizard'
-      })
     }
   }
   setChartData (graphData) {
