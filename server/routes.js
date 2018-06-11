@@ -54,6 +54,7 @@ module.exports = function (app) {
   app.use('/api/ip2country', require('./api/ipcountry'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/migrations', require('./api/migrations'))
+  app.use('/api/permissions', require('./api/permissions'))
 
   app.use('/auth', require('./auth'))
 
