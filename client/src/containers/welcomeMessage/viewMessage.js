@@ -9,22 +9,7 @@ class ViewWelcomeMessage extends React.Component {
     super(props, context)
     this.goBack = this.goBack.bind(this)
   }
-  componentDidMount () {
-    require('../../../public/js/jquery-3.2.0.min.js')
-    require('../../../public/js/jquery.min.js')
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/theme-plugins.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/material.min.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/main.js')
-    document.body.appendChild(addScript)
-    addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://unpkg.com/react-select/dist/react-select.js')
-    document.body.appendChild(addScript)
-  }
+
   goBack () {
     browserHistory.push({
       pathname: `/settings`,

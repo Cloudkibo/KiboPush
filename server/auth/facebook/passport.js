@@ -35,6 +35,8 @@ exports.setup = function (User, config) {
       let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
         config.facebook.clientSecret)
 
+      logger.serverLog(TAG, `profile.id: ${profile.id} accessToken: ${accessToken}`)
+
       // todo do this for permissions error
       FBExtension.permissionsGiven(profile.id, accessToken)
         .then(permissions => {

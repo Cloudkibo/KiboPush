@@ -435,18 +435,22 @@ class Settings extends React.Component {
                           </a>
                         </li>
                       }
+                        { this.props.user && this.props.user.isSuperUser &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon fa fa-cc-mastercard' />
                             <span className='m-nav__link-text'>Payment Methods</span>
                           </a>
                         </li>
+                        }
+                        { this.props.user && this.props.user.isSuperUser &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon fa fa-money' />
                             <span className='m-nav__link-text'>Billing</span>
                           </a>
                         </li>
+                      }
                       </ul>
                     </div>
                   </div>

@@ -25,6 +25,8 @@ import Reports from '../operationalDashboard/reports'
 import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
+import Connect from '../facebookConnect/connect'
+
 var json2csv = require('json2csv')
 
 class Dashboard extends React.Component {
@@ -131,6 +133,9 @@ class Dashboard extends React.Component {
     }
   }
   componentWillReceiveProps (nextprops) {
+    if (nextprops.permissionError) {
+      console.log('PERMISSION ERROR CLIENT')
+    }
     if (nextprops.user && nextprops.user.emailVerified === false &&
       (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
       browserHistory.push({
@@ -339,70 +344,74 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Dashboard</h3>
+    if (this.props.permissionError) {
+      return <Connect permissionError />
+    } else {
+      return (
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Dashboard</h3>
+              </div>
             </div>
           </div>
-        </div>
-        <div className='m-content'>
-          <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-          {
-            this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
-              (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
-            ? null
-            : <div>
-              {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
-              <GettingStarted pages={this.props.pages} /> */ }
+          <div className='m-content'>
+            <AlertContainer ref={a => this.msg = a} {...alertOptions} />
+            {
+              this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
+                (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
+              ? null
+              : <div>
+                {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
+                <GettingStarted pages={this.props.pages} /> */ }
+              </div>
+            }
+            <div className='row'>
+              {
+                this.props.pages && this.props.pages.length > 0 &&
+                <PageLikesSubscribers connectedPages={this.props.pages} />
+              }
+              {
+                this.props.dashboard &&
+                <CardBoxes data={this.props.dashboard} />
+              }
             </div>
-          }
-          <div className='row'>
             {
-              this.props.pages && this.props.pages.length > 0 &&
-              <PageLikesSubscribers connectedPages={this.props.pages} />
+              this.props.sentseendata &&
+              <CardsWithProgress data={this.props.sentseendata} />
             }
             {
-              this.props.dashboard &&
-              <CardBoxes data={this.props.dashboard} />
+             this.props.topPages && this.props.topPages.length > 1 &&
+               <div className='row'>
+                 <TopPages pagesData={this.props.topPages} />
+               </div>
             }
-          </div>
-          {
-            this.props.sentseendata &&
-            <CardsWithProgress data={this.props.sentseendata} />
-          }
-          {
-           this.props.topPages && this.props.topPages.length > 1 &&
-             <div className='row'>
-               <TopPages pagesData={this.props.topPages} />
-             </div>
-          }
-          <div className='row'>
-            <Reports
-              iconClassName={'fa fa-line-chart'}
-              title={'Reports'}
-              lineChartData={this.state.chartData}
-              onDaysChange={this.onDaysChange}
-              selectedDays={this.state.selectedDays}
-              />
-          </div>
-          <div className='row'>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                <span>
-                  <i className='fa fa-download' />
+            <div className='row'>
+              <Reports
+                iconClassName={'fa fa-line-chart'}
+                title={'Reports'}
+                lineChartData={this.state.chartData}
+                onDaysChange={this.onDaysChange}
+                selectedDays={this.state.selectedDays}
+                />
+            </div>
+            <div className='row'>
+              <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                   <span>
-                    Export Records in CSV File
+                    <i className='fa fa-download' />
+                    <span>
+                      Export Records in CSV File
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
   }
 
@@ -410,6 +419,7 @@ function mapStateToProps (state) {
   console.log('state', state)
   return {
     user: (state.basicInfo.user),
+    permissionError: (state.basicInfo.permissionError),
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),

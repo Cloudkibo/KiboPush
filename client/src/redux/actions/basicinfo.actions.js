@@ -10,10 +10,19 @@ export function setBrowserName (data) {
 }
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
-  auth.putUserId(data._id)
-  return {
-    type: ActionTypes.LOAD_USER_DETAILS,
-    data
+  console.log('user details: ', data)
+  if (data && data.permissionsRevoked) {
+    console.log('Permissions ERROR')
+    return {
+      type: ActionTypes.PERMISSION_ERROR,
+      data
+    }
+  } else {
+    auth.putUserId(data._id)
+    return {
+      type: ActionTypes.LOAD_USER_DETAILS,
+      data
+    }
   }
 }
 
@@ -57,6 +66,7 @@ export function setSocketStatus (data) {
 }
 
 export function getuserdetails () {
+  console.log('Getting User Details')
   return (dispatch) => {
     callApi('users').then(res => dispatch(showuserdetails(res.payload)))
   }

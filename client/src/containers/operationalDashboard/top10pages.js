@@ -27,7 +27,6 @@ class top10pages extends React.Component {
     // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
   showData () {
-    console.log('showData')
     let table = []
     for (let i = 0; i < this.props.pagesData.length; i += 2) {
       table.push(<div className='row'>
@@ -37,15 +36,17 @@ class top10pages extends React.Component {
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i].pagePic) ? this.props.pagesData[i].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
-              <h4 className='m-widget5__title substring-toppages'>
+              <a className='m-widget5__title' style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical', display: 'block'}}
+                href={'http://m.me/' + this.props.pagesData[i].pageId}
+                target='_blank'>
                 {this.props.pagesData[i].pageName}
-              </h4>
+              </a>
               <div className='m-widget5__info'>
                 <span className='m-widget5__author'>
                   User:
                 </span>
                 <br />
-                <span className='m-widget5__info-author m--font-info substring-toppages' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer'}} >
+                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i].userName)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}} >
                   {this.props.pagesData[i].userName.name}
                 </span>
               </div>
@@ -63,7 +64,7 @@ class top10pages extends React.Component {
               <br />
               <span className='m-widget5__votes'>
                 <Link onClick={(e) => { let pageSelected = this.props.pagesData[i]; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 See Subscribers
+                 Subscribers
                </Link>
               </span>
             </div>
@@ -76,15 +77,17 @@ class top10pages extends React.Component {
               <img className='m-widget7__img' alt='pic' src={(this.props.pagesData[i + 1].pagePic) ? this.props.pagesData[i + 1].pagePic : ''} style={{borderRadius: '50%', width: '5rem'}} />
             </div>
             <div className='m-widget5__content'>
-              <h4 className='m-widget5__title substring-toppages'>
+              <a className='m-widget5__title' style={{whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical', display: 'block'}}
+                href={'http://m.me/' + this.props.pagesData[i + 1].pageId}
+                target='_blank'>
                 {this.props.pagesData[i + 1].pageName}
-              </h4>
+              </a>
               <div className='m-widget5__info'>
                 <span className='m-widget5__author'>
                   User:
                 </span>
                 <br />
-                <span className='m-widget5__info-author m--font-info substring-toppages' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer'}}>
+                <span className='m-widget5__info-author m--font-info' onClick={() => this.goToBroadcasts(this.props.pagesData[i + 1].userName)} style={{cursor: 'pointer', whiteSpace: 'nowrap', width: '100px', overflow: 'hidden', textOverflow: 'ellipsis', webkitLineClamp: '1', webkitBoxOrient: 'vertical'}}>
                   {this.props.pagesData[i + 1].userName.name}
                 </span>
               </div>
@@ -102,7 +105,7 @@ class top10pages extends React.Component {
               <br />
               <span className='m-widget5__votes'>
                 <Link onClick={(e) => { let pageSelected = this.props.pagesData[i + 1]; this.onPageClick(e, pageSelected) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                 See Subscribers
+                 Subscribers
                </Link>
               </span>
             </div>

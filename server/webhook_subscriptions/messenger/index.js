@@ -11,4 +11,6 @@ const controller = require('./messenger.controller')
 router.post('/webhook', controller.getHook)
 router.get('/webhook', controller.verifyHook)
 
+router.post('/deauthorize', controller.deauthorize)
+
 module.exports = router

@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
+import { browserHistory } from 'react-router'
 
 class Sidebar extends Component {
   constructor (props, context) {
@@ -388,6 +389,9 @@ class Sidebar extends Component {
   }
 
   render () {
+    if (this.props.user && this.props.user.permissionsRevoked) {
+      browserHistory.push('/dashboard')
+    }
     return (
       <div>
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
@@ -399,6 +403,8 @@ class Sidebar extends Component {
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
+            {
+            (this.props.user && !this.props.user.permissionsRevoked) &&
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
               {this.showDashboard()}
@@ -451,8 +457,8 @@ class Sidebar extends Component {
               </li>
              }
             </ul>
+          }
           </div>
-
         </div>
       </div>
     )

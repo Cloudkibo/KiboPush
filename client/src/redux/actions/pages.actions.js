@@ -44,8 +44,10 @@ export function loadMyPagesList () {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allpages`).then(res => {
-      console.log('res.payload', res)
+      console.log('loadMyPages res.payload', res)
       dispatch(updatePagesList(res.payload))
+    }).catch(err => {
+      console.log('PAGES ERROR', err)
     })
   }
 }
@@ -56,6 +58,8 @@ export function loadMyPagesListNew (data) {
     callApi(`pages/allConnectedPages`, 'post', data).then(res => {
       console.log('res.payload', res)
       dispatch(updatePagesListNew(res.payload))
+    }).catch(err => {
+      console.log('PAGES ERROR', err)
     })
   }
 }
