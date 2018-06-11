@@ -216,6 +216,30 @@ const all = {
       analytics: false,
       api: false
     }
+  },
+
+  stripeOptions: {
+    apiKey: process.env.STRIPE_KEY || 'sk_test_gB8zWtkvbbYFbFFnuj3t4EZn',
+    stripePubKey: process.env.STRIPE_PUB_KEY || 'pk_test_ZeDNvsAKmYXckvDr3DuyqCbP',
+    plans: ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
+    planData: {
+      'plan_A': {
+        name: 'plan_A',
+        price: 10
+      },
+      'plan_B': {
+        name: 'plan_B',
+        price: 0
+      },
+      'plan_C': {
+        name: 'plan_C',
+        price: 15
+      },
+      'plan_D': {
+        name: 'plan_D',
+        price: 0
+      }
+    }
   }
 }
 

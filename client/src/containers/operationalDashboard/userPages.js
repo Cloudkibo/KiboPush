@@ -78,8 +78,10 @@ class PagesInfo extends React.Component {
                              style={{height: '55px'}} key={i}>
                              <td data-field='pages'
                                className='m-datatable__cell'>
-                               <span
-                                 style={{width: '150px'}}>{page.pageName}</span>
+                               <a
+                                 style={{width: '150px'}}
+                                 href={'http://m.me/' + page.pageId}
+                                 target='_blank'>{page.pageName}</a>
                              </td>
                              <td data-field='likes'
                                className='m-datatable__cell'>
