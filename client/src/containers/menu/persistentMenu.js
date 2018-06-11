@@ -2,11 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
+import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
 class Menu extends React.Component {
@@ -17,15 +19,11 @@ class Menu extends React.Component {
       openPopover: false,
       menuItems: [{
         title: 'Menu Item',
-        submenu: [{
-          title: 'Sub Menu',
-          nestedMenu: [{
-            title: 'Nested Menu'
-          }]
-        }]
+        submenu: []
       }],
       selectPage: {},
-      selectedIndex: 'item-0'
+      selectedIndex: 'menuPopover',
+      disabledWebUrl: true
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -38,6 +36,11 @@ class Menu extends React.Component {
     this.removeSubMenu = this.removeSubMenu.bind(this)
     this.addNestedMenu = this.addNestedMenu.bind(this)
     this.removeNestedMenu = this.removeNestedMenu.bind(this)
+    this.handleRadioChange = this.handleRadioChange.bind(this)
+    this.setWebUrl = this.setWebUrl.bind(this)
+    this.saveWebUrl = this.saveWebUrl.bind(this)
+    this.replyWithMessage = this.replyWithMessage.bind(this)
+    this.getMenuByIndex = this.getMenuByIndex.bind(this)
   }
 
   componentDidMount () {
@@ -58,11 +61,32 @@ class Menu extends React.Component {
       // write logic to select page
     }
   }
+  replyWithMessage (e) {
+
+  }
   selectIndex (e, index) {
     this.setState({
-      selectedIndex: index
+      selectedIndex: index,
+      openPopover: false
     })
+    var menu = this.getMenuByIndex(index)
+    if (menu.type === 'web_url') {
+      this.setState({
+        selectedRadio: 'openWebsite',
+        webUrl: menu.url
+      })
+    } else {
+      this.setState({
+        selectedRadio: '',
+        webUrl: ''
+      })
+    }
     console.log('Selected Index', this.state.selectedIndex)
+  }
+  handleRadioChange (e) {
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
@@ -109,18 +133,25 @@ class Menu extends React.Component {
       menuItems: this.state.menuItems
     })
   }
+  removeMenu (index) {
+    var menuItems = []
+    for (let i = 0; i < this.state.menuItems.length; i++) {
+      if (index !== i) {
+        menuItems.push(this.state.menuItems[i])
+      }
+    }
+    this.setState({
+      menuItems: menuItems
+    })
+  }
   addSubMenu (index) {
     var menuItems = this.state.menuItems
     var newSubmenu = {
       title: 'Sub Menu',
       nestedMenu: []
     }
-    for (let i = 0; i < menuItems.length; i++) {
-      if (i === index) {
-        var submenu = menuItems[i].submenu
-        submenu.push(newSubmenu)
-      }
-    }
+    var submenus = menuItems[index].submenu
+    submenus.push(newSubmenu)
     this.setState({
       menuItems: this.state.menuItems
     })
@@ -139,24 +170,14 @@ class Menu extends React.Component {
       menuItems: menuItems
     })
   }
-  removeMenu (index) {
-    var menuItems = []
-    for (let i = 0; i < this.state.menuItems.length; i++) {
-      if (index !== i) {
-        menuItems.push(this.state.menuItems[i])
-      }
-    }
-    this.setState({
-      menuItems: menuItems
-    })
-  }
   addNestedMenu (index, subIndex) {
     var menuItems = this.state.menuItems
     var newNestedMenu = {
       title: 'Nested Menu',
       nestedMenu: []
     }
-    menuItems[index].submenu[subIndex].nestedMenu.push(newNestedMenu)
+    var nestedMenus = menuItems[index].submenu[subIndex].nestedMenu
+    nestedMenus.push(newNestedMenu)
     this.setState({
       menuItems: this.state.menuItems
     })
@@ -164,7 +185,7 @@ class Menu extends React.Component {
   removeNestedMenu (index, subIndex, nestedIndex) {
     var nestedItems = []
     for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].nestedMenu.length; i++) {
-      if (subIndex !== i) {
+      if (nestedIndex !== i) {
         nestedItems.push(this.state.menuItems[index].submenu[subIndex].nestedMenu[i])
       }
     }
@@ -174,6 +195,88 @@ class Menu extends React.Component {
     this.setState({
       menuItems: menuItems
     })
+  }
+  getMenuHierarchy (index) {
+    var menu = ''
+    if (index && index.length > 1) {
+      if (index.length === 2) {
+        menu = 'item'
+      } else if (index.length === 3) {
+        menu = 'submenu'
+      } else if (index.length === 4) {
+        menu = 'nestedMenu'
+      } else {
+        menu = 'invalid'
+      }
+    }
+    return menu
+  }
+  getMenuByIndex (indexValue) {
+    var menuItems = this.state.menuItems
+    var item = ''
+    var index = indexValue.split('-')
+    if (index && index.length > 1) {
+      if (index.length === 2) {
+        item = menuItems[index[1]]
+      } else if (index.length === 3) {
+        item = menuItems[index[1]].submenu[index[2]]
+      } else if (index.length === 4) {
+        item = menuItems[index[1]].submenu[index[2]].nestedMenu[index[3]]
+      } else {
+        item = 'invalid'
+      }
+    }
+    return item
+  }
+  setWebUrl (event) {
+    this.setState({
+      webUrl: event.target.value
+    })
+    if (event.target.value !== '' && isWebURL(event.target.value)) {
+      this.setState({
+        disabledWebUrl: false
+      })
+    } else {
+      this.setState({
+        disabledWebUrl: true
+      })
+    }
+  }
+  saveWebUrl (event) {
+    var temp = this.state.menuItems
+    var index = this.state.selectedIndex.split('-')
+    if (index && index.length > 1) {
+      var menu = this.getMenuHierarchy(index)
+      switch (menu) {
+        case 'item':
+          if (temp[index[1]].payload) {
+            delete temp[index[1]].payload
+          }
+          temp[index[1]].type = 'web_url'
+          temp[index[1]].url = this.state.webUrl
+          break
+        case 'submenu':
+          if (temp[index[1]].submenu[index[2]].payload) {
+            delete temp[index[1]].submenu[index[2]].payload
+          }
+          temp[index[1]].submenu[index[2]].type = 'web_url'
+          temp[index[1]].submenu[index[2]].url = this.state.webUrl
+          break
+        case 'nested':
+          if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
+            delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
+          }
+          temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
+          temp[index[1]].submenu[index[2]].submenu[index[3]].url = this.state.webUrl
+          break
+        default:
+          break
+      }
+    }
+    this.setState({menuItems: temp})
+    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+    this.props.saveCurrentMenuItem(currentState)
+    this.handleToggle()
   }
   render () {
     var alertOptions = {
@@ -187,12 +290,52 @@ class Menu extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+        <div id='menuPopover' />
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
-          <PopoverHeader><strong>Add Button</strong></PopoverHeader>
+          <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
-            <div>
-              PopoverBody
+            <h6>Choose an action for the menu item:</h6>
+            <div className='radio-buttons' style={{marginLeft: '37px'}}>
+              <div className='radio'>
+                <input id='replyMessage'
+                  type='radio'
+                  value='replyMessage'
+                  name='replyMessage'
+                  onChange={this.handleRadioChange}
+                  checked={this.state.selectedRadio === 'replyMessage'} />
+                <label>Reply with a message</label>
+              </div>
+              <div className='radio'>
+                <input id='openWebsite'
+                  type='radio'
+                  value='openWebsite'
+                  name='openWebsite'
+                  onChange={this.handleRadioChange}
+                  checked={this.state.selectedRadio === 'openWebsite'} />
+                <label>Open website </label>
+              </div>
             </div>
+            <span style={{fontSize: '0.9rem'}}>
+              If you change the menu item action, all the underlying submenus and their
+              content will be lost
+            </span>
+            {
+              this.state.selectedRadio === 'openWebsite' &&
+              <div style={{marginTop: '20px'}}>
+                <label>Website URL to open</label>
+                <input placeholder='Enter URL' style={{marginBottom: '20px'}} value={this.state.webUrl} onChange={this.setWebUrl} type='url' className='form-control' />
+                <button onClick={this.saveWebUrl} className='btn btn-primary pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
+                <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginBottom: '10px'}} onClick={this.handleToggle} className='btn pull-left'> Cancel </button>
+              </div>
+            }
+            {
+             this.state.selectedRadio === 'replyMessage' &&
+             <div className='col-12' style={{marginTop: '20px', marginBottom: '10px'}}>
+               <button className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
+                  Create Message
+               </button>
+             </div>
+            }
           </PopoverBody>
         </Popover>
         <div
@@ -271,25 +414,27 @@ class Menu extends React.Component {
                                         </span>
                                       </span>
                                     </div>
-                                    {
-                                      subItem.nestedMenu.map((nestedItem, nestedIndex) => {
-                                        return (
-                                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
-                                            <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
-                                            <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
-                                              <span>
-                                                <i className='fa fa-times-circle' />
+                                    <div>
+                                      {
+                                        subItem.nestedMenu.map((nestedItem, nestedIndex) => {
+                                          return (
+                                            <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
+                                              <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
+                                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
+                                                <span>
+                                                  <i className='fa fa-times-circle' />
+                                                </span>
                                               </span>
-                                            </span>
-                                          </div>
-                                        )
-                                      })
-                                    }
-                                    { subItem.nestedMenu.length < 5 &&
-                                      <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
-                                        <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
-                                      </div>
-                                    }
+                                            </div>
+                                          )
+                                        })
+                                      }
+                                      { subItem.nestedMenu.length < 5 &&
+                                        <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
+                                          <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
+                                        </div>
+                                      }
+                                    </div>
                                   </div>
                                 )
                               })
@@ -311,7 +456,26 @@ class Menu extends React.Component {
                       <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
                         <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' />
                       </div>
+                      <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
+                        <i className='flaticon-exclamation m--font-brand' />
+                        <span style={{marginLeft: '5px'}}>
+                          Only two more main menus can be added. Submenus are limited to 5.
+                        </span>
+                      </div>
                     </div>
+                  </div>
+                </div>
+                <div className='m-portlet__foot m-portlet__foot--fit'>
+                  <div style={{paddingTop: '20px', paddingBottom: '20px', marginLeft: '50px'}}>
+                    <button className='btn btn-sm btn-primary'>
+                      Save Menu
+                    </button>
+                    <button className='btn btn-sm btn-primary' style={{marginLeft: '15px'}}>
+                      Preview
+                    </button>
+                    <button style={{marginLeft: '15px'}} className='btn btn-sm btn-secondary'>
+                      Reset Menu
+                    </button>
                   </div>
                 </div>
               </div>
@@ -324,14 +488,16 @@ class Menu extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    currentMenuItem: (state.menuInfo.currentMenuItem)
     //  items: (state.menuInfo.menuitems)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    saveCurrentMenuItem: saveCurrentMenuItem
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

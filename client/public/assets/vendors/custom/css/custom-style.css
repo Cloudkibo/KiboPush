@@ -239,3 +239,10 @@ a.broadcastTabs.active {
   width: 100%;
   text-align: left
 }
+#menuPopover {
+  display: none
+}
+.replyWithMessage {
+  width: 100%;
+  text-align: center;
+}
