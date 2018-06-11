@@ -18,6 +18,10 @@ export function settingsInfo (state = {}, action) {
       return Object.assign({}, state, {
         apiSuccess: action.data
       })
+    case ActionTypes.GET_PERMISSIONS_SUCCESS:
+      return Object.assign({}, state, {
+        permissions: action.data
+      })
     case ActionTypes.GET_API_FAILURE:
       return Object.assign({}, state, {
         apiFailure: action.data

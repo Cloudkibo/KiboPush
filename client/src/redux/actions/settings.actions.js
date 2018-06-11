@@ -30,6 +30,13 @@ export function getAPISuccess (data) {
   }
 }
 
+export function getPermissionsSuccess (data) {
+  return {
+    type: ActionTypes.GET_PERMISSIONS_SUCCESS,
+    data
+  }
+}
+
 export function getAPIFailure (data) {
   return {
     type: ActionTypes.GET_API_FAILURE,
@@ -95,6 +102,18 @@ export function getAPI (API) {
           dispatch(getAPISuccess(res.payload))
         } else if (res.status === 'failed') {
           dispatch(getAPIFailure(res.description))
+        }
+      })
+  }
+}
+
+export function getPermissions () {
+  return (dispatch) => {
+    callApi('permissions/fetchPermissions')
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('permissions', res.payload)
+          dispatch(getPermissionsSuccess(res.payload))
         }
       })
   }
