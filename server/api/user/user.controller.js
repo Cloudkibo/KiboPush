@@ -669,7 +669,7 @@ exports.joinCompany = function (req, res) {
           }
 
           let permissionsPayload = {
-            companyId: companyUserSaved._id,
+            companyId: invitationToken.companyId,
             userId: user._id
           }
 

@@ -38,10 +38,10 @@ class Connect extends React.Component {
               </div>
               <div className='m-stack__item m-stack__item--center'>
                 {
-                  (this.props.location.state.account_type === 'team') &&
+                  this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <Link to='/finsh' className='m-link m-link--focus m-login__account-link'>Skip</Link>
+                    <Link to='/dashboard' className='m-link m-link--focus m-login__account-link'>Skip</Link>
                   </div>
                 }
               </div>
