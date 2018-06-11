@@ -16,10 +16,52 @@ const config = require('./../../config/environment/index')
 const _ = require('lodash')
 let crypto = require('crypto')
 const logger = require('../../components/logger')
-
+// const mongoose = require('mongoose')
 const MailChimp = require('mailchimp-api-v3')
 
 const TAG = 'api/user/user.controller.js'
+
+exports.movePlan = function (req, res) {
+  Users.find({}, (err, users) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'Error at find all users: ' + JSON.stringify(err)
+      })
+    }
+    let companies = []
+    users.forEach((user, index) => {
+      // console.log('user plan: ', JSON.parse(JSON.stringify(user)).plan)
+      user = JSON.parse(JSON.stringify(user))
+      CompanyUsers.findOne({domain_email: user.domain_email}, (err, cu) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Error at find company user: ' + JSON.stringify(err)
+          })
+        }
+        if (companies.indexOf(cu.companyId) === -1) {
+          companies.push(cu.companyId)
+          CompanyProfile.update({_id: cu.companyId}, {'stripe.plan': user.plan}, (err, companyUpdated) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: 'Error at updating company profile: ' + JSON.stringify(err)
+              })
+            }
+            console.log('companyUpdated', companyUpdated)
+          })
+        }
+      })
+      if (index === (users.length - 1)) {
+        return res.status(200).json({
+          status: 'success',
+          description: 'Successfuly moved!'
+        })
+      }
+    })
+  })
+}
 
 exports.index = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
@@ -43,44 +85,52 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      Permissions.findOne({userId: req.user._id}, (err, permissions) => {
+      CompanyProfile.findOne({_id: companyUser.companyId}, (err, company) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        if (!permissions) {
+        if (!companyUser) {
           return res.status(404).json({
             status: 'failed',
-            description: 'Permissions not set for this user. Please contact support'
+            description: 'The user account does not belong to any company. Please contact support'
           })
         }
-        Plans.findOne({}, (err, plan) => {
+        Permissions.findOne({userId: req.user._id}, (err, permissions) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          if (!plan) {
+          if (!permissions) {
             return res.status(404).json({
               status: 'failed',
-              description: 'Fatal Error, plan not set for this user. Please contact support'
+              description: 'Permissions not set for this user. Please contact support'
             })
           }
-          user = user.toObject()
-          user.companyId = companyUser.companyId
-          user.permissions = permissions
-          user.currentPlan = req.user.plan
-          user.plan = plan[req.user.plan]
-          res.status(200).json({status: 'success', payload: user})
+          Plans.findOne({}, (err, plan) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (!plan) {
+              return res.status(404).json({
+                status: 'failed',
+                description: 'Fatal Error, plan not set for this user. Please contact support'
+              })
+            }
+            user = user.toObject()
+            user.companyId = companyUser.companyId
+            user.permissions = permissions
+            user.currentPlan = company.stripe.plan
+            user.plan = plan[company.stripe.plan]
+            res.status(200).json({status: 'success', payload: user})
+          })
         })
       })
     })
@@ -160,38 +210,47 @@ exports.updateMode = function (req, res) {
             description: 'The user account does not belong to any company. Please contact support'
           })
         }
-        Permissions.findOne({userId: req.body._id}, (err, permissions) => {
+        CompanyProfile.findOne({_id: companyUser.companyId}, (err, company) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          if (!permissions) {
-            return res.status(404).json({
-              status: 'failed',
-              description: 'Permissions not set for this user. Please contact support'
-            })
-          }
-          Plans.findOne({}, (err, plan) => {
+
+          Permissions.findOne({userId: req.body._id}, (err, permissions) => {
             if (err) {
               return res.status(500).json({
                 status: 'failed',
                 description: `Internal Server Error ${JSON.stringify(err)}`
               })
             }
-            if (!plan) {
+            if (!permissions) {
               return res.status(404).json({
                 status: 'failed',
-                description: 'Fatal Error, plan not set for this user. Please contact support'
+                description: 'Permissions not set for this user. Please contact support'
               })
             }
-            user = user.toObject()
-            user.companyId = companyUser.companyId
-            user.permissions = permissions
-            user.currentPlan = user.plan
-            user.plan = plan[user.plan]
-            res.status(200).json({status: 'success', payload: user})
+            Plans.findOne({}, (err, plan) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              if (!plan) {
+                return res.status(404).json({
+                  status: 'failed',
+                  description: 'Fatal Error, plan not set for this user. Please contact support'
+                })
+              }
+              user = user.toObject()
+              user.companyId = companyUser.companyId
+              user.permissions = permissions
+              user.currentPlan = company.stripe.plan
+              user.plan = plan[company.profile.plan]
+              res.status(200).json({status: 'success', payload: user})
+            })
           })
         })
       })
@@ -246,16 +305,13 @@ exports.create = function (req, res) {
               description: 'This workspace name already has an account on KiboPush. Contact support for more information.'
             })
           } else {
-            let plan = 'plan_C'
-            if (config.env === 'production') plan = 'plan_D'
             let accountData = new Users({
               name: req.body.name,
               email: req.body.email.toLowerCase(),
               domain: req.body.domain.toLowerCase(),
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
-              role: 'buyer',
-              plan: plan
+              role: 'buyer'
             })
 
             accountData.save(function (err, user) {
@@ -442,8 +498,6 @@ exports.create = function (req, res) {
           description: 'This email address already has an account on KiboPush. Contact support for more information.'
         })
       } else {
-        let plan = 'plan_A'
-        if (config.env === 'production') plan = 'plan_B'
         let today = new Date()
         let uid = crypto.randomBytes(8).toString('hex')
         let domain = 'f' + uid + '' + today.getFullYear() + '' +
@@ -456,8 +510,7 @@ exports.create = function (req, res) {
           domain: domain,
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
-          role: 'buyer',
-          plan: plan
+          role: 'buyer'
         })
 
         accountData.save(function (err, user) {
@@ -633,8 +686,7 @@ exports.joinCompany = function (req, res) {
           description: 'Invitation token invalid or expired. Please contact admin to invite you again.'
         })
       }
-      let plan = 'plan_C'
-      if (config.env === 'production') plan = 'plan_D'
+
       let role = invitationToken.role
       let accountData = new Users({
         name: req.body.name,
@@ -642,8 +694,7 @@ exports.joinCompany = function (req, res) {
         domain: invitationToken.domain,
         password: req.body.password,
         domain_email: invitationToken.domain + '' + req.body.email,
-        role: role,
-        plan: plan
+        role: role
       })
 
       accountData.save(function (err, user) {
