@@ -31,7 +31,6 @@ exports.movePlan = function (req, res) {
     }
     let companies = []
     users.forEach((user, index) => {
-      // console.log('user plan: ', JSON.parse(JSON.stringify(user)).plan)
       user = JSON.parse(JSON.stringify(user))
       CompanyUsers.findOne({domain_email: user.domain_email}, (err, cu) => {
         if (err) {
@@ -49,7 +48,6 @@ exports.movePlan = function (req, res) {
                 description: 'Error at updating company profile: ' + JSON.stringify(err)
               })
             }
-            console.log('companyUpdated', companyUpdated)
           })
         }
       })
@@ -59,6 +57,104 @@ exports.movePlan = function (req, res) {
           description: 'Successfuly moved!'
         })
       }
+    })
+  })
+}
+
+exports.setCard = function (req, res) {
+  var stripeToken = req.body.stripeToken
+
+  if (!stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please provide a valid card.`
+    })
+  }
+
+  Users.findOne({_id: req.user._id}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!user) {
+      return res.status(404)
+        .json({status: 'failed', description: 'User not found'})
+    }
+
+    user.setCard(stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Card has been attached successfuly!'
+      })
+    })
+  })
+}
+
+exports.updatePlan = function (req, res) {
+  var plan = req.body.plan
+  var stripeToken = null
+
+  if (req.user.stripe.plan === plan) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `The selected plan is the same as the current plan.`
+    })
+  }
+
+  if (req.body.stripeToken) {
+    stripeToken = req.body.stripeToken
+  }
+
+  if (!req.user.stripe.last4 && !req.body.stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please add a card to your account before choosing a plan.`
+    })
+  }
+
+  Users.findOne({_id: req.user._id}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!user) {
+      return res.status(404)
+        .json({status: 'failed', description: 'User not found'})
+    }
+
+    user.setPlan(plan, stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Plan has been updated successfuly!'
+      })
     })
   })
 }
@@ -311,7 +407,8 @@ exports.create = function (req, res) {
               domain: req.body.domain.toLowerCase(),
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
-              role: 'buyer'
+              role: 'buyer',
+              'stripe.plan': 'plan_D'
             })
 
             accountData.save(function (err, user) {
@@ -510,7 +607,8 @@ exports.create = function (req, res) {
           domain: domain,
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
-          role: 'buyer'
+          role: 'buyer',
+          'stripe.plan': 'plan_B'
         })
 
         accountData.save(function (err, user) {

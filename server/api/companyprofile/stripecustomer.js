@@ -15,9 +15,14 @@ module.exports = exports = function stripeCustomer (schema, options) {
     }
   })
 
-  schema.statics.getPlans = function () {
-    return options.planData
-  }
+  schema.pre('save', function (next) {
+    var user = this
+    if (user.stripe.customerId) return next()
+    user.createCustomer(function (err) {
+      if (err) return next(err)
+      next()
+    })
+  })
 
   schema.methods.createCustomer = function (cb) {
     var user = this
@@ -30,6 +35,10 @@ module.exports = exports = function stripeCustomer (schema, options) {
       user.stripe.customerId = customer.id
       return cb()
     })
+  }
+
+  schema.statics.getPlans = function () {
+    return options.planData
   }
 
   schema.methods.setCard = function (stripeToken, cb) {
