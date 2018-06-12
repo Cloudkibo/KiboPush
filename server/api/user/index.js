@@ -17,5 +17,8 @@ router.post('/signup', controller.create)
 router.post('/joinCompany', controller.joinCompany)
 router.post('/updateMode', controller.updateMode)
 router.get('/fbAppId', auth.isAuthenticated(), controller.fbAppId)
+router.get('/movePlan', controller.movePlan)
+router.post('/setCard', auth.isAuthenticated(), controller.setCard)
+router.post('/updatePlan', auth.isAuthenticated(), controller.updatePlan)
 
 module.exports = router

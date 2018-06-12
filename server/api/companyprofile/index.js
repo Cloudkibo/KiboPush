@@ -3,8 +3,15 @@
 var express = require('express')
 var controller = require('./companyprofile.controller')
 var auth = require('../../auth/auth.service')
-
+var config = require('../../config/environment/index')
+var StripeWebhook = require('stripe-webhook-middleware')
+var stripeEvents = require('./stripeEvents')
 var router = express.Router()
+
+var stripeWebhook = new StripeWebhook({
+  stripeApiKey: config.stripeOptions.apiKey,
+  respond: true
+})
 
 router.get('/',
   auth.isAuthenticated(),
@@ -56,5 +63,11 @@ router.get('/members',
   auth.doesPlanPermitsThisAction('team_members_management'),
   auth.doesRolePermitsThisAction('membersPermission'),
   controller.members)
+
+  // use this url to receive stripe webhook events
+router.post('/stripe/events',
+  stripeWebhook.middleware,
+  stripeEvents
+)
 
 module.exports = router

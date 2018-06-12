@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
+const CompanyProfile = require('../api/companyprofile/companyprofile.model')
 const Plans = require('../api/permissions_plan/permissions_plan.model')
 const Permissions = require('../api/permissions/permissions.model')
 const ApiSettings = require('../api/api_settings/api_settings.model')
@@ -53,6 +54,27 @@ function isAuthenticated () {
 
         req.user = user
         next()
+      })
+    })
+    .use((req, res, next) => {
+      CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyuser) => {
+        if (err) {
+          return res.status(500)
+            .json({status: 'failed', description: 'Internal Server Error'})
+        }
+        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+          if (err) {
+            return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+          }
+          if (!company) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Company Not Found. Contact support for more information.'})
+          }
+
+          req.user.plan = company.stripe.plan
+          next()
+        })
       })
     })
 }
