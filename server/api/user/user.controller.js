@@ -1,4 +1,4 @@
- /**
+/**
  * Created by sojharo on 27/07/2017.
  */
 
@@ -125,6 +125,7 @@ exports.index = function (req, res) {
             user = user.toObject()
             user.companyId = companyUser.companyId
             user.permissions = permissions
+            user.permissionsRevoked = req.user.permissionsRevoked
             user.currentPlan = company.stripe.plan
             user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
@@ -335,15 +336,6 @@ exports.create = function (req, res) {
                     description: 'profile save error: ' + JSON.stringify(err)
                   })
                 }
-
-                companySaved.createCustomer(req.body.email, req.body.name, function (err) {
-                  if (err) {
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: 'internal server error' + JSON.stringify(err)
-                    })
-                  }
-                })
 
                 let companyUserData = new CompanyUsers({
                   companyId: companySaved._id,
