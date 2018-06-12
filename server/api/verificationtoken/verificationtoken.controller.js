@@ -9,7 +9,6 @@ let path = require('path')
 
 const logger = require('../../components/logger')
 
-const MailChimp = require('mailchimp-api-v3')
 const TAG = 'api/verificationtoken/verificationtoken.controller.js'
 
 let crypto = require('crypto')
@@ -176,26 +175,8 @@ exports.resend = function (req, res) {
         return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error ' + err})
       }
+      logger.serverLog(TAG, `verification email resent: ${JSON.stringify(email)}`)
       res.status(201).json({ status: 'success', description: 'Verification email has been sent' })
-    })
-
-    let mailchimp = new MailChimp('2d154e5f15ca18180d52c40ad6e5971e-us12')
-
-    mailchimp.post({
-      path: '/lists/5a4e866849/members',
-      body: {
-        email_address: req.user.email,
-        merge_fields: {
-          FNAME: req.user.name
-        },
-        status: 'subscribed'
-      }
-    }, function (err, result) {
-      if (err) {
-        logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
-      } else {
-        logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
-      }
     })
   })
 }
