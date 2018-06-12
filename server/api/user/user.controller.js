@@ -109,13 +109,6 @@ exports.index = function (req, res) {
               description: 'Permissions not set for this user. Please contact support'
             })
           }
-          user = user.toObject()
-          user.companyId = companyUser.companyId
-          user.permissions = permissions
-          user.permissionsRevoked = req.user.permissionsRevoked
-          user.currentPlan = req.user.plan
-          user.plan = plan[req.user.plan]
-          res.status(200).json({status: 'success', payload: user})
           Plans.findOne({}, (err, plan) => {
             if (err) {
               return res.status(500).json({
@@ -134,7 +127,6 @@ exports.index = function (req, res) {
             user.permissions = permissions
             user.permissionsRevoked = req.user.permissionsRevoked
             user.currentPlan = company.stripe.plan
-            user.permissionsRevoked = req.user.permissionsRevoked
             user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
             res.status(200).json({status: 'success', payload: user})
@@ -865,3 +857,4 @@ exports.joinCompany = function (req, res) {
       })
     })
 }
+
