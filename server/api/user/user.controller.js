@@ -344,6 +344,15 @@ exports.create = function (req, res) {
                   })
                 }
 
+                companySaved.createCustomer(req.body.email, req.body.name, function (err) {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'internal server error' + JSON.stringify(err)
+                    })
+                  }
+                })
+
                 let companyUserData = new CompanyUsers({
                   companyId: companySaved._id,
                   userId: user._id,
