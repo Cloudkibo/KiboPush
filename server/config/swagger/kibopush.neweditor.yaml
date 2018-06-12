@@ -5235,7 +5235,7 @@ paths:
              $ref: '#/definitions/Response500'
   /permissions/fetchPermissions:
     get:
-      description: gives all the permissions of a user
+      description: gives all the permissions of all users in team
       consumes:
         - application/json
       produces:
@@ -5244,7 +5244,55 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/Permissions'
+            type: object
+            properties:
+              status: 
+                type: string
+                description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    permission:
+                      $ref: '#/definitions/Permissions'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+            
+  /permissions/updatePermissions:
+    post:
+      description: gives all the permissions of one user in team
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: permission
+          in: body
+          required: true
+          description: contains existing permissions
+          schema:
+            $ref: '#/definitions/Permission'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Permission'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
               
               
 
@@ -6730,6 +6778,93 @@ definitions:
         type: string
         description: payload for the user object
         $ref: '#/definitions/User'
+      apiPermission: 
+        type: boolean
+        description: permission to use the api
+      surveyPermission:
+        type: boolean
+        description: permission to send the survey
+      subscriberPermission: 
+        type: boolean
+        description: permission to use the subscriber page
+      pollsPermission: 
+        type: boolean
+        description: permission to use the poll feature
+      pagesPermission:
+        type: boolean
+        description: permission to connect the Pages 
+      pagesAccessPermission: 
+        type: boolean
+        description: permission to see the page tab
+      menuPermission:
+        type: boolean
+        description: permission to see and use the menu
+      livechatPermission:
+        type: boolean
+        description: permission to use the livechat feature
+      autopostingPermission:
+        type: boolean
+        description: permission to use the autoposting feature
+      broadcastPermission: 
+        type: boolean
+        description: permission to use the broadcast feature
+      invitationsPermission:
+        type: boolean
+        description: permission to use the invite feature
+      deleteAgentPermission:
+        type: boolean
+        description: permission to use the delete agent
+      inviteAgentPermission:
+        type: boolean
+        description: permission to invite some agent
+      updateRolePermission:
+        type: boolean
+        description: permission to update the role of a user
+      deleteAdminPermission:
+        type: boolean
+        description: permission to delete an admin
+      inviteAdminPermission:
+        type: boolean
+        description: permission to invite an admin
+      memberPermission:
+        type: boolean
+        description: permission to view and update the members of the team
+      companyUpdatePermission:
+        type: boolean
+        description: permission to update the company details
+      companyPermission:
+        type: boolean
+      dashboardPermission:
+        type: boolean
+        description: permission to view to dashboard
+      customerMatchingPermission:
+        type: boolean
+        description: permission to match a customer
+      terminateService:
+        type: boolean
+        description: permission delete account from kibopush
+      upgradeService:
+        type: boolean
+        description: permission upgrade the plan
+      downgradeService:
+        type: boolean
+        description: permission to downgrade the plan
+      billingPermission:
+        type: boolean
+        description: permission to view the billing plans
+        
+  Permission:
+    type: object
+    description: This is permissions for a single user
+    properties: 
+      companyId:
+        type: string
+        description: company id of the company that the user belongs to
+        readOnly: true
+      userId:
+        type: string
+        description: payload for the user object
+        readOnly: true
       apiPermission: 
         type: boolean
         description: permission to use the api

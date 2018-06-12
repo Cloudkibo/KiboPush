@@ -37,6 +37,13 @@ export function getPermissionsSuccess (data) {
   }
 }
 
+export function getUpdatedPermissionsSuccess (data) {
+  return {
+    type: ActionTypes.GET_UPDATED_PERMISSIONS_SUCCESS,
+    data
+  }
+}
+
 export function getAPIFailure (data) {
   return {
     type: ActionTypes.GET_API_FAILURE,
@@ -114,6 +121,21 @@ export function getPermissions () {
         if (res.status === 'success') {
           console.log('permissions', res.payload)
           dispatch(getPermissionsSuccess(res.payload))
+        }
+      })
+  }
+}
+
+export function updatePermission (updatedPermissions, msg) {
+  return (dispatch) => {
+    callApi('permissions/updatePermissions', 'post', updatedPermissions)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('Updated Permission from Server', res.payload)
+          msg.success('Permission Updated Successfully')
+          dispatch(getUpdatedPermissionsSuccess(res.payload))
+        } else if (res.status === 'failed') {
+          msg.success('Permission Update Failed')
         }
       })
   }
