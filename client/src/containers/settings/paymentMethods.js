@@ -1,49 +1,10 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
 import { browserHistory } from 'react-router'
-import {
-  loadMyPagesList
-} from '../../redux/actions/pages.actions'
-import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import ReCAPTCHA from 'react-google-recaptcha'
-import {StripeProvider, Elements, CardElement} from 'react-stripe-elements'
-const handleBlur = () => {
-  console.log('[blur]')
-}
-const handleChange = (change) => {
-  console.log('[change]', change)
-}
-const handleClick = () => {
-  console.log('[click]')
-}
-const handleFocus = () => {
-  console.log('[focus]')
-}
-const handleReady = () => {
-  console.log('[ready]')
-}
-
-const createOptions = (fontSize, padding) => {
-  return {
-    style: {
-      base: {
-        fontSize,
-        color: '#424770',
-        letterSpacing: '0.025em',
-        fontFamily: 'Source Code Pro, monospace',
-        '::placeholder': {
-          color: '#aab7c4'
-        },
-        padding
-      },
-      invalid: {
-        color: '#9e2146'
-      }
-    }
-  }
-}
+import {StripeProvider, Elements} from 'react-stripe-elements'
+import InjectedCheckoutForm from '../wizard/checkout'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -199,12 +160,12 @@ class PaymentMethods extends React.Component {
                                            </div>
                                            <div className='m-widget4__ext'>
                                              <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => this.gotoView(page)}>
-                                              View Message
+                                              Update
                                             </button>
                                            </div>
                                            <div className='m-widget4__ext'>
                                              <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => this.gotoEdit(page)}>
-                                             Edit Message
+                                             Delete
                                            </button>
                                            </div>
                                          </div>
@@ -234,29 +195,9 @@ class PaymentMethods extends React.Component {
                             <div className='modal-body'>
                               <div className='col-12'>
                                 {this.state.change &&
-                                  <StripeProvider apiKey='pk_test_12345'>
+                                  <StripeProvider apiKey='pk_test_ozzmt2lgDgltSYx1pO4W2IE2'>
                                     <Elements>
-                                      <form onSubmit={this.handleSubmit}>
-                                        <label>Email Address:</label>
-                                        <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} id='generalSearch' />
-                                        <br />
-                                        <label>
-                                          Card details:
-                                        </label>
-                                        <CardElement
-                                          onBlur={handleBlur}
-                                          onChange={handleChange}
-                                          onFocus={handleFocus}
-                                          onReady={handleReady}
-                                          {...createOptions(this.props.fontSize)}
-                                        />
-                                        <br /><br />
-                                        <ReCAPTCHA ref='recaptcha' sitekey='6LckQ14UAAAAAFH2D15YXxH9o9EQvYP3fRsL2YOU' />
-                                        <br /><br />
-                                        <center>
-                                          <button className='btn btn-primary'>Pay $10.00</button>
-                                        </center>
-                                      </form>
+                                      <InjectedCheckoutForm setCard={this.setCard} />
                                     </Elements>
                                   </StripeProvider>}
                               </div>
