@@ -415,6 +415,7 @@ class CreateSubList extends React.Component {
                       <div className='row align-items-center'>
                         { !this.state.isEdit &&
                         <div>
+                          <h6>Choose an action for the menu item</h6>
                           <div className='radio-buttons' style={{marginLeft: '37px'}}>
                             <div className='radio'>
                               <input id='segmentAll'
