@@ -15,24 +15,16 @@ module.exports = exports = function stripeCustomer (schema, options) {
     }
   })
 
-  schema.pre('save', function (next) {
-    var user = this
-    if (user.stripe.customerId) return next()
-    user.createCustomer(function (err) {
-      if (err) return next(err)
-      next()
-    })
-  })
-
-  schema.methods.createCustomer = function (cb) {
-    var user = this
+  schema.methods.createCustomer = function (email, name, cb) {
+    var company = this
 
     stripe.customers.create({
-      email: user.email
+      email: email,
+      description: name
     }, function (err, customer) {
       if (err) return cb(err)
 
-      user.stripe.customerId = customer.id
+      company.stripe.customerId = customer.id
       return cb()
     })
   }
@@ -42,43 +34,42 @@ module.exports = exports = function stripeCustomer (schema, options) {
   }
 
   schema.methods.setCard = function (stripeToken, cb) {
-    var user = this
+    var company = this
 
     var cardHandler = function (err, customer) {
       if (err) return cb(err)
 
-      if (!user.stripe.customerId) {
-        user.stripe.customerId = customer.id
+      if (!company.stripe.customerId) {
+        company.stripe.customerId = customer.id
       }
 
       var card = customer.cards ? customer.cards.data[0] : customer.sources.data[0]
 
-      user.stripe.last4 = card.last4
-      user.save(function (err) {
+      company.stripe.last4 = card.last4
+      company.save(function (err) {
         if (err) return cb(err)
         return cb(null)
       })
     }
 
-    if (user.stripe.customerId) {
-      stripe.customers.update(user.stripe.customerId, {card: stripeToken}, cardHandler)
+    if (company.stripe.customerId) {
+      stripe.customers.update(company.stripe.customerId, {card: stripeToken}, cardHandler)
     } else {
       stripe.customers.create({
-        email: user.email,
         card: stripeToken
       }, cardHandler)
     }
   }
 
   schema.methods.setPlan = function (plan, stripeToken, cb) {
-    var user = this
+    var company = this
 
     var subscriptionHandler = function (err, subscription) {
       if (err) return cb(err)
 
-      user.stripe.plan = plan
-      user.stripe.subscriptionId = subscription.id
-      user.save(function (err) {
+      company.stripe.plan = plan
+      company.stripe.subscriptionId = subscription.id
+      company.save(function (err) {
         if (err) return cb(err)
         return cb(null)
       })
@@ -86,23 +77,23 @@ module.exports = exports = function stripeCustomer (schema, options) {
 
     var createSubscription = function () {
       stripe.customers.createSubscription(
-        user.stripe.customerId,
+        company.stripe.customerId,
         {plan: plan},
         subscriptionHandler
       )
     }
 
     if (stripeToken) {
-      user.setCard(stripeToken, function (err) {
+      company.setCard(stripeToken, function (err) {
         if (err) return cb(err)
         createSubscription()
       })
     } else {
-      if (user.stripe.subscriptionId) {
+      if (company.stripe.subscriptionId) {
         // update subscription
         stripe.customers.updateSubscription(
-          user.stripe.customerId,
-          user.stripe.subscriptionId,
+          company.stripe.customerId,
+          company.stripe.subscriptionId,
           { plan: plan },
           subscriptionHandler
         )
@@ -113,21 +104,21 @@ module.exports = exports = function stripeCustomer (schema, options) {
   }
 
   schema.methods.updateStripeEmail = function (cb) {
-    var user = this
+    var company = this
 
-    if (!user.stripe.customerId) return cb()
+    if (!company.stripe.customerId) return cb()
 
-    stripe.customers.update(user.stripe.customerId, {email: user.email}, function (err, customer) {
+    stripe.customers.update(company.stripe.customerId, {email: company.email}, function (err, customer) {
       cb(err)
     })
   }
 
   schema.methods.cancelStripe = function (cb) {
-    var user = this
+    var company = this
 
-    if (user.stripe.customerId) {
+    if (company.stripe.customerId) {
       stripe.customers.del(
-        user.stripe.customerId
+        company.stripe.customerId
       ).then(function (confirmation) {
         cb()
       }, function (err) {
