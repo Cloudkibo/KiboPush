@@ -92,3 +92,15 @@ export function updateMode (data) {
     })
   }
 }
+
+export function updatePlan (data) {
+  console.log('data for updateMode', data)
+  return (dispatch) => {
+    callApi('users/updatePlan', 'post', data).then(res => {
+      console.log('response from updatePlan', res)
+      if (res.status === 'success') {
+        dispatch(getuserdetails())
+      }
+    })
+  }
+}
