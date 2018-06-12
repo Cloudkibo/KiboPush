@@ -13,4 +13,11 @@ router.get('/fetchPermissions',
     // auth.doesRolePermitsThisAction('pollsPermission'),
     controller.fetchPermissions)
 
+router.post('/updatePermissions',
+    auth.isAuthenticated(),
+    auth.hasRole('buyer'),
+    // auth.doesPlanPermitsThisAction('polls'),
+    // auth.doesRolePermitsThisAction('pollsPermission'),
+    controller.updatePermissions)
+
 module.exports = router
