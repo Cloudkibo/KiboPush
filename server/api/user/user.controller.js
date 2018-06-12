@@ -126,6 +126,7 @@ exports.index = function (req, res) {
             user.companyId = companyUser.companyId
             user.permissions = permissions
             user.currentPlan = company.stripe.plan
+            user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
             res.status(200).json({status: 'success', payload: user})
           })
