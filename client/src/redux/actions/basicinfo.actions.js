@@ -17,6 +17,14 @@ export function showuserdetails (data) {
   }
 }
 
+export function updateKeys (data) {
+  return {
+    type: ActionTypes.LOAD_KEYS,
+    captchaKey: data.captchaKey,
+    stripeKey: data.stripeKey
+  }
+}
+
 export function showUpdatedUserDetails (data) {
   // NOTE: don't remove following auth method call
   auth.putUserId(data._id)
@@ -85,14 +93,35 @@ export function updateMode (data) {
   }
 }
 
-export function updatePlan (data) {
+export function updatePlan (data, msg) {
   console.log('data for updateMode', data)
   return (dispatch) => {
-    callApi('users/updatePlan', 'post', data).then(res => {
+    callApi('company/updatePlan', 'post', data).then(res => {
+      console.log('response from updatePlan', res)
+      if (res.status === 'success') {
+        msg.success('Plan updated successfully')
+        dispatch(getuserdetails())
+      } else {
+        msg.error(res.description)
+      }
+    })
+  }
+}
+
+export function updateCard (data) {
+  console.log('data for updateMode', data)
+  return (dispatch) => {
+    callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         dispatch(getuserdetails())
       }
     })
+  }
+}
+
+export function getKeys () {
+  return (dispatch) => {
+    callApi('company/getKeys').then(res => dispatch(updateKeys(res)))
   }
 }

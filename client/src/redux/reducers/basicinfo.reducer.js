@@ -6,7 +6,9 @@ const initialState = {
   socketStatus: false,
   getStartedSeen: true,
   fbAppId: '',
-  adminPageSubscription: []
+  adminPageSubscription: [],
+  captchaKey: '',
+  stripeKey: ''
 }
 
 export function basicInfo (state = initialState, action) {
@@ -48,6 +50,11 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.STORE_ADMIN_SUB_ID:
       return Object.assign({}, state, {
         adminPageSubscription: action.data
+      })
+    case ActionTypes.LOAD_KEYS:
+      return Object.assign({}, state, {
+        captchaKey: action.captchaKey,
+        stripeKey: action.stripeKey
       })
 
     default:
