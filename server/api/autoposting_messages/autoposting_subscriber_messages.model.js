@@ -11,7 +11,8 @@ const subscriberMessagesSchema = new Schema({
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   autopostingId: { type: Schema.ObjectId, ref: 'autopostings' },
   autoposting_messages_id: { type: Schema.ObjectId, ref: 'autoposting_messages' },
-  subscriberId: String, // facebook id of subscribers
+  subscriberId: String, // facebook id of subscriber
+  payload: Schema.Types.Mixed, // this where message content will go
   datetime: { type: Date, default: Date.now },
   seen: {type: Boolean, default: false}
 })

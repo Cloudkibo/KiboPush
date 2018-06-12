@@ -114,7 +114,6 @@ function connect () {
                             autoposting_type: 'twitter',
                             autopostingId: postingItem._id,
                             sent: subscribers.length,
-                            message_id: tweet.id,
                             seen: 0,
                             clicked: 0
                           })
@@ -187,7 +186,8 @@ function connect () {
                                   companyId: postingItem.companyId,
                                   autopostingId: postingItem._id,
                                   autoposting_messages_id: savedMsg._id,
-                                  subscriberId: subscriber.senderId
+                                  subscriberId: subscriber.senderId,
+                                  payload: messageData
                                 })
 
                                 newSubscriberMsg.save((err, savedSubscriberMsg) => {
@@ -234,11 +234,11 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
         }
       }
     })
-  // AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
-  //   if (err) {
-  //     logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
-  //   }
-  // })
+  AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
+    }
+  })
 }
 
 function restart () {
