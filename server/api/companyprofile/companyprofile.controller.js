@@ -40,6 +40,104 @@ exports.index = function (req, res) {
     })
 }
 
+exports.setCard = function (req, res) {
+  var stripeToken = req.body.stripeToken
+
+  if (!stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please provide a valid card.`
+    })
+  }
+
+  Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!company) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Company not found'})
+    }
+
+    company.setCard(stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Card has been attached successfuly!'
+      })
+    })
+  })
+}
+
+exports.updatePlan = function (req, res) {
+  var plan = req.body.plan
+  var stripeToken = null
+
+  if (req.user.plan === plan) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `The selected plan is the same as the current plan.`
+    })
+  }
+
+  if (req.body.stripeToken) {
+    stripeToken = req.body.stripeToken
+  }
+
+  if (!req.user.last4 && !req.body.stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please add a card to your account before choosing a plan.`
+    })
+  }
+
+  Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!company) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Company not found'})
+    }
+
+    company.setPlan(plan, stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Plan has been updated successfuly!'
+      })
+    })
+  })
+}
+
 exports.invite = function (req, res) {
   let parametersMissing = false
 

@@ -73,6 +73,7 @@ function isAuthenticated () {
           }
 
           req.user.plan = company.stripe.plan
+          req.user.last4 = company.stripe.last4
           next()
         })
       })

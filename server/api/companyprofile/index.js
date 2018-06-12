@@ -64,6 +64,9 @@ router.get('/members',
   auth.doesRolePermitsThisAction('membersPermission'),
   controller.members)
 
+router.post('/setCard', auth.isAuthenticated(), controller.setCard)
+router.post('/updatePlan', auth.isAuthenticated(), controller.updatePlan)
+
   // use this url to receive stripe webhook events
 router.post('/stripe/events',
   stripeWebhook.middleware,
