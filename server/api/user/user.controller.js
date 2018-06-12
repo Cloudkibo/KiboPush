@@ -61,104 +61,6 @@ exports.movePlan = function (req, res) {
   })
 }
 
-exports.setCard = function (req, res) {
-  var stripeToken = req.body.stripeToken
-
-  if (!stripeToken) {
-    return res.status(500).json({
-      status: 'failed',
-      description: `Please provide a valid card.`
-    })
-  }
-
-  Users.findOne({_id: req.user._id}, (err, user) => {
-    if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: 'internal server error' + JSON.stringify(err)
-      })
-    }
-    if (!user) {
-      return res.status(404)
-        .json({status: 'failed', description: 'User not found'})
-    }
-
-    user.setCard(stripeToken, function (err) {
-      if (err) {
-        if (err.code && err.code === 'card_declined') {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'Your card was declined. Please provide a valid card.'
-          })
-        }
-        return res.status(500).json({
-          status: 'failed',
-          description: 'internal server error' + JSON.stringify(err)
-        })
-      }
-      return res.status(200).json({
-        status: 'success',
-        description: 'Card has been attached successfuly!'
-      })
-    })
-  })
-}
-
-exports.updatePlan = function (req, res) {
-  var plan = req.body.plan
-  var stripeToken = null
-
-  if (req.user.stripe.plan === plan) {
-    return res.status(500).json({
-      status: 'failed',
-      description: `The selected plan is the same as the current plan.`
-    })
-  }
-
-  if (req.body.stripeToken) {
-    stripeToken = req.body.stripeToken
-  }
-
-  if (!req.user.stripe.last4 && !req.body.stripeToken) {
-    return res.status(500).json({
-      status: 'failed',
-      description: `Please add a card to your account before choosing a plan.`
-    })
-  }
-
-  Users.findOne({_id: req.user._id}, (err, user) => {
-    if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: 'internal server error' + JSON.stringify(err)
-      })
-    }
-    if (!user) {
-      return res.status(404)
-        .json({status: 'failed', description: 'User not found'})
-    }
-
-    user.setPlan(plan, stripeToken, function (err) {
-      if (err) {
-        if (err.code && err.code === 'card_declined') {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'Your card was declined. Please provide a valid card.'
-          })
-        }
-        return res.status(500).json({
-          status: 'failed',
-          description: 'internal server error' + JSON.stringify(err)
-        })
-      }
-      return res.status(200).json({
-        status: 'success',
-        description: 'Plan has been updated successfuly!'
-      })
-    })
-  })
-}
-
 exports.index = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
@@ -407,8 +309,7 @@ exports.create = function (req, res) {
               domain: req.body.domain.toLowerCase(),
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
-              role: 'buyer',
-              'stripe.plan': 'plan_D'
+              role: 'buyer'
             })
 
             accountData.save(function (err, user) {
@@ -422,7 +323,8 @@ exports.create = function (req, res) {
               let companyprofileData = new CompanyProfile({
                 companyName: req.body.company_name,
                 companyDetail: req.body.company_description,
-                ownerId: user._id
+                ownerId: user._id,
+                'stripe.plan': 'plan_D'
               })
 
               companyprofileData.save(function (err, companySaved) {
@@ -607,8 +509,7 @@ exports.create = function (req, res) {
           domain: domain,
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
-          role: 'buyer',
-          'stripe.plan': 'plan_B'
+          role: 'buyer'
         })
 
         accountData.save(function (err, user) {
@@ -622,7 +523,8 @@ exports.create = function (req, res) {
           let companyprofileData = new CompanyProfile({
             companyName: 'Pending ' + domain,
             companyDetail: 'Pending ' + domain,
-            ownerId: user._id
+            ownerId: user._id,
+            'stripe.plan': 'plan_B'
           })
 
           companyprofileData.save(function (err, companySaved) {
