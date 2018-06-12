@@ -168,20 +168,19 @@ class AddPage extends React.Component {
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' />
                               <div className='col-lg-6 m--align-right'>
-                                { this.props.otherPages && this.props.otherPages.length > 0
+                                { /* this.props.otherPages && this.props.otherPages.length > 0
                                ? <Link to='/inviteUsingLinkWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                  <span>
                                    <span>Next</span>&nbsp;&nbsp;
                                    <i className='la la-arrow-right' />
                                  </span>
-                               </Link>
-                                : <Link className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled>
+                               </Link> */}
+                                <Link to='/inviteUsingLinkWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
                                   </span>
                                 </Link>
-                               }
                               </div>
                             </div>
                           </div>

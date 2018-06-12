@@ -13,6 +13,7 @@ import { enable, disable, reset, getAPI, saveSwitchState, getNGP, enableNGP, dis
 import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
+import ShowPermissions from './showPermissions'
 import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
 import Billing from './billing'
@@ -51,6 +52,7 @@ class Settings extends React.Component {
       showWelcomeMessage: false,
       showBilling: false,
       showPaymentMethods: false,
+      showPermissions: false,
       chatWidget: false,
       planInfo: ''
     }
@@ -68,6 +70,7 @@ class Settings extends React.Component {
     this.setBilling = this.setBilling.bind(this)
     this.setPayementMethods = this.setPayementMethods.bind(this)
     this.setChatWidget = this.setChatWidget.bind(this)
+    this.setPermissions = this.setPermissions.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.handleNGPKeyChange = this.handleNGPKeyChange.bind(this)
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
@@ -108,38 +111,41 @@ class Settings extends React.Component {
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
+    this.setState({showPermissions: false, showAPI: true, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
       this.initializeSwitch(this.state.buttonState)
     })
   }
   setNGP () {
-    this.setState({showAPI: false, showNGP: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
+    this.setState({showPermissions: false, showAPI: false, showNGP: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
       this.initializeSwitchNGP(this.state.ngpButtonState)
     })
   }
   setResetPass () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+  }
+  setPermissions () {
+    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showPermissions: true})
   }
   setGreetingMessage () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setBilling () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: true, showPaymentMethods: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: true, showPaymentMethods: false})
   }
   setPayementMethods () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: true})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: true})
   }
   setConnectFb () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
   }
   setChatWidget () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: true})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: true})
   }
   setSubscribeToMessenger () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false, chatWidget: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false, chatWidget: false})
   }
   setWelcomeMessage () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true, chatWidget: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true, chatWidget: false})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -401,6 +407,14 @@ class Settings extends React.Component {
                           </a>
                         </li>
                         }
+                        {this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-mark' />
+                            <span className='m-nav__link-text'>User Permissions</span>
+                          </a>
+                        </li>
+                        }
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-exclamation' />
@@ -596,6 +610,9 @@ class Settings extends React.Component {
                 }
                 { this.state.resetPassword &&
                   <ResetPassword />
+                }
+                { this.state.showPermissions &&
+                  <ShowPermissions />
                 }
                 { this.state.showGreetingMessage &&
                   <GreetingMessage user={this.props.user} />
