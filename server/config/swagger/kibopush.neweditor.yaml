@@ -4515,6 +4515,44 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response400'
+             
+  /company/updateAutomatedOptions:
+    post:
+      description: updates automated response options
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: automated_options
+          in: formData
+          description: this is the automated response user sent
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  savedCompanyProfile:
+                    type: object
+                    $ref: '#/definitions/Company'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 
   /company/members:
     get:
@@ -6527,6 +6565,8 @@ definitions:
         type: string
       ownerId:
         type: object
+      automated_options:
+        type: string
 
   CompanyUser:
     type: object

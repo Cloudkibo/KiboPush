@@ -57,6 +57,11 @@ router.post('/updateRole',
   auth.doesRolePermitsThisAction('updateRolePermission'),
   controller.updateRole)
 
+router.post('/updateAutomatedOptions',
+  auth.isAuthenticated(),
+  auth.hasRole('buyer'),
+  controller.updateAutomatedOptions)
+
 router.get('/members',
   auth.isAuthenticated(),
   auth.hasRequiredPlan(['plan_C', 'plan_D']),
