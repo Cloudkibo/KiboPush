@@ -857,4 +857,3 @@ exports.joinCompany = function (req, res) {
       })
     })
 }
-

@@ -1427,8 +1427,6 @@ function updateseenstatus (req) {
   //   })
 }
 
-const PassportFacebookExtension = require('passport-facebook-extension')
-
 function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   parsedData.forEach(payloadItem => {

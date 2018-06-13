@@ -11,17 +11,10 @@ export function setBrowserName (data) {
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
-  if (data && data.permissionsRevoked) {
-    return {
-      type: ActionTypes.PERMISSION_ERROR,
-      data
-    }
-  } else {
-    auth.putUserId(data._id)
-    return {
-      type: ActionTypes.LOAD_USER_DETAILS,
-      data
-    }
+  auth.putUserId(data._id)
+  return {
+    type: ActionTypes.LOAD_USER_DETAILS,
+    data
   }
 }
 

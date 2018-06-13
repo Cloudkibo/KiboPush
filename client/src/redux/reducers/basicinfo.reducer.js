@@ -11,11 +11,6 @@ const initialState = {
 
 export function basicInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.PERMISSION_ERROR:
-      return Object.assign({}, state, {
-        permissionError: true,
-        user: action.data
-      })
     case ActionTypes.LOAD_BROWSER_NAME:
       return Object.assign({}, state, {
         browserName: action.data

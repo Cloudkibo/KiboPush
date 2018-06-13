@@ -342,7 +342,7 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    if (this.props.permissionError) {
+    if (this.props.user && this.props.user.permissionsRevoked) {
       return <Connect permissionError />
     }
     return (
@@ -416,7 +416,6 @@ function mapStateToProps (state) {
   console.log('state', state)
   return {
     user: (state.basicInfo.user),
-    permissionError: (state.basicInfo.permissionError),
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),

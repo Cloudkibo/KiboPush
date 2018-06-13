@@ -388,7 +388,7 @@ class Sidebar extends Component {
   }
 
   render () {
-    if (this.props.user && this.props.permissionsRevoked) {
+    if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push('/dashboard')
     }
     return (
@@ -403,7 +403,7 @@ class Sidebar extends Component {
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
             {
-              this.props.user && !this.props.permissionsRevoked &&
+              this.props.user && !this.props.user.permissionsRevoked &&
               <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
                 {this.showOperationalDashboard()}
                 {this.showDashboard()}
