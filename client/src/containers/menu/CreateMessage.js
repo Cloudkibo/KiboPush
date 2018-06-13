@@ -7,13 +7,13 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Image from '../menu/Image'
-import Video from '../menu/Video'
-import Audio from '../menu/Audio'
-import File from '../menu/File'
-import Text from '../menu/Text'
-import Card from '../menu/Card'
-import Gallery from '../menu/Gallery'
+import Image from '../convo/Image'
+import Video from '../convo/Video'
+import Audio from '../convo/Audio'
+import File from '../convo/File'
+import Text from '../convo/Text'
+import Card from '../convo/Card'
+import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -107,7 +107,7 @@ class CreateMessage extends React.Component {
     for (var i = 0; i < payload.length; i++) {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
@@ -383,7 +383,7 @@ class CreateMessage extends React.Component {
                   <div>
                     <div className='row' >
                       <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
                           <div className='align-center'>
                             <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                             <h6>Text</h6>
