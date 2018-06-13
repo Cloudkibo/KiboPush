@@ -6652,6 +6652,62 @@
         }
       }
     },
+    "/company/updateAutomatedOptions": {
+      "post": {
+        "description": "updates automated response options",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "automated_options",
+            "in": "formData",
+            "description": "this is the automated response user sent",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "savedCompanyProfile": {
+                      "type": "object",
+                      "$ref": "#/definitions/Company"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
     "/company/members": {
       "get": {
         "description": "Gives all members of a company",
@@ -9448,6 +9504,9 @@
         },
         "ownerId": {
           "type": "object"
+        },
+        "automated_options": {
+          "type": "string"
         }
       }
     },
