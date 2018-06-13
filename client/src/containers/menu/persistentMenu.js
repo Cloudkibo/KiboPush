@@ -274,7 +274,8 @@ class Menu extends React.Component {
   }
   handleRadioChange (e) {
     this.setState({
-      selectedRadio: e.currentTarget.value
+      selectedRadio: e.currentTarget.value,
+      isEditMessage: false
     })
     if (e.currentTarget.value === 'openSubMenu') {
       var index = this.state.selectedIndex.split('-')
@@ -304,6 +305,8 @@ class Menu extends React.Component {
           selectPage: page
         })
       }
+      var currentState = null
+      this.props.saveCurrentMenuItem(currentState)
       this.props.getIndexBypage(page.pageId)
     } else {
       this.setState({
