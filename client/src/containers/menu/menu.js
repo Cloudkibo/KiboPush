@@ -413,7 +413,7 @@ class Menu extends React.Component {
   reset () {
     var data = {}
     data.payload = removeMenuPayload()
-    data.pageId = this.state.pageValue
+    data.pageId = this.state.selectPage.pageId
     data.userId = this.props.user._id
     var tempItemMenus = [{
       title: 'First Menu',

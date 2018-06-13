@@ -60,12 +60,11 @@ export function fetchMenu (setMenu) {
   }
 }
 
-export function getIndexBypage (pageId, handleIndexByPage) {
+export function getIndexBypage (pageId) {
   return (dispatch) => {
     callApi('menu/indexByPage', 'post', {pageId: pageId}).then(res => {
       dispatch(updateIndexByPage(res.payload))
       console.log('updateIndexByPage', res)
-      handleIndexByPage()
     })
   }
 }
@@ -75,7 +74,7 @@ export function saveMenu (data, handleSaveMenu, msg) {
     callApi('menu/create', 'post', data).then(res => {
       if (res.status === 'success') {
         msg.success('Menu saved successfully')
-        handleSaveMenu()
+        handleSaveMenu(res)
       } else {
         dispatch(saveMenuFailure(res))
         msg.error('Failed to save Menu')
