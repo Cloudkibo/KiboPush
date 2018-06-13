@@ -278,8 +278,8 @@ class Menu extends React.Component {
       selectedRadio: e.currentTarget.value,
       isEditMessage: false
     })
+    var index = this.state.selectedIndex.split('-')
     if (e.currentTarget.value === 'openSubMenu') {
-      var index = this.state.selectedIndex.split('-')
       if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
         this.addSubMenu(index[1])
       }
@@ -287,6 +287,18 @@ class Menu extends React.Component {
         this.addNestedMenu(index[1], index[2])
       }
       this.handleToggle()
+    }
+    if (e.currentTarget.value === 'replyWithMessage') {
+      var menuItems = this.state.menuItems
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
+        menuItems[index[1]].submenu = []
+      }
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'submenu') {
+        menuItems[index[1]].submenu[index[2]].submenu = []
+      }
+      this.setState({
+        menuItems: menuItems
+      })
     }
   }
   handleToggle () {
