@@ -137,6 +137,11 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'gallery') {
+        if (payload[i].cards) {
+          for (var m = 0; m < payload[i].cards.length; m++) {
+            payload[i].cards[m].id = m
+          }
+        }
         temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
