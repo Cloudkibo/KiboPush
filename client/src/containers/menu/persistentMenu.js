@@ -611,7 +611,7 @@ class Menu extends React.Component {
               <div style={{marginTop: '20px'}}>
                 <label>Website URL to open</label>
                 <input placeholder='Enter URL' style={{marginBottom: '20px'}} value={this.state.webUrl} onChange={this.setWebUrl} type='url' className='form-control' />
-                <button onClick={this.saveWebUrl} className='btn btn-primary pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
+                <button onClick={this.saveWebUrl} className='btn btn-success pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
                 <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginBottom: '10px'}} onClick={this.handleToggle} className='btn pull-left'> Cancel </button>
               </div>
             }
