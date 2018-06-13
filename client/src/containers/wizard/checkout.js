@@ -27,6 +27,8 @@ class CheckoutForm extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      responseReturned: false,
+      error: false
     }
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -38,20 +40,31 @@ class CheckoutForm extends React.Component {
 
   handleSubmit (ev) {
     ev.preventDefault()
+    // if (!this.state.responseReturned) {
+    //   this.setState({error: true})
+    //   return
+    // }
     console.log('ev', ev)
     if (this.props.stripe) {
       console.log('this.props.stripe', this.props.stripe)
       this.props.stripe
-        .createToken()
+        .createToken({})
         .then((payload) => {
           console.log('[token]', payload)
-          this.props.setCard(payload.token.id)
+          if (payload.token && !this.state.responseReturned) {
+            this.setState({error: true})
+            return
+          }
+          this.props.setCard(payload.token.id, false)
         })
     } else {
       console.log('Stripe.js hasnt loaded yet.')
     }
   }
-
+  onChange (response) {
+    this.setState({responseReturned: true})
+    console.log('response', response)
+  }
   render () {
     return (
       <form onSubmit={this.handleSubmit}>
@@ -62,7 +75,10 @@ class CheckoutForm extends React.Component {
           {...createOptions(this.props.fontSize)}
         />
         <br /><br />
-        <ReCAPTCHA ref='recaptcha' sitekey='6LckQ14UAAAAAFH2D15YXxH9o9EQvYP3fRsL2YOU' />
+        <ReCAPTCHA ref='recaptcha' sitekey={this.props.captchaKey} onChange={this.onChange.bind(this)} />
+        {this.state.error &&
+          <div id='email-error' style={{color: 'red', fontWeight: 'inherit'}}><bold>Please verify</bold></div>
+        }
         <br /><br />
         <center>
           <button className='btn btn-primary'>Save</button>

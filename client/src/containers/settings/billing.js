@@ -5,26 +5,74 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { getuserdetails, updatePlan } from '../../redux/actions/basicinfo.actions'
+import AlertContainer from 'react-alert'
 class Billing extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.save = this.save.bind(this)
-  }
-  save (event) {
-    event.preventDefault()
-    if (this.state.ismatch) {
-      this.props.changePass({old_password: this.refs.current.value, new_password: this.refs.new.value}, this.msg)
+    props.getuserdetails()
+    this.state = {
+      selectedRadio: 'free',
+      change: false
     }
+    this.change = this.change.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.save = this.save.bind(this)
+    this.goToPayment = this.goToPayment.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
   }
   componentWillReceiveProps (nextProps) {
+    if (nextProps.user) {
+      if (nextProps.user.currentPlan === 'plan_A' || 'plan_C') {
+        this.setState({selectedRadio: 'premium'})
+      } else if (nextProps.user.currentPlan === 'plan_B' || 'plan_D') {
+        this.setState({selectedRadio: 'free'})
+      }
+    }
   }
+  handleRadioButton (e) {
+    this.setState({
+      selectedRadio: e.currentTarget.value
+    })
+  }
+  change (value) {
+    this.setState({change: value})
+  }
+  save () {
+    this.setState({change: false})
+    if (this.state.selectedRadio === 'free') {
+      if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
+      } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_D'}, this.msg)
+      }
+    } else if (this.state.selectedRadio === 'premium') {
+      if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A'}, this.msg)
+      } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C'}, this.msg)
+      }
+    }
+  }
+
+  goToPayment () {
+    this.props.showPaymentMethods()
+  }
+
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-4 col-xs-12'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -48,25 +96,45 @@ class Billing extends React.Component {
                         Billing Plan
                       </h4>
                       <br />
+                      {this.props.user && (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_A') && this.props.user.last4 &&
+                      <div>
+                        <span style={{marginLeft: '1.8rem'}}>
+                          <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                            xxxx xxxx xxxx xxxx {this.props.user.last4}
+                        </span>
+                        <br />
+                      </div>
+                      }
                       <a className='m-widget24__desc' style={{color: 'blue', cursor: 'pointer'}}>
                         <u>Learn more about pricing</u>
                       </a>
-                      <span className='m-widget24__stats m--font-brand'>
+                      {this.props.user && (this.props.user.currentPlan === 'plan_B' || this.props.user.currentPlan === 'plan_D')
+                      ? <span className='m-widget24__stats m--font-brand'>
                         FREE
                       </span>
+                      : <span className='m-widget24__stats m--font-brand'>
+                        PREMIUM
+                      </span>
+                      }
                       <br /><br />
                     </div>
                     <center style={{marginTop: '15px', marginBottom: '15px'}}>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#m_modal_1_2'>
-                        <span>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => this.change(true)} data-toggle='modal' data-target='#m_modal_1_2'>
+                        {this.props.user && (this.props.user.currentPlan === 'plan_B' || this.props.user.currentPlan === 'plan_D')
+                        ? <span>
                           Upgrade to Pro
                         </span>
+                        : <span>
+                          Change Plan
+                        </span>
+                      }
                       </button>
                     </center>
                   </div>
                 </div>
               </div>
             </div>
+            {this.state.change &&
             <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
               <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
                 <div className='modal-content'>
@@ -87,37 +155,50 @@ class Billing extends React.Component {
                         <div className='radio'>
                           <input id='segmentAll'
                             type='radio'
-                            value='segmentation'
+                            value='free'
                             name='segmentationType'
-                            onChange={this.handleRadioButton} />
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'free'} />
                           <label>Free</label>
                         </div>
                         <div className='radio'>
                           <input id='segmentList'
                             type='radio'
-                            value='list'
+                            value='premium'
                             name='segmentationType'
-                            onChange={this.handleRadioButton} />
-                          <label>Premium $10.00/month</label>
+                            onChange={this.handleRadioButton}
+                            checked={this.state.selectedRadio === 'premium'} />
+                          <label>Premium</label>
                         </div>
                       </div>
                     </div>
+                    {this.state.selectedRadio === 'premium' &&
                     <div className='col-12'>
                       <label>Select Payment Method:</label>
                       <br />
-                      <div className='btn' onClick={this.showDialog} style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}}>
+                      {this.props.user && this.props.user.last4
+                      ? <div className='m-widget4__info'>
+                        <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                        <span className='m-widget4__title'>
+                         xxxx xxxx xxxx {this.props.user.last4}
+                        </span>
+                      </div>
+                      : <div className='btn' onClick={this.goToPayment} style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}}>
                         <i className='fa fa-plus' style={{marginRight: '10px'}} />
                         <span>Add Payment Method</span>
                       </div>
+                    }
                     </div>
+                    }
                     <br /><br />
-                    <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.onPrevious}>
+                    <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.save.bind(this)}>
                       Change
                     </button>
                   </div>
                 </div>
               </div>
             </div>
+          }
           </div>
         </div>
       </div>
@@ -126,13 +207,14 @@ class Billing extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    // changeSuccess: (state.settingsInfo.changeSuccess),
-    // changeFailure: (state.settingsInfo.changeFailure)
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    updatePlan: updatePlan,
+    getuserdetails: getuserdetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Billing)
