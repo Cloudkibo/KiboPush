@@ -253,7 +253,8 @@ class Menu extends React.Component {
     if (menu.type === 'web_url') {
       this.setState({
         selectedRadio: 'openWebsite',
-        webUrl: menu.url
+        webUrl: menu.url,
+        disabledWebUrl: false
       })
     } else if (menu.type === 'nested') {
       this.setState({
@@ -586,10 +587,13 @@ class Menu extends React.Component {
                 <label>Open website </label>
               </div>
             </div>
-            <span style={{fontSize: '0.9rem'}}>
-              If you change the menu item action, all the underlying submenus and their
-              content will be lost
-            </span>
+            {
+              this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
+              <span style={{fontSize: '0.9rem'}}>
+                If you change the menu item action, all the underlying submenus and their
+                content will be lost
+              </span>
+           }
             {
               this.state.selectedRadio === 'openWebsite' &&
               <div style={{marginTop: '20px'}}>
