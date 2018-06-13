@@ -219,8 +219,8 @@ const all = {
   },
 
   stripeOptions: {
-    apiKey: process.env.STRIPE_KEY || 'pk_test_ozzmt2lgDgltSYx1pO4W2IE2',
-    stripePubKey: process.env.STRIPE_PUB_KEY || 'pk_test_ZeDNvsAKmYXckvDr3DuyqCbP',
+    apiKey: process.env.STRIPE_KEY || 'sk_test_gB8zWtkvbbYFbFFnuj3t4EZn',
+    stripePubKey: process.env.STRIPE_PUB_KEY || 'pk_test_ozzmt2lgDgltSYx1pO4W2IE2',
     plans: ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
     planData: {
       'plan_A': {
