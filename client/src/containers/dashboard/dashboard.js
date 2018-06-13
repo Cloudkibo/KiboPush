@@ -25,6 +25,8 @@ import Reports from '../operationalDashboard/reports'
 import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
+import Connect from '../facebookConnect/connect'
+
 var json2csv = require('json2csv')
 
 class Dashboard extends React.Component {
@@ -340,6 +342,9 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    // if (this.props.permissionError) {
+    //  return <Connect permissionError />
+    // }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -411,6 +416,7 @@ function mapStateToProps (state) {
   console.log('state', state)
   return {
     user: (state.basicInfo.user),
+    permissionError: (state.basicInfo.permissionError),
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
