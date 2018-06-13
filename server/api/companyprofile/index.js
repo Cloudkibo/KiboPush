@@ -67,7 +67,7 @@ router.get('/getAutomatedOptions',
   auth.hasRequiredPlan(['plan_C', 'plan_D']),
   auth.doesPlanPermitsThisAction('team_members_management'),
   auth.doesRolePermitsThisAction('companyPermission'),
-  controller.updateAutomatedOptions)
+  controller.getAutomatedOptions)
 
 router.get('/members',
   auth.isAuthenticated(),
