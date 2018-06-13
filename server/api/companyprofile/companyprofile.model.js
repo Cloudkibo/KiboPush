@@ -12,9 +12,13 @@ var CompanyprofileSchema = new Schema({
   ownerId: { type: Schema.ObjectId, ref: 'users' },
   automated_options: {
     type: String,
-    enum: ['AUTOMATED_CHAT', 'HUMAN_CHAT', 'MIX_CHAT'],
-    defualt: 'MIX_CHAT'
+    default: 'MIX_CHAT'
   }
+  // automated_options: {
+  //   type: String,
+  //   enum: ['AUTOMATED_CHAT', 'HUMAN_CHAT', 'MIX_CHAT'],
+  //   default: 'MIX_CHAT'
+  // }
 
 })
 

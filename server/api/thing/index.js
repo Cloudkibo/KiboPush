@@ -247,7 +247,7 @@ router.get('/updateBroadcasts', (req, res) => {
 })
 
 router.get('/updateAutomatedOptions', (req, res) => {
-  CompanyProfile.update({}, {automated_response: 'MIX_CHAT'}, {multi: true}, (err, profiles) => {
+  CompanyProfile.update({}, {automated_options: 'MIX_CHAT'}, {multi: true}, (err, profiles) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     } else {
