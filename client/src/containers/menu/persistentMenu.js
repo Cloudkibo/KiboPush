@@ -182,7 +182,7 @@ class Menu extends React.Component {
       submenu: []
     }]
     data.jsonStructure = tempItemMenus
-    var currentState = { itemMenus: tempItemMenus, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+    var currentState = null
     this.props.saveCurrentMenuItem(currentState)
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
