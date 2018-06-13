@@ -19,7 +19,6 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
-import { Link } from 'react-router'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -50,11 +49,20 @@ class CreateMessage extends React.Component {
     this.setCreateMessage = this.setCreateMessage.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
     this.getPayloadByIndex = this.getPayloadByIndex.bind(this)
+    this.gotoMenu = this.gotoMenu.bind(this)
+  }
+  gotoMenu () {
+    this.props.history.push({
+      pathname: `/menu`,
+      state: {action: 'replyWithMessage'}
+    })
+    // browserHistory.push(`/pollResult/${poll._id}`)
   }
   getPayloadByIndex (index) {
     var payload = []
     var currentMenuItem = this.props.currentMenuItem
-    switch (index[0]) {
+    var menu = this.getMenuHierarchy(this.props.currentMenuItem.clickedIndex)
+    switch (menu) {
       case 'item':
         //  console.log('An Item was Clicked position ', index[1])
         if (currentMenuItem.itemMenus[index[1]].payload && currentMenuItem.itemMenus[index[1]].payload !== '') {
@@ -67,7 +75,7 @@ class CreateMessage extends React.Component {
           payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
         }
         break
-      case 'nested':
+      case 'nestedMenu':
         //  console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
           payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload
@@ -263,11 +271,27 @@ class CreateMessage extends React.Component {
     var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
     this.props.saveCurrentMenuItem(currentState)
   }
-
+  getMenuHierarchy (indexVal) {
+    var index = indexVal.split('-')
+    var menu = ''
+    if (index && index.length > 1) {
+      if (index.length === 2) {
+        menu = 'item'
+      } else if (index.length === 3) {
+        menu = 'submenu'
+      } else if (index.length === 4) {
+        menu = 'nestedMenu'
+      } else {
+        menu = 'invalid'
+      }
+    }
+    return menu
+  }
   setCreateMessage (clickedIndex, payload) {
     var temp = this.props.currentMenuItem.itemMenus
     var index = clickedIndex.split('-')
-    switch (index[0]) {
+    var menu = this.getMenuHierarchy(clickedIndex)
+    switch (menu) {
       case 'item':
         var temp1 = []
         for (var i = 0; i < payload.length; i++) {
@@ -282,7 +306,7 @@ class CreateMessage extends React.Component {
         }
         temp[index[1]].submenu[index[2]].payload = JSON.stringify(temp2)
         break
-      case 'nested':
+      case 'nestedMenu':
         var temp3 = []
         for (var k = 0; k < payload.length; k++) {
           temp3.push(payload[k])
@@ -422,7 +446,7 @@ class CreateMessage extends React.Component {
                       <br />
                       <br />
                       <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
-                      <Link to='menu' style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </Link>
+                      <button onClick={this.gotoMenu} style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button>
                     </div>
                   </div>
                 </div>

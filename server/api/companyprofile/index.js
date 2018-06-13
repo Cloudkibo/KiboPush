@@ -71,6 +71,7 @@ router.get('/members',
 
 router.post('/setCard', auth.isAuthenticated(), controller.setCard)
 router.post('/updatePlan', auth.isAuthenticated(), controller.updatePlan)
+router.get('/getKeys', auth.isAuthenticated(), controller.getKeys)
 
   // use this url to receive stripe webhook events
 router.post('/stripe/events',

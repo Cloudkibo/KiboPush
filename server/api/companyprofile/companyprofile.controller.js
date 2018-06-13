@@ -425,6 +425,7 @@ exports.members = function (req, res) {
     })
 }
 
+
 exports.updateAutomatedOptions = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
@@ -462,4 +463,14 @@ exports.updateAutomatedOptions = function (req, res) {
         })
       })
     })
+}
+
+exports.getKeys = function (req, res) {
+  if (config.env === 'production') {
+    res.status(200).json({status: 'success', captchaKey: '6Lf9kV4UAAAAALTke6FGn_KTXZdWPDorAQEKQbER', stripeKey: config.stripeOptions.stripePubKey})
+  } else if (config.env === 'staging') {
+    res.status(200).json({status: 'success', captchaKey: '6LdWsF0UAAAAAK4UFpMYmabq7HwQ6XV-lyWd7Li6', stripeKey: config.stripeOptions.stripePubKey})
+  } else if (config.env === 'development') {
+    res.status(200).json({status: 'success', captchaKey: '6LckQ14UAAAAAFH2D15YXxH9o9EQvYP3fRsL2YOU', stripeKey: config.stripeOptions.stripePubKey})
+  }
 }

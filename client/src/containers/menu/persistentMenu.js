@@ -2,14 +2,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
+import { saveCurrentMenuItem, removeMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
+import { transformData, removeMenuPayload } from './utility'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import ViewScreen from './viewScreen'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -21,9 +24,11 @@ class Menu extends React.Component {
         title: 'Menu Item',
         submenu: []
       }],
-      selectPage: {},
+      selectPage: '',
       selectedIndex: 'menuPopover',
-      disabledWebUrl: true
+      disabledWebUrl: true,
+      showPreview: false,
+      isEditMessage: false
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -41,28 +46,203 @@ class Menu extends React.Component {
     this.saveWebUrl = this.saveWebUrl.bind(this)
     this.replyWithMessage = this.replyWithMessage.bind(this)
     this.getMenuByIndex = this.getMenuByIndex.bind(this)
+    this.changeLabel = this.changeLabel.bind(this)
+    this.saveMenu = this.saveMenu.bind(this)
+    this.handleSaveMenu = this.handleSaveMenu.bind(this)
+    this.validateMenu = this.validateMenu.bind(this)
+    this.removeMainMenu = this.removeMainMenu.bind(this)
+    this.handleReset = this.handleReset.bind(this)
+    this.showPreview = this.showPreview.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.initializeMenuItems = this.initializeMenuItems.bind(this)
+    if (!this.props.currentMenuItem) {
+      props.getIndexBypage(this.props.pages[0].pageId)
+    }
   }
 
   componentDidMount () {
     document.title = 'KiboPush | Menu'
     this.selectPage()
     var compProp = this.props
-    var self = this
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
+        compProp.getIndexBypage(compProp.pages[0].pageId)
       }
     })
+    if (this.props.location.state && this.props.location.state.action === 'replyWithMessage') {
+      this.setState({
+        menuItems: this.props.currentMenuItem.itemMenus,
+        selectedIndex: this.props.currentMenuItem.clickedIndex
+      })
+      for (var i = 0; i < this.props.pages.length; i++) {
+        if (this.props.pages[i].pageId === this.props.currentMenuItem.currentPage) {
+          this.setState({ selectPage: this.props.pages[i] })
+        }
+      }
+    }
   }
-
+  initializeMenuItems () {
+    var tempItemMenus = [{
+      title: 'Main Menu',
+      submenu: []
+    }]
+    this.setState({
+      menuItems: tempItemMenus
+    })
+  }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.pages) {
-      // write logic to select page
+    if (!this.props.currentMenuItem) {
+      if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
+        if (this.state.selectPage.pageId === nextProps.indexByPage[0].pageId) {
+          this.setState({menuItems: nextProps.indexByPage[0].jsonStructure})
+          if (nextProps.pages) {
+            for (var i = 0; i < nextProps.pages.length; i++) {
+              if (nextProps.pages[i].pageId === nextProps.indexByPage[0].pageId) {
+                this.setState({ selectPage: nextProps.pages[i] })
+              }
+            }
+          }
+        }
+      } else {
+        this.initializeMenuItems()
+      }
     }
   }
   replyWithMessage (e) {
+    var temp = this.state.menuItems
+    var index = this.state.selectedIndex.split('-')
+    var menu = this.getMenuHierarchy(this.state.selectedIndex)
+    var payload = []
+    switch (menu) {
+      case 'item':
+        //  console.log('An Item was Clicked position ', index[1])
+        if (temp[index[1]].payload && temp[index[1]].payload !== '') {
+          payload = temp[index[1]].payload
+        }
+        if (temp[index[1]].url) {
+          delete temp[index[1]].url
+        }
+        temp[index[1]].type = 'postback'
+        temp[index[1]].payload = payload
+        break
+      case 'submenu':
+        //  console.log('A Submenu was Clicked position ', index[1], index[2])
+        if (temp[index[1]].submenu[index[2]].payload && temp[index[1]].submenu[index[2]].payload !== '') {
+          payload = temp[index[1]].submenu[index[2]].payload
+        }
+        if (temp[index[1]].submenu[index[2]].url) {
+          delete temp[index[1]].submenu[index[2]].url
+        }
 
+        temp[index[1]].submenu[index[2]].type = 'postback'
+        temp[index[1]].submenu[index[2]].payload = payload
+        break
+      case 'nestedMenu':
+        //  console.log('A Nested was Clicked position ', index[1], index[2], index[3])
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload && temp[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
+          payload = temp[index[1]].submenu[index[2]].submenu[index[3]].payload
+        }
+        if (temp[index[1]].submenu[index[2]].submenu[index[3]].url) {
+          delete temp[index[1]].submenu[index[2]].submenu[index[3]].url
+        }
+
+        temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'postback'
+        temp[index[1]].submenu[index[2]].submenu[index[3]].payload = payload
+        break
+
+      default:
+        break
+    }
+
+    this.setState({menuItems: temp})
+    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+    this.props.saveCurrentMenuItem(currentState)
+  }
+  showPreview () {
+    this.setState({
+      showPreview: true
+    })
+  }
+  closeDialog () {
+    this.setState({
+      showPreview: false
+    })
+  }
+  handleReset () {
+    this.props.getIndexBypage(this.state.selectPage.pageId)
+  }
+  removeMainMenu () {
+    var data = {}
+    data.payload = removeMenuPayload()
+    data.pageId = this.state.selectPage.pageId
+    data.userId = this.props.user._id
+    var tempItemMenus = [{
+      title: 'First Menu',
+      submenu: []
+    }]
+    data.jsonStructure = tempItemMenus
+    var currentState = null
+    this.props.saveCurrentMenuItem(currentState)
+    this.props.removeMenu(data, this.handleReset, this.msg)
+  }
+  validateMenu () {
+    var isValid = true
+    var menuItems = this.state.menuItems
+    for (var j = 0; j < menuItems.length; j++) {
+      if (menuItems[j].title === '') {
+        this.msg.error('Menu title cannot be empty')
+        isValid = false
+      }
+      if ((!menuItems[j].type || menuItems[j].type === '') && menuItems[j].submenu.length === 0) {
+        this.msg.error(`Please select action for your menu '${menuItems[j].title}'`)
+        isValid = false
+      }
+      for (var k = 0; k < menuItems[j].submenu.length; k++) {
+        if (menuItems[j].submenu[k].title === '') {
+          this.msg.error('Menu title cannot be empty')
+          isValid = false
+        }
+        if ((!menuItems[j].submenu[k].type || menuItems[j].submenu[k].type === '') && menuItems[j].submenu[k].submenu.length === 0) {
+          this.msg.error(`Please select action for your submenu '${menuItems[j].submenu[k].title}'`)
+          isValid = false
+        }
+        for (var l = 0; l < menuItems[j].submenu[k].submenu.length; l++) {
+          if (menuItems[j].submenu[k].submenu[l].title === '') {
+            this.msg.error('Menu title cannot be empty')
+            isValid = false
+          }
+          if (!menuItems[j].submenu[k].submenu[l].type || menuItems[j].submenu[k].submenu[l].type === '') {
+            this.msg.error(`Please select action for your submenu '${menuItems[j].submenu[k].submenu[l].title}'`)
+            isValid = false
+          }
+        }
+      }
+    }
+    return isValid
+  }
+  changeLabel (e) {
+    var temp = this.state.menuItems
+    var index = this.state.selectedIndex.split('-')
+    if (index && index.length > 1) {
+      var menu = this.getMenuHierarchy(this.state.selectedIndex)
+      switch (menu) {
+        case 'item':
+          temp[index[1]].title = e.target.value
+          break
+        case 'submenu':
+          temp[index[1]].submenu[index[2]].title = e.target.value
+          break
+        case 'nestedMenu':
+          temp[index[1]].submenu[index[2]].submenu[index[3]].title = e.target.value
+          break
+        default:
+          break
+      }
+    }
+    this.setState({
+      menuItems: temp
+    })
   }
   selectIndex (e, index) {
     this.setState({
@@ -73,7 +253,17 @@ class Menu extends React.Component {
     if (menu.type === 'web_url') {
       this.setState({
         selectedRadio: 'openWebsite',
-        webUrl: menu.url
+        webUrl: menu.url,
+        disabledWebUrl: false
+      })
+    } else if (menu.type === 'nested') {
+      this.setState({
+        selectedRadio: 'openSubMenu'
+      })
+    } else if (menu.type === 'postback') {
+      this.setState({
+        selectedRadio: 'replyWithMessage',
+        isEditMessage: true
       })
     } else {
       this.setState({
@@ -85,8 +275,19 @@ class Menu extends React.Component {
   }
   handleRadioChange (e) {
     this.setState({
-      selectedRadio: e.currentTarget.value
+      selectedRadio: e.currentTarget.value,
+      isEditMessage: false
     })
+    if (e.currentTarget.value === 'openSubMenu') {
+      var index = this.state.selectedIndex.split('-')
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'item') {
+        this.addSubMenu(index[1])
+      }
+      if (this.getMenuHierarchy(this.state.selectedIndex) === 'submenu') {
+        this.addNestedMenu(index[1], index[2])
+      }
+      this.handleToggle()
+    }
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
@@ -105,6 +306,9 @@ class Menu extends React.Component {
           selectPage: page
         })
       }
+      var currentState = null
+      this.props.saveCurrentMenuItem(currentState)
+      this.props.getIndexBypage(page.pageId)
     } else {
       this.setState({
         selectPage: {}
@@ -148,8 +352,15 @@ class Menu extends React.Component {
     var menuItems = this.state.menuItems
     var newSubmenu = {
       title: 'Sub Menu',
-      nestedMenu: []
+      submenu: []
     }
+    if (menuItems[index].payload) {
+      delete menuItems[index].payload
+    }
+    if (menuItems[index].url) {
+      delete menuItems[index].url
+    }
+    menuItems[index].type = 'nested'
     var submenus = menuItems[index].submenu
     submenus.push(newSubmenu)
     this.setState({
@@ -166,6 +377,9 @@ class Menu extends React.Component {
 
     var menuItems = this.state.menuItems
     menuItems[index].submenu = subItems
+    if (subItems.length === 0) {
+      menuItems[index].type = ''
+    }
     this.setState({
       menuItems: menuItems
     })
@@ -173,10 +387,16 @@ class Menu extends React.Component {
   addNestedMenu (index, subIndex) {
     var menuItems = this.state.menuItems
     var newNestedMenu = {
-      title: 'Nested Menu',
-      nestedMenu: []
+      title: 'Nested Menu'
     }
-    var nestedMenus = menuItems[index].submenu[subIndex].nestedMenu
+    if (menuItems[index].submenu[subIndex].payload) {
+      delete menuItems[index].submenu[subIndex].payload
+    }
+    if (menuItems[index].submenu[subIndex].url) {
+      delete menuItems[index].submenu[subIndex].url
+    }
+    menuItems[index].submenu[subIndex].type = 'nested'
+    var nestedMenus = menuItems[index].submenu[subIndex].submenu
     nestedMenus.push(newNestedMenu)
     this.setState({
       menuItems: this.state.menuItems
@@ -184,19 +404,23 @@ class Menu extends React.Component {
   }
   removeNestedMenu (index, subIndex, nestedIndex) {
     var nestedItems = []
-    for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].nestedMenu.length; i++) {
+    for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].submenu.length; i++) {
       if (nestedIndex !== i) {
-        nestedItems.push(this.state.menuItems[index].submenu[subIndex].nestedMenu[i])
+        nestedItems.push(this.state.menuItems[index].submenu[subIndex].submenu[i])
       }
     }
 
     var menuItems = this.state.menuItems
-    menuItems[index].submenu[subIndex].nestedMenu = nestedItems
+    menuItems[index].submenu[subIndex].submenu = nestedItems
+    if (nestedItems.length === 0) {
+      menuItems[index].submenu[subIndex].type = ''
+    }
     this.setState({
       menuItems: menuItems
     })
   }
-  getMenuHierarchy (index) {
+  getMenuHierarchy (indexVal) {
+    var index = indexVal.split('-')
     var menu = ''
     if (index && index.length > 1) {
       if (index.length === 2) {
@@ -221,7 +445,7 @@ class Menu extends React.Component {
       } else if (index.length === 3) {
         item = menuItems[index[1]].submenu[index[2]]
       } else if (index.length === 4) {
-        item = menuItems[index[1]].submenu[index[2]].nestedMenu[index[3]]
+        item = menuItems[index[1]].submenu[index[2]].submenu[index[3]]
       } else {
         item = 'invalid'
       }
@@ -246,7 +470,7 @@ class Menu extends React.Component {
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
     if (index && index.length > 1) {
-      var menu = this.getMenuHierarchy(index)
+      var menu = this.getMenuHierarchy(this.state.selectedIndex)
       switch (menu) {
         case 'item':
           if (temp[index[1]].payload) {
@@ -262,7 +486,7 @@ class Menu extends React.Component {
           temp[index[1]].submenu[index[2]].type = 'web_url'
           temp[index[1]].submenu[index[2]].url = this.state.webUrl
           break
-        case 'nested':
+        case 'nestedMenu':
           if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
             delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
           }
@@ -274,9 +498,45 @@ class Menu extends React.Component {
       }
     }
     this.setState({menuItems: temp})
-    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
-    this.props.saveCurrentMenuItem(currentState)
     this.handleToggle()
+  }
+  saveMenu () {
+    if (this.state.menuItems && this.state.menuItems.length > 0) {
+      var valid = this.validateMenu()
+      if (valid) {
+        var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+        this.props.saveCurrentMenuItem(currentState)
+        var temp = []
+        for (var k = 0; k < this.state.menuItems.length; k++) {
+          temp.push(this.state.menuItems[k])
+        }
+        temp.push({url: 'www.kibopush.com', type: 'web_url', submenu: [], title: 'Powered by KiboPush'})
+        var data = {}
+        if (!this.state.selectPage) {
+          this.msg.error('Please select a page')
+          return
+        }
+        data.payload = transformData(temp)
+        data.pageId = this.state.selectPage.pageId
+        data.userId = this.props.user._id
+        data.jsonStructure = this.state.menuItems
+        this.props.saveMenu(data, this.handleSaveMenu, this.msg)
+      }
+    }
+  }
+  handleSaveMenu (res) {
+    if (res.status === 'success' && res.payload) {
+      this.setState({
+        menuItems: res.payload.jsonStructure
+      })
+      for (var i = 0; i < this.props.pages.length; i++) {
+        if (this.props.pages[i].pageId === res.payload.pageId) {
+          this.setState({ selectPage: this.props.pages[i] })
+        }
+      }
+    }
+    var currentState = null
+    this.props.saveCurrentMenuItem(currentState)
   }
   render () {
     var alertOptions = {
@@ -296,13 +556,25 @@ class Menu extends React.Component {
           <PopoverBody>
             <h6>Choose an action for the menu item:</h6>
             <div className='radio-buttons' style={{marginLeft: '37px'}}>
+              {
+                this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
+                  <div className='radio'>
+                    <input id='openSubMenu'
+                      type='radio'
+                      value='openSubMenu'
+                      name='openSubMenu'
+                      onChange={this.handleRadioChange}
+                      checked={this.state.selectedRadio === 'openSubMenu'} />
+                    <label>Open a submenu</label>
+                  </div>
+              }
               <div className='radio'>
-                <input id='replyMessage'
+                <input id='replyWithMessage'
                   type='radio'
-                  value='replyMessage'
-                  name='replyMessage'
+                  value='replyWithMessage'
+                  name='replyWithMessage'
                   onChange={this.handleRadioChange}
-                  checked={this.state.selectedRadio === 'replyMessage'} />
+                  checked={this.state.selectedRadio === 'replyWithMessage'} />
                 <label>Reply with a message</label>
               </div>
               <div className='radio'>
@@ -315,10 +587,13 @@ class Menu extends React.Component {
                 <label>Open website </label>
               </div>
             </div>
-            <span style={{fontSize: '0.9rem'}}>
-              If you change the menu item action, all the underlying submenus and their
-              content will be lost
-            </span>
+            {
+              this.getMenuHierarchy(this.state.selectedIndex) !== 'nestedMenu' &&
+              <span style={{fontSize: '0.9rem'}}>
+                If you change the menu item action, all the underlying submenus and their
+                content will be lost
+              </span>
+           }
             {
               this.state.selectedRadio === 'openWebsite' &&
               <div style={{marginTop: '20px'}}>
@@ -329,11 +604,16 @@ class Menu extends React.Component {
               </div>
             }
             {
-             this.state.selectedRadio === 'replyMessage' &&
+             this.state.selectedRadio === 'replyWithMessage' &&
              <div className='col-12' style={{marginTop: '20px', marginBottom: '10px'}}>
-               <button className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
-                  Create Message
-               </button>
+               { this.state.isEditMessage
+               ? <Link to='CreateMessage' className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
+                  Edit Message
+                </Link>
+                : <Link to='CreateMessage' className='btn btn-success m-btn m-btn--icon replyWithMessage' onClick={this.replyWithMessage}>
+                   Create Message
+                </Link>
+               }
              </div>
             }
           </PopoverBody>
@@ -376,6 +656,24 @@ class Menu extends React.Component {
                 </div>
                 <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
                 <div className='m-portlet__body' >
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      {
+                        this.state.showPreview &&
+                        <ModalContainer style={{top: '100px'}}
+                          onClose={this.closeDialog}>
+                          <ModalDialog style={{top: '100px'}}
+                            onClose={this.closeDialog}>
+                            <h3>Persistent Menu Preview</h3>
+                            <div>
+                              <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
+                            </div>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                    </div>
+                  </div>
                   <div className='row'>
                     <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select a page</label>
                     <div className='col-8 input-group'>
@@ -396,18 +694,20 @@ class Menu extends React.Component {
                           return (
                             <div>
                               <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
-                                <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={item.title} />
-                                <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
-                                  <span>
-                                    <i className='fa fa-times-circle' />
+                                <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
+                                { this.state.menuItems.length > 1 &&
+                                  <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
+                                    <span>
+                                      <i className='fa fa-times-circle' />
+                                    </span>
                                   </span>
-                                </span>
+                                }
                               </div>
                               {item.submenu.map((subItem, subindex) => {
                                 return (
                                   <div>
                                     <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px'}}>
-                                      <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={subItem.title} />
+                                      <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} onChange={(e) => this.changeLabel(e)} type='text' className='form-control m-input menuInput' value={subItem.title} />
                                       <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
                                         <span>
                                           <i className='fa fa-times-circle' />
@@ -416,10 +716,10 @@ class Menu extends React.Component {
                                     </div>
                                     <div>
                                       {
-                                        subItem.nestedMenu.map((nestedItem, nestedIndex) => {
+                                        subItem.submenu.map((nestedItem, nestedIndex) => {
                                           return (
                                             <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
-                                              <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
+                                              <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onChange={(e) => this.changeLabel(e)} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
                                               <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
                                                 <span>
                                                   <i className='fa fa-times-circle' />
@@ -429,7 +729,7 @@ class Menu extends React.Component {
                                           )
                                         })
                                       }
-                                      { subItem.nestedMenu.length < 5 &&
+                                      { subItem.submenu.length < 5 &&
                                         <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
                                           <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
                                         </div>
@@ -467,14 +767,14 @@ class Menu extends React.Component {
                 </div>
                 <div className='m-portlet__foot m-portlet__foot--fit'>
                   <div style={{paddingTop: '20px', paddingBottom: '20px', marginLeft: '50px'}}>
-                    <button className='btn btn-sm btn-primary'>
+                    <button className='btn btn-sm btn-primary' onClick={this.saveMenu}>
                       Save Menu
                     </button>
-                    <button className='btn btn-sm btn-primary' style={{marginLeft: '15px'}}>
+                    <button className='btn btn-sm btn-primary' onClick={this.showPreview}style={{marginLeft: '15px'}}>
                       Preview
                     </button>
-                    <button style={{marginLeft: '15px'}} className='btn btn-sm btn-secondary'>
-                      Reset Menu
+                    <button style={{marginLeft: '15px'}} className='btn btn-sm btn-secondary' onClick={this.removeMainMenu}>
+                      Remove Main Menu
                     </button>
                   </div>
                 </div>
@@ -489,7 +789,9 @@ class Menu extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
-    currentMenuItem: (state.menuInfo.currentMenuItem)
+    currentMenuItem: (state.menuInfo.currentMenuItem),
+    user: (state.basicInfo.user),
+    indexByPage: (state.menuInfo.menuitems)
     //  items: (state.menuInfo.menuitems)
   }
 }
@@ -497,7 +799,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
-    saveCurrentMenuItem: saveCurrentMenuItem
+    saveCurrentMenuItem: saveCurrentMenuItem,
+    saveMenu: saveMenu,
+    getIndexBypage: getIndexBypage,
+    removeMenu: removeMenu
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
