@@ -551,7 +551,7 @@ class Menu extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div id='menuPopover' />
-        <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
+        <Popover placement='right-end' isOpen={this.state.openPopover} className='menuPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
             <h6>Choose an action for the menu item:</h6>
