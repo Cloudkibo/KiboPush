@@ -56,31 +56,84 @@ class Menu extends React.Component {
     this.handleReset = this.handleReset.bind(this)
     this.showPreview = this.showPreview.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.handleIndexByPage = this.handleIndexByPage.bind(this)
     this.initializeMenuItems = this.initializeMenuItems.bind(this)
+    this.validatePostbackPayload = this.validatePostbackPayload.bind(this)
     if (!this.props.currentMenuItem) {
-      props.getIndexBypage(this.props.pages[0].pageId)
+      if (this.props.pages && this.props.pages.length > 0) {
+        this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
+      }
     }
   }
 
   componentDidMount () {
     document.title = 'KiboPush | Menu'
-    this.selectPage()
     var compProp = this.props
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        compProp.getIndexBypage(compProp.pages[0].pageId)
+        compProp.getIndexBypage(compProp.pages[0].pageId, this.handleIndexByPage)
       }
     })
     if (this.props.location.state && this.props.location.state.action === 'replyWithMessage') {
+      var index = this.props.currentMenuItem.clickedIndex.split('-')
+      var menuReturned = this.props.currentMenuItem.itemMenus
+      var menu = this.getMenuHierarchy(this.props.currentMenuItem.clickedIndex)
+      switch (menu) {
+        case 'item':
+          if (menuReturned[index[1]].payload && menuReturned[index[1]].payload.length < 1) {
+            menuReturned[index[1]].type = ''
+            menuReturned[index[1]].payload = null
+          }
+          break
+        case 'submenu':
+          if (menuReturned[index[1]].submenu[index[2]].payload && menuReturned[index[1]].submenu[index[2]].payload.length < 1) {
+            menuReturned[index[1]].submenu[index[2]].type = ''
+            menuReturned[index[1]].submenu[index[2]] = null
+          }
+          break
+        case 'nestedMenu':
+          if (menuReturned[index[1]].submenu[index[2]].submenu[index[3]].payload && menuReturned[index[1]].submenu[index[2]].submenu[index[3]].payload.length < 1) {
+            menuReturned[index[1]].submenu[index[2]].submenu[index[3]].type = ''
+            menuReturned[index[1]].submenu[index[2]].submenu[index[3]].payload = null
+          }
+          break
+        default:
+          break
+      }
       this.setState({
-        menuItems: this.props.currentMenuItem.itemMenus,
+        menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
       for (var i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i].pageId === this.props.currentMenuItem.currentPage) {
           this.setState({ selectPage: this.props.pages[i] })
         }
+      }
+    }
+  }
+  validatePostbackPayload (indexVal) {
+    var menuItemReturned = this.getMenuByIndex(indexVal)
+    if (menuItemReturned.payload && menuItemReturned.payload.length < 0) {
+      var temp = this.state.menuItems
+      var index = indexVal.split('-')
+      var menu = this.getMenuHierarchy(indexVal)
+      switch (menu) {
+        case 'item':
+          temp[index[1]].type = ''
+          temp[index[1]].payload = null
+          break
+        case 'submenu':
+          temp[index[1]].submenu[index[2]].type = ''
+          temp[index[1]].submenu[index[2]].payload = null
+          break
+        case 'nestedMenu':
+          temp[index[1]].submenu[index[2]].submenu[index[3]].type = ''
+          temp[index[1]].submenu[index[2]].submenu[index[3]].payload = null
+          break
+
+        default:
+          break
       }
     }
   }
@@ -94,21 +147,8 @@ class Menu extends React.Component {
     })
   }
   componentWillReceiveProps (nextProps) {
-    if (!nextProps.currentMenuItem) {
-      if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
-        if (this.state.selectPage.pageId === nextProps.indexByPage[0].pageId) {
-          this.setState({menuItems: nextProps.indexByPage[0].jsonStructure})
-          if (nextProps.pages) {
-            for (var i = 0; i < nextProps.pages.length; i++) {
-              if (nextProps.pages[i].pageId === nextProps.indexByPage[0].pageId) {
-                this.setState({ selectPage: nextProps.pages[i] })
-              }
-            }
-          }
-        }
-      } else {
-        this.initializeMenuItems()
-      }
+    if (nextProps.pages && nextProps.pages.length > 0 && this.state.selectPage === '') {
+      this.setState({selectPage: nextProps.pages[0]})
     }
   }
   replyWithMessage (e) {
@@ -172,7 +212,21 @@ class Menu extends React.Component {
     })
   }
   handleReset () {
-    this.props.getIndexBypage(this.state.selectPage.pageId)
+    this.props.getIndexBypage(this.state.selectPage.pageId, this.handleIndexByPage)
+  }
+  handleIndexByPage (res) {
+    if (res.status === 'success' && res.payload && res.payload.length > 0) {
+      this.setState({
+        menuItems: res.payload[0].jsonStructure
+      })
+      for (var i = 0; i < this.props.pages.length; i++) {
+        if (this.props.pages[i].pageId === res.payload.pageId) {
+          this.setState({ selectPage: this.props.pages[i] })
+        }
+      }
+    } else {
+      this.initializeMenuItems()
+    }
   }
   removeMainMenu () {
     var data = {}
@@ -189,39 +243,39 @@ class Menu extends React.Component {
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
   validateMenu () {
-    var isValid = true
+    var errorMessage = ''
     var menuItems = this.state.menuItems
     for (var j = 0; j < menuItems.length; j++) {
       if (menuItems[j].title === '') {
-        this.msg.error('Menu title cannot be empty')
-        isValid = false
+        errorMessage = 'Menu title cannot be empty'
+        break
       }
       if ((!menuItems[j].type || menuItems[j].type === '') && menuItems[j].submenu.length === 0) {
-        this.msg.error(`Please select action for your menu '${menuItems[j].title}'`)
-        isValid = false
+        errorMessage = `Please select action for your menu '${menuItems[j].title}`
+        break
       }
       for (var k = 0; k < menuItems[j].submenu.length; k++) {
         if (menuItems[j].submenu[k].title === '') {
-          this.msg.error('Menu title cannot be empty')
-          isValid = false
+          errorMessage = 'Menu title cannot be empty'
+          break
         }
         if ((!menuItems[j].submenu[k].type || menuItems[j].submenu[k].type === '') && menuItems[j].submenu[k].submenu.length === 0) {
-          this.msg.error(`Please select action for your submenu '${menuItems[j].submenu[k].title}'`)
-          isValid = false
+          errorMessage = `Please select action for your submenu '${menuItems[j].submenu[k].title}'`
+          break
         }
         for (var l = 0; l < menuItems[j].submenu[k].submenu.length; l++) {
           if (menuItems[j].submenu[k].submenu[l].title === '') {
-            this.msg.error('Menu title cannot be empty')
-            isValid = false
+            errorMessage = 'Menu title cannot be empty'
+            break
           }
           if (!menuItems[j].submenu[k].submenu[l].type || menuItems[j].submenu[k].submenu[l].type === '') {
-            this.msg.error(`Please select action for your submenu '${menuItems[j].submenu[k].submenu[l].title}'`)
-            isValid = false
+            errorMessage = `Please select action for your submenu '${menuItems[j].submenu[k].submenu[l].title}`
+            break
           }
         }
       }
     }
-    return isValid
+    return errorMessage
   }
   changeLabel (e) {
     var temp = this.state.menuItems
@@ -322,7 +376,7 @@ class Menu extends React.Component {
       }
       var currentState = null
       this.props.saveCurrentMenuItem(currentState)
-      this.props.getIndexBypage(page.pageId)
+      this.props.getIndexBypage(page.pageId, this.handleIndexByPage)
     } else {
       this.setState({
         selectPage: {}
@@ -516,8 +570,8 @@ class Menu extends React.Component {
   }
   saveMenu () {
     if (this.state.menuItems && this.state.menuItems.length > 0) {
-      var valid = this.validateMenu()
-      if (valid) {
+      var errorMessage = this.validateMenu()
+      if (errorMessage === '') {
         var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
         this.props.saveCurrentMenuItem(currentState)
         var temp = []
@@ -538,6 +592,8 @@ class Menu extends React.Component {
           loading: true
         })
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
+      } else {
+        this.msg.error(errorMessage)
       }
     }
   }
@@ -707,7 +763,7 @@ class Menu extends React.Component {
                   <div className='row'>
                     <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select a page</label>
                     <div className='col-8 input-group'>
-                      <select className='form-control m-input' value={this.state.pageValue} onChange={this.pageChange}>
+                      <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.pageChange}>
                         {
                           this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                             page.connected &&
@@ -722,7 +778,7 @@ class Menu extends React.Component {
                       {
                         this.state.menuItems.map((item, index) => {
                           return (
-                            <div>
+                            <div key={index}>
                               <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
                                 <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
                                 { this.state.menuItems.length > 1 &&
@@ -735,7 +791,7 @@ class Menu extends React.Component {
                               </div>
                               {item.submenu.map((subItem, subindex) => {
                                 return (
-                                  <div>
+                                  <div key={subindex}>
                                     <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px'}}>
                                       <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} onChange={(e) => this.changeLabel(e)} type='text' className='form-control m-input menuInput' value={subItem.title} />
                                       <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
@@ -748,7 +804,7 @@ class Menu extends React.Component {
                                       {
                                         subItem.submenu.map((nestedItem, nestedIndex) => {
                                           return (
-                                            <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
+                                            <div key={nestedIndex} className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
                                               <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onChange={(e) => this.changeLabel(e)} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
                                               <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
                                                 <span>
@@ -784,7 +840,7 @@ class Menu extends React.Component {
                         </div>
                       }
                       <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                        <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' />
+                        <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                       </div>
                       <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
                         <i className='flaticon-exclamation m--font-brand' />
@@ -797,10 +853,10 @@ class Menu extends React.Component {
                 </div>
                 <div className='m-portlet__foot m-portlet__foot--fit'>
                   <div style={{paddingTop: '20px', paddingBottom: '20px', marginLeft: '50px'}}>
-                    <button className='btn btn-sm btn-primary' onClick={this.saveMenu}>
+                    <button className='btn btn-sm btn-primary' onClick={this.saveMenu} disabled={this.props.pages && this.props.pages.length < 1}>
                       Save Menu
                     </button>
-                    <button className='btn btn-sm btn-primary' onClick={this.showPreview}style={{marginLeft: '15px'}}>
+                    <button className='btn btn-sm btn-primary' onClick={this.showPreview} style={{marginLeft: '15px'}}>
                       Preview
                     </button>
                     <button style={{marginLeft: '15px'}} className='btn btn-sm btn-secondary' onClick={this.removeMainMenu}>
