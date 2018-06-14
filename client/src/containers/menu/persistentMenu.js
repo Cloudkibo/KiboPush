@@ -13,6 +13,7 @@ import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
+import Halogen from 'halogen'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -28,7 +29,8 @@ class Menu extends React.Component {
       selectedIndex: 'menuPopover',
       disabledWebUrl: true,
       showPreview: false,
-      isEditMessage: false
+      isEditMessage: false,
+      loading: false
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -92,7 +94,7 @@ class Menu extends React.Component {
     })
   }
   componentWillReceiveProps (nextProps) {
-    if (!this.props.currentMenuItem) {
+    if (!nextProps.currentMenuItem) {
       if (nextProps.indexByPage && nextProps.indexByPage.length > 0) {
         if (this.state.selectPage.pageId === nextProps.indexByPage[0].pageId) {
           this.setState({menuItems: nextProps.indexByPage[0].jsonStructure})
@@ -178,7 +180,7 @@ class Menu extends React.Component {
     data.pageId = this.state.selectPage.pageId
     data.userId = this.props.user._id
     var tempItemMenus = [{
-      title: 'First Menu',
+      title: 'Main Menu',
       submenu: []
     }]
     data.jsonStructure = tempItemMenus
@@ -516,7 +518,7 @@ class Menu extends React.Component {
     if (this.state.menuItems && this.state.menuItems.length > 0) {
       var valid = this.validateMenu()
       if (valid) {
-        var currentState = { itemMenus: this.state.itemMenus, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+        var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
         this.props.saveCurrentMenuItem(currentState)
         var temp = []
         for (var k = 0; k < this.state.menuItems.length; k++) {
@@ -532,6 +534,9 @@ class Menu extends React.Component {
         data.pageId = this.state.selectPage.pageId
         data.userId = this.props.user._id
         data.jsonStructure = this.state.menuItems
+        this.setState({
+          loading: true
+        })
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
       }
     }
@@ -547,6 +552,9 @@ class Menu extends React.Component {
         }
       }
     }
+    this.setState({
+      loading: false
+    })
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
   }
@@ -563,6 +571,16 @@ class Menu extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div id='menuPopover' />
+        {
+          this.state.loading
+          ? <ModalContainer>
+            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+              className='align-center'>
+              <center><Halogen.RingLoader color='#716aca' /></center>
+            </div>
+          </ModalContainer>
+          : <span />
+        }
         <Popover placement='right-end' isOpen={this.state.openPopover} className='menuPopover' target={this.state.selectedIndex} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Menu Item</strong></PopoverHeader>
           <PopoverBody>
