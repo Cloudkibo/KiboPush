@@ -745,20 +745,20 @@ exports.getfbMessage = function (req, res) {
     }
   }
 
-  if (req.body.object && req.body.object === 'permissions' && req.body.entry && req.body.entry[0].changes &&
-    req.body.entry[0].changes[0] &&
-    req.body.entry[0].changes[0].field && req.body.entry[0].changes[0].field === 'connected' &&
-    req.body.entry[0].changes[0].verb) {
-    let isDisconnected = req.body.entry[0].changes[0].verb !== 'granted'
-    if (isDisconnected) {
-      Users.update({'facebookInfo.fbId': req.body.entry[0].id}, {$set: {facebookInfo: null}}, (err, user) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        } else {
-          logger.serverLog(TAG, `USER DISCONNECTED ${JSON.stringify(user)}`)
-        }
-      })
-    }
+  if (req.body.object && req.body.object === 'page' && req.body.entry && req.body.entry[0] &&
+    req.body.entry[0].changes && req.body.entry[0].changes[0] &&
+    req.body.entry[0].changes[0].field && req.body.entry[0].changes[0].field === 'name' &&
+    req.body.entry[0].changes[0].value) {
+    let pageId = req.body.entry[0].id
+    let newPageName = req.body.entry[0].changes[0].value
+    logger.serverLog(TAG, `Page name update request ${JSON.stringify(req.body)}`)
+    Pages.update({pageId: pageId}, {$set: {pageName: newPageName}}, (err, page) => {
+      if (err) {
+        logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
+      } else {
+        logger.serverLog(TAG, `Page name updated: ${JSON.stringify(page)}`)
+      }
+    })
   }
   return res.status(200).json({status: 'success', description: 'got the data.'})
 }
@@ -1426,8 +1426,6 @@ function updateseenstatus (req) {
   //       })
   //   })
 }
-
-const PassportFacebookExtension = require('passport-facebook-extension')
 
 function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)

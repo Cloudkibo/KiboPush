@@ -166,13 +166,7 @@ function doesPlanPermitsThisAction (action) {
             description: 'Fatal Error. Plan not set. Please contact support.'
           })
       }
-      if (!req.user) {
-        res.status(403)
-            .json({
-              status: 'failed',
-              description: 'Permissions Error'
-            })
-      } else if (plan[req.user.plan][action]) {
+      if (req.user && req.user.plan && plan[req.user.plan][action]) {
         next()
       } else {
         res.status(403)
