@@ -389,7 +389,7 @@ class Sidebar extends Component {
 
   render () {
     if (this.props.user && this.props.user.permissionsRevoked) {
-      browserHistory.push('/dashboard')
+      browserHistory.push('/connectFb')
     }
     return (
       <div>

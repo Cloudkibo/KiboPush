@@ -342,9 +342,6 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    if (this.props.user && this.props.user.permissionsRevoked) {
-      return <Connect permissionError />
-    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
