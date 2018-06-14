@@ -26,6 +26,10 @@ const utility = require('./broadcasts.utility')
 let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+/* eslint-disable */
+const async = require('asyncawait/async')
+const await = require('asyncawait/await')
+/* eslint-enable */
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -93,24 +97,7 @@ exports.sendConversation = function (req, res) {
                 `Payload for Messenger Send API for test: ${JSON.stringify(
                   messageData)}`)
 
-              request(
-                {
-                  'method': 'POST',
-                  'json': true,
-                  'formData': messageData,
-                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                  page.accessToken
-                },
-                function (err, res) {
-                  if (err) {
-                    return logger.serverLog(TAG,
-                      `At send test message broadcast ${JSON.stringify(err)}`)
-                  } else {
-                    logger.serverLog(TAG,
-                      `At send test message broadcast response ${JSON.stringify(
-                        res)}`)
-                  }
-                })
+              prepareToSendMessage(messageData, page)
             })
           })
         })
@@ -284,30 +271,7 @@ exports.sendConversation = function (req, res) {
                           let messageData = utility.prepareSendAPIPayload(
                             subscriber.senderId,
                             payloadItem)
-                          request(
-                            {
-                              'method': 'POST',
-                              'json': true,
-                              'formData': messageData,
-                              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                              page.accessToken
-                            },
-                            function (err, resp) {
-                              if (err) {
-                                return logger.serverLog(TAG,
-                                  `At send message broadcast ${JSON.stringify(err)}`)
-                              } else {
-                                if (resp.statusCode !== 200) {
-                                  logger.serverLog(TAG,
-                                    `At send message broadcast response ${JSON.stringify(
-                                      resp)}`)
-                                } else {
-                                  logger.serverLog(TAG,
-                                    `At send message broadcast response ${JSON.stringify(
-                                      resp.body.message_id)}`)
-                                }
-                              }
-                            })
+                          prepareToSendMessage(messageData, page)
                         })
                       })
                     })
@@ -388,30 +352,7 @@ exports.sendConversation = function (req, res) {
                         let messageData = utility.prepareSendAPIPayload(
                           subscriber.senderId,
                           payloadItem)
-                        request(
-                          {
-                            'method': 'POST',
-                            'json': true,
-                            'formData': messageData,
-                            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                            page.accessToken
-                          },
-                          function (err, resp) {
-                            if (err) {
-                              return logger.serverLog(TAG,
-                                `At send message broadcast ${JSON.stringify(err)}`)
-                            } else {
-                              if (resp.statusCode !== 200) {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp)}`)
-                              } else {
-                                logger.serverLog(TAG,
-                                  `At send message broadcast response ${JSON.stringify(
-                                    resp.body.message_id)}`)
-                              }
-                            }
-                          })
+                        prepareToSendMessage(messageData, page)
                       })
                     })
                   })
@@ -426,6 +367,34 @@ exports.sendConversation = function (req, res) {
     })
   }
 }
+
+const sendMessage = (messageData, token) => {
+  return new Promise((resolve, reject) => {
+    request(
+      {
+        'method': 'POST',
+        'json': true,
+        'formData': messageData,
+        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+        token
+      }, function (err, resp) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(resp)
+      }
+    })
+  })
+}
+
+const prepareToSendMessage = async ((messageData, page) => {
+  try {
+    const message = await (sendMessage(messageData, page.accessToken))
+  } catch (error) {
+    logger.serverLog(TAG,
+      `At send broadcast error ${JSON.stringify(error)}`)
+  }
+})
 
 exports.upload = function (req, res) {
   var today = new Date()

@@ -57,6 +57,18 @@ router.post('/updateRole',
   auth.doesRolePermitsThisAction('updateRolePermission'),
   controller.updateRole)
 
+router.post('/updateAutomatedOptions',
+  auth.isAuthenticated(),
+  auth.hasRole('buyer'),
+  controller.updateAutomatedOptions)
+
+router.get('/getAutomatedOptions',
+  auth.isAuthenticated(),
+  auth.hasRequiredPlan(['plan_C', 'plan_D']),
+  auth.doesPlanPermitsThisAction('team_members_management'),
+  auth.doesRolePermitsThisAction('companyPermission'),
+  controller.getAutomatedOptions)
+
 router.get('/members',
   auth.isAuthenticated(),
   auth.hasRequiredPlan(['plan_C', 'plan_D']),
@@ -66,6 +78,7 @@ router.get('/members',
 
 router.post('/setCard', auth.isAuthenticated(), controller.setCard)
 router.post('/updatePlan', auth.isAuthenticated(), controller.updatePlan)
+router.get('/getKeys', auth.isAuthenticated(), controller.getKeys)
 
   // use this url to receive stripe webhook events
 router.post('/stripe/events',

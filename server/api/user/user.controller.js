@@ -337,6 +337,13 @@ exports.create = function (req, res) {
                   })
                 }
 
+                companySaved.createCustomer(req.body.email, req.body.name, function (err) {
+                  if (err) {
+                    logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
+                      err)}`)
+                  }
+                })
+
                 let companyUserData = new CompanyUsers({
                   companyId: companySaved._id,
                   userId: user._id,
@@ -536,6 +543,13 @@ exports.create = function (req, res) {
                 description: 'profile save error: ' + JSON.stringify(err)
               })
             }
+
+            companySaved.createCustomer(req.body.email, req.body.name, function (err) {
+              if (err) {
+                logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
+                  err)}`)
+              }
+            })
 
             let companyUserData = new CompanyUsers({
               companyId: companySaved._id,

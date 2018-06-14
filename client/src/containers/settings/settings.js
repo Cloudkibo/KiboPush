@@ -54,7 +54,8 @@ class Settings extends React.Component {
       showPaymentMethods: false,
       showPermissions: false,
       chatWidget: false,
-      planInfo: ''
+      planInfo: '',
+      show: true
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -93,6 +94,7 @@ class Settings extends React.Component {
     this.setState({NGPSecret: event.target.value})
   }
   getPlanInfo (plan) {
+    this.setState({show: false})
     var planInfo
     if (plan === 'plan_A') {
       planInfo = 'Individual, Premium Account'
@@ -121,7 +123,7 @@ class Settings extends React.Component {
     })
   }
   setResetPass () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: false})
   }
   setPermissions () {
     this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showPermissions: true})
@@ -236,7 +238,7 @@ class Settings extends React.Component {
         pathname: '/resendVerificationEmail'
       })
     }
-    if (nextProps.user) {
+    if (nextProps.user && this.state.show) {
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }
@@ -630,7 +632,7 @@ class Settings extends React.Component {
                   <ChatWidget />
                 }
                 { this.state.showBilling &&
-                  <Billing />
+                  <Billing showPaymentMethods={this.setPayementMethods} />
                 }
                 { this.state.showPaymentMethods &&
                   <PaymentMethods />

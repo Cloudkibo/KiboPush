@@ -6,13 +6,15 @@ import Sidebar from './sidebar'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {StripeProvider, Elements} from 'react-stripe-elements'
-import { getuserdetails, updatePlan } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import InjectedCheckoutForm from './checkout'
+import AlertContainer from 'react-alert'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
     super(props, context)
     props.getuserdetails()
+    props.getKeys()
     this.state = {
       selectedRadio: 'free',
       change: false
@@ -26,8 +28,18 @@ class PaymentMethods extends React.Component {
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
   }
-  change () {
-    this.setState({change: true})
+  componentWillReceiveProps (nextprops) {
+    console.log('in componentWillReceiveProps plan', nextprops)
+    if (nextprops.user) {
+      if (nextprops.user.currentPlan === 'plan_A' || 'plan_C') {
+        this.setState({selectedRadio: 'premium'})
+      } else if (nextprops.user.currentPlan === 'plan_B' || 'plan_D') {
+        this.setState({selectedRadio: 'free'})
+      }
+    }
+  }
+  change (value) {
+    this.setState({change: value})
   }
 
   handleRadioButton (e) {
@@ -35,25 +47,37 @@ class PaymentMethods extends React.Component {
       selectedRadio: e.currentTarget.value
     })
   }
-  setCard (payload) {
+  setCard (payload, value) {
     console.log('in setCard', payload)
+    this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg)
+    this.setState({change: false})
+  }
+  save () {
     if (this.state.selectedRadio === 'free') {
       if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
-        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B', stripeToken: payload})
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
       } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
-        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_D', stripeToken: payload})
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_D'}, this.msg)
       }
     } else if (this.state.selectedRadio === 'premium') {
       if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
-        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A', stripeToken: payload})
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A'}, this.msg)
       } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
-        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C', stripeToken: payload})
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C'}, this.msg)
       }
     }
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -99,39 +123,33 @@ class PaymentMethods extends React.Component {
                             {this.state.selectedRadio === 'premium' &&
                             <div>
                               <label>Select Payment Method:</label>
-                              <div className='tab-pane active' id='m_widget4_tab1_content'>
-                                {this.props.user && this.props.user.lastFour &&
-                                  <div className='m-widget4' >
-                                    <div className='m-widget4__item'>
-                                      <div className='m-widget4__info'>
-                                        <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
-                                        <span className='m-widget4__title'>
-                                         xxxx xxxx xxxx xxxx
-                                        </span>
-                                      </div>
-                                      <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => this.gotoView()} style={{marginRight: '10px'}}>
-                                        Update
-                                       </button>
-                                      </div>
-                                      <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={() => this.gotoEdit()} style={{marginRight: '80px'}}>
-                                        Delete
-                                      </button>
-                                      </div>
+                              <br />
+                              {this.props.user && this.props.user.last4
+                              ? <div className='tab-pane active' id='m_widget4_tab1_content'>
+                                <div className='m-widget4' >
+                                  <div className='m-widget4__item'>
+                                    <div className='m-widget4__info'>
+                                      <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                                      <span className='m-widget4__title'>
+                                       xxxx xxxx xxxx {this.props.user.last4}
+                                      </span>
                                     </div>
                                   </div>
-                                }
+                                </div>
                               </div>
-                              <div className='btn' style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}} onClick={this.change} data-toggle='modal' data-target='#m_modal_1_2'>
+                              : <div className='btn' style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}} onClick={() => this.change(true)} data-toggle='modal' data-target='#m_modal_1_2'>
                                 <i className='fa fa-plus' style={{marginRight: '10px'}} />
-                                <span>Add Payment Method</span>
+                                <span style={{fontWeight: 'inherit'}}>Add Payment Method</span>
                               </div>
-                              <br /><br />
-                              <label style={{fontWeight: 'inherit'}}><b>Note:</b> You can add maximum of three cards only</label>
+                            }
                             </div>
                             }
+                            <br /><br />
+                            <button onClick={this.save.bind(this)} className='btn btn-primary pull-left'>
+                              Save
+                            </button>
                           </div>
+                          {this.state.change &&
                           <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                             <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
                               <div className='modal-content'>
@@ -147,17 +165,19 @@ class PaymentMethods extends React.Component {
                                 </div>
                                 <div className='modal-body'>
                                   <div className='col-12'>
-                                    {this.state.change &&
-                                      <StripeProvider apiKey='pk_test_ozzmt2lgDgltSYx1pO4W2IE2'>
-                                        <Elements>
-                                          <InjectedCheckoutForm setCard={this.setCard} />
-                                        </Elements>
-                                      </StripeProvider>}
+                                    {this.props.stripeKey && this.props.captchaKey &&
+                                    <StripeProvider apiKey='pk_test_ZeDNvsAKmYXckvDr3DuyqCbP'>
+                                      <Elements>
+                                        <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                                      </Elements>
+                                    </StripeProvider>
+                                  }
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
+                        }
                         </div>
                         <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                           <div className='m-form__actions'>
@@ -195,13 +215,17 @@ class PaymentMethods extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    captchaKey: (state.basicInfo.captchaKey),
+    stripeKey: (state.basicInfo.stripeKey)
   }
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updatePlan: updatePlan,
-    getuserdetails: getuserdetails
+    updateCard: updateCard,
+    getuserdetails: getuserdetails,
+    getKeys: getKeys
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PaymentMethods)
