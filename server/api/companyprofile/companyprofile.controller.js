@@ -425,6 +425,73 @@ exports.members = function (req, res) {
     })
 }
 
+exports.updateAutomatedOptions = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+
+      Companyprofile.findOne({_id: companyUser.companyId}, (err, profile) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+
+        profile.automated_options = req.body.automated_options
+        profile.save((err, updatedProfile) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          } else {
+            return res.status(200).json({status: 'success', payload: updatedProfile})
+          }
+        })
+      })
+    })
+}
+
+exports.getAutomatedOptions = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      Companyprofile.findOne({_id: companyUser.companyId},
+        function (err, company) {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          res.status(200).json({status: 'success', payload: company})
+        })
+    })
+}
+
 exports.getKeys = function (req, res) {
   if (config.env === 'production') {
     res.status(200).json({status: 'success', captchaKey: '6Lf9kV4UAAAAALTke6FGn_KTXZdWPDorAQEKQbER', stripeKey: config.stripeOptions.stripePubKey})
