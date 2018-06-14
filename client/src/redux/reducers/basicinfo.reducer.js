@@ -8,7 +8,8 @@ const initialState = {
   fbAppId: '',
   adminPageSubscription: [],
   captchaKey: '',
-  stripeKey: ''
+  stripeKey: '',
+  error: ''
 }
 
 export function basicInfo (state = initialState, action) {
@@ -26,13 +27,15 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data,
-        updatedUser: ''
+        updatedUser: '',
+        error: ''
       })
 
     case ActionTypes.LOAD_UPDATED_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data,
-        updatedUser: action.data
+        updatedUser: action.data,
+        error: ''
       })
 
     case ActionTypes.SET_SOCKET_STATUS:
@@ -55,6 +58,10 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         captchaKey: action.captchaKey,
         stripeKey: action.stripeKey
+      })
+    case ActionTypes.FETCH_PLAN:
+      return Object.assign({}, state, {
+        error: action.data
       })
 
     default:

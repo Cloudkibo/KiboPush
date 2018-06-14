@@ -9,6 +9,7 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import { getuserdetails, updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import InjectedCheckoutForm from './checkout'
 import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -22,7 +23,13 @@ class PaymentMethods extends React.Component {
     this.change = this.change.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.setCard = this.setCard.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
+
+  closeDialog () {
+    this.setState({change: false})
+  }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
@@ -31,11 +38,14 @@ class PaymentMethods extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps plan', nextprops)
     if (nextprops.user) {
-      if (nextprops.user.currentPlan === 'plan_A' || 'plan_C') {
+      if (nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_C') {
         this.setState({selectedRadio: 'premium'})
-      } else if (nextprops.user.currentPlan === 'plan_B' || 'plan_D') {
+      } else if (nextprops.user.currentPlan === 'plan_B' || nextprops.user.currentPlan === 'plan_D') {
         this.setState({selectedRadio: 'free'})
       }
+    }
+    if (nextprops.error) {
+      this.msg.error(nextprops.error)
     }
   }
   change (value) {
@@ -150,33 +160,23 @@ class PaymentMethods extends React.Component {
                             </button>
                           </div>
                           {this.state.change &&
-                          <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                            <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
-                              <div className='modal-content'>
-                                <div style={{display: 'block'}} className='modal-header'>
-                                  <h5 className='modal-title' id='exampleModalLabel'>
-                                    Credit/Debit Card Details
-                                  </h5>
-                                  <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                                    <span aria-hidden='true'>
-                                      &times;
-                                    </span>
-                                  </button>
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <center><h4>Credit/Debit Card Details</h4></center>
+                                <br /><br />
+                                <div className='col-12'>
+                                  {this.props.stripeKey && this.props.captchaKey &&
+                                  <StripeProvider apiKey={this.props.stripeKey}>
+                                    <Elements>
+                                      <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                                    </Elements>
+                                  </StripeProvider>
+                                }
                                 </div>
-                                <div className='modal-body'>
-                                  <div className='col-12'>
-                                    {this.props.stripeKey && this.props.captchaKey &&
-                                    <StripeProvider apiKey='pk_test_ZeDNvsAKmYXckvDr3DuyqCbP'>
-                                      <Elements>
-                                        <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
-                                      </Elements>
-                                    </StripeProvider>
-                                  }
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                              </ModalDialog>
+                            </ModalContainer>
                         }
                         </div>
                         <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
@@ -216,6 +216,7 @@ class PaymentMethods extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
+    error: (state.basicInfo.error),
     captchaKey: (state.basicInfo.captchaKey),
     stripeKey: (state.basicInfo.stripeKey)
   }

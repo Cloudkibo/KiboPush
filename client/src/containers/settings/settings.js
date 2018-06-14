@@ -154,6 +154,9 @@ class Settings extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://js.stripe.com/v3/')
+    document.body.appendChild(addScript)
     this.scrollToTop()
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
@@ -232,6 +235,7 @@ class Settings extends React.Component {
     })
   }
   componentWillReceiveProps (nextProps) {
+    console.log('iin componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
       browserHistory.push({
