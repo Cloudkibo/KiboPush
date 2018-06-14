@@ -207,7 +207,7 @@ class Sidebar extends Component {
   }
 
   showSmartRespliesItem () {
-    if (this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode) {
+    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/bots' className='m-menu__link m-menu__toggle'>
@@ -389,7 +389,7 @@ class Sidebar extends Component {
 
   render () {
     if (this.props.user && this.props.user.permissionsRevoked) {
-      browserHistory.push('/connectFb')
+      browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
       <div>
@@ -402,28 +402,26 @@ class Sidebar extends Component {
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
-            {
-              this.props.user && !this.props.user.permissionsRevoked &&
-              <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-                {this.showOperationalDashboard()}
-                {this.showDashboard()}
-                {this.showBroadcastsItem()}
-                {this.showCommentCapture()}
-                {this.showSurveysItem()}
-                {this.showPollsItem()}
-                {this.showSmartRespliesItem()}
-                {this.showLiveChatItem()}
-                {this.showAutoPostingItem()}
-                {this.showPersistentMenuItem()}
-                {this.showPagesItem()}
-                {this.showSubscribersItem()}
-                {this.showSequenceMessaging()}
-                {this.showCreatePhoneList()}
-                {this.showInviteMembersItem()}
-                {this.showMembersItem()}
-                {this.showTeams()}
-                {this.showBroadcastTemplates()}
-                {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
+            <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+              {this.showOperationalDashboard()}
+              {this.showDashboard()}
+              {this.showBroadcastsItem()}
+              {this.showCommentCapture()}
+              {this.showSurveysItem()}
+              {this.showPollsItem()}
+              {this.showSmartRespliesItem()}
+              {this.showLiveChatItem()}
+              {this.showAutoPostingItem()}
+              {this.showPersistentMenuItem()}
+              {this.showPagesItem()}
+              {this.showSubscribersItem()}
+              {this.showSequenceMessaging()}
+              {this.showCreatePhoneList()}
+              {this.showInviteMembersItem()}
+              {this.showMembersItem()}
+              {this.showTeams()}
+              {this.showBroadcastTemplates()}
+              {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
                     <i className='m-menu__link-icon flaticon-list-3' />
@@ -431,7 +429,7 @@ class Sidebar extends Component {
                   </Link>
                 </li>
               }
-                {this.state.settings &&
+              {this.state.settings &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <Link to='/settings' className='m-menu__link m-menu__toggle'>
                     <i className='m-menu__link-icon flaticon-cogwheel' />
@@ -439,7 +437,7 @@ class Sidebar extends Component {
                   </Link>
                 </li>
               }
-                {this.state.userGuide &&
+              {this.state.userGuide &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
                     <i className='m-menu__link-icon flaticon-info' />
@@ -447,7 +445,7 @@ class Sidebar extends Component {
                   </a>
                 </li>
               }
-                {this.state.waitingResponse &&
+              {this.state.waitingResponse &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
                     <i className='m-menu__link-icon flaticon-cogwheel' />
@@ -455,8 +453,7 @@ class Sidebar extends Component {
                   </Link>
                 </li>
              }
-              </ul>
-            }
+            </ul>
           </div>
 
         </div>
