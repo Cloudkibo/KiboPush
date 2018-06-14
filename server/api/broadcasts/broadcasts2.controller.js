@@ -26,10 +26,6 @@ const utility = require('./broadcasts.utility')
 let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
-/* eslint-disable */
-const async = require('asyncawait/async')
-const await = require('asyncawait/await')
-/* eslint-enable */
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -302,58 +298,59 @@ exports.sendConversation = function (req, res) {
                 if (err) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-                newPayload.forEach(payloadItem => {
-                  utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                    taggedSubscribers.forEach(subscriber => {
-                      Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At get session ${JSON.stringify(err)}`)
-                        }
-                        if (!session) {
-                          return logger.serverLog(TAG,
-                            `No chat session was found for broadcast`)
-                        }
-                        const chatMessage = new LiveChat({
-                          sender_id: page._id, // this is the page id: _id of Pageid
-                          recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                          sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                          recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                          session_id: session._id,
-                          company_id: req.user._id, // this is admin id till we have companies
-                          payload: payloadItem, // this where message content will go
-                          status: 'unseen' // seen or unseen
-                        })
-                        chatMessage.save((err, chatMessageSaved) => {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At get session ${JSON.stringify(err)}`)
-                          }
-                        })
+                utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                  taggedSubscribers.forEach(subscriber => {
+                    Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                      if (err) {
+                        return logger.serverLog(TAG,
+                          `At get session ${JSON.stringify(err)}`)
+                      }
+                      if (!session) {
+                        return logger.serverLog(TAG,
+                          `No chat session was found for broadcast`)
+                      }
+                      /* eslint-disable */
+                      const chatMessage = new LiveChat({
+                        sender_id: page._id, // this is the page id: _id of Pageid
+                        recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                        sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                        recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                        session_id: session._id,
+                        company_id: req.user._id, // this is admin id till we have companies
+                        payload: '', // this where message content will go
+                        status: 'unseen' // seen or unseen
                       })
-                      // update broadcast sent field
-                      let pagebroadcast = new BroadcastPage({
-                        pageId: page.pageId,
-                        userId: req.user._id,
-                        subscriberId: subscriber.senderId,
-                        broadcastId: broadcast._id,
-                        seen: false,
-                        companyId: companyUser.companyId
-                      })
+                      /* eslint-enable */
+                      // chatMessage.save((err, chatMessageSaved) => {
+                      //   if (err) {
+                      //     return logger.serverLog(TAG,
+                      //       `At get session ${JSON.stringify(err)}`)
+                      //   }
+                      // })
+                    })
+                    // update broadcast sent field
+                    let pagebroadcast = new BroadcastPage({
+                      pageId: page.pageId,
+                      userId: req.user._id,
+                      subscriberId: subscriber.senderId,
+                      broadcastId: broadcast._id,
+                      seen: false,
+                      companyId: companyUser.companyId
+                    })
 
-                      pagebroadcast.save((err2, savedpagebroadcast) => {
-                        if (err2) {
-                          logger.serverLog(TAG, {
-                            status: 'failed',
-                            description: 'PageBroadcast create failed',
-                            err2
-                          })
-                        }
-                        let messageData = utility.prepareSendAPIPayload(
-                          subscriber.senderId,
-                          payloadItem)
-                        prepareToSendMessage(messageData, page)
-                      })
+                    pagebroadcast.save((err2, savedpagebroadcast) => {
+                      if (err2) {
+                        logger.serverLog(TAG, {
+                          status: 'failed',
+                          description: 'PageBroadcast create failed',
+                          err2
+                        })
+                      }
+                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
+                      // let messageData = utility.prepareSendAPIPayload(
+                      //   subscriber.senderId,
+                      //   payloadItem)
+                      // prepareToSendMessage(messageData, page)
                     })
                   })
                 })
@@ -366,6 +363,18 @@ exports.sendConversation = function (req, res) {
       })
     })
   }
+}
+
+const sendBroadcast = (batchMessages, page) => {
+  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
+    if (err) {
+      return logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
+  })
+  const form = r.form()
+  form.append('access_token', page.accessToken)
+  form.append('batch', batchMessages)
 }
 
 const sendMessage = (messageData, token) => {
@@ -387,14 +396,16 @@ const sendMessage = (messageData, token) => {
   })
 }
 
-const prepareToSendMessage = async ((messageData, page) => {
+const prepareToSendMessage = (messageData, page) => {
   try {
-    const message = await (sendMessage(messageData, page.accessToken))
+    /* eslint-disable */
+    const message = sendMessage(messageData, page.accessToken)
+    /* eslint-enable */
   } catch (error) {
     logger.serverLog(TAG,
       `At send broadcast error ${JSON.stringify(error)}`)
   }
-})
+}
 
 exports.upload = function (req, res) {
   var today = new Date()

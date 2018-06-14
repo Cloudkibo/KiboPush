@@ -385,6 +385,97 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
     fn(subscribers)
   }
 }
+
+function prepareMessageData (subscriberId, body) {
+  let payload = {}
+  if (body.componentType === 'text' && !body.buttons) {
+    payload = {
+      'text': body.text,
+      'metadata': 'This is a meta data'
+    }
+    return payload
+  } else if (body.componentType === 'text' && body.buttons) {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'button',
+          'text': body.text,
+          'buttons': body.buttons
+        }
+      }
+    }
+  } else if (['image', 'audio', 'file', 'video'].indexOf(
+      body.componentType) > -1) {
+    payload = {
+      'attachment': {
+        'type': body.componentType,
+        'payload': {}
+      }
+    }
+    return payload
+    // todo test this one. we are not removing as we need to keep it for live chat
+    // if (!isForLiveChat) deleteFile(body.fileurl)
+  } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+      body.componentType) > -1) {
+    payload = {
+      'attachment': {
+        'type': 'image',
+        'payload': {
+          'url': body.fileurl
+        }
+      }
+    }
+  } else if (body.componentType === 'card') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': [
+            {
+              'title': body.title,
+              'image_url': body.image_url,
+              'subtitle': body.description,
+              'buttons': body.buttons
+            }
+          ]
+        }
+      }
+    }
+  } else if (body.componentType === 'gallery') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': body.cards
+        }
+      }
+    }
+  }
+  return payload
+}
+
+/* eslint-disable */
+function getBatchData (payload, recipientId, page, sendBroadcast) {
+  let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
+  let batch = []  // to display typing on bubble :)
+  payload.forEach((item, index) => {
+    // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
+    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item)))
+    if (index === 0) {
+      batch.push({"method":"POST", "name": `message${index+1}`, "relative_url":"v2.6/me/messages", "body": recipient + "&" + message})
+    } else {
+      batch.push({"method":"POST", "name": `message${index+1}`, "depends_on":`message${index}`, "relative_url":"v2.6/me/messages", "body": recipient + "&" + message})
+    }
+    if (index === (payload.length -1) ) {
+      sendBroadcast(JSON.stringify(batch), page)
+    }
+  })
+}
+/* eslint-enable */
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
@@ -392,3 +483,4 @@ exports.validateInput = validateInput
 exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
+exports.getBatchData = getBatchData

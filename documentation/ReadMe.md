@@ -13,7 +13,7 @@ You should have Nodejs and NPM installed on your system.
 To install forever run the following command:
 
     npm install forever -g
-    
+
 #### Install Git
 
     sudo apt-get update
@@ -34,7 +34,7 @@ Run following two commands
 Now on terminal, set the environment variables in /etc/environment.
 
     nano /etc/environment
-    
+
 We need to set the following variables: (Just copy paste and then change the values)
 
     NODE_ENV=production
@@ -43,13 +43,14 @@ We need to set the following variables: (Just copy paste and then change the val
     FACEBOOK_SECRET=<YOUR FB SECRET>
     DOMAIN=<YOUR DOMAIN>
     MONGO_URI=<DATABASE STRING>
-    
+    STRIPE_KEY=<STRIPE SECRET KEY>
+    STRIPE_PUB_KEY=<STRIPE PUBLISHABLE KEY>
+
 
 Now, run the following command to install dependencies:
 
     npm install
-   
+
 After this, we can run the server by running the script kibo_script.
 
     ./kibo_script
-    
