@@ -6,6 +6,7 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import InjectedCheckoutForm from './../wizard/checkout'
 import { updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class PaymentMethods extends React.Component {
   constructor (props, context) {
@@ -16,6 +17,11 @@ class PaymentMethods extends React.Component {
     props.getKeys()
     this.change = this.change.bind(this)
     this.setCard = this.setCard.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+  }
+
+  closeDialog () {
+    this.setState({change: false})
   }
   change (value) {
     this.setState({change: value})
@@ -87,33 +93,23 @@ class PaymentMethods extends React.Component {
                       }
                       </div>
                       {this.state.change &&
-                      <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                        <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
-                          <div className='modal-content'>
-                            <div style={{display: 'block'}} className='modal-header'>
-                              <h5 className='modal-title' id='exampleModalLabel'>
-                                Credit/Debit Card Details
-                              </h5>
-                              <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                                <span aria-hidden='true'>
-                                  &times;
-                                </span>
-                              </button>
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialog}>
+                          <ModalDialog style={{width: '500px'}}
+                            onClose={this.closeDialog}>
+                            <center><h4>Credit/Debit Card Details</h4></center>
+                            <br /><br />
+                            <div className='col-12'>
+                              {this.props.stripeKey && this.props.captchaKey &&
+                              <StripeProvider apiKey={this.props.stripeKey}>
+                                <Elements>
+                                  <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                                </Elements>
+                              </StripeProvider>
+                            }
                             </div>
-                            <div className='modal-body'>
-                              <div className='col-12'>
-                                {this.props.stripeKey && this.props.captchaKey &&
-                                <StripeProvider apiKey={this.props.stripeKey}>
-                                  <Elements>
-                                    <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
-                                  </Elements>
-                                </StripeProvider>
-                              }
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                          </ModalDialog>
+                        </ModalContainer>
                     }
                     </div>
                   </div>

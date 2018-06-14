@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getuserdetails, updatePlan } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+
 class Billing extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -19,6 +21,11 @@ class Billing extends React.Component {
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.save = this.save.bind(this)
     this.goToPayment = this.goToPayment.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+  }
+
+  closeDialog () {
+    this.setState({change: false})
   }
 
   componentDidMount () {
@@ -33,6 +40,9 @@ class Billing extends React.Component {
         this.setState({selectedRadio: 'free'})
       }
     }
+    if (nextProps.error) {
+      this.msg.error(nextProps.error)
+    }
   }
   handleRadioButton (e) {
     console.log('e.currentTarget.value', e.currentTarget.value)
@@ -44,7 +54,7 @@ class Billing extends React.Component {
     this.setState({change: value})
   }
   save () {
-    this.setState({change: false})
+    console.log('change', this.state.change)
     if (this.state.selectedRadio === 'free') {
       if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
@@ -137,69 +147,59 @@ class Billing extends React.Component {
               </div>
             </div>
             {this.state.change &&
-            <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='m_modal_1_2' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-              <div style={{transform: 'translate(0, 0)'}} className='modal-dialog' role='document'>
-                <div className='modal-content'>
-                  <div style={{display: 'block'}} className='modal-header'>
-                    <h5 className='modal-title' id='exampleModalLabel'>
-                      Change Plan
-                    </h5>
-                    <button style={{marginTop: '-10px', opacity: '0.5'}} type='button' className='close' data-dismiss='modal' aria-label='Close'>
-                      <span aria-hidden='true'>
-                        &times;
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialog}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialog}>
+                  <center><h3>Change Plan</h3></center>
+                  <br /><br />
+                  <div className='col-12'>
+                    <label>Billing Plan:</label>
+                    <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                      <div className='radio'>
+                        <input id='segmentAll'
+                          type='radio'
+                          value='free'
+                          name='segmentationType'
+                          onChange={this.handleRadioButton}
+                          checked={this.state.selectedRadio === 'free'} />
+                        <label>Free</label>
+                      </div>
+                      <div className='radio'>
+                        <input id='segmentList'
+                          type='radio'
+                          value='premium'
+                          name='segmentationType'
+                          onChange={this.handleRadioButton}
+                          checked={this.state.selectedRadio === 'premium'} />
+                        <label>Premium</label>
+                      </div>
+                    </div>
+                  </div>
+                  {this.state.selectedRadio === 'premium' &&
+                  <div className='col-12'>
+                    <label>Select Payment Method:</label>
+                    <br />
+                    {this.props.user && this.props.user.last4
+                    ? <div className='m-widget4__info'>
+                      <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                      <span className='m-widget4__title'>
+                       xxxx xxxx xxxx {this.props.user.last4}
                       </span>
-                    </button>
-                  </div>
-                  <div className='modal-body'>
-                    <div className='col-12'>
-                      <label>Billing Plan:</label>
-                      <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                        <div className='radio'>
-                          <input id='segmentAll'
-                            type='radio'
-                            value='free'
-                            name='segmentationType'
-                            onChange={this.handleRadioButton}
-                            checked={this.state.selectedRadio === 'free'} />
-                          <label>Free</label>
-                        </div>
-                        <div className='radio'>
-                          <input id='segmentList'
-                            type='radio'
-                            value='premium'
-                            name='segmentationType'
-                            onChange={this.handleRadioButton}
-                            checked={this.state.selectedRadio === 'premium'} />
-                          <label>Premium</label>
-                        </div>
-                      </div>
                     </div>
-                    {this.state.selectedRadio === 'premium' &&
-                    <div className='col-12'>
-                      <label>Select Payment Method:</label>
-                      <br />
-                      {this.props.user && this.props.user.last4
-                      ? <div className='m-widget4__info'>
-                        <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
-                        <span className='m-widget4__title'>
-                         xxxx xxxx xxxx {this.props.user.last4}
-                        </span>
-                      </div>
-                      : <div className='btn' onClick={this.goToPayment} style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}}>
-                        <i className='fa fa-plus' style={{marginRight: '10px'}} />
-                        <span>Add Payment Method</span>
-                      </div>
-                    }
+                    : <div className='btn' onClick={this.goToPayment} style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}}>
+                      <i className='fa fa-plus' style={{marginRight: '10px'}} />
+                      <span>Add Payment Method</span>
                     </div>
-                    }
-                    <br /><br />
-                    <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.save.bind(this)}>
-                      Change
-                    </button>
+                  }
                   </div>
-                </div>
-              </div>
-            </div>
+                  }
+                  <br /><br />
+                  <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.save.bind(this)} data-dismiss='modal' aria-label='Close'>
+                    Change
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
           }
           </div>
         </div>
@@ -209,7 +209,8 @@ class Billing extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    error: (state.basicInfo.error)
   }
 }
 

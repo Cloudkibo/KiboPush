@@ -8,6 +8,14 @@ export function setBrowserName (data) {
     data
   }
 }
+
+export function fetchPlan (data) {
+  return {
+    type: ActionTypes.FETCH_PLAN,
+    data
+  }
+}
+
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
@@ -110,18 +118,19 @@ export function updatePlan (data, msg) {
         msg.success('Plan updated successfully')
         dispatch(getuserdetails())
       } else {
-        msg.error(res.description)
+        dispatch(fetchPlan(res.description))
       }
     })
   }
 }
 
-export function updateCard (data) {
+export function updateCard (data, msg) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
+        msg.success('Card added successfully')
         dispatch(getuserdetails())
       }
     })
