@@ -31,9 +31,9 @@ class PaymentMethods extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps plan', nextprops)
     if (nextprops.user) {
-      if (nextprops.user.currentPlan === 'plan_A' || 'plan_C') {
+      if (nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_C') {
         this.setState({selectedRadio: 'premium'})
-      } else if (nextprops.user.currentPlan === 'plan_B' || 'plan_D') {
+      } else if (nextprops.user.currentPlan === 'plan_B' || nextprops.user.currentPlan === 'plan_D') {
         this.setState({selectedRadio: 'free'})
       }
     }
@@ -166,7 +166,7 @@ class PaymentMethods extends React.Component {
                                 <div className='modal-body'>
                                   <div className='col-12'>
                                     {this.props.stripeKey && this.props.captchaKey &&
-                                    <StripeProvider apiKey='pk_test_ZeDNvsAKmYXckvDr3DuyqCbP'>
+                                    <StripeProvider apiKey={this.props.stripeKey}>
                                       <Elements>
                                         <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
                                       </Elements>

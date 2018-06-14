@@ -25,15 +25,17 @@ class Billing extends React.Component {
     document.title = 'KiboPush | api_settings'
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps.user', nextProps.user)
     if (nextProps.user) {
-      if (nextProps.user.currentPlan === 'plan_A' || 'plan_C') {
+      if (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_C') {
         this.setState({selectedRadio: 'premium'})
-      } else if (nextProps.user.currentPlan === 'plan_B' || 'plan_D') {
+      } else if (nextProps.user.currentPlan === 'plan_B' || nextProps.user.currentPlan === 'plan_D') {
         this.setState({selectedRadio: 'free'})
       }
     }
   }
   handleRadioButton (e) {
+    console.log('e.currentTarget.value', e.currentTarget.value)
     this.setState({
       selectedRadio: e.currentTarget.value
     })
@@ -88,7 +90,7 @@ class Billing extends React.Component {
           </div>
           <div className='m-portlet__body'>
             <div className='row'>
-              <div className='col-md-6 col-lg-6 col-xl-6'>
+              <div className='col-md-8 col-lg-8 col-xl-8'>
                 <div className='m-widget24'>
                   <div className='m-widget24__item' style={{border: 'solid 1px #ccc'}}>
                     <div style={{borderBottom: 'solid 1px #ccc'}}>

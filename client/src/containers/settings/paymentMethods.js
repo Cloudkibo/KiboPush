@@ -11,10 +11,6 @@ class PaymentMethods extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      showDropDown: false,
-      surveysData: [],
-      totalLength: 0,
-      filterValue: '',
       change: false
     }
     props.getKeys()
@@ -25,9 +21,6 @@ class PaymentMethods extends React.Component {
     this.setState({change: value})
   }
   componentDidMount () {
-    var addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://js.stripe.com/v3/')
-    document.body.appendChild(addScript)
   }
   setCard (payload, value) {
     console.log('in setCard', payload)
@@ -110,7 +103,7 @@ class PaymentMethods extends React.Component {
                             <div className='modal-body'>
                               <div className='col-12'>
                                 {this.props.stripeKey && this.props.captchaKey &&
-                                <StripeProvider apiKey='pk_test_ZeDNvsAKmYXckvDr3DuyqCbP'>
+                                <StripeProvider apiKey={this.props.stripeKey}>
                                   <Elements>
                                     <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
                                   </Elements>
