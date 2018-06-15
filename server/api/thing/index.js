@@ -261,6 +261,7 @@ router.get('/updatePageNames', (req, res) => {
   Pages.find({}, (err, pages) => {
     if (err) {
       logger.serverLog(TAG, `Error in retrieving pages: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'failed', description: `Error in retrieving pages: ${JSON.stringify(err)}`})
     }
     let updatedPages = []
     let requests = pages.map((page) => {
@@ -290,7 +291,9 @@ router.get('/updatePageNames', (req, res) => {
         })
       })
     })
-    Promise.all(requests).then(() => res.status(200).json({status: 'success', payload: updatedPages}))
+    Promise.all(requests)
+      .then(() => res.status(200).json({status: 'success', payload: updatedPages}))
+      .catch((err) => res.status(500).json({status: 'failed', description: `Error: ${JSON.stringify(err)}`}))
   })
 })
 
