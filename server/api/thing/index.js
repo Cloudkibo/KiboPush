@@ -263,13 +263,13 @@ router.get('/updateSubcribersSource', (req, res) => {
     }
     subscribers.forEach((subscriber) => {
       if (subscriber.isSubscribedByPhoneNumber === true) {
-        Subscribers.update({_id: subscriber._id, isSubscribedByPhoneNumber: true}, {source: 'customer_matching'}, (err, subs) => {
+        Subscribers.update({_id: subscriber._id}, {source: 'customer_matching'}, {multi: true}, (err, subs) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
         })
       } else {
-        Subscribers.update({_id: subscriber._id}, {source: 'direct_message'}, (err, subs) => {
+        Subscribers.update({_id: subscriber._id}, {source: 'direct_message'}, {multi: true}, (err, subs) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
