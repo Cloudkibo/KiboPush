@@ -262,7 +262,7 @@ router.get('/updateSubcribersSource', (req, res) => {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
     subscribers.forEach((subscriber) => {
-      if (subscriber.isSubscribedByPhoneNumber) {
+      if (subscriber.isSubscribedByPhoneNumber === true) {
         Subscribers.update({_id: subscriber._id}, {source: 'customer_matching'}, (err, subs) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
