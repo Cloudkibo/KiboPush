@@ -262,14 +262,17 @@ router.get('/updateSubcribersSource', (req, res) => {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
     subscribers.forEach((subscriber) => {
-      if (subscriber.isSubscribedByPhoneNumber) {
-        Subscribers.update({_id: subscriber._id}, {source: 'customer_matching'}, (err, subs) => {
+      let user = JSON.parse(JSON.stringify(subscriber))
+      console.log('subscriber', user.isSubscribedByPhoneNumber)
+      if (user.isSubscribedByPhoneNumber === true) {
+        console.log('subscriber', subscriber.firstName)
+        Subscribers.update({_id: user._id}, {source: 'customer_matching'}, {multi: true}, (err, subs) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
         })
       } else {
-        Subscribers.update({_id: subscriber._id}, {source: 'direct_message'}, (err, subs) => {
+        Subscribers.update({_id: user._id}, {source: 'direct_message'}, {multi: true}, (err, subs) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
