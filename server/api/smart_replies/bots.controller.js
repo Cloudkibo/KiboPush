@@ -48,7 +48,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       }
 
       // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
-      if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
+      if (Object.keys(JSON.parse(witres.body).entities).length === 0) {
         logger.serverLog(TAG, 'No response found')
         Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, db_res) => {
           if (err) {
@@ -242,6 +242,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
+   logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   var uniquebotName = req.body.botName + req.user._id + Date.now()
   request(
     {
@@ -299,6 +300,7 @@ exports.create = function (req, res) {
           }
         }
       })
+
 }
 
 exports.edit = function (req, res) {
