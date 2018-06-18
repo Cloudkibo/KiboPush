@@ -180,7 +180,7 @@ exports.viewList = function (req, res) {
                 findPage.push(number[a].pageId)
               }
               let subscriberFindCriteria = {
-                isSubscribedByPhoneNumber: true,
+                source: 'customer_matching',
                 companyId: companyUser.companyId,
                 isSubscribed: true
               }
@@ -385,12 +385,12 @@ exports.repliedPollSubscribers = function (req, res) {
                   pageId: subscribers[a].pageId,
                   phoneNumber: subscribers[a].phoneNumber,
                   unSubscribedBy: subscribers[a].unSubscribedBy,
-                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
                   companyId: subscribers[a].companyId,
                   isSubscribed: subscribers[a].isSubscribed,
                   isEnabledByPage: subscribers[a].isEnabledByPage,
                   datetime: subscribers[a].datetime,
-                  dateReplied: responses[b].datetime
+                  dateReplied: responses[b].datetime,
+                  source: subscribers[a].source
                 })
               }
             }
@@ -459,12 +459,12 @@ exports.repliedSurveySubscribers = function (req, res) {
                   pageId: subscribers[a].pageId,
                   phoneNumber: subscribers[a].phoneNumber,
                   unSubscribedBy: subscribers[a].unSubscribedBy,
-                  isSubscribedByPhoneNumber: subscribers[a].isSubscribedByPhoneNumber,
                   companyId: subscribers[a].companyId,
                   isSubscribed: subscribers[a].isSubscribed,
                   isEnabledByPage: subscribers[a].isEnabledByPage,
                   datetime: subscribers[a].datetime,
-                  dateReplied: responses[b].datetime
+                  dateReplied: responses[b].datetime,
+                  source: subscribers[a].source
                 })
               }
             }

@@ -288,8 +288,8 @@ function applyTagFilterIfNecessary (req, subscribers, fn) {
                 datetime: subscribers[i].datetime,
                 isEnabledByPage: subscribers[i].isEnabledByPage,
                 isSubscribed: subscribers[i].isSubscribed,
-                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-                unSubscribedBy: subscribers[i].unSubscribedBy
+                unSubscribedBy: subscribers[i].unSubscribedBy,
+                source: subscribers[i].source
               })
             }
           }
@@ -331,8 +331,8 @@ function applySurveyFilterIfNecessary (req, subscribers, fn) {
                 datetime: subscribers[i].datetime,
                 isEnabledByPage: subscribers[i].isEnabledByPage,
                 isSubscribed: subscribers[i].isSubscribed,
-                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-                unSubscribedBy: subscribers[i].unSubscribedBy
+                unSubscribedBy: subscribers[i].unSubscribedBy,
+                source: subscribers[i].source
               })
             }
           }
@@ -373,8 +373,8 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
                 datetime: subscribers[i].datetime,
                 isEnabledByPage: subscribers[i].isEnabledByPage,
                 isSubscribed: subscribers[i].isSubscribed,
-                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-                unSubscribedBy: subscribers[i].unSubscribedBy
+                unSubscribedBy: subscribers[i].unSubscribedBy,
+                source: subscribers[i].source
               })
             }
           }
