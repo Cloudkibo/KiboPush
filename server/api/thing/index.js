@@ -256,4 +256,28 @@ router.get('/updateAutomatedOptions', (req, res) => {
   })
 })
 
+router.get('/updateSubcribersSource', (req, res) => {
+  Subscribers.find({}, (err, subscribers) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    subscribers.forEach((subscriber) => {
+      if (subscriber.isSubscribedByPhoneNumber) {
+        Subscribers.update({_id: subscriber._id}, {source: 'customer_matching'}, (err, subs) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+        })
+      } else {
+        Subscribers.update({_id: subscriber._id}, {source: 'direct_message'}, (err, subs) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+        })
+      }
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
 module.exports = router

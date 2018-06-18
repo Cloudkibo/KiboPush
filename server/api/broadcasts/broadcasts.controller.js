@@ -451,14 +451,14 @@ exports.getfbMessage = function (req, res) {
 
   botController.respond(JSON.parse(JSON.stringify(req.body)))
 
-  let subscriberByPhoneNumber = false
+  let subscriberSource = 'direct_message'
   let phoneNumber = ''
   if (req.body.entry && req.body.entry[0].messaging &&
     req.body.entry[0].messaging[0] &&
     req.body.entry[0].messaging[0].prior_message &&
     req.body.entry[0].messaging[0].prior_message.source ===
     'customer_matching') {
-    subscriberByPhoneNumber = true
+    subscriberSource = 'customer_matching'
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({pageId: req.body.entry[0].id}, (err, pages) => {
       if (err) {
@@ -478,6 +478,14 @@ exports.getfbMessage = function (req, res) {
         })
       })
     })
+  }
+
+  if (req.body.entry && req.body.entry[0].messaging &&
+    req.body.entry[0].messaging[0] &&
+    req.body.entry[0].messaging[0].message && req.body.entry[0].messaging[0].message.tags &&
+    req.body.entry[0].messaging[0].message.tags.source ===
+    'customer_chat_plugin') {
+    subscriberSource = 'chat_plugin'
   }
 
   if (req.body.entry && req.body.entry[0].changes &&
@@ -609,9 +617,11 @@ exports.getfbMessage = function (req, res) {
                           pageId: page._id,
                           isSubscribed: true
                         }
-                        if (subscriberByPhoneNumber) {
+                        if (subscriberSource === 'customer_matching') {
                           payload.phoneNumber = phoneNumber
-                          payload.isSubscribedByPhoneNumber = true
+                          payload.source = 'customer_matching'
+                        } else if (subscriberSource === 'chat_plugin') {
+                          payload.source = 'chat_plugin'
                         }
                         Subscribers.findOne({senderId: sender},
                           (err, subscriber) => {
@@ -623,7 +633,7 @@ exports.getfbMessage = function (req, res) {
                                   if (err2) {
                                     logger.serverLog(TAG, err2)
                                   }
-                                  if (subscriberByPhoneNumber) {
+                                  if (subscriberSource === 'customer_matching') {
                                     updateList(phoneNumber, sender, page)
                                   }
                                   if (!(event.postback &&
@@ -644,16 +654,16 @@ exports.getfbMessage = function (req, res) {
                                     })
                                 })
                             } else {
-                              if (subscriberByPhoneNumber === true) {
-                                Subscribers.update({senderId: sender}, {
-                                  phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                  isSubscribedByPhoneNumber: true,
-                                  isSubscribed: true,
-                                  isEnabledByPage: true
-                                }, (err, subscriber) => {
-                                  if (err) return logger.serverLog(TAG, err)
-                                  logger.serverLog(TAG, subscriber)
-                                })
+                              if (subscriberSource === 'customer_matching') {
+                                // Subscribers.update({senderId: sender}, {
+                                //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
+                                //   source: 'customer_matching',
+                                //   isSubscribed: true,
+                                //   isEnabledByPage: true
+                                // }, (err, subscriber) => {
+                                //   if (err) return logger.serverLog(TAG, err)
+                                //   logger.serverLog(TAG, subscriber)
+                                // })
                               } else if (!subscriber.isSubscribed) {
                                 // subscribing the subscriber again in case he
                                 // or she unsubscribed and removed chat
@@ -773,7 +783,7 @@ function updateList (phoneNumber, sender, page) {
     }
     if (number.length > 0) {
       let subscriberFindCriteria = {
-        isSubscribedByPhoneNumber: true,
+        source: 'customer_matching',
         senderId: sender,
         isSubscribed: true,
         phoneNumber: phoneNumber,

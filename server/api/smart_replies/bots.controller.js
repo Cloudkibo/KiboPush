@@ -459,10 +459,10 @@ exports.waitingReply = function (req, res) {
             datetime: subscribers[i].datetime,
             isEnabledByPage: subscribers[i].isEnabledByPage,
             isSubscribed: subscribers[i].isSubscribed,
-            isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
             phoneNumber: subscribers[i].phoneNumber,
             unSubscribedBy: subscribers[i].unSubscribedBy,
-            tags: []
+            tags: [],
+            source: subscribers[i].source
           })
         }
         TagsSubscribers.find({subscriberId: {$in: subsArray}})
