@@ -1388,12 +1388,13 @@ exports.uploadFile = function (req, res) {
               status: 'failed',
               description: `Error in getting users ${JSON.stringify(err)}`
             })
-            if (users && users.length > 0) {
-
-            } else {
-              logger.serverLog(TAG, `user not found for page ${JSON.stringify(pages[i])}`)
-            }
           }
+          if (users && users.length > 0) {
+
+          } else {
+            logger.serverLog(TAG, `user not found for page ${JSON.stringify(pages[i])}`)
+          }
+        })
         for (let j = 0; j < users.length; j++) {
           if (pages[i].userId.toString() === users[j]._id.toString()) {
             Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
