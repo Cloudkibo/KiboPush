@@ -53,7 +53,7 @@ class Connect extends React.Component {
             ? <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
               <div className='m-grid__item m-grid__item--middle'>
                 <p className='m-login__msg'>You have revoked permissions for KiboPush. In order to use KiboPush,
-                you will have to reconnect Facebook, or alternatively log out and use another acccount.</p>
+                you will have to reconnect Facebook, or alternatively log out and use another account.</p>
                 <a onClick={() => { auth.logout() }} href='/' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
                           Logout
                 </a>
