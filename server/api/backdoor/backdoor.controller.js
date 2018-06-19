@@ -1379,7 +1379,7 @@ exports.uploadFile = function (req, res) {
           description: `Error in getting pages ${JSON.stringify(err)}`
         })
       }
-
+      logger.serverLog(TAG, `Pages ${JSON.stringify(pages.length)}`)
       let usersPayload = []
       for (let i = 0; i < pages.length; i++) {
         for (let j = 0; j < users.length; j++) {
@@ -1419,11 +1419,6 @@ exports.uploadFile = function (req, res) {
                           description: `Error in getting pages ${JSON.stringify(err)}`
                         })
                       }
-                      logger.serverLog(TAG, `Subscribers ${JSON.stringify(subscribers.length)}`)
-                      logger.serverLog(TAG, `Broadcasts ${JSON.stringify(Broadcasts.length)}`)
-                      logger.serverLog(TAG, `SUrveys ${JSON.stringify(surveys.length)}`)
-                      logger.serverLog(TAG, `Polls ${JSON.stringify(subscribers.length)}`)
-                      logger.serverLog(TAG, `LiveChat ${JSON.stringify(liveChat.length)}`)
 
                       usersPayload.push({
                         Page: pages[i].pageName,
@@ -1440,6 +1435,7 @@ exports.uploadFile = function (req, res) {
                         Polls: polls && polls.length > 0 ? polls.length : 0,
                         lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                       })
+                      logger.serverLog(TAG, `usersp ${JSON.stringify(usersPayload.length)}`)
                       if (pages.length === usersPayload.length) {
                         var info = usersPayload
                         var keys = []
