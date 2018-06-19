@@ -337,6 +337,7 @@ exports.create = function (req, res) {
                   })
                 }
 
+                // Create customer on stripe
                 CompanyProfile.findOne({_id: companySaved._id}, (err, cp) => {
                   if (err) {
                     return res.status(422).json({
