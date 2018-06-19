@@ -16,7 +16,9 @@ const PagePolls = require('./../page_poll/page_poll.model')
 const PageSurveys = require('./../page_survey/page_survey.model')
 const PageBroadcasts = require('./../page_broadcast/page_broadcast.model')
 const mongoose = require('mongoose')
+const request = require('request')
 
+let request = require('request')
 const logger = require('../../components/logger')
 const TAG = 'api/thing/index'
 
@@ -256,6 +258,47 @@ router.get('/updateAutomatedOptions', (req, res) => {
   })
 })
 
+router.get('/updatePageNames', (req, res) => {
+  Pages.find({}, (err, pages) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in retrieving pages: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'failed', description: `Error in retrieving pages: ${JSON.stringify(err)}`})
+    }
+    let updatedPages = []
+    let requests = pages.map((page) => {
+      return new Promise((resolve, reject) => {
+        request(
+          {
+            'method': 'GET',
+            'json': true,
+            'uri': `https://graph.facebook.com/v3.0/${page.pageId}?access_token=${page.accessToken}`
+          }, function (err, resp) {
+          if (err) {
+            logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
+            reject(err)
+          } else {
+            resolve(resp)
+            if (page.pageName !== resp.body.name) {
+              updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
+              Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
+                } else {
+                  logger.serverLog(TAG, `Updated page name. Previous page name in database: ${page.pageName}, Actual page name: ${resp.body.name}`)
+                }
+              })
+            }
+          }
+        })
+      })
+    })
+    Promise.all(requests)
+      .then(() => res.status(200).json({status: 'success', payload: updatedPages}))
+      .catch((err) => res.status(500).json({status: 'failed', description: `Error: ${JSON.stringify(err)}`}))
+  })
+})
+
+<<<<<<< HEAD
 router.get('/updateSubcribersSource', (req, res) => {
   Subscribers.find({}, (err, subscribers) => {
     if (err) {
@@ -281,4 +324,6 @@ router.get('/updateSubcribersSource', (req, res) => {
   })
 })
 
+=======
+>>>>>>> d23f55accd676cdfa85e54759d4f49dd74e732e4
 module.exports = router
