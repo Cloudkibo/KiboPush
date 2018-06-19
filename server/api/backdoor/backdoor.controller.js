@@ -1447,7 +1447,6 @@ exports.uploadFile = function (req, res) {
                       Polls: polls && polls.length > 0 ? polls.length : 0,
                       lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                     })
-                    logger.serverLog(TAG, `usersp ${JSON.stringify(usersPayload.length)}`)
                     if (i === pages.length - 1) {
                       var info = usersPayload
                       var keys = []
