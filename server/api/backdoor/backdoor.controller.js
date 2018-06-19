@@ -1395,83 +1395,85 @@ exports.uploadFile = function (req, res) {
             logger.serverLog(TAG, `user not found for page ${JSON.stringify(pages[i])}`)
           }
         })
-        Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
-          if (err) {
-            return res.status(404).json({
-              status: 'failed',
-              description: `Error in getting pages ${JSON.stringify(err)}`
-            })
-          }
-          Broadcasts.find({pageIds: pages[i].pageId}, (err, broadcasts) => {
+        if (pages[i].userId) {
+          Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
             if (err) {
               return res.status(404).json({
                 status: 'failed',
                 description: `Error in getting pages ${JSON.stringify(err)}`
               })
             }
-            Surveys.find({pageIds: pages[i].pageId}, (err, surveys) => {
+            Broadcasts.find({pageIds: pages[i].pageId}, (err, broadcasts) => {
               if (err) {
                 return res.status(404).json({
                   status: 'failed',
                   description: `Error in getting pages ${JSON.stringify(err)}`
                 })
               }
-              Polls.find({pageIds: pages[i].pageId}, (err, polls) => {
+              Surveys.find({pageIds: pages[i].pageId}, (err, surveys) => {
                 if (err) {
                   return res.status(404).json({
                     status: 'failed',
                     description: `Error in getting pages ${JSON.stringify(err)}`
                   })
                 }
-                LiveChat.find({sender_id: pages[i]._id}, (err, liveChat) => {
+                Polls.find({pageIds: pages[i].pageId}, (err, polls) => {
                   if (err) {
                     return res.status(404).json({
                       status: 'failed',
                       description: `Error in getting pages ${JSON.stringify(err)}`
                     })
                   }
-
-                  usersPayload.push({
-                    Page: pages[i].pageName,
-                    isConnected: pages[i].connected,
-                    Name: pages[i].userId.name,
-                    Gender: pages[i].userId.facebookInfo ? pages[i].userId.facebookInfo.gender : '',
-                    Email: pages[i].userId.email,
-                    Locale: pages[i].userId.facebookInfo ? pages[i].userId.facebookInfo.locale : '',
-                    CreatedAt: pages[i].userId.createdAt,
-                    Likes: pages[i].likes,
-                    Subscribers: subscribers && subscribers.length > 0 ? subscribers.length : 0,
-                    Broadcasts: broadcasts && broadcasts.length > 0 ? broadcasts.length : 0,
-                    Surveys: surveys && surveys.length > 0 ? surveys.length : 0,
-                    Polls: polls && polls.length > 0 ? polls.length : 0,
-                    lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
-                  })
-                  logger.serverLog(TAG, `usersp ${JSON.stringify(usersPayload.length)}`)
-                  if (pages.length === usersPayload.length) {
-                    var info = usersPayload
-                    var keys = []
-                    var val = info[0]
-
-                    for (var k in val) {
-                      var subKey = k
-                      keys.push(subKey)
-                    }
-                    json2csv({ data: info, fields: keys }, function (err, csv) {
-                      if (err) {
-                        logger.serverLog(TAG,
-                                      `Error at exporting csv file ${JSON.stringify(err)}`)
-                      }
-                      res.status(200).json({
-                        status: 'success',
-                        payload: csv
+                  LiveChat.find({sender_id: pages[i]._id}, (err, liveChat) => {
+                    if (err) {
+                      return res.status(404).json({
+                        status: 'failed',
+                        description: `Error in getting pages ${JSON.stringify(err)}`
                       })
+                    }
+
+                    usersPayload.push({
+                      Page: pages[i].pageName,
+                      isConnected: pages[i].connected,
+                      Name: pages[i].userId.name,
+                      Gender: pages[i].userId.facebookInfo ? pages[i].userId.facebookInfo.gender : '',
+                      Email: pages[i].userId.email,
+                      Locale: pages[i].userId.facebookInfo ? pages[i].userId.facebookInfo.locale : '',
+                      CreatedAt: pages[i].userId.createdAt,
+                      Likes: pages[i].likes,
+                      Subscribers: subscribers && subscribers.length > 0 ? subscribers.length : 0,
+                      Broadcasts: broadcasts && broadcasts.length > 0 ? broadcasts.length : 0,
+                      Surveys: surveys && surveys.length > 0 ? surveys.length : 0,
+                      Polls: polls && polls.length > 0 ? polls.length : 0,
+                      lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                     })
-                  }
+                    logger.serverLog(TAG, `usersp ${JSON.stringify(usersPayload.length)}`)
+                    if (i === pages.length - 1) {
+                      var info = usersPayload
+                      var keys = []
+                      var val = info[0]
+
+                      for (var k in val) {
+                        var subKey = k
+                        keys.push(subKey)
+                      }
+                      json2csv({ data: info, fields: keys }, function (err, csv) {
+                        if (err) {
+                          logger.serverLog(TAG,
+                                        `Error at exporting csv file ${JSON.stringify(err)}`)
+                        }
+                        res.status(200).json({
+                          status: 'success',
+                          payload: csv
+                        })
+                      })
+                    }
+                  })
                 })
               })
             })
           })
-        })
+        }
       }
     //  let dir = path.resolve(__dirname, './my-file.csv')
     // let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/users.csv')
