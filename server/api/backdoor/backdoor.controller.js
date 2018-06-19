@@ -1382,9 +1382,18 @@ exports.uploadFile = function (req, res) {
       logger.serverLog(TAG, `Pages ${JSON.stringify(pages.length)}`)
       let usersPayload = []
       for (let i = 0; i < pages.length; i++) {
-        if (!pages[i].userId) {
-          logger.serverLog(TAG, `usersp ${JSON.stringify(pages[i])}`)
-        }
+        Users.find({_id: pages[i].userId}, (err, users) => {
+          if (err) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting users ${JSON.stringify(err)}`
+            })
+            if (users && users.length > 0) {
+
+            } else {
+              logger.serverLog(TAG, `user not found for page ${JSON.stringify(pages[i])}`)
+            }
+          }
         for (let j = 0; j < users.length; j++) {
           if (pages[i].userId.toString() === users[j]._id.toString()) {
             Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
