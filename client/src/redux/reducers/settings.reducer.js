@@ -68,6 +68,10 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         greetingMessage: action.data
       })
+    case ActionTypes.RESPONSE_METHOD:
+      return Object.assign({}, state, {
+        responseMethod: action.data.automated_options
+      })
     default:
       return state
   }

@@ -8,7 +8,18 @@ export function enableSuccess (data) {
     data
   }
 }
-
+export function getResponseMethod (data) {
+  return {
+    type: ActionTypes.RESPONSE_METHOD,
+    data
+  }
+}
+export function get (data) {
+  return {
+    type: ActionTypes.ENABLE_SUCCESS,
+    data
+  }
+}
 export function disableSuccess (data) {
   return {
     type: ActionTypes.DISABLE_SUCCESS,
@@ -256,6 +267,33 @@ export function saveGreetingMessage (data, msg) {
           msg.success('Greeting message saved successfully')
         } else {
           msg.error(res.description)
+        }
+      })
+  }
+}
+
+export function saveResponseMethod (data, msg) {
+  return (dispatch) => {
+    callApi('company/updateAutomatedOptions', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getResponseMethod(res.payload))
+          msg.success('Response Method saved successfully')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+
+export function findResponseMethod () {
+  return (dispatch) => {
+    callApi('company/getAutomatedOptions')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getResponseMethod(res.payload))
+        } else if (res.status === 'failed') {
+          console.log(`Getting response method fails. ${res.description}`)
         }
       })
   }
