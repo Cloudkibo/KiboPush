@@ -18,6 +18,7 @@ const PageBroadcasts = require('./../page_broadcast/page_broadcast.model')
 const mongoose = require('mongoose')
 const request = require('request')
 
+let request = require('request')
 const logger = require('../../components/logger')
 const TAG = 'api/thing/index'
 
@@ -297,6 +298,7 @@ router.get('/updatePageNames', (req, res) => {
   })
 })
 
+<<<<<<< HEAD
 router.get('/updateSubcribersSource', (req, res) => {
   Subscribers.find({}, (err, subscribers) => {
     if (err) {
@@ -322,4 +324,6 @@ router.get('/updateSubcribersSource', (req, res) => {
   })
 })
 
+=======
+>>>>>>> d23f55accd676cdfa85e54759d4f49dd74e732e4
 module.exports = router
