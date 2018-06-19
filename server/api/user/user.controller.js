@@ -338,19 +338,11 @@ exports.create = function (req, res) {
                 }
 
                 // Create customer on stripe
-                CompanyProfile.findOne({_id: companySaved._id}, (err, cp) => {
+                companySaved.createCustomer(req.body.email, req.body.name, function (err) {
                   if (err) {
-                    return res.status(422).json({
-                      status: 'failed',
-                      description: 'Internal Server Error: ' + JSON.stringify(err)
-                    })
+                    logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
+                      err)}`)
                   }
-                  cp.createCustomer(req.body.email, req.body.name, function (err) {
-                    if (err) {
-                      logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
-                        err)}`)
-                    }
-                  })
                 })
 
                 let companyUserData = new CompanyUsers({
@@ -553,6 +545,7 @@ exports.create = function (req, res) {
               })
             }
 
+            // Create customer on stripe
             companySaved.createCustomer(req.body.email, req.body.name, function (err) {
               if (err) {
                 logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
