@@ -6,6 +6,8 @@ const config = require('../config/environment/index')
 const logger = require('./logger')
 const TAG = 'components/utility.js'
 let Plans = require('../api/permissions_plan/permissions_plan.model')
+let sessions = require('../api/sessions/sessions.model')
+let subscribers = require('../api/subscribers/Subscribers.model')
 
 function validateUrl (str) {
   let regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/
@@ -130,8 +132,19 @@ function findVanSupport () {
   })
 }
 
+function checkLastMessageAge (subscriberId, callback) {
+  subscribers.findOne({ senderId: subscriberId }, (err, subscriber) => {
+    if (err) {
+      logger.serverLog(TAG, 'inside error')
+      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+    }
+    sessions.findOne({ subscriber_id: subscriber._id }, callback)
+  })
+}
+
 exports.validateUrl = validateUrl
 exports.setupPlans = setupPlans
 exports.test = test
 exports.addVanSupporter = addVanSupporter
 exports.findVanSupport = findVanSupport
+exports.checkLastMessageAge = checkLastMessageAge
