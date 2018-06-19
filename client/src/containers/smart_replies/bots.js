@@ -117,7 +117,7 @@ class Bot extends React.Component {
       }
     } else if (event.target.value !== '' && this.state.filterValue !== '') {
       for (let i = 0; i < this.props.bots.length; i++) {
-        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.bots[i].pageId._id === this.state.filterValue) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.bots[i].pageId.pageId === this.state.filterValue) {
           filtered.push(this.props.bots[i])
         }
       }
@@ -135,13 +135,13 @@ class Bot extends React.Component {
       // this.setState({filter: true})
       // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
       for (let i = 0; i < this.props.bots.length; i++) {
-        if (this.props.bots[i].pageId._id === e.target.value) {
+        if (this.props.bots[i].pageId.pageId === e.target.value) {
           filtered.push(this.props.bots[i])
         }
       }
     } else if (e.target.value !== '' && this.state.searchValue !== '') {
       for (let i = 0; i < this.props.bots.length; i++) {
-        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId._id === e.target.value) {
+        if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId.pageId === e.target.value) {
           filtered.push(this.props.bots[i])
         }
       }
@@ -159,11 +159,12 @@ class Bot extends React.Component {
       this.setState({ totalLength: nextProps.bots.length })
     }
     if (nextProps.pages && nextProps.pages.length > 0) {
-      this.state.pageSelected = nextProps.pages[0]._id
+      this.state.pageSelected = nextProps.pages[0].pageId
     }
   }
 
   changePage (e) {
+  	console.log("Selected page", e.target.value)
     this.setState({pageSelected: e.target.value})
   }
 
@@ -201,6 +202,7 @@ class Bot extends React.Component {
   }
 
   render () {
+  	console.log("Pages: ", this.state.pageSelected, this.props.pages)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -360,7 +362,7 @@ class Bot extends React.Component {
                                     <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                                       {
                                         this.props.pages.map((page, i) => (
-                                          <option key={i} value={page._id}>{page.pageName}</option>
+                                          <option key={i} value={page.pageId}>{page.pageName}</option>
                                         ))
                                       }
                                     </select>
@@ -418,7 +420,7 @@ class Bot extends React.Component {
                             {
                               this.props.pages && this.props.pages.length > 0 &&
                               this.props.pages.map((page, i) => (
-                                <option key={i} value={page._id}>{page.pageName}</option>
+                                <option key={i} value={page.pageId}>{page.pageName}</option>
                               ))
                             }
                             <option value=''>All</option>
