@@ -25,7 +25,10 @@ module.exports = exports = function stripeCustomer (schema, options) {
       if (err) return cb(err)
 
       company.stripe.customerId = customer.id
-      return cb()
+      company.save(function (err) {
+        if (err) return cb(err)
+        return cb(null)
+      })
     })
   }
 
