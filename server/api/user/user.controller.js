@@ -248,7 +248,7 @@ exports.updateMode = function (req, res) {
               user.companyId = companyUser.companyId
               user.permissions = permissions
               user.currentPlan = company.stripe.plan
-              user.plan = plan[company.profile.plan]
+              user.plan = plan[company.stripe.plan]
               res.status(200).json({status: 'success', payload: user})
             })
           })
