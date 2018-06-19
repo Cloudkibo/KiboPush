@@ -628,16 +628,12 @@ exports.send = function (req, res) {
 
                         // this calls the needle when the last message was older than 30 minutes
                         // checks the age of function using callback
-                        compUtility.checkLastMessageAge(subscribers[j].senderId, (err, session) => {
+                        compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
                           if (err) {
                             logger.serverLog(TAG, 'inside error')
                             return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                           }
-                          let lastActivity = new Date(session.last_activity_time)
-                          let inMiliSeconds = Date.now() - lastActivity
-                          let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
-                          if (inMinutes > 30) {
-                            logger.serverLog(TAG, 'My session is ' + inMinutes)
+                          if (isLastMessage) {
                             logger.serverLog(TAG, 'inside poll send')
                             needle.post(
                               `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
@@ -668,7 +664,7 @@ exports.send = function (req, res) {
                                         })
                                       })
                           } else {
-                            logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ' + inMinutes)
+                            logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
                           }
                         })
                       }
@@ -722,16 +718,12 @@ exports.send = function (req, res) {
                           }
                           // this calls the needle when the last message was older than 30 minutes
                           // checks the age of function using callback
-                          compUtility.checkLastMessageAge(subscribers[j].senderId, (err, session) => {
+                          compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
                             if (err) {
                               logger.serverLog(TAG, 'inside error')
                               return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                             }
-                            let lastActivity = new Date(session.last_activity_time)
-                            let inMiliSeconds = Date.now() - lastActivity
-                            let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
-                            if (inMinutes > 30) {
-                              logger.serverLog(TAG, 'My session is ' + inMinutes)
+                            if (isLastMessage) {
                               logger.serverLog(TAG, 'inside poll send')
                               needle.post(
                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
@@ -798,7 +790,7 @@ exports.send = function (req, res) {
                                   })
                                 })
                             } else {
-                              logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ' + inMinutes)
+                              logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
                             }
                           })
                         }

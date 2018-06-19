@@ -136,9 +136,19 @@ function checkLastMessageAge (subscriberId, callback) {
   subscribers.findOne({ senderId: subscriberId }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, 'inside error')
-      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+      return callback(err)
     }
-    sessions.findOne({ subscriber_id: subscriber._id }, callback)
+    sessions.findOne({ subscriber_id: subscriber._id }, (err, session) => {
+      if (err) {
+        logger.serverLog(TAG, 'inside error')
+        return callback(err)
+      }
+      let lastActivity = new Date(session.last_activity_time)
+      let inMiliSeconds = Date.now() - lastActivity
+      let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
+
+      callback(null, (inMinutes > 30))
+    })
   })
 }
 
