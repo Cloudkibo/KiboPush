@@ -6352,6 +6352,50 @@
         }
       }
     },
+    "/company/getAutomatedOptions": {
+      "get": {
+        "description": "Fetches the automated response options for the company account",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/Company"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
     "/company/invite": {
       "post": {
         "description": "sends an invite to join company",

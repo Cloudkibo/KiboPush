@@ -4314,6 +4314,36 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+             
+  /company/getAutomatedOptions:
+    get:
+      description: Fetches the automated response options for the company account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/Company'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 
   /company/invite:
     post:
