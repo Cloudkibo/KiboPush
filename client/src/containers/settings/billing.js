@@ -41,7 +41,11 @@ class Billing extends React.Component {
       }
     }
     if (nextProps.error) {
-      this.msg.error(nextProps.error)
+      if (nextProps.error === 'success') {
+        this.setState({change: false})
+      } else {
+        this.msg.error(nextProps.error)
+      }
     }
   }
   handleRadioButton (e) {

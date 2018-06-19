@@ -109,6 +109,7 @@ export function updatePlan (data, msg) {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Plan updated successfully')
+        dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
         dispatch(fetchPlan(res.description))
