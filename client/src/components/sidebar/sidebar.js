@@ -6,7 +6,7 @@
 import React, {Component} from 'react'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
@@ -50,6 +50,7 @@ class Sidebar extends Component {
   }
   componentWillMount () {
     this.props.getuserdetails()
+    this.props.getAutomatedOptions()
   }
   componentDidMount () {
     if (!this.state.ignore) {
@@ -223,7 +224,9 @@ class Sidebar extends Component {
 
   showLiveChatItem () {
     if (this.props.user) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat &&
+          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
@@ -468,13 +471,15 @@ function mapStateToProps (state) {
     updatedUser: (state.basicInfo.updatedUser),
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),
-    socketData: (state.liveChat.socketData)
+    socketData: (state.liveChat.socketData),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
+    getAutomatedOptions: getAutomatedOptions,
     fetchSessions: fetchSessions,
     fetchUserChats: fetchUserChats,
     resetSocket: resetSocket,
