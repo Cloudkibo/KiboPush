@@ -26,6 +26,14 @@ export function showuserdetails (data) {
   }
 }
 
+export function showAutomatedOptions (data) {
+  console.log(data)
+  return {
+    type: ActionTypes.GET_AUTOMATED_OPTIONS,
+    data
+  }
+}
+
 export function updateKeys (data) {
   return {
     type: ActionTypes.LOAD_KEYS,
@@ -76,6 +84,12 @@ export function setSocketStatus (data) {
 export function getuserdetails () {
   return (dispatch) => {
     callApi('users').then(res => dispatch(showuserdetails(res.payload)))
+  }
+}
+
+export function getAutomatedOptions () {
+  return (dispatch) => {
+    callApi('company/getAutomatedOptions').then(res => dispatch(showAutomatedOptions(res.payload)))
   }
 }
 

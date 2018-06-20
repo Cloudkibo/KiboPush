@@ -20,6 +20,7 @@ const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const utility = require('./../broadcasts/broadcasts.utility')
+const compUtility = require('../../components/utility')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -679,34 +680,47 @@ exports.send = function (req, res) {
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                   message: messageData
                                 }
-                                needle.post(
-                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                  data, (err, resp) => {
-                                    if (err) {
-                                      return res.status(500).json({
-                                        status: 'failed',
-                                        description: JSON.stringify(err)
-                                      })
-                                    }
-                                    let surveyPage = new SurveyPage({
-                                      pageId: pages[z].pageId,
-                                      userId: req.user._id,
-                                      subscriberId: subscribers[j].senderId,
-                                      surveyId: req.body._id,
-                                      seen: false,
-                                      companyId: companyUser.companyId
-                                    })
 
-                                    surveyPage.save((err2) => {
-                                      if (err2) {
-                                        logger.serverLog(TAG, {
+                                // checks the age of function using callback
+                                compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, 'inside error')
+                                    return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                  }
+                                  if (isLastMessage) {
+                                    logger.serverLog(TAG, 'inside suvery send')
+                                    needle.post(
+                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                    data, (err, resp) => {
+                                      if (err) {
+                                        return res.status(500).json({
                                           status: 'failed',
-                                          description: 'PollBroadcast create failed',
-                                          err2
+                                          description: JSON.stringify(err)
                                         })
                                       }
+                                      let surveyPage = new SurveyPage({
+                                        pageId: pages[z].pageId,
+                                        userId: req.user._id,
+                                        subscriberId: subscribers[j].senderId,
+                                        surveyId: req.body._id,
+                                        seen: false,
+                                        companyId: companyUser.companyId
+                                      })
+
+                                      surveyPage.save((err2) => {
+                                        if (err2) {
+                                          logger.serverLog(TAG, {
+                                            status: 'failed',
+                                            description: 'PollBroadcast create failed',
+                                            err2
+                                          })
+                                        }
+                                      })
                                     })
-                                  })
+                                  } else {
+                                    logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                                  }
+                                })
                               }
                             })
                           })
@@ -769,70 +783,83 @@ exports.send = function (req, res) {
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                 message: messageData
                               }
-                              needle.post(
-                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                data, (err, resp) => {
-                                  if (err) {
-                                    return res.status(500).json({
-                                      status: 'failed',
-                                      description: JSON.stringify(err)
-                                    })
-                                  }
-                                  let surveyPage = new SurveyPage({
-                                    pageId: pages[z].pageId,
-                                    userId: req.user._id,
-                                    subscriberId: subscribers[j].senderId,
-                                    surveyId: req.body._id,
-                                    seen: false,
-                                    companyId: companyUser.companyId
-                                  })
 
-                                  surveyPage.save((err2) => {
-                                    if (err2) {
-                                      logger.serverLog(TAG, {
-                                        status: 'failed',
-                                        description: 'PollBroadcast create failed',
-                                        err2
+                              // this calls the needle when the last message was older than 30 minutes
+                              // checks the age of function using callback
+                              compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
+                                if (err) {
+                                  logger.serverLog(TAG, 'inside error')
+                                  return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                }
+                                if (isLastMessage) {
+                                  needle.post(
+                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                    data, (err, resp) => {
+                                      if (err) {
+                                        return res.status(500).json({
+                                          status: 'failed',
+                                          description: JSON.stringify(err)
+                                        })
+                                      }
+                                      let surveyPage = new SurveyPage({
+                                        pageId: pages[z].pageId,
+                                        userId: req.user._id,
+                                        subscriberId: subscribers[j].senderId,
+                                        surveyId: req.body._id,
+                                        seen: false,
+                                        companyId: companyUser.companyId
                                       })
-                                    }
-                                    // not using now
-                                    // Sessions.findOne({
-                                    //   subscriber_id: subscribers[j]._id,
-                                    //   page_id: pages[z]._id,
-                                    //   company_id: pages[z].userId._id
-                                    // }, (err, session) => {
-                                    //   if (err) {
-                                    //     return logger.serverLog(TAG,
-                                    //       `At get session ${JSON.stringify(err)}`)
-                                    //   }
-                                    //   if (!session) {
-                                    //     return logger.serverLog(TAG,
-                                    //       `No chat session was found for surveys`)
-                                    //   }
-                                    //   const chatMessage = new LiveChat({
-                                    //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
-                                    //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
-                                    //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
-                                    //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                                    //     session_id: session._id,
-                                    //     company_id: pages[z].userId._id, // this is admin id till we have companies
-                                    //     payload: {
-                                    //       componentType: 'survey',
-                                    //       payload: messageData
-                                    //     }, // this where message content will go
-                                    //     status: 'unseen' // seen or unseen
-                                    //   })
-                                    //   chatMessage.save((err, chatMessageSaved) => {
-                                    //     if (err) {
-                                    //       return logger.serverLog(TAG,
-                                    //         `At save chat${JSON.stringify(err)}`)
-                                    //     }
-                                    //     logger.serverLog(TAG,
-                                    //       'Chat message saved for surveys sent')
-                                    //   })
-                                    // })
-                                  })
-                                })
+
+                                      surveyPage.save((err2) => {
+                                        if (err2) {
+                                          logger.serverLog(TAG, {
+                                            status: 'failed',
+                                            description: 'PollBroadcast create failed',
+                                            err2
+                                          })
+                                        }
+                                      // not using now
+                                      // Sessions.findOne({
+                                      //   subscriber_id: subscribers[j]._id,
+                                      //   page_id: pages[z]._id,
+                                      //   company_id: pages[z].userId._id
+                                      // }, (err, session) => {
+                                      //   if (err) {
+                                      //     return logger.serverLog(TAG,
+                                      //       `At get session ${JSON.stringify(err)}`)
+                                      //   }
+                                      //   if (!session) {
+                                      //     return logger.serverLog(TAG,
+                                      //       `No chat session was found for surveys`)
+                                      //   }
+                                      //   const chatMessage = new LiveChat({
+                                      //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
+                                      //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
+                                      //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
+                                      //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                                      //     session_id: session._id,
+                                      //     company_id: pages[z].userId._id, // this is admin id till we have companies
+                                      //     payload: {
+                                      //       componentType: 'survey',
+                                      //       payload: messageData
+                                      //     }, // this where message content will go
+                                      //     status: 'unseen' // seen or unseen
+                                      //   })
+                                      //   chatMessage.save((err, chatMessageSaved) => {
+                                      //     if (err) {
+                                      //       return logger.serverLog(TAG,
+                                      //         `At save chat${JSON.stringify(err)}`)
+                                      //     }
+                                      //     logger.serverLog(TAG,
+                                      //       'Chat message saved for surveys sent')
+                                      //   })
+                                      // })
+                                      })
+                                    })
+                                } else {
+                                  logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                                }
+                              })
                             }
                           })
                         })

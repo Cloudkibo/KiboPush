@@ -24,6 +24,11 @@ export function basicInfo (state = initialState, action) {
         browserVersion: action.data
       })
 
+    case ActionTypes.GET_AUTOMATED_OPTIONS:
+      return Object.assign({}, state, {
+        automated_options: action.data
+      })
+
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data,
