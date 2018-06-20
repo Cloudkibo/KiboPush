@@ -44,20 +44,12 @@ class Settings extends React.Component {
       firstTime: true,
       firstTimeNGP: true,
       resetPassword: false,
-      showAPI: true,
-      showNGP: false,
+      showAPIbyPlan: true,
       saveState: null,
       saveStateNGP: null,
-      showGreetingMessage: false,
-      showSubscribeToMessenger: false,
-      showWelcomeMessage: false,
-      showBilling: false,
-      showPaymentMethods: false,
-      showPermissions: false,
-      chatWidget: false,
       planInfo: '',
-      showResponseMethods: false,
-      show: true
+      show: true,
+      openTab: 'showAPI'
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -81,10 +73,14 @@ class Settings extends React.Component {
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
-      this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
+      this.setState({
+        openTab: 'connectFb'
+      })
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'welcome') {
-      this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
+      this.setState({
+        openTab: 'welcomeMessage'
+      })
     }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
@@ -103,11 +99,11 @@ class Settings extends React.Component {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
-      this.setState({showAPI: false, resetPassword: true})
+      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
     } else if (plan === 'plan_D') {
-      this.setState({showAPI: false, resetPassword: true})
+      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
@@ -116,44 +112,68 @@ class Settings extends React.Component {
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showPermissions: false, showAPI: true, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
+    this.setState({
+      openTab: 'showAPI'
+    }, () => {
       this.initializeSwitch(this.state.buttonState)
     })
   }
   setNGP () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
+    this.setState({
+      openTab: 'showNGP'
+    }, () => {
       this.initializeSwitchNGP(this.state.ngpButtonState)
     })
   }
   setResetPass () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: false, showResponseMethods: false})
+    this.setState({
+      openTab: 'resetPassword'
+    })
   }
   setPermissions () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showPermissions: true, showResponseMethods: false})
+    this.setState({
+      openTab: 'permissions'
+    })
   }
   setGreetingMessage () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showResponseMethods: false})
+    this.setState({
+      openTab: 'greetingMessage'
+    })
   }
   setBilling () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: true, showPaymentMethods: false, showResponseMethods: false})
+    this.setState({
+      openTab: 'billing'
+    })
   }
   setPayementMethods () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: true, showResponseMethods: false})
+    this.setState({
+      openTab: 'paymentMethods'
+    })
   }
   setConnectFb () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showResponseMethods: false})
+    this.setState({
+      openTab: 'connectFb'
+    })
   }
   setChatWidget () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: true, showResponseMethods: false})
+    this.setState({
+      openTab: 'chatWidget'
+    })
   }
   setSubscribeToMessenger () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false, chatWidget: false, showResponseMethods: false})
+    this.setState({
+      openTab: 'subscribeToMessenger'
+    })
   }
   setWelcomeMessage () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true, chatWidget: false, showResponseMethods: false})
+    this.setState({
+      openTab: 'welcomeMessage'
+    })
   }
   setResponseMethods () {
-    this.setState({showPermissions: false, showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showResponseMethods: true})
+    this.setState({
+      openTab: 'responseMethods'
+    })
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -449,7 +469,7 @@ class Settings extends React.Component {
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon flaticon-list-2' />
-                            <span className='m-nav__link-text'>Automation Options</span>
+                            <span className='m-nav__link-text'>Response Methods</span>
                           </a>
                         </li>
                         }
@@ -489,7 +509,7 @@ class Settings extends React.Component {
                     </div>
                   </div>
                 </div>
-                { this.state.showAPI &&
+                { this.state.openTab === 'showAPI' && this.state.showAPIbyPlan &&
                 <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
@@ -560,7 +580,7 @@ class Settings extends React.Component {
                   </div>
                 </div>
                 }
-                { this.state.showNGP &&
+                { this.state.openTab === 'showNGP' &&
                 <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
@@ -628,34 +648,34 @@ class Settings extends React.Component {
                   </div>
                 </div>
                 }
-                { this.state.resetPassword &&
+                { this.state.openTab === 'resetPassword' &&
                   <ResetPassword />
                 }
-                { this.state.showPermissions &&
+                { this.state.openTab === 'permissions' &&
                   <ShowPermissions />
                 }
-                { this.state.showGreetingMessage &&
+                { this.state.openTab === 'greetingMessage' &&
                   <GreetingMessage user={this.props.user} />
                 }
-                { this.state.showSubscribeToMessenger &&
+                { this.state.openTab === 'subscribeToMessenger' &&
                   <SubscribeToMessenger />
                 }
-                { this.state.showWelcomeMessage &&
+                { this.state.openTab === 'welcomeMessage' &&
                   <WelcomeMessage />
                 }
-                { this.state.connectFb &&
+                { this.state.openTab === 'connectFb' &&
                   <ConnectFb />
                 }
-                { this.state.chatWidget &&
+                { this.state.openTab === 'chatWidget' &&
                   <ChatWidget />
                 }
-                { this.state.showBilling &&
+                { this.state.openTab === 'billing' &&
                   <Billing showPaymentMethods={this.setPayementMethods} />
                 }
-                { this.state.showPaymentMethods &&
+                { this.state.openTab === 'paymentMethods' &&
                   <PaymentMethods />
                 }
-                { this.state.showResponseMethods &&
+                { this.state.openTab === 'responseMethods' &&
                   <ResponseMethods />
                 }
               </div>

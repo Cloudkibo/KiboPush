@@ -92,6 +92,7 @@ import AutopostingWizard from './containers/wizard/autoposting'
 import MenuWizard from './containers/wizard/persistentMenu'
 import PaymentMethodsWizard from './containers/wizard/paymentMethods'
 import Finish from './containers/wizard/finish'
+import ResponseMethods from './containers/wizard/responseMethods'
 import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
@@ -224,6 +225,7 @@ const routes = (
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
     <Route path='/paymentMethodsWizard' component={PaymentMethodsWizard} onEnter={requireAuth} />
     <Route path='/finish' component={Finish} onEnter={requireAuth} />
+    <Route path='/responseMethods' component={ResponseMethods} onEnter={requireAuth} />
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
     <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
     <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />

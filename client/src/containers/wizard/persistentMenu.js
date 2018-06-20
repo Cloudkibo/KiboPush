@@ -592,7 +592,7 @@ class Menu extends React.Component {
                           <div className='m-portlet__head-caption'>
                             <div className='m-portlet__head-title'>
                               <h3 className='m-portlet__head-text'>
-                                Step 7: Persistent Menu
+                                Step 6: Persistent Menu
                               </h3>
                             </div>
                           </div>
@@ -733,7 +733,7 @@ class Menu extends React.Component {
                                 </Link>
                               </div>
                               <div className='col-lg-6 m--align-right'>
-                                <Link to='/paymentMethodsWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <Link to='/responseMethods' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
