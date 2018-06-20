@@ -197,9 +197,40 @@ class Sidebar extends React.Component {
               {this.props.step === '7'
             ? <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0', backgroundColor: '#716aca'}}>
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                <Link to='/paymentMethodsWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', color: '#5867dd', backgroundColor: 'transparent'}}>
+                <Link to='/responseMethods' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', color: '#5867dd', backgroundColor: 'transparent'}}>
                   <span style={{backgroundColor: '#3d3698', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                     <span style={{color: '#ffffff', fontSize: '1.7rem', fontWeight: '500'}}>7</span>
+                  </span>
+                </Link>
+                <div className='m-wizard__step-label' style={{color: '#ffffff', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
+                  Response Methods
+              </div>
+              </div>
+            </div>
+            : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
+              <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
+                <Link to='/responseMethods' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
+                    <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>7</span>
+                  </span>
+                </Link>
+                <div className='m-wizard__step-label' style={{color: '#9699a2', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
+                  Response Methods
+                </div>
+                {this.props.step > 7 &&
+                  <div className='m-wizard__step-icon' style={{textAlign: 'right', paddingLeft: '6rem', display: 'table-cell', verticalAlign: 'middle', color: '#575962', fontSize: '13px', fontWeight: '300', fontFamily: 'Poppins'}}>
+                    <i className='la la-check' style={{color: '#716aca', fontSize: '35px', fontWeight: 'normal', display: 'inline-block', font: 'normal normal normal "LineAwesome"', textDecoration: 'inherit', textRendering: 'optimizeLegibility', textTransform: 'none', textAlign: 'right'}} />
+                  </div>
+              }
+              </div>
+            </div>
+          }
+              {this.props.step === '8'
+            ? <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0', backgroundColor: '#716aca'}}>
+              <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
+                <Link to='/paymentMethodsWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', color: '#5867dd', backgroundColor: 'transparent'}}>
+                  <span style={{backgroundColor: '#3d3698', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
+                    <span style={{color: '#ffffff', fontSize: '1.7rem', fontWeight: '500'}}>8</span>
                   </span>
                 </Link>
                 <div className='m-wizard__step-label' style={{color: '#ffffff', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '1rem'}}>
@@ -211,13 +242,13 @@ class Sidebar extends React.Component {
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
                 <Link to='/paymentMethodsWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
                   <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
-                    <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>7</span>
+                    <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>8</span>
                   </span>
                 </Link>
                 <div className='m-wizard__step-label' style={{color: '#9699a2', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
                   Choose<br /> Plan
                 </div>
-                {this.props.step > 7 &&
+                {this.props.step > 8 &&
                   <div className='m-wizard__step-icon' style={{textAlign: 'right', paddingLeft: '6rem', display: 'table-cell', verticalAlign: 'middle', color: '#575962', fontSize: '13px', fontWeight: '300', fontFamily: 'Poppins'}}>
                     <i className='la la-check' style={{color: '#716aca', fontSize: '35px', fontWeight: 'normal', display: 'inline-block', font: 'normal normal normal "LineAwesome"', textDecoration: 'inherit', textRendering: 'optimizeLegibility', textTransform: 'none', textAlign: 'right'}} />
                   </div>
@@ -225,12 +256,12 @@ class Sidebar extends React.Component {
               </div>
             </div>
             }
-              {this.props.step === '8'
+              {this.props.step === '9'
             ? <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0', backgroundColor: '#716aca'}}>
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
                 <Link to='/finish' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', color: '#5867dd', backgroundColor: 'transparent'}}>
                   <span style={{backgroundColor: '#3d3698', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
-                    <span style={{color: '#ffffff', fontSize: '1.7rem', fontWeight: '500'}}>8</span>
+                    <span style={{color: '#ffffff', fontSize: '1.7rem', fontWeight: '500'}}>9</span>
                   </span>
                 </Link>
                 <div className='m-wizard__step-label' style={{color: '#ffffff', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
@@ -242,13 +273,13 @@ class Sidebar extends React.Component {
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
                 <Link to='/finish' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
                   <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
-                    <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>8</span>
+                    <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>9</span>
                   </span>
                 </Link>
                 <div className='m-wizard__step-label' style={{color: '#9699a2', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
                   Subscribe To<br /> KiboPush
                 </div>
-                {this.props.step > 8 &&
+                {this.props.step > 9 &&
                   <div className='m-wizard__step-icon' style={{textAlign: 'right', paddingLeft: '6rem', display: 'table-cell', verticalAlign: 'middle', color: '#575962', fontSize: '13px', fontWeight: '300', fontFamily: 'Poppins'}}>
                     <i className='la la-check' style={{color: '#716aca', fontSize: '35px', fontWeight: 'normal', display: 'inline-block', font: 'normal normal normal "LineAwesome"', textDecoration: 'inherit', textRendering: 'optimizeLegibility', textTransform: 'none', textAlign: 'right'}} />
                   </div>
