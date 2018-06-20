@@ -9,7 +9,8 @@ const webhookSchema = new Schema({
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   isEnabled: { type: Boolean, default: false },
   error_message: {type: String, default: null},
-  optIn: Schema.Types.Mixed
+  optIn: Schema.Types.Mixed,
+  pageId: { type: Schema.ObjectId, ref: 'pages' }
 })
 
 module.exports = mongoose.model('webhooks', webhookSchema)
