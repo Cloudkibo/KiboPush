@@ -4314,7 +4314,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
-             
+
   /company/getAutomatedOptions:
     get:
       description: Fetches the automated response options for the company account
@@ -4545,7 +4545,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response400'
-             
+
   /company/updateAutomatedOptions:
     post:
       description: updates automated response options
@@ -5314,7 +5314,7 @@ paths:
           schema:
             type: object
             properties:
-              status: 
+              status:
                 type: string
                 description: success
               payload:
@@ -5333,7 +5333,7 @@ paths:
           schema:
              $ref: '#/definitions/Response500'
 
-            
+
   /permissions/updatePermissions:
     post:
       description: gives all the permissions of one user in team
@@ -5361,10 +5361,157 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-              
-              
+  /webhooks/:id:
+    get:
+      description: gives the details of the webhook for a particular page
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /webhooks/create/:
+    post:
+      description: creates a new webhook
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: post
+          in: body
+          required: true
+          description: Webhook details
+          schema:
+            $ref: '#/definitions/Webhook'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+                description: The newly created post
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
+  /webhooks/edit/:
+    post:
+      description: Edit an already created webhook
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The unique id of the autopost to edit
+          type: string
+          required: true
+        - name: web_url
+          in: formData
+          description: The url to send info to
+          type: string
+          required: true
+        - name: isEnabled
+          in: formData
+          description: Enable or disable the webhook
+          type: boolean
+          required: true
+        - name: optIn
+          in: formData
+          description: Enable or disable subscription types
+          type: string
+          required: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+                description: The edited webhook
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 
+  /webhooks/enabled/:
+    post:
+      description: Enable or disable a webhook
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The unique id of the autopost to edit
+          type: string
+          required: true
+        - name: isEnabled
+          in: formData
+          description: Enable or disable the webhook
+          type: boolean
+          required: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+                description: The edited webhook
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 ################################################################################
 #                                 Definitions                                  #
 ################################################################################
@@ -6835,11 +6982,37 @@ definitions:
         type: number
         description: the number of comments on the post
         readOnly: true
-  
+  Webhook:
+    type: object
+    description: This table is used to store facebook webhooks information
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+        readOnly: true
+      pageId:
+        type: string
+        description: the id of the page to set webhook for
+      companyId:
+        type: string
+        description: company id of the company that the user belongs to
+        readOnly: true
+      webhook_url:
+          type: string
+          description: The url to send info to
+      isEnabled:
+        type: boolean
+        description: Whether the webhook is enabled or not
+      error_message:
+        type: string
+        description: the error message
+        readOnly: true
+      optIn:
+        type: object
   Permissions:
     type: object
     description: This table is used to store the permissions of a user
-    properties: 
+    properties:
       companyId:
         type: string
         description: company id of the company that the user belongs to
@@ -6848,22 +7021,22 @@ definitions:
         type: string
         description: payload for the user object
         $ref: '#/definitions/User'
-      apiPermission: 
+      apiPermission:
         type: boolean
         description: permission to use the api
       surveyPermission:
         type: boolean
         description: permission to send the survey
-      subscriberPermission: 
+      subscriberPermission:
         type: boolean
         description: permission to use the subscriber page
-      pollsPermission: 
+      pollsPermission:
         type: boolean
         description: permission to use the poll feature
       pagesPermission:
         type: boolean
-        description: permission to connect the Pages 
-      pagesAccessPermission: 
+        description: permission to connect the Pages
+      pagesAccessPermission:
         type: boolean
         description: permission to see the page tab
       menuPermission:
@@ -6875,7 +7048,7 @@ definitions:
       autopostingPermission:
         type: boolean
         description: permission to use the autoposting feature
-      broadcastPermission: 
+      broadcastPermission:
         type: boolean
         description: permission to use the broadcast feature
       invitationsPermission:
@@ -6922,11 +7095,11 @@ definitions:
       billingPermission:
         type: boolean
         description: permission to view the billing plans
-        
+
   Permission:
     type: object
     description: This is permissions for a single user
-    properties: 
+    properties:
       companyId:
         type: string
         description: company id of the company that the user belongs to
@@ -6935,22 +7108,22 @@ definitions:
         type: string
         description: payload for the user object
         readOnly: true
-      apiPermission: 
+      apiPermission:
         type: boolean
         description: permission to use the api
       surveyPermission:
         type: boolean
         description: permission to send the survey
-      subscriberPermission: 
+      subscriberPermission:
         type: boolean
         description: permission to use the subscriber page
-      pollsPermission: 
+      pollsPermission:
         type: boolean
         description: permission to use the poll feature
       pagesPermission:
         type: boolean
-        description: permission to connect the Pages 
-      pagesAccessPermission: 
+        description: permission to connect the Pages
+      pagesAccessPermission:
         type: boolean
         description: permission to see the page tab
       menuPermission:
@@ -6962,7 +7135,7 @@ definitions:
       autopostingPermission:
         type: boolean
         description: permission to use the autoposting feature
-      broadcastPermission: 
+      broadcastPermission:
         type: boolean
         description: permission to use the broadcast feature
       invitationsPermission:
@@ -7009,8 +7182,6 @@ definitions:
       billingPermission:
         type: boolean
         description: permission to view the billing plans
-      
-
 
   Response500:
     type: object

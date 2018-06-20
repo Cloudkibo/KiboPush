@@ -11,6 +11,9 @@ const router = express.Router()
 const auth = require('../../auth/auth.service')
 const controller = require('./webhooks.controller')
 
+router.get('/:id', auth.isAuthenticated(), controller.index)
 router.post('/create', auth.isAuthenticated(), controller.create)
+router.post('/edit', auth.isAuthenticated(), controller.edit)
+router.post('/enabled', auth.isAuthenticated(), controller.enabled)
 
 module.exports = router

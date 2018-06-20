@@ -7909,6 +7909,227 @@
           }
         }
       }
+    },
+    "/webhooks/:id": {
+      "get": {
+        "description": "gives the details of the webhook for a particular page",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/Webhook"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/create/": {
+      "post": {
+        "description": "creates a new webhook",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "post",
+            "in": "body",
+            "required": true,
+            "description": "Webhook details",
+            "schema": {
+              "$ref": "#/definitions/Webhook"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/Webhook",
+                  "description": "The newly created post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/edit/": {
+      "post": {
+        "description": "Edit an already created webhook",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "formData",
+            "description": "The unique id of the autopost to edit",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "web_url",
+            "in": "formData",
+            "description": "The url to send info to",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "isEnabled",
+            "in": "formData",
+            "description": "Enable or disable the webhook",
+            "type": "boolean",
+            "required": true
+          },
+          {
+            "name": "optIn",
+            "in": "formData",
+            "description": "Enable or disable subscription types",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/Webhook",
+                  "description": "The edited webhook"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/enabled/": {
+      "post": {
+        "description": "Enable or disable a webhook",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "formData",
+            "description": "The unique id of the autopost to edit",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "isEnabled",
+            "in": "formData",
+            "description": "Enable or disable the webhook",
+            "type": "boolean",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/Webhook",
+                  "description": "The edited webhook"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -9873,6 +10094,42 @@
           "type": "number",
           "description": "the number of comments on the post",
           "readOnly": true
+        }
+      }
+    },
+    "Webhook": {
+      "type": "object",
+      "description": "This table is used to store facebook webhooks information",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "unique id of the record",
+          "readOnly": true
+        },
+        "pageId": {
+          "type": "string",
+          "description": "the id of the page to set webhook for"
+        },
+        "companyId": {
+          "type": "string",
+          "description": "company id of the company that the user belongs to",
+          "readOnly": true
+        },
+        "webhook_url": {
+          "type": "string",
+          "description": "The url to send info to"
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "description": "Whether the webhook is enabled or not"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "the error message",
+          "readOnly": true
+        },
+        "optIn": {
+          "type": "object"
         }
       }
     },
