@@ -14,6 +14,9 @@ const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 let utility = require('./../broadcasts/broadcasts.utility')
+const Sessions = require('./../sessions/sessions.model')
+const _ = require('lodash')
+const mongoose = require('mongoose')
 
 function transformPayload (payload) {
   var transformed = []
@@ -486,4 +489,44 @@ exports.waitingReply = function (req, res) {
           })
       })
     })
+}
+
+exports.savePendingSubscribersQueue = function (req, res) {
+  var parametersMissing = false
+  if (!_.has(req.body, 'botId')) {
+    parametersMissing = true
+  }
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  Bots.findOne({_id: req.body.botId}, (err, bot) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG, `bot ${JSON.stringify(bot)}`)
+    Sessions.find({
+      page_id: mongoose.Types.ObjectId(bot.pageId),
+      last_activity_time: {$gt: new Date(Date.now() - 30 * 60 * 1000)}
+    }).exec(function (err, sessionsData) {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      } else {
+        let activeSubscribers = []
+        for (var i = 0; i < sessionsData.length; i++) {
+          activeSubscribers.push(sessionsData[i].subscriber_id)
+        }
+        Bots.update(
+          {_id: req.body.botId},
+          {blockedSubscribers: activeSubscribers}, (err, updated) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            return res.status(200)
+            .json({status: 'success', payload: bot})
+          })
+      }
+    })
+  })
 }

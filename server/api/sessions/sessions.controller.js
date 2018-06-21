@@ -12,7 +12,6 @@ const Users = require('./../user/Users.model')
 const Notifications = require('./../notifications/notifications.model')
 const needle = require('needle')
 const _ = require('lodash')
-const mongoose = require('mongoose')
 
 // get list of fb sessions
 exports.index = function (req, res) {
@@ -1321,30 +1320,4 @@ exports.assignTeam = function (req, res) {
         res.status(200).json({status: 'success', payload: updated})
       })
   })
-}
-exports.findActiveSessions = function (req, res) {
-  var parametersMissing = false
-  if (!_.has(req.body, 'pageId')) {
-    parametersMissing = true
-  }
-  if (!_.has(req.body, 'botId')) {
-    parametersMissing = true
-  }
-  if (parametersMissing) {
-    return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
-  }
-  Sessions.find({
-    page_id: mongoose.Types.ObjectId(req.body.pageId),
-    last_activity_time: {$lt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)}
-  }).populate('subscriber_id')
-    .exec(function (err, sessionsData) {
-      if (err) {
-        return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
-      } else {
-        return res.status(200)
-        .json({status: 'success', payload: sessionsData})
-      }
-    })
 }
