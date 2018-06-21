@@ -37,6 +37,7 @@ const AutopostingSubscriberMessages = require(
 // const SequenceSubscriberMessages = require(
 //  './../sequenceMessaging/sequenceSubscribersMessages.model')
 const utility = require('./broadcasts.utility')
+const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
 const og = require('open-graph')
 let _ = require('lodash')
@@ -985,7 +986,21 @@ function handleThePagePostsForAutoPosting (event, status) {
                               'metadata': 'This is metadata'
                             })
                           }
-                          sendAutopostingMessage(messageData, page, savedMsg)
+                          // Logic to control the autoposting when last activity is less than 30 minutes
+                          compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                            if (err) {
+                              logger.serverLog(TAG, 'inside error')
+                              return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                            }
+
+                            if (isLastMessage) {
+                              logger.serverLog(TAG, 'inside fb autoposting send')
+                              sendAutopostingMessage(messageData, page, savedMsg)
+                            } else {
+                              // Logic to add into queue will go here
+                              logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                            }
+                          })
                         } else if (event.value.item === 'share') {
                           let URLObject = new URL({
                             originalURL: event.value.link,
@@ -1032,7 +1047,21 @@ function handleThePagePostsForAutoPosting (event, status) {
                                 }
                               })
                             }
-                            sendAutopostingMessage(messageData, page, savedMsg)
+                            // Logic to control the autoposting when last activity is less than 30 minutes
+                            compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                              if (err) {
+                                logger.serverLog(TAG, 'inside error')
+                                return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                              }
+
+                              if (isLastMessage) {
+                                logger.serverLog(TAG, 'inside fb autoposting send')
+                                sendAutopostingMessage(messageData, page, savedMsg)
+                              } else {
+                                // Logic to add into queue will go here
+                                logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              }
+                            })
                           })
                         } else if (event.value.item === 'photo') {
                           let URLObject = new URL({
@@ -1080,7 +1109,21 @@ function handleThePagePostsForAutoPosting (event, status) {
                                 }
                               })
                             }
-                            sendAutopostingMessage(messageData, page, savedMsg)
+                            // Logic to control the autoposting when last activity is less than 30 minutes
+                            compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                              if (err) {
+                                logger.serverLog(TAG, 'inside error')
+                                return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                              }
+
+                              if (isLastMessage) {
+                                logger.serverLog(TAG, 'inside fb autoposting send')
+                                sendAutopostingMessage(messageData, page, savedMsg)
+                              } else {
+                                // Logic to add into queue will go here
+                                logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              }
+                            })
                           })
                         } else if (event.value.item === 'video') {
                           messageData = {
@@ -1098,7 +1141,21 @@ function handleThePagePostsForAutoPosting (event, status) {
                               }
                             })
                           }
-                          sendAutopostingMessage(messageData, page, savedMsg)
+                          // Logic to control the autoposting when last activity is less than 30 minutes
+                          compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                            if (err) {
+                              logger.serverLog(TAG, 'inside error')
+                              return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                            }
+
+                            if (isLastMessage) {
+                              logger.serverLog(TAG, 'inside fb autoposting send')
+                              sendAutopostingMessage(messageData, page, savedMsg)
+                            } else {
+                              // Logic to add into queue will go here
+                              logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                            }
+                          })
                         }
 
                         let newSubscriberMsg = new AutopostingSubscriberMessages({
