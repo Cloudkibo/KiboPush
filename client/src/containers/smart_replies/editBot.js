@@ -264,7 +264,7 @@ class EditBot extends React.Component {
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <div className='col-12'>
-                        <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this poll after 30 mins of ending the conversation.</p>
+                        <p style={{marginTop: '10px'}}> <b>Note: </b>Bot will not respond to those subscribers who are having chat with an agent for past 30 minutes</p>
                       </div>
                       <div className='col-12'>
                         <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
