@@ -382,3 +382,39 @@ export function allLocales () {
     callApi('backdoor/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
+export function deleteAccount (id, msg) {
+  return (dispatch) => {
+    callApi(`backdoor/deleteAccount`)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Account deleted successfully!')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+export function deleteSubscribers (id, msg) {
+  return (dispatch) => {
+    callApi(`backdoor/deleteSubscribers`)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Account deleted successfully!')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+export function deleteLiveChat (id, msg) {
+  return (dispatch) => {
+    callApi(`backdoor/deleteLiveChat`)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Account deleted successfully!')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}

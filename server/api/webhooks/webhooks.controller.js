@@ -7,17 +7,30 @@ const Webhooks = require('./webhooks.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
 exports.index = function (req, res) {
-  Webhooks.findOne({pageId: req.params.id}, (err, webhook) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    return res.status(201).json({status: 'success', payload: webhook})
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Webhooks.find({companyId: companyUser.companyId}, (err, webhooks) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      return res.status(201).json({status: 'success', payload: webhooks})
+    })
   })
 }
-
 exports.create = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -88,7 +101,6 @@ exports.enabled = function (req, res) {
         .json({status: 'failed', description: 'Record not found'})
     }
     webhook.isEnabled = req.body.isEnabled
-    webhook.optIn = req.body.optIn
     webhook.save((err2) => {
       if (err2) {
         return res.status(500)

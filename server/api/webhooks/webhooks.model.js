@@ -10,7 +10,7 @@ const webhookSchema = new Schema({
   isEnabled: { type: Boolean, default: false },
   error_message: {type: String, default: null},
   optIn: Schema.Types.Mixed,
-  pageId: { type: Schema.ObjectId, ref: 'pages' }
+  pageId: {type: String}
 })
 
 module.exports = mongoose.model('webhooks', webhookSchema)
