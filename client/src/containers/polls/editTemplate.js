@@ -333,15 +333,20 @@ class EditPoll extends React.Component {
                       }
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.showDialog}> Save
-                        </button>
-                        <Link
-                          to='/showTemplatePolls'
-                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                          Back
-                        </Link>
+                      <div className='col-12'>
+                        <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this poll after 30 mins of ending the conversation.</p>
+                      </div>
+                      <div className='col-12'>
+                        <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
+                          <button className='btn btn-primary'
+                            onClick={this.showDialog}> Save
+                          </button>
+                          <Link
+                            to='/showTemplatePolls'
+                            className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                            Back
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
