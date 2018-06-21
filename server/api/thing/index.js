@@ -321,4 +321,21 @@ router.get('/updatePageNames', (req, res) => {
   })
 })
 
+router.get('/updateEulaField', (req, res) => {
+  Users.find({}, (err, users) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
+    }
+    users.forEach(user => {
+      Users.update({_id: user._id}, {eulaAccepted: true}, (err, resp) => {
+        if (err) {
+          logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+        }
+      })
+    })
+  })
+  res.status(200).json({status: 'success', payload: []})
+})
+
 module.exports = router
