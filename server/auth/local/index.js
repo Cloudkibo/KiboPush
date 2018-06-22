@@ -15,7 +15,6 @@ const TAG = 'api/user/user.controller.js'
 let router = express.Router()
 
 router.post('/', function (req, res, next) {
-  logger.serverLog(TAG, `login request: ${JSON.stringify(req.body)}`)
   if (req.body.domain) {
     User.findOne({
       domain: req.body.domain.toLowerCase(),
