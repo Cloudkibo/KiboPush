@@ -4,7 +4,7 @@ const AutomationQueue = require('./automation_queue.model')
 const TAG = 'api/automation_queue/automation_queue.controller.js'
 
 exports.index = function (req, res) {
-  AutomationQueue.find({ companyId: req.companyId }, (err, automationQueue) => {
+  AutomationQueue.find({ companyId: req.body.companyId }, (err, automationQueue) => {
     if (err) {
       logger.serverLog(TAG, JSON.stringify(err))
       return res.status(500).json({
