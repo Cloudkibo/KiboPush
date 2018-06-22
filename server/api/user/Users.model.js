@@ -35,7 +35,8 @@ const UserSchema = new Schema({
   mainMenuTourSeen: {type: Boolean, default: false},
   subscribeToMessengerTourSeen: {type: Boolean, default: false},
   pagesTourSeen: {type: Boolean, default: false},
-  advancedMode: {type: Boolean, default: false}
+  advancedMode: {type: Boolean, default: false},
+  eulaAccepted: {type: Boolean, default: true}
 })
 
 /**

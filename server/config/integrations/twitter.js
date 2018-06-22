@@ -13,6 +13,7 @@ const AutopostingSubscriberMessages = require('../../api/autoposting_messages/au
 let request = require('request')
 let _ = require('lodash')
 let utility = require('../../api/broadcasts/broadcasts.utility')
+const compUtility = require('../../components/utility')
 
 const logger = require('../../components/logger')
 const TAG = 'config/integrations/twitter.js'
@@ -135,7 +136,21 @@ function connect () {
                                       'metadata': 'This is a meta data for tweet'
                                     })
                                   }
-                                  sendAutopostingMessage(messageData, page, savedMsg)
+                                  // Logic to control the autoposting when last activity is less than 30 minutes
+                                  compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, 'inside error')
+                                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                    }
+
+                                    if (isLastMessage) {
+                                      logger.serverLog(TAG, 'inside autoposting send')
+                                      sendAutopostingMessage(messageData, page, savedMsg)
+                                    } else {
+                                      // Logic to add into queue will go here
+                                      logger.serverLog(TAG, 'inside adding to autoposting queue')
+                                    }
+                                  })
                                 } else {
                                   let URLObject = new URL({
                                     originalURL: tweet.entities.media[0].url,
@@ -178,7 +193,21 @@ function connect () {
                                         }
                                       })
                                     }
-                                    sendAutopostingMessage(messageData, page, savedMsg)
+                                    // Logic to control the autoposting when last activity is less than 30 minutes
+                                    compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                                      if (err) {
+                                        logger.serverLog(TAG, 'inside error')
+                                        return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                      }
+
+                                      if (isLastMessage) {
+                                        logger.serverLog(TAG, 'inside autoposting send')
+                                        sendAutopostingMessage(messageData, page, savedMsg)
+                                      } else {
+                                        // Logic to add into queue will go here
+                                        logger.serverLog(TAG, 'inside adding to autoposting queue')
+                                      }
+                                    })
                                   })
                                 }
 

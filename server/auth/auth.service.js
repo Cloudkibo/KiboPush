@@ -61,8 +61,6 @@ function isAuthenticated () {
           // todo do this for permissions error
           FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
             .then(permissions => {
-              logger.serverLog(TAG,
-                `Permissions given: ${JSON.stringify(permissions)}`)
               req.user = user
               next()
             })

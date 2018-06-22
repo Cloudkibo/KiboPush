@@ -455,6 +455,7 @@ class Targeting extends React.Component {
           <i className='flaticon-exclamation m--font-brand' />
           { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
+            <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
           </span>
           }
           { this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>

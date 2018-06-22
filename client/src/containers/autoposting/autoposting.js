@@ -189,6 +189,9 @@ class Autoposting extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
+                  <div className='col-12'>
+                    <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive autoposts after 30 mins of ending the conversation.</p>
+                  </div>
                   <div
                     className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
                     <div className='row align-items-center'>
