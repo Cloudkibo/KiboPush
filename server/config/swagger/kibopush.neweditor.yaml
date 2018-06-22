@@ -5361,7 +5361,7 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
-  /webhooks/:id:
+  /webhooks/:
     get:
       description: gives the details of the webhook for a particular page
       consumes:
@@ -5378,8 +5378,9 @@ paths:
                type: string
                description: success
               payload:
-                type: object
-                $ref: '#/definitions/Webhook'
+                type: array
+                items:
+                  $ref: '#/definitions/Webhook'
         '500':
           description: failed
           schema:
@@ -5430,26 +5431,12 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: _id
-          in: formData
-          description: The unique id of the autopost to edit
-          type: string
+        - name: webhook
+          in: body
+          description: The survey details
           required: true
-        - name: web_url
-          in: formData
-          description: The url to send info to
-          type: string
-          required: true
-        - name: isEnabled
-          in: formData
-          description: Enable or disable the webhook
-          type: boolean
-          required: true
-        - name: optIn
-          in: formData
-          description: Enable or disable subscription types
-          type: string
-          required: true
+          schema:
+            $ref: '#/definitions/WebhookEdit'
       responses:
         '201':
           description: OK
@@ -7007,6 +6994,21 @@ definitions:
         type: string
         description: the error message
         readOnly: true
+      optIn:
+        type: object
+  WebhookEdit:
+    type: object
+    description: This table is used to store facebook webhooks information
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+      webhook_url:
+          type: string
+          description: The url to send info to
+      isEnabled:
+        type: boolean
+        description: Whether the webhook is enabled or not
       optIn:
         type: object
   Permissions:

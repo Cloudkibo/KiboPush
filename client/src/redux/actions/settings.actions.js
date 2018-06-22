@@ -75,7 +75,18 @@ export function showGreetingMessage (data) {
     data: data
   }
 }
-
+export function showWebhook (data) {
+  return {
+    type: ActionTypes.SHOW_WEBHOOK,
+    data
+  }
+}
+export function showWebhookResponse (data) {
+  return {
+    type: ActionTypes.SHOW_WEBHOOK_RESPONSE,
+    data
+  }
+}
 export function enable (API) {
   return (dispatch) => {
     callApi('api_settings/enable', 'post', API)
@@ -294,6 +305,65 @@ export function findResponseMethod () {
           dispatch(getResponseMethod(res.payload))
         } else if (res.status === 'failed') {
           console.log(`Getting response method fails. ${res.description}`)
+        }
+      })
+  }
+}
+export function loadWebhook () {
+  return (dispatch) => {
+    callApi('webhooks')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWebhook(res.payload))
+        }
+      })
+  }
+}
+export function createEndpoint (data) {
+  console.log('data for createEndpoint', data)
+  return (dispatch) => {
+    callApi('webhooks/create', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWebhookResponse('success'))
+          dispatch(loadWebhook())
+        } else {
+          dispatch(showWebhookResponse(res.description))
+          //  msg.error(res.description)
+        }
+      })
+  }
+}
+export function editEndpoint (data) {
+  console.log('data for editEndpoint', data)
+  return (dispatch) => {
+    callApi('webhooks/edit', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWebhookResponse('success'))
+          dispatch(loadWebhook())
+        } else {
+          dispatch(showWebhookResponse(res.description))
+          //  msg.error(res.description)
+        }
+      })
+  }
+}
+export function enabled (data, msg) {
+  console.log('data for enabled', data)
+  return (dispatch) => {
+    callApi('webhooks/enabled', 'post', data)
+      .then(res => {
+        console.log('response from enabled', res)
+        if (res.status === 'success') {
+          if (data.isEnabled) {
+            msg.success('Webhook Enabled!')
+          } else {
+            msg.success('Webhook Disabled!')
+          }
+          dispatch(loadWebhook())
+        } else {
+          //  msg.error(res.description)
         }
       })
   }

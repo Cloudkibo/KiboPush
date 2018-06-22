@@ -20,6 +20,7 @@ import Billing from './billing'
 import PaymentMethods from './paymentMethods'
 import ChatWidget from './chatWidget'
 import ResponseMethods from './responseMethods'
+import Webhook from './webhooks'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
@@ -63,6 +64,7 @@ class Settings extends React.Component {
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
     this.setBilling = this.setBilling.bind(this)
+    this.setWebhook = this.setWebhook.bind(this)
     this.setPayementMethods = this.setPayementMethods.bind(this)
     this.setChatWidget = this.setChatWidget.bind(this)
     this.setPermissions = this.setPermissions.bind(this)
@@ -143,6 +145,11 @@ class Settings extends React.Component {
   setBilling () {
     this.setState({
       openTab: 'billing'
+    })
+  }
+  setWebhook () {
+    this.setState({
+      openTab: 'webhook'
     })
   }
   setPayementMethods () {
@@ -505,6 +512,14 @@ class Settings extends React.Component {
                           </a>
                         </li>
                       }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon la la-link' />
+                            <span className='m-nav__link-text'>Webhook</span>
+                          </a>
+                        </li>
+                      }
                       </ul>
                     </div>
                   </div>
@@ -677,6 +692,9 @@ class Settings extends React.Component {
                 }
                 { this.state.openTab === 'responseMethods' &&
                   <ResponseMethods />
+                }
+                { this.state.openTab === 'webhook' &&
+                  <Webhook />
                 }
               </div>
             </div>

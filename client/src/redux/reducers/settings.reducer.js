@@ -72,6 +72,15 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         responseMethod: action.data.automated_options
       })
+    case ActionTypes.SHOW_WEBHOOK:
+      return Object.assign({}, state, {
+        webhook: action.data,
+        response: ''
+      })
+    case ActionTypes.SHOW_WEBHOOK_RESPONSE:
+      return Object.assign({}, state, {
+        response: action.data
+      })
     default:
       return state
   }

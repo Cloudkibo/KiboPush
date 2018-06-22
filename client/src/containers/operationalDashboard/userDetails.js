@@ -5,10 +5,11 @@ import PagesInfo from './userPages'
 import BroadcastsInfo from './userBroadcasts'
 import SurveysInfo from './userSurveys'
 import PollsInfo from './userPolls'
-import { loadPagesList } from '../../redux/actions/backdoor.actions'
+import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import AlertContainer from 'react-alert'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -25,6 +26,9 @@ class UserDetails extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)
     this.search = this.search.bind(this)
+    this.deleteAccount = this.deleteAccount.bind(this)
+    this.deleteLiveChat = this.deleteLiveChat.bind(this)
+    this.deleteSubscribers = this.deleteSubscribers.bind(this)
   }
 
   search (event, name) {
@@ -83,20 +87,42 @@ class UserDetails extends React.Component {
       this.setState({pagesData: [], totalLength: 0})
     }
   }
-
+  deleteAccount (id) {
+    this.props.deleteAccount(id, this.msg)
+  }
+  deleteLiveChat (id) {
+    this.props.deleteLiveChat(id, this.msg)
+  }
+  deleteSubscribers (id) {
+    this.props.deleteSubscribers(id, this.msg)
+  }
   componentDidUpdate () {
     window.scrollTo(0, 0)
   }
 
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
             <div className='m-subheader '>
+              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' onClick={() => this.deleteAccount(this.props.location.state._id)}>Delete Entire Account
+              </button>
+              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.deleteLiveChat(this.props.location.state._id)}>Delete Live Chat
+              </button>
+              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.deleteSubscribers(this.props.location.state._id)}>Delete Subscribers
+              </button>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
                   <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
@@ -129,7 +155,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadPagesList: loadPagesList
+    loadPagesList: loadPagesList,
+    deleteAccount: deleteAccount,
+    deleteLiveChat: deleteLiveChat,
+    deleteSubscribers: deleteSubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails)
