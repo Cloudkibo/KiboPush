@@ -5499,6 +5499,36 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+             
+  /automationQueue:
+    get:
+      description: gives all the automated options in the automated queue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/AutomationQueue'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 ################################################################################
 #                                 Definitions                                  #
 ################################################################################
@@ -6919,6 +6949,23 @@ definitions:
       datetime:
         type: string
         description: date and time of when this subscriber subscribed
+        
+  AutomationQueue:
+    type: object
+    description: This table is used to store automation queue
+    properties:
+      automatedMessageId:
+        type: string
+        description: Id of the automated message i.e. survey, poll etc.
+      subscriberId:
+        type: string
+        description: Id of the subscriber to which automated message should be sent
+      companyId:
+        type: string
+        description: Id of the company that the user belongs to
+      type:
+        type: string
+        description: whether the automated message is survey, poll, broadcast
 
   FacebookPost:
     type: object
