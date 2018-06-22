@@ -14,6 +14,12 @@ export function getResponseMethod (data) {
     data
   }
 }
+export function showDeleteOption (data) {
+  return {
+    type: ActionTypes.DELETE_OPTION,
+    data
+  }
+}
 export function get (data) {
   return {
     type: ActionTypes.ENABLE_SUCCESS,
@@ -365,6 +371,25 @@ export function enabled (data, msg) {
         } else {
           //  msg.error(res.description)
         }
+      })
+  }
+}
+export function saveDeleteOption (data, msg) {
+  return (dispatch) => {
+    dispatch(showDeleteOption(data))
+  }
+}
+export function authenticatePassword (data, msg, handleAuthentication) {
+  return (dispatch) => {
+    callApi('users/authenticatePassword', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Authenticated')
+        } else {
+          msg.error(res.description)
+        }
+        handleAuthentication(res)
       })
   }
 }

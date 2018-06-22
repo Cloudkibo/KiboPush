@@ -873,3 +873,38 @@ exports.joinCompany = function (req, res) {
       })
     })
 }
+
+exports.authenticatePassword = function (req, res) {
+  var parametersMissing = false
+  if (!_.has(req.body, 'email')) {
+    parametersMissing = true
+  }
+  if (!_.has(req.body, 'password')) {
+    parametersMissing = true
+  }
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  Users.findOne({
+    email: req.body.email
+  }, function (err, user) {
+    if (err) {
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!user) {
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    logger.serverLog(TAG,
+      'req.body ' + JSON.stringify(req.body))
+    if (!user.authenticate(req.body.password)) {
+      return res.status(200)
+      .json({status: 'failed', description: 'Incorrect password'})
+    } else {
+      return res.status(200)
+      .json({status: 'success', description: 'Authenticated'})
+    }
+  })
+}
