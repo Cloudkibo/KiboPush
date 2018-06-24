@@ -74,7 +74,12 @@ export function updateSurveysGraphData (data) {
     data
   }
 }
-
+export function deleteAccountResponse (data) {
+  return {
+    type: ActionTypes.DELETE_ACCOUNT_RESPONSE,
+    data
+  }
+}
 export function updatePollsGraphData (data) {
   return {
     type: ActionTypes.UPDATE_POLLS_GRAPH,
@@ -389,6 +394,7 @@ export function deleteAccount (id, msg) {
         console.log('response from deleteAccount', res)
         if (res.status === 'success') {
           msg.success('Account deleted successfully!')
+          dispatch(deleteAccountResponse('success'))
         } else {
           msg.error(res.description)
         }

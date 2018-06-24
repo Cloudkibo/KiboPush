@@ -97,11 +97,13 @@ class UserDetails extends React.Component {
     } else {
       this.setState({pagesData: [], totalLength: 0})
     }
+    if (nextProps.response) {
+      browserHistory.push({
+        pathname: `/operationalDashboard`
+      })
+    }
   }
   deleteAccount (id) {
-    browserHistory.push({
-      pathname: `/operationalDashboard`
-    })
     this.props.deleteAccount(id, this.msg)
     this.setState({isShowingModalAccount: false})
   }
@@ -237,7 +239,8 @@ class UserDetails extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: state.backdoorInfo.pages,
-    count: state.backdoorInfo.pagesCount
+    count: state.backdoorInfo.pagesCount,
+    response: state.backdoorInfo.response
   }
 }
 
