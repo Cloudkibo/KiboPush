@@ -41,6 +41,8 @@ router.get('/pollsByDays/:days', auth.isAuthorizedSuperUser(), controller.pollsB
 router.post('/getAllPolls', auth.isAuthorizedSuperUser(), controller.getAllPolls) // pagination
 router.get('/sendEmail', auth.isAuthorizedSuperUser(), controller.sendEmail)
 router.get('/allLocales', auth.isAuthorizedSuperUser(), controller.allLocales)
-router.get('/deletePages', auth.isAuthorizedSuperUser(), controller.deletePages)
+router.get('/deleteAccount/:id', auth.isAuthorizedSuperUser(), controller.deleteAccount)
+router.get('/deleteSubscribers/:id', auth.isAuthorizedSuperUser(), controller.deleteSubscribers)
+router.get('/deleteLiveChat/:id', auth.isAuthorizedSuperUser(), controller.deleteLiveChat)
 
 module.exports = router
