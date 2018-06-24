@@ -73,7 +73,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
           }
         })
         for (let i = 0; i < bot.payload.length; i++) {
-          if (bot.payload[i].intent_name == intent.value) {
+          if (bot.payload[i].intent_name === intent.value) {
             sendMessenger(bot.payload[i].answer, pageId, senderId)
           }
         }
@@ -123,29 +123,29 @@ exports.respond = function (payload) {
   }
   if (!payload.entry) {
     logger.serverLog(TAG, `Payload received is not for bot does not contain entry`)
-  	return
+    return
   }
   if (!payload.entry[0].messaging) {
     logger.serverLog(TAG, `Payload received is not for bot does contain messaging field`)
-  	return
+    return
   }
   if (!payload.entry[0].messaging[0]) {
     logger.serverLog(TAG, `Payload received is not for bot does not contain messaging array`)
-  	return
+    return
   }
   var messageDetails = payload.entry[0].messaging[0]
   var pageId = messageDetails.recipient.id
   var senderId = messageDetails.sender.id
 
   if (!messageDetails.message) {
-  	return
+    return
   }
   if (messageDetails.message.is_echo) {
     return
   }
   var text = messageDetails.message.text
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
-  Pages.findOne({pageId: pageId}, (err, page) => {
+  Pages.findOne({_id: pageId}, (err, page) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
@@ -155,7 +155,6 @@ exports.respond = function (payload) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
 
-  	 	// Return if no bot found
         if (!bot) {
           logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
           return
@@ -245,7 +244,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-   logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   var uniquebotName = req.body.botName + req.user._id + Date.now()
   request(
     {
@@ -303,7 +302,6 @@ exports.create = function (req, res) {
           }
         }
       })
-
 }
 
 exports.edit = function (req, res) {
@@ -376,9 +374,9 @@ exports.delete = function (req, res) {
       logger.serverLog(TAG,
               `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
       if (bot.length == 0) {
-      	logger.serverLog(TAG,
+        logger.serverLog(TAG,
               `Cannot find a bot to delete`)
-      	return
+        return
       }
 
       request(
