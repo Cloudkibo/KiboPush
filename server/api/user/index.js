@@ -19,5 +19,6 @@ router.post('/updateMode', controller.updateMode)
 router.get('/fbAppId', auth.isAuthenticated(), controller.fbAppId)
 router.post('/authenticatePassword', auth.isAuthenticated(), controller.authenticatePassword)
 router.get('/movePlan', controller.movePlan)
+router.post('/enableDelete', controller.enableDelete)
 
 module.exports = router

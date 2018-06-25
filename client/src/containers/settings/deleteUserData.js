@@ -99,20 +99,20 @@ class DeleteUserData extends React.Component {
     }
   }
   saveDeleteOption () {
-    this.props.saveDeleteOption({delete_options: this.state.deleteOption}, this.msg)
+    this.props.saveDeleteOption({delete_option: this.state.deleteOption, user: this.props.user}, this.msg)
   }
   handleRadioChange (e) {
     this.setState({
       selectedRadio: e.currentTarget.value
     })
     if (e.currentTarget.value === 'delAccount') {
-      this.setState({deleteOption: 'delAccount'})
+      this.setState({deleteOption: 'DEL_ACCOUNT'})
     }
     if (e.currentTarget.value === 'delChat') {
-      this.setState({deleteOption: 'delChat'})
+      this.setState({deleteOption: 'DEL_CHAT'})
     }
     if (e.currentTarget.value === 'delSubscribers') {
-      this.setState({deleteOption: 'delSubscribers'})
+      this.setState({deleteOption: 'DEL_SUBSCRIBER'})
     }
   }
   render () {

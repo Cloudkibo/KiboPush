@@ -376,7 +376,16 @@ export function enabled (data, msg) {
 }
 export function saveDeleteOption (data, msg) {
   return (dispatch) => {
-    dispatch(showDeleteOption(data))
+    callApi('users/enableDelete', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Authenticated')
+          dispatch(showDeleteOption(data))
+        } else {
+          msg.error(res.description)
+        }
+      })
   }
 }
 export function authenticatePassword (data, msg, handleAuthentication) {
