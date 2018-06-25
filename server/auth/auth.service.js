@@ -294,10 +294,13 @@ function fbConnectDone (req, res) {
       return res.status(401)
         .json({status: 'failed', description: 'Unauthorized'})
     }
-
+    Users.update({_id: user.facebookInfo.fbId}, {permissionsRevoked: false}, {multi: true}, (err, resp) => {
+      if (err) {
+        logger.serverLog(TAG, `Error updating permissionsRevoked field`)
+      }
+    })
     req.user = user
     user.facebookInfo = fbPayload
-    user.permissionsRevoked = false
     user.save((err) => {
       if (err) {
         return res.status(500)
