@@ -1863,6 +1863,33 @@ paths:
           type: array
           items:
             type: string
+        - name: segmentationTags
+          in: formData
+          description: The segmented tags
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationPoll
+          in: formData
+          description: The segmented poll
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationList
+          in: formData
+          description: The segmented list
+          required: false
+          type: array
+          items:
+            type: string
+        - name: isList
+          in: formData
+          description: Whether to send the poll to a list or not
+          required: false
+          type: boolean
+          default: false
       responses:
         '200':
           description: OK
@@ -2714,6 +2741,33 @@ paths:
           type: array
           items:
             type: string
+        - name: segmentationTags
+          in: formData
+          description: The segmented tags
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationSurvey
+          in: formData
+          description: The segmented survey
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationList
+          in: formData
+          description: The segmented list
+          required: false
+          type: array
+          items:
+            type: string
+        - name: isList
+          in: formData
+          description: Whether to send the survey to a list or not
+          required: false
+          type: boolean
+          default: false
       responses:
         '200':
           description: OK
@@ -6248,6 +6302,23 @@ definitions:
         type: string
         description: Date and time when this record was created.
         readOnly: true
+      segmentationTags:
+        type: array
+        items:
+          type: string
+          description: The tags of the subscribers to send survey to
+      segmentationList:
+        type: array
+        items:
+          type: string
+          description: The list of the subscribers to send survey to
+      isList:
+        type: boolean
+        description: Whether to send this survey to a list or not
+        default: false
+      clicks:
+        type: number
+        readOnly: true
 
   Page_Broadcast:
     type: object
@@ -6387,6 +6458,7 @@ definitions:
       isSegmented:
         type: boolean
         description: Whether this poll is segmented or not
+        default: false
       segmentationPageIds:
         type: array
         items:
@@ -6405,6 +6477,25 @@ definitions:
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send poll to
+      segmentationTags:
+        type: array
+        items:
+          type: string
+          description: The tags of the subscribers to send poll to
+      segmentationList:
+        type: array
+        items:
+          type: string
+          description: The list of the subscribers to send poll to
+      segmentationPoll:
+        type: array
+        items:
+          type: string
+          description: Send poll to subscribers who replied to previous polls
+      isList:
+        type: boolean
+        description: Whether to send this poll to a list or not
+        default: false
 
   Poll_Response:
     type: object
@@ -6537,6 +6628,25 @@ definitions:
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send survey to
+      segmentationTags:
+        type: array
+        items:
+          type: string
+          description: The tags of the subscribers to send survey to
+      segmentationList:
+        type: array
+        items:
+          type: string
+          description: The list of the subscribers to send survey to
+      segmentationPoll:
+        type: array
+        items:
+          type: string
+          description: Send survey to subscribers who replied to previous surveys
+      isList:
+        type: boolean
+        description: Whether to send this survey to a list or not
+        default: false
   EditSurvey:
     type: object
     description: The table contains information for editing a survey
