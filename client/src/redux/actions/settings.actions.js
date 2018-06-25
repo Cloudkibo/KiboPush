@@ -325,7 +325,7 @@ export function loadWebhook () {
       })
   }
 }
-export function createEndpoint (data) {
+export function createEndpoint (data, msg) {
   console.log('data for createEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/create', 'post', data)
@@ -334,8 +334,8 @@ export function createEndpoint (data) {
           dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
         } else {
-          dispatch(showWebhookResponse(res.description))
-          //  msg.error(res.description)
+          //  dispatch(showWebhookResponse(res.description))
+          msg.error(res.description)
         }
       })
   }

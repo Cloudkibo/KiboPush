@@ -74,7 +74,12 @@ export function updateSurveysGraphData (data) {
     data
   }
 }
-
+export function deleteAccountResponse (data) {
+  return {
+    type: ActionTypes.DELETE_ACCOUNT_RESPONSE,
+    data
+  }
+}
 export function updatePollsGraphData (data) {
   return {
     type: ActionTypes.UPDATE_POLLS_GRAPH,
@@ -384,10 +389,12 @@ export function allLocales () {
 }
 export function deleteAccount (id, msg) {
   return (dispatch) => {
-    callApi(`backdoor/deleteAccount`)
+    callApi(`backdoor/deleteAccount/${id}`)
       .then(res => {
+        console.log('response from deleteAccount', res)
         if (res.status === 'success') {
           msg.success('Account deleted successfully!')
+          dispatch(deleteAccountResponse('success'))
         } else {
           msg.error(res.description)
         }
@@ -396,10 +403,14 @@ export function deleteAccount (id, msg) {
 }
 export function deleteSubscribers (id, msg) {
   return (dispatch) => {
-    callApi(`backdoor/deleteSubscribers`)
+    callApi(`backdoor/deleteSubscribers/${id}`)
       .then(res => {
         if (res.status === 'success') {
-          msg.success('Account deleted successfully!')
+          msg.success('Subscribers deleted successfully!')
+          dispatch(loadPagesList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''}))
+          dispatch(loadBroadcastsList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', type_value: ''}}))
+          dispatch(loadPollsList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}}))
+          dispatch(loadSurveysList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}}))
         } else {
           msg.error(res.description)
         }
@@ -407,11 +418,17 @@ export function deleteSubscribers (id, msg) {
   }
 }
 export function deleteLiveChat (id, msg) {
+  console.log('data for deleteLiveChat', id)
   return (dispatch) => {
-    callApi(`backdoor/deleteLiveChat`)
+    callApi(`backdoor/deleteLiveChat/${id}`)
       .then(res => {
+        console.log('response from liveChat', res)
         if (res.status === 'success') {
-          msg.success('Account deleted successfully!')
+          msg.success('Live Chat deleted successfully!')
+          dispatch(loadPagesList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''}))
+          dispatch(loadBroadcastsList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', type_value: ''}}))
+          dispatch(loadPollsList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}}))
+          dispatch(loadSurveysList(id, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: '', days: 10}}))
         } else {
           msg.error(res.description)
         }

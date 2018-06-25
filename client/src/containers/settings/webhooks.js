@@ -55,8 +55,6 @@ class Webhook extends React.Component {
       if (nextProps.response === 'success') {
         this.msg.success('Webhook saved')
         this.setState({isShowingModal: false, isShowingModalEdit: false})
-      } else {
-        this.msg.error(nextProps.response)
       }
     }
   }
@@ -216,7 +214,7 @@ class Webhook extends React.Component {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptions[i].selected
         }
       }
-      this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn})
+      this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
     }
   }
   cancel () {
