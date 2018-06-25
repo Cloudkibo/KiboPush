@@ -297,6 +297,7 @@ function fbConnectDone (req, res) {
 
     req.user = user
     user.facebookInfo = fbPayload
+    user.permissionsRevoked = false
     user.save((err) => {
       if (err) {
         return res.status(500)
