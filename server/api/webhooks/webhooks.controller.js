@@ -39,30 +39,43 @@ exports.create = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
+
     if (!companyUser) {
       return res.status(404).json({
         status: 'failed',
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let webhookPayload = {
-      webhook_url: req.body.webhook_url,
-      companyId: companyUser.companyId,
-      isEnabled: req.body.isEnabled,
-      optIn: req.body.optIn,
-      pageId: req.body.pageId
-    }
-
-    const webhook = new Webhooks(webhookPayload)
-
-    Webhooks.create(webhook, (err, webhook) => {
+    Webhooks.find({companyId: companyUser.companyId, pageId: req.body.pageId}, (err, webhooks) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      return res.status(201).json({status: 'success', payload: webhook})
+      if (webhooks && webhooks.length > 0) {
+        return res.status(403).json({status: 'failed', description: 'Webhook for this page is already set'})
+      } else {
+        let webhookPayload = {
+          webhook_url: req.body.webhook_url,
+          companyId: companyUser.companyId,
+          isEnabled: req.body.isEnabled,
+          optIn: req.body.optIn,
+          pageId: req.body.pageId
+        }
+
+        const webhook = new Webhooks(webhookPayload)
+
+        Webhooks.create(webhook, (err, webhook) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          return res.status(201).json({status: 'success', payload: webhook})
+        })
+      }
     })
   })
 }
