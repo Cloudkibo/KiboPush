@@ -81,6 +81,10 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         response: action.data
       })
+    case ActionTypes.DELETE_OPTION:
+      return Object.assign({}, state, {
+        deleteOption: action.data.delete_options
+      })
     default:
       return state
   }
