@@ -36,7 +36,8 @@ const UserSchema = new Schema({
   subscribeToMessengerTourSeen: {type: Boolean, default: false},
   pagesTourSeen: {type: Boolean, default: false},
   advancedMode: {type: Boolean, default: false},
-  eulaAccepted: {type: Boolean, default: true}
+  eulaAccepted: {type: Boolean, default: true},
+  permissionsRevoked: {type: Boolean, default: false}
 })
 
 /**

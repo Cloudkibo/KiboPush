@@ -19,6 +19,8 @@ const logger = require('../../components/logger')
 // const mongoose = require('mongoose')
 const MailChimp = require('mailchimp-api-v3')
 
+// const PassportFacebookExtension = require('passport-facebook-extension')
+
 const TAG = 'api/user/user.controller.js'
 
 exports.movePlan = function (req, res) {
@@ -122,10 +124,24 @@ exports.index = function (req, res) {
                 description: 'Fatal Error, plan not set for this user. Please contact support'
               })
             }
+
+            // if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
+            //   let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+            // config.facebook.clientSecret)
+
+            //   FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
+            // .then(permissions => {
+            //   logger.serverLog(TAG, `Permissions given: ${JSON.stringify(permissions)}`)
+            // })
+            // .fail(e => {
+            //   logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
+            //   user.permissionsRevoked = true
+            // })
+            // }
+
             user = user.toObject()
             user.companyId = companyUser.companyId
             user.permissions = permissions
-            user.permissionsRevoked = req.user.permissionsRevoked
             user.currentPlan = company.stripe.plan
             user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
