@@ -82,7 +82,7 @@ class LiveChat extends React.Component {
     registerAction({
       event: 'agent_replied',
       action: function (data) {
-        if (data.user_id !== this.props.user._id && this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.activeSession._id === data.session_id) {
+        if (data.user_id !== compProp.user._id && this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.activeSession._id === data.session_id) {
           compProp.fetchUserChats(data.session_id)
         }
       }
