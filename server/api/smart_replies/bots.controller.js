@@ -517,12 +517,12 @@ exports.savePendingSubscribersQueue = function (req, res) {
         }
         Bots.update(
           {_id: req.body.botId},
-          {blockedSubscribers: activeSubscribers}, (err, updated) => {
+          {blockedSubscribers: activeSubscribers}, (err, updatedBot) => {
             if (err) {
               return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
             return res.status(200)
-            .json({status: 'success', payload: bot})
+            .json({status: 'success', payload: updatedBot})
           })
       }
     })
