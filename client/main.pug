@@ -176,7 +176,11 @@ html(lang="en")
       }
       var env = readCookie("environment");
       if (env !== "development") {
-        Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307').install()
+        Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
+          autoBreadcrumbs: {
+          console: false
+        }
+      }).install()
       }
     script(src="js/bundle.js")
     // Js effects for material design. + Tooltips
