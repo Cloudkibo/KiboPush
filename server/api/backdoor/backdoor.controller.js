@@ -87,14 +87,6 @@ exports.getAllUsers = function (req, res) {
     }
   }
   */
-  Users.find({}).exec((err, usersData) => {
-    if (err) {
-      return res.status(404).json({
-        status: 'failed',
-        description: `Error in getting users ${JSON.stringify(err)}`
-      })
-    }
-  })
   if (req.body.first_page) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
@@ -139,8 +131,6 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        console.log('findCriteria', findCriteria)
-        console.log('users', users)
         let usersPayload = []
         if (users.length > 0) {
           users.forEach((user) => {
