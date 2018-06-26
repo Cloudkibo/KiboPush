@@ -17,7 +17,7 @@
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
     "watch": "watchify client/src/app.js -t babelify -o client/public/js/bundle.js --debug --verbose",
     "build:client": "sh build_script",
-    "build:react": "echo 'Build reactjs bundle...' && browserify -t [ babelify --presets [ es2015 react ] ] client/src/app.js --debug | exorcist client/public/js/bundle.js.map > client/public/js/bundle.js && echo 'Done compiling reactjs file'",
+    "build:react": "echo 'Build reactjs bundle...' && browserify -t [ babelify --presets [ es2015 react ] ] client/src/app.js --debug | exorcist client/public/js/bundle.js.map > client/public/js/bundle.js && uglifycss client/public/assets/vendors/custom/css/custom-style.css --output client/public/dist/custom-style.min.css client/public/Bootstrap/dist/css/latestBootstrap.css client/public/assets/Emoji/picker.css client/public/assets/dashboard/dashboard.css --output client/public/dist/kibopush.min.css &&echo 'Done compiling reactjs file'",
     "lint": "echo 'Pre-commit checks...' && standard --fix && echo \"No code style errors found.\"",
     "test": "echo \"Code tests are under construction by Sojharo\" && exit 0"
   },
