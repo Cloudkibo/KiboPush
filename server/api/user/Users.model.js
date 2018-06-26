@@ -40,7 +40,7 @@ const UserSchema = new Schema({
   permissionsRevoked: {type: Boolean, default: false},
   deleteInformation: {
     type: String,
-    enum: ['DEL_ACCOUNT', 'DEL_CHAT', 'DEL_SUBSCRIBER'],
+    enum: ['DEL_ACCOUNT', 'DEL_CHAT', 'DEL_SUBSCRIBER', 'NONE'],
     default: ''
   }
 })

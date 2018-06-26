@@ -924,34 +924,9 @@ exports.authenticatePassword = function (req, res) {
     }
   })
 }
-
-exports.getDeleteOptions = function (req, res) {
-  logger.serverLog(TAG,
-    `Delete Options : ${JSON.stringify(
-      req)}`)
-  Users.findOne({domain_email: req.user._id},
-    (err, user) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!user) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      return res.status(200).json({status: 'success', payload: user.deleteInformation})
-    })
-}
 exports.enableDelete = function (req, res) {
   var parametersMissing = false
   if (!_.has(req.body, 'delete_option')) {
-    parametersMissing = true
-  }
-  if (!_.has(req.body, 'user')) {
     parametersMissing = true
   }
   if (parametersMissing) {
@@ -959,7 +934,7 @@ exports.enableDelete = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  Users.findOne({_id: req.body.user._id}, (err, user) => {
+  Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -986,7 +961,7 @@ exports.enableDelete = function (req, res) {
           config.sendgrid.password)
 
         let email = new sendgrid.Email({
-          to: req.body.user.email,
+          to: req.user.email,
           from: 'support@cloudkibo.com',
           subject: 'KiboPush: Delete Confirmation',
           text: ' Delete Confirmation'
@@ -997,12 +972,107 @@ exports.enableDelete = function (req, res) {
           '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
           '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
           '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-          '<p style="color: #ffffff">Verify your account</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<p style="color: #ffffff">Delete Confirmation</p> </td></tr> </table> </td> </tr> </table> ' +
           '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
           '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
           '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
          '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
          emailText +
+         '<!-- END: Content -->' +
+         '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+         '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+        sendgrid.send(email, function (err, json) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `Internal Server Error on sending email : ${JSON.stringify(
+                err)}`)
+          }
+        })
+
+        let emailAdmin = new sendgrid.Email({
+          to: 'sojharo@cloudkibo',
+          from: 'support@cloudkibo.com',
+          subject: 'KiboPush: Delete User Information',
+          text: 'Delete User Information'
+        })
+
+        emailAdmin.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+          '<p style="color: #ffffff">Delete User Information</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
+          '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+         '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+          req.user.name + ' has requested to delete his/her information from KiboPush. The information type to be deleted is: ' +
+          req.body.delete_option + '. ' +
+          'Following are the user details:' +
+          '<ul>' +
+            '<li>' + req.user._id + '</li>' +
+            '<li>' + req.user.email + '</li>' +
+            '<li>' + req.user.role + '</li>' +
+            '<li>' + req.user.plan + '</li>' +
+          '</ul>' +
+         '<!-- END: Content -->' +
+        '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+        '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+        sendgrid.send(emailAdmin, function (err, json) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `Internal Server Error on sending email to Admin : ${JSON.stringify(
+                err)}`)
+          }
+        })
+
+        return res.status(200).json({status: 'success', payload: updatedUser})
+      }
+    })
+  })
+}
+
+exports.cancelDeletion = function (req, res) {
+  Users.findOne({domain_email: req.user.domain_email}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    user.deleteInformation = 'NONE'
+    user.save((err, updatedUser) => {
+      logger.serverLog(TAG,
+        `Inside SaveUser user : ${JSON.stringify(
+          updatedUser)}`)
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      } else {
+        let sendgrid = require('sendgrid')(config.sendgrid.username,
+          config.sendgrid.password)
+
+        let email = new sendgrid.Email({
+          to: req.user.email,
+          from: 'support@cloudkibo.com',
+          subject: 'KiboPush: Cancel Deletion Process',
+          text: 'Cancel Deletion Process'
+        })
+
+        email.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+          '<p style="color: #ffffff">Cancel Deletion Process</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
+          '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+         '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+         '<p> You have requested to cancel the deletion process. Request has been sent to admin.</p>' +
          '<!-- END: Content -->' +
         '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
           '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
@@ -1018,8 +1088,8 @@ exports.enableDelete = function (req, res) {
         let emailAdmin = new sendgrid.Email({
           to: 'sojharo@cloudkibo.com',
           from: 'support@cloudkibo.com',
-          subject: 'KiboPush: Delete User Information',
-          text: 'Delete User Information'
+          subject: 'KiboPush: Cancel Deletion Process',
+          text: 'Cancel Deletion Process'
         })
 
         emailAdmin.setHtml(
@@ -1032,8 +1102,14 @@ exports.enableDelete = function (req, res) {
           '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
           '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
          '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
-          req.body.user._id + ' has requested to delete his information from KiboPush. The information type deleted would be:' +
-          req.body.delete_option +
+          req.user.name + ' has requested to stop his/her deletion process. ' +
+          'Following are the user details:' +
+          '<ul>' +
+            '<li>' + req.user._id + '</li>' +
+            '<li>' + req.user.email + '</li>' +
+            '<li>' + req.user.role + '</li>' +
+            '<li>' + req.user.plan + '</li>' +
+          '</ul>' +
          '<!-- END: Content -->' +
         '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
           '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')

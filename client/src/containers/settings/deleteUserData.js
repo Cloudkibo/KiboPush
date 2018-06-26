@@ -3,7 +3,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { saveDeleteOption, authenticatePassword, getDeleteOption } from '../../redux/actions/settings.actions'
+import { saveDeleteOption, authenticatePassword, getDeleteOption, cancelDeletion } from '../../redux/actions/settings.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
@@ -16,7 +16,8 @@ class DeleteUserData extends React.Component {
       showConfirmation: false,
       confirmationMessage: '',
       showAuthentication: false,
-      password: ''
+      password: '',
+      showEmailAlert: ''
     }
     props.getuserdetails()
     this.handleRadioChange = this.handleRadioChange.bind(this)
@@ -48,7 +49,7 @@ class DeleteUserData extends React.Component {
       selectedRadio: '',
       deleteOption: ''
     })
-    this.saveDeleteOption()
+    this.props.cancelDeletion(this.msg, this.handleSave)
   }
   handleAuthentication (res) {
     if (res.status === 'success') {
@@ -99,28 +100,32 @@ class DeleteUserData extends React.Component {
       if (user.deleteInformation === 'DEL_ACCOUNT') {
         this.setState({
           deleteOption: 'DEL_ACCOUNT',
-          selectedRadio: 'delAccount'
+          selectedRadio: 'delAccount',
+          showEmailAlert: 'Your request to delete account has been sent to the admin.'
         })
       } else if (user.deleteInformation === 'DEL_CHAT') {
         this.setState({
           deleteOption: 'DEL_CHAT',
-          selectedRadio: 'delChat'
+          selectedRadio: 'delChat',
+          showEmailAlert: 'Your request to delete chat sessions has been sent to the admin.'
         })
       } else if (user.deleteInformation === 'DEL_SUBSCRIBER') {
         this.setState({
           deleteOption: 'DEL_SUBSCRIBER',
-          selectedRadio: 'delSubscribers'
+          selectedRadio: 'delSubscribers',
+          showEmailAlert: 'Your request to delete subscribers has been sent to the admin.'
         })
       } else {
         this.setState({
           deleteOption: '',
-          selectedRadio: ''
+          selectedRadio: '',
+          showEmailAlert: ''
         })
       }
     }
   }
   saveDeleteOption () {
-    this.props.saveDeleteOption({delete_option: this.state.deleteOption, user: this.props.user}, this.msg, this.handleSave)
+    this.props.saveDeleteOption({delete_option: this.state.deleteOption}, this.msg, this.handleSave)
   }
   handleSave (res) {
     if (res.status === 'success') {
@@ -241,10 +246,15 @@ class DeleteUserData extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='row'>
+            <div className='row' style={{marginBottom: '20px'}}>
               <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.deleteOption === ''} onClick={(e) => this.onSaveOption(e)}>Save</button>
-              <button className='btn btn-secondary' style={{marginLeft: '10px', marginTop: '20px'}} onClick={(e) => this.onCancel(e)}>Cancel</button>
+              <button className='btn btn-secondary' style={{marginLeft: '10px', marginTop: '20px'}} disabled={this.state.showEmailAlert === ''} onClick={(e) => this.onCancel(e)}>Cancel</button>
             </div>
+            {this.state.showEmailAlert !== '' && <div className='row alert alert-email'>
+              <p>{this.state.showEmailAlert}</p>
+              <span>Click on 'Cancel' if you want to stop the deletion process.</span>
+            </div>
+            }
           </div>
         </div>
       </div>
@@ -261,7 +271,8 @@ function mapDispatchToProps (dispatch) {
     saveDeleteOption: saveDeleteOption,
     authenticatePassword: authenticatePassword,
     getDeleteOption: getDeleteOption,
-    getuserdetails: getuserdetails
+    getuserdetails: getuserdetails,
+    cancelDeletion: cancelDeletion
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteUserData)
