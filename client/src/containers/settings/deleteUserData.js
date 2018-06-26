@@ -3,7 +3,8 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { saveDeleteOption, authenticatePassword } from '../../redux/actions/settings.actions'
+import { saveDeleteOption, authenticatePassword, getDeleteOption } from '../../redux/actions/settings.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class DeleteUserData extends React.Component {
@@ -17,6 +18,7 @@ class DeleteUserData extends React.Component {
       showAuthentication: false,
       password: ''
     }
+    props.getuserdetails()
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.saveDeleteOption = this.saveDeleteOption.bind(this)
     this.updateDeleteOption = this.updateDeleteOption.bind(this)
@@ -27,13 +29,15 @@ class DeleteUserData extends React.Component {
     this.onPasswordSubmit = this.onPasswordSubmit.bind(this)
     this.handleAuthentication = this.handleAuthentication.bind(this)
     this.onCancel = this.onCancel.bind(this)
+    this.handleSave = this.handleSave.bind(this)
   }
   componentDidMount () {
-    this.updateDeleteOption(this.props.deleteOption)
+    this.updateDeleteOption(this.props.user)
   }
   componentWillReceiveProps (nextProps) {
-    this.updateDeleteOption(this.props.deleteOption)
+    this.updateDeleteOption(nextProps.user)
   }
+
   changePassword (e) {
     this.setState({
       password: e.target.value
@@ -90,16 +94,38 @@ class DeleteUserData extends React.Component {
       showAuthentication: false
     })
   }
-  updateDeleteOption (deleteOption) {
-    if (deleteOption) {
-      this.setState({
-        deleteOption: deleteOption,
-        selectedRadio: deleteOption
-      })
+  updateDeleteOption (user) {
+    if (user && user.deleteInformation && user.deleteInformation !== '') {
+      if (user.deleteInformation === 'DEL_ACCOUNT') {
+        this.setState({
+          deleteOption: 'DEL_ACCOUNT',
+          selectedRadio: 'delAccount'
+        })
+      } else if (user.deleteInformation === 'DEL_CHAT') {
+        this.setState({
+          deleteOption: 'DEL_CHAT',
+          selectedRadio: 'delChat'
+        })
+      } else if (user.deleteInformation === 'DEL_SUBSCRIBER') {
+        this.setState({
+          deleteOption: 'DEL_SUBSCRIBER',
+          selectedRadio: 'delSubscribers'
+        })
+      } else {
+        this.setState({
+          deleteOption: '',
+          selectedRadio: ''
+        })
+      }
     }
   }
   saveDeleteOption () {
-    this.props.saveDeleteOption({delete_option: this.state.deleteOption, user: this.props.user}, this.msg)
+    this.props.saveDeleteOption({delete_option: this.state.deleteOption, user: this.props.user}, this.msg, this.handleSave)
+  }
+  handleSave (res) {
+    if (res.status === 'success') {
+      this.props.getuserdetails()
+    }
   }
   handleRadioChange (e) {
     this.setState({
@@ -234,7 +260,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     saveDeleteOption: saveDeleteOption,
-    authenticatePassword: authenticatePassword
+    authenticatePassword: authenticatePassword,
+    getDeleteOption: getDeleteOption,
+    getuserdetails: getuserdetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteUserData)

@@ -374,17 +374,29 @@ export function enabled (data, msg) {
       })
   }
 }
-export function saveDeleteOption (data, msg) {
+export function getDeleteOption () {
+  return (dispatch) => {
+    callApi('users/getDeleteOptions')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showDeleteOption(res.payload))
+        } else if (res.status === 'failed') {
+          console.log(`Getting delete options failed. ${res.description}`)
+        }
+      })
+  }
+}
+export function saveDeleteOption (data, msg, handleSave) {
   return (dispatch) => {
     callApi('users/enableDelete', 'post', data)
       .then(res => {
         console.log('response from msg', res)
         if (res.status === 'success') {
-          msg.success('Authenticated')
-          dispatch(showDeleteOption(data))
+          msg.success('Delete request has been sent')
         } else {
           msg.error(res.description)
         }
+        handleSave(res)
       })
   }
 }

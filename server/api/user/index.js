@@ -20,5 +20,6 @@ router.get('/fbAppId', auth.isAuthenticated(), controller.fbAppId)
 router.post('/authenticatePassword', auth.isAuthenticated(), controller.authenticatePassword)
 router.get('/movePlan', controller.movePlan)
 router.post('/enableDelete', controller.enableDelete)
+router.get('/getDeleteOptions', controller.getDeleteOptions)
 
 module.exports = router
