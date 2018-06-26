@@ -29,7 +29,7 @@ class LoginSignup extends React.Component {
                   <br />
                   <br />
                   <br />
-                  <div className='m-login__signin'>
+                  <div style={{marginTop: -50}} className='m-login__signin'>
                     <div className='m-login__form m-form'>
                       <center>
                         <Link to='/login' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>

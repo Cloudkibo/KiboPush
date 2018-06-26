@@ -37,6 +37,7 @@ const UserSchema = new Schema({
   pagesTourSeen: {type: Boolean, default: false},
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
+  permissionsRevoked: {type: Boolean, default: false},
   deleteInformation: {
     type: String,
     enum: ['DEL_ACCOUNT', 'DEL_CHAT', 'DEL_SUBSCRIBER'],

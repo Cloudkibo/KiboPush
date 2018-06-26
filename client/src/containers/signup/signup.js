@@ -154,9 +154,9 @@ class Signup extends React.Component {
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
           data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request'
         />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin m-login--signup' id='m_login' style={{height: 130 + 'vh'}}>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin m-login--signup' id='m_login' style={{height: 100 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
-            <div className='m-stack m-stack--hor m-stack--desktop'>
+            <div style={{marginTop: !this.state.eulaAgreed ? -120 : 0}} className='m-stack m-stack--hor m-stack--desktop'>
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
@@ -264,10 +264,13 @@ class Signup extends React.Component {
                         <center>
                           <div style={{
                             width: '300px',
-                            height: '20pc',
+                            height: '17pc',
                             overflowY: 'scroll',
                             textAlign: 'left',
-                            whiteSpace: 'pre-wrap'
+                            whiteSpace: 'pre-wrap',
+                            marginTop: -20,
+                            border: '1px solid black',
+                            padding: 10
                           }}>
 
                             <p>This End-User License Agreement ("EULA") is a legal agreement between you and CloudKibo</p>
