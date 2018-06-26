@@ -913,12 +913,22 @@ exports.enable = function (req, res) {
                                     err)}`
                                 })
                               }
-                              res.status(200).json({
-                                status: 'success',
-                                payload: {
-                                  pages: pages,
-                                  msg: 'Page is already connected by another user'
+                              Users.findOne({_id: pagesbyOther[0].userId},
+                              (err, userInfo) => {
+                                if (err) {
+                                  return res.status(500).json({
+                                    status: 'failed',
+                                    description: `Internal Server Error${JSON.stringify(
+                                      err)}`
+                                  })
                                 }
+                                res.status(200).json({
+                                  status: 'success',
+                                  payload: {
+                                    pages: pages,
+                                    msg: `Page is already connected by ${userInfo.facebookInfo.name}. In order to manage this page please ask ${userInfo.facebookInfo.name} to create a team account and invite you.`
+                                  }
+                                })
                               })
                             })
                         }
