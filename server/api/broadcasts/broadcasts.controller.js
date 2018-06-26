@@ -32,6 +32,8 @@ const AutopostingMessages = require(
   './../autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
+const Webhooks = require(
+  './../webhooks/webhooks.model')
 // const SequenceMessages = require(
 //  './../sequenceMessaging/message.model')
 // const SequenceSubscriberMessages = require(
@@ -634,6 +636,19 @@ exports.getfbMessage = function (req, res) {
                                   if (err2) {
                                     logger.serverLog(TAG, err2)
                                   }
+                                  Webhooks.findOne({pageId: pageId}, (err, webhook) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                      var data = {
+                                        subscription_type: 'NEW_SUBSCRIBER',
+                                        payload: {subscriber: subsriber, recipient: pageId, sender: sender}
+                                      }
+                                      needle.post(webhook.webhook_url, data,
+                                        (error, response) => {
+                                          if (error) logger.serverLog(TAG, err)
+                                        })
+                                    }
+                                  })
                                   if (subscriberSource === 'customer_matching') {
                                     updateList(phoneNumber, sender, page)
                                   }
@@ -1576,6 +1591,19 @@ function savepoll (req, resp) {
       subscriberId: subscriber._id
 
     }
+    Webhooks.findOne({pageId: req.recipient.id}, (err, webhook) => {
+      if (err) logger.serverLog(TAG, err)
+      if (webhook && webhook.optIn.POLL_RESPONSE) {
+        var data = {
+          subscription_type: 'POLL_RESPONSE',
+          payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message}
+        }
+        needle.post(webhook.webhook_url, data,
+          (error, response) => {
+            if (error) logger.serverLog(TAG, err)
+          })
+      }
+    })
     if (temp === true) {
       PollResponse.create(pollbody, (err, pollresponse) => {
         if (err) {
@@ -1811,7 +1839,19 @@ function savesurvey (req) {
       questionId: resp.question_id,
       subscriberId: subscriber._id
     }
-
+    Webhooks.findOne({pageId: req.recipient.id}, (err, webhook) => {
+      if (err) logger.serverLog(TAG, err)
+      if (webhook && webhook.optIn.SURVEY_RESPONSE) {
+        var data = {
+          subscription_type: 'SURVEY_RESPONSE',
+          payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id}
+        }
+        needle.post(webhook.webhook_url, data,
+          (error, response) => {
+            if (error) logger.serverLog(TAG, err)
+          })
+      }
+    })
     SurveyResponse.update({
       surveyId: resp.survey_id,
       questionId: resp.question_id,
