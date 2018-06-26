@@ -18,6 +18,7 @@ let crypto = require('crypto')
 const logger = require('../../components/logger')
 // const mongoose = require('mongoose')
 const MailChimp = require('mailchimp-api-v3')
+const moment = require('moment')
 
 // const PassportFacebookExtension = require('passport-facebook-extension')
 
@@ -929,6 +930,9 @@ exports.enableDelete = function (req, res) {
   if (!_.has(req.body, 'delete_option')) {
     parametersMissing = true
   }
+  if (!_.has(req.body, 'deletion_date')) {
+    parametersMissing = true
+  }
   if (parametersMissing) {
     return res.status(400)
       .json({status: 'failed', description: 'Parameters are missing'})
@@ -942,14 +946,15 @@ exports.enableDelete = function (req, res) {
       })
     }
     var emailText = ''
+    var deletionDate = moment(req.body.deletion_date).format('dddd, MMMM Do YYYY')
     if (req.body.delete_option === 'DEL_ACCOUNT') {
-      emailText = 'You have requested deleting your account. Once your request has been served, you will not be able to reactivate it or retrieve any of the information. You have 14 days to change your decision, after which your account and entire data will be deleted.'
+      emailText = `You have requested deleting your account. Your request will be served in 14 days time, after which you will not be able to reactivate or retrieve any of the information. Your account and entire data will be deleted by ${deletionDate}`
     } else if (req.body.delete_option === 'DEL_CHAT') {
-      emailText = 'You have requested deleting your live chat data from KiboPush. Once your request has been served, you will not be able to retrieve your information back. You have 14 days to change your decision, after which your live chat data will be deleted.'
+      emailText = `You have requested deleting your live chat data from KiboPush. Your request will be served in 14 days time, after which you will not be able to retrieve your information back. Your live chat data will be deleted by ${deletionDate}`
     } else if (req.body.delete_option === 'DEL_SUBSCRIBER') {
-      emailText = 'You have requested deleting your subscribers information from Kibopush. Once your request has been served, you will not be able to retrieve your information back. You have 14 days to change your decision, after which your subscribers data will be deleted.'
+      emailText = `You have requested deleting your subscribers information from Kibopush. Your request will served in 14 days time, after whcih you will not be able to retrieve your information back. Your subscribers data will be deleted by ${deletionDate}`
     }
-    user.deleteInformation = req.body.delete_option
+    user.deleteInformation = {delete_option: req.body.delete_option, deletion_date: req.body.deletion_date}
     user.save((err, updatedUser) => {
       if (err) {
         return res.status(500).json({
@@ -990,7 +995,7 @@ exports.enableDelete = function (req, res) {
         })
 
         let emailAdmin = new sendgrid.Email({
-          to: 'sojharo@cloudkibo',
+          to: 'sojharo@cloudkibo.com',
           from: 'support@cloudkibo.com',
           subject: 'KiboPush: Delete User Information',
           text: 'Delete User Information'
@@ -1007,7 +1012,7 @@ exports.enableDelete = function (req, res) {
           '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
          '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
           req.user.name + ' has requested to delete his/her information from KiboPush. The information type to be deleted is: ' +
-          req.body.delete_option + '. ' +
+          req.body.delete_option + '. Data will be deleted by ' + deletionDate + '. ' +
           'Following are the user details:' +
           '<ul>' +
             '<li>' + req.user._id + '</li>' +
@@ -1041,7 +1046,7 @@ exports.cancelDeletion = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    user.deleteInformation = 'NONE'
+    user.deleteInformation = {delete_option: 'NONE', deletion_date: ''}
     user.save((err, updatedUser) => {
       logger.serverLog(TAG,
         `Inside SaveUser user : ${JSON.stringify(

@@ -38,11 +38,7 @@ const UserSchema = new Schema({
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
   permissionsRevoked: {type: Boolean, default: false},
-  deleteInformation: {
-    type: String,
-    enum: ['DEL_ACCOUNT', 'DEL_CHAT', 'DEL_SUBSCRIBER', 'NONE'],
-    default: ''
-  }
+  deleteInformation: Schema.Types.Mixed
 })
 
 /**

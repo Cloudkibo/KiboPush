@@ -6,6 +6,7 @@ import AlertContainer from 'react-alert'
 import { saveDeleteOption, authenticatePassword, getDeleteOption, cancelDeletion } from '../../redux/actions/settings.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import moment from 'moment'
 
 class DeleteUserData extends React.Component {
   constructor (props, context) {
@@ -96,24 +97,25 @@ class DeleteUserData extends React.Component {
     })
   }
   updateDeleteOption (user) {
-    if (user && user.deleteInformation && user.deleteInformation !== '') {
-      if (user.deleteInformation === 'DEL_ACCOUNT') {
+    if (user && user.deleteInformation && user.deleteInformation.delete_option) {
+      var deletionDate = moment(user.deleteInformation.deletion_date).format('dddd, MMMM Do YYYY')
+      if (user.deleteInformation.delete_option === 'DEL_ACCOUNT') {
         this.setState({
           deleteOption: 'DEL_ACCOUNT',
           selectedRadio: 'delAccount',
-          showEmailAlert: 'Your request to delete account has been sent to the admin.'
+          showEmailAlert: `Your request to delete account has been sent to the admin. Your account will be deleted by ${deletionDate}}`
         })
-      } else if (user.deleteInformation === 'DEL_CHAT') {
+      } else if (user.deleteInformation.delete_option === 'DEL_CHAT') {
         this.setState({
           deleteOption: 'DEL_CHAT',
           selectedRadio: 'delChat',
-          showEmailAlert: 'Your request to delete chat sessions has been sent to the admin.'
+          showEmailAlert: `Your request to delete chat sessions has been sent to the admin. Your data will be deleted by ${deletionDate}`
         })
-      } else if (user.deleteInformation === 'DEL_SUBSCRIBER') {
+      } else if (user.deleteInformation.delete_option === 'DEL_SUBSCRIBER') {
         this.setState({
           deleteOption: 'DEL_SUBSCRIBER',
           selectedRadio: 'delSubscribers',
-          showEmailAlert: 'Your request to delete subscribers has been sent to the admin.'
+          showEmailAlert: `Your request to delete subscribers has been sent to the admin. Your data will be deleted by ${deletionDate}`
         })
       } else {
         this.setState({
@@ -125,7 +127,8 @@ class DeleteUserData extends React.Component {
     }
   }
   saveDeleteOption () {
-    this.props.saveDeleteOption({delete_option: this.state.deleteOption}, this.msg, this.handleSave)
+    var deletionDate = moment().add(14, 'day')
+    this.props.saveDeleteOption({delete_option: this.state.deleteOption, deletion_date: deletionDate}, this.msg, this.handleSave)
   }
   handleSave (res) {
     if (res.status === 'success') {
