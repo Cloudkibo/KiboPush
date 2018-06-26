@@ -382,12 +382,22 @@ export function authenticatePassword (data, msg, handleAuthentication) {
     callApi('users/authenticatePassword', 'post', data)
       .then(res => {
         console.log('response from msg', res)
-        if (res.status === 'success') {
-          msg.success('Authenticated')
-        } else {
+        if (res.status !== 'success') {
           msg.error(res.description)
         }
         handleAuthentication(res)
+      })
+  }
+}
+export function cancelDeletion (msg, handleCancel) {
+  return (dispatch) => {
+    callApi('users/cancelDeletion')
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Request to cancel deletion process has been sent to admin.')
+        }
+        handleCancel(res)
       })
   }
 }

@@ -252,3 +252,8 @@ a.broadcastTabs.active {
   width: 100%;
   text-align: center;
 }
+.alert-email {
+  padding: 20px;
+  background-color: #34bfa3;
+  color: white;
+}
