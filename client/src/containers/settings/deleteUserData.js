@@ -253,8 +253,7 @@ class DeleteUserData extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    user: state.basicInfo.user,
-    deleteOption: state.settingsInfo.deleteOption
+    user: state.basicInfo.user
   }
 }
 function mapDispatchToProps (dispatch) {
