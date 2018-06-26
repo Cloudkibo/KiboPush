@@ -131,6 +131,13 @@ export function showChangeStatus (data) {
   }
 }
 
+export function showSearchChat (data) {
+  return {
+    type: ActionTypes.SHOW_SEARCH_CHAT,
+    data
+  }
+}
+
 // export function fetchSessions () {
 //   return (dispatch) => {
 //     callApi('sessions')
@@ -207,6 +214,18 @@ export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       handleSendAttachment(res)
+    })
+  }
+}
+
+export function searchChat (data) {
+  return (dispatch) => {
+    callApi('livechat/search', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showSearchChat(res.payload))
+      } else {
+        console.log(res.description)
+      }
     })
   }
 }

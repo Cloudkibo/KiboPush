@@ -110,6 +110,7 @@ export const UPDATE_CHAT = 'UPDATE_CHAT'
 export const CHANGE_STATUS = 'CHANGE_STATUS'
 export const SET_ACTIVE_SESSION = 'SET_ACTIVE_SESSION'
 export const RESET_ACTIVE_SESSION = 'RESET_ACTIVE_SESSION'
+export const SHOW_SEARCH_CHAT = 'SHOW_SEARCH_CHAT'
 
 // constants for login
 export const FORGOT_FAILURE = 'FORGOT_FAILURE'
