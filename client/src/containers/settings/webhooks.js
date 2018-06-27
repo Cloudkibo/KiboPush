@@ -145,7 +145,7 @@ class Webhook extends React.Component {
         }
         this.setState({subscriptions: subscriptions})
       } else {
-        for (var q = 0; q < this.state.subscribersDataAll.length; q++) {
+        for (var q = 0; q < this.state.subscriptions.length; q++) {
           if (subscriptions[q].name === e.target.value) {
             subscriptions[q].selected = false
           }
