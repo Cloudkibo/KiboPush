@@ -6,7 +6,7 @@
 const Webhooks = require('./webhooks.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const needle = require('needle')
-
+//  var http = require('http')
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -64,10 +64,14 @@ exports.create = function (req, res) {
         // if (url[url.length - 1] === '/') {
         //   url = url.substring(0, url.length - 1)
         // }
+        // console.log('url', url)
         // var options = {method: 'HEAD', host: url, port: 80}
         // var validUrl = http.request(options, function (err, r) {
+        //   if (err) {}
+        //   console.log('response', JSON)
+        // })
+        // validUrl.end()
         var url = req.body.webhook_url + '?token=' + req.body.token
-        console.log('url', url)
         needle.get(url, (err, r) => {
           if (err) {
             return res.status(404).json({status: 'failed', description: 'This URL contains an invalid domain or the server at the given URL is not live.'})
@@ -76,6 +80,7 @@ exports.create = function (req, res) {
               let webhookPayload = {
                 webhook_url: req.body.webhook_url,
                 companyId: companyUser.companyId,
+                userId: req.user._id,
                 isEnabled: req.body.isEnabled,
                 optIn: req.body.optIn,
                 pageId: req.body.pageId
@@ -112,15 +117,27 @@ exports.edit = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'Record not found'})
     }
-    webhook.webhook_url = req.body.webhook_url
-    webhook.isEnabled = req.body.isEnabled
-    webhook.optIn = req.body.optIn
-    webhook.save((err2) => {
-      if (err2) {
-        return res.status(500)
-          .json({status: 'failed', description: 'Poll update failed'})
+    var url = req.body.webhook_url + '?token=' + req.body.token
+    console.log('url', url)
+    needle.get(url, (err, r) => {
+      console.log('r.statusCode', r.statusCode)
+      if (err) {
+        return res.status(404).json({status: 'failed', description: 'This URL contains an invalid domain or the server at the given URL is not live.'})
+      } else if (r.statusCode === 200) {
+        webhook.webhook_url = req.body.webhook_url
+        webhook.isEnabled = req.body.isEnabled
+        webhook.optIn = req.body.optIn
+        webhook.userId = req.user._id
+        webhook.save((err2) => {
+          if (err2) {
+            return res.status(500)
+              .json({status: 'failed', description: 'Poll update failed'})
+          }
+          res.status(201).json({status: 'success', payload: webhook})
+        })
+      } else {
+        return res.status(404).json({status: 'failed', description: 'This URL contains an invalid domain or the server at the given URL is not live.'})
       }
-      res.status(201).json({status: 'success', payload: webhook})
     })
   })
 }
