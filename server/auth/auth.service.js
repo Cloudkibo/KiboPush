@@ -294,11 +294,13 @@ function fbConnectDone (req, res) {
       return res.status(401)
         .json({status: 'failed', description: 'Unauthorized'})
     }
-    Users.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: false}, {multi: true}, (err, resp) => {
-      if (err) {
-        logger.serverLog(TAG, `Error updating permissionsRevoked field`)
-      }
-    })
+// @bjafri I am commenting this code as it is breaking when we create a new account. This facebookInfo field should
+// not be used here as for new users it is not set by default and we are setting it in line 305.
+//     Users.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: false}, {multi: true}, (err, resp) => {
+//       if (err) {
+//         logger.serverLog(TAG, `Error updating permissionsRevoked field`)
+//       }
+//     })
     req.user = user
     user.facebookInfo = fbPayload
     user.save((err) => {
