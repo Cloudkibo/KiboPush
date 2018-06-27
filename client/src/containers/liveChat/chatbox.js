@@ -38,6 +38,7 @@ import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import ReactTooltip from 'react-tooltip'
 // import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {
@@ -815,6 +816,11 @@ class ChatBox extends React.Component {
           </ModalContainer>
         }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <ReactTooltip
+          place='bottom'
+          type='dark'
+          effect='solid'
+        />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <Popover
@@ -888,11 +894,16 @@ class ChatBox extends React.Component {
             <button style={{backgroundColor: 'white'}} className='btn'>Status: {this.props.currentSession.is_assigned ? 'Assigned' : 'Unassigned'}</button>
             {
               this.props.currentSession.status === 'new'
-              ? <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success' onClick={this.showDialog}><i className='la la-check' /> Mark as done</button>
-              : <button style={{float: 'right', borderColor: '#34bfa3'}} type='button' className='btn m-btn--square btn-outline-success'
-                onClick={(e) => {
+              ? <div style={{float: 'right'}}>
+                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} onClick={this.showDialog} data-tip='Mark as done' className='la la-check' />
+              </div>
+              : <div style={{float: 'right'}}>
+                <i style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}} data-tip='Search' className='la la-search' />
+                <i style={{cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold'}} data-tip='Reopen' onClick={(e) => {
                   this.changeStatus(e, 'new', this.props.currentSession._id)
-                }}><i className='fa fa-envelope-open-o' /> Reopen</button>
+                }} className='fa fa-envelope-open-o' />
+              </div>
             }
           </div>
           <div style={{padding: '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>

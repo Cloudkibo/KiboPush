@@ -37,7 +37,8 @@ const UserSchema = new Schema({
   pagesTourSeen: {type: Boolean, default: false},
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
-  permissionsRevoked: {type: Boolean, default: false}
+  permissionsRevoked: {type: Boolean, default: false},
+  deleteInformation: Schema.Types.Mixed
 })
 
 /**

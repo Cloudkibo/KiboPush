@@ -14,18 +14,7 @@ export function getResponseMethod (data) {
     data
   }
 }
-export function showDeleteOption (data) {
-  return {
-    type: ActionTypes.DELETE_OPTION,
-    data
-  }
-}
-export function get (data) {
-  return {
-    type: ActionTypes.ENABLE_SUCCESS,
-    data
-  }
-}
+
 export function disableSuccess (data) {
   return {
     type: ActionTypes.DISABLE_SUCCESS,
@@ -374,9 +363,18 @@ export function enabled (data, msg) {
       })
   }
 }
-export function saveDeleteOption (data, msg) {
+export function saveDeleteOption (data, msg, handleSave) {
   return (dispatch) => {
-    dispatch(showDeleteOption(data))
+    callApi('users/enableDelete', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Delete request has been sent')
+        } else {
+          msg.error(res.description)
+        }
+        handleSave(res)
+      })
   }
 }
 export function authenticatePassword (data, msg, handleAuthentication) {
@@ -384,12 +382,22 @@ export function authenticatePassword (data, msg, handleAuthentication) {
     callApi('users/authenticatePassword', 'post', data)
       .then(res => {
         console.log('response from msg', res)
-        if (res.status === 'success') {
-          msg.success('Authenticated')
-        } else {
+        if (res.status !== 'success') {
           msg.error(res.description)
         }
         handleAuthentication(res)
+      })
+  }
+}
+export function cancelDeletion (msg, handleCancel) {
+  return (dispatch) => {
+    callApi('users/cancelDeletion')
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Request to cancel deletion process has been sent to admin.')
+        }
+        handleCancel(res)
       })
   }
 }

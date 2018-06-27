@@ -39,6 +39,29 @@ exports.index = function (req, res) {
   })
 }
 
+exports.search = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'session_id')) parametersMissing = true
+  if (!_.has(req.body, 'text')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  LiveChat.find({session_id: req.body.session_id, $text: {$search: req.body.text}}).sort({ datetime: -1 }).exec(function (err, chats) {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    return res.status(200).json({
+      status: 'success',
+      payload: chats
+    })
+  })
+}
+
 exports.create = function (req, res) {
   let parametersMissing = false
 
