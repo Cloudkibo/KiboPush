@@ -317,16 +317,27 @@ exports.create = function (req, res) {
       }
     }
     Pages.find(pagesFindCriteria).exec((err, pages) => {
-      if (err) {}
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
       pages.forEach((page) => {
         Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
-          if (err) logger.serverLog(TAG, err)
-          console.log('webhook', webhook)
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
           if (webhook && webhook.isEnabled) {
             needle.get(webhook.webhook_url, (err, r) => {
-              console.log('response from webhook', r.statusCode)
               if (err) {
-                webhookUtility.saveNotification(webhook)
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
               } else if (r.statusCode === 200) {
                 if (webhook && webhook.optIn.SURVEY_CREATED) {
                   var data = {
@@ -335,7 +346,12 @@ exports.create = function (req, res) {
                   }
                   needle.post(webhook.webhook_url, data,
                     (error, response) => {
-                      if (error) logger.serverLog(TAG, err)
+                      if (error) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
                     })
                 }
               } else {
@@ -1088,11 +1104,19 @@ exports.sendSurvey = function (req, res) {
                   }
                   for (let z = 0; z < pages.length; z++) {
                     Webhooks.findOne({pageId: pages[z].pageId}).populate('userId').exec((err, webhook) => {
-                      if (err) logger.serverLog(TAG, err)
+                      if (err) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
                       if (webhook && webhook.isEnabled) {
                         needle.get(webhook.webhook_url, (err, r) => {
                           if (err) {
-                            webhookUtility.saveNotification(webhook)
+                            return res.status(500).json({
+                              status: 'failed',
+                              description: `Internal Server Error ${JSON.stringify(err)}`
+                            })
                           } else if (r.statusCode === 200) {
                             if (webhook && webhook.optIn.SURVEY_CREATED) {
                               var data = {
@@ -1101,7 +1125,12 @@ exports.sendSurvey = function (req, res) {
                               }
                               needle.post(webhook.webhook_url, data,
                                 (error, response) => {
-                                  if (error) logger.serverLog(TAG, err)
+                                  if (error) {
+                                    return res.status(500).json({
+                                      status: 'failed',
+                                      description: `Internal Server Error ${JSON.stringify(err)}`
+                                    })
+                                  }
                                 })
                             }
                           } else {
