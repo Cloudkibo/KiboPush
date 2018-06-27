@@ -21,8 +21,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
 import { Picker } from 'emoji-mart'
-import Popover from 'react-simple-popover'
-// import Popover from '../../components/Popover/popover'
+import { Popover, PopoverBody } from 'reactstrap'
 import StickerMenu from '../../components/StickerPicker/stickers'
 import GiphyPicker from 'react-gif-picker'
 import {
@@ -101,14 +100,14 @@ class ChatBox extends React.Component {
     this.stopRecording = this.stopRecording.bind(this)
     this.onData = this.onData.bind(this)
     this.onStop = this.onStop.bind(this)
-    this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
+    this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.showStickers = this.showStickers.bind(this)
-    this.hideStickers = this.hideStickers.bind(this)
-    this.sendSticker = this.sendSticker.bind(this)
-    this.showGif = this.showGif.bind(this)
-    this.closeGif = this.closeGif.bind(this)
+    this.toggleStickerPicker = this.toggleStickerPicker.bind(this)
     this.sendGif = this.sendGif.bind(this)
+    this.showGif = this.showGif.bind(this)
+    this.toggleGifPicker = this.toggleGifPicker.bind(this)
+    this.sendSticker = this.sendSticker.bind(this)
     this.setDataPayload = this.setDataPayload.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.createGallery = this.createGallery.bind(this)
@@ -204,8 +203,8 @@ class ChatBox extends React.Component {
     this.setState({showEmojiPicker: true})
   }
 
-  closeEmojiPicker () {
-    this.setState({showEmojiPicker: false})
+  toggleEmojiPicker () {
+    this.setState({showEmojiPicker: !this.state.showEmojiPicker})
   }
 
   showRecorder () {
@@ -275,39 +274,66 @@ class ChatBox extends React.Component {
     this.setState({showStickers: true})
   }
 
-  hideStickers () {
-    this.setState({showStickers: false})
+  toggleStickerPicker () {
+    this.setState({showStickers: !this.state.showStickers})
   }
 
   showGif () {
     this.setState({showGifPicker: true})
   }
 
-  closeGif () {
-    this.setState({showGifPicker: false})
+  toggleGifPicker () {
+    this.setState({showGifPicker: !this.state.showGifPicker})
   }
 
   sendSticker (sticker) {
-    this.state.componentType = 'sticker'
-    this.state.stickerUrl = sticker.image.hdpi
-    let enterEvent = new Event('keypress')
-    enterEvent.which = 13
-    this.onEnter(enterEvent)
+    var payload = {
+      componentType: 'sticker',
+      fileurl: sticker.image.hdpi
+    }
+    this.setState({
+      componentType: 'sticker',
+      stickerUrl: sticker.image.hdpi
+    })
+    var session = this.props.currentSession
+    var data = this.setMessageData(session, payload)
+    this.props.sendChatMessage(data)
+    this.toggleStickerPicker()
+    data.format = 'convos'
+    this.props.userChat.push(data)
   }
 
   sendGif (gif) {
-    this.state.componentType = 'gif'
-    this.state.gifUrl = gif.downsized.url
-    let enterEvent = new Event('keypress')
-    enterEvent.which = 13
-    this.onEnter(enterEvent)
+    var payload = {
+      componentType: 'gif',
+      fileurl: gif.downsized.url
+    }
+    this.setState({
+      componentType: 'gif',
+      stickerUrl: gif.downsized.url
+    })
+    var session = this.props.currentSession
+    var data = this.setMessageData(session, payload)
+    this.props.sendChatMessage(data)
+    this.toggleGifPicker()
+    data.format = 'convos'
+    this.props.userChat.push(data)
   }
 
   sendThumbsUp () {
-    this.state.componentType = 'thumbsUp'
-    let enterEvent = new Event('keypress')
-    enterEvent.which = 13
-    this.onEnter(enterEvent)
+    this.setState({
+      componentType: 'thumbsUp'
+    })
+    var payload = {
+      componentType: 'thumbsUp',
+      fileurl: 'https://app.kibopush.com/img/thumbsup.png'
+    }
+    var session = this.props.currentSession
+    var data = this.setMessageData(session, payload)
+    this.props.sendChatMessage(data)
+    data.format = 'convos'
+    this.props.userChat.push(data)
+    this.setState({textAreaValue: ''})
   }
 
   resetFileComponent () {
@@ -433,27 +459,6 @@ class ChatBox extends React.Component {
           this.setState({textAreaValue: ''})
           data.format = 'convos'
           this.props.userChat.push(data)
-        } else if (this.state.componentType === 'gif') {
-          payload = this.setDataPayload('gif')
-          data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
-          this.closeGif()
-          data.format = 'convos'
-          this.props.userChat.push(data)
-        } else if (this.state.componentType === 'sticker') {
-          payload = this.setDataPayload('sticker')
-          data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
-          this.hideStickers()
-          data.format = 'convos'
-          this.props.userChat.push(data)
-        } else if (this.state.componentType === 'thumbsUp') {
-          payload = this.setDataPayload('thumbsUp')
-          data = this.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
-          data.format = 'convos'
-          this.props.userChat.push(data)
-          this.setState({textAreaValue: ''})
         }
       }
     }
@@ -575,7 +580,7 @@ class ChatBox extends React.Component {
   componentDidUpdate (nextProps) {
     console.log('componentDidUpdate')
     this.scrollToBottom()
-    this.scrollToTop()
+  //   this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -817,54 +822,93 @@ class ChatBox extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <Popover
-          style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
-          placement='top'
-          height='390px'
-          target={this.target}
-          show={this.state.showEmojiPicker}
-          onHide={this.closeEmojiPicker}
-        >
-          <div>
-            <Picker
-              style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
-              emojiSize={24}
-              perLine={7}
-              skin={1}
-              set='facebook'
-              custom={[]}
-              autoFocus={false}
-              showPreview={false}
-              onClick={(emoji, event) => this.setEmoji(emoji)}
+        <Popover placement='left' isOpen={this.state.showEmojiPicker} className='chatPopover' target='emogiPickerChat' toggle={this.toggleEmojiPicker}>
+          <PopoverBody>
+            <div>
+              <Picker
+                style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+                emojiSize={24}
+                perLine={6}
+                skin={1}
+                set='facebook'
+                custom={[]}
+                autoFocus={false}
+                showPreview={false}
+                onClick={(emoji, event) => this.setEmoji(emoji)}
+              />
+            </div>
+          </PopoverBody>
+        </Popover>
+        <Popover placement='left' isOpen={this.state.showStickers} className='chatPopover' target='stickerPickerChat' toggle={this.toggleStickerPicker}>
+          <PopoverBody>
+            <div>
+              <StickerMenu
+                apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
+                userId={'imran.shoukat@khi.iba.edu.pk'}
+                sendSticker={(sticker) => { this.sendSticker(sticker) }}
+              />
+            </div>
+          </PopoverBody>
+        </Popover>
+        <Popover placement='left' isOpen={this.state.showGifPicker} className='chatPopover' target='gifPickerChat' toggle={this.toggleGifPicker}>
+          <PopoverBody>
+            <div>
+              <GiphyPicker onSelected={(gif) => { this.sendGif(gif) }} />
+            </div>
+          </PopoverBody>
+        </Popover>
+        {
+          /*
+          <Popover
+            style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+            placement='top'
+            height='390px'
+            target={this.target}
+            show={this.state.showEmojiPicker}
+            onHide={this.closeEmojiPicker}
+          >
+            <div>
+              <Picker
+                style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+                emojiSize={24}
+                perLine={7}
+                skin={1}
+                set='facebook'
+                custom={[]}
+                autoFocus={false}
+                showPreview={false}
+                onClick={(emoji, event) => this.setEmoji(emoji)}
+              />
+            </div>
+          </Popover>
+          <Popover
+            style={{width: '305px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+            placement='top'
+            height='360px'
+            target={this.stickers}
+            show={this.state.showStickers}
+            onHide={this.hideStickers}
+          >
+            <StickerMenu
+              apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
+              userId={'imran.shoukat@khi.iba.edu.pk'}
+              sendSticker={this.sendSticker}
             />
-          </div>
-        </Popover>
-        <Popover
-          style={{width: '305px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
-          placement='top'
-          height='360px'
-          target={this.stickers}
-          show={this.state.showStickers}
-          onHide={this.hideStickers}
-        >
-          <StickerMenu
-            apiKey={'80b32d82b0c7dc5c39d2aafaa00ba2bf'}
-            userId={'imran.shoukat@khi.iba.edu.pk'}
-            sendSticker={this.sendSticker}
-          />
-        </Popover>
-        <Popover
-          style={{width: '232px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
-          placement='top'
-          height='400px'
-          target={this.gifs}
-          show={this.state.showGifPicker}
-          onHide={this.closeGif}
-        >
-          <div style={{marginLeft: '-15px', marginTop: '-20px'}}>
-            <GiphyPicker onSelected={this.sendGif} />
-          </div>
-        </Popover>
+          </Popover>
+          <Popover
+            style={{width: '232px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+            placement='top'
+            height='400px'
+            target={this.gifs}
+            show={this.state.showGifPicker}
+            onHide={this.closeGif}
+          >
+            <div style={{marginLeft: '-15px', marginTop: '-20px'}}>
+              <GiphyPicker onSelected={this.sendGif} />
+            </div>
+          </Popover>
+          */
+        }
         <Popover
           style={{paddingBottom: '100px', width: '280px', boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
           placement='top'
@@ -1513,71 +1557,66 @@ class ChatBox extends React.Component {
                         }} className='fa fa-microphone' />
                       </i>
                     </div>
-                    {
-                      /*
-                      <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons1'>
-                        <i onClick={this.showEmojiPicker} style={styles.iconclass}>
-                          <i style={{
-                            fontSize: '20px',
-                            position: 'absolute',
-                            left: '0',
-                            width: '100%',
-                            height: '2em',
-                            margin: '5px',
-                            textAlign: 'center',
-                            color: '#787878'
-                          }} className='fa fa-smile-o' />
-                        </i>
-                      </div>
-
-                      <div ref={(c) => { this.stickers = c }} style={{display: 'inline-block'}} data-tip='stickers'>
-                        <i onClick={this.showStickers} style={styles.iconclass}>
-                          <i style={{
-                            fontSize: '20px',
-                            position: 'absolute',
-                            left: '0',
-                            width: '100%',
-                            height: '2em',
-                            margin: '5px',
-                            textAlign: 'center'
-                          }} className='fa fa-file-o' />
-                          <i style={{
-                            position: 'absolute',
-                            left: '0',
-                            width: '100%',
-                            textAlign: 'center',
-                            margin: '5px',
-                            fontSize: '12px',
-                            bottom: -4
-                          }}
-                            className='center fa fa-smile-o' />
-                        </i>
-                      </div>
-                      <div ref={(c) => { this.gifs = c }} style={{display: 'inline-block'}} data-tip='GIF'>
-                        <i onClick={this.showGif} style={styles.iconclass}>
-                          <i style={{
-                            fontSize: '20px',
-                            position: 'absolute',
-                            left: '0',
-                            width: '100%',
-                            height: '2em',
-                            margin: '5px',
-                            textAlign: 'center'
-                          }} className='fa fa-file-o' />
-                          <p style={{
-                            position: 'absolute',
-                            text: 'GIF',
-                            left: '0',
-                            width: '100%',
-                            textAlign: 'center',
-                            margin: '5px',
-                            fontSize: '8px',
-                            bottom: -5
-                          }}>GIF</p>
-                        </i>
-                      </div>
-                      */
-                    }
+                    <div style={{display: 'inline-block'}} data-tip='emoticons1'>
+                      <i id='emogiPickerChat' onClick={this.showEmojiPicker} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center',
+                          color: '#787878'
+                        }} className='fa fa-smile-o' />
+                      </i>
+                    </div>
+                    <div style={{display: 'inline-block'}} data-tip='stickers'>
+                      <i id='stickerPickerChat' onClick={this.showStickers} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center'
+                        }} className='fa fa-file-o' />
+                        <i style={{
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          textAlign: 'center',
+                          margin: '5px',
+                          fontSize: '12px',
+                          bottom: -4
+                        }}
+                          className='center fa fa-smile-o' />
+                      </i>
+                    </div>
+                    <div style={{display: 'inline-block'}} data-tip='GIF'>
+                      <i id='gifPickerChat' onClick={this.showGif} style={styles.iconclass}>
+                        <i style={{
+                          fontSize: '20px',
+                          position: 'absolute',
+                          left: '0',
+                          width: '100%',
+                          height: '2em',
+                          margin: '5px',
+                          textAlign: 'center'
+                        }} className='fa fa-file-o' />
+                        <p style={{
+                          position: 'absolute',
+                          text: 'GIF',
+                          left: '0',
+                          width: '100%',
+                          textAlign: 'center',
+                          margin: '5px',
+                          fontSize: '8px',
+                          bottom: -5
+                        }}>GIF</p>
+                      </i>
+                    </div>
                   </div>
                   {
                     this.props.loadingUrl === true && this.props.urlValue === this.state.prevURL &&
