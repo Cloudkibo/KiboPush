@@ -82,11 +82,12 @@ export function setActiveSession (sessionId) {
   }
 }
 
-export function showUserChats (userChat) {
-  console.log('showUserChats response', userChat)
+export function showUserChats (payload) {
+  console.log('showUserChats response', payload)
   return {
     type: ActionTypes.SHOW_USER_CHAT,
-    userChat
+    userChat: payload.chat,
+    chatCount: payload.count
   }
 }
 
@@ -177,10 +178,12 @@ export function fetchSingleSession (sessionid, appendDeleteInfo) {
   }
 }
 
-export function fetchUserChats (sessionid) {
+export function fetchUserChats (sessionid, data) {
   return (dispatch) => {
-    callApi(`livechat/${sessionid}`)
-      .then(res => dispatch(showUserChats(res.payload)))
+    callApi(`livechat/${sessionid}`, 'post', data)
+      .then(res => {
+        dispatch(showUserChats(res.payload))
+      })
   }
 }
 

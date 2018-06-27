@@ -39,6 +39,7 @@ import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactTooltip from 'react-tooltip'
+import ReactChatView from 'react-chatview'
 // import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {
@@ -82,7 +83,7 @@ class ChatBox extends React.Component {
       buttonState: 'start',
       recording: false
     }
-    props.fetchUserChats(this.props.currentSession._id)
+    props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 5})
     props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
@@ -126,6 +127,8 @@ class ChatBox extends React.Component {
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
     this.handleStart = this.handleStart.bind(this)
     this.handleStop = this.handleStop.bind(this)
+    this.shouldLoad = this.shouldLoad.bind(this)
+    this.loadMoreMessage = this.loadMoreMessage.bind(this)
   }
 
   showDialogRecording () {
@@ -142,6 +145,20 @@ class ChatBox extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  shouldLoad () {
+    console.log('shouldLoad called')
+    if (this.props.userChat.length < this.props.chatCount) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  loadMoreMessage () {
+    console.log('loadMoreMessage called')
+    this.props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 5, last_id: this.props.userChat[0]._id})
   }
 
   handleAgentsForDisbaledValue (teamAgents) {
@@ -575,8 +592,8 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     console.log('componentDidUpdate')
-    this.scrollToBottom()
-    this.scrollToTop()
+    // this.scrollToBottom()
+    // this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -913,443 +930,488 @@ class ChatBox extends React.Component {
                   <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
                     <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                       <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                        {
-                            this.props.userChat && this.props.userChat.map((msg, index) => (
-                              msg.format === 'facebook'
-                              ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                {
-                                  index === 0
-                                  ? <div className='m-messenger__datetime'>
-                                    {displayDate(msg.datetime)}
-                                  </div>
-                                  : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
-                                  <div className='m-messenger__datetime'>
-                                    {displayDate(msg.datetime)}
-                                  </div>
-                                }
-                                <div style={{minWidth: '200px', maxWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
-                                  <div className='m-messenger__message-pic'>
-                                    <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
-                                  </div>
-                                  <div className='m-messenger__message-body'>
-                                    <div className='m-messenger__message-arrow' />
-                                    {
-                                      msg.payload.attachments && !msg.url_meta
-                                      ? (
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.props.currentSession.subscriber_id.firstName} shared
-                                          </div>
-                                          {
-                                            msg.payload.attachments.map((att, index) => (
-                                              att.type === 'video'
-                                              ? <div key={index}>
-                                                <ReactPlayer
-                                                  url={att.payload.url}
-                                                  controls
-                                                  width='100%'
-                                                  height='140px'
-                                                  onPlay={this.onTestURLVideo(att.payload.url)}
-                                                />
-                                              </div>
-                                              : att.type === 'audio'
-                                              ? <div style={{marginTop: '40px'}} key={index}>
-                                                <ReactPlayer
-                                                  url={att.payload.url}
-                                                  controls
-                                                  width='100%'
-                                                  height='auto'
-                                                  onPlay={this.onTestURLAudio(att.payload.url)}
-                                                />
-                                              </div>
-                                              : att.type === 'image'
-                                              ? <a key={index} href={att.payload.url} target='_blank'>
-                                                <img
-                                                  src={att.payload.url}
-                                                  style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
-                                                />
-                                              </a>
-                                              : att.type === 'location'
-                                              ? <table key={index} style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
-                                                <tbody>
-                                                  <tr>
-                                                    <td>
-                                                      <a href={this.getmainURL(att.payload)} target='_blank'>
-                                                        <img style={{width: '200px'}} src={this.geturl(att.payload)} />
-                                                      </a>
-                                                    </td>
-                                                  </tr>
-                                                  <tr>
-                                                    <td>
-                                                      <p style={{fontWeight: 'bold'}}> {att.title} </p>
-                                                    </td>
-                                                  </tr>
-                                                </tbody>
-                                              </table>
-                                              : att.type === 'file' &&
-                                              <a key={index} href={att.payload.url} target='_blank'>
-                                                <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
-                                              </a>
-                                            ))
-                                          }
-                                        </div>
-                                      )
-                                      : msg.url_meta
-                                      ? <div className='m-messenger__message-content'>
-                                        <div className='m-messenger__message-username'>
-                                          {this.props.currentSession.subscriber_id.firstName} shared a link
-                                        </div>
-                                        <div style={{clear: 'both', display: 'block'}}>
-                                          <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
-                                            <table style={{maxWidth: '175px'}}>
-                                              {
-                                                msg.url_meta.type && msg.url_meta.type === 'video'
-                                                ? <tbody>
-                                                  <tr>
-                                                    <td style={{width: '30%'}} colspan='2'>
-                                                      <ReactPlayer
-                                                        url={msg.url_meta.url}
-                                                        controls
-                                                        width='100%'
-                                                        height='100px'
-                                                      />
-                                                    </td>
-                                                    <td style={{width: '70%'}}>
-                                                      <div>
-                                                        <a href={msg.url_meta.url} target='_blank'>
-                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
-                                                        </a>
-                                                        <br />
-                                                        <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                      </div>
-                                                    </td>
-                                                  </tr>
-                                                </tbody>
-                                                : <tbody>
-                                                  <tr>
-                                                    <td>
-                                                      <div style={{width: 45, height: 45}}>
-                                                        {
-                                                          msg.url_meta.image &&
-                                                          <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
-                                                        }
-                                                      </div>
-                                                    </td>
-                                                    <td>
-                                                      <div>
-                                                        <a href={msg.url_meta.url} target='_blank'>
-                                                          <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
-                                                        </a>
-                                                        <br />
-                                                        {
-                                                          msg.url_meta.description &&
-                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                        }
-                                                      </div>
-                                                    </td>
-                                                  </tr>
-                                                </tbody>
-                                              }
-                                            </table>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
-                                      ? <div className='m-messenger__message-content'>
-                                        <div className='m-messenger__message-username'>
-                                          {this.props.currentSession.subscriber_id.firstName} reacted
-                                        </div>
-                                        <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
-                                          {msg.payload.text}
-                                        </div>
-                                      </div>
-                                      : <div className='m-messenger__message-content'>
-                                        <div className='m-messenger__message-username'>
-                                          {this.props.currentSession.subscriber_id.firstName} wrote
-                                        </div>
-                                        <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
-                                          {msg.payload.text}
-                                        </div>
-                                      </div>
-                                    }
-                                  </div>
-                                </div>
-                              </div>
-                              : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                {
-                                  index === 0
-                                  ? <div className='m-messenger__datetime'>
-                                    {displayDate(msg.datetime)}
-                                  </div>
-                                  : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
-                                  <div className='m-messenger__datetime'>
-                                    {displayDate(msg.datetime)}
-                                  </div>
-                                }
-                                {console.log('msg', msg)}
-                                <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
-                                  <div className='m-messenger__message-body'>
-                                    <div className='m-messenger__message-arrow' />
-                                    {
-                                      msg.payload.componentType &&
-                                      (msg.payload.componentType === 'video'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <ReactPlayer
-                                            url={msg.payload.fileurl.url}
-                                            controls
-                                            width='100%'
-                                            height='140px'
-                                            onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
-                                          />
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'audio'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <ReactPlayer
-                                            url={msg.payload.fileurl.url}
-                                            controls
-                                            width='100%'
-                                            height='auto'
-                                            onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
-                                          />
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'file'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
-                                            <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
-                                          </a>
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'card'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <div>
-                                            <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
-                                              <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                                <a href={msg.payload.fileurl} target='_blank'>
-                                                  <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.fileurl} />
-                                                </a>
-                                              </div>
-                                              <div style={{marginTop: '10px', padding: '5px'}}>
-                                                <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
-                                                <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.description}</div>
-                                              </div>
+                        <ReactChatView
+                          flipped={false}
+                          scrollLoadThreshold={50}
+                          onInfiniteLoad={this.loadMoreMessage}
+                        >
+                          {
+                              this.props.userChat.map((msg, index) => (
+                                msg.format === 'facebook'
+                                ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
+                                  {
+                                    index === 0
+                                    ? <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
+                                    : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
+                                    <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
+                                  }
+                                  <div style={{minWidth: '200px', maxWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--in'>
+                                    <div className='m-messenger__message-pic'>
+                                      <img src={this.props.currentSession.subscriber_id.profilePic} alt='' />
+                                    </div>
+                                    <div className='m-messenger__message-body'>
+                                      <div className='m-messenger__message-arrow' />
+                                      {
+                                        msg.payload.attachments && !msg.url_meta
+                                        ? (
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.props.currentSession.subscriber_id.firstName} shared
                                             </div>
                                             {
-                                              msg.payload.buttons && msg.payload.buttons.length > 0 &&
-                                              msg.payload.buttons.map((b, i) => (
-                                                <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                                  {b.title}
+                                              msg.payload.attachments.map((att, index) => (
+                                                att.type === 'video'
+                                                ? <div key={index}>
+                                                  <ReactPlayer
+                                                    url={att.payload.url}
+                                                    controls
+                                                    width='100%'
+                                                    height='140px'
+                                                    onPlay={this.onTestURLVideo(att.payload.url)}
+                                                  />
+                                                </div>
+                                                : att.type === 'audio'
+                                                ? <div style={{marginTop: '40px'}} key={index}>
+                                                  <ReactPlayer
+                                                    url={att.payload.url}
+                                                    controls
+                                                    width='100%'
+                                                    height='auto'
+                                                    onPlay={this.onTestURLAudio(att.payload.url)}
+                                                  />
+                                                </div>
+                                                : att.type === 'image'
+                                                ? <a key={index} href={att.payload.url} target='_blank'>
+                                                  <img
+                                                    src={att.payload.url}
+                                                    style={{maxWidth: '150px', maxHeight: '85px', marginTop: '10px'}}
+                                                  />
+                                                </a>
+                                                : att.type === 'location'
+                                                ? <table key={index} style={{border: '1px solid #ccc', borderRadius: '15px', borderCollapse: 'separate', padding: '5px'}}>
+                                                  <tbody>
+                                                    <tr>
+                                                      <td>
+                                                        <a href={this.getmainURL(att.payload)} target='_blank'>
+                                                          <img style={{width: '200px'}} src={this.geturl(att.payload)} />
+                                                        </a>
+                                                      </td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>
+                                                        <p style={{fontWeight: 'bold'}}> {att.title} </p>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                                : att.type === 'file' &&
+                                                <a key={index} href={att.payload.url} target='_blank'>
+                                                  <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong> {att.payload.url.split('?')[0].split('/')[att.payload.url.split('?')[0].split('/').length - 1]}</strong></h6>
                                                 </a>
                                               ))
                                             }
                                           </div>
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'gallery'
-                                      ? <div>
-                                        <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                        )
+                                        : msg.url_meta
+                                        ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
+                                            {this.props.currentSession.subscriber_id.firstName} shared a link
                                           </div>
-                                          <Slider ref={(c) => { this.slider = c }} {...settings}>
-                                            {
-                                              msg.payload.cards.map((card, i) => (
-                                                <div key={i}>
-                                                  <div id={i} style={{maxWidth: '200px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
-                                                    <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                                      <a href={card.image_url} target='_blank'>
-                                                        <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
-                                                      </a>
-                                                    </div>
-                                                    <div style={{marginTop: '10px', padding: '5px'}}>
-                                                      <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
-                                                      <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
-                                                    </div>
-                                                  </div>
-                                                  {
-                                                    card.buttons && card.buttons.length > 0 &&
-                                                    card.buttons.map((b, i) => (
-                                                      <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                                        {b.title}
-                                                      </a>
-                                                    ))
-                                                  }
-                                                </div>
-                                              ))
-                                            }
-                                          </Slider>
+                                          <div style={{clear: 'both', display: 'block'}}>
+                                            <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                              <table style={{maxWidth: '175px'}}>
+                                                {
+                                                  msg.url_meta.type && msg.url_meta.type === 'video'
+                                                  ? <tbody>
+                                                    <tr>
+                                                      <td style={{width: '30%'}} colspan='2'>
+                                                        <ReactPlayer
+                                                          url={msg.url_meta.url}
+                                                          controls
+                                                          width='100%'
+                                                          height='100px'
+                                                        />
+                                                      </td>
+                                                      <td style={{width: '70%'}}>
+                                                        <div>
+                                                          <a href={msg.url_meta.url} target='_blank'>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                          </a>
+                                                          <br />
+                                                          <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                        </div>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                  : <tbody>
+                                                    <tr>
+                                                      <td>
+                                                        <div style={{width: 45, height: 45}}>
+                                                          {
+                                                            msg.url_meta.image &&
+                                                            <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                          }
+                                                        </div>
+                                                      </td>
+                                                      <td>
+                                                        <div>
+                                                          <a href={msg.url_meta.url} target='_blank'>
+                                                            <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                          </a>
+                                                          <br />
+                                                          {
+                                                            msg.url_meta.description &&
+                                                            <p style={{marginTop: '-35px'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                          }
+                                                        </div>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                }
+                                              </table>
+                                            </div>
+                                          </div>
                                         </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'image'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
+                                        : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                        ? <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
+                                            {this.props.currentSession.subscriber_id.firstName} reacted
                                           </div>
-                                          <img
-                                            src={msg.payload.fileurl.url}
-                                            style={{maxWidth: '150px', maxHeight: '85px'}}
-                                            />
+                                          <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                            {msg.payload.text}
+                                          </div>
                                         </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'gif'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
+                                        : <div className='m-messenger__message-content'>
                                           <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
+                                            {this.props.currentSession.subscriber_id.firstName} wrote
                                           </div>
-                                          <img
-                                            src={msg.payload.fileurl}
-                                            style={{maxWidth: '150px', maxHeight: '85px'}}
-                                          />
+                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                            {msg.payload.text}
+                                          </div>
                                         </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'sticker'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <img
-                                            src={msg.payload.fileurl}
-                                            style={{maxWidth: '150px', maxHeight: '85px'}}
-                                          />
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.payload.componentType === 'thumbsUp'
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <img
-                                            src={msg.payload.fileurl}
-                                            style={{maxWidth: '150px', maxHeight: '85px'}}
-                                          />
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : msg.url_meta && msg.url_meta !== ''
-                                      ? (msg.url_meta.type
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                                : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
+                                  {
+                                    index === 0
+                                    ? <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
+                                    : index > 0 && showDate(this.props.userChat[index - 1].datetime, msg.datetime) &&
+                                    <div className='m-messenger__datetime'>
+                                      {displayDate(msg.datetime)}
+                                    </div>
+                                  }
+                                  {console.log('msg', msg)}
+                                  <div style={{minWidth: '200px'}} key={msg._id} className='m-messenger__message m-messenger__message--out'>
+                                    <div className='m-messenger__message-body'>
+                                      <div className='m-messenger__message-arrow' />
+                                      {
+                                        msg.payload.componentType &&
+                                        (msg.payload.componentType === 'video'
                                         ? <div>
                                           <div className='m-messenger__message-content'>
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{clear: 'both', display: 'block'}}>
-                                              <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
-                                                <table style={{maxWidth: '175px'}}>
-                                                  {
-                                                    msg.url_meta.type && msg.url_meta.type === 'video'
-                                                    ? <tbody>
-                                                      <tr>
-                                                        <td style={{width: '30%'}} colspan='2'>
-                                                          <ReactPlayer
-                                                            url={msg.url_meta.url}
-                                                            controls
-                                                            width='100%'
-                                                            height='100px'
-                                                          />
-                                                        </td>
-                                                        <td style={{width: '70%'}}>
-                                                          <div>
-                                                            <a href={msg.url_meta.url} target='_blank'>
-                                                              <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
-                                                            </a>
-                                                            <br />
-                                                            <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                          </div>
-                                                        </td>
-                                                      </tr>
-                                                    </tbody>
-                                                    : <tbody>
-                                                      <tr>
-                                                        <td>
-                                                          <div style={{width: 45, height: 45}}>
-                                                            {
-                                                              msg.url_meta.image &&
-                                                              <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
-                                                            }
-                                                          </div>
-                                                        </td>
-                                                        <td>
-                                                          <div>
-                                                            <a href={msg.url_meta.url} target='_blank'>
-                                                              <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
-                                                            </a>
-                                                            <br />
-                                                            {
-                                                              msg.url_meta.description &&
-                                                              <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
-                                                            }
-                                                          </div>
-                                                        </td>
-                                                      </tr>
-                                                    </tbody>
-                                                  }
-                                                </table>
+                                            <ReactPlayer
+                                              url={msg.payload.fileurl.url}
+                                              controls
+                                              width='100%'
+                                              height='140px'
+                                              onPlay={this.onTestURLVideo(msg.payload.fileurl.url)}
+                                            />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'audio'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <ReactPlayer
+                                              url={msg.payload.fileurl.url}
+                                              controls
+                                              width='100%'
+                                              height='auto'
+                                              onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
+                                            />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'file'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <a download={msg.payload.fileName} target='_blank' href={msg.payload.fileurl.url} >
+                                              <h6 style={{color: 'white'}}><i className='fa fa-file-text-o' /><strong> {msg.payload.fileName}</strong></h6>
+                                            </a>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'card'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div>
+                                              <div style={{maxWidth: 200, borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                                <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                                  <a href={msg.payload.fileurl} target='_blank'>
+                                                    <img style={{maxWidth: 180, borderRadius: '5px'}} src={msg.payload.fileurl} />
+                                                  </a>
+                                                </div>
+                                                <div style={{marginTop: '10px', padding: '5px'}}>
+                                                  <div style={{textAlign: 'left', fontWeight: 'bold'}}>{msg.payload.title}</div>
+                                                  <div style={{textAlign: 'left', color: '#ccc'}}>{msg.payload.description}</div>
+                                                </div>
                                               </div>
+                                              {
+                                                msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                                msg.payload.buttons.map((b, i) => (
+                                                  <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                                    {b.title}
+                                                  </a>
+                                                ))
+                                              }
+                                            </div>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'gallery'
+                                        ? <div>
+                                          <div style={{width: '250px'}} className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <Slider ref={(c) => { this.slider = c }} {...settings}>
+                                              {
+                                                msg.payload.cards.map((card, i) => (
+                                                  <div key={i}>
+                                                    <div id={i} style={{maxWidth: '200px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                                      <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                                        <a href={card.image_url} target='_blank'>
+                                                          <img style={{maxWidth: 180, borderRadius: '5px'}} src={card.image_url} />
+                                                        </a>
+                                                      </div>
+                                                      <div style={{marginTop: '10px', padding: '5px'}}>
+                                                        <div style={{textAlign: 'left', fontWeight: 'bold'}}>{card.title}</div>
+                                                        <div style={{textAlign: 'left', color: '#ccc'}}>{card.subtitle}</div>
+                                                      </div>
+                                                    </div>
+                                                    {
+                                                      card.buttons && card.buttons.length > 0 &&
+                                                      card.buttons.map((b, i) => (
+                                                        <a key={i} href={b.url} target='_blank' style={{width: '100%', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                                          {b.title}
+                                                        </a>
+                                                      ))
+                                                    }
+                                                  </div>
+                                                ))
+                                              }
+                                            </Slider>
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'image'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <img
+                                              src={msg.payload.fileurl.url}
+                                              style={{maxWidth: '150px', maxHeight: '85px'}}
+                                              />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'gif'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <img
+                                              src={msg.payload.fileurl}
+                                              style={{maxWidth: '150px', maxHeight: '85px'}}
+                                            />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'sticker'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <img
+                                              src={msg.payload.fileurl}
+                                              style={{maxWidth: '150px', maxHeight: '85px'}}
+                                            />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.payload.componentType === 'thumbsUp'
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <img
+                                              src={msg.payload.fileurl}
+                                              style={{maxWidth: '150px', maxHeight: '85px'}}
+                                            />
+                                          </div>
+                                          {index === this.props.userChat.length - 1 && msg.seen &&
+                                            <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                              <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                            </div>
+                                          }
+                                        </div>
+                                        : msg.url_meta && msg.url_meta !== ''
+                                        ? (msg.url_meta.type
+                                          ? <div>
+                                            <div className='m-messenger__message-content'>
+                                              <div className='m-messenger__message-username'>
+                                                {this.getRepliedByMsg(msg)}
+                                              </div>
+                                              <div style={{clear: 'both', display: 'block'}}>
+                                                <div style={{borderRadius: '15px', backgroundColor: '#f0f0f0', minHeight: '20px', justifyContent: 'flex-end', boxSizing: 'border-box', clear: 'both', position: 'relative', display: 'inline-block'}}>
+                                                  <table style={{maxWidth: '175px'}}>
+                                                    {
+                                                      msg.url_meta.type && msg.url_meta.type === 'video'
+                                                      ? <tbody>
+                                                        <tr>
+                                                          <td style={{width: '30%'}} colspan='2'>
+                                                            <ReactPlayer
+                                                              url={msg.url_meta.url}
+                                                              controls
+                                                              width='100%'
+                                                              height='100px'
+                                                            />
+                                                          </td>
+                                                          <td style={{width: '70%'}}>
+                                                            <div>
+                                                              <a href={msg.url_meta.url} target='_blank'>
+                                                                <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                              </a>
+                                                              <br />
+                                                              <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                            </div>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                      : <tbody>
+                                                        <tr>
+                                                          <td>
+                                                            <div style={{width: 45, height: 45}}>
+                                                              {
+                                                                msg.url_meta.image &&
+                                                                <img src={msg.url_meta.image.url} style={{width: 45, height: 45}} />
+                                                              }
+                                                            </div>
+                                                          </td>
+                                                          <td>
+                                                            <div>
+                                                              <a href={msg.url_meta.url} target='_blank'>
+                                                                <p style={{color: 'rgba(0, 0, 0, 1)', fontSize: '13px', fontWeight: 'bold', textOverflow: 'ellipsis', overflow: 'hidden', width: '200px'}}>{msg.url_meta.title}</p>
+                                                              </a>
+                                                              <br />
+                                                              {
+                                                                msg.url_meta.description &&
+                                                                <p style={{marginTop: '-35px', color: '#696d75'}}>{msg.url_meta.description.length > 25 ? msg.url_meta.description.substring(0, 24) + '...' : msg.url_meta.description}</p>
+                                                              }
+                                                            </div>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    }
+                                                  </table>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            {index === this.props.userChat.length - 1 && msg.seen &&
+                                              <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                                <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                              </div>
+                                            }
+                                          </div>
+                                          : <div>
+                                            <div className='m-messenger__message-content'>
+                                              <div className='m-messenger__message-username'>
+                                                {this.getRepliedByMsg(msg)}
+                                              </div>
+                                              {
+                                                validURL(msg.payload.text)
+                                                ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                  <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
+                                                    <p>{msg.payload.text}</p>
+                                                  </a>
+                                                </div>
+                                                : <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                                  {msg.payload.text}
+                                                </div>
+                                              }
+                                            </div>
+                                            {index === this.props.userChat.length - 1 && msg.seen &&
+                                              <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+                                                <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
+                                              </div>
+                                            }
+                                          </div>
+                                        )
+                                        : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
+                                        ? <div>
+                                          <div className='m-messenger__message-content'>
+                                            <div className='m-messenger__message-username'>
+                                              {this.getRepliedByMsg(msg)}
+                                            </div>
+                                            <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
+                                              {msg.payload.text}
                                             </div>
                                           </div>
                                           {index === this.props.userChat.length - 1 && msg.seen &&
@@ -1363,70 +1425,31 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            {
-                                              validURL(msg.payload.text)
-                                              ? <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
-                                                <a style={{color: 'white'}} href={msg.payload.text} target='_blank'>
-                                                  <p>{msg.payload.text}</p>
-                                                </a>
-                                              </div>
-                                              : <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
-                                                {msg.payload.text}
-                                              </div>
-                                            }
+                                            <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                              {msg.payload.text}
+                                            </div>
                                           </div>
+                                          {
+                                            msg.payload.buttons && msg.payload.buttons.length > 0 &&
+                                            msg.payload.buttons.map((b, i) => (
+                                              <a key={i} href={b.url} target='_blank' style={{borderColor: '#716aca', width: '100%', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
+                                                {b.title}
+                                              </a>
+                                            ))
+                                          }
                                           {index === this.props.userChat.length - 1 && msg.seen &&
                                             <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
                                               <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
                                             </div>
                                           }
                                         </div>
-                                      )
-                                      : msg.payload.text && msg.payload.text.split(' ').length === 1 && isEmoji(msg.payload.text)
-                                      ? <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <div style={{fontSize: '30px'}} className='m-messenger__message-text'>
-                                            {msg.payload.text}
-                                          </div>
-                                        </div>
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                      : <div>
-                                        <div className='m-messenger__message-content'>
-                                          <div className='m-messenger__message-username'>
-                                            {this.getRepliedByMsg(msg)}
-                                          </div>
-                                          <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
-                                            {msg.payload.text}
-                                          </div>
-                                        </div>
-                                        {
-                                          msg.payload.buttons && msg.payload.buttons.length > 0 &&
-                                          msg.payload.buttons.map((b, i) => (
-                                            <a key={i} href={b.url} target='_blank' style={{borderColor: '#716aca', width: '100%', marginTop: '5px'}} className='btn btn-outline-brand btn-sm'>
-                                              {b.title}
-                                            </a>
-                                          ))
-                                        }
-                                        {index === this.props.userChat.length - 1 && msg.seen &&
-                                          <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-                                            <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{displayDate(msg.seenDateTime)}
-                                          </div>
-                                        }
-                                      </div>
-                                    )}
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))
-                        }
+                              ))
+                          }
+                        </ReactChatView>
                         <div style={{height: '50px', float: 'left', clear: 'both'}}
                           ref={(el) => { this.messagesEnd = el }} />
                       </div>
@@ -1667,6 +1690,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     userChat: (state.liveChat.userChat),
+    chatCount: (state.liveChat.chatCount),
     sessions: (state.liveChat.sessions),
     openSessions: (state.liveChat.openSessions),
     closeSessions: (state.liveChat.closeSessions),

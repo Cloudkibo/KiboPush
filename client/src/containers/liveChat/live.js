@@ -95,7 +95,7 @@ class LiveChat extends React.Component {
       event: 'agent_replied',
       action: function (data) {
         if (data.user_id !== compProp.user._id && this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.activeSession._id === data.session_id) {
-          compProp.fetchUserChats(data.session_id)
+          // compProp.fetchUserChats(data.session_id)
         }
       }
     })
@@ -140,7 +140,7 @@ class LiveChat extends React.Component {
       }
     }
 
-    this.props.fetchUserChats(session._id)
+    this.props.fetchUserChats(session._id, {page: 'first', number: 5})
     console.log('session in changeActiveSession', session)
     this.props.markRead(session._id)
     this.props.getSubscriberTags(session.subscriber_id, this.msg)
@@ -252,7 +252,7 @@ class LiveChat extends React.Component {
 
     if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.openSessions && nextProps.closeSessions) {
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
-        this.props.fetchUserChats(nextProps.socketSession)
+        // this.props.fetchUserChats(nextProps.socketSession)
         this.props.resetSocket()
       } else if (nextProps.socketSession !== '') {
         this.props.fetchSingleSession(nextProps.socketSession, {appendTo: 'open', deleteFrom: 'close'})

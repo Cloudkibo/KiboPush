@@ -8,30 +8,48 @@ const LiveChat = require('./livechat.model')
 const Sessions = require('./../sessions/sessions.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const mongoose = require('mongoose')
 let utility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
 
 // Get list of Facebook Chat Messages
 exports.index = function (req, res) {
-  LiveChat.find({session_id: req.params.session_id}).sort({ datetime: 1 }).exec(function (err, fbchats) {
+  LiveChat.aggregate([
+    { $match: {session_id: mongoose.Types.ObjectId(req.params.session_id)} },
+    { $group: { _id: null, count: { $sum: 1 } } }
+  ], (err, chatCount) => {
     if (err) {
-      return res.status(500)
-        .json({status: 'failed', description: 'Internal Server Error'})
+      return res.status(404)
+        .json({status: 'failed', description: 'Chat not found'})
     }
-    for (var i = 0; i < fbchats.length; i++) {
-      fbchats[i].set('lastPayload',
-        fbchats[fbchats.length - 1].payload,
-        {strict: false})
-      fbchats[i].set('lastRepliedBy',
-      fbchats[fbchats.length - 1].replied_by,
-      {strict: false})
-      fbchats[i].set('lastDateTime',
-        fbchats[fbchats.length - 1].datetime,
-        {strict: false})
+
+    let query = {}
+    if (req.body.page === 'next') {
+      query = {
+        session_id: req.params.session_id,
+        _id: {$gt: req.body.last_id}
+      }
+    } else {
+      query = {
+        session_id: req.params.session_id
+      }
     }
-    return res.status(200).json({
-      status: 'success',
-      payload: fbchats
+    LiveChat.find(query).sort({ datetime: -1 }).limit(req.body.number)
+    .exec(function (err, chat) {
+      if (err) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      let fbchats = chat.reverse()
+      for (var i = 0; i < fbchats.length; i++) {
+        fbchats[i].set('lastPayload', fbchats[fbchats.length - 1].payload, {strict: false})
+        fbchats[i].set('lastRepliedBy', fbchats[fbchats.length - 1].replied_by, {strict: false})
+        fbchats[i].set('lastDateTime', fbchats[fbchats.length - 1].datetime, {strict: false})
+      }
+      return res.status(200).json({
+        status: 'success',
+        payload: {chat: fbchats, count: chatCount.length > 0 ? chatCount[0].count : 0}
+      })
     })
   })
 }

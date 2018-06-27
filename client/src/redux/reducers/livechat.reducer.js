@@ -101,7 +101,8 @@ export function liveChat (state = initialState, action) {
 
     case ActionTypes.SHOW_USER_CHAT:
       return Object.assign({}, state, {
-        userChat: action.userChat,
+        userChat: state.userChat.concat(action.userChat),
+        chatCount: action.chatCount,
         changedStatus: ''
       })
 
