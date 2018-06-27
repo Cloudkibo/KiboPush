@@ -1012,7 +1012,7 @@ exports.enableDelete = function (req, res) {
           '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
          '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
           req.user.name + ' has requested to delete his/her information from KiboPush. The information type to be deleted is: ' +
-          req.body.delete_option + '. ' +
+          req.body.delete_option + '. Data will be deleted by ' + deletionDate + '. ' +
           'Following are the user details:' +
           '<ul>' +
             '<li>' + req.user._id + '</li>' +
