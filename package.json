@@ -12,6 +12,8 @@
     "start:sania": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-sania.ngrok.io nodemon server/app.js",
     "start:ahsan": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-ahsan.ngrok.io nodemon server/app.js",
     "start:baqar": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-baqar.ngrok.io nodemon server/app.js",
+    "start:arveen": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-arveen.ngrok.io nodemon server/app.js",
+    "start:mehrish": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-mehrish.ngrok.io nodemon server/app.js",
     "start:asad": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-asad.ngrok.io nodemon server/app.js",
     "start:prod": "cross-env NODE_ENV=production node server/app.js",
     "debug": "cross-env DEBUG=express:router:route,express:application,kibopush:* NODE_ENV=development nodemon --trace-sync-io server/app.js",
