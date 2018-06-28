@@ -11,10 +11,10 @@ const Lists = require('../lists/lists.model')
 const Users = require('./../user/Users.model')
 let _ = require('lodash')
 const utility = require('./../broadcasts/broadcasts.utility')
+const webhookUtility = require('./../webhooks/webhooks.utility')
 const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
 const Webhooks = require('./../webhooks/webhooks.model')
-
 const TAG = 'api/polls/polls.controller.js'
 
 exports.index = function (req, res) {
@@ -399,20 +399,58 @@ exports.create = function (req, res) {
         ? req.body.segmentationList
         : null
     }
-    Pages.find({companyId: companyUser.companyId, connected: true}).exec((err, pages) => {
-      if (err) {}
+    let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
+    if (req.body.isSegmented) {
+      if (req.body.segmentationPageIds.length > 0) {
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
+          pageId: {
+            $in: req.body.segmentationPageIds
+          }
+        })
+      }
+    }
+    Pages.find(pagesFindCriteria).exec((err, pages) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
       pages.forEach((page) => {
-        Webhooks.findOne({pageId: page.pageId}, (err, webhook) => {
-          if (err) logger.serverLog(TAG, err)
-          if (webhook && webhook.optIn.POLL_CREATED) {
-            var data = {
-              subscription_type: 'POLL_CREATED',
-              payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
-            }
-            needle.post(webhook.webhook_url, data,
-              (error, response) => {
-                if (error) logger.serverLog(TAG, err)
-              })
+        Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (webhook && webhook.isEnabled) {
+            needle.get(webhook.webhook_url, (err, r) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              } else if (r.statusCode === 200) {
+                if (webhook && webhook.optIn.POLL_CREATED) {
+                  var data = {
+                    subscription_type: 'POLL_CREATED',
+                    payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
+                  }
+                  needle.post(webhook.webhook_url, data,
+                    (error, response) => {
+                      if (error) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
+                    })
+                }
+              } else {
+                webhookUtility.saveNotification(webhook)
+              }
+            })
           }
         })
       })
@@ -591,19 +629,6 @@ exports.send = function (req, res) {
             })
           }
           for (let z = 0; z < pages.length; z++) {
-            Webhooks.findOne({pageId: pages[z].pageId}, (err, webhook) => {
-              if (err) logger.serverLog(TAG, err)
-              if (webhook && webhook.optIn.POLL_CREATED) {
-                var data = {
-                  subscription_type: 'POLL_CREATED',
-                  payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
-                }
-                needle.post(webhook.webhook_url, data,
-                  (error, response) => {
-                    if (error) logger.serverLog(TAG, err)
-                  })
-              }
-            })
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
@@ -1067,6 +1092,42 @@ exports.sendPoll = function (req, res) {
               })
             }
             for (let z = 0; z < pages.length; z++) {
+              Webhooks.findOne({pageId: pages[z].pageId}).populate('userId').exec((err, webhook) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+                if (webhook && webhook.isEnabled) {
+                  needle.get(webhook.webhook_url, (err, r) => {
+                    if (err) {
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: `Internal Server Error ${JSON.stringify(err)}`
+                      })
+                    } else if (r.statusCode === 200) {
+                      if (webhook && webhook.optIn.POLL_CREATED) {
+                        var data = {
+                          subscription_type: 'POLL_CREATED',
+                          payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
+                        }
+                        needle.post(webhook.webhook_url, data,
+                          (error, response) => {
+                            if (error) {
+                              return res.status(500).json({
+                                status: 'failed',
+                                description: `Internal Server Error ${JSON.stringify(err)}`
+                              })
+                            }
+                          })
+                      }
+                    } else {
+                      webhookUtility.saveNotification(webhook)
+                    }
+                  })
+                }
+              })
               if (req.body.isList === true) {
                 let ListFindCriteria = {}
                 ListFindCriteria = _.merge(ListFindCriteria,

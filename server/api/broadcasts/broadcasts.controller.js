@@ -47,6 +47,7 @@ let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const request = require('request')
+const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
 var array = []
 
@@ -637,17 +638,27 @@ exports.getfbMessage = function (req, res) {
                                   if (err2) {
                                     logger.serverLog(TAG, err2)
                                   }
-                                  Webhooks.findOne({pageId: pageId}, (err, webhook) => {
+                                  Webhooks.findOne({pageId: pageId}).populate('userId').exec((err, webhook) => {
                                     if (err) logger.serverLog(TAG, err)
-                                    if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                      var data = {
-                                        subscription_type: 'NEW_SUBSCRIBER',
-                                        payload: {subscriber: subsriber, recipient: pageId, sender: sender}
-                                      }
-                                      needle.post(webhook.webhook_url, data,
-                                        (error, response) => {
-                                          if (error) logger.serverLog(TAG, err)
-                                        })
+                                    if (webhook && webhook.isEnabled) {
+                                      needle.get(webhook.webhook_url, (err, r) => {
+                                        if (err) {
+                                          logger.serverLog(TAG, err)
+                                        } else if (r.statusCode === 200) {
+                                          if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                            var data = {
+                                              subscription_type: 'NEW_SUBSCRIBER',
+                                              payload: {subscriber: subsriber, recipient: pageId, sender: sender}
+                                            }
+                                            needle.post(webhook.webhook_url, data,
+                                              (error, response) => {
+                                                if (error) logger.serverLog(TAG, err)
+                                              })
+                                          }
+                                        } else {
+                                          webhookUtility.saveNotification(webhook)
+                                        }
+                                      })
                                     }
                                   })
                                   if (subscriberSource === 'customer_matching') {
@@ -1386,6 +1397,36 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
+  Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+    if (err) logger.serverLog(TAG, err)
+    if (webhook && webhook.isEnabled) {
+      needle.get(webhook.webhook_url, (err, r) => {
+        if (err) {
+          logger.serverLog(TAG, err)
+        } else if (r.statusCode === 200) {
+          if (webhook && webhook.optIn.POLL_CREATED) {
+            var data = {
+              subscription_type: 'LIVE_CHAT_ACTIONS',
+              payload: {
+                format: 'facebook',
+                subscriberId: subscriber.senderId,
+                pageId: page.pageId,
+                session_id: session._id,
+                company_id: page.companyId,
+                payload: event.message
+              }
+            }
+            needle.post(webhook.webhook_url, data,
+              (error, response) => {
+                if (error) logger.serverLog(TAG, err)
+              })
+          }
+        } else {
+          webhookUtility.saveNotification(webhook)
+        }
+      })
+    }
+  })
   if (event.message) {
     let urlInText = utility.parseUrl(event.message.text)
     if (urlInText !== null && urlInText !== '') {
@@ -1664,17 +1705,27 @@ function savepoll (req, resp) {
       subscriberId: subscriber._id
 
     }
-    Webhooks.findOne({pageId: req.recipient.id}, (err, webhook) => {
+    Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
       if (err) logger.serverLog(TAG, err)
-      if (webhook && webhook.optIn.POLL_RESPONSE) {
-        var data = {
-          subscription_type: 'POLL_RESPONSE',
-          payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message}
-        }
-        needle.post(webhook.webhook_url, data,
-          (error, response) => {
-            if (error) logger.serverLog(TAG, err)
-          })
+      if (webhook && webhook.isEnabled) {
+        needle.get(webhook.webhook_url, (err, r) => {
+          if (err) {
+            logger.serverLog(TAG, err)
+          } else if (r.statusCode === 200) {
+            if (webhook && webhook.optIn.POLL_RESPONSE) {
+              var data = {
+                subscription_type: 'POLL_RESPONSE',
+                payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message}
+              }
+              needle.post(webhook.webhook_url, data,
+                (error, response) => {
+                  if (error) logger.serverLog(TAG, err)
+                })
+            }
+          } else {
+            webhookUtility.saveNotification(webhook)
+          }
+        })
       }
     })
     if (temp === true) {
@@ -1865,6 +1916,38 @@ function sendautomatedmsg (req, page) {
                         }, // this where message content will go
                         status: 'unseen' // seen or unseen
                       })
+                      Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+                        if (err) logger.serverLog(TAG, err)
+                        if (webhook && webhook.isEnabled) {
+                          needle.get(webhook.webhook_url, (err, r) => {
+                            if (err) {
+                              logger.serverLog(TAG, err)
+                            } else if (r.statusCode === 200) {
+                              if (webhook && webhook.optIn.POLL_CREATED) {
+                                var data = {
+                                  subscription_type: 'LIVE_CHAT_ACTIONS',
+                                  payload: {
+                                    pageId: page.pageId, // this is the (facebook) :page id of pageId
+                                    subscriberId: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                                    session_id: session._id,
+                                    company_id: page.companyId, // this is admin id till we have companies
+                                    payload: {
+                                      componentType: 'text',
+                                      text: messageData.text
+                                    }
+                                  }
+                                }
+                                needle.post(webhook.webhook_url, data,
+                                  (error, response) => {
+                                    if (error) logger.serverLog(TAG, err)
+                                  })
+                              }
+                            } else {
+                              webhookUtility.saveNotification(webhook)
+                            }
+                          })
+                        }
+                      })
                       chatMessage.save((err, chatMessageSaved) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -1912,17 +1995,27 @@ function savesurvey (req) {
       questionId: resp.question_id,
       subscriberId: subscriber._id
     }
-    Webhooks.findOne({pageId: req.recipient.id}, (err, webhook) => {
+    Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
       if (err) logger.serverLog(TAG, err)
-      if (webhook && webhook.optIn.SURVEY_RESPONSE) {
-        var data = {
-          subscription_type: 'SURVEY_RESPONSE',
-          payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id}
-        }
-        needle.post(webhook.webhook_url, data,
-          (error, response) => {
-            if (error) logger.serverLog(TAG, err)
-          })
+      if (webhook && webhook.isEnabled) {
+        needle.get(webhook.webhook_url, (err, r) => {
+          if (err) {
+            logger.serverLog(TAG, err)
+          } else if (r.statusCode === 200) {
+            if (webhook && webhook.optIn.SURVEY_RESPONSE) {
+              var data = {
+                subscription_type: 'SURVEY_RESPONSE',
+                payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id}
+              }
+              needle.post(webhook.webhook_url, data,
+                (error, response) => {
+                  if (error) logger.serverLog(TAG, err)
+                })
+            }
+          } else {
+            webhookUtility.saveNotification(webhook)
+          }
+        })
       }
     })
     SurveyResponse.update({

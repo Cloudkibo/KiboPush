@@ -279,7 +279,7 @@ class Webhook extends React.Component {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptionsEdit[i].selected
         }
       }
-      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn})
+      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
     }
   }
   enabled (data, id) {

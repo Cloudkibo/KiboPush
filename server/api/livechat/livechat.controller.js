@@ -10,6 +10,9 @@ const Subscribers = require('./../subscribers/Subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 let utility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
+const Webhooks = require('./../webhooks/webhooks.model')
+const webhookUtility = require('./../webhooks/webhooks.utility')
+const needle = require('needle')
 
 // Get list of Facebook Chat Messages
 exports.index = function (req, res) {
@@ -101,6 +104,50 @@ exports.create = function (req, res) {
       url_meta: req.body.url_meta,
       status: 'unseen', // seen or unseen
       replied_by: req.body.replied_by
+    })
+    Webhooks.findOne({pageId: req.body.sender_fb_id}).populate('userId').exec((err, webhook) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (webhook && webhook.isEnabled) {
+        needle.get(webhook.webhook_url, (err, r) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          } else if (r.statusCode === 200) {
+            if (webhook && webhook.optIn.POLL_CREATED) {
+              var data = {
+                subscription_type: 'LIVE_CHAT_ACTIONS',
+                payload: { // this is the subscriber id: _id of subscriberId
+                  pageId: req.body.sender_fb_id, // this is the (facebook) :page id of pageId
+                  subscriberId: req.body.recipient_fb_id, // this is the (facebook) subscriber id : pageid of subscriber id
+                  session_id: req.body.session_id,
+                  company_id: req.body.company_id, // this is admin id till we have companies
+                  payload: req.body.payload, // this where message content will go
+                  url_meta: req.body.url_meta,
+                  replied_by: req.body.replied_by
+                }
+              }
+              needle.post(webhook.webhook_url, data,
+                (error, response) => {
+                  if (error) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: `Internal Server Error ${JSON.stringify(err)}`
+                    })
+                  }
+                })
+            }
+          } else {
+            webhookUtility.saveNotification(webhook)
+          }
+        })
+      }
     })
 
     chatMessage.save((err, chatMessage) => {

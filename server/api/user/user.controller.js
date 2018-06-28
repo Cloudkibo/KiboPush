@@ -294,7 +294,8 @@ exports.create = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
   if (req.body.domain) {
-    let search = new RegExp('.*' + req.body.email + '.*', 'i')
+    var result = req.body.domain.replace(/\s/g, '')
+    let search = new RegExp('.*' + result + '.*', 'i')
     Users.findOne({email: {$regex: search}}, (err, emailUsed) => {
       if (err) {
         return res.status(422).json({
