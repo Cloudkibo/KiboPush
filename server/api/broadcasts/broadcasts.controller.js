@@ -13,6 +13,7 @@ const Pages = require('../pages/Pages.model')
 const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
+const AutomationQueue = require('./../automation_queue/automation_queue.model')
 const PollPage = require('../page_poll/page_poll.model')
 //  const Polls = require('../polls/Polls.model')
 const SurveyPage = require('../page_survey/page_survey.model')
@@ -1014,6 +1015,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                             } else {
                               // Logic to add into queue will go here
                               logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              let timeNow = new Date()
+                              let automatedQueueMessage = new AutomationQueue({
+                                automatedMessageId: savedMsg._id,
+                                subscriberId: subscriber._id,
+                                companyId: savedMsg.companyId,
+                                type: 'autoposting-fb',
+                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              })
+
+                              automatedQueueMessage.save((error) => {
+                                if (error) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Automation Queue autoposting-fb Message create failed',
+                                    error
+                                  })
+                                }
+                              })
                             }
                           })
                         } else if (event.value.item === 'share') {
@@ -1075,6 +1094,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                               } else {
                                 // Logic to add into queue will go here
                                 logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                                let timeNow = new Date()
+                                let automatedQueueMessage = new AutomationQueue({
+                                  automatedMessageId: savedMsg._id,
+                                  subscriberId: subscriber._id,
+                                  companyId: savedMsg.companyId,
+                                  type: 'autoposting-fb',
+                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                })
+
+                                automatedQueueMessage.save((error) => {
+                                  if (error) {
+                                    logger.serverLog(TAG, {
+                                      status: 'failed',
+                                      description: 'Automation Queue autoposting-fb Message create failed',
+                                      error
+                                    })
+                                  }
+                                })
                               }
                             })
                           })
@@ -1137,6 +1174,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                               } else {
                                 // Logic to add into queue will go here
                                 logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                                let timeNow = new Date()
+                                let automatedQueueMessage = new AutomationQueue({
+                                  automatedMessageId: savedMsg._id,
+                                  subscriberId: subscriber._id,
+                                  companyId: savedMsg.companyId,
+                                  type: 'autoposting-fb',
+                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                })
+
+                                automatedQueueMessage.save((error) => {
+                                  if (error) {
+                                    logger.serverLog(TAG, {
+                                      status: 'failed',
+                                      description: 'Automation Queue autoposting-fb Message create failed',
+                                      error
+                                    })
+                                  }
+                                })
                               }
                             })
                           })
@@ -1169,6 +1224,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                             } else {
                               // Logic to add into queue will go here
                               logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              let timeNow = new Date()
+                              let automatedQueueMessage = new AutomationQueue({
+                                automatedMessageId: savedMsg._id,
+                                subscriberId: subscriber._id,
+                                companyId: savedMsg.companyId,
+                                type: 'autoposting-fb',
+                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              })
+
+                              automatedQueueMessage.save((error) => {
+                                if (error) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Automation Queue autoposting-fb Message create failed',
+                                    error
+                                  })
+                                }
+                              })
                             }
                           })
                         }

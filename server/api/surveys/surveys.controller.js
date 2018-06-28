@@ -9,6 +9,7 @@ const SurveyQuestions = require('./surveyquestions.model')
 const SurveyResponses = require('./surveyresponse.model')
 const SurveyPage = require('../page_survey/page_survey.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const AutomationQueue = require('./../automation_queue/automation_queue.model')
 const TAG = 'api/surveys/surveys.controller.js'
 const mongoose = require('mongoose')
 const Lists = require('../lists/lists.model')
@@ -737,6 +738,24 @@ exports.send = function (req, res) {
                                     })
                                   } else {
                                     logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                                    let timeNow = new Date()
+                                    let automatedQueueMessage = new AutomationQueue({
+                                      automatedMessageId: req.body._id,
+                                      subscriberId: subscribers[j]._id,
+                                      companyId: companyUser.companyId,
+                                      type: 'survey',
+                                      scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                    })
+
+                                    automatedQueueMessage.save((error) => {
+                                      if (error) {
+                                        logger.serverLog(TAG, {
+                                          status: 'failed',
+                                          description: 'Automation Queue Survey Message create failed',
+                                          error
+                                        })
+                                      }
+                                    })
                                   }
                                 })
                               }
@@ -876,6 +895,24 @@ exports.send = function (req, res) {
                                     })
                                 } else {
                                   logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                                  let timeNow = new Date()
+                                  let automatedQueueMessage = new AutomationQueue({
+                                    automatedMessageId: req.body._id,
+                                    subscriberId: subscribers[j]._id,
+                                    companyId: companyUser.companyId,
+                                    type: 'survey',
+                                    scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                  })
+
+                                  automatedQueueMessage.save((error) => {
+                                    if (error) {
+                                      logger.serverLog(TAG, {
+                                        status: 'failed',
+                                        description: 'Automation Queue Survey Message create failed',
+                                        error
+                                      })
+                                    }
+                                  })
                                 }
                               })
                             }
@@ -1143,34 +1180,67 @@ exports.sendSurvey = function (req, res) {
                                     recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                     message: messageData
                                   }
-                                  needle.post(
-                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                    data, (err, resp) => {
-                                      if (err) {
-                                        return res.status(500).json({
-                                          status: 'failed',
-                                          description: JSON.stringify(err)
+                                  // this calls the needle when the last message was older than 30 minutes
+                                  // checks the age of function using callback
+                                  logger.serverLog(TAG, 'just before sending')
+                                  compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, 'inside error')
+                                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                    }
+
+                                    if (isLastMessage) {
+                                      logger.serverLog(TAG, 'inside direct survey send')
+                                      needle.post(
+                                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                        data, (err, resp) => {
+                                          if (err) {
+                                            return res.status(500).json({
+                                              status: 'failed',
+                                              description: JSON.stringify(err)
+                                            })
+                                          }
+                                          let surveyPage = new SurveyPage({
+                                            pageId: pages[z].pageId,
+                                            userId: req.user._id,
+                                            subscriberId: subscribers[j].senderId,
+                                            surveyId: survey._id,
+                                            seen: false,
+                                            companyId: companyUser.companyId
+                                          })
+
+                                          surveyPage.save((err2) => {
+                                            if (err2) {
+                                              logger.serverLog(TAG, {
+                                                status: 'failed',
+                                                description: 'PollBroadcast create failed',
+                                                err2
+                                              })
+                                            }
+                                          })
                                         })
-                                      }
-                                      let surveyPage = new SurveyPage({
-                                        pageId: pages[z].pageId,
-                                        userId: req.user._id,
-                                        subscriberId: subscribers[j].senderId,
-                                        surveyId: survey._id,
-                                        seen: false,
-                                        companyId: companyUser.companyId
+                                    } else {
+                                      logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                                      let timeNow = new Date()
+                                      let automatedQueueMessage = new AutomationQueue({
+                                        automatedMessageId: survey._id,
+                                        subscriberId: subscribers[j]._id,
+                                        companyId: companyUser.companyId,
+                                        type: 'survey',
+                                        scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
                                       })
 
-                                      surveyPage.save((err2) => {
-                                        if (err2) {
+                                      automatedQueueMessage.save((error) => {
+                                        if (error) {
                                           logger.serverLog(TAG, {
                                             status: 'failed',
-                                            description: 'PollBroadcast create failed',
-                                            err2
+                                            description: 'Automation Queue Survey Message create failed',
+                                            error
                                           })
                                         }
                                       })
-                                    })
+                                    }
+                                  })
                                 }
                               })
                             })
@@ -1233,34 +1303,67 @@ exports.sendSurvey = function (req, res) {
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                   message: messageData
                                 }
-                                needle.post(
-                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                  data, (err, resp) => {
-                                    if (err) {
-                                      return res.status(500).json({
-                                        status: 'failed',
-                                        description: JSON.stringify(err)
+                                // this calls the needle when the last message was older than 30 minutes
+                                // checks the age of function using callback
+                                logger.serverLog(TAG, 'just before sending')
+                                compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, 'inside error')
+                                    return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                  }
+
+                                  if (isLastMessage) {
+                                    logger.serverLog(TAG, 'inside direct survey sendd')
+                                    needle.post(
+                                      `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                      data, (err, resp) => {
+                                        if (err) {
+                                          return res.status(500).json({
+                                            status: 'failed',
+                                            description: JSON.stringify(err)
+                                          })
+                                        }
+                                        let surveyPage = new SurveyPage({
+                                          pageId: pages[z].pageId,
+                                          userId: req.user._id,
+                                          subscriberId: subscribers[j].senderId,
+                                          surveyId: survey._id,
+                                          seen: false,
+                                          companyId: companyUser.companyId
+                                        })
+
+                                        surveyPage.save((err2) => {
+                                          if (err2) {
+                                            logger.serverLog(TAG, {
+                                              status: 'failed',
+                                              description: 'PollBroadcast create failed',
+                                              err2
+                                            })
+                                          }
+                                        })
                                       })
-                                    }
-                                    let surveyPage = new SurveyPage({
-                                      pageId: pages[z].pageId,
-                                      userId: req.user._id,
-                                      subscriberId: subscribers[j].senderId,
-                                      surveyId: survey._id,
-                                      seen: false,
-                                      companyId: companyUser.companyId
+                                  } else {
+                                    logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                                    let timeNow = new Date()
+                                    let automatedQueueMessage = new AutomationQueue({
+                                      automatedMessageId: survey._id,
+                                      subscriberId: subscribers[j]._id,
+                                      companyId: companyUser.companyId,
+                                      type: 'survey',
+                                      scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
                                     })
 
-                                    surveyPage.save((err2) => {
-                                      if (err2) {
+                                    automatedQueueMessage.save((error) => {
+                                      if (error) {
                                         logger.serverLog(TAG, {
                                           status: 'failed',
-                                          description: 'PollBroadcast create failed',
-                                          err2
+                                          description: 'Automation Queue Survey Message create failed',
+                                          error
                                         })
                                       }
                                     })
-                                  })
+                                  }
+                                })
                               }
                             })
                           })

@@ -8,6 +8,7 @@ let AutoPosting = require('../../api/autoposting/autopostings.model')
 let Pages = require('../../api/pages/Pages.model')
 const URL = require('../../api/URLforClickedCount/URL.model')
 let Subscribers = require('../../api/subscribers/Subscribers.model')
+const AutomationQueue = require('../../api/automation_queue/automation_queue.model')
 const AutopostingMessages = require('../../api/autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require('../../api/autoposting_messages/autoposting_subscriber_messages.model')
 let request = require('request')
@@ -148,7 +149,25 @@ function connect () {
                                       sendAutopostingMessage(messageData, page, savedMsg)
                                     } else {
                                       // Logic to add into queue will go here
-                                      logger.serverLog(TAG, 'inside adding to autoposting queue')
+                                      logger.serverLog(TAG, 'inside adding autoposting-twitter to autoposting queue')
+                                      let timeNow = new Date()
+                                      let automatedQueueMessage = new AutomationQueue({
+                                        automatedMessageId: savedMsg._id,
+                                        subscriberId: subscriber._id,
+                                        companyId: savedMsg.companyId,
+                                        type: 'autoposting-twitter',
+                                        scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                      })
+
+                                      automatedQueueMessage.save((error) => {
+                                        if (error) {
+                                          logger.serverLog(TAG, {
+                                            status: 'failed',
+                                            description: 'Automation Queue autoposting-twitter Message create failed',
+                                            error
+                                          })
+                                        }
+                                      })
                                     }
                                   })
                                 } else {
@@ -201,11 +220,29 @@ function connect () {
                                       }
 
                                       if (isLastMessage) {
-                                        logger.serverLog(TAG, 'inside autoposting send')
+                                        logger.serverLog(TAG, 'inside autoposting autoposting twitter send')
                                         sendAutopostingMessage(messageData, page, savedMsg)
                                       } else {
                                         // Logic to add into queue will go here
                                         logger.serverLog(TAG, 'inside adding to autoposting queue')
+                                        let timeNow = new Date()
+                                        let automatedQueueMessage = new AutomationQueue({
+                                          automatedMessageId: savedMsg._id,
+                                          subscriberId: subscriber._id,
+                                          companyId: savedMsg.companyId,
+                                          type: 'autoposting-twitter',
+                                          scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                        })
+
+                                        automatedQueueMessage.save((error) => {
+                                          if (error) {
+                                            logger.serverLog(TAG, {
+                                              status: 'failed',
+                                              description: 'Automation Queue autoposting-twitter Message create failed',
+                                              error
+                                            })
+                                          }
+                                        })
                                       }
                                     })
                                   })
