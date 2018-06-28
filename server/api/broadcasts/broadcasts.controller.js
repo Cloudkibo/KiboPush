@@ -642,7 +642,7 @@ exports.getfbMessage = function (req, res) {
                                     if (webhook && webhook.isEnabled) {
                                       needle.get(webhook.webhook_url, (err, r) => {
                                         if (err) {
-                                          webhookUtility.saveNotification(webhook)
+                                          logger.serverLog(TAG, err)
                                         } else if (r.statusCode === 200) {
                                           if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
                                             var data = {
@@ -1329,7 +1329,7 @@ function saveLiveChat (page, subscriber, session, event) {
     if (webhook && webhook.isEnabled) {
       needle.get(webhook.webhook_url, (err, r) => {
         if (err) {
-          webhookUtility.saveNotification(webhook)
+          logger.serverLog(TAG, err)
         } else if (r.statusCode === 200) {
           if (webhook && webhook.optIn.POLL_CREATED) {
             var data = {
@@ -1637,7 +1637,7 @@ function savepoll (req, resp) {
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
           if (err) {
-            webhookUtility.saveNotification(webhook)
+            logger.serverLog(TAG, err)
           } else if (r.statusCode === 200) {
             if (webhook && webhook.optIn.POLL_RESPONSE) {
               var data = {
@@ -1848,7 +1848,7 @@ function sendautomatedmsg (req, page) {
                         if (webhook && webhook.isEnabled) {
                           needle.get(webhook.webhook_url, (err, r) => {
                             if (err) {
-                              webhookUtility.saveNotification(webhook)
+                              logger.serverLog(TAG, err)
                             } else if (r.statusCode === 200) {
                               if (webhook && webhook.optIn.POLL_CREATED) {
                                 var data = {
@@ -1927,7 +1927,7 @@ function savesurvey (req) {
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
           if (err) {
-            webhookUtility.saveNotification(webhook)
+            logger.serverLog(TAG, err)
           } else if (r.statusCode === 200) {
             if (webhook && webhook.optIn.SURVEY_RESPONSE) {
               var data = {

@@ -1,9 +1,7 @@
 const Notifications = require('./../notifications/notifications.model')
 const Webhooks = require('./../webhooks/webhooks.model')
-const logger = require('../../components/logger')
 const config = require('./../../config/environment/index')
 function saveNotification (webhook) {
-  console.log('webhook', webhook)
   const notification = new Notifications({
     message: `The server at the URL "${webhook.webhook_url}" is not live`,
     category: {type: 'webhookFailed', id: webhook.userId},

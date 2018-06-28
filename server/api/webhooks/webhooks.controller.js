@@ -64,11 +64,9 @@ exports.create = function (req, res) {
         // if (url[url.length - 1] === '/') {
         //   url = url.substring(0, url.length - 1)
         // }
-        // console.log('url', url)
         // var options = {method: 'HEAD', host: url, port: 80}
         // var validUrl = http.request(options, function (err, r) {
         //   if (err) {}
-        //   console.log('response', JSON)
         // })
         // validUrl.end()
         var url = req.body.webhook_url + '?token=' + req.body.token
@@ -118,9 +116,7 @@ exports.edit = function (req, res) {
         .json({status: 'failed', description: 'Record not found'})
     }
     var url = req.body.webhook_url + '?token=' + req.body.token
-    console.log('url', url)
     needle.get(url, (err, r) => {
-      console.log('r.statusCode', r.statusCode)
       if (err) {
         return res.status(404).json({status: 'failed', description: 'This URL contains an invalid domain or the server at the given URL is not live.'})
       } else if (r.statusCode === 200) {
