@@ -123,7 +123,7 @@ exports.create = function (req, res) {
             if (webhook && webhook.optIn.POLL_CREATED) {
               var data = {
                 subscription_type: 'LIVE_CHAT_ACTIONS',
-                payload: { // this is the subscriber id: _id of subscriberId
+                payload: JSON.stringify({ // this is the subscriber id: _id of subscriberId
                   pageId: req.body.sender_fb_id, // this is the (facebook) :page id of pageId
                   subscriberId: req.body.recipient_fb_id, // this is the (facebook) subscriber id : pageid of subscriber id
                   session_id: req.body.session_id,
@@ -131,7 +131,7 @@ exports.create = function (req, res) {
                   payload: req.body.payload, // this where message content will go
                   url_meta: req.body.url_meta,
                   replied_by: req.body.replied_by
-                }
+                })
               }
               needle.post(webhook.webhook_url, data,
                 (error, response) => {

@@ -1110,7 +1110,7 @@ exports.sendPoll = function (req, res) {
                       if (webhook && webhook.optIn.POLL_CREATED) {
                         var data = {
                           subscription_type: 'POLL_CREATED',
-                          payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
+                          payload: JSON.stringify({userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options})
                         }
                         needle.post(webhook.webhook_url, data,
                           (error, response) => {
