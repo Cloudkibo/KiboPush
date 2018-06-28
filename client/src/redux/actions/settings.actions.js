@@ -279,6 +279,7 @@ export function saveGreetingMessage (data, msg) {
 }
 
 export function saveResponseMethod (data, msg) {
+  console.log('data for saveResponseMethod', data)
   return (dispatch) => {
     callApi('company/updateAutomatedOptions', 'post', data)
       .then(res => {

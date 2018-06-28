@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
+import AlertContainer from 'react-alert'
 
 class InviteMembers extends React.Component {
   constructor (props) {
@@ -41,22 +42,22 @@ class InviteMembers extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.successMessage) {
-      this.setState({
-        alertMessage: nextProps.successMessage,
-        alertType: 'success'
-      })
-    } else if (nextProps.errorMessage) {
-      this.setState({
-        alertMessage: nextProps.errorMessage,
-        alertType: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
-    }
+    // if (nextProps.successMessage) {
+    //   this.setState({
+    //     alertMessage: nextProps.successMessage,
+    //     alertType: 'success'
+    //   })
+    // } else if (nextProps.errorMessage) {
+    //   this.setState({
+    //     alertMessage: nextProps.errorMessage,
+    //     alertType: 'danger'
+    //   })
+    // } else {
+    //   this.setState({
+    //     alertMessage: '',
+    //     alertType: ''
+    //   })
+    // }
   }
 
   createNewInvitations (event) {
@@ -87,7 +88,7 @@ class InviteMembers extends React.Component {
       name: this.state.name,
       email: this.state.email,
       role: this.state.role
-    })
+    }, this.msg)
     // this.props.history.push({
     //   pathname: '/workflows'
     // })
@@ -114,10 +115,18 @@ class InviteMembers extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
 
       <div>
         <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />

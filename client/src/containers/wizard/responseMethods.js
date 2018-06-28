@@ -60,6 +60,9 @@ class AutomationControls extends React.Component {
     if (e.currentTarget.value === 'mixResponse') {
       this.setState({responseMethod: 'MIX_CHAT'})
     }
+    if (e.currentTarget.value === 'disableChat') {
+      this.setState({responseMethod: 'DISABLE_CHAT'})
+    }
   }
   render () {
     var alertOptions = {
@@ -120,6 +123,15 @@ class AutomationControls extends React.Component {
                                   onChange={this.handleRadioChange}
                                   checked={this.state.selectedRadio === 'mixResponse'} />
                                 <p>Responses are partially automated, with support by human agents</p>
+                              </div>
+                              <div className='radio'>
+                                <input id='disableChat'
+                                  type='radio'
+                                  value='disableChat'
+                                  name='disableChat'
+                                  onChange={this.handleRadioChange}
+                                  checked={this.state.selectedRadio === 'disableChat'} />
+                                <p>All responses are human based</p>
                               </div>
                             </div>
                           </div>
