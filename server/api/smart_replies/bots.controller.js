@@ -245,7 +245,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-   logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   var uniquebotName = req.body.botName + req.user._id + Date.now()
   request(
     {
@@ -303,7 +303,6 @@ exports.create = function (req, res) {
           }
         }
       })
-
 }
 
 exports.edit = function (req, res) {
