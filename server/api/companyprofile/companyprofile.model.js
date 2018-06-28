@@ -16,7 +16,7 @@ var CompanyprofileSchema = new Schema({
   // }
   automated_options: {
     type: String,
-    enum: ['AUTOMATED_CHAT', 'HUMAN_CHAT', 'MIX_CHAT'],
+    enum: ['AUTOMATED_CHAT', 'HUMAN_CHAT', 'MIX_CHAT', 'DISABLE_CHAT'],
     default: 'MIX_CHAT'
   }
 

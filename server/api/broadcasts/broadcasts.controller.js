@@ -24,6 +24,7 @@ const AutoPosting = require('../autoposting/autopostings.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const CompanyProfile = require('../companyprofile/companyprofile.model')
 const FacebookPosts = require('./../facebook_posts/facebook_posts.model')
 const PageAdminSubscriptions = require(
   './../pageadminsubscriptions/pageadminsubscriptions.model')
@@ -1358,29 +1359,38 @@ function handleMessageFromSomeOtherApp (event) {
 }
 
 function createSession (page, subscriber, event) {
-  Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
-    (err, session) => {
-      if (err) logger.serverLog(TAG, err)
-      if (session === null) {
-        let newSession = new Sessions({
-          subscriber_id: subscriber._id,
-          page_id: page._id,
-          company_id: page.companyId
-        })
-        newSession.save((err, sessionSaved) => {
-          if (err) logger.serverLog(TAG, err)
-          logger.serverLog(TAG, 'new session created')
-          saveLiveChat(page, subscriber, sessionSaved, event)
-        })
-      } else {
-        session.last_activity_time = Date.now()
-        if (session.status === 'resolved') {
-          session.status = 'new'
-        }
-        session.save((err) => {
-          if (err) logger.serverLog(TAG, err)
-          saveLiveChat(page, subscriber, session, event)
-        })
+  CompanyProfile.findOne({_id: page.companyId},
+    function (err, company) {
+      if (err) {
+        return logger.serverLog(TAG, err)
+      }
+
+      if (!company.automated_options === 'DISABLE_CHAT') {
+        Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
+          (err, session) => {
+            if (err) logger.serverLog(TAG, err)
+            if (session === null) {
+              let newSession = new Sessions({
+                subscriber_id: subscriber._id,
+                page_id: page._id,
+                company_id: page.companyId
+              })
+              newSession.save((err, sessionSaved) => {
+                if (err) logger.serverLog(TAG, err)
+                logger.serverLog(TAG, 'new session created')
+                saveLiveChat(page, subscriber, sessionSaved, event)
+              })
+            } else {
+              session.last_activity_time = Date.now()
+              if (session.status === 'resolved') {
+                session.status = 'new'
+              }
+              session.save((err) => {
+                if (err) logger.serverLog(TAG, err)
+                saveLiveChat(page, subscriber, session, event)
+              })
+            }
+          })
       }
     })
 }
