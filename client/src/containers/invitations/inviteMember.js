@@ -59,7 +59,8 @@ class InviteMembers extends React.Component {
     }
   }
 
-  createNewInvitations () {
+  createNewInvitations (event) {
+    event.preventDefault()
     if (this.state.name === '') {
       this.setState({
         alertMessage: 'Please fill the name field',
@@ -151,7 +152,7 @@ class InviteMembers extends React.Component {
                     </div>
                   </div>
                 </div>
-                <form className='m-form m-form--label-align-right'>
+                <form className='m-form m-form--label-align-right' onSubmit={this.createNewInvitations}>
                   <div className='m-portlet__body'>
                     <div className='m-form__section m-form__section--first'>
                       <div className='form-group m-form__group row'>
@@ -173,6 +174,8 @@ class InviteMembers extends React.Component {
                           <input className='form-control m-input'
                             onChange={this.changeEmail}
                             value={this.state.email}
+                            type='email'
+                            required
                             id='exampleInputReply' />
                         </div>
                       </div>
@@ -204,8 +207,7 @@ class InviteMembers extends React.Component {
                       <div className='row'>
                         <div className='col-lg-2' />
                         <div className='col-lg-6'>
-                          <button className='btn btn-primary' type='button'
-                            onClick={this.createNewInvitations}>
+                          <button className='btn btn-primary' type='submit'>
                             Invite
                           </button>
                           <span>&nbsp;&nbsp;</span>
@@ -242,7 +244,7 @@ class InviteMembers extends React.Component {
             </div>
           </div>
         </div>
-      </div >
+      </div>
 
     )
   }
