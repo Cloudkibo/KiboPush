@@ -445,7 +445,6 @@ exports.create = function (req, res) {
                           description: `Internal Server Error ${JSON.stringify(err)}`
                         })
                       }
-                      console.log('response', response)
                     })
                 }
               } else {
