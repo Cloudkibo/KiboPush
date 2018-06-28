@@ -76,6 +76,7 @@ class Settings extends React.Component {
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
   }
   componentWillMount () {
+    console.log('this.props.location', this.props.location)
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
       this.setState({
         openTab: 'connectFb'
@@ -84,6 +85,11 @@ class Settings extends React.Component {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setState({
         openTab: 'welcomeMessage'
+      })
+    }
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'webhook') {
+      this.setState({
+        openTab: 'webhook', show: false
       })
     }
     this.props.getuserdetails()
