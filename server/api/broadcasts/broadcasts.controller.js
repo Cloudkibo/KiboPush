@@ -649,7 +649,7 @@ exports.getfbMessage = function (req, res) {
                                           if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
                                             var data = {
                                               subscription_type: 'NEW_SUBSCRIBER',
-                                              payload: {subscriber: subsriber, recipient: pageId, sender: sender}
+                                              payload: JSON.stringify({subscriber: subsriber, recipient: pageId, sender: sender})
                                             }
                                             needle.post(webhook.webhook_url, data,
                                               (error, response) => {
@@ -1417,14 +1417,14 @@ function saveLiveChat (page, subscriber, session, event) {
           if (webhook && webhook.optIn.POLL_CREATED) {
             var data = {
               subscription_type: 'LIVE_CHAT_ACTIONS',
-              payload: {
+              payload: JSON.stringify({
                 format: 'facebook',
                 subscriberId: subscriber.senderId,
                 pageId: page.pageId,
                 session_id: session._id,
                 company_id: page.companyId,
                 payload: event.message
-              }
+              })
             }
             needle.post(webhook.webhook_url, data,
               (error, response) => {
@@ -1725,7 +1725,7 @@ function savepoll (req, resp) {
             if (webhook && webhook.optIn.POLL_RESPONSE) {
               var data = {
                 subscription_type: 'POLL_RESPONSE',
-                payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message}
+                payload: JSON.stringify({sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message})
               }
               needle.post(webhook.webhook_url, data,
                 (error, response) => {
@@ -1936,7 +1936,7 @@ function sendautomatedmsg (req, page) {
                               if (webhook && webhook.optIn.POLL_CREATED) {
                                 var data = {
                                   subscription_type: 'LIVE_CHAT_ACTIONS',
-                                  payload: {
+                                  payload: JSON.stringify({
                                     pageId: page.pageId, // this is the (facebook) :page id of pageId
                                     subscriberId: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
                                     session_id: session._id,
@@ -1945,7 +1945,7 @@ function sendautomatedmsg (req, page) {
                                       componentType: 'text',
                                       text: messageData.text
                                     }
-                                  }
+                                  })
                                 }
                                 needle.post(webhook.webhook_url, data,
                                   (error, response) => {
@@ -2015,7 +2015,7 @@ function savesurvey (req) {
             if (webhook && webhook.optIn.SURVEY_RESPONSE) {
               var data = {
                 subscription_type: 'SURVEY_RESPONSE',
-                payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id}
+                payload: JSON.stringify({sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id})
               }
               needle.post(webhook.webhook_url, data,
                 (error, response) => {

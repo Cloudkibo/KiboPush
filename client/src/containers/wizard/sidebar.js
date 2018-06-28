@@ -203,7 +203,7 @@ class Sidebar extends React.Component {
                   </span>
                 </Link>
                 <div className='m-wizard__step-label' style={{color: '#ffffff', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
-                  Response Methods
+                  Response<br /> Methods
               </div>
               </div>
             </div>
@@ -215,7 +215,7 @@ class Sidebar extends React.Component {
                   </span>
                 </Link>
                 <div className='m-wizard__step-label' style={{color: '#9699a2', width: '100%', display: 'table-cell', verticalAlign: 'middle', fontWeight: '500', paddingLeft: '2rem'}}>
-                  Response Methods
+                  Response<br /> Methods
                 </div>
                 {this.props.step > 7 &&
                   <div className='m-wizard__step-icon' style={{textAlign: 'right', paddingLeft: '6rem', display: 'table-cell', verticalAlign: 'middle', color: '#575962', fontSize: '13px', fontWeight: '300', fontFamily: 'Poppins'}}>
@@ -224,7 +224,7 @@ class Sidebar extends React.Component {
               }
               </div>
             </div>
-          }
+            }
               {this.props.step === '8'
             ? <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0', backgroundColor: '#716aca'}}>
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>

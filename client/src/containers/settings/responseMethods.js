@@ -124,7 +124,7 @@ class AutomationControls extends React.Component {
                     name='disableChat'
                     onChange={this.handleRadioChange}
                     checked={this.state.selectedRadio === 'disableChat'} />
-                  <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to do chat with subscribers)</p>
+                  <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
                 </div>
               </div>
             </div>

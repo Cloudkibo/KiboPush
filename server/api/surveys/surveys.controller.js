@@ -343,7 +343,7 @@ exports.create = function (req, res) {
                 if (webhook && webhook.optIn.SURVEY_CREATED) {
                   var data = {
                     subscription_type: 'SURVEY_CREATED',
-                    payload: {userId: req.user._id, companyId: companyUser.companyId, title: req.body.survey.title, description: req.body.survey.description, questions: req.body.questions}
+                    payload: JSON.stringify({userId: req.user._id, companyId: companyUser.companyId, title: req.body.survey.title, description: req.body.survey.description, questions: req.body.questions})
                   }
                   needle.post(webhook.webhook_url, data,
                     (error, response) => {
@@ -1158,7 +1158,7 @@ exports.sendSurvey = function (req, res) {
                             if (webhook && webhook.optIn.SURVEY_CREATED) {
                               var data = {
                                 subscription_type: 'SURVEY_CREATED',
-                                payload: {userId: req.user._id, companyId: companyUser.companyId, title: req.body.survey.title, description: req.body.survey.description, questions: req.body.questions}
+                                payload: JSON.stringify({userId: req.user._id, companyId: companyUser.companyId, title: req.body.survey.title, description: req.body.survey.description, questions: req.body.questions})
                               }
                               needle.post(webhook.webhook_url, data,
                                 (error, response) => {

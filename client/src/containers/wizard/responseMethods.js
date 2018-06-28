@@ -35,6 +35,8 @@ class AutomationControls extends React.Component {
         response = 'autoResponse'
       } else if (responseMethod === 'HUMAN_CHAT') {
         response = 'humanResponse'
+      } else if (responseMethod === 'DISABLE_CHAT') {
+        response = 'disableChat'
       } else {
         response = ''
       }
@@ -89,7 +91,7 @@ class AutomationControls extends React.Component {
                           <div className='m-portlet__head-caption'>
                             <div className='m-portlet__head-title'>
                               <h3 className='m-portlet__head-text'>
-                                Step 7: Response Methods
+                                Step 7: Live Chat Response Methods
                               </h3>
                             </div>
                           </div>
@@ -104,7 +106,7 @@ class AutomationControls extends React.Component {
                                   name='autoResponse'
                                   onChange={this.handleRadioChange}
                                   checked={this.state.selectedRadio === 'autoResponse'} />
-                                <p>All responses are automated</p>
+                                <p>All responses are automated (only chatbot would respond to subscribers)</p>
                               </div>
                               <div className='radio'>
                                 <input id='humanResponse'
@@ -113,7 +115,7 @@ class AutomationControls extends React.Component {
                                   name='humanResponse'
                                   onChange={this.handleRadioChange}
                                   checked={this.state.selectedRadio === 'humanResponse'} />
-                                <p>All responses are based on human agents</p>
+                                <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
                               </div>
                               <div className='radio'>
                                 <input id='mixResponse'
@@ -122,7 +124,7 @@ class AutomationControls extends React.Component {
                                   name='mixResponse'
                                   onChange={this.handleRadioChange}
                                   checked={this.state.selectedRadio === 'mixResponse'} />
-                                <p>Responses are partially automated, with support by human agents</p>
+                                <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
                               </div>
                               <div className='radio'>
                                 <input id='disableChat'
@@ -131,7 +133,7 @@ class AutomationControls extends React.Component {
                                   name='disableChat'
                                   onChange={this.handleRadioChange}
                                   checked={this.state.selectedRadio === 'disableChat'} />
-                                <p>All responses are human based</p>
+                                <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
                               </div>
                             </div>
                           </div>
