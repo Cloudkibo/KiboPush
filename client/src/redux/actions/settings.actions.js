@@ -1,3 +1,4 @@
+import {getAutomatedOptions} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
@@ -284,7 +285,9 @@ export function saveResponseMethod (data, msg) {
     callApi('company/updateAutomatedOptions', 'post', data)
       .then(res => {
         if (res.status === 'success') {
+          console.log('res', res)
           dispatch(getResponseMethod(res.payload))
+          dispatch(getAutomatedOptions())
           msg.success('Response Method saved successfully')
         } else {
           msg.error(res.description)
