@@ -4,6 +4,7 @@
   "description": "kibopush official repository",
   "main": "app.js",
   "scripts": {
+    "start:script": "cross-env DEBUG=kibopush:* NODE_ENV=development node scripts/mongodb_script.js",
     "start": "cross-env DEBUG=kibopush:* NODE_ENV=development nodemon server/app.js",
     "start:sojharo": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-sojharo.ngrok.io nodemon server/app.js",
     "start:dayem": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-dayem.ngrok.io nodemon server/app.js",
@@ -55,6 +56,7 @@
     "concurrently": "^3.5.1",
     "connect-multiparty": "^2.0.0",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "csv-parse": "^2.2.0",
     "csv-parser": "^1.11.0",
     "csvtojson": "^1.1.9",

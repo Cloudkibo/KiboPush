@@ -279,6 +279,7 @@ export function saveGreetingMessage (data, msg) {
 }
 
 export function saveResponseMethod (data, msg) {
+  console.log('data for saveResponseMethod', data)
   return (dispatch) => {
     callApi('company/updateAutomatedOptions', 'post', data)
       .then(res => {
@@ -329,7 +330,7 @@ export function createEndpoint (data, msg) {
       })
   }
 }
-export function editEndpoint (data) {
+export function editEndpoint (data, msg) {
   console.log('data for editEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/edit', 'post', data)
@@ -338,8 +339,8 @@ export function editEndpoint (data) {
           dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
         } else {
-          dispatch(showWebhookResponse(res.description))
-          //  msg.error(res.description)
+          //  dispatch(showWebhookResponse(res.description))
+          msg.error(res.description)
         }
       })
   }

@@ -188,7 +188,6 @@ class Bot extends React.Component {
   }
 
   changePage (e) {
-    console.log('Selected page', e.target.value)
     this.setState({pageSelected: e.target.value})
   }
 
@@ -226,7 +225,6 @@ class Bot extends React.Component {
   }
 
   render () {
-    console.log('Pages: ', this.state.pageSelected, this.state.pages)
     var alertOptions = {
       offset: 75,
       position: 'top right',

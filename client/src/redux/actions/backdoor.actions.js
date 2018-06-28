@@ -24,15 +24,15 @@ export function updateUsersList (data, originalData) {
     return {
       type: ActionTypes.LOAD_USERS_LIST_FILTERS,
       data: data.users,
-      count: data.count,
-      locale: getLocales(data.users)
+      count: data.count
+      // locale: getLocales(data.users)
     }
   } else {
     return {
       type: ActionTypes.LOAD_USERS_LIST,
       data: data.users,
-      count: data.count,
-      locale: getLocales(data.users)
+      count: data.count
+      // locale: getLocales(data.users)
     }
   }
 }

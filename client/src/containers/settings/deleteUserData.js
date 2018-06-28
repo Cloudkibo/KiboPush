@@ -103,7 +103,7 @@ class DeleteUserData extends React.Component {
         this.setState({
           deleteOption: 'DEL_ACCOUNT',
           selectedRadio: 'delAccount',
-          showEmailAlert: `Your request to delete account has been sent to the admin. Your account will be deleted by ${deletionDate}}`
+          showEmailAlert: `Your request to delete account has been sent to the admin. Your account will be deleted by ${deletionDate}`
         })
       } else if (user.deleteInformation.delete_option === 'DEL_CHAT') {
         this.setState({
@@ -219,6 +219,10 @@ class DeleteUserData extends React.Component {
           </div>
           <div className='m-portlet__body'>
             <div className='row align-items-center'>
+              <div className='col-12' style={{marginBottom: '20px'}}>
+                <i className='flaticon-exclamation m--font-brand' />
+                <span style={{marginLeft: '5px'}}> When you start the deletion process by selecting one of the options below, a request is sent to the admin to delete your desired information in 14 days time.</span>
+              </div>
               <div className='radio-buttons' style={{marginLeft: '37px'}}>
                 <div className='radio'>
                   <input id='delChat'
@@ -250,12 +254,12 @@ class DeleteUserData extends React.Component {
               </div>
             </div>
             <div className='row' style={{marginBottom: '20px'}}>
-              <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.deleteOption === ''} onClick={(e) => this.onSaveOption(e)}>Save</button>
-              <button className='btn btn-secondary' style={{marginLeft: '10px', marginTop: '20px'}} disabled={this.state.showEmailAlert === ''} onClick={(e) => this.onCancel(e)}>Cancel</button>
+              <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.deleteOption === ''} onClick={(e) => this.onSaveOption(e)}>Start Deletion Process</button>
+              <button className='btn btn-secondary' style={{marginLeft: '10px', marginTop: '20px'}} disabled={this.state.showEmailAlert === ''} onClick={(e) => this.onCancel(e)}>Cancel Deletion Process</button>
             </div>
             {this.state.showEmailAlert !== '' && <div className='row alert alert-email'>
               <p>{this.state.showEmailAlert}</p>
-              <span>Click on 'Cancel' if you want to stop the deletion process.</span>
+              <span>Click on 'Cancel Deletion Process' if you want to stop the deletion process.</span>
             </div>
             }
           </div>

@@ -163,7 +163,8 @@ exports.invite = function (req, res) {
           description: 'The user account logged in does not belong to any company. Please contact support'
         })
       }
-      let search = new RegExp('.*' + req.body.email + '.*', 'i')
+      var result = req.body.email.replace(/\s/g, '')
+      let search = new RegExp('.*' + result + '.*', 'i')
       Invitations.count(
         {email: {$regex: search}, companyId: companyUser.companyId._id},
         function (err, gotCount) {
@@ -263,8 +264,8 @@ exports.invite = function (req, res) {
                     '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
                   sendgrid.send(email, function (err, json) {
                     if (err) {
-                      return logger.serverLog(TAG,
-                        `At sending email ${JSON.stringify(err)}`)
+                      return res.status(500).json(
+                        {status: 'failed', description: 'Email does not exist'})
                     }
 
                     return res.status(200).json(
