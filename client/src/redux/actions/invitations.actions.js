@@ -46,15 +46,17 @@ export function loadInvitationsList () {
   }
 }
 
-export function addInvitation (data) {
+export function addInvitation (data, msg) {
   return (dispatch) => {
     callApi('company/invite', 'post', data)
     .then(res => {
       console.log('response from invitation', res)
       if (res.status === 'success') {
+        msg.success('Invitation email sent')
         dispatch(invitationSuccess('Invitation email sent.'))
         dispatch(updateInvitation(res.description))
       } else {
+        msg.error(res.description)
         dispatch(invitationFailure(res.description))
       }
     })
