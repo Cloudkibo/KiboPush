@@ -209,14 +209,17 @@ class Sidebar extends Component {
 
   showSmartRespliesItem () {
     // if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode) {
-    return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <Link to='/bots' className='m-menu__link m-menu__toggle'>
-          <i className='m-menu__link-icon flaticon-comment' />
-          <span className='m-menu__link-text'>Smart Replies</span>
-        </Link>
-      </li>
-    )
+    if (this.props.user && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+     this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/bots' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-comment' />
+            <span className='m-menu__link-text'>Smart Replies</span>
+          </Link>
+        </li>
+      )
+    }
     // } else {
     //   return (null)
     // }

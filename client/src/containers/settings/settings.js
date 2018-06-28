@@ -483,7 +483,7 @@ class Settings extends React.Component {
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon flaticon-list-2' />
-                            <span className='m-nav__link-text'>Response Methods</span>
+                            <span className='m-nav__link-text'> Live Chat Response Methods</span>
                           </a>
                         </li>
                         }
