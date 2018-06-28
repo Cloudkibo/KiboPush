@@ -14,6 +14,9 @@ const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 let utility = require('./../broadcasts/broadcasts.utility')
+const Sessions = require('./../sessions/sessions.model')
+const _ = require('lodash')
+const mongoose = require('mongoose')
 
 function transformPayload (payload) {
   var transformed = []
@@ -48,7 +51,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       }
 
       // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
-      if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
+      if (Object.keys(JSON.parse(witres.body).entities).length === 0) {
         logger.serverLog(TAG, 'No response found')
         Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, db_res) => {
           if (err) {
@@ -70,7 +73,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
           }
         })
         for (let i = 0; i < bot.payload.length; i++) {
-          if (bot.payload[i].intent_name == intent.value) {
+          if (bot.payload[i].intent_name === intent.value) {
             sendMessenger(bot.payload[i].answer, pageId, senderId)
           }
         }
@@ -112,57 +115,57 @@ function sendMessenger (message, pageId, senderId) {
 }
 
 exports.respond = function (payload) {
-  // Need to extract the pageID and message from facebook and also the senderID
-  // logger.serverLog(TAG, `Getting this in respond ${JSON.stringify(payload)}`)
   if (payload.object && payload.object !== 'page') {
     logger.serverLog(TAG, `Payload received is not for bot`)
     return
   }
   if (!payload.entry) {
     logger.serverLog(TAG, `Payload received is not for bot does not contain entry`)
-  	return
+    return
   }
   if (!payload.entry[0].messaging) {
     logger.serverLog(TAG, `Payload received is not for bot does contain messaging field`)
-  	return
+    return
   }
   if (!payload.entry[0].messaging[0]) {
     logger.serverLog(TAG, `Payload received is not for bot does not contain messaging array`)
-  	return
+    return
   }
   var messageDetails = payload.entry[0].messaging[0]
   var pageId = messageDetails.recipient.id
   var senderId = messageDetails.sender.id
 
   if (!messageDetails.message) {
-  	return
+    return
   }
   if (messageDetails.message.is_echo) {
     return
   }
   var text = messageDetails.message.text
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
-  Pages.findOne({pageId: pageId}, (err, page) => {
+  Pages.find({pageId: pageId}, (err, page) => {
     if (err) {
-      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      logger.serverLog(TAG, `ERROR PAGE ID ISSUE ${JSON.stringify(err)}`)
+      return
     }
-    if (page && page._id) {
-      Bots.findOne({pageId: page._id}, (err, bot) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-
-  	 	// Return if no bot found
-        if (!bot) {
-          logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
-          return
-        }
-        if (bot.isActive === 'true') {
-              // Write the bot response logic here
-          logger.serverLog(TAG, 'Responding using the bot as status is Active')
-          getWitResponse(text, bot.witToken, bot, pageId, senderId)
-        }
-      })
+    logger.serverLog(TAG, `PAGES FETCHED ${JSON.stringify(page)}`)
+    for (let i = 0; i < page.length; i++) {
+      if (page[i] && page[i]._id) {
+        Bots.findOne({pageId: page[i]._id}, (err, bot) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          } else {
+            if (!bot) {
+              logger.serverLog(TAG, `Couldnt find the bot while trying to respond ${page[i]._id}`)
+            }
+            if (bot && bot.isActive === 'true') {
+                // Write the bot response logic here
+              logger.serverLog(TAG, 'Responding using the bot as status is Active')
+              getWitResponse(text, bot.witToken, bot, pageId, senderId)
+            }
+          }
+        })
+      }
     }
   })
 }
@@ -242,6 +245,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
+  logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   var uniquebotName = req.body.botName + req.user._id + Date.now()
   request(
     {
@@ -371,9 +375,9 @@ exports.delete = function (req, res) {
       logger.serverLog(TAG,
               `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
       if (bot.length == 0) {
-      	logger.serverLog(TAG,
+        logger.serverLog(TAG,
               `Cannot find a bot to delete`)
-      	return
+        return
       }
 
       request(
@@ -459,10 +463,10 @@ exports.waitingReply = function (req, res) {
             datetime: subscribers[i].datetime,
             isEnabledByPage: subscribers[i].isEnabledByPage,
             isSubscribed: subscribers[i].isSubscribed,
-            isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
             phoneNumber: subscribers[i].phoneNumber,
             unSubscribedBy: subscribers[i].unSubscribedBy,
-            tags: []
+            tags: [],
+            source: subscribers[i].source
           })
         }
         TagsSubscribers.find({subscriberId: {$in: subsArray}})
@@ -484,4 +488,44 @@ exports.waitingReply = function (req, res) {
           })
       })
     })
+}
+
+exports.savePendingSubscribersQueue = function (req, res) {
+  var parametersMissing = false
+  if (!_.has(req.body, 'botId')) {
+    parametersMissing = true
+  }
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  Bots.findOne({_id: req.body.botId}, (err, bot) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG, `bot ${JSON.stringify(bot)}`)
+    Sessions.find({
+      page_id: mongoose.Types.ObjectId(bot.pageId),
+      last_activity_time: {$gt: new Date(Date.now() - 30 * 60 * 1000)}
+    }).exec(function (err, sessionsData) {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      } else {
+        let activeSubscribers = []
+        for (var i = 0; i < sessionsData.length; i++) {
+          activeSubscribers.push(sessionsData[i].subscriber_id)
+        }
+        Bots.update(
+          {_id: req.body.botId},
+          {blockedSubscribers: activeSubscribers}, (err, updatedBot) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            return res.status(200)
+            .json({status: 'success', payload: updatedBot})
+          })
+      }
+    })
+  })
 }

@@ -147,7 +147,7 @@ exports.upload = function (req, res) {
                           findNumber.push(number[a].number)
                           findPage.push(number[a].pageId)
                         }
-                        let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                        let subscriberFindCriteria = {source: 'customer_matching', companyId: companyUser.companyId, isSubscribed: true}
                         subscriberFindCriteria = _.merge(subscriberFindCriteria, {
                           phoneNumber: {
                             $in: findNumber
@@ -390,7 +390,7 @@ exports.sendMessage = function (req, res) {
                     findNumber.push(number[a].number)
                     findPage.push(number[a].pageId)
                   }
-                  let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                  let subscriberFindCriteria = {source: 'customer_matching', companyId: companyUser.companyId, isSubscribed: true}
                   subscriberFindCriteria = _.merge(subscriberFindCriteria, {
                     phoneNumber: {
                       $in: findNumber
@@ -579,7 +579,7 @@ exports.sendNumbers = function (req, res) {
                     findNumber.push(number[a].number)
                     findPage.push(number[a].pageId)
                   }
-                  let subscriberFindCriteria = {isSubscribedByPhoneNumber: true, companyId: companyUser.companyId, isSubscribed: true}
+                  let subscriberFindCriteria = {source: 'customer_matching', companyId: companyUser.companyId, isSubscribed: true}
                   subscriberFindCriteria = _.merge(subscriberFindCriteria, {
                     phoneNumber: {
                       $in: findNumber

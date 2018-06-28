@@ -40,10 +40,7 @@ const subscriberSchema = new Schema({
     type: String
   },
   unSubscribedBy: {type: String, default: 'subscriber'},
-  isSubscribedByPhoneNumber: {
-    type: Boolean,
-    default: false
-  },
+  source: {type: String, default: 'direct_message'},
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   isSubscribed: {
     type: Boolean,

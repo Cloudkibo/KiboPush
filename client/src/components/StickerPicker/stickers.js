@@ -126,7 +126,7 @@ class StickerMenu extends Component {
 
     return (
       <section className='sticker-menu'>
-        <div style={{border: '1px solid #e0e0eb', width: '280px'}}>
+        <div style={{border: '1px solid #e0e0eb', width: '250px'}}>
           <MyStickerPacks
             stickerPacks={stickerPacks}
             showPack={this.showPack}
@@ -137,7 +137,7 @@ class StickerMenu extends Component {
         </div>
         {
           (pack && pack.stickers) && !shop
-          ? <div style={{border: '1px solid #e0e0eb', overflow: 'scroll', width: '280px', height: '280px'}}>
+          ? <div style={{border: '1px solid #e0e0eb', overflow: 'scroll', width: '250px', height: '280px'}}>
             <StickerPack pack={pack} sendSticker={sendSticker} />
           </div>
           : null

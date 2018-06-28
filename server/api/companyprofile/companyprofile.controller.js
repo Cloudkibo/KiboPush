@@ -40,6 +40,104 @@ exports.index = function (req, res) {
     })
 }
 
+exports.setCard = function (req, res) {
+  var stripeToken = req.body.stripeToken
+
+  if (!stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please provide a valid card.`
+    })
+  }
+
+  Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!company) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Company not found'})
+    }
+
+    company.setCard(stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Card has been attached successfuly!'
+      })
+    })
+  })
+}
+
+exports.updatePlan = function (req, res) {
+  var plan = req.body.plan
+  var stripeToken = null
+
+  if (req.user.plan === plan) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `The selected plan is the same as the current plan.`
+    })
+  }
+
+  if (req.body.stripeToken) {
+    stripeToken = req.body.stripeToken
+  }
+
+  if (!req.user.last4 && !req.body.stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please add a card to your account before choosing a plan.`
+    })
+  }
+
+  Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!company) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Company not found'})
+    }
+
+    company.setPlan(plan, stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Plan has been updated successfuly!'
+      })
+    })
+  })
+}
+
 exports.invite = function (req, res) {
   let parametersMissing = false
 
@@ -65,8 +163,10 @@ exports.invite = function (req, res) {
           description: 'The user account logged in does not belong to any company. Please contact support'
         })
       }
+      var result = req.body.email.replace(/\s/g, '')
+      let search = new RegExp('.*' + result + '.*', 'i')
       Invitations.count(
-        {email: req.body.email, companyId: companyUser.companyId._id},
+        {email: {$regex: search}, companyId: companyUser.companyId._id},
         function (err, gotCount) {
           if (err) {
             return res.status(500).json({
@@ -81,8 +181,8 @@ exports.invite = function (req, res) {
               description: `${req.body.name} is already invited.`
             })
           } else {
-            Users.count({email: req.body.email},
-              function (err, gotCountAgentWithEmail) {
+            Users.count({email: req.body.email, domain: req.user.domain},
+              function (err, gotCountAgent) {
                 if (err) {
                   return res.status(500).json({
                     status: 'failed',
@@ -90,104 +190,87 @@ exports.invite = function (req, res) {
                   })
                 }
 
-                if (gotCountAgentWithEmail > 0) {
+                if (gotCountAgent > 0) {
                   return res.status(200).json({
                     status: 'failed',
-                    description: `${req.body.name} is already on KiboPush.`
+                    description: `${req.body.name} is already a member.`
                   })
                 } else {
-                  Users.count({email: req.body.email, domain: req.user.domain},
-                    function (err, gotCountAgent) {
-                      if (err) {
-                        return res.status(500).json({
-                          status: 'failed',
-                          description: `Internal Server Error ${JSON.stringify(err)}`
-                        })
-                      }
+                  let today = new Date()
+                  let uid = Math.random().toString(36).substring(7)
+                  let uniqueTokenId = 'k' + uid + '' + today.getFullYear() +
+                    '' + (today.getMonth() + 1) + '' + today.getDate() + '' +
+                    today.getHours() + '' + today.getMinutes() + '' +
+                    today.getSeconds()
 
-                      if (gotCountAgent > 0) {
-                        return res.status(200).json({
-                          status: 'failed',
-                          description: `${req.body.name} is already a member.`
-                        })
-                      } else {
-                        let today = new Date()
-                        let uid = Math.random().toString(36).substring(7)
-                        let uniqueTokenId = 'k' + uid + '' + today.getFullYear() +
-                          '' + (today.getMonth() + 1) + '' + today.getDate() + '' +
-                          today.getHours() + '' + today.getMinutes() + '' +
-                          today.getSeconds()
+                  let inviteeData = new Inviteagenttoken({
+                    email: req.body.email,
+                    token: uniqueTokenId,
+                    companyId: companyUser.companyId._id,
+                    domain: req.user.domain,
+                    companyName: companyUser.companyId.companyName,
+                    role: req.body.role
+                  })
 
-                        let inviteeData = new Inviteagenttoken({
-                          email: req.body.email,
-                          token: uniqueTokenId,
-                          companyId: companyUser.companyId._id,
-                          domain: req.user.domain,
-                          companyName: companyUser.companyId.companyName,
-                          role: req.body.role
-                        })
+                  inviteeData.save(function (err) {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `At invite token save ${err}`)
+                    }
+                  })
 
-                        inviteeData.save(function (err) {
-                          if (err) {
-                            logger.serverLog(TAG,
-                              `At invite token save ${err}`)
-                          }
-                        })
+                  let inviteeTempData = new Invitations({
+                    name: req.body.name,
+                    email: req.body.email,
+                    companyId: companyUser.companyId._id
+                  })
 
-                        let inviteeTempData = new Invitations({
-                          name: req.body.name,
-                          email: req.body.email,
-                          companyId: companyUser.companyId._id
-                        })
+                  inviteeTempData.save(function (err) {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `At invitation data save ${err}`)
+                    }
+                  })
 
-                        inviteeTempData.save(function (err) {
-                          if (err) {
-                            logger.serverLog(TAG,
-                              `At invitation data save ${err}`)
-                          }
-                        })
+                  let sendgrid = require('sendgrid')(config.sendgrid.username,
+                    config.sendgrid.password)
 
-                        let sendgrid = require('sendgrid')(config.sendgrid.username,
-                          config.sendgrid.password)
+                  var email = new sendgrid.Email({
+                    to: req.body.email,
+                    from: 'support@cloudkibo.com',
+                    subject: 'KiboPush: Invitation',
+                    text: 'Welcome to KiboPush'
+                  })
+                  email.setHtml(
+                    '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                    '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                    '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                    '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                    '<p style="color: #ffffff">Inviting you as support agent</p> </td></tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                    '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+                    req.user.name + ' has invited you to join ' +
+                    companyUser.companyId.companyName +
+                    ' as a Support Agent.</p> <p> <ul> <li>Company Name: ' +
+                    companyUser.companyId.companyName + '</li> ' +
+                    '<li>Workspace name: ' + req.user.domain +
+                    ' </li> </ul> </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+                    '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' + config.domain + '/api/invite_verification/verify/' +
+                    uniqueTokenId +
+                    '">' + config.domain + '/api/invite_verification/verify/' +
+                    uniqueTokenId +
+                    '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                    '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+                  sendgrid.send(email, function (err, json) {
+                    if (err) {
+                      return res.status(500).json(
+                        {status: 'failed', description: 'Email does not exist'})
+                    }
 
-                        var email = new sendgrid.Email({
-                          to: req.body.email,
-                          from: 'support@cloudkibo.com',
-                          subject: 'KiboPush: Invitation',
-                          text: 'Welcome to KiboPush'
-                        })
-                        email.setHtml(
-                          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-                          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-                          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-                          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-                          '<p style="color: #ffffff">Inviting you as support agent</p> </td></tr> </table> </td> </tr> </table> ' +
-                          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-                          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-                          '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
-                          req.user.name + ' has invited you to join ' +
-                          companyUser.companyId.companyName +
-                          ' as a Support Agent.</p> <p> <ul> <li>Company Name: ' +
-                          companyUser.companyId.companyName + '</li> ' +
-                          '<li>Workspace name: ' + req.user.domain +
-                          ' </li> </ul> </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-                          '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' + config.domain + '/api/invite_verification/verify/' +
-                          uniqueTokenId +
-                          '">' + config.domain + '/api/invite_verification/verify/' +
-                          uniqueTokenId +
-                          '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-                          '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-                        sendgrid.send(email, function (err, json) {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At sending email ${JSON.stringify(err)}`)
-                          }
-
-                          return res.status(200).json(
-                            {status: 'success', description: 'Email has been sent'})
-                        })
-                      }
-                    })
+                    return res.status(200).json(
+                      {status: 'success', description: 'Email has been sent'})
+                  })
                 }
               })
           }
@@ -325,4 +408,81 @@ exports.members = function (req, res) {
           res.status(200).json({status: 'success', payload: members})
         })
     })
+}
+
+exports.updateAutomatedOptions = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+
+      Companyprofile.findOne({_id: companyUser.companyId}, (err, profile) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+
+        profile.automated_options = req.body.automated_options
+        profile.save((err, updatedProfile) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          } else {
+            return res.status(200).json({status: 'success', payload: updatedProfile})
+          }
+        })
+      })
+    })
+}
+
+exports.getAutomatedOptions = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      Companyprofile.findOne({_id: companyUser.companyId},
+        function (err, company) {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          res.status(200).json({status: 'success', payload: company})
+        })
+    })
+}
+
+exports.getKeys = function (req, res) {
+  if (config.env === 'production') {
+    res.status(200).json({status: 'success', captchaKey: '6Lf9kV4UAAAAALTke6FGn_KTXZdWPDorAQEKQbER', stripeKey: config.stripeOptions.stripePubKey})
+  } else if (config.env === 'staging') {
+    res.status(200).json({status: 'success', captchaKey: '6LdWsF0UAAAAAK4UFpMYmabq7HwQ6XV-lyWd7Li6', stripeKey: config.stripeOptions.stripePubKey})
+  } else if (config.env === 'development') {
+    res.status(200).json({status: 'success', captchaKey: '6LckQ14UAAAAAFH2D15YXxH9o9EQvYP3fRsL2YOU', stripeKey: config.stripeOptions.stripePubKey})
+  }
 }

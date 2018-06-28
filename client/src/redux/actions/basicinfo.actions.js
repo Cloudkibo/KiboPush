@@ -8,12 +8,37 @@ export function setBrowserName (data) {
     data
   }
 }
+
+export function fetchPlan (data) {
+  return {
+    type: ActionTypes.FETCH_PLAN,
+    data
+  }
+}
+
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
+  console.log('user details', data)
   auth.putUserId(data._id)
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
     data
+  }
+}
+
+export function showAutomatedOptions (data) {
+  console.log(data)
+  return {
+    type: ActionTypes.GET_AUTOMATED_OPTIONS,
+    data
+  }
+}
+
+export function updateKeys (data) {
+  return {
+    type: ActionTypes.LOAD_KEYS,
+    captchaKey: data.captchaKey,
+    stripeKey: data.stripeKey
   }
 }
 
@@ -62,6 +87,12 @@ export function getuserdetails () {
   }
 }
 
+export function getAutomatedOptions () {
+  return (dispatch) => {
+    callApi('company/getAutomatedOptions').then(res => dispatch(showAutomatedOptions(res.payload)))
+  }
+}
+
 export function getFbAppId () {
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
@@ -82,5 +113,40 @@ export function updateMode (data) {
         dispatch(showUpdatedUserDetails(res.payload))
       }
     })
+  }
+}
+
+export function updatePlan (data, msg) {
+  console.log('data for updateMode', data)
+  return (dispatch) => {
+    callApi('company/updatePlan', 'post', data).then(res => {
+      console.log('response from updatePlan', res)
+      if (res.status === 'success') {
+        msg.success('Plan updated successfully')
+        dispatch(fetchPlan('success'))
+        dispatch(getuserdetails())
+      } else {
+        dispatch(fetchPlan(res.description))
+      }
+    })
+  }
+}
+
+export function updateCard (data, msg) {
+  console.log('data for updateMode', data)
+  return (dispatch) => {
+    callApi('company/setCard', 'post', data).then(res => {
+      console.log('response from updatePlan', res)
+      if (res.status === 'success') {
+        msg.success('Card added successfully')
+        dispatch(getuserdetails())
+      }
+    })
+  }
+}
+
+export function getKeys () {
+  return (dispatch) => {
+    callApi('company/getKeys').then(res => dispatch(updateKeys(res)))
   }
 }

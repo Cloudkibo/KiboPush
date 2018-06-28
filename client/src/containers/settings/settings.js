@@ -13,11 +13,15 @@ import { enable, disable, reset, getAPI, saveSwitchState, getNGP, enableNGP, dis
 import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
+import ShowPermissions from './showPermissions'
 import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
 import Billing from './billing'
 import PaymentMethods from './paymentMethods'
 import ChatWidget from './chatWidget'
+import ResponseMethods from './responseMethods'
+import DeleteUserData from './deleteUserData'
+import Webhook from './webhooks'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
@@ -42,17 +46,12 @@ class Settings extends React.Component {
       firstTime: true,
       firstTimeNGP: true,
       resetPassword: false,
-      showAPI: true,
-      showNGP: false,
+      showAPIbyPlan: true,
       saveState: null,
       saveStateNGP: null,
-      showGreetingMessage: false,
-      showSubscribeToMessenger: false,
-      showWelcomeMessage: false,
-      showBilling: false,
-      showPaymentMethods: false,
-      chatWidget: false,
-      planInfo: ''
+      planInfo: '',
+      show: true,
+      openTab: 'showAPI'
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -66,18 +65,26 @@ class Settings extends React.Component {
     this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
     this.setBilling = this.setBilling.bind(this)
+    this.setWebhook = this.setWebhook.bind(this)
     this.setPayementMethods = this.setPayementMethods.bind(this)
     this.setChatWidget = this.setChatWidget.bind(this)
+    this.setPermissions = this.setPermissions.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.handleNGPKeyChange = this.handleNGPKeyChange.bind(this)
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
+    this.setResponseMethods = this.setResponseMethods.bind(this)
+    this.setDeleteUserData = this.setDeleteUserData.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
-      this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false})
+      this.setState({
+        openTab: 'connectFb'
+      })
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'welcome') {
-      this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true})
+      this.setState({
+        openTab: 'welcomeMessage'
+      })
     }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
@@ -90,16 +97,17 @@ class Settings extends React.Component {
     this.setState({NGPSecret: event.target.value})
   }
   getPlanInfo (plan) {
+    this.setState({show: false})
     var planInfo
     if (plan === 'plan_A') {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
-      this.setState({showAPI: false, resetPassword: true})
+      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
     } else if (plan === 'plan_D') {
-      this.setState({showAPI: false, resetPassword: true})
+      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
@@ -108,44 +116,87 @@ class Settings extends React.Component {
   }
   setAPI () {
     this.props.saveSwitchState()
-    this.setState({showAPI: true, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
+    this.setState({
+      openTab: 'showAPI'
+    }, () => {
       this.initializeSwitch(this.state.buttonState)
     })
   }
   setNGP () {
-    this.setState({showAPI: false, showNGP: true, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false}, () => {
+    this.setState({
+      openTab: 'showNGP'
+    }, () => {
       this.initializeSwitchNGP(this.state.ngpButtonState)
     })
   }
   setResetPass () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: true, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({
+      openTab: 'resetPassword'
+    })
+  }
+  setPermissions () {
+    this.setState({
+      openTab: 'permissions'
+    })
   }
   setGreetingMessage () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: true, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({
+      openTab: 'greetingMessage'
+    })
   }
   setBilling () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: true, showPaymentMethods: false})
+    this.setState({
+      openTab: 'billing'
+    })
+  }
+  setWebhook () {
+    this.setState({
+      openTab: 'webhook'
+    })
   }
   setPayementMethods () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false, showBilling: false, showPaymentMethods: true})
+    this.setState({
+      openTab: 'paymentMethods'
+    })
   }
   setConnectFb () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: true, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: false})
+    this.setState({
+      openTab: 'connectFb'
+    })
   }
   setChatWidget () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: false, chatWidget: true})
+    this.setState({
+      openTab: 'chatWidget'
+    })
   }
   setSubscribeToMessenger () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: true, showWelcomeMessage: false, chatWidget: false})
+    this.setState({
+      openTab: 'subscribeToMessenger'
+    })
   }
   setWelcomeMessage () {
-    this.setState({showAPI: false, showNGP: false, resetPassword: false, showGreetingMessage: false, connectFb: false, showSubscribeToMessenger: false, showWelcomeMessage: true, chatWidget: false})
+    this.setState({
+      openTab: 'welcomeMessage'
+    })
+  }
+  setResponseMethods () {
+    this.setState({
+      openTab: 'responseMethods'
+    })
+  }
+  setDeleteUserData () {
+    this.setState({
+      openTab: 'deleteUserData'
+    })
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
+    var addScript = document.createElement('script')
+    addScript.setAttribute('src', 'https://js.stripe.com/v3/')
+    document.body.appendChild(addScript)
     this.scrollToTop()
     if (this.state.saveState === true || this.state.saveState === false) {
       this.initializeSwitch(this.state.saveState)
@@ -224,13 +275,14 @@ class Settings extends React.Component {
     })
   }
   componentWillReceiveProps (nextProps) {
+    console.log('iin componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
     }
-    if (nextProps.user) {
+    if (nextProps.user && this.state.show) {
       var plan = nextProps.user.currentPlan
       this.getPlanInfo(plan)
     }
@@ -401,6 +453,14 @@ class Settings extends React.Component {
                           </a>
                         </li>
                         }
+                        {this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-mark' />
+                            <span className='m-nav__link-text'>User Permissions</span>
+                          </a>
+                        </li>
+                        }
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
                             <i className='m-nav__link-icon flaticon-exclamation' />
@@ -419,6 +479,14 @@ class Settings extends React.Component {
                             <span className='m-nav__link-text'>HTML Widget</span>
                           </a>
                         </li>
+                        { this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-list-2' />
+                            <span className='m-nav__link-text'>Response Methods</span>
+                          </a>
+                        </li>
+                        }
                         { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
@@ -426,7 +494,7 @@ class Settings extends React.Component {
                             <span className='m-nav__link-text'>Connect with Facebook</span>
                           </a>
                         </li>
-                      }
+                        }
                         { this.props.user && this.props.user.isSuperUser &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
@@ -451,11 +519,27 @@ class Settings extends React.Component {
                           </a>
                         </li>
                       }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon la la-link' />
+                            <span className='m-nav__link-text'>Webhook</span>
+                          </a>
+                        </li>
+                        }
+                        { this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-delete' />
+                            <span className='m-nav__link-text'>Delete Information</span>
+                          </a>
+                        </li>
+                        }
                       </ul>
                     </div>
                   </div>
                 </div>
-                { this.state.showAPI &&
+                { this.state.openTab === 'showAPI' && this.state.showAPIbyPlan &&
                 <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
@@ -526,7 +610,7 @@ class Settings extends React.Component {
                   </div>
                 </div>
                 }
-                { this.state.showNGP &&
+                { this.state.openTab === 'showNGP' &&
                 <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
                   <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                     <div className='m-portlet__head'>
@@ -594,29 +678,41 @@ class Settings extends React.Component {
                   </div>
                 </div>
                 }
-                { this.state.resetPassword &&
+                { this.state.openTab === 'resetPassword' &&
                   <ResetPassword />
                 }
-                { this.state.showGreetingMessage &&
+                { this.state.openTab === 'permissions' &&
+                  <ShowPermissions />
+                }
+                { this.state.openTab === 'greetingMessage' &&
                   <GreetingMessage user={this.props.user} />
                 }
-                { this.state.showSubscribeToMessenger &&
+                { this.state.openTab === 'subscribeToMessenger' &&
                   <SubscribeToMessenger />
                 }
-                { this.state.showWelcomeMessage &&
+                { this.state.openTab === 'welcomeMessage' &&
                   <WelcomeMessage />
                 }
-                { this.state.connectFb &&
+                { this.state.openTab === 'connectFb' &&
                   <ConnectFb />
                 }
-                { this.state.chatWidget &&
+                { this.state.openTab === 'chatWidget' &&
                   <ChatWidget />
                 }
-                { this.state.showBilling &&
-                  <Billing />
+                { this.state.openTab === 'billing' &&
+                  <Billing showPaymentMethods={this.setPayementMethods} />
                 }
-                { this.state.showPaymentMethods &&
+                { this.state.openTab === 'paymentMethods' &&
                   <PaymentMethods />
+                }
+                { this.state.openTab === 'responseMethods' &&
+                  <ResponseMethods />
+                }
+                { this.state.openTab === 'deleteUserData' &&
+                  <DeleteUserData />
+                }
+                { this.state.openTab === 'webhook' &&
+                  <Webhook />
                 }
               </div>
             </div>

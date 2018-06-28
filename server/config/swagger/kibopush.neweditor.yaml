@@ -246,6 +246,58 @@ paths:
           schema:
              $ref: '#/definitions/Response500'
 
+  /autoposting_messages/getMessages/:id:
+    post:
+      description: Gives a particular autoposting message
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: first_page
+          in: formData
+          description: first, next or previous
+          type: string
+          required: true
+        - name: last_id
+          in: formData
+          description: The id of the last record on the page
+          type: string
+          required: true
+        - name: number_of_records
+          in: formData
+          description: The number of records on each page
+          type: number
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  count:
+                    type: number
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Autoposting_Message'
+                      description: The details of the autopost message
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
   /bots:
     get:
       description: Gets all bots of the logged in user
@@ -497,6 +549,38 @@ paths:
         - application/json
       produces:
         - application/json
+      parameters:
+        - name: broadcast
+          in: body
+          required: true
+          description: Broadcast details
+          schema:
+            type: object
+            properties:
+              last_id:
+                type: string
+                description: Id of the last record on the page. None if first page
+              first_page:
+                type: string
+                description: First, previous or next
+              number_of_records:
+                type: number
+                description: Number of records on each page
+              filter:
+                type: boolean
+                description: whether to apply filters or not
+              filter_criteria:
+                type: object
+                properties:
+                  search_value:
+                    type: string
+                    description: Search the broadcast by title of the broadcast
+                  type_value:
+                    type: string
+                    description: Search the broadcast by type of the broadcast
+                  days:
+                    type: number
+                    description: Filter broadcasts by days
       responses:
         '200':
           description: OK
@@ -519,6 +603,9 @@ paths:
                     items:
                       type: object
                       $ref: '#/definitions/Page_Broadcast'
+                  count:
+                    type: number
+                    description: Total number of broadcasts
         '404':
           description: failed
           schema:
@@ -1363,6 +1450,61 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+  /pages/allConnectedPages:
+    post:
+      description: Gives the pages of the user that are not connected to KiboPush
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: body
+          required: true
+          description: Page details
+          schema:
+            type: object
+            properties:
+              last_id:
+                type: string
+                description: Id of the last record on the page. None if first page
+              first_page:
+                type: string
+                description: First, previous or next
+              number_of_records:
+                type: number
+                description: Number of records on each page
+              filter:
+                type: boolean
+                description: whether to apply filters or not
+              filter_criteria:
+                type: object
+                properties:
+                  search_value:
+                    type: string
+                    description: Search pages by name
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  pages:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Page'
+                  count:
+                    type: number
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
   /pages/otherpages:
     get:
       description: Gives the pages of the user that are not connected to KiboPush
@@ -1537,6 +1679,77 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /polls/allPolls/:
+    post:
+      description: Gives the data of poll, poll sent and poll responded
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: first_page
+          in: formData
+          description: first, next or previous
+          type: string
+          required: true
+        - name: last_id
+          in: formData
+          description: The id of the last record on the page
+          type: string
+          required: true
+        - name: number_of_records
+          in: formData
+          description: The number of records on each page
+          type: number
+          required: true
+        - name: days
+          in: formData
+          description: return records for given number of days
+          type: number
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  responsesCount:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        count:
+                          type: number
+                  polls:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Poll'
+                  pollpages:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Page_Poll'
+                  count:
+                    type: number
+
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
   /polls/responses/:id:
     get:
@@ -1650,6 +1863,33 @@ paths:
           type: array
           items:
             type: string
+        - name: segmentationTags
+          in: formData
+          description: The segmented tags
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationPoll
+          in: formData
+          description: The segmented poll
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationList
+          in: formData
+          description: The segmented list
+          required: false
+          type: array
+          items:
+            type: string
+        - name: isList
+          in: formData
+          description: Whether to send the poll to a list or not
+          required: false
+          type: boolean
+          default: false
       responses:
         '200':
           description: OK
@@ -2170,6 +2410,76 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response404'
+  /subscribers/getAll:
+    post:
+      description: Gives all the subscribers of all the pages of a user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: subscriber
+          in: body
+          required: true
+          description: subscriber details
+          schema:
+            type: object
+            properties:
+              last_id:
+                type: string
+                description: Id of the last record on the page. None if first page
+              first_page:
+                type: string
+                description: First, previous or next
+              number_of_records:
+                type: number
+                description: Number of records on each page
+              filter:
+                type: boolean
+                description: whether to apply filters or not
+              filter_criteria:
+                type: object
+                properties:
+                  search_value:
+                    type: string
+                    description: Search the subscribers by name
+                  gender_value:
+                    type: string
+                    description: Search the subscribers by gender
+                  page_value:
+                    type: string
+                    description: Search the subscribers by page
+                  locale_value:
+                    type: string
+                    description: Search the subscribers by locale
+                  tag_value:
+                    type: string
+                    description: Search the subscribers by tags
+                  status_value:
+                    type: string
+                    description: Search the subscribers by status
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  subscribers:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Subscriber'
+                  count:
+                    type: number
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
   /subscribers/subscribeBack/:id:
     get:
       description: Subscribes the given user again
@@ -2223,6 +2533,73 @@ paths:
                     items:
                       type: object
                       $ref: '#/definitions/Page_Survey'
+
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /surveys/allSurveys/:
+    post:
+      description: Gives the data of surveys, surveys sent and surveys responsed for the past days. If days is 0, all surveys data is returned.
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: first_page
+          in: formData
+          description: first, next or previous
+          type: string
+          required: true
+        - name: last_id
+          in: formData
+          description: The id of the last record on the page
+          type: string
+          required: true
+        - name: number_of_records
+          in: formData
+          description: The number of records on each page
+          type: number
+          required: true
+        - name: days
+          in: formData
+          description: Fetch data for given number of days
+          type: number
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  responsesCount:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey_Response'
+                  surveys:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Survey'
+                  surveypages:
+                    type: array
+                    items:
+                      type: object
+                      $ref: '#/definitions/Page_Survey'
+                  count:
+                    type: number
 
         '404':
           description: failed
@@ -2364,6 +2741,33 @@ paths:
           type: array
           items:
             type: string
+        - name: segmentationTags
+          in: formData
+          description: The segmented tags
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationSurvey
+          in: formData
+          description: The segmented survey
+          required: false
+          type: array
+          items:
+            type: string
+        - name: segmentationList
+          in: formData
+          description: The segmented list
+          required: false
+          type: array
+          items:
+            type: string
+        - name: isList
+          in: formData
+          description: Whether to send the survey to a list or not
+          required: false
+          type: boolean
+          default: false
       responses:
         '200':
           description: OK
@@ -2932,6 +3336,62 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /templates/getAllPolls:
+    post:
+      description: Gives all the template polls
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: template poll
+          in: body
+          required: true
+          description: poll details
+          schema:
+            type: object
+            properties:
+              last_id:
+                type: string
+                description: Id of the last record on the page. None if first page
+              first_page:
+                type: string
+                description: First, previous or next
+              number_of_records:
+                type: number
+                description: Number of records on each page
+              filter_criteria:
+                type: object
+                properties:
+                  search_value:
+                    type: string
+                    description: Search the template polls by title of the poll
+                  category_value:
+                    type: string
+                    description: Search the template polls by category
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  polls:
+                    type: array
+                    items:
+                      $ref: '#/definitions/PollTemplate'
+                  count:
+                    type: number
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
   /templates/allSurveys:
     get:
       description: Gives all the template surveys
@@ -2963,9 +3423,68 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response500'
+  /templates/getAllSurveys:
+    post:
+      description: Gives all the template surveys
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: survey
+          in: body
+          required: true
+          description: survey details
+          schema:
+            type: object
+            properties:
+              last_id:
+                type: string
+                description: Id of the last record on the page. None if first page
+              first_page:
+                type: string
+                description: First, previous or next
+              number_of_records:
+                type: number
+                description: Number of records on each page
+              filter_criteria:
+                type: object
+                properties:
+                  search_value:
+                    type: string
+                    description: Search the template surveys by title of the survey
+                  category_value:
+                    type: string
+                    description: Search the surveys by category
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  surveys:
+                    type: array
+                    items:
+                      $ref: '#/definitions/SurveyTemplate'
+                  surveyQuestions:
+                    type: array
+                    items:
+                      $ref: '#/definitions/SurveyQuestion'
+                  count:
+                    type: number
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
   /templates/allBroadcasts:
     get:
-      description: Gives all the template surveys
+      description: Gives all the template broadcasts
       consumes:
         - application/json
       produces:
@@ -2983,6 +3502,61 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/BroadcastTemplate'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /templates/getAllBroadcasts:
+    post:
+      description: Gives all the template broadcasts
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: broadcast
+          in: body
+          required: true
+          description: broadcast details
+          schema:
+            type: object
+            properties:
+              last_id:
+                type: string
+                description: Id of the last record on the page. None if first page
+              first_page:
+                type: string
+                description: First, previous or next
+              number_of_records:
+                type: number
+                description: Number of records on each page
+              filter_criteria:
+                type: object
+                properties:
+                  search_value:
+                    type: string
+                    description: Search the template broadcast by title of the broadcast
+                  category_value:
+                    type: string
+                    description: Search the broadcasts by category
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  broadcasts:
+                    type: array
+                    items:
+                      $ref: '#/definitions/BroadcastTemplate'
+                  count:
+                    type: number
         '500':
           description: failed
           schema:
@@ -3244,6 +3818,52 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/List'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /lists/getAll:
+    post:
+      description: Gives all the lists of a particular user
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: first_page
+          in: formData
+          description: first, next or previous
+          type: string
+          required: true
+        - name: last_id
+          in: formData
+          description: The id of the last record on the page
+          type: string
+          required: true
+        - name: number_of_records
+          in: formData
+          description: The number of records on each page
+          type: number
+          required: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  lists:
+                    type: array
+                    items:
+                      $ref: '#/definitions/List'
+                  count:
+                    type: number
         '500':
           description: failed
           schema:
@@ -4315,6 +4935,36 @@ paths:
           schema:
              $ref: '#/definitions/Response404'
 
+  /company/getAutomatedOptions:
+    get:
+      description: Fetches the automated response options for the company account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/Company'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
   /company/invite:
     post:
       description: sends an invite to join company
@@ -4515,6 +5165,44 @@ paths:
           description: failed
           schema:
              $ref: '#/definitions/Response400'
+
+  /company/updateAutomatedOptions:
+    post:
+      description: updates automated response options
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: automated_options
+          in: formData
+          description: this is the automated response user sent
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                properties:
+                  savedCompanyProfile:
+                    type: object
+                    $ref: '#/definitions/Company'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 
   /company/members:
     get:
@@ -5235,7 +5923,7 @@ paths:
              $ref: '#/definitions/Response500'
   /permissions/fetchPermissions:
     get:
-      description: gives all the permissions of a user
+      description: gives all the permissions of all users in team
       consumes:
         - application/json
       produces:
@@ -5244,11 +5932,223 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/Permissions'
-              
-              
+            type: object
+            properties:
+              status:
+                type: string
+                description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    permission:
+                      $ref: '#/definitions/Permissions'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
 
 
+  /permissions/updatePermissions:
+    post:
+      description: gives all the permissions of one user in team
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: permission
+          in: body
+          required: true
+          description: contains existing permissions
+          schema:
+            $ref: '#/definitions/Permission'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Permission'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /webhooks/:
+    get:
+      description: gives the details of the webhook for a particular page
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  $ref: '#/definitions/Webhook'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+  /webhooks/create/:
+    post:
+      description: creates a new webhook
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: post
+          in: body
+          required: true
+          description: Webhook details
+          schema:
+            $ref: '#/definitions/Webhook'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+                description: The newly created post
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+
+  /webhooks/edit/:
+    post:
+      description: Edit an already created webhook
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: webhook
+          in: body
+          description: The survey details
+          required: true
+          schema:
+            $ref: '#/definitions/WebhookEdit'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+                description: The edited webhook
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /webhooks/enabled/:
+    post:
+      description: Enable or disable a webhook
+      consumes:
+          - application/json
+          - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: formData
+          description: The unique id of the autopost to edit
+          type: string
+          required: true
+        - name: isEnabled
+          in: formData
+          description: Enable or disable the webhook
+          type: boolean
+          required: true
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: object
+                $ref: '#/definitions/Webhook'
+                description: The edited webhook
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
+
+  /automationQueue:
+    get:
+      description: gives all the automated options in the automated queue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+               type: string
+               description: success
+              payload:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/definitions/AutomationQueue'
+        '500':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response500'
+        '404':
+          description: failed
+          schema:
+             $ref: '#/definitions/Response404'
 ################################################################################
 #                                 Definitions                                  #
 ################################################################################
@@ -5402,6 +6302,23 @@ definitions:
         type: string
         description: Date and time when this record was created.
         readOnly: true
+      segmentationTags:
+        type: array
+        items:
+          type: string
+          description: The tags of the subscribers to send survey to
+      segmentationList:
+        type: array
+        items:
+          type: string
+          description: The list of the subscribers to send survey to
+      isList:
+        type: boolean
+        description: Whether to send this survey to a list or not
+        default: false
+      clicks:
+        type: number
+        readOnly: true
 
   Page_Broadcast:
     type: object
@@ -5541,6 +6458,7 @@ definitions:
       isSegmented:
         type: boolean
         description: Whether this poll is segmented or not
+        default: false
       segmentationPageIds:
         type: array
         items:
@@ -5559,6 +6477,25 @@ definitions:
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send poll to
+      segmentationTags:
+        type: array
+        items:
+          type: string
+          description: The tags of the subscribers to send poll to
+      segmentationList:
+        type: array
+        items:
+          type: string
+          description: The list of the subscribers to send poll to
+      segmentationPoll:
+        type: array
+        items:
+          type: string
+          description: Send poll to subscribers who replied to previous polls
+      isList:
+        type: boolean
+        description: Whether to send this poll to a list or not
+        default: false
 
   Poll_Response:
     type: object
@@ -5691,6 +6628,25 @@ definitions:
       segmentationTimeZone:
         type: string
         description: The timezone of the subscriber to send survey to
+      segmentationTags:
+        type: array
+        items:
+          type: string
+          description: The tags of the subscribers to send survey to
+      segmentationList:
+        type: array
+        items:
+          type: string
+          description: The list of the subscribers to send survey to
+      segmentationPoll:
+        type: array
+        items:
+          type: string
+          description: Send survey to subscribers who replied to previous surveys
+      isList:
+        type: boolean
+        description: Whether to send this survey to a list or not
+        default: false
   EditSurvey:
     type: object
     description: The table contains information for editing a survey
@@ -6479,6 +7435,8 @@ definitions:
         type: string
       ownerId:
         type: object
+      automated_options:
+        type: string
 
   CompanyUser:
     type: object
@@ -6668,6 +7626,23 @@ definitions:
         type: string
         description: date and time of when this subscriber subscribed
 
+  AutomationQueue:
+    type: object
+    description: This table is used to store automation queue
+    properties:
+      automatedMessageId:
+        type: string
+        description: Id of the automated message i.e. survey, poll etc.
+      subscriberId:
+        type: string
+        description: Id of the subscriber to which automated message should be sent
+      companyId:
+        type: string
+        description: Id of the company that the user belongs to
+      type:
+        type: string
+        description: whether the automated message is survey, poll, broadcast
+
   FacebookPost:
     type: object
     description: This table is used to store facebook posts information
@@ -6717,11 +7692,52 @@ definitions:
         type: number
         description: the number of comments on the post
         readOnly: true
-  
+  Webhook:
+    type: object
+    description: This table is used to store facebook webhooks information
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+        readOnly: true
+      pageId:
+        type: string
+        description: the id of the page to set webhook for
+      companyId:
+        type: string
+        description: company id of the company that the user belongs to
+        readOnly: true
+      webhook_url:
+          type: string
+          description: The url to send info to
+      isEnabled:
+        type: boolean
+        description: Whether the webhook is enabled or not
+      error_message:
+        type: string
+        description: the error message
+        readOnly: true
+      optIn:
+        type: object
+  WebhookEdit:
+    type: object
+    description: This table is used to store facebook webhooks information
+    properties:
+      _id:
+        type: string
+        description: unique id of the record
+      webhook_url:
+          type: string
+          description: The url to send info to
+      isEnabled:
+        type: boolean
+        description: Whether the webhook is enabled or not
+      optIn:
+        type: object
   Permissions:
     type: object
     description: This table is used to store the permissions of a user
-    properties: 
+    properties:
       companyId:
         type: string
         description: company id of the company that the user belongs to
@@ -6730,22 +7746,22 @@ definitions:
         type: string
         description: payload for the user object
         $ref: '#/definitions/User'
-      apiPermission: 
+      apiPermission:
         type: boolean
         description: permission to use the api
       surveyPermission:
         type: boolean
         description: permission to send the survey
-      subscriberPermission: 
+      subscriberPermission:
         type: boolean
         description: permission to use the subscriber page
-      pollsPermission: 
+      pollsPermission:
         type: boolean
         description: permission to use the poll feature
       pagesPermission:
         type: boolean
-        description: permission to connect the Pages 
-      pagesAccessPermission: 
+        description: permission to connect the Pages
+      pagesAccessPermission:
         type: boolean
         description: permission to see the page tab
       menuPermission:
@@ -6757,7 +7773,7 @@ definitions:
       autopostingPermission:
         type: boolean
         description: permission to use the autoposting feature
-      broadcastPermission: 
+      broadcastPermission:
         type: boolean
         description: permission to use the broadcast feature
       invitationsPermission:
@@ -6804,8 +7820,93 @@ definitions:
       billingPermission:
         type: boolean
         description: permission to view the billing plans
-      
 
+  Permission:
+    type: object
+    description: This is permissions for a single user
+    properties:
+      companyId:
+        type: string
+        description: company id of the company that the user belongs to
+        readOnly: true
+      userId:
+        type: string
+        description: payload for the user object
+        readOnly: true
+      apiPermission:
+        type: boolean
+        description: permission to use the api
+      surveyPermission:
+        type: boolean
+        description: permission to send the survey
+      subscriberPermission:
+        type: boolean
+        description: permission to use the subscriber page
+      pollsPermission:
+        type: boolean
+        description: permission to use the poll feature
+      pagesPermission:
+        type: boolean
+        description: permission to connect the Pages
+      pagesAccessPermission:
+        type: boolean
+        description: permission to see the page tab
+      menuPermission:
+        type: boolean
+        description: permission to see and use the menu
+      livechatPermission:
+        type: boolean
+        description: permission to use the livechat feature
+      autopostingPermission:
+        type: boolean
+        description: permission to use the autoposting feature
+      broadcastPermission:
+        type: boolean
+        description: permission to use the broadcast feature
+      invitationsPermission:
+        type: boolean
+        description: permission to use the invite feature
+      deleteAgentPermission:
+        type: boolean
+        description: permission to use the delete agent
+      inviteAgentPermission:
+        type: boolean
+        description: permission to invite some agent
+      updateRolePermission:
+        type: boolean
+        description: permission to update the role of a user
+      deleteAdminPermission:
+        type: boolean
+        description: permission to delete an admin
+      inviteAdminPermission:
+        type: boolean
+        description: permission to invite an admin
+      memberPermission:
+        type: boolean
+        description: permission to view and update the members of the team
+      companyUpdatePermission:
+        type: boolean
+        description: permission to update the company details
+      companyPermission:
+        type: boolean
+      dashboardPermission:
+        type: boolean
+        description: permission to view to dashboard
+      customerMatchingPermission:
+        type: boolean
+        description: permission to match a customer
+      terminateService:
+        type: boolean
+        description: permission delete account from kibopush
+      upgradeService:
+        type: boolean
+        description: permission upgrade the plan
+      downgradeService:
+        type: boolean
+        description: permission to downgrade the plan
+      billingPermission:
+        type: boolean
+        description: permission to view the billing plans
 
   Response500:
     type: object

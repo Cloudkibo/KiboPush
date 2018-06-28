@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { Link } from 'react-router'
+import auth from '../../utility/auth.service'
 
 class Connect extends React.Component {
   componentDidMount () {
@@ -38,22 +39,36 @@ class Connect extends React.Component {
               </div>
               <div className='m-stack__item m-stack__item--center'>
                 {
-                  (this.props.location.state.account_type === 'team') &&
+                  this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <Link to='/finsh' className='m-link m-link--focus m-login__account-link'>Skip</Link>
+                    <Link to='/dashboard' className='m-link m-link--focus m-login__account-link'>Skip</Link>
                   </div>
                 }
               </div>
             </div>
           </div>
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
-            <div className='m-grid__item m-grid__item--middle'>
-              <Link to='/signup' className='m-login__welcome'>Join KiboPush</Link>
-              <p className='m-login__msg'>Get connected with your facebook audience through push messages.
-              Push surveys, polls, instant broadcasts to your Facebook subscribers.</p>
+          {
+            (this.props.location.state && this.props.location.state.permissionsRevoked)
+            ? <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+              <div className='m-grid__item m-grid__item--middle'>
+                <p className='m-login__msg'>You have revoked permissions for KiboPush. In order to use KiboPush,
+                you will have to reconnect Facebook, or alternatively log out and use another account.</p>
+                <a onClick={() => { auth.logout() }} href='/' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
+                          Logout
+                </a>
+              </div>
             </div>
-          </div>
+
+            : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+              <div className='m-grid__item m-grid__item--middle'>
+                <Link to='/signup' className='m-login__welcome'>Join KiboPush</Link>
+                <p className='m-login__msg'>Get connected with your facebook audience through push messages.
+            Push surveys, polls, instant broadcasts to your Facebook subscribers.</p>
+              </div>
+            </div>
+          }
+
         </div>
       </div>
     )

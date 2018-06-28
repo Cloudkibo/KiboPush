@@ -37,6 +37,14 @@ html(lang="en")
         },
       })
     // end::Web font
+    // LuckyOrange Code Start
+    script(type='text/javascript').
+      window.__lo_site_id = 114153;
+      (function() {
+      var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+      wa.src = 'https://d10lpsik1i8c69.cloudfront.net/w.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+      })();
     link(rel="shortcut icon" href="assets/demo/default/media/img/logo/favicon.ico")
     // Slick Carousel
     link(rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css")
@@ -168,7 +176,11 @@ html(lang="en")
       }
       var env = readCookie("environment");
       if (env !== "development") {
-        Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307').install()
+        Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
+          autoBreadcrumbs: {
+          console: false
+        }
+      }).install()
       }
     script(src="js/bundle.js")
     // Js effects for material design. + Tooltips

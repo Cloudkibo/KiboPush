@@ -157,6 +157,10 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         changedStatus: action.data
       })
+    case ActionTypes.SHOW_SEARCH_CHAT:
+      return Object.assign({}, state, {
+        searchChat: action.data
+      })
 
     default:
       return state

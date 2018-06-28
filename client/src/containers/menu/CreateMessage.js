@@ -7,19 +7,18 @@ import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Image from '../menu/Image'
-import Video from '../menu/Video'
-import Audio from '../menu/Audio'
-import File from '../menu/File'
-import Text from '../menu/Text'
-import Card from '../menu/Card'
-import Gallery from '../menu/Gallery'
+import Image from '../convo/Image'
+import Video from '../convo/Video'
+import Audio from '../convo/Audio'
+import File from '../convo/File'
+import Text from '../convo/Text'
+import Card from '../convo/Card'
+import Gallery from '../convo/Gallery'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
-import { Link } from 'react-router'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -50,11 +49,20 @@ class CreateMessage extends React.Component {
     this.setCreateMessage = this.setCreateMessage.bind(this)
     this.setEditComponents = this.setEditComponents.bind(this)
     this.getPayloadByIndex = this.getPayloadByIndex.bind(this)
+    this.gotoMenu = this.gotoMenu.bind(this)
+  }
+  gotoMenu () {
+    this.props.history.push({
+      pathname: `/menu`,
+      state: {action: 'replyWithMessage'}
+    })
+    // browserHistory.push(`/pollResult/${poll._id}`)
   }
   getPayloadByIndex (index) {
     var payload = []
     var currentMenuItem = this.props.currentMenuItem
-    switch (index[0]) {
+    var menu = this.getMenuHierarchy(this.props.currentMenuItem.clickedIndex)
+    switch (menu) {
       case 'item':
         //  console.log('An Item was Clicked position ', index[1])
         if (currentMenuItem.itemMenus[index[1]].payload && currentMenuItem.itemMenus[index[1]].payload !== '') {
@@ -67,7 +75,7 @@ class CreateMessage extends React.Component {
           payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].payload
         }
         break
-      case 'nested':
+      case 'nestedMenu':
         //  console.log('A Nested was Clicked position ', index[1], index[2], index[3])
         if (currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload && currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload !== '') {
           payload = currentMenuItem.itemMenus[index[1]].submenu[index[2]].submenu[index[3]].payload
@@ -99,7 +107,7 @@ class CreateMessage extends React.Component {
     for (var i = 0; i < payload.length; i++) {
       payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload.buttons} />)})
+        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
@@ -129,6 +137,11 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'gallery') {
+        if (payload[i].cards) {
+          for (var m = 0; m < payload[i].cards.length; m++) {
+            payload[i].cards[m].id = m
+          }
+        }
         temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
@@ -263,11 +276,27 @@ class CreateMessage extends React.Component {
     var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
     this.props.saveCurrentMenuItem(currentState)
   }
-
+  getMenuHierarchy (indexVal) {
+    var index = indexVal.split('-')
+    var menu = ''
+    if (index && index.length > 1) {
+      if (index.length === 2) {
+        menu = 'item'
+      } else if (index.length === 3) {
+        menu = 'submenu'
+      } else if (index.length === 4) {
+        menu = 'nestedMenu'
+      } else {
+        menu = 'invalid'
+      }
+    }
+    return menu
+  }
   setCreateMessage (clickedIndex, payload) {
     var temp = this.props.currentMenuItem.itemMenus
     var index = clickedIndex.split('-')
-    switch (index[0]) {
+    var menu = this.getMenuHierarchy(clickedIndex)
+    switch (menu) {
       case 'item':
         var temp1 = []
         for (var i = 0; i < payload.length; i++) {
@@ -282,7 +311,7 @@ class CreateMessage extends React.Component {
         }
         temp[index[1]].submenu[index[2]].payload = JSON.stringify(temp2)
         break
-      case 'nested':
+      case 'nestedMenu':
         var temp3 = []
         for (var k = 0; k < payload.length; k++) {
           temp3.push(payload[k])
@@ -359,7 +388,7 @@ class CreateMessage extends React.Component {
                   <div>
                     <div className='row' >
                       <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
                           <div className='align-center'>
                             <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                             <h6>Text</h6>
@@ -422,7 +451,7 @@ class CreateMessage extends React.Component {
                       <br />
                       <br />
                       <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
-                      <Link to='menu' style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </Link>
+                      <button onClick={this.gotoMenu} style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button>
                     </div>
                   </div>
                 </div>
