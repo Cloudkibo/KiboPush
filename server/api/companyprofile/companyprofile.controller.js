@@ -165,7 +165,6 @@ exports.invite = function (req, res) {
       }
       var result = req.body.email.replace(/\s/g, '')
       let search = new RegExp('.*' + result + '.*', 'i')
-      console.log('search', search)
       Invitations.count(
         {email: {$regex: search}, companyId: companyUser.companyId._id},
         function (err, gotCount) {
