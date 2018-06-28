@@ -81,7 +81,7 @@ class ChatBox extends React.Component {
       buttonState: 'start',
       recording: false
     }
-    props.fetchUserChats(this.props.currentSession._id)
+    props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 5})
     props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
@@ -125,6 +125,8 @@ class ChatBox extends React.Component {
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
     this.handleStart = this.handleStart.bind(this)
     this.handleStop = this.handleStop.bind(this)
+    this.shouldLoad = this.shouldLoad.bind(this)
+    this.loadMoreMessage = this.loadMoreMessage.bind(this)
   }
 
   showDialogRecording () {
@@ -141,6 +143,20 @@ class ChatBox extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  shouldLoad () {
+    console.log('shouldLoad called')
+    if (this.props.userChat.length < this.props.chatCount) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  loadMoreMessage () {
+    console.log('loadMoreMessage called')
+    this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 5, last_id: this.props.userChat[0]._id})
   }
 
   handleAgentsForDisbaledValue (teamAgents) {
@@ -185,6 +201,11 @@ class ChatBox extends React.Component {
     this.scrollToBottom()
     this.scrollToTop()
     this.getDisabledValue()
+    this.refs.chatScroll.addEventListener('scroll', () => {
+      if ((this.refs.chatScroll.scrollTop + this.refs.chatScroll.clientHeight) >= this.refs.chatScroll.scrollHeight && this.shouldLoad()) {
+        this.loadMoreMessage()
+      }
+    })
   }
   scrollToBottom () {
     this.messagesEnd.scrollIntoView({behavior: 'instant'})
@@ -580,8 +601,8 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     console.log('componentDidUpdate')
-    this.scrollToBottom()
-  //   this.scrollToTop()
+    // this.scrollToBottom()
+    // this.scrollToTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }
@@ -955,10 +976,10 @@ class ChatBox extends React.Component {
               <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
                   <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                    <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                    <div ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                       <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                         {
-                            this.props.userChat && this.props.userChat.map((msg, index) => (
+                            this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
                               ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
                                 {
@@ -1473,6 +1494,10 @@ class ChatBox extends React.Component {
                         }
                         <div style={{height: '50px', float: 'left', clear: 'both'}}
                           ref={(el) => { this.messagesEnd = el }} />
+                        {
+                          this.shouldLoad() &&
+                          <p>Loading...</p>
+                        }
                       </div>
                     </div>
                   </div>
@@ -1706,6 +1731,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     userChat: (state.liveChat.userChat),
+    chatCount: (state.liveChat.chatCount),
     sessions: (state.liveChat.sessions),
     openSessions: (state.liveChat.openSessions),
     closeSessions: (state.liveChat.closeSessions),

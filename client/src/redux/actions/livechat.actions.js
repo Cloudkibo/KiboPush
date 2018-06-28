@@ -82,11 +82,20 @@ export function setActiveSession (sessionId) {
   }
 }
 
-export function showUserChats (userChat) {
-  console.log('showUserChats response', userChat)
-  return {
-    type: ActionTypes.SHOW_USER_CHAT,
-    userChat
+export function showUserChats (payload, originalData) {
+  console.log('showUserChats response', payload)
+  if (originalData.page === 'first') {
+    return {
+      type: ActionTypes.SHOW_USER_CHAT_OVERWRITE,
+      userChat: payload.chat,
+      chatCount: payload.count
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_USER_CHAT,
+      userChat: payload.chat,
+      chatCount: payload.count
+    }
   }
 }
 
@@ -177,10 +186,12 @@ export function fetchSingleSession (sessionid, appendDeleteInfo) {
   }
 }
 
-export function fetchUserChats (sessionid) {
+export function fetchUserChats (sessionid, data) {
   return (dispatch) => {
-    callApi(`livechat/${sessionid}`)
-      .then(res => dispatch(showUserChats(res.payload)))
+    callApi(`livechat/${sessionid}`, 'post', data)
+      .then(res => {
+        dispatch(showUserChats(res.payload, data))
+      })
   }
 }
 
