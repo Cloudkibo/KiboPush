@@ -91,7 +91,7 @@ class AutomationControls extends React.Component {
                           <div className='m-portlet__head-caption'>
                             <div className='m-portlet__head-title'>
                               <h3 className='m-portlet__head-text'>
-                                Step 7: Response Methods
+                                Step 7: Live Chat Response Methods
                               </h3>
                             </div>
                           </div>
