@@ -50,9 +50,10 @@ export function addInvitation (data) {
   return (dispatch) => {
     callApi('company/invite', 'post', data)
     .then(res => {
+      console.log('response from invitation', res)
       if (res.status === 'success') {
         dispatch(invitationSuccess('Invitation email sent.'))
-        dispatch(updateInvitation(res.payload))
+        dispatch(updateInvitation(res.description))
       } else {
         dispatch(invitationFailure(res.description))
       }

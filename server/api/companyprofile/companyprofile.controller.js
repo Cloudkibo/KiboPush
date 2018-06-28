@@ -264,8 +264,8 @@ exports.invite = function (req, res) {
                     '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
                   sendgrid.send(email, function (err, json) {
                     if (err) {
-                      return logger.serverLog(TAG,
-                        `At sending email ${JSON.stringify(err)}`)
+                      return res.status(500).json(
+                        {status: 'failed', description: 'Email does not exist'})
                     }
 
                     return res.status(200).json(
