@@ -82,12 +82,20 @@ export function setActiveSession (sessionId) {
   }
 }
 
-export function showUserChats (payload) {
+export function showUserChats (payload, originalData) {
   console.log('showUserChats response', payload)
-  return {
-    type: ActionTypes.SHOW_USER_CHAT,
-    userChat: payload.chat,
-    chatCount: payload.count
+  if (originalData.page === 'first') {
+    return {
+      type: ActionTypes.SHOW_USER_CHAT_OVERWRITE,
+      userChat: payload.chat,
+      chatCount: payload.count
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_USER_CHAT,
+      userChat: payload.chat,
+      chatCount: payload.count
+    }
   }
 }
 
@@ -182,7 +190,7 @@ export function fetchUserChats (sessionid, data) {
   return (dispatch) => {
     callApi(`livechat/${sessionid}`, 'post', data)
       .then(res => {
-        dispatch(showUserChats(res.payload))
+        dispatch(showUserChats(res.payload, data))
       })
   }
 }

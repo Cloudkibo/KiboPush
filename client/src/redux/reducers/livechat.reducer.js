@@ -99,9 +99,20 @@ export function liveChat (state = initialState, action) {
                     ? (state.closeCount - 1) : state.closeCount
       })
 
-    case ActionTypes.SHOW_USER_CHAT:
+    case ActionTypes.SHOW_USER_CHAT_OVERWRITE:
       return Object.assign({}, state, {
-        userChat: state.userChat.concat(action.userChat),
+        userChat: action.userChat,
+        chatCount: action.chatCount,
+        changedStatus: ''
+      })
+
+    case ActionTypes.SHOW_USER_CHAT:
+      let chat = [...state.userChat, ...action.userChat]
+      let orderedChat = chat.sort(function (a, b) {
+        return new Date(a.datetime) - new Date(b.datetime)
+      })
+      return Object.assign({}, state, {
+        userChat: orderedChat,
         chatCount: action.chatCount,
         changedStatus: ''
       })

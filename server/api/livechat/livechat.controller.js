@@ -27,7 +27,7 @@ exports.index = function (req, res) {
     if (req.body.page === 'next') {
       query = {
         session_id: req.params.session_id,
-        _id: {$gt: req.body.last_id}
+        _id: {$lt: req.body.last_id}
       }
     } else {
       query = {
