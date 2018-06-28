@@ -131,7 +131,7 @@ class AutomationControls extends React.Component {
                                   name='disableChat'
                                   onChange={this.handleRadioChange}
                                   checked={this.state.selectedRadio === 'disableChat'} />
-                                <p>Responses are partially automated, with support by human agents</p>
+                                <p>All responses are human based</p>
                               </div>
                             </div>
                           </div>
