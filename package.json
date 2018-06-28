@@ -53,6 +53,7 @@
     "concurrently": "^3.5.1",
     "connect-multiparty": "^2.0.0",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "csv-parse": "^2.2.0",
     "csv-parser": "^1.11.0",
     "csvtojson": "^1.1.9",
