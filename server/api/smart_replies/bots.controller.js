@@ -115,8 +115,6 @@ function sendMessenger (message, pageId, senderId) {
 }
 
 exports.respond = function (payload) {
-  // Need to extract the pageID and message from facebook and also the senderID
-  // logger.serverLog(TAG, `Getting this in respond ${JSON.stringify(payload)}`)
   if (payload.object && payload.object !== 'page') {
     logger.serverLog(TAG, `Payload received is not for bot`)
     return
@@ -145,26 +143,29 @@ exports.respond = function (payload) {
   }
   var text = messageDetails.message.text
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
-  Pages.findOne({_id: pageId}, (err, page) => {
+  Pages.find({pageId: pageId}, (err, page) => {
     if (err) {
-      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      logger.serverLog(TAG, `ERROR PAGE ID ISSUE ${JSON.stringify(err)}`)
+      return
     }
-    if (page && page._id) {
-      Bots.findOne({pageId: page._id}, (err, bot) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-
-        if (!bot) {
-          logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
-          return
-        }
-        if (bot.isActive === 'true') {
-              // Write the bot response logic here
-          logger.serverLog(TAG, 'Responding using the bot as status is Active')
-          getWitResponse(text, bot.witToken, bot, pageId, senderId)
-        }
-      })
+    logger.serverLog(TAG, `PAGES FETCHED ${JSON.stringify(page)}`)
+    for (let i = 0; i < page.length; i++) {
+      if (page[i] && page[i]._id) {
+        Bots.findOne({pageId: page[i]._id}, (err, bot) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          } else {
+            if (!bot) {
+              logger.serverLog(TAG, `Couldnt find the bot while trying to respond ${page[i]._id}`)
+            }
+            if (bot && bot.isActive === 'true') {
+                // Write the bot response logic here
+              logger.serverLog(TAG, 'Responding using the bot as status is Active')
+              getWitResponse(text, bot.witToken, bot, pageId, senderId)
+            }
+          }
+        })
+      }
     }
   })
 }
