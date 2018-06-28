@@ -18,7 +18,7 @@ const Pages = require('../api/pages/Pages.model')
 const CompanyUsers = require('../api/companyuser/companyuser.model')
 const _ = require('lodash')
 
-const PassportFacebookExtension = require('passport-facebook-extension')
+// const PassportFacebookExtension = require('passport-facebook-extension')
 const logger = require('../components/logger')
 
 const TAG = 'auth/auth.service.js'
@@ -52,28 +52,30 @@ function isAuthenticated () {
           return res.status(401)
             .json({status: 'failed', description: 'Unauthorized'})
         }
-        logger.serverLog(TAG, `User authenticated: ${JSON.stringify(user)}`)
+        // logger.serverLog(TAG, `User authenticated: ${JSON.stringify(user)}`)
+        req.user = user
+        next()
 
-        if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
-          let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
-            config.facebook.clientSecret)
+        // if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
+        //   let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+        //     config.facebook.clientSecret)
 
-          // todo do this for permissions error
-          FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
-            .then(permissions => {
-              req.user = user
-              next()
-            })
-            .fail(e => {
-              logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-              user.permissionsRevoked = true
-              req.user = user
-              next()
-            })
-        } else {
-          req.user = user
-          next()
-        }
+        //   // todo do this for permissions error
+        //   FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
+        //     .then(permissions => {
+        //       req.user = user
+        //       next()
+        //     })
+        //     .fail(e => {
+        //       logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
+        //       user.permissionsRevoked = true
+        //       req.user = user
+        //       next()
+        //     })
+        // } else {
+        //   req.user = user
+        //   next()
+        // }
       })
     })
     .use((req, res, next) => {
@@ -292,13 +294,20 @@ function fbConnectDone (req, res) {
       return res.status(401)
         .json({status: 'failed', description: 'Unauthorized'})
     }
-
     req.user = user
     user.facebookInfo = fbPayload
     user.save((err) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      // set permissionsRevoked to false to indicate that permissions were regranted
+      if (user.permissionsRevoked) {
+        Users.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: false}, {multi: true}, (err, resp) => {
+          if (err) {
+            logger.serverLog(TAG, `Error updating permissionsRevoked field`)
+          }
+        })
       }
       fetchPages(`https://graph.facebook.com/v2.10/${
         fbPayload.fbId}/accounts?access_token=${

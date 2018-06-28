@@ -3,6 +3,7 @@ const Polls = require('./Polls.model')
 const PollResponse = require('./pollresponse.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const AutomationQueue = require('./../automation_queue/automation_queue.model')
 const needle = require('needle')
 const Pages = require('../pages/Pages.model')
 const PollPage = require('../page_poll/page_poll.model')
@@ -10,9 +11,10 @@ const Lists = require('../lists/lists.model')
 const Users = require('./../user/Users.model')
 let _ = require('lodash')
 const utility = require('./../broadcasts/broadcasts.utility')
+const webhookUtility = require('./../webhooks/webhooks.utility')
 const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
-
+const Webhooks = require('./../webhooks/webhooks.model')
 const TAG = 'api/polls/polls.controller.js'
 
 exports.index = function (req, res) {
@@ -397,6 +399,62 @@ exports.create = function (req, res) {
         ? req.body.segmentationList
         : null
     }
+    let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
+    if (req.body.isSegmented) {
+      if (req.body.segmentationPageIds.length > 0) {
+        pagesFindCriteria = _.merge(pagesFindCriteria, {
+          pageId: {
+            $in: req.body.segmentationPageIds
+          }
+        })
+      }
+    }
+    Pages.find(pagesFindCriteria).exec((err, pages) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      pages.forEach((page) => {
+        Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (webhook && webhook.isEnabled) {
+            needle.get(webhook.webhook_url, (err, r) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              } else if (r.statusCode === 200) {
+                if (webhook && webhook.optIn.POLL_CREATED) {
+                  var data = {
+                    subscription_type: 'POLL_CREATED',
+                    payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
+                  }
+                  needle.post(webhook.webhook_url, data,
+                    (error, response) => {
+                      if (error) {
+                        return res.status(500).json({
+                          status: 'failed',
+                          description: `Internal Server Error ${JSON.stringify(err)}`
+                        })
+                      }
+                    })
+                }
+              } else {
+                webhookUtility.saveNotification(webhook)
+              }
+            })
+          }
+        })
+      })
+    })
     const poll = new Polls(pollPayload)
 
     // save model to MongoDB
@@ -665,6 +723,26 @@ exports.send = function (req, res) {
                                       })
                           } else {
                             logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                            let timeNow = new Date()
+                            let automatedQueueMessage = new AutomationQueue({
+                              automatedMessageId: req.body._id,
+                              subscriberId: subscribers[j]._id,
+                              companyId: companyUser.companyId,
+                              type: 'poll',
+                              scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                            })
+
+                            logger.serverLog(TAG, 'scheduled time: ' + timeNow)
+
+                            automatedQueueMessage.save((error) => {
+                              if (error) {
+                                logger.serverLog(TAG, {
+                                  status: 'failed',
+                                  description: 'Automation Queue poll Message create failed',
+                                  error
+                                })
+                              }
+                            })
                           }
                         })
                       }
@@ -791,6 +869,26 @@ exports.send = function (req, res) {
                                 })
                             } else {
                               logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                              let timeNow = new Date()
+                              let automatedQueueMessage = new AutomationQueue({
+                                automatedMessageId: req.body._id,
+                                subscriberId: subscribers[j]._id,
+                                companyId: companyUser.companyId,
+                                type: 'poll',
+                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              })
+
+                              logger.serverLog(TAG, 'scheduled time: ' + timeNow)
+
+                              automatedQueueMessage.save((error) => {
+                                if (error) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Automation Queue poll Message create failed',
+                                    error
+                                  })
+                                }
+                              })
                             }
                           })
                         }
@@ -994,6 +1092,42 @@ exports.sendPoll = function (req, res) {
               })
             }
             for (let z = 0; z < pages.length; z++) {
+              Webhooks.findOne({pageId: pages[z].pageId}).populate('userId').exec((err, webhook) => {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  })
+                }
+                if (webhook && webhook.isEnabled) {
+                  needle.get(webhook.webhook_url, (err, r) => {
+                    if (err) {
+                      return res.status(500).json({
+                        status: 'failed',
+                        description: `Internal Server Error ${JSON.stringify(err)}`
+                      })
+                    } else if (r.statusCode === 200) {
+                      if (webhook && webhook.optIn.POLL_CREATED) {
+                        var data = {
+                          subscription_type: 'POLL_CREATED',
+                          payload: {userId: req.user._id, companyId: companyUser.companyId, statement: req.body.statement, options: req.body.options}
+                        }
+                        needle.post(webhook.webhook_url, data,
+                          (error, response) => {
+                            if (error) {
+                              return res.status(500).json({
+                                status: 'failed',
+                                description: `Internal Server Error ${JSON.stringify(err)}`
+                              })
+                            }
+                          })
+                      }
+                    } else {
+                      webhookUtility.saveNotification(webhook)
+                    }
+                  })
+                }
+              })
               if (req.body.isList === true) {
                 let ListFindCriteria = {}
                 ListFindCriteria = _.merge(ListFindCriteria,
@@ -1048,35 +1182,69 @@ exports.sendPoll = function (req, res) {
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                             message: messageData
                           }
+                          // this calls the needle when the last message was older than 30 minutes
+                          // checks the age of function using callback
+                          logger.serverLog(TAG, 'before direct poll send')
+                          compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
+                            if (err) {
+                              logger.serverLog(TAG, 'inside error')
+                              return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                            }
 
-                          needle.post(
-                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                            data, (err, resp) => {
-                              if (err) {
-                                logger.serverLog(TAG, err)
-                                logger.serverLog(TAG,
-                                  `Error occured at subscriber :${JSON.stringify(
-                                    subscribers[j])}`)
-                              }
-                              let pollBroadcast = new PollPage({
-                                pageId: pages[z].pageId,
-                                userId: req.user._id,
+                            if (isLastMessage) {
+                              logger.serverLog(TAG, 'inside direct poll send')
+                              needle.post(
+                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                data, (err, resp) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, err)
+                                    logger.serverLog(TAG,
+                                      `Error occured at subscriber :${JSON.stringify(
+                                        subscribers[j])}`)
+                                  }
+                                  let pollBroadcast = new PollPage({
+                                    pageId: pages[z].pageId,
+                                    userId: req.user._id,
+                                    companyId: companyUser.companyId,
+                                    subscriberId: subscribers[j].senderId,
+                                    pollId: pollCreated._id,
+                                    seen: false
+                                  })
+
+                                  pollBroadcast.save((err2) => {
+                                    if (err2) {
+                                      logger.serverLog(TAG, {
+                                        status: 'failed',
+                                        description: 'PollBroadcast create failed',
+                                        err2
+                                      })
+                                    }
+                                  })
+                                })
+                            } else {
+                              logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                              let timeNow = new Date()
+                              let automatedQueueMessage = new AutomationQueue({
+                                automatedMessageId: pollCreated._id,
+                                subscriberId: subscribers[j]._id,
                                 companyId: companyUser.companyId,
-                                subscriberId: subscribers[j].senderId,
-                                pollId: pollCreated._id,
-                                seen: false
+                                type: 'poll',
+                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
                               })
 
-                              pollBroadcast.save((err2) => {
-                                if (err2) {
+                              logger.serverLog(TAG, 'scheduled time: ' + timeNow)
+
+                              automatedQueueMessage.save((error) => {
+                                if (error) {
                                   logger.serverLog(TAG, {
                                     status: 'failed',
-                                    description: 'PollBroadcast create failed',
-                                    err2
+                                    description: 'Automation Queue poll Message create failed',
+                                    error
                                   })
                                 }
                               })
-                            })
+                            }
+                          })
                         }
                       })
                     })
@@ -1126,35 +1294,69 @@ exports.sendPoll = function (req, res) {
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                               message: messageData
                             }
+                            // this calls the needle when the last message was older than 30 minutes
+                            // checks the age of function using callback
+                            logger.serverLog(TAG, 'before direct poll send')
+                            compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
+                              if (err) {
+                                logger.serverLog(TAG, 'inside error')
+                                return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                              }
 
-                            needle.post(
-                              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                              data, (err, resp) => {
-                                if (err) {
-                                  logger.serverLog(TAG, err)
-                                  logger.serverLog(TAG,
-                                    `Error occured at subscriber :${JSON.stringify(
-                                      subscribers[j])}`)
-                                }
-                                let pollBroadcast = new PollPage({
-                                  pageId: pages[z].pageId,
-                                  userId: req.user._id,
+                              if (isLastMessage) {
+                                logger.serverLog(TAG, 'inside direct poll sendd')
+                                needle.post(
+                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                  data, (err, resp) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, err)
+                                      logger.serverLog(TAG,
+                                        `Error occured at subscriber :${JSON.stringify(
+                                          subscribers[j])}`)
+                                    }
+                                    let pollBroadcast = new PollPage({
+                                      pageId: pages[z].pageId,
+                                      userId: req.user._id,
+                                      companyId: companyUser.companyId,
+                                      subscriberId: subscribers[j].senderId,
+                                      pollId: pollCreated._id,
+                                      seen: false
+                                    })
+
+                                    pollBroadcast.save((err2) => {
+                                      if (err2) {
+                                        logger.serverLog(TAG, {
+                                          status: 'failed',
+                                          description: 'PollBroadcast create failed',
+                                          err2
+                                        })
+                                      }
+                                    })
+                                  })
+                              } else {
+                                logger.serverLog(TAG, 'agent was engagedd just 30 minutes ago ')
+                                let timeNow = new Date()
+                                let automatedQueueMessage = new AutomationQueue({
+                                  automatedMessageId: pollCreated._id,
+                                  subscriberId: subscribers[j]._id,
                                   companyId: companyUser.companyId,
-                                  subscriberId: subscribers[j].senderId,
-                                  pollId: pollCreated._id,
-                                  seen: false
+                                  type: 'poll',
+                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
                                 })
 
-                                pollBroadcast.save((err2) => {
-                                  if (err2) {
+                                logger.serverLog(TAG, 'scheduled time: ' + timeNow)
+
+                                automatedQueueMessage.save((error) => {
+                                  if (error) {
                                     logger.serverLog(TAG, {
                                       status: 'failed',
-                                      description: 'PollBroadcast create failed',
-                                      err2
+                                      description: 'Automation Queue poll Message create failed',
+                                      error
                                     })
                                   }
                                 })
-                              })
+                              }
+                            })
                           }
                         })
                       })

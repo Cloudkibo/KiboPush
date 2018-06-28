@@ -1025,43 +1025,45 @@ exports.markread = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
-          if (err) {
-            return res.status(500).json({
-              status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
-            })
-          }
-          var currentUser
-          if (req.user.facebookInfo) {
-            currentUser = req.user
-          } else {
-            currentUser = connectedUser
-          }
-          needle.get(
-          `https://graph.facebook.com/v2.10/${session.page_id.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-          (err, resp) => {
+        if (userPage && userPage.userId) {
+          Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
             if (err) {
-              logger.serverLog(TAG,
-              `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-            }
-            const data = {
-              messaging_type: 'UPDATE',
-              recipient: {id: session.subscriber_id.senderId}, // this is the subscriber id
-              sender_action: 'mark_seen'
-            }
-            needle.post(
-              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-              data, (err, resp1) => {
-                if (err) {
-                  logger.serverLog(TAG, err)
-                  logger.serverLog(TAG,
-                    `Error occured at subscriber :${JSON.stringify(
-                      session.subscriber_id)}`)
-                }
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
               })
+            }
+            var currentUser
+            if (req.user.facebookInfo) {
+              currentUser = req.user
+            } else {
+              currentUser = connectedUser
+            }
+            needle.get(
+            `https://graph.facebook.com/v2.10/${session.page_id.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+            (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG,
+                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+              }
+              const data = {
+                messaging_type: 'UPDATE',
+                recipient: {id: session.subscriber_id.senderId}, // this is the subscriber id
+                sender_action: 'mark_seen'
+              }
+              needle.post(
+                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                data, (err, resp1) => {
+                  if (err) {
+                    logger.serverLog(TAG, err)
+                    logger.serverLog(TAG,
+                      `Error occured at subscriber :${JSON.stringify(
+                        session.subscriber_id)}`)
+                  }
+                })
+            })
           })
-        })
+        }
       })
     })
   })

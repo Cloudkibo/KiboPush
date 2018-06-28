@@ -2,6 +2,6 @@
 # This will install all the required libraries.
 git pull origin staging
 npm install
-npm run build:client
+npm run build:react
 forever stop server/app.js
 forever start server/app.js

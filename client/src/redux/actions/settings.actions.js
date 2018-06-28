@@ -14,12 +14,7 @@ export function getResponseMethod (data) {
     data
   }
 }
-export function get (data) {
-  return {
-    type: ActionTypes.ENABLE_SUCCESS,
-    data
-  }
-}
+
 export function disableSuccess (data) {
   return {
     type: ActionTypes.DISABLE_SUCCESS,
@@ -284,6 +279,7 @@ export function saveGreetingMessage (data, msg) {
 }
 
 export function saveResponseMethod (data, msg) {
+  console.log('data for saveResponseMethod', data)
   return (dispatch) => {
     callApi('company/updateAutomatedOptions', 'post', data)
       .then(res => {
@@ -319,7 +315,7 @@ export function loadWebhook () {
       })
   }
 }
-export function createEndpoint (data) {
+export function createEndpoint (data, msg) {
   console.log('data for createEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/create', 'post', data)
@@ -328,13 +324,13 @@ export function createEndpoint (data) {
           dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
         } else {
-          dispatch(showWebhookResponse(res.description))
-          //  msg.error(res.description)
+          //  dispatch(showWebhookResponse(res.description))
+          msg.error(res.description)
         }
       })
   }
 }
-export function editEndpoint (data) {
+export function editEndpoint (data, msg) {
   console.log('data for editEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/edit', 'post', data)
@@ -343,8 +339,8 @@ export function editEndpoint (data) {
           dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
         } else {
-          dispatch(showWebhookResponse(res.description))
-          //  msg.error(res.description)
+          //  dispatch(showWebhookResponse(res.description))
+          msg.error(res.description)
         }
       })
   }
@@ -365,6 +361,44 @@ export function enabled (data, msg) {
         } else {
           //  msg.error(res.description)
         }
+      })
+  }
+}
+export function saveDeleteOption (data, msg, handleSave) {
+  return (dispatch) => {
+    callApi('users/enableDelete', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Delete request has been sent')
+        } else {
+          msg.error(res.description)
+        }
+        handleSave(res)
+      })
+  }
+}
+export function authenticatePassword (data, msg, handleAuthentication) {
+  return (dispatch) => {
+    callApi('users/authenticatePassword', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status !== 'success') {
+          msg.error(res.description)
+        }
+        handleAuthentication(res)
+      })
+  }
+}
+export function cancelDeletion (msg, handleCancel) {
+  return (dispatch) => {
+    callApi('users/cancelDeletion')
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Request to cancel deletion process has been sent to admin.')
+        }
+        handleCancel(res)
       })
   }
 }

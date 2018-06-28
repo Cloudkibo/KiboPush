@@ -18,6 +18,9 @@ let crypto = require('crypto')
 const logger = require('../../components/logger')
 // const mongoose = require('mongoose')
 const MailChimp = require('mailchimp-api-v3')
+const moment = require('moment')
+
+// const PassportFacebookExtension = require('passport-facebook-extension')
 
 const TAG = 'api/user/user.controller.js'
 
@@ -122,10 +125,24 @@ exports.index = function (req, res) {
                 description: 'Fatal Error, plan not set for this user. Please contact support'
               })
             }
+
+            // if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
+            //   let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+            // config.facebook.clientSecret)
+
+            //   FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
+            // .then(permissions => {
+            //   logger.serverLog(TAG, `Permissions given: ${JSON.stringify(permissions)}`)
+            // })
+            // .fail(e => {
+            //   logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
+            //   user.permissionsRevoked = true
+            // })
+            // }
+
             user = user.toObject()
             user.companyId = companyUser.companyId
             user.permissions = permissions
-            user.permissionsRevoked = req.user.permissionsRevoked
             user.currentPlan = company.stripe.plan
             user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
@@ -277,7 +294,9 @@ exports.create = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
   if (req.body.domain) {
-    Users.findOne({email: req.body.email}, (err, emailUsed) => {
+    var result = req.body.domain.replace(/\s/g, '')
+    let search = new RegExp('.*' + result + '.*', 'i')
+    Users.findOne({email: {$regex: search}}, (err, emailUsed) => {
       if (err) {
         return res.status(422).json({
           status: 'failed',
@@ -872,4 +891,246 @@ exports.joinCompany = function (req, res) {
         })
       })
     })
+}
+
+exports.authenticatePassword = function (req, res) {
+  var parametersMissing = false
+  if (!_.has(req.body, 'email')) {
+    parametersMissing = true
+  }
+  if (!_.has(req.body, 'password')) {
+    parametersMissing = true
+  }
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  Users.findOne({
+    email: req.body.email
+  }, function (err, user) {
+    if (err) {
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    if (!user) {
+      return res.status(500)
+      .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    logger.serverLog(TAG,
+      'req.body ' + JSON.stringify(req.body))
+    if (!user.authenticate(req.body.password)) {
+      return res.status(200)
+      .json({status: 'failed', description: 'Incorrect password'})
+    } else {
+      return res.status(200)
+      .json({status: 'success', description: 'Authenticated'})
+    }
+  })
+}
+exports.enableDelete = function (req, res) {
+  var parametersMissing = false
+  if (!_.has(req.body, 'delete_option')) {
+    parametersMissing = true
+  }
+  if (!_.has(req.body, 'deletion_date')) {
+    parametersMissing = true
+  }
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  Users.findOne({_id: req.user._id}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    var emailText = ''
+    var deletionDate = moment(req.body.deletion_date).format('dddd, MMMM Do YYYY')
+    if (req.body.delete_option === 'DEL_ACCOUNT') {
+      emailText = `You have requested deleting your account. Your request will be served in 14 days time, after which you will not be able to reactivate or retrieve any of the information. Your account and entire data will be deleted by ${deletionDate}`
+    } else if (req.body.delete_option === 'DEL_CHAT') {
+      emailText = `You have requested deleting your live chat data from KiboPush. Your request will be served in 14 days time, after which you will not be able to retrieve your information back. Your live chat data will be deleted by ${deletionDate}`
+    } else if (req.body.delete_option === 'DEL_SUBSCRIBER') {
+      emailText = `You have requested deleting your subscribers information from Kibopush. Your request will served in 14 days time, after whcih you will not be able to retrieve your information back. Your subscribers data will be deleted by ${deletionDate}`
+    }
+    user.deleteInformation = {delete_option: req.body.delete_option, deletion_date: req.body.deletion_date}
+    user.save((err, updatedUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      } else {
+        let sendgrid = require('sendgrid')(config.sendgrid.username,
+          config.sendgrid.password)
+
+        let email = new sendgrid.Email({
+          to: req.user.email,
+          from: 'support@cloudkibo.com',
+          subject: 'KiboPush: Delete Confirmation',
+          text: ' Delete Confirmation'
+        })
+
+        email.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+          '<p style="color: #ffffff">Delete Confirmation</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
+          '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+         '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+         emailText +
+         '<!-- END: Content -->' +
+         '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+         '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+        sendgrid.send(email, function (err, json) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `Internal Server Error on sending email : ${JSON.stringify(
+                err)}`)
+          }
+        })
+
+        let emailAdmin = new sendgrid.Email({
+          to: 'sojharo@cloudkibo.com',
+          from: 'support@cloudkibo.com',
+          subject: 'KiboPush: Delete User Information',
+          text: 'Delete User Information'
+        })
+
+        emailAdmin.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+          '<p style="color: #ffffff">Delete User Information</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
+          '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+         '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+          req.user.name + ' has requested to delete his/her information from KiboPush. The information type to be deleted is: ' +
+          req.body.delete_option + '. Data will be deleted by ' + deletionDate + '. ' +
+          'Following are the user details:' +
+          '<ul>' +
+            '<li>' + req.user._id + '</li>' +
+            '<li>' + req.user.email + '</li>' +
+            '<li>' + req.user.role + '</li>' +
+            '<li>' + req.user.plan + '</li>' +
+          '</ul>' +
+         '<!-- END: Content -->' +
+        '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+        '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+        sendgrid.send(emailAdmin, function (err, json) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `Internal Server Error on sending email to Admin : ${JSON.stringify(
+                err)}`)
+          }
+        })
+
+        return res.status(200).json({status: 'success', payload: updatedUser})
+      }
+    })
+  })
+}
+
+exports.cancelDeletion = function (req, res) {
+  Users.findOne({domain_email: req.user.domain_email}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    user.deleteInformation = {delete_option: 'NONE', deletion_date: ''}
+    user.save((err, updatedUser) => {
+      logger.serverLog(TAG,
+        `Inside SaveUser user : ${JSON.stringify(
+          updatedUser)}`)
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      } else {
+        let sendgrid = require('sendgrid')(config.sendgrid.username,
+          config.sendgrid.password)
+
+        let email = new sendgrid.Email({
+          to: req.user.email,
+          from: 'support@cloudkibo.com',
+          subject: 'KiboPush: Cancel Deletion Process',
+          text: 'Cancel Deletion Process'
+        })
+
+        email.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+          '<p style="color: #ffffff">Cancel Deletion Process</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
+          '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+         '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+         '<p> You have requested to cancel the deletion process. Request has been sent to admin.</p>' +
+         '<!-- END: Content -->' +
+        '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+          '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+        sendgrid.send(email, function (err, json) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `Internal Server Error on sending email : ${JSON.stringify(
+                err)}`)
+          }
+        })
+
+        let emailAdmin = new sendgrid.Email({
+          to: 'sojharo@cloudkibo.com',
+          from: 'support@cloudkibo.com',
+          subject: 'KiboPush: Cancel Deletion Process',
+          text: 'Cancel Deletion Process'
+        })
+
+        emailAdmin.setHtml(
+          '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+          '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+          '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+          '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+          '<p style="color: #ffffff">Delete User Informatio</p> </td></tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+          '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> ' +
+          '<!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+         '<tr> <td class="wrapper last"> <p> Hello, <br> ' +
+          req.user.name + ' has requested to stop his/her deletion process. ' +
+          'Following are the user details:' +
+          '<ul>' +
+            '<li>' + req.user._id + '</li>' +
+            '<li>' + req.user.email + '</li>' +
+            '<li>' + req.user.role + '</li>' +
+            '<li>' + req.user.plan + '</li>' +
+          '</ul>' +
+         '<!-- END: Content -->' +
+        '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+          '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+        sendgrid.send(emailAdmin, function (err, json) {
+          if (err) {
+            return logger.serverLog(TAG,
+              `Internal Server Error on sending email to Admin : ${JSON.stringify(
+                err)}`)
+          }
+        })
+
+        return res.status(200).json({status: 'success', payload: updatedUser})
+      }
+    })
+  })
 }

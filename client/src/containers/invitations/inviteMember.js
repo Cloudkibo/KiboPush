@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
+import AlertContainer from 'react-alert'
 
 class InviteMembers extends React.Component {
   constructor (props) {
@@ -41,25 +42,26 @@ class InviteMembers extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.successMessage) {
-      this.setState({
-        alertMessage: nextProps.successMessage,
-        alertType: 'success'
-      })
-    } else if (nextProps.errorMessage) {
-      this.setState({
-        alertMessage: nextProps.errorMessage,
-        alertType: 'danger'
-      })
-    } else {
-      this.setState({
-        alertMessage: '',
-        alertType: ''
-      })
-    }
+    // if (nextProps.successMessage) {
+    //   this.setState({
+    //     alertMessage: nextProps.successMessage,
+    //     alertType: 'success'
+    //   })
+    // } else if (nextProps.errorMessage) {
+    //   this.setState({
+    //     alertMessage: nextProps.errorMessage,
+    //     alertType: 'danger'
+    //   })
+    // } else {
+    //   this.setState({
+    //     alertMessage: '',
+    //     alertType: ''
+    //   })
+    // }
   }
 
-  createNewInvitations () {
+  createNewInvitations (event) {
+    event.preventDefault()
     if (this.state.name === '') {
       this.setState({
         alertMessage: 'Please fill the name field',
@@ -86,7 +88,7 @@ class InviteMembers extends React.Component {
       name: this.state.name,
       email: this.state.email,
       role: this.state.role
-    })
+    }, this.msg)
     // this.props.history.push({
     //   pathname: '/workflows'
     // })
@@ -113,10 +115,18 @@ class InviteMembers extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
 
       <div>
         <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -151,7 +161,7 @@ class InviteMembers extends React.Component {
                     </div>
                   </div>
                 </div>
-                <form className='m-form m-form--label-align-right'>
+                <form className='m-form m-form--label-align-right' onSubmit={this.createNewInvitations}>
                   <div className='m-portlet__body'>
                     <div className='m-form__section m-form__section--first'>
                       <div className='form-group m-form__group row'>
@@ -173,6 +183,8 @@ class InviteMembers extends React.Component {
                           <input className='form-control m-input'
                             onChange={this.changeEmail}
                             value={this.state.email}
+                            type='email'
+                            required
                             id='exampleInputReply' />
                         </div>
                       </div>
@@ -204,8 +216,7 @@ class InviteMembers extends React.Component {
                       <div className='row'>
                         <div className='col-lg-2' />
                         <div className='col-lg-6'>
-                          <button className='btn btn-primary' type='button'
-                            onClick={this.createNewInvitations}>
+                          <button className='btn btn-primary' type='submit'>
                             Invite
                           </button>
                           <span>&nbsp;&nbsp;</span>
@@ -242,7 +253,7 @@ class InviteMembers extends React.Component {
             </div>
           </div>
         </div>
-      </div >
+      </div>
 
     )
   }

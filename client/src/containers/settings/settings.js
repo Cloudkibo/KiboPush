@@ -20,6 +20,7 @@ import Billing from './billing'
 import PaymentMethods from './paymentMethods'
 import ChatWidget from './chatWidget'
 import ResponseMethods from './responseMethods'
+import DeleteUserData from './deleteUserData'
 import Webhook from './webhooks'
 import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -72,6 +73,7 @@ class Settings extends React.Component {
     this.handleNGPKeyChange = this.handleNGPKeyChange.bind(this)
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
     this.setResponseMethods = this.setResponseMethods.bind(this)
+    this.setDeleteUserData = this.setDeleteUserData.bind(this)
   }
   componentWillMount () {
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
@@ -180,6 +182,11 @@ class Settings extends React.Component {
   setResponseMethods () {
     this.setState({
       openTab: 'responseMethods'
+    })
+  }
+  setDeleteUserData () {
+    this.setState({
+      openTab: 'deleteUserData'
     })
   }
   scrollToTop () {
@@ -487,7 +494,7 @@ class Settings extends React.Component {
                             <span className='m-nav__link-text'>Connect with Facebook</span>
                           </a>
                         </li>
-                      }
+                        }
                         { this.props.user && this.props.user.isSuperUser &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
@@ -516,10 +523,18 @@ class Settings extends React.Component {
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon la la-link' />
-                            <span className='m-nav__link-text'>Webhook</span>
+                            <span className='m-nav__link-text'>Webhooks</span>
                           </a>
                         </li>
-                      }
+                        }
+                        { this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-delete' />
+                            <span className='m-nav__link-text'>Delete Information</span>
+                          </a>
+                        </li>
+                        }
                       </ul>
                     </div>
                   </div>
@@ -692,6 +707,9 @@ class Settings extends React.Component {
                 }
                 { this.state.openTab === 'responseMethods' &&
                   <ResponseMethods />
+                }
+                { this.state.openTab === 'deleteUserData' &&
+                  <DeleteUserData />
                 }
                 { this.state.openTab === 'webhook' &&
                   <Webhook />

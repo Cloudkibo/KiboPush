@@ -184,6 +184,13 @@ a.broadcastTabs.active {
 .subscriberPopover > .popover-inner {
   height: auto !important;
 }
+.popover.show.chatPopover {
+  height: auto !important;
+  left: 20px !important; 
+}
+.chatPopover > .popover-inner {
+  height: auto !important;
+}
 .popover.show.liveChatPopover {
   height: auto !important
 }
@@ -251,4 +258,9 @@ a.broadcastTabs.active {
 .replyWithMessage {
   width: 100%;
   text-align: center;
+}
+.alert-email {
+  padding: 20px;
+  background-color: #34bfa3;
+  color: white;
 }

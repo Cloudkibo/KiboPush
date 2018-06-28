@@ -62,7 +62,7 @@ exports.getAll = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      if (req.body.first_page) {
+      if (req.body.first_page === 'first') {
         let findCriteria = {
           companyId: mongoose.Types.ObjectId(companyUser.companyId)
         }

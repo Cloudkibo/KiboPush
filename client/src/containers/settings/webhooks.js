@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { isWebURL } from './../../utility/utils'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -24,7 +25,7 @@ class Webhook extends React.Component {
       urlEdit: '',
       subscriptionsEdit: [{name: 'New Poll', selected: false}, {'name': 'Poll Response', selected: false}, {'name': 'New Survey', selected: false}, {'name': 'Survey Response', selected: false}, {'name': 'New Subscriber', selected: false},
       {'name': 'Live Chat Actions', selected: false}],
-      errorUrl: false,
+      errorUrl: '',
       errorToken: false,
       pageEdit: '',
       id: ''
@@ -54,9 +55,11 @@ class Webhook extends React.Component {
     if (nextProps.response) {
       if (nextProps.response === 'success') {
         this.msg.success('Webhook saved')
-        this.setState({isShowingModal: false, isShowingModalEdit: false})
-      } else {
-        this.msg.error(nextProps.response)
+        var subscriptions = this.state.subscriptions
+        for (var i = 0; i < this.state.subscriptions.length; i++) {
+          subscriptions[i].selected = false
+        }
+        this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false, isShowingModalEdit: false})
       }
     }
   }
@@ -96,13 +99,13 @@ class Webhook extends React.Component {
   }
 
   closeDialogEdit () {
-    this.setState({isShowingModalEdit: false, errorUrl: false, errorToken: false})
+    this.setState({isShowingModalEdit: false, errorUrl: '', errorToken: false})
   }
   updateURL (e) {
-    this.setState({url: e.target.value, errorUrl: false})
+    this.setState({url: e.target.value, errorUrl: ''})
   }
   updateURLEdit (e) {
-    this.setState({urlEdit: e.target.value, errorUrl: false})
+    this.setState({urlEdit: e.target.value, errorUrl: ''})
   }
   updateToken (e) {
     this.setState({token: e.target.value, errorToken: false})
@@ -142,7 +145,7 @@ class Webhook extends React.Component {
         }
         this.setState({subscriptions: subscriptions})
       } else {
-        for (var q = 0; q < this.state.subscribersDataAll.length; q++) {
+        for (var q = 0; q < this.state.subscriptions.length; q++) {
           if (subscriptions[q].name === e.target.value) {
             subscriptions[q].selected = false
           }
@@ -197,7 +200,9 @@ class Webhook extends React.Component {
   save () {
     let optIn = {}
     if (this.state.url === '') {
-      this.setState({errorUrl: true})
+      this.setState({errorUrl: 'Please enter a URL'})
+    } else if (!isWebURL(this.state.url)) {
+      this.setState({errorUrl: 'Please enter a valid URL'})
     } else if (this.state.token === '') {
       this.setState({errorToken: true})
     } else {
@@ -216,7 +221,7 @@ class Webhook extends React.Component {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptions[i].selected
         }
       }
-      this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn})
+      this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
     }
   }
   cancel () {
@@ -224,7 +229,7 @@ class Webhook extends React.Component {
     for (var i = 0; i < this.state.subscriptions.length; i++) {
       subscriptions[i].selected = false
     }
-    this.setState({url: '', token: '', errorToken: false, errorUrl: false, subscriptions: subscriptions, isShowingModal: false})
+    this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false})
   }
   edit (webhook) {
     // let subscriptionsEdit = this.state.subscriptionsEdit
@@ -253,7 +258,9 @@ class Webhook extends React.Component {
   saveEdited () {
     let optIn = {}
     if (this.state.urlEdit === '') {
-      this.setState({errorUrl: true})
+      this.setState({errorUrl: 'Please enter a URL'})
+    } else if (!isWebURL(this.state.urlEdit)) {
+      this.setState({errorUrl: 'Please enter a valid URL'})
     } else if (this.state.token === '') {
       this.setState({errorToken: true})
     } else {
@@ -272,7 +279,7 @@ class Webhook extends React.Component {
           optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptionsEdit[i].selected
         }
       }
-      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn})
+      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
     }
   }
   enabled (data, id) {
@@ -303,7 +310,7 @@ class Webhook extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Webhook
+                    Webhooks
                   </span>
                 </li>
               </ul>
@@ -343,7 +350,7 @@ class Webhook extends React.Component {
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>Callback URL</label>
                                   {this.state.errorUrl &&
-                                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a callback URL</bold></div>
+                                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>{this.state.errorUrl}</bold></div>
                                     }
                                   <input className='form-control'
                                     value={this.state.url} onChange={(e) => this.updateURL(e)} />

@@ -13,6 +13,7 @@ const Pages = require('../pages/Pages.model')
 const PollResponse = require('../polls/pollresponse.model')
 const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
+const AutomationQueue = require('./../automation_queue/automation_queue.model')
 const PollPage = require('../page_poll/page_poll.model')
 //  const Polls = require('../polls/Polls.model')
 const SurveyPage = require('../page_survey/page_survey.model')
@@ -23,6 +24,7 @@ const AutoPosting = require('../autoposting/autopostings.model')
 const Sessions = require('../sessions/sessions.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const CompanyProfile = require('../companyprofile/companyprofile.model')
 const FacebookPosts = require('./../facebook_posts/facebook_posts.model')
 const PageAdminSubscriptions = require(
   './../pageadminsubscriptions/pageadminsubscriptions.model')
@@ -32,6 +34,8 @@ const AutopostingMessages = require(
   './../autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
+const Webhooks = require(
+  './../webhooks/webhooks.model')
 // const SequenceMessages = require(
 //  './../sequenceMessaging/message.model')
 // const SequenceSubscriberMessages = require(
@@ -44,6 +48,7 @@ let _ = require('lodash')
 const TAG = 'api/broadcast/broadcasts.controller.js'
 const needle = require('needle')
 const request = require('request')
+const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
 var array = []
 
@@ -634,6 +639,29 @@ exports.getfbMessage = function (req, res) {
                                   if (err2) {
                                     logger.serverLog(TAG, err2)
                                   }
+                                  Webhooks.findOne({pageId: pageId}).populate('userId').exec((err, webhook) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    if (webhook && webhook.isEnabled) {
+                                      needle.get(webhook.webhook_url, (err, r) => {
+                                        if (err) {
+                                          logger.serverLog(TAG, err)
+                                        } else if (r.statusCode === 200) {
+                                          if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                            var data = {
+                                              subscription_type: 'NEW_SUBSCRIBER',
+                                              payload: {subscriber: subsriber, recipient: pageId, sender: sender}
+                                            }
+                                            needle.post(webhook.webhook_url, data,
+                                              (error, response) => {
+                                                if (error) logger.serverLog(TAG, err)
+                                              })
+                                          }
+                                        } else {
+                                          webhookUtility.saveNotification(webhook)
+                                        }
+                                      })
+                                    }
+                                  })
                                   if (subscriberSource === 'customer_matching') {
                                     updateList(phoneNumber, sender, page)
                                   }
@@ -999,6 +1027,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                             } else {
                               // Logic to add into queue will go here
                               logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              let timeNow = new Date()
+                              let automatedQueueMessage = new AutomationQueue({
+                                automatedMessageId: savedMsg._id,
+                                subscriberId: subscriber._id,
+                                companyId: savedMsg.companyId,
+                                type: 'autoposting-fb',
+                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              })
+
+                              automatedQueueMessage.save((error) => {
+                                if (error) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Automation Queue autoposting-fb Message create failed',
+                                    error
+                                  })
+                                }
+                              })
                             }
                           })
                         } else if (event.value.item === 'share') {
@@ -1060,6 +1106,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                               } else {
                                 // Logic to add into queue will go here
                                 logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                                let timeNow = new Date()
+                                let automatedQueueMessage = new AutomationQueue({
+                                  automatedMessageId: savedMsg._id,
+                                  subscriberId: subscriber._id,
+                                  companyId: savedMsg.companyId,
+                                  type: 'autoposting-fb',
+                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                })
+
+                                automatedQueueMessage.save((error) => {
+                                  if (error) {
+                                    logger.serverLog(TAG, {
+                                      status: 'failed',
+                                      description: 'Automation Queue autoposting-fb Message create failed',
+                                      error
+                                    })
+                                  }
+                                })
                               }
                             })
                           })
@@ -1122,6 +1186,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                               } else {
                                 // Logic to add into queue will go here
                                 logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                                let timeNow = new Date()
+                                let automatedQueueMessage = new AutomationQueue({
+                                  automatedMessageId: savedMsg._id,
+                                  subscriberId: subscriber._id,
+                                  companyId: savedMsg.companyId,
+                                  type: 'autoposting-fb',
+                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                })
+
+                                automatedQueueMessage.save((error) => {
+                                  if (error) {
+                                    logger.serverLog(TAG, {
+                                      status: 'failed',
+                                      description: 'Automation Queue autoposting-fb Message create failed',
+                                      error
+                                    })
+                                  }
+                                })
                               }
                             })
                           })
@@ -1154,6 +1236,24 @@ function handleThePagePostsForAutoPosting (event, status) {
                             } else {
                               // Logic to add into queue will go here
                               logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              let timeNow = new Date()
+                              let automatedQueueMessage = new AutomationQueue({
+                                automatedMessageId: savedMsg._id,
+                                subscriberId: subscriber._id,
+                                companyId: savedMsg.companyId,
+                                type: 'autoposting-fb',
+                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              })
+
+                              automatedQueueMessage.save((error) => {
+                                if (error) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Automation Queue autoposting-fb Message create failed',
+                                    error
+                                  })
+                                }
+                              })
                             }
                           })
                         }
@@ -1259,29 +1359,38 @@ function handleMessageFromSomeOtherApp (event) {
 }
 
 function createSession (page, subscriber, event) {
-  Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
-    (err, session) => {
-      if (err) logger.serverLog(TAG, err)
-      if (session === null) {
-        let newSession = new Sessions({
-          subscriber_id: subscriber._id,
-          page_id: page._id,
-          company_id: page.companyId
-        })
-        newSession.save((err, sessionSaved) => {
-          if (err) logger.serverLog(TAG, err)
-          logger.serverLog(TAG, 'new session created')
-          saveLiveChat(page, subscriber, sessionSaved, event)
-        })
-      } else {
-        session.last_activity_time = Date.now()
-        if (session.status === 'resolved') {
-          session.status = 'new'
-        }
-        session.save((err) => {
-          if (err) logger.serverLog(TAG, err)
-          saveLiveChat(page, subscriber, session, event)
-        })
+  CompanyProfile.findOne({_id: page.companyId},
+    function (err, company) {
+      if (err) {
+        return logger.serverLog(TAG, err)
+      }
+
+      if (!company.automated_options === 'DISABLE_CHAT') {
+        Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
+          (err, session) => {
+            if (err) logger.serverLog(TAG, err)
+            if (session === null) {
+              let newSession = new Sessions({
+                subscriber_id: subscriber._id,
+                page_id: page._id,
+                company_id: page.companyId
+              })
+              newSession.save((err, sessionSaved) => {
+                if (err) logger.serverLog(TAG, err)
+                logger.serverLog(TAG, 'new session created')
+                saveLiveChat(page, subscriber, sessionSaved, event)
+              })
+            } else {
+              session.last_activity_time = Date.now()
+              if (session.status === 'resolved') {
+                session.status = 'new'
+              }
+              session.save((err) => {
+                if (err) logger.serverLog(TAG, err)
+                saveLiveChat(page, subscriber, session, event)
+              })
+            }
+          })
       }
     })
 }
@@ -1298,6 +1407,36 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
+  Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+    if (err) logger.serverLog(TAG, err)
+    if (webhook && webhook.isEnabled) {
+      needle.get(webhook.webhook_url, (err, r) => {
+        if (err) {
+          logger.serverLog(TAG, err)
+        } else if (r.statusCode === 200) {
+          if (webhook && webhook.optIn.POLL_CREATED) {
+            var data = {
+              subscription_type: 'LIVE_CHAT_ACTIONS',
+              payload: {
+                format: 'facebook',
+                subscriberId: subscriber.senderId,
+                pageId: page.pageId,
+                session_id: session._id,
+                company_id: page.companyId,
+                payload: event.message
+              }
+            }
+            needle.post(webhook.webhook_url, data,
+              (error, response) => {
+                if (error) logger.serverLog(TAG, err)
+              })
+          }
+        } else {
+          webhookUtility.saveNotification(webhook)
+        }
+      })
+    }
+  })
   if (event.message) {
     let urlInText = utility.parseUrl(event.message.text)
     if (urlInText !== null && urlInText !== '') {
@@ -1576,6 +1715,29 @@ function savepoll (req, resp) {
       subscriberId: subscriber._id
 
     }
+    Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
+      if (err) logger.serverLog(TAG, err)
+      if (webhook && webhook.isEnabled) {
+        needle.get(webhook.webhook_url, (err, r) => {
+          if (err) {
+            logger.serverLog(TAG, err)
+          } else if (r.statusCode === 200) {
+            if (webhook && webhook.optIn.POLL_RESPONSE) {
+              var data = {
+                subscription_type: 'POLL_RESPONSE',
+                payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message}
+              }
+              needle.post(webhook.webhook_url, data,
+                (error, response) => {
+                  if (error) logger.serverLog(TAG, err)
+                })
+            }
+          } else {
+            webhookUtility.saveNotification(webhook)
+          }
+        })
+      }
+    })
     if (temp === true) {
       PollResponse.create(pollbody, (err, pollresponse) => {
         if (err) {
@@ -1764,6 +1926,38 @@ function sendautomatedmsg (req, page) {
                         }, // this where message content will go
                         status: 'unseen' // seen or unseen
                       })
+                      Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+                        if (err) logger.serverLog(TAG, err)
+                        if (webhook && webhook.isEnabled) {
+                          needle.get(webhook.webhook_url, (err, r) => {
+                            if (err) {
+                              logger.serverLog(TAG, err)
+                            } else if (r.statusCode === 200) {
+                              if (webhook && webhook.optIn.POLL_CREATED) {
+                                var data = {
+                                  subscription_type: 'LIVE_CHAT_ACTIONS',
+                                  payload: {
+                                    pageId: page.pageId, // this is the (facebook) :page id of pageId
+                                    subscriberId: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                                    session_id: session._id,
+                                    company_id: page.companyId, // this is admin id till we have companies
+                                    payload: {
+                                      componentType: 'text',
+                                      text: messageData.text
+                                    }
+                                  }
+                                }
+                                needle.post(webhook.webhook_url, data,
+                                  (error, response) => {
+                                    if (error) logger.serverLog(TAG, err)
+                                  })
+                              }
+                            } else {
+                              webhookUtility.saveNotification(webhook)
+                            }
+                          })
+                        }
+                      })
                       chatMessage.save((err, chatMessageSaved) => {
                         if (err) {
                           return logger.serverLog(TAG,
@@ -1811,7 +2005,29 @@ function savesurvey (req) {
       questionId: resp.question_id,
       subscriberId: subscriber._id
     }
-
+    Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
+      if (err) logger.serverLog(TAG, err)
+      if (webhook && webhook.isEnabled) {
+        needle.get(webhook.webhook_url, (err, r) => {
+          if (err) {
+            logger.serverLog(TAG, err)
+          } else if (r.statusCode === 200) {
+            if (webhook && webhook.optIn.SURVEY_RESPONSE) {
+              var data = {
+                subscription_type: 'SURVEY_RESPONSE',
+                payload: {sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id}
+              }
+              needle.post(webhook.webhook_url, data,
+                (error, response) => {
+                  if (error) logger.serverLog(TAG, err)
+                })
+            }
+          } else {
+            webhookUtility.saveNotification(webhook)
+          }
+        })
+      }
+    })
     SurveyResponse.update({
       surveyId: resp.survey_id,
       questionId: resp.question_id,
