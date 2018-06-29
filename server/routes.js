@@ -53,6 +53,7 @@ module.exports = function (app) {
   app.use('/api/post', require('./api/facebook_posts'))
   app.use('/api/ip2country', require('./api/ipcountry'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
+  app.use('/webhooks/wordpress', require('./webhook_subscriptions/wordpress'))
   app.use('/migrations', require('./api/migrations'))
   app.use('/api/permissions', require('./api/permissions'))
   app.use('/api/webhooks', require('./api/webhooks'))
