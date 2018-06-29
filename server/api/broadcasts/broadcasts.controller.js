@@ -455,7 +455,7 @@ exports.getfbMessage = function (req, res) {
   logger.serverLog(TAG,
   `something received from facebook FIRST ${JSON.stringify(req.body)}`)
 
-  botController.respond(JSON.parse(JSON.stringify(req.body)))
+  //  botController.respond(JSON.parse(JSON.stringify(req.body)))
 
   let subscriberSource = 'direct_message'
   let phoneNumber = ''
