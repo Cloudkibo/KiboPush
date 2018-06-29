@@ -348,10 +348,10 @@ exports.create = function (req, res) {
                   needle.post(webhook.webhook_url, data,
                     (error, response) => {
                       if (error) {
-                        return res.status(500).json({
-                          status: 'failed',
-                          description: `Internal Server Error ${JSON.stringify(err)}`
-                        })
+                        // return res.status(500).json({
+                        //   status: 'failed',
+                        //   description: `Internal Server Error ${JSON.stringify(err)}`
+                        // })
                       }
                     })
                 }
@@ -1163,10 +1163,10 @@ exports.sendSurvey = function (req, res) {
                               needle.post(webhook.webhook_url, data,
                                 (error, response) => {
                                   if (error) {
-                                    return res.status(500).json({
-                                      status: 'failed',
-                                      description: `Internal Server Error ${JSON.stringify(err)}`
-                                    })
+                                    // return res.status(500).json({
+                                    //   status: 'failed',
+                                    //   description: `Internal Server Error ${JSON.stringify(err)}`
+                                    // })
                                   }
                                 })
                             }
