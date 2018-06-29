@@ -79,7 +79,7 @@ exports.create = function (req, res) {
                 webhook_url: req.body.webhook_url,
                 companyId: companyUser.companyId,
                 userId: req.user._id,
-                isEnabled: req.body.isEnabled,
+                isEnabled: true,
                 optIn: req.body.optIn,
                 pageId: req.body.pageId
               }
@@ -121,7 +121,6 @@ exports.edit = function (req, res) {
         return res.status(404).json({status: 'failed', description: 'This URL contains an invalid domain or the server at the given URL is not live.'})
       } else if (r.statusCode === 200) {
         webhook.webhook_url = req.body.webhook_url
-        webhook.isEnabled = req.body.isEnabled
         webhook.optIn = req.body.optIn
         webhook.userId = req.user._id
         webhook.save((err2) => {
