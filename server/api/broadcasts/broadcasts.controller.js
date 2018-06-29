@@ -1410,7 +1410,7 @@ function saveLiveChat (page, subscriber, session, event) {
   Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
     if (err) logger.serverLog(TAG, err)
     if (webhook && webhook.isEnabled) {
-      logger.serverLog(TAG, `webhook ${webhook}`)
+      logger.serverLog(TAG, `webhook in live chat ${webhook}`)
       needle.get(webhook.webhook_url, (err, r) => {
         if (err) {
           logger.serverLog(TAG, err)
@@ -1731,6 +1731,7 @@ function savepoll (req, resp) {
                 subscription_type: 'POLL_RESPONSE',
                 payload: JSON.stringify({sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message})
               }
+              logger.serverLog(TAG, `data for poll response ${data}`)
               needle.post(webhook.webhook_url, data,
                 (error, response) => {
                   if (error) logger.serverLog(TAG, err)
@@ -1933,6 +1934,7 @@ function sendautomatedmsg (req, page) {
                       Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
                         if (err) logger.serverLog(TAG, err)
                         if (webhook && webhook.isEnabled) {
+                          logger.serverLog(TAG, `webhook in live chat ${webhook}`)
                           needle.get(webhook.webhook_url, (err, r) => {
                             if (err) {
                               logger.serverLog(TAG, err)
