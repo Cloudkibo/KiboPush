@@ -1410,9 +1410,11 @@ function saveLiveChat (page, subscriber, session, event) {
   Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
     if (err) logger.serverLog(TAG, err)
     if (webhook && webhook.isEnabled) {
+      logger.serverLog(TAG, `webhook ${webhook}`)
       needle.get(webhook.webhook_url, (err, r) => {
         if (err) {
           logger.serverLog(TAG, err)
+          logger.serverLog(TAG, `response ${r.statusCode}`)
         } else if (r.statusCode === 200) {
           if (webhook && webhook.optIn.POLL_CREATED) {
             var data = {
@@ -1720,9 +1722,9 @@ function savepoll (req, resp) {
       if (err) logger.serverLog(TAG, err)
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
-          logger.serverLog(TAG, `response ${r.statusCode}`)
           if (err) {
             logger.serverLog(TAG, err)
+            logger.serverLog(TAG, `response ${r.statusCode}`)
           } else if (r.statusCode === 200) {
             if (webhook && webhook.optIn.POLL_RESPONSE) {
               var data = {
