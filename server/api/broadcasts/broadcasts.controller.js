@@ -1716,9 +1716,11 @@ function savepoll (req, resp) {
 
     }
     Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
+      logger.serverLog(TAG, `webhook ${webhook}`)
       if (err) logger.serverLog(TAG, err)
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
+          logger.serverLog(TAG, `response ${r.statusCode}`)
           if (err) {
             logger.serverLog(TAG, err)
           } else if (r.statusCode === 200) {
