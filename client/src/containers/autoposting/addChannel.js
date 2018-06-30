@@ -179,7 +179,7 @@ class AddChannel extends React.Component {
                       Select all the fields
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/api/autoposting/wordpress'
+                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
                       </li>
                       <li>
                       Click on 'Add new webhook'
