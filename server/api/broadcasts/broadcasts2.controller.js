@@ -449,22 +449,23 @@ exports.upload = function (req, res) {
               })
             }
             let pageAccessToken = resp2.body.access_token
+            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
             const messageData = {
-              'message': {
+              'message': JSON.stringify({
                 'attachment': {
                   'type': req.body.componentType,
                   'payload': {
-                    'is_reusable': true,
-                    'url': `${dir}/userfiles/${req.files.file.name}`
+                    'is_reusable': true
                   }
                 }
-              }
+              }),
+              'filedata': fileReaderStream
             }
             request(
               {
                 'method': 'POST',
                 'json': true,
-                'formData': JSON.stringify(messageData),
+                'formData': messageData,
                 'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
               },
               function (err, resp) {
