@@ -24,7 +24,7 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   }
 }
 
-export function uploadImage (file, data, pageId, componentType, handleUpload, setLoading) {
+export function uploadImage (file, pageId, componentType, data, handleUpload, setLoading) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()
   fileData.append('file', file)
