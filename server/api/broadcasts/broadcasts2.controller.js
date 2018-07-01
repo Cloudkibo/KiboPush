@@ -464,7 +464,7 @@ exports.upload = function (req, res) {
               {
                 'method': 'POST',
                 'json': true,
-                'formData': messageData,
+                'formData': JSON.stringify(messageData),
                 'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
               },
               function (err, resp) {
