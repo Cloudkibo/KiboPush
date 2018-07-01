@@ -143,11 +143,13 @@ function checkLastMessageAge (subscriberId, callback) {
         logger.serverLog(TAG, 'inside error')
         return callback(err)
       }
-      let lastActivity = new Date(session.last_activity_time)
-      let inMiliSeconds = Date.now() - lastActivity
-      let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
+      if (session && session.last_activity_time) {
+        let lastActivity = new Date(session.last_activity_time)
+        let inMiliSeconds = Date.now() - lastActivity
+        let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
 
-      callback(null, (inMinutes > 30))
+        callback(null, (inMinutes > 30))
+      }
     })
   })
 }

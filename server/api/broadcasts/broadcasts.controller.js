@@ -1402,7 +1402,7 @@ function saveLiveChat (page, subscriber, session, event) {
     recipient_id: page.userId._id,
     sender_fb_id: subscriber.senderId,
     recipient_fb_id: page.pageId,
-    session_id: session._id,
+    session_id: session && session._id ? session._id : '',
     company_id: page.companyId,
     status: 'unseen', // seen or unseen
     payload: event.message
