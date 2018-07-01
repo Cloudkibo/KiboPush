@@ -464,28 +464,28 @@ exports.upload = function (req, res) {
                 'method': 'POST',
                 'json': true,
                 'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken,
-                function (err, resp) {
-                  if (err) {
-                    return res.status(500).json({
-                      status: 'failed',
-                      description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
-                    })
-                  } else {
-                    logger.serverLog(TAG,
-                      `file uploaded on Facebook, sending response now: ${JSON.stringify({
-                        id: resp.attachment_id
-                      })}`)
-                    return res.status(201).json({
-                      status: 'success',
-                      payload: {
-                        id: serverPath,
-                        attachment_id: resp.attachment_id,
-                        name: req.files.file.name,
-                        url: `${config.domain}/api/broadcasts/download/${serverPath}`
-                      }
-                    })
-                  }
+                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+              },
+              function (err, resp) {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
+                  })
+                } else {
+                  logger.serverLog(TAG,
+                    `file uploaded on Facebook, sending response now: ${JSON.stringify({
+                      id: resp.attachment_id
+                    })}`)
+                  return res.status(201).json({
+                    status: 'success',
+                    payload: {
+                      id: serverPath,
+                      attachment_id: resp.attachment_id,
+                      name: req.files.file.name,
+                      url: `${config.domain}/api/broadcasts/download/${serverPath}`
+                    }
+                  })
                 }
               })
           })

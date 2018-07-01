@@ -43,10 +43,14 @@ export function uploadImage (file, data, pageId, componentType, handleUpload, se
         'Authorization': `Bearer ${auth.getToken()}`
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
-      data.fileurl = res.payload
-      data.image_url = res.payload.url
-      setLoading()
-      handleUpload(data)
+      if (res.status === 'success') {
+        data.fileurl = res.payload
+        data.image_url = res.payload.url
+        setLoading()
+        handleUpload(data)
+      } else {
+        console.log(res.description)
+      }
     })
   }
 }
