@@ -86,7 +86,7 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, {fileurl: '',
+      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -260,7 +260,9 @@ class Card extends React.Component {
 
 function mapStateToProps (state) {
   console.log(state)
-  return {}
+  return {
+    pages: (state.pagesInfo.pages)
+  }
 }
 
 function mapDispatchToProps (dispatch) {
