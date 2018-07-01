@@ -24,13 +24,15 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   }
 }
 
-export function uploadImage (file, data, handleUpload, setLoading) {
+export function uploadImage (file, data, pageId, componentType, handleUpload, setLoading) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()
   fileData.append('file', file)
   fileData.append('filename', file.name)
   fileData.append('filetype', file.type)
   fileData.append('filesize', file.size)
+  fileData.append('pageId', pageId)
+  fileData.append('componentType', componentType)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/broadcasts/upload`, {

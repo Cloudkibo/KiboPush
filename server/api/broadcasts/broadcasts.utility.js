@@ -410,7 +410,9 @@ function prepareMessageData (subscriberId, body) {
     payload = {
       'attachment': {
         'type': body.componentType,
-        'payload': {}
+        'payload': {
+          'attachment_id': body.fileurl.attachment_id
+        }
       }
     }
     return payload
