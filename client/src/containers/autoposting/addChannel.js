@@ -207,7 +207,7 @@ class AddChannel extends React.Component {
                       Choose Notifications: 'webhook'
                       </li>
                       <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/api/autoposting/wordpress'
+                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
                       </li>
                       <li>
                       Add arguments: 'post_id', 'post_permalink' and 'post_title'
