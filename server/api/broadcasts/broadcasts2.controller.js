@@ -475,9 +475,7 @@ exports.upload = function (req, res) {
                   })
                 } else {
                   logger.serverLog(TAG,
-                    `file uploaded on Facebook, sending response now: ${JSON.stringify({
-                      id: resp.attachment_id
-                    })}`)
+                    `file uploaded on Facebook, sending response now: ${JSON.stringify(resp.body)}`)
                   return res.status(201).json({
                     status: 'success',
                     payload: {
