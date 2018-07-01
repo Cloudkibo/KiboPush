@@ -19,6 +19,7 @@ import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { checkConditions } from '../polls/utility'
 import Image from './Image'
+import List from './List'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
@@ -71,6 +72,7 @@ class CreateConvo extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -301,6 +303,23 @@ class CreateConvo extends React.Component {
       temp.push(obj)
     }
 
+    this.setState({broadcast: temp})
+  }
+  handleList (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.cards.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.cards = obj.cards
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
     this.setState({broadcast: temp})
   }
 
@@ -601,6 +620,14 @@ class CreateConvo extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
                                         </div>
                                       </div>
                                     </div>
