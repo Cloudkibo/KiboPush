@@ -11,10 +11,15 @@ const Subscribers = require('../server/api/subscribers/Subscribers.model')
 const SurveyPage = require('../server/api/page_survey/page_survey.model')
 const PollPage = require('../server/api/page_poll/page_poll.model')
 const Polls = require('../server/api/polls/Polls.model')
+const AutoPostingMessages = require('../server/api/autoposting_messages/autoposting_messages.model')
+const AutopostingSubscriberMessages = require('../server/api/autoposting_messages/autoposting_subscriber_messages.model')
+const URL = require('../server/api/URLforClickedCount/URL.model')
+const AutoPosting = require('../server/api/autoposting/autopostings.model')
 const TAG = 'scripts/monodb_script.js'
 
 let _ = require('lodash')
 
+const request = require('request')
 const needle = require('needle')
 const utility = require('../server/api/broadcasts/broadcasts.utility')
 const compUtility = require('../server/components/utility')
@@ -668,7 +673,6 @@ AutomationQueue.find({}, (err, data) => {
                                                 `Error occured at subscriber :${JSON.stringify(
                                                   subscribers[j])}`)
                                             }
-                                            console.log('poll is just sent ' + JSON.stringify(resp.body))
                                             let pollBroadcast = new PollPage({
                                               pageId: pages[z].pageId,
                                               userId: currentUser._id,
@@ -753,6 +757,160 @@ AutomationQueue.find({}, (err, data) => {
               })
             })
           })
+        } else if (message.type === 'autoposting-wordpress') {
+          AutoPostingMessages.findOne({ '_id': message.automatedMessageId }, (err, autopostingMessage) => {
+            if (err) {
+              return {
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              }
+            }
+
+            AutoPosting.find({ '_id': autopostingMessage.autopostingId, isActive: true })
+              .populate('userId')
+              .exec((err, autopostings) => {
+                if (err) {
+                  return logger.serverLog(TAG, 'Internal Server Error on connect')
+                }
+                // logger.serverLog(TAG, `Tweet received and pages listening to it ${autopostings.length} and account is ${tweet.user.screen_name}`)
+
+                autopostings.forEach(postingItem => {
+                  let pagesFindCriteria = {
+                    companyId: message.companyId,
+                    connected: true
+                  }
+                  if (postingItem.isSegmented) {
+                    if (postingItem.segmentationPageIds && postingItem.segmentationPageIds.length > 0) {
+                      pagesFindCriteria = _.merge(pagesFindCriteria, {
+                        pageId: {
+                          $in: postingItem.segmentationPageIds
+                        }
+                      })
+                    }
+                  }
+
+                  Pages.find(pagesFindCriteria, (err, pages) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                    }
+                    pages.forEach(page => {
+                      let subscriberFindCriteria = {
+                        pageId: page._id,
+                        isSubscribed: true
+                      }
+
+                      if (postingItem.isSegmented) {
+                        if (postingItem.segmentationGender.length > 0) {
+                          subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                            {
+                              gender: {
+                                $in: postingItem.segmentationGender
+                              }
+                            })
+                        }
+                        if (postingItem.segmentationLocale.length > 0) {
+                          subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                            {
+                              locale: {
+                                $in: postingItem.segmentationLocale
+                              }
+                            })
+                        }
+                      }
+
+                      Subscribers.find(subscriberFindCriteria,
+                        (err, subscribers) => {
+                          if (err) {
+                            return logger.serverLog(TAG,
+                              `Error ${JSON.stringify(err)}`)
+                          }
+                          if (subscribers.length > 0) {
+                            if (err) logger.serverLog(TAG, err)
+                            utility.applyTagFilterIfNecessary({ body: postingItem }, subscribers, (taggedSubscribers) => {
+                              taggedSubscribers.forEach(subscriber => {
+                                let messageData = {}
+
+                                URL.findOne({ 'originalURL': autopostingMessage.message_id }, (err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  let newURL = config.domain + '/api/URL/' + savedurl._id
+                                  messageData = {
+                                    'messaging_type': 'UPDATE',
+                                    'recipient': JSON.stringify({
+                                      'id': subscriber.senderId
+                                    }),
+                                    'message': JSON.stringify({
+                                      'attachment': {
+                                        'type': 'template',
+                                        'payload': {
+                                          'template_type': 'generic',
+                                          'elements': [
+                                            {
+                                              'title': 'Wordpress blog Post title',
+                                              'image_url': config.domain + '/img/wordpress.png',
+                                              'subtitle': 'sent using kibopush.com',
+                                              'buttons': [
+                                                {
+                                                  'type': 'web_url',
+                                                  'url': newURL,
+                                                  'title': 'View Wordpress Blog Post'
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    })
+                                  }
+                                  // Logic to control the autoposting when last activity is less than 30 minutes
+                                  compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, 'inside error')
+                                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                    }
+
+                                    if (isLastMessage) {
+                                      logger.serverLog(TAG, 'inside autoposting wordpress send')
+                                      sendAutopostingMessage(messageData, page, autopostingMessage)
+                                    } else {
+                                      // Logic to add into queue will go here
+                                      logger.serverLog(TAG, 'inside adding to autoposting queue')
+                                      let timeNow = new Date()
+                                      message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
+
+                                      message.save((error) => {
+                                        if (error) {
+                                          logger.serverLog(TAG, {
+                                            status: 'failed',
+                                            description: 'Automation Queue autoposting-wordpress Message create failed',
+                                            error
+                                          })
+                                        }
+                                      })
+                                    }
+                                  })
+                                })
+
+                                let newSubscriberMsg = new AutopostingSubscriberMessages({
+                                  pageId: page.pageId,
+                                  companyId: postingItem.companyId,
+                                  autopostingId: postingItem._id,
+                                  autoposting_messages_id: autopostingMessage._id,
+                                  subscriberId: subscriber.senderId
+                                })
+
+                                newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
+                                })
+                              })
+                            })
+                          }
+                        })
+                    })
+                  })
+                })
+              })
+          })
         }
       } else {
         // Do work to reschedule the message
@@ -769,4 +927,37 @@ function exists (list, content) {
     }
   }
   return false
+}
+
+function sendAutopostingMessage (messageData, page, savedMsg) {
+  request(
+    {
+      'method': 'POST',
+      'json': true,
+      'formData': messageData,
+      'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+        page.accessToken
+    },
+    function (err, res) {
+      if (err) {
+        return logger.serverLog(TAG,
+          `At send wordpress broadcast ${JSON.stringify(
+            err)}`)
+      } else {
+        if (res.statusCode !== 200) {
+          logger.serverLog(TAG,
+            `At send wordpress broadcast response ${JSON.stringify(
+              res.body.error)}`)
+        } else {
+          // logger.serverLog(TAG,
+          //   `At send tweet broadcast response ${JSON.stringify(
+          //   res.body.message_id)}`, true)
+        }
+      }
+    })
+  // AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
+  //   if (err) {
+  //     logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
+  //   }
+  // })
 }
