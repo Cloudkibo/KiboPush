@@ -1365,7 +1365,7 @@ function createSession (page, subscriber, event) {
         return logger.serverLog(TAG, err)
       }
 
-      if (!company.automated_options === 'DISABLE_CHAT') {
+      if (!(company.automated_options === 'DISABLE_CHAT')) {
         Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
           (err, session) => {
             if (err) logger.serverLog(TAG, err)
