@@ -23,6 +23,7 @@ const fs = require('fs')
 const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
+const mongoose = require('mongoose')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
@@ -430,7 +431,7 @@ exports.upload = function (req, res) {
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      Pages.findOne({_id: req.body.pageId})
+      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
       .populate('userId').exec((err, page) => {
         if (err) {
           return res.status(500).json({
