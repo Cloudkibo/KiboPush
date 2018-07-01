@@ -481,7 +481,7 @@ exports.upload = function (req, res) {
                     status: 'success',
                     payload: {
                       id: serverPath,
-                      attachment_id: resp.attachment_id,
+                      attachment_id: resp.body.attachment_id,
                       name: req.files.file.name,
                       url: `${config.domain}/api/broadcasts/download/${serverPath}`
                     }
