@@ -57,6 +57,7 @@ const styles = {
 class ChatBox extends React.Component {
   constructor (props, context) {
     super(props, context)
+    this.previousScrollHeight = undefined
     this.state = {
       attachment: [],
       attachmentType: '',
@@ -80,10 +81,9 @@ class ChatBox extends React.Component {
       disabledValue: false,
       record: false,
       buttonState: 'start',
-      recording: false,
-      scroll: true
+      recording: false
     }
-    props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 10})
+    props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
     this.onFileChange = this.onFileChange.bind(this)
     this.setComponentType = this.setComponentType.bind(this)
@@ -129,6 +129,7 @@ class ChatBox extends React.Component {
     this.handleStop = this.handleStop.bind(this)
     this.shouldLoad = this.shouldLoad.bind(this)
     this.loadMoreMessage = this.loadMoreMessage.bind(this)
+    this.updateScrollTop = this.updateScrollTop.bind(this)
   }
 
   showDialogRecording () {
@@ -156,7 +157,7 @@ class ChatBox extends React.Component {
   }
 
   loadMoreMessage () {
-    this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 10, last_id: this.props.userChat[0]._id})
+    this.props.fetchUserChats(this.props.currentSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id})
   }
 
   handleAgentsForDisbaledValue (teamAgents) {
@@ -200,9 +201,12 @@ class ChatBox extends React.Component {
     document.body.appendChild(addScript)
     this.getDisabledValue()
     this.refs.chatScroll.addEventListener('scroll', () => {
-      if (this.refs.chatScroll.scrollTop !== (this.refs.chatScroll.scrollHeight - this.refs.chatScroll.clientHeight) && this.shouldLoad()) {
-        console.log(this.props.userChat.length)
-        this.loadMoreMessage()
+      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      if (this.refs.chatScroll.scrollTop === 0) {
+        if (this.shouldLoad()) {
+          this.loadMoreMessage()
+        }
+        this.updateScrollTop()
       }
     })
 
@@ -215,6 +219,12 @@ class ChatBox extends React.Component {
     })
 
     scrollSpy.update()
+  }
+
+  updateScrollTop () {
+    if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
+      this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
+    }
   }
 
   componetWillUnmount () {
@@ -597,9 +607,6 @@ class ChatBox extends React.Component {
       }
       this.setState({urlmeta: nextProps.urlMeta})
     }
-    if (nextProps.userChat && nextProps.userChat.length > 0 && this.state.scroll) {
-      this.scrollToTop()
-    }
   }
 
   setEmoji (emoji) {
@@ -610,13 +617,11 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    console.log('componentDidUpdate', this.props.userChat)
-    console.log('componentDidUpdate state', this.state)
-    if (this.props.userChat && this.props.userChat.length > 0 && this.state.scroll) {
-      console.log('scroll')
+    this.updateScrollTop()
+    if (this.props.userChat && this.props.userChat.length > 0 && this.props.scroll) {
       this.scrollToTop()
       setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
-      this.setState({scroll: false})
+      this.props.disableScroll()
     }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -993,6 +998,10 @@ class ChatBox extends React.Component {
                   <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
                     <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                       <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                        {
+                          (this.props.chatCount > this.props.userChat.length) &&
+                          <p style={{textAlign: 'center'}}>Loading...</p>
+                        }
                         {
                             this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'

@@ -53,7 +53,8 @@ class LiveChat extends React.Component {
       showDropDown: false,
       isShowingModalGuideLines: false,
       tabValue: 'open',
-      filter: false
+      filter: false,
+      scroll: true
     }
     props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
     props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
@@ -72,6 +73,11 @@ class LiveChat extends React.Component {
     this.loadMoreClose = this.loadMoreClose.bind(this)
     this.showSearch = this.showSearch.bind(this)
     this.hideSearch = this.hideSearch.bind(this)
+    this.disableScroll = this.disableScroll.bind(this)
+  }
+
+  disableScroll () {
+    this.setState({scroll: false})
   }
 
   showSearch () {
@@ -123,7 +129,7 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession (session) {
-    this.setState({activeSession: session})
+    this.setState({activeSession: session, scroll: true})
     if (this.state.tabValue === 'open') {
       var temp = this.props.openSessions
       for (var i = 0; i < temp.length; i++) {
@@ -140,7 +146,7 @@ class LiveChat extends React.Component {
       }
     }
 
-    this.props.fetchUserChats(session._id, {page: 'first', number: 10})
+    this.props.fetchUserChats(session._id, {page: 'first', number: 25})
     console.log('session in changeActiveSession', session)
     this.props.markRead(session._id)
     this.props.getSubscriberTags(session.subscriber_id, this.msg)
@@ -742,7 +748,7 @@ class LiveChat extends React.Component {
                   }
                   {
                     this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
-                    <ChatBox showSearch={this.showSearch} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                    <ChatBox scroll={this.state.scroll} disableScroll={this.disableScroll} showSearch={this.showSearch} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                   {
                     this.state.activeSession !== '' && this.state.activeSession !== 'none' && !this.state.showSearch &&
