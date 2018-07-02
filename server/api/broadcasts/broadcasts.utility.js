@@ -80,6 +80,44 @@ function validateInput (body) {
           }
         }
       }
+      if (body.payload[i].componentType === 'list') {
+        if (body.payload[i].listItems === undefined) return false
+        if (body.payload[i].listItems.length === 0) return false
+        for (let m = 0; m < body.payload[i].buttons.length; m++) {
+          if (body.payload[i].buttons[m].type === 'web_url') {
+            if (!utility.validateUrl(
+              body.payload[i].buttons[m].url)) return false
+          }
+        }
+        for (let j = 0; j < body.payload[i].listItems.length; j++) {
+          if (body.payload[i].listItems[j].title === undefined ||
+            body.payload[i].listItems[j].title === '') return false
+          if (body.payload[i].listItems[j].image_url === undefined ||
+            body.payload[i].listItems[j].image_url === '') return false
+          if (body.payload[i].listItems[j].subtitle === undefined ||
+            body.payload[i].listItems[j].subtitle === '') return false
+          if (body.payload[i].listItems[j].buttons === undefined &&
+           body.payload[i].listItems[j].default_action === undefined) return false
+          if (body.payload[i].listItems[j].default_action &&
+          body.payload[i].listItems[j].default_action.type === '') return false
+          if (body.payload[i].listItems[j].default_action &&
+          body.payload[i].listItems[j].default_action.url === '') return false
+          if (!utility.validateUrl(
+              body.payload[i].listItems[j].image_url)) return false
+          if (body.payload[i].listItems[j].buttons) {
+            for (let k = 0; k < body.payload[i].listItems[j].buttons.length; k++) {
+              if (body.payload[i].listItems[j].buttons[k].type === undefined ||
+              body.payload[i].listItems[j].buttons[k].type === '') return false
+              if (body.payload[i].listItems[j].buttons[k].url === undefined ||
+              body.payload[i].listItems[j].buttons[k].url === '') return false
+              if (body.payload[i].listItems[j].buttons[k].type === 'web_url') {
+                if (!utility.validateUrl(
+                    body.payload[i].listItems[j].buttons[k].url)) return false
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -455,12 +493,28 @@ function prepareMessageData (subscriberId, body) {
         }
       }
     }
+  } else if (body.componentType === 'list') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'list',
+          'top_element_style': 'compact',
+          'elements': body.listItems,
+          'buttons': body.buttons
+        }
+      }
+    }
   }
+  logger.serverLog(TAG,
+    `Return Payload ${JSON.stringify(payload)}`)
   return payload
 }
 
 /* eslint-disable */
 function getBatchData (payload, recipientId, page, sendBroadcast) {
+  logger.serverLog(TAG,
+    `Batch Data ${JSON.stringify(payload)}`)
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
   let batch = []  // to display typing on bubble :)
   payload.forEach((item, index) => {
