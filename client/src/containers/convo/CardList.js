@@ -198,7 +198,6 @@ class Card extends React.Component {
   }
 
   render () {
-    console.log('this.props.id', this.props.id)
     return (
       <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px'}} className='ui-block hoverbordersolid'>
         <div onClick={() => { this.props.removeElement({id: this.props.id}) }} style={{marginLeft: '-15px', marginTop: '-23px', float: 'left'}}>
@@ -225,7 +224,7 @@ class Card extends React.Component {
             {
           (this.state.imgSrc === '')
           ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-          : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
+          : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
          }
 
           </div>

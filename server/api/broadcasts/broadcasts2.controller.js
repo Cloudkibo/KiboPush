@@ -266,7 +266,7 @@ exports.sendConversation = function (req, res) {
                           }
                           let messageData = utility.prepareSendAPIPayload(
                             subscriber.senderId,
-                            payloadItem)
+                            payloadItem, subscriber.firstName + ' ' + subscriber.lastName)
                           prepareToSendMessage(messageData, page)
                         })
                       })
@@ -346,7 +346,7 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
+                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
                       // let messageData = utility.prepareSendAPIPayload(
                       //   subscriber.senderId,
                       //   payloadItem)

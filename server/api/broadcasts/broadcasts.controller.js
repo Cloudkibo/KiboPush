@@ -572,9 +572,9 @@ exports.getfbMessage = function (req, res) {
                             page.isWelcomeMessageEnabled) {
                             page.welcomeMessage.forEach(payloadItem => {
                               if (payloadItem.componentType === 'text') {
-                                if (payloadItem.text.includes('[Username]')) {
+                                if (payloadItem.text.includes('{{user_full_name}}')) {
                                   payloadItem.text = payloadItem.text.replace(
-                                    '[Username]',
+                                    '{{user_full_name}}',
                                     response.body.first_name + ' ' +
                                     response.body.last_name)
                                 }

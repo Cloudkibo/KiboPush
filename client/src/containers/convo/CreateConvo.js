@@ -306,6 +306,7 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
   handleList (obj) {
+    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
     obj.cards.forEach((d) => {
@@ -320,6 +321,7 @@ class CreateConvo extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
+    console.log('temp', temp)
     this.setState({broadcast: temp})
   }
 
@@ -361,6 +363,26 @@ class CreateConvo extends React.Component {
             this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
           }
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'list') {
+        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
+          if (!this.state.broadcast[i].cards[j].buttons) {
+            this.initTab()
+            return this.msg.error('Element in list must have a button.')
+          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            this.initTab()
+            return this.msg.error('Element in list must have a button.')
+          }
+          if (this.state.broadcast[i].cards[j].image_url === '') {
+            return this.msg.error('Element in list must have an image')
+          }
+          if (this.state.broadcast[i].cards[j].title === '') {
+            return this.msg.error('Element in list must have a title')
+          }
+        }
+        if (this.state.broadcasts[i].cards.length < 2) {
+          return this.msg.error('A list must have atleast 2 elements')
         }
       }
     }
