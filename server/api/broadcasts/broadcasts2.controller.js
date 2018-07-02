@@ -271,7 +271,6 @@ exports.sendConversation = function (req, res) {
                         seen: false,
                         companyId: companyUser.companyId
                       })
-
                       pagebroadcast.save((err2, savedpagebroadcast) => {
                         if (err2) {
                           logger.serverLog(TAG, {
