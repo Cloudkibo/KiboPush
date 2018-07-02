@@ -1,14 +1,14 @@
 const config = require('../../config/environment/index')
-let AutoPosting = require('../../api/autoposting/autopostings.model')
-let Pages = require('../../api/pages/Pages.model')
+const AutoPosting = require('../../api/autoposting/autopostings.model')
+const Pages = require('../../api/pages/Pages.model')
 const URL = require('../../api/URLforClickedCount/URL.model')
-let Subscribers = require('../../api/subscribers/Subscribers.model')
+const Subscribers = require('../../api/subscribers/Subscribers.model')
 const AutomationQueue = require('../../api/automation_queue/automation_queue.model')
 const AutopostingMessages = require('../../api/autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require('../../api/autoposting_messages/autoposting_subscriber_messages.model')
-let request = require('request')
-let _ = require('lodash')
-let utility = require('../../api/broadcasts/broadcasts.utility')
+const request = require('request')
+const _ = require('lodash')
+const utility = require('../../api/broadcasts/broadcasts.utility')
 const compUtility = require('../../components/utility')
 
 const logger = require('../../components/logger')
@@ -123,12 +123,12 @@ exports.postPublish = function (req, res) {
                                     {
                                       'title': req.body.post_title,
                                       'image_url': config.domain + '/img/wordpress.png',
-                                      'subtitle': 'kibopush.com',
+                                      'subtitle': 'sent using kibopush.com',
                                       'buttons': [
                                         {
                                           'type': 'web_url',
                                           'url': newURL,
-                                          'title': 'View Blog Post'
+                                          'title': 'View Wordpress Blog Post'
                                         }
                                       ]
                                     }
