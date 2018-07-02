@@ -396,7 +396,6 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
 
 function prepareMessageData (subscriberId, body, name) {
   let payload = {}
-  console.log('names', name)
   let text = ''
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
@@ -407,7 +406,6 @@ function prepareMessageData (subscriberId, body, name) {
       'text': text,
       'metadata': 'This is a meta data'
     }
-    console.log('payload anisha', payload)
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
