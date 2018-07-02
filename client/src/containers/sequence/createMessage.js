@@ -26,6 +26,7 @@ import File from '../convo/File'
 import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
+import List from '../convo/List'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -48,6 +49,7 @@ class CreateMessage extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -136,6 +138,11 @@ class CreateMessage extends React.Component {
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
+      } else if (payload[i].componentType === 'list') {
+        temp.push({content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} listDetails={payload[i]} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       }
     }
   }
@@ -220,6 +227,29 @@ class CreateMessage extends React.Component {
   }
 
   handleGallery (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.cards.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data, i) => {
+      if (data.id === obj.id) {
+        // var newObj = {}
+        // newObj.image_url = obj.cards.image
+        // newObj.subtitle = obj.cards.subtitle
+        // newObj.title = obj.cards.title
+
+        temp[i].cards = obj.cards
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
+  handleList (obj) {
     var temp = this.state.broadcast
     var isPresent = false
     obj.cards.forEach((d) => {
@@ -435,6 +465,14 @@ class CreateMessage extends React.Component {
                                         </div>
                                       </div>
                                     </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
@@ -483,7 +521,7 @@ class CreateMessage extends React.Component {
                                   <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
                                     {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
 
-                                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' style={{position: 'initial'}} />
 
                                   </div>
                                 </div>
