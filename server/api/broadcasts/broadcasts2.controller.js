@@ -8,7 +8,6 @@ const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
 const URL = require('./../URLforClickedCount/URL.model')
-
 // const PollResponse = require('../polls/pollresponse.model')
 // const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
@@ -18,12 +17,13 @@ const LiveChat = require('../livechat/livechat.model')
 const Session = require('../sessions/sessions.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
-// const needle = require('needle')
+const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
+const mongoose = require('mongoose')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
@@ -93,7 +93,24 @@ exports.sendConversation = function (req, res) {
                 `Payload for Messenger Send API for test: ${JSON.stringify(
                   messageData)}`)
 
-              prepareToSendMessage(messageData, page)
+              request(
+                {
+                  'method': 'POST',
+                  'json': true,
+                  'formData': messageData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                  page.accessToken
+                },
+                function (err, res) {
+                  if (err) {
+                    return logger.serverLog(TAG,
+                      `At send test message broadcast ${JSON.stringify(err)}`)
+                  } else {
+                    logger.serverLog(TAG,
+                      `At send test message broadcast response ${JSON.stringify(
+                        res)}`)
+                  }
+                })
             })
           })
         })
@@ -217,58 +234,52 @@ exports.sendConversation = function (req, res) {
                   if (err) {
                     return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
-                  req.body.payload.forEach(payloadItem => {
-                    utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                      taggedSubscribers.forEach(subscriber => {
-                        Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                  utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                    taggedSubscribers.forEach(subscriber => {
+                      Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                        if (err) {
+                          return logger.serverLog(TAG,
+                            `At get session ${JSON.stringify(err)}`)
+                        }
+                        if (!session) {
+                          return logger.serverLog(TAG,
+                            `No chat session was found for broadcast`)
+                        }
+                        const chatMessage = new LiveChat({
+                          sender_id: page._id, // this is the page id: _id of Pageid
+                          recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                          sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                          recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                          session_id: session._id,
+                          company_id: req.user._id, // this is admin id till we have companies
+                          payload: '', // this where message content will go
+                          status: 'unseen' // seen or unseen
+                        })
+                        chatMessage.save((err, chatMessageSaved) => {
                           if (err) {
                             return logger.serverLog(TAG,
                               `At get session ${JSON.stringify(err)}`)
                           }
-                          if (!session) {
-                            return logger.serverLog(TAG,
-                              `No chat session was found for broadcast`)
-                          }
-                          const chatMessage = new LiveChat({
-                            sender_id: page._id, // this is the page id: _id of Pageid
-                            recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                            sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                            recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                            session_id: session._id,
-                            company_id: req.user._id, // this is admin id till we have companies
-                            payload: payloadItem, // this where message content will go
-                            status: 'unseen' // seen or unseen
+                        })
+                      })
+                      // update broadcast sent field
+                      let pagebroadcast = new BroadcastPage({
+                        pageId: page.pageId,
+                        userId: req.user._id,
+                        subscriberId: subscriber.senderId,
+                        broadcastId: broadcast._id,
+                        seen: false,
+                        companyId: companyUser.companyId
+                      })
+                      pagebroadcast.save((err2, savedpagebroadcast) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'PageBroadcast create failed',
+                            err2
                           })
-                          chatMessage.save((err, chatMessageSaved) => {
-                            if (err) {
-                              return logger.serverLog(TAG,
-                                `At get session ${JSON.stringify(err)}`)
-                            }
-                          })
-                        })
-                        // update broadcast sent field
-                        let pagebroadcast = new BroadcastPage({
-                          pageId: page.pageId,
-                          userId: req.user._id,
-                          subscriberId: subscriber.senderId,
-                          broadcastId: broadcast._id,
-                          seen: false,
-                          companyId: companyUser.companyId
-                        })
-
-                        pagebroadcast.save((err2, savedpagebroadcast) => {
-                          if (err2) {
-                            logger.serverLog(TAG, {
-                              status: 'failed',
-                              description: 'PageBroadcast create failed',
-                              err2
-                            })
-                          }
-                          let messageData = utility.prepareSendAPIPayload(
-                            subscriber.senderId,
-                            payloadItem, subscriber.firstName + ' ' + subscriber.lastName)
-                          prepareToSendMessage(messageData, page)
-                        })
+                        }
+                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
                       })
                     })
                   })
@@ -346,11 +357,7 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
-                      // let messageData = utility.prepareSendAPIPayload(
-                      //   subscriber.senderId,
-                      //   payloadItem)
-                      // prepareToSendMessage(messageData, page)
+                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
                     })
                   })
                 })
@@ -375,36 +382,6 @@ const sendBroadcast = (batchMessages, page) => {
   const form = r.form()
   form.append('access_token', page.accessToken)
   form.append('batch', batchMessages)
-}
-
-const sendMessage = (messageData, token) => {
-  return new Promise((resolve, reject) => {
-    request(
-      {
-        'method': 'POST',
-        'json': true,
-        'formData': messageData,
-        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-        token
-      }, function (err, resp) {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(resp)
-      }
-    })
-  })
-}
-
-const prepareToSendMessage = (messageData, page) => {
-  try {
-    /* eslint-disable */
-    const message = sendMessage(messageData, page.accessToken)
-    /* eslint-enable */
-  } catch (error) {
-    logger.serverLog(TAG,
-      `At send broadcast error ${JSON.stringify(error)}`)
-  }
 }
 
 exports.upload = function (req, res) {
@@ -449,17 +426,68 @@ exports.upload = function (req, res) {
       let writeData = fs.createWriteStream(dir + '/userfiles/' + req.files.file.name)
       readData.pipe(writeData)
       logger.serverLog(TAG,
-        `file uploaded, sending response now: ${JSON.stringify({
+        `file uploaded on KiboPush, uploading it on Facebook: ${JSON.stringify({
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      return res.status(201).json({
-        status: 'success',
-        payload: {
-          id: serverPath,
-          name: req.files.file.name,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
+      .populate('userId').exec((err, page) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'internal server error' + JSON.stringify(err)
+          })
         }
+        needle.get(
+          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+          (err, resp2) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: 'unable to get page access_token: ' + JSON.stringify(err)
+              })
+            }
+            let pageAccessToken = resp2.body.access_token
+            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
+            const messageData = {
+              'message': JSON.stringify({
+                'attachment': {
+                  'type': req.body.componentType,
+                  'payload': {
+                    'is_reusable': true
+                  }
+                }
+              }),
+              'filedata': fileReaderStream
+            }
+            request(
+              {
+                'method': 'POST',
+                'json': true,
+                'formData': messageData,
+                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+              },
+              function (err, resp) {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
+                  })
+                } else {
+                  logger.serverLog(TAG,
+                    `file uploaded on Facebook, sending response now: ${JSON.stringify(resp.body)}`)
+                  return res.status(201).json({
+                    status: 'success',
+                    payload: {
+                      id: serverPath,
+                      attachment_id: resp.body.attachment_id,
+                      name: req.files.file.name,
+                      url: `${config.domain}/api/broadcasts/download/${serverPath}`
+                    }
+                  })
+                }
+              })
+          })
       })
     }
   )
