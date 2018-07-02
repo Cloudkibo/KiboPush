@@ -96,10 +96,14 @@ function validateInput (body) {
   return true
 }
 
-function prepareSendAPIPayload(subscriberId, body, isResponse) {
+function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      body.text = body.text.replace(
+        '{{user_full_name}}', name)
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -112,6 +116,10 @@ function prepareSendAPIPayload(subscriberId, body, isResponse) {
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      body.text = body.text.replace(
+        '{{user_full_name}}', name)
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -417,17 +425,22 @@ function applyPollFilterIfNecessary(req, subscribers, fn) {
 
 function prepareMessageData (subscriberId, body, name) {
   let payload = {}
+  let text = ''
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      body.text = body.text.replace(
+      text = body.text.replace(
         '{{user_full_name}}', name)
     }
     payload = {
-      'text': body.text,
+      'text': text,
       'metadata': 'This is a meta data'
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      body.text = body.text.replace(
+        '{{user_full_name}}', name)
+    }
     payload = {
       'attachment': {
         'type': 'template',
