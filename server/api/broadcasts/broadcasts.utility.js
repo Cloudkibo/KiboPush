@@ -34,7 +34,7 @@ function validateInput (body) {
           for (let j = 0; j < body.payload[i].buttons.length; j++) {
             if (body.payload[i].buttons[j].type === 'web_url') {
               if (!utility.validateUrl(
-                  body.payload[i].buttons[j].url)) return false
+                body.payload[i].buttons[j].url)) return false
             }
           }
         }
@@ -54,7 +54,7 @@ function validateInput (body) {
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
             if (!utility.validateUrl(
-                body.payload[i].buttons[j].url)) return false
+              body.payload[i].buttons[j].url)) return false
           }
         }
       }
@@ -71,13 +71,23 @@ function validateInput (body) {
           if (body.payload[i].cards[j].buttons === undefined) return false
           if (body.payload[i].cards[j].buttons.length === 0) return false
           if (!utility.validateUrl(
-              body.payload[i].cards[j].image_url)) return false
+            body.payload[i].cards[j].image_url)) return false
           for (let k = 0; k < body.payload[i].cards[j].buttons.length; k++) {
             if (body.payload[i].cards[j].buttons[k].type === 'web_url') {
               if (!utility.validateUrl(
-                  body.payload[i].cards[j].buttons[k].url)) return false
+                body.payload[i].cards[j].buttons[k].url)) return false
             }
           }
+        }
+      }
+      if (body.payload[i].componentType === 'list') {
+        if (body.payload[i].cards === undefined) return false
+        if (body.payload[i].cards.length === 0) return false
+        for (let j = 0; j < body.payload[i].cards.length; j++) {
+          if (body.payload[i].cards[j].title === undefined ||
+            body.payload[i].cards[j].title === '') return false
+          if (body.payload[i].cards[j].image_url === undefined ||
+            body.payload[i].cards[j].image_url === '') return false
         }
       }
     }
@@ -86,7 +96,7 @@ function validateInput (body) {
   return true
 }
 
-function prepareSendAPIPayload (subscriberId, body, isResponse) {
+function prepareSendAPIPayload(subscriberId, body, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
@@ -119,7 +129,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
       })
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
-      body.componentType) > -1) {
+    body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
     let fileReaderStream
     if (body.componentType === 'file') {
@@ -145,7 +155,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
   } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
-      body.componentType) > -1) {
+    body.componentType) > -1) {
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -199,11 +209,29 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
         }
       })
     }
+  } else if (body.componentType === 'list') {
+    payload = {
+      'messaging_type': messageType,
+      'recipient': JSON.stringify({
+        'id': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'list',
+            'top_element_style': body.topElementStyle,
+            'elements': body.cards,
+            'buttons': body.buttons
+          }
+        }
+      })
+    }
   }
   return payload
 }
 
-function prepareBroadCastPayload (req, companyId) {
+function prepareBroadCastPayload(req, companyId) {
   let broadcastPayload = {
     platform: req.body.platform,
     payload: req.body.payload,
@@ -248,7 +276,7 @@ function prepareBroadCastPayload (req, companyId) {
  })
  } */
 
-function parseUrl (text) {
+function parseUrl(text) {
   // eslint-disable-next-line no-useless-escape
   let urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   let onlyUrl = ''
@@ -259,9 +287,9 @@ function parseUrl (text) {
   return onlyUrl
 }
 
-function applyTagFilterIfNecessary (req, subscribers, fn) {
+function applyTagFilterIfNecessary(req, subscribers, fn) {
   if (req.body.segmentationTags && req.body.segmentationTags.length > 0) {
-    TagSubscribers.find({tagId: {$in: req.body.segmentationTags}},
+    TagSubscribers.find({ tagId: { $in: req.body.segmentationTags } },
       (err, tagSubscribers) => {
         if (err) {
           return logger.serverLog(TAG,
@@ -301,9 +329,9 @@ function applyTagFilterIfNecessary (req, subscribers, fn) {
   }
 }
 
-function applySurveyFilterIfNecessary (req, subscribers, fn) {
+function applySurveyFilterIfNecessary(req, subscribers, fn) {
   if (req.body.segmentationSurvey && req.body.segmentationSurvey.length > 0) {
-    SurveyResponses.find({surveyId: {$in: req.body.segmentationSurvey}})
+    SurveyResponses.find({ surveyId: { $in: req.body.segmentationSurvey } })
       .populate('subscriberId')
       .exec((err, responses) => {
         if (err) {
@@ -343,9 +371,9 @@ function applySurveyFilterIfNecessary (req, subscribers, fn) {
     fn(subscribers)
   }
 }
-function applyPollFilterIfNecessary (req, subscribers, fn) {
+function applyPollFilterIfNecessary(req, subscribers, fn) {
   if (req.body.segmentationPoll && req.body.segmentationPoll.length > 0) {
-    PollResponses.find({pollId: {$in: req.body.segmentationPoll}})
+    PollResponses.find({ pollId: { $in: req.body.segmentationPoll } })
       .populate('subscriberId')
       .exec((err, responses) => {
         if (err) {
@@ -386,6 +414,7 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
   }
 }
 
+
 function prepareMessageData (subscriberId, body, name) {
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
@@ -410,7 +439,7 @@ function prepareMessageData (subscriberId, body, name) {
       }
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
-      body.componentType) > -1) {
+    body.componentType) > -1) {
     payload = {
       'attachment': {
         'type': body.componentType,
@@ -423,7 +452,7 @@ function prepareMessageData (subscriberId, body, name) {
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
   } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
-      body.componentType) > -1) {
+    body.componentType) > -1) {
     payload = {
       'attachment': {
         'type': 'image',
@@ -471,11 +500,11 @@ function getBatchData (payload, recipientId, page, sendBroadcast, name) {
     // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
     let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, name)))
     if (index === 0) {
-      batch.push({"method":"POST", "name": `message${index+1}`, "relative_url":"v2.6/me/messages", "body": recipient + "&" + message})
+      batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
     } else {
-      batch.push({"method":"POST", "name": `message${index+1}`, "depends_on":`message${index}`, "relative_url":"v2.6/me/messages", "body": recipient + "&" + message})
+      batch.push({ "method": "POST", "name": `message${index + 1}`, "depends_on": `message${index}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
     }
-    if (index === (payload.length -1) ) {
+    if (index === (payload.length - 1)) {
       sendBroadcast(JSON.stringify(batch), page)
     }
   })
