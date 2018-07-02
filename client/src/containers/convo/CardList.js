@@ -8,10 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
-import Halogen from 'halogen'
-import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
-import AlertContainer from 'react-alert'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -40,6 +37,7 @@ class Card extends React.Component {
   }
 
   componentDidMount () {
+    console.log('this.props', this.props)
     this.updateCardDetails(this.props)
   }
   componentWillReceiveProps (nextProps) {
@@ -86,7 +84,7 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
+      this.props.uploadImage(file, {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -127,6 +125,7 @@ class Card extends React.Component {
   }
 
   addButton (obj) {
+    console.log('obj', obj)
     var temp = this.state.button
     temp.push(obj)
     this.setState({button: temp})
@@ -199,23 +198,20 @@ class Card extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
-      <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/* <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px'}} className='ui-block hoverbordersolid'>
+        <div onClick={() => { this.props.removeElement({id: this.props.id}) }} style={{marginLeft: '-15px', marginTop: '-23px', float: 'left'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i className='fa fa-times fa-stack-2x' />
+            <i className='fa fa-times-circle-o' style={{fontSize: '1.3rem'}} />
           </span>
-        </div>  */}
-        <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
-          <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
+        </div>
+        <div className='row'>
+          <div className='col-md-8' style={{marginLeft: '-20px'}}>
+            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
+            <br />
+            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: '90px'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
+          </div>
+          <div style={{display: 'flex', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
               ref='file'
               type='file'
@@ -228,41 +224,38 @@ class Card extends React.Component {
             {
           (this.state.imgSrc === '')
           ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-          : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
+          : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
          }
 
           </div>
-          <div>
-            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
-            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
-          </div>
         </div>
-        {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
-        }) : ''}
-        <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
+        <br />
+        {(!this.state.button || !this.state.button.length > 0) &&
+        <div className='ui-block hoverborder' style={{width: '54%', marginLeft: '12px'}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
         </div>
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
-            </div>
-          </ModalContainer>
-          : <span />
-        }
+      }
+        {(this.state.button) ? this.state.button.map((obj, index) => {
+          return (<div style={{width: '54%', marginLeft: '12px'}}>
+            <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          </div>)
+        }) : ''}
+        {/* <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
+        <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
       </div>
+      <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
+        <ElementButton button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
+      </div>
+    </div>  */}
+      </div>
+
     )
   }
 }
 
 function mapStateToProps (state) {
   console.log(state)
-  return {
-    pages: (state.pagesInfo.pages)
-  }
+  return {}
 }
 
 function mapDispatchToProps (dispatch) {

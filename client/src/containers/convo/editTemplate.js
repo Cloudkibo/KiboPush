@@ -22,6 +22,7 @@ import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
+import List from './List'
 import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
@@ -72,6 +73,7 @@ class EditTemplate extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -214,6 +216,11 @@ class EditTemplate extends React.Component {
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
+      } else if (payload[i].componentType === 'list') {
+        temp.push({content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} listDetails={payload[i]} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       }
     }
   }
@@ -307,6 +314,29 @@ class EditTemplate extends React.Component {
   }
 
   handleGallery (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.cards.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data, i) => {
+      if (data.id === obj.id) {
+        // var newObj = {}
+        // newObj.image_url = obj.cards.image
+        // newObj.subtitle = obj.cards.subtitle
+        // newObj.title = obj.cards.title
+
+        temp[i].cards = obj.cards
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
+  handleList (obj) {
     var temp = this.state.broadcast
     var isPresent = false
     obj.cards.forEach((d) => {

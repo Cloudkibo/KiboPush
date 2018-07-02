@@ -794,7 +794,7 @@ exports.enable = function (req, res) {
                                 {
                                   id: 0,
                                   componentType: 'text',
-                                  text: 'Hi [Username]! Thanks for getting in touch with us on Messenger. Please send us any questions you may have'
+                                  text: 'Hi {{user_full_name}}! Thanks for getting in touch with us on Messenger. Please send us any questions you may have'
                                 }]
                             }, {multi: true}, (err) => {
                               if (err) {

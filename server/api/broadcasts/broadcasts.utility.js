@@ -414,9 +414,14 @@ function applyPollFilterIfNecessary(req, subscribers, fn) {
   }
 }
 
-function prepareMessageData(subscriberId, body) {
+
+function prepareMessageData (subscriberId, body, name) {
   let payload = {}
   if (body.componentType === 'text' && !body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      body.text = body.text.replace(
+        '{{user_full_name}}', name)
+    }
     payload = {
       'text': body.text,
       'metadata': 'This is a meta data'
@@ -488,12 +493,12 @@ function prepareMessageData(subscriberId, body) {
 }
 
 /* eslint-disable */
-function getBatchData(payload, recipientId, page, sendBroadcast) {
-  let recipient = "recipient=" + encodeURIComponent(JSON.stringify({ "id": recipientId }))
+function getBatchData (payload, recipientId, page, sendBroadcast, name) {
+  let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
   let batch = []  // to display typing on bubble :)
   payload.forEach((item, index) => {
     // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
-    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item)))
+    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, name)))
     if (index === 0) {
       batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
     } else {
