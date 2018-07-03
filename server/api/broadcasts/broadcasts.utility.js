@@ -84,6 +84,10 @@ function validateInput (body) {
         if (body.payload[i].listItems === undefined) return false
         if (body.payload[i].listItems.length === 0) return false
         for (let m = 0; m < body.payload[i].buttons.length; m++) {
+          if (body.payload[i].buttons[m].type === undefined ||
+          body.payload[i].buttons[m].type === '') return false
+          if (body.payload[i].buttons[m].title === undefined ||
+          body.payload[i].buttons[m].title === '') return false
           if (body.payload[i].buttons[m].type === 'web_url') {
             if (!utility.validateUrl(
               body.payload[i].buttons[m].url)) return false
@@ -92,24 +96,22 @@ function validateInput (body) {
         for (let j = 0; j < body.payload[i].listItems.length; j++) {
           if (body.payload[i].listItems[j].title === undefined ||
             body.payload[i].listItems[j].title === '') return false
-          if (body.payload[i].listItems[j].image_url === undefined ||
-            body.payload[i].listItems[j].image_url === '') return false
-          if (body.payload[i].listItems[j].subtitle === undefined ||
+          if (body.payload[i].listItems[j].subtitle &&
             body.payload[i].listItems[j].subtitle === '') return false
-          if (body.payload[i].listItems[j].buttons === undefined &&
-           body.payload[i].listItems[j].default_action === undefined) return false
-          if (body.payload[i].listItems[j].default_action &&
-          body.payload[i].listItems[j].default_action.type === '') return false
-          if (body.payload[i].listItems[j].default_action &&
-          body.payload[i].listItems[j].default_action.url === '') return false
-          if (!utility.validateUrl(
+          if (body.payload[i].listItems[j].default_action && (
+            body.payload[i].listItems[j].default_action.type === undefined ||
+            body.payload[i].listItems[j].default_action.type === '')) return false
+          if (body.payload[i].listItems[j].default_action && (
+            body.payload[i].listItems[j].default_action.url === undefined ||
+            body.payload[i].listItems[j].default_action.url === '')) return false
+          if (body.payload[i].listItems[j].image_url && !utility.validateUrl(
               body.payload[i].listItems[j].image_url)) return false
           if (body.payload[i].listItems[j].buttons) {
             for (let k = 0; k < body.payload[i].listItems[j].buttons.length; k++) {
+              if (body.payload[i].listItems[j].buttons[k].title === undefined ||
+              body.payload[i].listItems[j].buttons[k].title === '') return false
               if (body.payload[i].listItems[j].buttons[k].type === undefined ||
               body.payload[i].listItems[j].buttons[k].type === '') return false
-              if (body.payload[i].listItems[j].buttons[k].url === undefined ||
-              body.payload[i].listItems[j].buttons[k].url === '') return false
               if (body.payload[i].listItems[j].buttons[k].type === 'web_url') {
                 if (!utility.validateUrl(
                     body.payload[i].listItems[j].buttons[k].url)) return false
