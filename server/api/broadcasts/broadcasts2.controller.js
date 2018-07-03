@@ -79,7 +79,7 @@ exports.sendConversation = function (req, res) {
 
         pages.forEach(page => {
           req.body.payload.forEach(payloadItem => {
-            PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}, (err, subscriptionUser) => {
+            PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}).populate('userId').exec((err, subscriptionUser) => {
               if (err) {
                 logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 return res.status(404)
@@ -87,7 +87,7 @@ exports.sendConversation = function (req, res) {
               }
               let messageData = utility.prepareSendAPIPayload(
                 subscriptionUser.subscriberId,
-                payloadItem, false)
+                payloadItem, subscriptionUser.userId.name, false)
 
               logger.serverLog(TAG,
                 `Payload for Messenger Send API for test: ${JSON.stringify(

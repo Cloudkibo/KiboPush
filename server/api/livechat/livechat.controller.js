@@ -196,7 +196,7 @@ exports.create = function (req, res) {
               logger.serverLog(TAG, `Payload from the client ${JSON.stringify(req.body.payload)}`)
               let messageData = utility.prepareSendAPIPayload(
                 subscriber.senderId,
-                req.body.payload, true)
+                req.body.payload, subscriber.firstName + ' ' + subscriber.lastName, true)
 
               request(
                 {

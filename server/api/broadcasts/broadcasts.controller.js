@@ -581,7 +581,8 @@ exports.getfbMessage = function (req, res) {
                               }
                               let messageData = utility.prepareSendAPIPayload(
                                 subsriber.id,
-                                payloadItem, true)
+                                payloadItem, response.body.first_name + ' ' +
+                                response.body.last_name, true)
 
                               request(
                                 {
