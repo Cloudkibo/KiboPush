@@ -94,6 +94,8 @@ function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
     if (body.text.includes('{{user_full_name}}')) {
       text = body.text.replace(
         '{{user_full_name}}', name)
+    } else {
+      text = body.text
     }
     payload = {
       'messaging_type': messageType,
@@ -108,8 +110,10 @@ function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      text = body.text.replace(
+      body.text = body.text.replace(
         '{{user_full_name}}', name)
+    } else {
+      text = body.text
     }
     payload = {
       'messaging_type': messageType,
@@ -121,7 +125,7 @@ function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'button',
-            'text': text,
+            'text': body.text,
             'buttons': body.buttons
           }
         }
@@ -402,6 +406,8 @@ function prepareMessageData (subscriberId, body, name) {
     if (body.text.includes('{{user_full_name}}')) {
       text = body.text.replace(
         '{{user_full_name}}', name)
+    } else {
+      text = body.text
     }
     payload = {
       'text': text,
@@ -412,6 +418,8 @@ function prepareMessageData (subscriberId, body, name) {
     if (body.text.includes('{{user_full_name}}')) {
       text = body.text.replace(
         '{{user_full_name}}', name)
+    } else {
+      text = body.text
     }
     payload = {
       'attachment': {
