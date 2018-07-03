@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
+import { Popover, PopoverBody } from 'reactstrap'
 
 // const styles = {
 //   iconclass: {
@@ -34,10 +35,14 @@ class Text extends React.Component {
       button: props.buttons ? props.buttons : [],
       text: props.txt ? props.txt : '',
       showEmojiPicker: false,
-      count: 0
+      count: 0,
+      showUserOptions: false
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
+    this.getName = this.getName.bind(this)
+    this.toggleUserOptions = this.toggleUserOptions.bind(this)
+    this.showUserOptions = this.showUserOptions.bind(this)
   }
   componentDidMount () {
     if (this.props.message && this.props.message !== '') {
@@ -50,6 +55,13 @@ class Text extends React.Component {
         })
       }
     }
+  }
+  toggleUserOptions () {
+    this.setState({showUserOptions: !this.state.showUserOptions})
+  }
+
+  showUserOptions () {
+    this.setState({showUserOptions: true})
   }
 
   showEmojiPicker () {
@@ -65,6 +77,21 @@ class Text extends React.Component {
       text: this.state.text + emoji.native
 
     })
+  }
+
+  getName (e, name) {
+    var message = this.state.text + `{{${name}}}`
+    var textCount = 160 - message.length
+    if (textCount > 0) {
+      this.props.handleText({id: this.props.id, text: message, button: this.state.button})
+      this.setState({
+        count: textCount,
+        text: message,
+        showUserOptions: false
+      })
+    } else {
+      this.setState({showUserOptions: false})
+    }
   }
 
   handleChange (event) {
@@ -103,11 +130,12 @@ class Text extends React.Component {
   render () {
     let textStyles
     if (this.props.removeState) {
-      textStyles = {marginBottom: 40 + 'px'}
+      textStyles = {marginBottom: 70 + 'px'}
     } else {
-      textStyles = {marginBottom: 40 + 'px', width: '60%'}
+      textStyles = {marginBottom: 70 + 'px', width: '60%'}
     }
     return (
+
       <div className='broadcast-component' style={textStyles}>
         {this.props.removeState &&
           <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{ float: 'right', height: 20 + 'px' }}>
@@ -173,13 +201,37 @@ class Text extends React.Component {
         }
         </div>
       }
+        <Popover placement='left' isOpen={this.state.showUserOptions} className='greetingPopover' target='userOptions' toggle={this.toggleUserOptions}>
+          <PopoverBody>
+            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_first_name')}>First Name</div>
+            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_last_name')}>Last Name</div>
+            <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
+          </PopoverBody>
+        </Popover>
+        <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0'}}>
+          <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
+            <i onClick={this.toggleUserOptions} style={{height: '24px',
+              width: '24px',
+              position: 'relative',
+              display: 'inline-block',
+              cursor: 'pointer'}}>
+              <i className='greetingMessage fa fa-user' style={{fontSize: '20px',
+                left: '0px',
+                width: '100%',
+                height: '2em',
+                textAlign: 'center',
+                color: 'rgb(120, 120, 120)'}} />
+            </i>
+          </div>
+        </div>
       </div>
     )
   }
 }
 
 function mapStateToProps (state) {
-  return {}
+  return {
+  }
 }
 
 function mapDispatchToProps (dispatch) {
