@@ -140,6 +140,7 @@ exports.sendConversation = function (req, res) {
           .json({status: 'failed', description: 'Broadcasts not created'})
         }
         let newPayload = req.body.payload
+        logger.serverLog('New Payload', newPayload)
         req.body.payload.forEach((payloadItem, pindex) => {
           if (payloadItem.buttons) {
             payloadItem.buttons.forEach((button, bindex) => {

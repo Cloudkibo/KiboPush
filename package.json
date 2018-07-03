@@ -106,6 +106,7 @@
     "react-cookie": "^0.4.5",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^15.6.1",
+    "react-dotdotdot": "^1.2.3",
     "react-drag-sortable": "^1.0.5",
     "react-dropdown": "^1.2.1",
     "react-dropzone": "^4.1.3",
