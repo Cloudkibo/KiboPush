@@ -169,6 +169,10 @@ a.broadcastTabs.active {
   left: -110px !important;
   height: auto !important
 }
+.popover.show.buttonPopoverList {
+  left: -190px !important;
+  height: auto !important
+}
 .buttonPopover > .popover-inner {
   height: auto !important;
 }
@@ -186,7 +190,7 @@ a.broadcastTabs.active {
 }
 .popover.show.chatPopover {
   height: auto !important;
-  left: 20px !important; 
+  left: 20px !important;
 }
 .chatPopover > .popover-inner {
   height: auto !important;

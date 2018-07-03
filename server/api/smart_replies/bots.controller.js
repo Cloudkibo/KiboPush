@@ -82,35 +82,40 @@ function getWitResponse (message, token, bot, pageId, senderId) {
 }
 
 function sendMessenger (message, pageId, senderId) {
-  let messageData = utility.prepareSendAPIPayload(
-                senderId,
-                 {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, true)
-  Pages.findOne({pageId: pageId}, (err, page) => {
+  Subscribers.findOne({senderId: senderId}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
-    request(
-      {
-        'method': 'POST',
-        'json': true,
-        'formData': messageData,
-        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              page.accessToken
-      },
-            (err, res) => {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send message live chat ${JSON.stringify(err)}`)
-              } else {
-                if (res.statusCode !== 200) {
-                  logger.serverLog(TAG,
-                    `At send message live chat response ${JSON.stringify(
-                      res.body.error)}`)
+    let messageData = utility.prepareSendAPIPayload(
+                  senderId,
+                   {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName + ' ' + subscriber.lastName, true)
+    Pages.findOne({pageId: pageId}, (err, page) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      request(
+        {
+          'method': 'POST',
+          'json': true,
+          'formData': messageData,
+          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
+        },
+              (err, res) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At send message live chat ${JSON.stringify(err)}`)
                 } else {
-                  logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+                  if (res.statusCode !== 200) {
+                    logger.serverLog(TAG,
+                      `At send message live chat response ${JSON.stringify(
+                        res.body.error)}`)
+                  } else {
+                    logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+                  }
                 }
-              }
-            })
+              })
+    })
   })
 }
 

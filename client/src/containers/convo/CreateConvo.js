@@ -309,12 +309,12 @@ class CreateConvo extends React.Component {
     console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
-    obj.cards.forEach((d) => {
+    obj.listItems.forEach((d) => {
       delete d.id
     })
     temp.map((data) => {
       if (data.id === obj.id) {
-        data.cards = obj.cards
+        data.listItems = obj.listItems
         isPresent = true
       }
     })
@@ -344,6 +344,7 @@ class CreateConvo extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
+    console.log('this.state.broadcast', this.state.broadcast)
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
@@ -366,23 +367,17 @@ class CreateConvo extends React.Component {
         }
       }
       if (this.state.broadcast[i].componentType === 'list') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Element in list must have a button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Element in list must have a button.')
-          }
-          if (this.state.broadcast[i].cards[j].image_url === '') {
-            return this.msg.error('Element in list must have an image')
-          }
-          if (this.state.broadcast[i].cards[j].title === '') {
-            return this.msg.error('Element in list must have a title')
-          }
-        }
-        if (this.state.broadcasts[i].cards.length < 2) {
+        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
           return this.msg.error('A list must have atleast 2 elements')
+        }
+        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
+          if (!this.state.broadcast[i].listItems[j].title) {
+            this.initTab()
+            return this.msg.error('Element in list must have a title.')
+          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
+            this.initTab()
+            return this.msg.error('Element in list must have a subtitle.')
+          }
         }
       }
     }

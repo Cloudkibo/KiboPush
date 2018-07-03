@@ -83,7 +83,13 @@ function validateInput (body) {
       if (body.payload[i].componentType === 'list') {
         if (body.payload[i].listItems === undefined) return false
         if (body.payload[i].listItems.length === 0) return false
+        if (body.payload[i].topElementStyle === undefined ||
+        body.payload[i].topElementStyle === '') return false
         for (let m = 0; m < body.payload[i].buttons.length; m++) {
+          if (body.payload[i].buttons[m].type === undefined ||
+          body.payload[i].buttons[m].type === '') return false
+          if (body.payload[i].buttons[m].title === undefined ||
+          body.payload[i].buttons[m].title === '') return false
           if (body.payload[i].buttons[m].type === 'web_url') {
             if (!utility.validateUrl(
               body.payload[i].buttons[m].url)) return false
@@ -92,24 +98,22 @@ function validateInput (body) {
         for (let j = 0; j < body.payload[i].listItems.length; j++) {
           if (body.payload[i].listItems[j].title === undefined ||
             body.payload[i].listItems[j].title === '') return false
-          if (body.payload[i].listItems[j].image_url === undefined ||
-            body.payload[i].listItems[j].image_url === '') return false
           if (body.payload[i].listItems[j].subtitle === undefined ||
             body.payload[i].listItems[j].subtitle === '') return false
-          if (body.payload[i].listItems[j].buttons === undefined &&
-           body.payload[i].listItems[j].default_action === undefined) return false
-          if (body.payload[i].listItems[j].default_action &&
-          body.payload[i].listItems[j].default_action.type === '') return false
-          if (body.payload[i].listItems[j].default_action &&
-          body.payload[i].listItems[j].default_action.url === '') return false
-          if (!utility.validateUrl(
+          if (body.payload[i].listItems[j].default_action && (
+            body.payload[i].listItems[j].default_action.type === undefined ||
+            body.payload[i].listItems[j].default_action.type === '')) return false
+          if (body.payload[i].listItems[j].default_action && (
+            body.payload[i].listItems[j].default_action.url === undefined ||
+            body.payload[i].listItems[j].default_action.url === '')) return false
+          if (body.payload[i].listItems[j].image_url && !utility.validateUrl(
               body.payload[i].listItems[j].image_url)) return false
           if (body.payload[i].listItems[j].buttons) {
             for (let k = 0; k < body.payload[i].listItems[j].buttons.length; k++) {
+              if (body.payload[i].listItems[j].buttons[k].title === undefined ||
+              body.payload[i].listItems[j].buttons[k].title === '') return false
               if (body.payload[i].listItems[j].buttons[k].type === undefined ||
               body.payload[i].listItems[j].buttons[k].type === '') return false
-              if (body.payload[i].listItems[j].buttons[k].url === undefined ||
-              body.payload[i].listItems[j].buttons[k].url === '') return false
               if (body.payload[i].listItems[j].buttons[k].type === 'web_url') {
                 if (!utility.validateUrl(
                     body.payload[i].listItems[j].buttons[k].url)) return false
@@ -124,22 +128,35 @@ function validateInput (body) {
   return true
 }
 
-function prepareSendAPIPayload (subscriberId, body, isResponse) {
+function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
+  let text = ''
   if (body.componentType === 'text' && !body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      text = body.text.replace(
+        '{{user_full_name}}', name)
+    } else {
+      text = body.text
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
         'id': subscriberId
       }),
       'message': JSON.stringify({
-        'text': body.text,
+        'text': text,
         'metadata': 'This is a meta data'
       })
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      text = body.text.replace(
+        '{{user_full_name}}', name)
+    } else {
+      text = body.text
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -150,7 +167,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'button',
-            'text': body.text,
+            'text': text,
             'buttons': body.buttons
           }
         }
@@ -248,7 +265,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'list',
-            'top_element_style': 'compact',
+            'top_element_style': body.topElementStyle,
             'elements': body.listItems,
             'buttons': body.buttons
           }
@@ -444,23 +461,32 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
 
 function prepareMessageData (subscriberId, body, name) {
   let payload = {}
+  let text = ''
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      body.text = body.text.replace(
+      text = body.text.replace(
         '{{user_full_name}}', name)
+    } else {
+      text = body.text
     }
     payload = {
-      'text': body.text,
+      'text': text,
       'metadata': 'This is a meta data'
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      text = body.text.replace(
+        '{{user_full_name}}', name)
+    } else {
+      text = body.text
+    }
     payload = {
       'attachment': {
         'type': 'template',
         'payload': {
           'template_type': 'button',
-          'text': body.text,
+          'text': text,
           'buttons': body.buttons
         }
       }
@@ -521,7 +547,7 @@ function prepareMessageData (subscriberId, body, name) {
         'type': 'template',
         'payload': {
           'template_type': 'list',
-          'top_element_style': 'compact',
+          'top_element_style': body.topElementStyle,
           'elements': body.listItems,
           'buttons': body.buttons
         }
