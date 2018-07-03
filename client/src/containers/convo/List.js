@@ -83,6 +83,7 @@ class List extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('in card', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
@@ -97,14 +98,22 @@ class List extends React.Component {
         data.title = obj.title
         data.buttons = obj.buttons
         data.subtitle = obj.description
+        if (obj.default_action) {
+          data.default_action = obj.default_action
+        }
         isPresent = true
       }
     })
     if (!isPresent) {
-      temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons})
+      if (obj.default_action) {
+        temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons, default_action: obj.default_action})
+      } else {
+        temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons})
+      }
     }
+    console.log('temp in card', temp)
     this.setState({broadcast: temp})
-    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: this.state.buttons})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(temp)), buttons: this.state.buttons})
   }
 
   addElement () {
@@ -175,7 +184,6 @@ class List extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('cards', this.state.cards)
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
