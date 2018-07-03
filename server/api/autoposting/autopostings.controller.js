@@ -281,13 +281,14 @@ exports.create = function (req, res) {
                   })
                 } else if (req.body.subscriptionType === 'wordpress') {
                   let url = req.body.subscriptionUrl
+                  let wordpressUniqueId = url.split('/')[0] + url.split('/')[1] + '//' + url.split('/')[2]
                   let autoPostingPayload = {
                     userId: req.user._id,
                     companyId: companyUser.companyId,
                     subscriptionUrl: req.body.subscriptionUrl,
                     subscriptionType: req.body.subscriptionType,
                     accountTitle: req.body.accountTitle,
-                    accountUniqueName: url
+                    accountUniqueName: wordpressUniqueId
                   }
 
                   if (req.body.isSegmented) {
