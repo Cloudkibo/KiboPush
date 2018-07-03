@@ -80,9 +80,7 @@ function validateInput (body) {
           }
         }
       }
-      return true
-    }
-  }
+  return true
 }
 
 function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
