@@ -7,6 +7,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Card from './CardList'
+import Button from './Button'
+import EditButton from './EditButton'
 import AlertContainer from 'react-alert'
 
 class List extends React.Component {
@@ -18,11 +20,15 @@ class List extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.addElement = this.addElement.bind(this)
     this.removeElement = this.removeElement.bind(this)
+    this.removeButton = this.removeButton.bind(this)
+    this.editButton = this.editButton.bind(this)
+    this.addButton = this.addButton.bind(this)
     this.state = {
       broadcast: [],
       cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: 2}],
       showPlus: false,
-      pageNumber: 2
+      pageNumber: 2,
+      buttons: []
     }
   }
 
@@ -98,7 +104,7 @@ class List extends React.Component {
       temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons})
     }
     this.setState({broadcast: temp})
-    this.props.handleList({id: this.props.id, componentType: 'list', cards: JSON.parse(JSON.stringify(this.state.broadcast))})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: this.state.buttons})
   }
 
   addElement () {
@@ -139,7 +145,28 @@ class List extends React.Component {
   //     description: this.state.subtitle,
   //     buttons: this.state.button})
   }
-
+  addButton (obj) {
+    console.log('obj', obj)
+    var temp = this.state.buttons
+    temp.push(obj)
+    this.setState({buttons: temp})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: temp})
+  }
+  editButton (obj) {
+    var temp = this.state.buttons.map((elm, index) => {
+      if (index === obj.id) {
+        elm = obj.button
+      }
+      return elm
+    })
+    this.setState({buttons: temp})
+    this.props.handleList({id: this.props.id, componentType: 'list', cards: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: obj})
+  }
+  removeButton (obj) {
+    //  var temp = this.state.buttons.filter((elm, index) => { return index !== obj.id })
+    this.setState({buttons: []})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: []})
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -170,6 +197,15 @@ class List extends React.Component {
             </div>
             </div>
           }
+          {this.state.buttons && this.state.buttons.length > 0
+            ? this.state.buttons.map((obj, index) => {
+              return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+            })
+          : <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
+            <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
+          </div>
+
+        }
         </div>
       </div>
     )
