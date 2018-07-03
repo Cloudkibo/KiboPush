@@ -562,6 +562,7 @@ exports.getfbMessage = function (req, res) {
 
                     }
                     needle.get(options.url, options, (error, response) => {
+                      logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
                       const subsriber = response.body
                       if (!error) {
                         if (event.sender && event.recipient && event.postback &&
@@ -569,6 +570,7 @@ exports.getfbMessage = function (req, res) {
                           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                           if (page.welcomeMessage &&
                             page.isWelcomeMessageEnabled) {
+                            logger.serverLog(TAG, `Going to send welcome message`)
                             utility.getBatchData(page.welcomeMessage, subsriber.senderId, page, sendBroadcast, subsriber.firstName, subsriber.lastName)
                           }
                         }
