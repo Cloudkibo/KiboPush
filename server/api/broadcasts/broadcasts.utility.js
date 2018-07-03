@@ -83,6 +83,8 @@ function validateInput (body) {
       if (body.payload[i].componentType === 'list') {
         if (body.payload[i].listItems === undefined) return false
         if (body.payload[i].listItems.length === 0) return false
+        if (body.payload[i].topElementStyle === undefined ||
+        body.payload[i].topElementStyle === '') return false
         for (let m = 0; m < body.payload[i].buttons.length; m++) {
           if (body.payload[i].buttons[m].type === undefined ||
           body.payload[i].buttons[m].type === '') return false
@@ -263,7 +265,7 @@ function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'list',
-            'top_element_style': 'compact',
+            'top_element_style': body.topElementStyle,
             'elements': body.listItems,
             'buttons': body.buttons
           }
@@ -545,7 +547,7 @@ function prepareMessageData (subscriberId, body, name) {
         'type': 'template',
         'payload': {
           'template_type': 'list',
-          'top_element_style': 'compact',
+          'top_element_style': body.topElementStyle,
           'elements': body.listItems,
           'buttons': body.buttons
         }
