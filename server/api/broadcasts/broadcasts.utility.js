@@ -124,22 +124,35 @@ function validateInput (body) {
   return true
 }
 
-function prepareSendAPIPayload (subscriberId, body, isResponse) {
+function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
+  let text = ''
   if (body.componentType === 'text' && !body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      text = body.text.replace(
+        '{{user_full_name}}', name)
+    } else {
+      text = body.text
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
         'id': subscriberId
       }),
       'message': JSON.stringify({
-        'text': body.text,
+        'text': text,
         'metadata': 'This is a meta data'
       })
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      text = body.text.replace(
+        '{{user_full_name}}', name)
+    } else {
+      text = body.text
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -150,7 +163,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'button',
-            'text': body.text,
+            'text': text,
             'buttons': body.buttons
           }
         }
@@ -444,23 +457,32 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
 
 function prepareMessageData (subscriberId, body, name) {
   let payload = {}
+  let text = ''
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      body.text = body.text.replace(
+      text = body.text.replace(
         '{{user_full_name}}', name)
+    } else {
+      text = body.text
     }
     payload = {
-      'text': body.text,
+      'text': text,
       'metadata': 'This is a meta data'
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}')) {
+      text = body.text.replace(
+        '{{user_full_name}}', name)
+    } else {
+      text = body.text
+    }
     payload = {
       'attachment': {
         'type': 'template',
         'payload': {
           'template_type': 'button',
-          'text': body.text,
+          'text': text,
           'buttons': body.buttons
         }
       }

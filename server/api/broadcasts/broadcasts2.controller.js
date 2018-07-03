@@ -280,7 +280,7 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
+                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
                       })
                     })
                   })
@@ -358,7 +358,7 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
+                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
                     })
                   })
                 })
