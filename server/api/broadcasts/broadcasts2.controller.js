@@ -280,8 +280,7 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        subscriber = JSON.parse(JSON.stringify(subscriber))
-                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
+                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
                       })
                     })
                   })
@@ -359,8 +358,7 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      subscriber = JSON.parse(JSON.stringify(subscriber))
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
+                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast)
                     })
                   })
                 })

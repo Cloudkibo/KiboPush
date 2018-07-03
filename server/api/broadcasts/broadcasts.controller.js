@@ -572,7 +572,7 @@ exports.getfbMessage = function (req, res) {
                             page.isWelcomeMessageEnabled) {
                             page.welcomeMessage.forEach(payloadItem => {
                               if (payloadItem.componentType === 'text') {
-                                if (payloadItem.text.includes('{{user_full_name}}') || payloadItem.text.includes('[Username]')) {
+                                if (payloadItem.text.includes('{{user_full_name}}')) {
                                   payloadItem.text = payloadItem.text.replace(
                                     '{{user_full_name}}',
                                     response.body.first_name + ' ' +
@@ -581,8 +581,7 @@ exports.getfbMessage = function (req, res) {
                               }
                               let messageData = utility.prepareSendAPIPayload(
                                 subsriber.id,
-                                payloadItem, response.body.first_name + ' ' +
-                                response.body.last_name, true)
+                                payloadItem, true)
 
                               request(
                                 {
@@ -1640,54 +1639,49 @@ function sendReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   parsedData.forEach(payloadItem => {
     logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
-    Subscribers.findOne({senderId: req.sender.id}).exec((err, subscriber) => {
+    let messageData = utility.prepareSendAPIPayload(
+      req.sender.id, payloadItem, true)
+    Pages.find({pageId: req.recipient.id, connected: true}).populate('userId').exec((err, pages) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
-      let messageData = utility.prepareSendAPIPayload(
-        req.sender.id, payloadItem, subscriber.firstName + ' ' + subscriber.lastName, true)
-      Pages.find({pageId: req.recipient.id, connected: true}).populate('userId').exec((err, pages) => {
-        if (err) {
-          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        }
-        pages.forEach((page) => {
-          request(
-            {
-              'method': 'POST',
-              'json': true,
-              'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              page.accessToken
-            },
-            function (err, res) {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send message reply for menu ${JSON.stringify(err)}`)
-              } else {
-                logger.serverLog(TAG,
-                  `At send reply response ${JSON.stringify(
-                    res)}`)
+      pages.forEach((page) => {
+        request(
+          {
+            'method': 'POST',
+            'json': true,
+            'formData': messageData,
+            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+            page.accessToken
+          },
+          function (err, res) {
+            if (err) {
+              return logger.serverLog(TAG,
+                `At send message reply for menu ${JSON.stringify(err)}`)
+            } else {
+              logger.serverLog(TAG,
+                `At send reply response ${JSON.stringify(
+                  res)}`)
 
-                // let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
-                //   config.facebook.clientSecret)
-                //
-                // FBExtension.extendShortToken(pages[0].userId.facebookInfo.fbToken).then((error) => {
-                //   logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
-                // }).fail((response) => {
-                //   logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
-                //   let accessToken = response.access_token
-                //   Users.update({_id: pages[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
-                //     if (err) {
-                //       return logger.serverLog(TAG,
-                //         `At update user fb token ${JSON.stringify(err)}`)
-                //     }
-                //     logger.serverLog(TAG, 'done with token update')
-                //     logger.serverLog(TAG, result)
-                //   })
-                // })
-              }
-            })
-        })
+              // let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+              //   config.facebook.clientSecret)
+              //
+              // FBExtension.extendShortToken(pages[0].userId.facebookInfo.fbToken).then((error) => {
+              //   logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
+              // }).fail((response) => {
+              //   logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
+              //   let accessToken = response.access_token
+              //   Users.update({_id: pages[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
+              //     if (err) {
+              //       return logger.serverLog(TAG,
+              //         `At update user fb token ${JSON.stringify(err)}`)
+              //     }
+              //     logger.serverLog(TAG, 'done with token update')
+              //     logger.serverLog(TAG, result)
+              //   })
+              // })
+            }
+          })
       })
     })
   })
