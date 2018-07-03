@@ -5,10 +5,12 @@ import PagesInfo from './userPages'
 import BroadcastsInfo from './userBroadcasts'
 import SurveysInfo from './userSurveys'
 import PollsInfo from './userPolls'
-import { loadPagesList } from '../../redux/actions/backdoor.actions'
+import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
+import AlertContainer from 'react-alert'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -20,11 +22,24 @@ class UserDetails extends React.Component {
     this.state = {
       pagesData: [],
       totalLength: 0,
-      pageNumber: 0
+      pageNumber: 0,
+      isShowingModalAccount: false,
+      isShowingModalSubscribers: false,
+      isShowingModalLiveChat: false,
+      id: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)
     this.search = this.search.bind(this)
+    this.deleteAccount = this.deleteAccount.bind(this)
+    this.deleteLiveChat = this.deleteLiveChat.bind(this)
+    this.deleteSubscribers = this.deleteSubscribers.bind(this)
+    this.showDialogAccount = this.showDialogAccount.bind(this)
+    this.closeDialogAccount = this.closeDialogAccount.bind(this)
+    this.showDialogSubscribers = this.showDialogSubscribers.bind(this)
+    this.closeDialogSubscribers = this.closeDialogSubscribers.bind(this)
+    this.showDialogLiveChat = this.showDialogLiveChat.bind(this)
+    this.closeDialogLiveChat = this.closeDialogLiveChat.bind(this)
   }
 
   search (event, name) {
@@ -82,21 +97,122 @@ class UserDetails extends React.Component {
     } else {
       this.setState({pagesData: [], totalLength: 0})
     }
+    if (nextProps.response) {
+      browserHistory.push({
+        pathname: `/operationalDashboard`
+      })
+    }
   }
-
+  deleteAccount (id) {
+    this.props.deleteAccount(id, this.msg)
+    this.setState({isShowingModalAccount: false})
+  }
+  deleteLiveChat (id) {
+    this.props.deleteLiveChat(id, this.msg)
+    this.setState({isShowingModalLiveChat: false})
+  }
+  deleteSubscribers (id) {
+    this.props.deleteSubscribers(id, this.msg)
+    this.setState({isShowingModalSubscribers: false})
+  }
   componentDidUpdate () {
     window.scrollTo(0, 0)
   }
+  showDialogAccount (id) {
+    this.setState({isShowingModalAccount: true, id: id})
+  }
 
+  closeDialogAccount () {
+    this.setState({isShowingModalAccount: false})
+  }
+  showDialogSubscribers (id) {
+    this.setState({isShowingModalSubscribers: true, id: id})
+  }
+
+  closeDialogSubscribers () {
+    this.setState({isShowingModalSubscribers: false})
+  }
+  showDialogLiveChat (id) {
+    this.setState({isShowingModalLiveChat: true, id: id})
+  }
+
+  closeDialogLiveChat () {
+    this.setState({isShowingModalLiveChat: false})
+  }
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
+            {
+              this.state.isShowingModalAccount &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialogAccount}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialogAccount}>
+                  <h3>Delete Account?</h3>
+                  <p>Are you sure you want to delete this entire account?</p>
+                  <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                      this.deleteAccount(this.state.id)
+                    }}>Delete
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
+            {
+              this.state.isShowingModalLiveChat &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialogLiveChat}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialogLiveChat}>
+                  <h3>Delete Live Chat?</h3>
+                  <p>Are you sure you want to delete the live chat for this account?</p>
+                  <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                      this.deleteLiveChat(this.state.id)
+                    }}>Delete
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
+            {
+              this.state.isShowingModalSubscribers &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialogSubscribers}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialogSubscribers}>
+                  <h3>Delete Subscribers?</h3>
+                  <p>Are you sure you want to delete all the subscribers for this account?</p>
+                  <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                      this.deleteSubscribers(this.state.id)
+                    }}>Delete
+                  </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
             <div className='m-subheader '>
+              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' onClick={() => this.showDialogAccount(this.props.location.state._id)}>Delete Entire Account
+              </button>
+              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.showDialogLiveChat(this.props.location.state._id)}>Delete Live Chat
+              </button>
+              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.showDialogSubscribers(this.props.location.state._id)}>Delete Subscribers
+              </button>
               <div className='d-flex align-items-center'>
                 <div className='mr-auto'>
                   <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
@@ -123,13 +239,17 @@ class UserDetails extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: state.backdoorInfo.pages,
-    count: state.backdoorInfo.pagesCount
+    count: state.backdoorInfo.pagesCount,
+    response: state.backdoorInfo.response
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadPagesList: loadPagesList
+    loadPagesList: loadPagesList,
+    deleteAccount: deleteAccount,
+    deleteLiveChat: deleteLiveChat,
+    deleteSubscribers: deleteSubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails)

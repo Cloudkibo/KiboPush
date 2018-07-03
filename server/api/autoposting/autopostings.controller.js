@@ -4,6 +4,7 @@
 
 const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
+const AutoPostingMessages = require('../autoposting_messages/autoposting_messages.model')
 const TAG = 'api/autoposting/migrations.controller.js'
 const TwitterUtility = require('../../config/integrations/twitter')
 const CompanyUsers = require('./../companyuser/companyuser.model')
@@ -276,6 +277,58 @@ exports.create = function (req, res) {
                       })
                     } else {
                       res.status(201).json({status: 'success', payload: createdRecord})
+                    }
+                  })
+                } else if (req.body.subscriptionType === 'wordpress') {
+                  let url = req.body.subscriptionUrl
+                  let autoPostingPayload = {
+                    userId: req.user._id,
+                    companyId: companyUser.companyId,
+                    subscriptionUrl: req.body.subscriptionUrl,
+                    subscriptionType: req.body.subscriptionType,
+                    accountTitle: req.body.accountTitle,
+                    accountUniqueName: url
+                  }
+
+                  if (req.body.isSegmented) {
+                    autoPostingPayload.isSegmented = true
+                    autoPostingPayload.segmentationPageIds = (req.body.segmentationPageIds)
+                      ? req.body.pageIds
+                      : null
+                    autoPostingPayload.segmentationGender = (req.body.segmentationGender)
+                      ? req.body.segmentationGender
+                      : null
+                    autoPostingPayload.segmentationLocale = (req.body.segmentationLocale)
+                      ? req.body.segmentationLocale
+                      : null
+                    autoPostingPayload.segmentationTags = (req.body.segmentationTags)
+                      ? req.body.segmentationTags
+                      : null
+                  }
+
+                  const autoPosting = new AutoPosting(autoPostingPayload)
+                  autoPosting.save((err, createdRecord) => {
+                    if (err) {
+                      res.status(500).json({
+                        status: 'Failed',
+                        error: err,
+                        description: 'Failed to insert record'
+                      })
+                    } else {
+                      res.status(201)
+                      .json({status: 'success', payload: createdRecord})
+                      require('./../../config/socketio').sendMessageToClient({
+                        room_id: companyUser.companyId,
+                        body: {
+                          action: 'autoposting_created',
+                          payload: {
+                            autoposting_id: createdRecord._id,
+                            user_id: req.user._id,
+                            user_name: req.user.name,
+                            payload: createdRecord
+                          }
+                        }
+                      })
                     }
                   })
                 }

@@ -21,7 +21,7 @@ class LoginSignup extends React.Component {
             <div className='m-stack m-stack--hor m-stack--desktop'>
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
-                  <div className='m-login__logo'>
+                  <div style={{margin: 0, marginTop: 30}} className='m-login__logo'>
                     <a href='#'>
                       <img src='img/logo.png' style={{maxWidth: 250}} />
                     </a>
@@ -29,7 +29,7 @@ class LoginSignup extends React.Component {
                   <br />
                   <br />
                   <br />
-                  <div className='m-login__signin'>
+                  <div style={{marginTop: -50}} className='m-login__signin'>
                     <div className='m-login__form m-form'>
                       <center>
                         <Link to='/login' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>

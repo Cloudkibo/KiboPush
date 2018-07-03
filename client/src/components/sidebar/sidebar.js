@@ -4,9 +4,9 @@
  */
 
 import React, {Component} from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
@@ -38,7 +38,7 @@ class Sidebar extends Component {
       welcomeMessage: true,
       createPhoneList: true,
       commentCapture: true,
-      smartReplies: false,
+      smartReplies: true,
       templates: true,
       sequenceMessaging: true,
       waitingResponse: false
@@ -50,6 +50,7 @@ class Sidebar extends Component {
   }
   componentWillMount () {
     this.props.getuserdetails()
+    this.props.getAutomatedOptions()
   }
   componentDidMount () {
     if (!this.state.ignore) {
@@ -207,7 +208,9 @@ class Sidebar extends Component {
   }
 
   showSmartRespliesItem () {
-    if (this.props.user && this.state.smartReplies && this.props.user.advancedMode) {
+    // if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode) {
+    if (this.props.user && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+     this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/bots' className='m-menu__link m-menu__toggle'>
@@ -216,14 +219,18 @@ class Sidebar extends Component {
           </Link>
         </li>
       )
-    } else {
-      return (null)
     }
+    // } else {
+    //   return (null)
+    // }
   }
 
   showLiveChatItem () {
-    if (this.props.user) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat) {
+    if (this.props.user && this.props.automated_options) {
+      console.log('in live chat ' + this.props.automated_options)
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat &&
+          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
@@ -388,6 +395,9 @@ class Sidebar extends Component {
   }
 
   render () {
+    if (this.props.user && this.props.user.permissionsRevoked) {
+      browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
+    }
     return (
       <div>
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
@@ -419,36 +429,36 @@ class Sidebar extends Component {
               {this.showTeams()}
               {this.showBroadcastTemplates()}
               {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-list-3' />
-                  <span className='m-menu__link-text'>Invite using phone number</span>
-                </Link>
-              </li>
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-list-3' />
+                    <span className='m-menu__link-text'>Invite using phone number</span>
+                  </Link>
+                </li>
               }
               {this.state.settings &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/settings' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-cogwheel' />
-                  <span className='m-menu__link-text'>Settings</span>
-                </Link>
-              </li>
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/settings' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-cogwheel' />
+                    <span className='m-menu__link-text'>Settings</span>
+                  </Link>
+                </li>
               }
               {this.state.userGuide &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-info' />
-                  <span className='m-menu__link-text'>User Guide</span>
-                </a>
-              </li>
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-info' />
+                    <span className='m-menu__link-text'>User Guide</span>
+                  </a>
+                </li>
               }
               {this.state.waitingResponse &&
-              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
-                  <i className='m-menu__link-icon flaticon-cogwheel' />
-                  <span className='m-menu__link-text'>Waiting Response</span>
-                </Link>
-              </li>
+                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                  <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
+                    <i className='m-menu__link-icon flaticon-cogwheel' />
+                    <span className='m-menu__link-text'>Waiting Response</span>
+                  </Link>
+                </li>
              }
             </ul>
           </div>
@@ -465,13 +475,15 @@ function mapStateToProps (state) {
     updatedUser: (state.basicInfo.updatedUser),
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),
-    socketData: (state.liveChat.socketData)
+    socketData: (state.liveChat.socketData),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getuserdetails: getuserdetails,
+    getAutomatedOptions: getAutomatedOptions,
     fetchSessions: fetchSessions,
     fetchUserChats: fetchUserChats,
     resetSocket: resetSocket,

@@ -129,6 +129,7 @@ class Button extends React.Component {
   }
 
   changeUrl (event) {
+    console.log('event', event.target.value)
     if (isWebURL(event.target.value) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {

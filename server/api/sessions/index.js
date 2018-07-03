@@ -61,5 +61,4 @@ router.post('/unSubscribe',
     auth.doesPlanPermitsThisAction('live_chat'),
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.unSubscribe)
-
 module.exports = router

@@ -136,12 +136,19 @@ class Header extends React.Component {
     return Math.floor(seconds) + ' seconds ago'
   }
 
-  gotoView (id, _id) {
+  gotoView (id, _id, type) {
     this.props.markRead({notificationId: _id})
-    browserHistory.push({
-      pathname: `/liveChat`,
-      state: {id: id}
-    })
+    if (type === 'webhookFailed') {
+      browserHistory.push({
+        pathname: `/settings`,
+        state: {module: 'webhook'}
+      })
+    } else {
+      browserHistory.push({
+        pathname: `/liveChat`,
+        state: {id: id}
+      })
+    }
   }
 
   render () {
@@ -261,7 +268,7 @@ class Header extends React.Component {
                                                   this.state.unseenNotifications.map((unseen, i) => (
                                                     <div className='m-list-timeline__item'>
                                                       <span className='m-list-timeline__badge m-list-timeline__badge--brand' />
-                                                      <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id)} style={{cursor: 'pointer'}}>
+                                                      <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id, unseen.category.type)} style={{cursor: 'pointer'}}>
                                                         {unseen.message}
                                                       </span>
                                                       <span className='m-list-timeline__time' style={{width: '100px'}}>

@@ -20,6 +20,7 @@ import { getSubscriberTags } from '../../redux/actions/tags.actions'
 import { Link } from 'react-router'
 import ChatBox from './chatbox'
 import Profile from './profile'
+import Search from './search'
 import Halogen from 'halogen'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -43,6 +44,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       activeSession: '',
+      showSearch: false,
       loading: true,
       ignore: true,
       searchValue: '',
@@ -51,7 +53,8 @@ class LiveChat extends React.Component {
       showDropDown: false,
       isShowingModalGuideLines: false,
       tabValue: 'open',
-      filter: false
+      filter: false,
+      scroll: true
     }
     props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
     props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
@@ -68,6 +71,21 @@ class LiveChat extends React.Component {
     this.changeActiveSessionFromChatbox = this.changeActiveSessionFromChatbox.bind(this)
     this.loadMoreOpen = this.loadMoreOpen.bind(this)
     this.loadMoreClose = this.loadMoreClose.bind(this)
+    this.showSearch = this.showSearch.bind(this)
+    this.hideSearch = this.hideSearch.bind(this)
+    this.disableScroll = this.disableScroll.bind(this)
+  }
+
+  disableScroll () {
+    this.setState({scroll: false})
+  }
+
+  showSearch () {
+    this.setState({showSearch: true})
+  }
+
+  hideSearch () {
+    this.setState({showSearch: false})
   }
 
   componentDidMount () {
@@ -82,8 +100,8 @@ class LiveChat extends React.Component {
     registerAction({
       event: 'agent_replied',
       action: function (data) {
-        if (data.user_id !== this.props.user._id && this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.activeSession._id === data.session_id) {
-          compProp.fetchUserChats(data.session_id)
+        if (data.user_id !== compProp.user._id && this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.activeSession._id === data.session_id) {
+          // compProp.fetchUserChats(data.session_id)
         }
       }
     })
@@ -111,7 +129,7 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession (session) {
-    this.setState({activeSession: session})
+    this.setState({activeSession: session, scroll: true})
     if (this.state.tabValue === 'open') {
       var temp = this.props.openSessions
       for (var i = 0; i < temp.length; i++) {
@@ -128,7 +146,7 @@ class LiveChat extends React.Component {
       }
     }
 
-    this.props.fetchUserChats(session._id)
+    this.props.fetchUserChats(session._id, {page: 'first', number: 25})
     console.log('session in changeActiveSession', session)
     this.props.markRead(session._id)
     this.props.getSubscriberTags(session.subscriber_id, this.msg)
@@ -240,7 +258,7 @@ class LiveChat extends React.Component {
 
     if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.openSessions && nextProps.closeSessions) {
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
-        this.props.fetchUserChats(nextProps.socketSession)
+        // this.props.fetchUserChats(nextProps.socketSession)
         this.props.resetSocket()
       } else if (nextProps.socketSession !== '') {
         this.props.fetchSingleSession(nextProps.socketSession, {appendTo: 'open', deleteFrom: 'close'})
@@ -730,11 +748,15 @@ class LiveChat extends React.Component {
                   }
                   {
                     this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
-                    <ChatBox currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                    <ChatBox scroll={this.state.scroll} disableScroll={this.disableScroll} showSearch={this.showSearch} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
                   }
                   {
-                    this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
+                    this.state.activeSession !== '' && this.state.activeSession !== 'none' && !this.state.showSearch &&
                     <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                  }
+                  {
+                    this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.showSearch &&
+                    <Search currentSession={this.state.activeSession} hideSearch={this.hideSearch} />
                   }
                 </div>
               }

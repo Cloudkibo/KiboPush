@@ -2,12 +2,13 @@
 
 let Verificationtoken = require('./verificationtoken.model')
 let User = require('./../user/Users.model')
+let CompanyProfile = require('./../companyprofile/companyprofile.model')
+let CompanyUsers = require('./../companyuser/companyuser.model')
 let config = require('./../../config/environment/index')
 let path = require('path')
 
 const logger = require('../../components/logger')
 
-const MailChimp = require('mailchimp-api-v3')
 const TAG = 'api/verificationtoken/verificationtoken.controller.js'
 
 let crypto = require('crypto')
@@ -31,83 +32,96 @@ exports.verify = function (req, res) {
       if (!user) {
         return res.sendFile(path.join(config.root, 'client/pages/verification_failed.html'))
       } else {
-        user['emailVerified'] = 'Yes'
-
-        let sendgrid = require('sendgrid')(config.sendgrid.username, config.sendgrid.password)
-
-        let emailConfirm = new sendgrid.Email({
-          to: user.email,
-          from: 'support@cloudkibo.com',
-          subject: 'KiboPush: Account verified',
-          text: 'Welcome to KiboPush',
-          bcc: 'accounts@cloudibo.com'
-        })
-
-        if (user.plan === 'plan_C' || user.plan === 'plan_D') {
-          if (user.role === 'buyer') {
-            emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-              '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-              '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-              '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-              '<p style="color: #ffffff">Welcome to KiboPush</p> </td></tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-              '<tr> <td class="wrapper last"> <p> Hello, <br> ' + user.name + '<br> Thank you for signing up with KiboPush, your account has been verified. Following is you account information:' +
-              '<p> <ul> <li>Name: ' + user.name + '</li> ' +
-              '<li>Workspace name: ' + user.domain + ' </li>' +
-              ' <li>Email Address: ' + user.email + '</li></ul> </p> ' +
-              '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
-              '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-              '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-          } else {
-            emailConfirm.setHtml('<h1>KiboPush</h1><br><br>Welcome to KiboPush ' + user.name +
-              '<br>' +
-              '<br><h4></h4> Your account has been verified. Thank you for joining us. Following is your account information ' +
-              '<br>' +
-              '<br> Name:   ' + user.name +
-              '<br> Domain:   ' + user.domain +
-              '<br> Email Address:   ' + user.email +
-              '<br>' +
-              '</b><br><br>')
-
-            emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-              '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-              '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-              '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-              '<p style="color: #ffffff">Welcome to KiboPush</p> </td></tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-              '<tr> <td class="wrapper last"> <p> Hello <br> ' + user.name + ',<br> Thank you for joining us, your account has been verified. Following is your account information:' +
-              '<p> <ul> <li>Name: ' + user.name + '</li> ' +
-              '<li>Workspace Name: ' + user.domain + ' </li>' +
-              ' <li>Email Address: ' + user.email + '</li><</ul> </p> ' +
-              '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
-              '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-              '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+        CompanyUsers.findOne({domain_email: user.domain_email}, (err, companyuser) => {
+          if (err) {
+            return res.status(501)
+            .json({status: 'failed', description: 'Internal Server Error'})
           }
-        } else {
-          emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-            '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-            '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-            '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-            '<p style="color: #ffffff">Welcome to KiboPush</p> </td></tr> </table> </td> </tr> </table> ' +
-            '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-            '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-            '<tr> <td class="wrapper last"> <p> Hello, <br> ' + user.name + '<br> Thank you for signing up with KiboPush, your account has been verified. Following is you account information:' +
-            '<p> <ul> <li>Name: ' + user.name + '</li> ' +
-            ' <li>Email Address: ' + user.email + '</li></ul> </p> ' +
-            '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
-            '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-            '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-        }
 
-        sendgrid.send(emailConfirm, function (err, json) {
-          if (err) logger.serverLog(TAG, {status: 'failed', description: 'Internal Server Error'})
-        })
+          CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+            if (err) {
+              return res.status(501)
+              .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            user['emailVerified'] = 'Yes'
 
-        user.save(function (err) {
-          if (err) logger.serverLog(TAG, {status: 'failed', description: 'Internal Server Error'})
-          return res.sendFile(path.join(config.root, 'client/pages/verification_success.html'))
+            let sendgrid = require('sendgrid')(config.sendgrid.username, config.sendgrid.password)
+
+            let emailConfirm = new sendgrid.Email({
+              to: user.email,
+              from: 'support@cloudkibo.com',
+              subject: 'KiboPush: Account verified',
+              text: 'Welcome to KiboPush',
+              bcc: 'accounts@cloudibo.com'
+            })
+
+            if (company.stripe.plan === 'plan_C' || company.stripe.plan === 'plan_D') {
+              if (user.role === 'buyer') {
+                emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                  '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                  '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                  '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                  '<p style="color: #ffffff">Welcome to KiboPush</p> </td></tr> </table> </td> </tr> </table> ' +
+                  '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                  '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                  '<tr> <td class="wrapper last"> <p> Hello, <br> ' + user.name + '<br> Thank you for signing up with KiboPush, your account has been verified. Following is you account information:' +
+                  '<p> <ul> <li>Name: ' + user.name + '</li> ' +
+                  '<li>Workspace name: ' + user.domain + ' </li>' +
+                  ' <li>Email Address: ' + user.email + '</li></ul> </p> ' +
+                  '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
+                  '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                  '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+              } else {
+                emailConfirm.setHtml('<h1>KiboPush</h1><br><br>Welcome to KiboPush ' + user.name +
+                  '<br>' +
+                  '<br><h4></h4> Your account has been verified. Thank you for joining us. Following is your account information ' +
+                  '<br>' +
+                  '<br> Name:   ' + user.name +
+                  '<br> Domain:   ' + user.domain +
+                  '<br> Email Address:   ' + user.email +
+                  '<br>' +
+                  '</b><br><br>')
+
+                emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                  '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                  '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                  '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                  '<p style="color: #ffffff">Welcome to KiboPush</p> </td></tr> </table> </td> </tr> </table> ' +
+                  '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                  '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                  '<tr> <td class="wrapper last"> <p> Hello <br> ' + user.name + ',<br> Thank you for joining us, your account has been verified. Following is your account information:' +
+                  '<p> <ul> <li>Name: ' + user.name + '</li> ' +
+                  '<li>Workspace Name: ' + user.domain + ' </li>' +
+                  ' <li>Email Address: ' + user.email + '</li><</ul> </p> ' +
+                  '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
+                  '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                  '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+              }
+            } else {
+              emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                '<p style="color: #ffffff">Welcome to KiboPush</p> </td></tr> </table> </td> </tr> </table> ' +
+                '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                '<tr> <td class="wrapper last"> <p> Hello, <br> ' + user.name + '<br> Thank you for signing up with KiboPush, your account has been verified. Following is you account information:' +
+                '<p> <ul> <li>Name: ' + user.name + '</li> ' +
+                ' <li>Email Address: ' + user.email + '</li></ul> </p> ' +
+                '<br><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table>' +
+                '<!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+            }
+
+            sendgrid.send(emailConfirm, function (err, json) {
+              if (err) logger.serverLog(TAG, {status: 'failed', description: 'Internal Server Error'})
+            })
+
+            user.save(function (err) {
+              if (err) logger.serverLog(TAG, {status: 'failed', description: 'Internal Server Error'})
+              return res.sendFile(path.join(config.root, 'client/pages/verification_success.html'))
+            })
+          })
         })
       }
     })
@@ -161,26 +175,8 @@ exports.resend = function (req, res) {
         return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error ' + err})
       }
+      logger.serverLog(TAG, `verification email resent: ${JSON.stringify(email)}`)
       res.status(201).json({ status: 'success', description: 'Verification email has been sent' })
-    })
-
-    let mailchimp = new MailChimp('2d154e5f15ca18180d52c40ad6e5971e-us12')
-
-    mailchimp.post({
-      path: '/lists/5a4e866849/members',
-      body: {
-        email_address: req.user.email,
-        merge_fields: {
-          FNAME: req.user.name
-        },
-        status: 'subscribed'
-      }
-    }, function (err, result) {
-      if (err) {
-        logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
-      } else {
-        logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
-      }
     })
   })
 }

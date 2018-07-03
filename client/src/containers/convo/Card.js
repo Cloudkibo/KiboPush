@@ -86,7 +86,7 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, {fileurl: '',
+      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -209,11 +209,11 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+        {/* <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
-        </div>
+        </div>  */}
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
             <input
@@ -260,7 +260,9 @@ class Card extends React.Component {
 
 function mapStateToProps (state) {
   console.log(state)
-  return {}
+  return {
+    pages: (state.pagesInfo.pages)
+  }
 }
 
 function mapDispatchToProps (dispatch) {

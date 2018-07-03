@@ -172,10 +172,23 @@ a.broadcastTabs.active {
 .buttonPopover > .popover-inner {
   height: auto !important;
 }
+.popover.show.menuPopover {
+  height: auto !important
+}
+.menuPopover > .popover-inner {
+  height: auto !important;
+}
 .popover.show.subscriberPopover {
   height: auto !important
 }
 .subscriberPopover > .popover-inner {
+  height: auto !important;
+}
+.popover.show.chatPopover {
+  height: auto !important;
+  left: 20px !important; 
+}
+.chatPopover > .popover-inner {
   height: auto !important;
 }
 .popover.show.liveChatPopover {
@@ -238,4 +251,16 @@ a.broadcastTabs.active {
   padding: 10px;
   width: 100%;
   text-align: left
+}
+#menuPopover {
+  display: none
+}
+.replyWithMessage {
+  width: 100%;
+  text-align: center;
+}
+.alert-email {
+  padding: 20px;
+  background-color: #34bfa3;
+  color: white;
 }

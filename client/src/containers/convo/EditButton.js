@@ -89,9 +89,10 @@ class EditButton extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
   }
   handleDone () {
+    console.log('this.state.url', this.state.url)
     if (this.state.url !== '') {
       this.props.onEdit({
-        id: this.props.data.id,
+        id: 0,
         button: {
           type: 'web_url',
           url: this.state.url, // User defined link,
@@ -126,6 +127,15 @@ class EditButton extends React.Component {
         })
       }
     }
+    this.setState({
+      openPopover: false,
+      title: '',
+      url: '',
+      sequenceValue: '',
+      openWebsite: false,
+      openSubscribe: false,
+      openUnsubscribe: false
+    })
   }
 
   changeTitle (event) {

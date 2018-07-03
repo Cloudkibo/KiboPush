@@ -1,3 +1,4 @@
+import {getAutomatedOptions} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
@@ -5,6 +6,12 @@ export const API_URL = '/api'
 export function enableSuccess (data) {
   return {
     type: ActionTypes.ENABLE_SUCCESS,
+    data
+  }
+}
+export function getResponseMethod (data) {
+  return {
+    type: ActionTypes.RESPONSE_METHOD,
     data
   }
 }
@@ -30,6 +37,20 @@ export function getAPISuccess (data) {
   }
 }
 
+export function getPermissionsSuccess (data) {
+  return {
+    type: ActionTypes.GET_PERMISSIONS_SUCCESS,
+    data
+  }
+}
+
+export function getUpdatedPermissionsSuccess (data) {
+  return {
+    type: ActionTypes.GET_UPDATED_PERMISSIONS_SUCCESS,
+    data
+  }
+}
+
 export function getAPIFailure (data) {
   return {
     type: ActionTypes.GET_API_FAILURE,
@@ -50,7 +71,18 @@ export function showGreetingMessage (data) {
     data: data
   }
 }
-
+export function showWebhook (data) {
+  return {
+    type: ActionTypes.SHOW_WEBHOOK,
+    data
+  }
+}
+export function showWebhookResponse (data) {
+  return {
+    type: ActionTypes.SHOW_WEBHOOK_RESPONSE,
+    data
+  }
+}
 export function enable (API) {
   return (dispatch) => {
     callApi('api_settings/enable', 'post', API)
@@ -95,6 +127,33 @@ export function getAPI (API) {
           dispatch(getAPISuccess(res.payload))
         } else if (res.status === 'failed') {
           dispatch(getAPIFailure(res.description))
+        }
+      })
+  }
+}
+
+export function getPermissions () {
+  return (dispatch) => {
+    callApi('permissions/fetchPermissions')
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('permissions', res.payload)
+          dispatch(getPermissionsSuccess(res.payload))
+        }
+      })
+  }
+}
+
+export function updatePermission (updatedPermissions, msg) {
+  return (dispatch) => {
+    callApi('permissions/updatePermissions', 'post', updatedPermissions)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('Updated Permission from Server', res.payload)
+          msg.success('Permission Updated Successfully')
+          dispatch(getUpdatedPermissionsSuccess(res.payload))
+        } else if (res.status === 'failed') {
+          msg.success('Permission Update Failed')
         }
       })
   }
@@ -216,6 +275,133 @@ export function saveGreetingMessage (data, msg) {
         } else {
           msg.error(res.description)
         }
+      })
+  }
+}
+
+export function saveResponseMethod (data, msg) {
+  console.log('data for saveResponseMethod', data)
+  return (dispatch) => {
+    callApi('company/updateAutomatedOptions', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('res', res)
+          dispatch(getResponseMethod(res.payload))
+          dispatch(getAutomatedOptions())
+          msg.success('Response Method saved successfully')
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+
+export function findResponseMethod () {
+  return (dispatch) => {
+    callApi('company/getAutomatedOptions')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getResponseMethod(res.payload))
+        } else if (res.status === 'failed') {
+          console.log(`Getting response method fails. ${res.description}`)
+        }
+      })
+  }
+}
+export function loadWebhook () {
+  return (dispatch) => {
+    callApi('webhooks')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWebhook(res.payload))
+        }
+      })
+  }
+}
+export function createEndpoint (data, msg) {
+  console.log('data for createEndpoint', data)
+  return (dispatch) => {
+    callApi('webhooks/create', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWebhookResponse('success'))
+          dispatch(loadWebhook())
+        } else {
+          //  dispatch(showWebhookResponse(res.description))
+          msg.error(res.description)
+        }
+      })
+  }
+}
+export function editEndpoint (data, msg) {
+  console.log('data for editEndpoint', data)
+  return (dispatch) => {
+    callApi('webhooks/edit', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWebhookResponse('success'))
+          dispatch(loadWebhook())
+        } else {
+          //  dispatch(showWebhookResponse(res.description))
+          msg.error(res.description)
+        }
+      })
+  }
+}
+export function enabled (data, msg) {
+  console.log('data for enabled', data)
+  return (dispatch) => {
+    callApi('webhooks/enabled', 'post', data)
+      .then(res => {
+        console.log('response from enabled', res)
+        if (res.status === 'success') {
+          if (data.isEnabled) {
+            msg.success('Webhook Enabled!')
+          } else {
+            msg.success('Webhook Disabled!')
+          }
+          dispatch(loadWebhook())
+        } else {
+          //  msg.error(res.description)
+        }
+      })
+  }
+}
+export function saveDeleteOption (data, msg, handleSave) {
+  return (dispatch) => {
+    callApi('users/enableDelete', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Delete request has been sent')
+        } else {
+          msg.error(res.description)
+        }
+        handleSave(res)
+      })
+  }
+}
+export function authenticatePassword (data, msg, handleAuthentication) {
+  return (dispatch) => {
+    callApi('users/authenticatePassword', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status !== 'success') {
+          msg.error(res.description)
+        }
+        handleAuthentication(res)
+      })
+  }
+}
+export function cancelDeletion (msg, handleCancel) {
+  return (dispatch) => {
+    callApi('users/cancelDeletion')
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('Request to cancel deletion process has been sent to admin.')
+        }
+        handleCancel(res)
       })
   }
 }

@@ -19,6 +19,7 @@ import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { checkConditions } from '../polls/utility'
 import Image from './Image'
+import List from './List'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
@@ -71,6 +72,7 @@ class CreateConvo extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -303,6 +305,25 @@ class CreateConvo extends React.Component {
 
     this.setState({broadcast: temp})
   }
+  handleList (obj) {
+    console.log(obj)
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.cards.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.cards = obj.cards
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    console.log('temp', temp)
+    this.setState({broadcast: temp})
+  }
 
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
@@ -342,6 +363,26 @@ class CreateConvo extends React.Component {
             this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
           }
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'list') {
+        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
+          if (!this.state.broadcast[i].cards[j].buttons) {
+            this.initTab()
+            return this.msg.error('Element in list must have a button.')
+          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            this.initTab()
+            return this.msg.error('Element in list must have a button.')
+          }
+          if (this.state.broadcast[i].cards[j].image_url === '') {
+            return this.msg.error('Element in list must have an image')
+          }
+          if (this.state.broadcast[i].cards[j].title === '') {
+            return this.msg.error('Element in list must have a title')
+          }
+        }
+        if (this.state.broadcasts[i].cards.length < 2) {
+          return this.msg.error('A list must have atleast 2 elements')
         }
       }
     }
@@ -601,6 +642,14 @@ class CreateConvo extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
                                         </div>
                                       </div>
                                     </div>

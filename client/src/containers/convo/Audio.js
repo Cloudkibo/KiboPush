@@ -87,6 +87,8 @@ class Audio extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
+        fileData.append('pageId', this.props.pages[0]._id)
+        fileData.append('componentType', 'audio')
         var fileInfo = {
           id: this.props.id,
           componentType: 'audio',
@@ -173,7 +175,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    pages: (state.pagesInfo.pages)
   }
 }
 
