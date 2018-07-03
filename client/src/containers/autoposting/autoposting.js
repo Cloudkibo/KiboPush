@@ -169,25 +169,25 @@ class Autoposting extends React.Component {
                 </div>
                 <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                   <div className='panel-body'>
-                    <p>On self-hosted wordpress sites, install a plug-in 'Notification by Bracket-Space' and follow the steps below to allow autoposting</p>
+                    <p>On self-hosted wordpress sites, install a plug-in 'HookPress by KiboPush' and follow the steps below to allow autoposting</p>
                     <ul>
                       <li>
-                      Choose Trigger: 'Post publised'
+                      Go to Settings -> Webhooks on WordPress dashboard
                       </li>
                       <li>
-                      Choose Notifications: 'webhook'
+                      Choose Action: 'Publish_Post'
+                      </li>
+                      <li>
+                      Select All the fields
                       </li>
                       <li>
                       Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
                       </li>
                       <li>
-                      Add arguments: 'post_id', 'post_permalink' and 'post_title'
-                      </li>
-                      <li>
-                      Save your notification.
+                      Click on 'Add new webhook'
                       </li>
                     </ul>
-                    <p> Once you have added our webhook on WORDPRESS.ORG through Notifications plug-in, our endpoint will be notified whenever a new post is published.
+                    <p> Once you have added our webhook on WORDPRESS.ORG through HookPress plug-in, our endpoint will be notified whenever a new post is published.
                     Your blog post details will be automatically broadcasted to your subscribers </p>
                   </div>
                 </div>
