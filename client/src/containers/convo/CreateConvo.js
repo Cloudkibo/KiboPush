@@ -367,7 +367,7 @@ class CreateConvo extends React.Component {
         }
       }
       if (this.state.broadcast[i].componentType === 'list') {
-        if (this.state.broadcasts[i].listItems.length < 2) {
+        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
           return this.msg.error('A list must have atleast 2 elements')
         }
         for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {

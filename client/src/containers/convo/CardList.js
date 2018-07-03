@@ -9,6 +9,8 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import { uploadImage } from '../../redux/actions/convos.actions'
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { isWebURL } from './../../utility/utils'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -22,6 +24,11 @@ class Card extends React.Component {
     this.updateImageUrl = this.updateImageUrl.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.updateCardDetails = this.updateCardDetails.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+    this.handleToggle = this.handleToggle.bind(this)
+    this.handleDone = this.handleDone.bind(this)
+    this.changeUrl = this.changeUrl.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -32,10 +39,50 @@ class Card extends React.Component {
       type: '',
       size: '',
       image_url: '',
-      loading: false
+      loading: false,
+      openPopover: false,
+      elementUrl: '',
+      disabled: true
     }
   }
-
+  changeUrl (event) {
+    console.log('event', event.target.value)
+    if (isWebURL(event.target.value)) {
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
+    }
+    this.setState({elementUrl: event.target.value})
+  }
+  handleDone () {
+    if (this.state.elementUrl !== '') {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button,
+        default_action: {type: 'web_url', url: this.state.elementUrl}
+      })
+    }
+    this.setState({
+      openPopover: false
+    })
+  }
+  handleClick (e) {
+    this.setState({disabled: true})
+    this.setState({openPopover: !this.state.openPopover})
+  }
+  handleClose (e) {
+    this.setState({openPopover: false, elementUrl: ''})
+  }
+  handleToggle () {
+    this.setState({openPopover: !this.state.openPopover})
+  }
   componentDidMount () {
     console.log('this.props', this.props)
     this.updateCardDetails(this.props)
@@ -199,7 +246,22 @@ class Card extends React.Component {
 
   render () {
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px'}} className='ui-block hoverbordersolid'>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px'}} className='ui-block hoverbordersolid' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }}>
+        <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
+          <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
+          <PopoverBody>
+            <div>
+              <br />
+              <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter URL...' value={this.state.elementUrl} />
+              <br />This can be used to open a web page on a list item click
+              <hr style={{color: '#ccc'}} />
+              <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+              <br />
+              <br />
+            </div>
+          </PopoverBody>
+        </Popover>
         <div onClick={() => { this.props.removeElement({id: this.props.id}) }} style={{marginLeft: '-15px', marginTop: '-23px', float: 'left'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times-circle-o' style={{fontSize: '1.3rem'}} />
