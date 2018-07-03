@@ -124,16 +124,22 @@ function validateInput (body) {
   return true
 }
 
-function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
+function prepareSendAPIPayload (subscriberId, body, fname, lname, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
-  let text = ''
+  let text = body.text
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      text = body.text.replace(
-        '{{user_full_name}}', name)
-    } else {
-      text = body.text
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
     }
     payload = {
       'messaging_type': messageType,
@@ -148,10 +154,16 @@ function prepareSendAPIPayload (subscriberId, body, name, isResponse) {
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      text = body.text.replace(
-        '{{user_full_name}}', name)
-    } else {
-      text = body.text
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
     }
     payload = {
       'messaging_type': messageType,
@@ -455,15 +467,21 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
   }
 }
 
-function prepareMessageData (subscriberId, body, name) {
+function prepareMessageData (subscriberId, body, fname, lname) {
   let payload = {}
-  let text = ''
+  let text = body.text
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      text = body.text.replace(
-        '{{user_full_name}}', name)
-    } else {
-      text = body.text
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
     }
     payload = {
       'text': text,
@@ -472,10 +490,16 @@ function prepareMessageData (subscriberId, body, name) {
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
     if (body.text.includes('{{user_full_name}}')) {
-      text = body.text.replace(
-        '{{user_full_name}}', name)
-    } else {
-      text = body.text
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
     }
     payload = {
       'attachment': {
@@ -556,12 +580,12 @@ function prepareMessageData (subscriberId, body, name) {
 }
 
 /* eslint-disable */
-function getBatchData (payload, recipientId, page, sendBroadcast, name) {
+function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname) {
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
   let batch = []  // to display typing on bubble :)
   payload.forEach((item, index) => {
     // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
-    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, name)))
+    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, fname, lname)))
     if (index === 0) {
       batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
     } else {

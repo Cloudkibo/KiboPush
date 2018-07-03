@@ -569,17 +569,17 @@ exports.getfbMessage = function (req, res) {
                           if (page.welcomeMessage &&
                             page.isWelcomeMessageEnabled) {
                             page.welcomeMessage.forEach(payloadItem => {
-                              if (payloadItem.componentType === 'text') {
-                                if (payloadItem.text.includes('{{user_full_name}}') || payloadItem.text.includes('{{[Username]}}')) {
-                                  payloadItem.text = payloadItem.text.replace(
-                                    '{{user_full_name}}',
-                                    response.body.first_name + ' ' +
-                                    response.body.last_name)
-                                }
-                              }
+                              // if (payloadItem.componentType === 'text') {
+                              //   if (payloadItem.text.includes('{{user_full_name}}') || payloadItem.text.includes('{{[Username]}}')) {
+                              //     payloadItem.text = payloadItem.text.replace(
+                              //       '{{user_full_name}}',
+                              //       response.body.first_name + ' ' +
+                              //       response.body.last_name)
+                              //   }
+                              // }
                               let messageData = utility.prepareSendAPIPayload(
                                 subsriber.id,
-                                payloadItem, response.body.first_name + ' ' +
+                                payloadItem, response.body.first_name,
                                 response.body.last_name, true)
 
                               request(
@@ -1644,7 +1644,7 @@ function sendReply (req) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
       let messageData = utility.prepareSendAPIPayload(
-        req.sender.id, payloadItem, subscriber.firstName + ' ' + subscriber.lastName, true)
+        req.sender.id, payloadItem, subscriber.firstName, subscriber.lastName, true)
       Pages.find({pageId: req.recipient.id, connected: true}).populate('userId').exec((err, pages) => {
         if (err) {
           return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
