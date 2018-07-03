@@ -96,7 +96,7 @@ function validateInput (body) {
         for (let j = 0; j < body.payload[i].listItems.length; j++) {
           if (body.payload[i].listItems[j].title === undefined ||
             body.payload[i].listItems[j].title === '') return false
-          if (body.payload[i].listItems[j].subtitle &&
+          if (body.payload[i].listItems[j].subtitle === undefined ||
             body.payload[i].listItems[j].subtitle === '') return false
           if (body.payload[i].listItems[j].default_action && (
             body.payload[i].listItems[j].default_action.type === undefined ||
