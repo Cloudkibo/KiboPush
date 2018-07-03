@@ -170,7 +170,6 @@ a.broadcastTabs.active {
   height: auto !important
 }
 .popover.show.buttonPopoverList {
-  left: -190px !important;
   height: auto !important
 }
 .buttonPopover > .popover-inner {

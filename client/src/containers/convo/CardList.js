@@ -28,6 +28,7 @@ class Card extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.handleCheckbox = this.handleCheckbox.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
@@ -42,7 +43,15 @@ class Card extends React.Component {
       loading: false,
       openPopover: false,
       elementUrl: '',
-      disabled: true
+      disabled: true,
+      checkbox: false
+    }
+  }
+  handleCheckbox (e) {
+    this.setState({checkbox: !this.state.checkbox})
+    console.log('value', e.target.value)
+    if (e.target.value) {
+      this.setState({disabled: false})
     }
   }
   changeUrl (event) {
@@ -72,6 +81,10 @@ class Card extends React.Component {
     this.setState({
       openPopover: false
     })
+    if (this.state.checkbox) {
+      console.log('in checkbox')
+      this.props.topElementStyle('LARGE')
+    }
   }
   handleClick (e) {
     this.setState({disabled: true})
@@ -252,12 +265,21 @@ class Card extends React.Component {
 
   render () {
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px'}} className='ui-block hoverbordersolid' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }}>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(https://staging.kibopush.com/api/broadcasts/download/fdb24193270201873181553.png)' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
             <div>
               <br />
+              {this.props.id === 1 &&
+                <div>
+                  <span>
+                    <input type='checkbox' value={!this.state.checkbox} onChange={this.handleCheckbox} checked={this.state.checkbox} />&nbsp;&nbsp;
+                    Make first item large
+                  </span>
+                  <br /><br />
+                </div>
+              }
               <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter URL...' value={this.state.elementUrl} />
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
@@ -298,8 +320,10 @@ class Card extends React.Component {
           </div>
         </div>
         <br />
+        <div className = 'row'>
+          <div className='col-md-6'>
         {(!this.state.button || !this.state.button.length > 0) &&
-        <div className='ui-block hoverborder' style={{width: '54%', marginLeft: '12px'}}>
+        <div className='ui-block hoverborder' style={{width: '120%', marginLeft: '12px'}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
         </div>
       }
@@ -308,6 +332,18 @@ class Card extends React.Component {
             <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
           </div>)
         }) : ''}
+      </div>
+      <div className='col-md-6' style={{marginTop: '15px'}}>
+        {this.state.elementUrl === '' && !this.state.checkbox
+          ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px', marginLeft: '20px'}}>
+          <i className='la la-plus' /> Add Action
+        </a>
+        : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px', marginLeft: '20px'}}>
+        Edit Action
+      </a>
+      }
+      </div>
+      </div>
         {/* <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
         <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
       </div>

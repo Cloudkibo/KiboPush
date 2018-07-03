@@ -129,7 +129,7 @@ function prepareSendAPIPayload (subscriberId, body, fname, lname, isResponse) {
   let payload = {}
   let text = body.text
   if (body.componentType === 'text' && !body.buttons) {
-    if (body.text.includes('{{user_full_name}}')) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
       text = text.replace(
         '{{user_full_name}}', fname + ' ' + lname)
     }
@@ -153,7 +153,7 @@ function prepareSendAPIPayload (subscriberId, body, fname, lname, isResponse) {
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
-    if (body.text.includes('{{user_full_name}}')) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
       text = text.replace(
         '{{user_full_name}}', fname + ' ' + lname)
     }
@@ -471,7 +471,7 @@ function prepareMessageData (subscriberId, body, fname, lname) {
   let payload = {}
   let text = body.text
   if (body.componentType === 'text' && !body.buttons) {
-    if (body.text.includes('{{user_full_name}}')) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
       text = text.replace(
         '{{user_full_name}}', fname + ' ' + lname)
     }
@@ -489,7 +489,7 @@ function prepareMessageData (subscriberId, body, fname, lname) {
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
-    if (body.text.includes('{{user_full_name}}')) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
       text = text.replace(
         '{{user_full_name}}', fname + ' ' + lname)
     }

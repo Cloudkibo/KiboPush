@@ -23,12 +23,14 @@ class List extends React.Component {
     this.removeButton = this.removeButton.bind(this)
     this.editButton = this.editButton.bind(this)
     this.addButton = this.addButton.bind(this)
+    this.topElementStyle = this.topElementStyle.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: 2}],
+      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: 2}],
       showPlus: false,
       pageNumber: 2,
-      buttons: []
+      buttons: [],
+      topElementStyle: 'COMPACT'
     }
   }
 
@@ -37,7 +39,7 @@ class List extends React.Component {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} />, key: k})
+        tmp.push({element: <Card id={k} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} />, key: k})
       }
       this.setState({cards: tmp, broadcast: this.props.cards})
     }
@@ -48,7 +50,7 @@ class List extends React.Component {
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
-        card = {element: <Card id={i} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} />, key: i}
+        card = {element: <Card id={i} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: i}
         cardMessage.push(cards[i])
         temp.push(card)
       }
@@ -65,6 +67,12 @@ class List extends React.Component {
     } else {
       this.setState({showPlus: false})
     }
+  }
+
+  topElementStyle (value) {
+    console.log('topElementStyle in', value)
+    this.setState({topElementStyle: value})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: this.state.buttons, topElementStyle: value})
   }
 
   removeSlide () {
@@ -113,12 +121,12 @@ class List extends React.Component {
     }
     console.log('temp in card', temp)
     this.setState({broadcast: temp})
-    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(temp)), buttons: this.state.buttons})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(temp)), buttons: this.state.buttons, topElementStyle: this.state.topElementStyle})
   }
 
   addElement () {
     var temp = this.state.cards
-    temp.push({element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: temp.length + 1})
+    temp.push({element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: temp.length + 1})
     this.setState({cards: temp, pageNumber: temp.length})
   }
 
@@ -159,7 +167,7 @@ class List extends React.Component {
     var temp = this.state.buttons
     temp.push(obj)
     this.setState({buttons: temp})
-    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: temp})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: temp, topElementStyle: this.state.topElementStyle})
   }
   editButton (obj) {
     var temp = this.state.buttons.map((elm, index) => {
@@ -169,12 +177,12 @@ class List extends React.Component {
       return elm
     })
     this.setState({buttons: temp})
-    this.props.handleList({id: this.props.id, componentType: 'list', cards: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: obj})
+    this.props.handleList({id: this.props.id, componentType: 'list', cards: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: obj, topElementStyle: this.state.topElementStyle})
   }
   removeButton (obj) {
     //  var temp = this.state.buttons.filter((elm, index) => { return index !== obj.id })
     this.setState({buttons: []})
-    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: []})
+    this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: [], topElementStyle: this.state.topElementStyle})
   }
   render () {
     var alertOptions = {
