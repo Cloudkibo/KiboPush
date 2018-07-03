@@ -250,25 +250,22 @@ class CreateMessage extends React.Component {
   }
 
   handleList (obj) {
+    console.log(obj)
     var temp = this.state.broadcast
     var isPresent = false
-    obj.cards.forEach((d) => {
+    obj.listItems.forEach((d) => {
       delete d.id
     })
-    temp.map((data, i) => {
+    temp.map((data) => {
       if (data.id === obj.id) {
-        // var newObj = {}
-        // newObj.image_url = obj.cards.image
-        // newObj.subtitle = obj.cards.subtitle
-        // newObj.title = obj.cards.title
-
-        temp[i].cards = obj.cards
+        data.listItems = obj.listItems
         isPresent = true
       }
     })
     if (!isPresent) {
       temp.push(obj)
     }
+    console.log('temp', temp)
     this.setState({broadcast: temp})
   }
 
@@ -330,6 +327,20 @@ class CreateMessage extends React.Component {
             return this.msg.error('Card in gallery must have at least one button.')
           } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
             return this.msg.error('Card in gallery must have at least one button.')
+          }
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'list') {
+        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
+          return this.msg.error('A list must have atleast 2 elements')
+        }
+        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
+          if (!this.state.broadcast[i].listItems[j].title) {
+            this.initTab()
+            return this.msg.error('Element in list must have a title.')
+          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
+            this.initTab()
+            return this.msg.error('Element in list must have a subtitle.')
           }
         }
       }
@@ -466,7 +477,7 @@ class CreateMessage extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} sequence={true} />)}]}) }}>
                                         <div className='align-center'>
                                           <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
                                           <h6>List</h6>
