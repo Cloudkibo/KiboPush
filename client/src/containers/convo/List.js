@@ -108,7 +108,7 @@ class List extends React.Component {
       if (obj.default_action) {
         temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons, default_action: obj.default_action})
       } else {
-        temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons, default_action: obj.default_action})
+        temp.push({id: obj.id, title: obj.title, image_url: obj.image_url, subtitle: obj.description, buttons: obj.buttons})
       }
     }
     console.log('temp in card', temp)
