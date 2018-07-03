@@ -208,7 +208,7 @@ class Text extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </PopoverBody>
         </Popover>
-        <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0'}}>
+        <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: '-70px', marginRight: '5px}}>
           <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
             <i onClick={this.toggleUserOptions} style={{height: '24px',
               width: '24px',
