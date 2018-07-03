@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { createautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
+import { isWebURL } from './../../utility/utils'
 
 class AddChannel extends React.Component {
   constructor (props, context) {
@@ -16,26 +16,32 @@ class AddChannel extends React.Component {
       twitterForeGroundColor: 'black',
       youtubeForeGroundColor: 'black',
       wordPressForeGroundColor: 'black',
-      showWordPressGuide: false
+      showWordPressGuide: false,
+      errorMessage: '',
+      type: ''
     }
     this.onSelectItem = this.onSelectItem.bind(this)
     this.createAutoposting = this.createAutoposting.bind(this)
-    this.closeGuide = this.closeGuide.bind(this)
-    this.viewGuide = this.viewGuide.bind(this)
-  }
-  closeGuide () {
-    this.setState({
-      showWordPressGuide: false
-    })
-  }
-  viewGuide () {
-    this.setState({
-      showWordPressGuide: true
-    })
   }
   createAutoposting (type) {
     var autopostingData = {}
-
+    var incorrectUrl = false
+    this.setState({
+      type: type
+    })
+    if (type === 'facebook') {
+      if (!isWebURL(this.facebookSubscriptionUrl.value)) {
+        incorrectUrl = true
+      }
+    } else if (type === 'twitter') {
+      if (!isWebURL(this.twitterSubscriptionUrl.value)) {
+        incorrectUrl = true
+      }
+    } else if (type === 'wordpress') {
+      if (!isWebURL(this.wordpressSubscriptionUrl.value)) {
+        incorrectUrl = true
+      }
+    }
     switch (type) {
       case 'facebook':
         autopostingData = {
@@ -82,12 +88,24 @@ class AddChannel extends React.Component {
         }
         break
     }
-    this.props.clearAlertMessages()
-    this.props.createautoposting(autopostingData)
-    this.props.onClose()
+    if (!incorrectUrl) {
+      this.props.clearAlertMessages()
+      this.setState({
+        errorMessage: ''
+      })
+      this.props.createautoposting(autopostingData)
+      this.props.onClose()
+    } else {
+      this.setState({
+        errorMessage: 'Incorrect Url'
+      })
+    }
   }
 
   onSelectItem (value) {
+    this.setState({
+      errorMessage: ''
+    })
     switch (value) {
       case 'facebook':
         this.setState({
@@ -151,80 +169,6 @@ class AddChannel extends React.Component {
     // let youtubeForeGroundColor = this.state.youtubeForeGroundColor
     return (
       <div>
-        {
-        this.state.showWordPressGuide &&
-        <ModalContainer style={{width: '500px', top: '80px'}}
-          onClose={this.closeGuide}>
-          <ModalDialog style={{width: '500px', top: '80px'}}
-            onClose={this.closeGuide}>
-            <h4>Guielines for integrating WordPress blogs</h4>
-            <div className='panel-group accordion' id='accordion1'>
-              <div className='panel panel-default'>
-                <div className='panel-heading guidelines-heading'>
-                  <h4 className='panel-title'>
-                    <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>WordPress.com</a>
-                  </h4>
-                </div>
-                <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                  <div className='panel-body'>
-                    <p>If you have admin rights on WordPress, follow the steps below to create a webhook</p>
-                    <ul>
-                      <li>
-                      Go to Settings -> Webhooks on WordPress dashboard
-                      </li>
-                      <li>
-                      Choose Action: 'Publish_Post'
-                      </li>
-                      <li>
-                      Select all the fields
-                      </li>
-                      <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
-                      </li>
-                      <li>
-                      Click on 'Add new webhook'
-                      </li>
-                    </ul>
-                    <p> Once you have added our webhook on WORDPRESS.COM, our endpoint will be notified whenever a new post is published.
-                    Your blog post details will be automatically broadcasted to your subscribers </p>
-                  </div>
-                </div>
-              </div>
-              <div className='panel panel-default'>
-                <div className='panel-heading guidelines-heading'>
-                  <h4 className='panel-title'>
-                    <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>WordPress.org (self-hosted version).</a>
-                  </h4>
-                </div>
-                <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                  <div className='panel-body'>
-                    <p>On self-hosted wordpress sites, install a plug-in 'Notification by Bracket-Space' and follow the steps below to allow autoposting</p>
-                    <ul>
-                      <li>
-                      Choose Trigger: 'Post publised'
-                      </li>
-                      <li>
-                      Choose Notifications: 'webhook'
-                      </li>
-                      <li>
-                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
-                      </li>
-                      <li>
-                      Add arguments: 'post_id', 'post_permalink' and 'post_title'
-                      </li>
-                      <li>
-                      Save your notification.
-                      </li>
-                    </ul>
-                    <p> Once you have added our webhook on WORDPRESS.ORG through Notifications plug-in, our endpoint will be notified whenever a new post is published.
-                    Your blog post details will be automatically broadcasted to your subscribers </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ModalDialog>
-        </ModalContainer>
-        }
         <h3>Connect Feed</h3>
         <div style={{width: '100%', textAlign: 'center'}}>
           <div style={{display: 'inline-block', padding: '5px'}}>
@@ -251,6 +195,9 @@ class AddChannel extends React.Component {
           <div>
             <label> Facebook Page Url </label>
             <input placeholder='Enter FB url' ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
+            { this.state.type === 'facebook' &&
+              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+            }
           </div>
           <button style={{float: 'right', margin: '10px'}}
             onClick={() => this.createAutoposting('facebook')}
@@ -263,6 +210,9 @@ class AddChannel extends React.Component {
           <div>
             <label> Twitter Account Url </label>
             <input placeholder='Enter Twitter handle' ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
+            { this.state.type === 'twitter' &&
+              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+            }
           </div>
           <button style={{float: 'right', margin: '10px'}}
             onClick={() => this.createAutoposting('twitter')}
@@ -275,6 +225,9 @@ class AddChannel extends React.Component {
           <div>
             <label> YouTube Channel Url </label>
             <input ref={(c) => { this.youtubeSubscriptionUrl = c }} type='text' className='form-control' />
+            { this.state.type === 'youtube' &&
+              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+            }
           </div>
           <button style={{float: 'right', margin: '10px'}}
             onClick={() => this.createAutoposting('youtube')}
@@ -287,9 +240,12 @@ class AddChannel extends React.Component {
           <div>
             <label> WordPress Channel Url </label>
             <input ref={(c) => { this.wordpressSubscriptionUrl = c }} type='text' className='form-control' />
+            { this.state.type === 'wordpress' &&
+              <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+            }
           </div>
           <button style={{float: 'right', marginTop: '10px'}}
-            onClick={this.viewGuide}
+            onClick={this.props.openGuidelines}
             className='btn btn-primary btn-sm'>View Integration Guidelines
           </button>
           <button style={{float: 'right', marginTop: '10px', marginRight: '10px'}}

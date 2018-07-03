@@ -80,9 +80,6 @@ function validateInput (body) {
           }
         }
       }
-    }
-  }
-
   return true
 }
 
