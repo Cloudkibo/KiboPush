@@ -87,7 +87,7 @@ exports.sendConversation = function (req, res) {
               }
               let messageData = utility.prepareSendAPIPayload(
                 subscriptionUser.subscriberId,
-                payloadItem, subscriptionUser.userId.name, false)
+                payloadItem, subscriptionUser.userId.name, '', false)
 
               logger.serverLog(TAG,
                 `Payload for Messenger Send API for test: ${JSON.stringify(
@@ -280,7 +280,7 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
+                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
                       })
                     })
                   })
@@ -358,7 +358,7 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName + ' ' + subscriber.lastName)
+                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
                     })
                   })
                 })

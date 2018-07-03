@@ -88,7 +88,7 @@ function sendMessenger (message, pageId, senderId) {
     }
     let messageData = utility.prepareSendAPIPayload(
                   senderId,
-                   {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName + ' ' + subscriber.lastName, true)
+                   {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName, subscriber.lastName, true)
     Pages.findOne({pageId: pageId}, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
