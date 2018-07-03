@@ -134,18 +134,26 @@ class Dashboard extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps dashboard', nextprops)
-    if (nextprops.user && nextprops.user.emailVerified === false &&
-      (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
+    if (nextprops.user && nextprops.user.emailVerified === false) {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
     }
     if (nextprops.user) {
-      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_ B') && !nextprops.user.facebookInfo) {
+      joinRoom(nextprops.user.companyId)
+      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
+      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
+        if (nextprops.pages && nextprops.pages.length === 0) {
+          console.log('going to push')
+          browserHistory.push({
+            pathname: '/connectFb',
+            state: { account_type: 'team' }
+          })
+        }
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
@@ -158,11 +166,8 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
-      }
-      if (nextprops.user) {
-        joinRoom(nextprops.user.companyId)
-      }
-      if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        console.log('going to push add page wizard')
         browserHistory.push({
           pathname: '/addPageWizard'
         })

@@ -55,7 +55,7 @@ class Signup extends React.Component {
     this.setState({error: false})
     if (nextprops.successSignup) {
       this.props.history.push({
-        pathname: '/connectFb',
+        pathname: '/resendVerificationEmail',
         state: { account_type: this.state.account_type }
       })
     } else if (nextprops.errorSignup) {

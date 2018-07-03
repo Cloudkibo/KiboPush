@@ -248,8 +248,8 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'list',
-            'top_element_style': body.topElementStyle,
-            'elements': body.cards,
+            'top_element_style': 'compact',
+            'elements': body.listItems,
             'buttons': body.buttons
           }
         }
