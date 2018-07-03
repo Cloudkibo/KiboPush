@@ -125,6 +125,7 @@ class Card extends React.Component {
     }
   }
   _onChange () {
+    console.log('+onChange')
   // Assuming only image
     var file = this.refs.file.files[0]
     if (file) {
@@ -159,6 +160,7 @@ class Card extends React.Component {
   }
 
   handleChange (event) {
+    console.log('+onChange')
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -265,7 +267,16 @@ class Card extends React.Component {
 
   render () {
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(https://staging.kibopush.com/api/broadcasts/download/fdb24193270201873181553.png)' : ''}} className='ui-block hoverbordersolid'>
+      <div>
+      <input
+        ref='file'
+        type='file'
+        name='user[image]'
+        multiple='true'
+        accept='image/*'
+        title=' '
+        onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url()' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -320,7 +331,7 @@ class Card extends React.Component {
           </div>
         </div>
         <br />
-        <div className = 'row'>
+        <div className='row'>
           <div className='col-md-6'>
         {(!this.state.button || !this.state.button.length > 0) &&
         <div className='ui-block hoverborder' style={{width: '120%', marginLeft: '12px'}}>
@@ -352,6 +363,7 @@ class Card extends React.Component {
       </div>
     </div>  */}
       </div>
+  </div>
 
     )
   }
