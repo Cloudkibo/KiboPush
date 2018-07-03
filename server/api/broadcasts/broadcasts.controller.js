@@ -6,7 +6,7 @@ const Sequences = require('../sequenceMessaging/sequence.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
-const botController = require('./../smart_replies/bots.controller')
+// const botController = require('./../smart_replies/bots.controller')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -40,6 +40,7 @@ const Webhooks = require(
 //  './../sequenceMessaging/message.model')
 // const SequenceSubscriberMessages = require(
 //  './../sequenceMessaging/sequenceSubscribersMessages.model')
+const {sendBroadcast} = require('./broadcasts2.controller')
 const utility = require('./broadcasts.utility')
 const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
@@ -568,40 +569,7 @@ exports.getfbMessage = function (req, res) {
                           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                           if (page.welcomeMessage &&
                             page.isWelcomeMessageEnabled) {
-                            page.welcomeMessage.forEach(payloadItem => {
-                              // if (payloadItem.componentType === 'text') {
-                              //   if (payloadItem.text.includes('{{user_full_name}}') || payloadItem.text.includes('{{[Username]}}')) {
-                              //     payloadItem.text = payloadItem.text.replace(
-                              //       '{{user_full_name}}',
-                              //       response.body.first_name + ' ' +
-                              //       response.body.last_name)
-                              //   }
-                              // }
-                              let messageData = utility.prepareSendAPIPayload(
-                                subsriber.id,
-                                payloadItem, response.body.first_name,
-                                response.body.last_name, true)
-
-                              request(
-                                {
-                                  'method': 'POST',
-                                  'json': true,
-                                  'formData': messageData,
-                                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                                  page.accessToken
-                                },
-                                function (err, res) {
-                                  if (err) {
-                                    return logger.serverLog(TAG,
-                                      `At send welcome message broadcast ${JSON.stringify(
-                                        err)}`)
-                                  } else {
-                                    logger.serverLog(TAG,
-                                      `At send welcome message broadcast response ${JSON.stringify(
-                                        res)}`)
-                                  }
-                                })
-                            })
+                            utility.getBatchData(page.welcomeMessage, subsriber.senderId, page, sendBroadcast, subsriber.firstName, subsriber.lastName)
                           }
                         }
 
@@ -735,7 +703,7 @@ exports.getfbMessage = function (req, res) {
               } else if (resp.action === 'unsubscribe') {
                 unsubscribeFromSequence(resp.sequenceId, event)
               } else {
-                sendReply(event)
+                sendMenuReply(event)
               }
             }
           } catch (e) {
@@ -1635,59 +1603,17 @@ function updateseenstatus (req) {
   //   })
 }
 
-function sendReply (req) {
+function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
-  parsedData.forEach(payloadItem => {
-    logger.serverLog(TAG, `payloadItem ${JSON.stringify(payloadItem)}`)
-    Subscribers.findOne({senderId: req.sender.id}).exec((err, subscriber) => {
+  Subscribers.findOne({senderId: req.sender.id}).exec((err, subscriber) => {
+    if (err) {
+      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+    }
+    Pages.findOne({pageId: req.recipient.id, connected: true}, (err, page) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
-      let messageData = utility.prepareSendAPIPayload(
-        req.sender.id, payloadItem, subscriber.firstName, subscriber.lastName, true)
-      Pages.find({pageId: req.recipient.id, connected: true}).populate('userId').exec((err, pages) => {
-        if (err) {
-          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        }
-        pages.forEach((page) => {
-          request(
-            {
-              'method': 'POST',
-              'json': true,
-              'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              page.accessToken
-            },
-            function (err, res) {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send message reply for menu ${JSON.stringify(err)}`)
-              } else {
-                logger.serverLog(TAG,
-                  `At send reply response ${JSON.stringify(
-                    res)}`)
-
-                // let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
-                //   config.facebook.clientSecret)
-                //
-                // FBExtension.extendShortToken(pages[0].userId.facebookInfo.fbToken).then((error) => {
-                //   logger.serverLog(TAG, `Extending token error: ${JSON.stringify(error)}`)
-                // }).fail((response) => {
-                //   logger.serverLog(TAG, 'token refreshed ' + JSON.stringify(response))
-                //   let accessToken = response.access_token
-                //   Users.update({_id: pages[0].userId._id}, {'facebookInfo.fbToken': accessToken}, {}, (err, result) => {
-                //     if (err) {
-                //       return logger.serverLog(TAG,
-                //         `At update user fb token ${JSON.stringify(err)}`)
-                //     }
-                //     logger.serverLog(TAG, 'done with token update')
-                //     logger.serverLog(TAG, result)
-                //   })
-                // })
-              }
-            })
-        })
-      })
+      utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
     })
   })
 }

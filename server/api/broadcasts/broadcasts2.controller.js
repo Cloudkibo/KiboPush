@@ -535,3 +535,5 @@ exports.delete = function (req, res) {
     }
   })
 }
+
+exports.sendBroadcast = sendBroadcast
