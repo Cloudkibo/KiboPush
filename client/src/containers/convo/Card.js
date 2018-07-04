@@ -209,13 +209,17 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        {/* <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
-          <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i className='fa fa-times fa-stack-2x' />
-          </span>
-        </div>  */}
+        { this.props.singleCard &&
+          <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+            <span style={{cursor: 'pointer'}} className='fa-stack'>
+              <i className='fa fa-times fa-stack-2x' />
+            </span>
+          </div>
+        }
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
-          <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
+          <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
+            this.refs.file.click()
+          }}>
             <input
               ref='file'
               type='file'
@@ -223,14 +227,12 @@ class Card extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
-
+              onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
           (this.state.imgSrc === '')
           ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
           : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
          }
-
           </div>
           <div>
             <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
