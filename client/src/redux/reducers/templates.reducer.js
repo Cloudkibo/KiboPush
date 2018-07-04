@@ -57,7 +57,6 @@ export function templatesInfo (state = {}, action) {
         broadcasts: action.data
       })
     case ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW:
-    console.log('data.broadcast', action.broadcasts)
       return Object.assign({}, state, {
         broadcasts: action.broadcasts,
         broadcastsCount: action.count
