@@ -911,6 +911,8 @@ AutomationQueue.find({}, (err, data) => {
                 })
               })
           })
+        } else if (message.type === 'autoposting-twitter') {
+          console.log({message})
         }
       } else {
         // Do work to reschedule the message
