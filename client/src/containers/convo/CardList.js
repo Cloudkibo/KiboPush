@@ -91,7 +91,7 @@ class Card extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
   }
   handleClose (e) {
-    this.setState({openPopover: false, elementUrl: ''})
+    this.setState({openPopover: false, elementUrl: '', checkbox: false})
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
@@ -125,7 +125,6 @@ class Card extends React.Component {
     }
   }
   _onChange () {
-    console.log('+onChange')
   // Assuming only image
     var file = this.refs.file.files[0]
     if (file) {
@@ -244,6 +243,7 @@ class Card extends React.Component {
   }
 
   setLoading () {
+    console.log('in loading')
     this.setState({loading: false})
   }
   updateImageUrl (data) {
@@ -267,8 +267,7 @@ class Card extends React.Component {
 
   render () {
     return (
-      <div>
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url()' : ''}} className='ui-block hoverbordersolid'>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -298,13 +297,9 @@ class Card extends React.Component {
             <i className='fa fa-times-circle-o' style={{fontSize: '1.3rem'}} />
           </span>
         </div>
-        <div className='row'>
-          <div className='col-md-8' style={{marginLeft: '-20px'}}>
-            <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
-            <br />
-            <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: '90px'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
-          </div>
-          <div style={{display: 'flex', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
+        {this.state.checkbox &&
+        <center>
+          <div style={{display: 'flex', backgroundColor: '#F2F3F8', height: '60px'}} className='cardimageblock col-md-4'>
             <input
               ref='file'
               type='file'
@@ -313,49 +308,63 @@ class Card extends React.Component {
               accept='image/*'
               title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
-
-            {
-          (this.state.imgSrc === '')
-          ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-          : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
-         }
-
+            <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
           </div>
+          <br />
+        </center>
+         }
+        <div className='row'>
+          <div className={this.state.checkbox ? 'col-md-12' : 'col-md-8'} style={{marginLeft: this.state.checkbox ? '-10px' : '-20px'}}>
+            <center>
+              <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none', width: this.state.checkbox ? '300px' : ''}} type='text' placeholder='Enter Title...' maxLength='80' />
+              <br />
+              <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '300px' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
+            </center>
+          </div>
+          {!this.state.checkbox &&
+          <div style={{display: 'flex', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
+            <input
+              ref='file'
+              type='file'
+              name='user[image]'
+              multiple='true'
+              accept='image/*'
+              title=' '
+              onClick={this.handleCheckbox} onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
+            {
+            (this.state.imgSrc === '')
+            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
+           }
+          </div>
+          }
         </div>
         <br />
         <div className='row'>
           <div className='col-md-6'>
-        {(!this.state.button || !this.state.button.length > 0) &&
-        <div className='ui-block hoverborder' style={{width: '120%', marginLeft: '12px'}}>
-          <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
+            {(!this.state.button || !this.state.button.length > 0) &&
+            <div className='ui-block hoverborder' style={{width: '120%', marginLeft: this.state.checkbox ? '10px' : '12px'}}>
+              <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
+            </div>
+            }
+            {(this.state.button) ? this.state.button.map((obj, index) => {
+              return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '10px' : '12px'}}>
+                <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+              </div>)
+            }) : ''}
+          </div>
+          <div className='col-md-6' style={{marginTop: '15px'}}>
+            {this.state.elementUrl === '' && !this.state.checkbox
+              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px', marginLeft: '20px'}}>
+                <i className='la la-plus' /> Add Action
+                </a>
+              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', marginLeft: '20px', fontWeight: 'bold'}}>
+                Edit Action
+                </a>
+              }
+          </div>
         </div>
-      }
-        {(this.state.button) ? this.state.button.map((obj, index) => {
-          return (<div style={{width: '54%', marginLeft: '12px'}}>
-            <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
-          </div>)
-        }) : ''}
       </div>
-      <div className='col-md-6' style={{marginTop: '15px'}}>
-        {this.state.elementUrl === '' && !this.state.checkbox
-          ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px', marginLeft: '20px'}}>
-          <i className='la la-plus' /> Add Action
-        </a>
-        : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px', marginLeft: '20px'}}>
-        Edit Action
-      </a>
-      }
-      </div>
-      </div>
-        {/* <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-        <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-      </div>
-      <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-        <ElementButton button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-      </div>
-    </div>  */}
-      </div>
-  </div>
 
     )
   }
