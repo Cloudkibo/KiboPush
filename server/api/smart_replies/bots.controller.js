@@ -85,7 +85,12 @@ function sendMessenger (message, pageId, senderId) {
   Subscribers.findOne({senderId: senderId}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      return
     }
+    if(subscriber === null){
+      return
+    }
+    logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
     let messageData = utility.prepareSendAPIPayload(
                   senderId,
                    {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName, subscriber.lastName, true)
@@ -119,34 +124,7 @@ function sendMessenger (message, pageId, senderId) {
   })
 }
 
-exports.respond = function (payload) {
-  if (payload.object && payload.object !== 'page') {
-    logger.serverLog(TAG, `Payload received is not for bot`)
-    return
-  }
-  if (!payload.entry) {
-    logger.serverLog(TAG, `Payload received is not for bot does not contain entry`)
-    return
-  }
-  if (!payload.entry[0].messaging) {
-    logger.serverLog(TAG, `Payload received is not for bot does contain messaging field`)
-    return
-  }
-  if (!payload.entry[0].messaging[0]) {
-    logger.serverLog(TAG, `Payload received is not for bot does not contain messaging array`)
-    return
-  }
-  var messageDetails = payload.entry[0].messaging[0]
-  var pageId = messageDetails.recipient.id
-  var senderId = messageDetails.sender.id
-
-  if (!messageDetails.message) {
-    return
-  }
-  if (messageDetails.message.is_echo) {
-    return
-  }
-  var text = messageDetails.message.text
+exports.respond = function (pageId, senderId, text) {
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
   Pages.find({pageId: pageId}, (err, page) => {
     if (err) {
