@@ -307,6 +307,7 @@ class CreateConvo extends React.Component {
   }
   handleList (obj) {
     console.log('in create convo handleList', obj)
+    console.log('in create convo handleList', this.state.broadcast)
     var temp = this.state.broadcast
     var isPresent = false
     obj.listItems.forEach((d) => {

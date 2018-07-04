@@ -90,6 +90,7 @@ export function showBroadcasts (data) {
 }
 
 export function showBroadcastsNew (data) {
+  console.log('data in showBroadcastsNew', data)
   return {
     type: ActionTypes.LOAD_TEMPLATE_BROADCASTS_LIST_NEW,
     broadcasts: data.broadcasts,

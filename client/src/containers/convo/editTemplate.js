@@ -339,7 +339,7 @@ class EditTemplate extends React.Component {
   handleList (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    obj.cards.forEach((d) => {
+    obj.listItems.forEach((d) => {
       delete d.id
     })
     temp.map((data, i) => {
@@ -349,7 +349,8 @@ class EditTemplate extends React.Component {
         // newObj.subtitle = obj.cards.subtitle
         // newObj.title = obj.cards.title
 
-        temp[i].cards = obj.cards
+        temp[i].listItems = obj.listItems
+        temp[i].topElementStyle = obj.topElementStyle
         isPresent = true
       }
     })
@@ -430,6 +431,39 @@ class EditTemplate extends React.Component {
           } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
             this.initTab()
             return this.msg.error('Card in gallery must have at least one button.')
+          }
+        }
+      }
+      for (let i = 0; i < this.state.broadcast.length; i++) {
+        if (this.state.broadcast[i].componentType === 'card') {
+          if (!this.state.broadcast[i].buttons) {
+            return this.msg.error('Card must have at least one button.')
+          } else if (this.state.broadcast[i].buttons.length === 0) {
+            return this.msg.error('Card must have at least one button.')
+          }
+        }
+        if (this.state.broadcast[i].componentType === 'gallery') {
+          for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
+            if (!this.state.broadcast[i].cards[j].buttons) {
+              return this.msg.error('Card in gallery must have at least one button.')
+            } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+              return this.msg.error('Card in gallery must have at least one button.')
+            }
+          }
+        }
+        if (this.state.broadcast[i].componentType === 'list') {
+          if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
+            return this.msg.error('A list must have atleast 2 elements')
+          }
+          if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
+            return this.msg.error('Please select an image for top item with large style in list')
+          }
+          for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
+            if (!this.state.broadcast[i].listItems[j].title) {
+              return this.msg.error('Element in list must have a title.')
+            } else if (!this.state.broadcast[i].listItems[j].subtitle) {
+              return this.msg.error('Element in list must have a subtitle.')
+            }
           }
         }
       }
@@ -674,6 +708,14 @@ class EditTemplate extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
                                         </div>
                                       </div>
                                     </div>
