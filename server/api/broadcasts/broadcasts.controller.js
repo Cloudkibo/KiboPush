@@ -6,7 +6,7 @@ const Sequences = require('../sequenceMessaging/sequence.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
-// const botController = require('./../smart_replies/bots.controller')
+const botController = require('./../smart_replies/bots.controller')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -1365,7 +1365,6 @@ function createSession (page, subscriber, event) {
 }
 
 function saveLiveChat (page, subscriber, session, event) {
-  // botController.respond(JSON.parse(JSON.stringify(req.body)))
   let chatPayload = {
     format: 'facebook',
     sender_id: subscriber._id,
@@ -1377,6 +1376,8 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
+  botController.respond(page.pageId, subscriber.senderId, event.message.text)
+
   Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
     if (err) logger.serverLog(TAG, err)
     if (webhook && webhook.isEnabled) {
