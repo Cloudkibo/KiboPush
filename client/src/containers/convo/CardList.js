@@ -268,14 +268,6 @@ class Card extends React.Component {
   render () {
     return (
       <div>
-      <input
-        ref='file'
-        type='file'
-        name='user[image]'
-        multiple='true'
-        accept='image/*'
-        title=' '
-        onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
       <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url()' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
