@@ -9,12 +9,14 @@ import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
 import { Link } from 'react-router'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Progress from 'react-progressbar'
 import AlertContainer from 'react-alert'
 var taiPasswordStrength = require('tai-password-strength')
 var strengthTester = new taiPasswordStrength.PasswordStrength()
+var googleKey = '6LeBK2IUAAAAANBk4VMXqUYqMmUhlyu3iyCYPBfQ'
 const TAG = 'containers/login/login'
 
 class Signup extends React.Component {
@@ -32,12 +34,14 @@ class Signup extends React.Component {
       pwdlength: true,
       error: false,
       account_type: 'none',
-      isShowingModal: false
+      isShowingModal: false,
+      captchaSuccess: false
     }
     this.check = this.check.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.equal = this.equal.bind(this)
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this)
 
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
@@ -48,6 +52,12 @@ class Signup extends React.Component {
       this.setState({isurl: true})
     }
   }
+
+  onChangeCaptcha (value) {
+    console.log('Captcha value:', value)
+    this.setState({captchaSuccess: true})
+  }
+
   componentDidMount () {
     log(TAG, 'signup Container Mounted')
   }
@@ -240,13 +250,19 @@ class Signup extends React.Component {
                           <div id='email-error' style={{color: 'red'}}>Passwords do not match</div>
                         }
                       </div>
-
+                      <div className='form-group m-form__group'>
+                        <ReCAPTCHA
+                          ref='recaptcha'
+                          sitekey={googleKey}
+                          onChange={this.onChangeCaptcha}
+                          />
+                      </div>
                       <div className='m-login__form-action'>
                         <div class='checkbox'>
                           <input type='checkbox' onChange={e => this.acceptEULA(e)} />
                           <label style={{marginBottom: 35, marginLeft: 15, fontSize: 13}}>I've read and accept the <a onClick={this.showDialog} href='#eulaAgreement'>terms and conditions</a></label>
                         </div>
-                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed}>
+                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess}>
                           Sign Up
                         </button>
                         <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
