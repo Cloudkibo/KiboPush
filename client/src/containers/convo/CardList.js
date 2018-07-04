@@ -314,11 +314,11 @@ class Card extends React.Component {
         </center>
          }
         <div className='row'>
-          <div className={this.state.checkbox ? 'col-md-12' : 'col-md-8'} style={{marginLeft: this.state.checkbox ? '-10px' : '-20px'}}>
+          <div className={this.state.checkbox ? 'col-md-12' : 'col-md-8'} style={{marginLeft: this.state.checkbox ? '' : '-20px'}}>
             <center>
-              <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none', width: this.state.checkbox ? '300px' : ''}} type='text' placeholder='Enter Title...' maxLength='80' />
+              <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none', width: this.state.checkbox ? '90%' : ''}} type='text' placeholder='Enter Title...' maxLength='80' />
               <br />
-              <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '300px' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
+              <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '90%' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             </center>
           </div>
           {!this.state.checkbox &&
@@ -343,22 +343,22 @@ class Card extends React.Component {
         <div className='row'>
           <div className='col-md-6'>
             {(!this.state.button || !this.state.button.length > 0) &&
-            <div className='ui-block hoverborder' style={{width: '120%', marginLeft: this.state.checkbox ? '10px' : '12px'}}>
+            <div className='ui-block hoverborder' style={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
               <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
             </div>
             }
             {(this.state.button) ? this.state.button.map((obj, index) => {
-              return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '10px' : '12px'}}>
+              return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
                 <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
               </div>)
             }) : ''}
           </div>
           <div className='col-md-6' style={{marginTop: '15px'}}>
             {this.state.elementUrl === '' && !this.state.checkbox
-              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px', marginLeft: '20px'}}>
+              ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
                 <i className='la la-plus' /> Add Action
                 </a>
-              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', marginLeft: '20px', fontWeight: 'bold'}}>
+              : <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{cursor: 'pointer', width: '110px', fontWeight: 'bold'}}>
                 Edit Action
                 </a>
               }
