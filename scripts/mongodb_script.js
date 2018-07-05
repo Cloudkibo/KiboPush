@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+let mongoose = require('mongoose')
 const logger = require('../server/components/logger')
 const config = require('../server/config/environment')
 const AutomationQueue = require('../server/api/automation_queue/automation_queue.model')
@@ -20,42 +20,43 @@ let Twit = require('twit')
 const needle = require('needle')
 const compUtility = require('../server/components/utility')
 
-mongoose.connect(config.mongo.uri)
+mongoose = mongoose.connect(config.mongo.uri)
 
 AutomationQueue.find({}, (err, data) => {
   if (err) {
-    return logger.serverLog(TAG, `queue messages not found ${JSON.stringify(err)}`)
+    logger.serverLog(TAG, `queue messages not found ${JSON.stringify(err)}`)
   }
   if (data) {
-    data.forEach((message) => {
+    for (let i = 0; i < data.length; i++) {
+      let message = data[i]
       if (message.scheduledTime.getTime() < new Date().getTime()) {
         if (message.type === 'survey') {
           /* Getting the company user who has connected the facebook account */
 
           Subscribers.findOne({ '_id': message.subscriberId }, (err, subscriber) => {
             if (err) {
-              return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
             }
 
             Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
               if (err) {
-                return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
               }
 
               Users.findOne({ '_id': page.userId }, (err, connectedUser) => {
                 if (err) {
-                  return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                 }
 
                 var currentUser = connectedUser
                 SurveyQuestions.find({ 'surveyId': message.automatedMessageId }, (err, questions) => {
                   if (err) {
-                    return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
 
                   Surveys.findOne({ '_id': message.automatedMessageId }, (err, survey) => {
                     if (err) {
-                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                      logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                     }
 
                     if (questions.length > 0) {
@@ -101,7 +102,7 @@ AutomationQueue.find({}, (err, data) => {
                       compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
                         if (err) {
                           logger.serverLog(TAG, 'inside error')
-                          return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                          logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                         }
                         if (isLastMessage) {
                           logger.serverLog(TAG, 'inside scheduler suvery send')
@@ -109,10 +110,7 @@ AutomationQueue.find({}, (err, data) => {
                             `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
                             data, (err, resp) => {
                               if (err) {
-                                return {
-                                  status: 'failed',
-                                  description: JSON.stringify(err)
-                                }
+                                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                               }
                               let surveyPage = new SurveyPage({
                                 pageId: page.pageId,
@@ -131,6 +129,13 @@ AutomationQueue.find({}, (err, data) => {
                                     err2
                                   })
                                 }
+                                AutomationQueue.deleteOne({'_id': message._id}, (err, result) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                  }
+
+                                  logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+                                })
                               })
                             })
                         } else {
@@ -150,7 +155,7 @@ AutomationQueue.find({}, (err, data) => {
                         }
                       })
                     } else {
-                      return logger.serverLog(TAG, 'Survey Questions not found - scheduler')
+                      logger.serverLog(TAG, 'Survey Questions not found - scheduler')
                     }
                   })
                 })
@@ -161,26 +166,23 @@ AutomationQueue.find({}, (err, data) => {
           /* Getting the company user who has connected the facebook account */
           AutoPostingMessages.findOne({'_id': message.automatedMessageId}, (err, autopostingMessage) => {
             if (err) {
-              return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
             }
             Subscribers.findOne({ '_id': message.subscriberId }, (err, subscriber) => {
               if (err) {
-                return {
-                  status: 'failed',
-                  description: `Internal Server Error ${JSON.stringify(err)}`
-                }
+                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
               }
               Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
                 if (err) {
-                  return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                 }
                 Users.findOne({'_id': page.userId}, (err, connectedUser) => {
                   if (err) {
-                    return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
                   Polls.findOne({'_id': message.automatedMessageId}, (err, poll) => {
                     if (err) {
-                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                      logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                     }
                     let currentUser = connectedUser
                     const messageData = {
@@ -217,7 +219,7 @@ AutomationQueue.find({}, (err, data) => {
                     compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
                       if (err) {
                         logger.serverLog(TAG, 'inside error')
-                        return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                        logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                       }
                       if (isLastMessage) {
                         needle.post(
@@ -246,6 +248,14 @@ AutomationQueue.find({}, (err, data) => {
                                   err2
                                 })
                               }
+
+                              AutomationQueue.deleteOne({'_id': message._id}, (err, result) => {
+                                if (err) {
+                                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                }
+
+                                logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+                              })
                             })
                           })
                       } else {
@@ -272,16 +282,12 @@ AutomationQueue.find({}, (err, data) => {
         } else if (message.type === 'autoposting-wordpress') {
           AutoPostingMessages.findOne({ '_id': message.automatedMessageId }, (err, autopostingMessage) => {
             if (err) {
-              return {
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              }
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
             }
             Subscribers.findOne({'_id': message.subscriberId}, (err, subscriber) => {
               if (err) {
-                return logger.serverLog(TAG, 'Internal Server Error on connect')
+                logger.serverLog(TAG, 'Internal Server Error on connect')
               }
-              console.log({subscriber})
               Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
                 if (err) {
                   logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
@@ -322,13 +328,12 @@ AutomationQueue.find({}, (err, data) => {
                   // Logic to control the autoposting when last activity is less than 30 minutes
                   compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
                     if (err) {
-                      logger.serverLog(TAG, 'inside error')
-                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                      logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                     }
 
                     if (isLastMessage) {
                       logger.serverLog(TAG, 'inside autoposting wordpress send')
-                      sendAutopostingMessage(messageData, page, autopostingMessage)
+                      sendAutopostingMessage(messageData, page, message)
                     } else {
                       // Logic to add into queue will go here
                       logger.serverLog(TAG, 'inside adding to autoposting queue')
@@ -364,7 +369,6 @@ AutomationQueue.find({}, (err, data) => {
             })
           })
         } else if (message.type === 'autoposting-twitter') {
-          console.log({message})
           let twitterClient = new Twit({
             consumer_key: config.twitter.consumer_key,
             consumer_secret: config.twitter.consumer_secret,
@@ -373,20 +377,19 @@ AutomationQueue.find({}, (err, data) => {
           })
           AutoPostingMessages.findOne({ '_id': message.automatedMessageId }, (err, autopostingMessage) => {
             if (err) {
-              return logger.serverLog(TAG, 'Internal Server Error on connect')
+              logger.serverLog(TAG, 'Internal Server Error on connect')
             }
-            console.log({autopostingMessage})
             twitterClient.get('statuses/show/:id', { id: autopostingMessage.message_id }, (err, tweet) => {
               if (err) {
-                return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
               }
               Subscribers.findOne({'_id': message.subscriberId}, (err, subscriber) => {
                 if (err) {
-                  return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                 }
                 Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
                   if (err) {
-                    return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
                   let messageData = {}
                   if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
@@ -403,12 +406,12 @@ AutomationQueue.find({}, (err, data) => {
                     // Logic to control the autoposting when last activity is less than 30 minutes
                     compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
                       if (err) {
-                        return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                        logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                       }
 
                       if (isLastMessage) {
                         logger.serverLog(TAG, 'inside autoposting send')
-                        sendAutopostingMessage(messageData, page, {})
+                        sendAutopostingMessage(messageData, page, message)
                       } else {
                         // Logic to add into queue will go here
                         logger.serverLog(TAG, 'inside adding autoposting-twitter to autoposting queue')
@@ -437,8 +440,9 @@ AutomationQueue.find({}, (err, data) => {
                     })
 
                     URLObject.save((err, savedurl) => {
-                      if (err) logger.serverLog(TAG, err)
-
+                      if (err) {
+                        logger.serverLog(TAG, err)
+                      }
                       let newURL = config.domain + '/api/URL/' + savedurl._id
                       messageData = {
                         'messaging_type': 'UPDATE',
@@ -471,13 +475,12 @@ AutomationQueue.find({}, (err, data) => {
                       // Logic to control the autoposting when last activity is less than 30 minutes
                       compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
                         if (err) {
-                          logger.serverLog(TAG, 'inside error')
-                          return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                          logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                         }
 
                         if (isLastMessage) {
                           logger.serverLog(TAG, 'inside autoposting autoposting twitter send')
-                          sendAutopostingMessage(messageData, page, {})
+                          sendAutopostingMessage(messageData, page, message)
                         } else {
                           // Logic to add into queue will go here
                           logger.serverLog(TAG, 'inside adding to autoposting queue')
@@ -506,7 +509,9 @@ AutomationQueue.find({}, (err, data) => {
                   })
 
                   newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                    if (err) logger.serverLog(TAG, err)
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
                     logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
                   })
                 })
@@ -522,13 +527,26 @@ AutomationQueue.find({}, (err, data) => {
           broadcast
           */
         }
-      } else {
+        if (!(i + 1 < data.length)) {
+          setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
+        }
+      } else if (!(i + 1 < data.length)) {
         // Do work to reschedule the message
+        setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
       }
-    })
+    }
   }
   // mongoose.disconnect()
 })
+
+function closeDB () {
+  console.log('last index reached')
+  mongoose.disconnect(function (err) {
+    if (err) throw err
+    console.log('disconnected')
+    process.exit()
+  })
+}
 
 function sendAutopostingMessage (messageData, page, savedMsg) {
   request(
@@ -541,7 +559,7 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
     },
     function (err, res) {
       if (err) {
-        return logger.serverLog(TAG,
+        logger.serverLog(TAG,
           `At send wordpress broadcast ${JSON.stringify(
             err)}`)
       } else {
@@ -550,6 +568,13 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
             `At send wordpress broadcast response ${JSON.stringify(
               res.body.error)}`)
         } else {
+          AutomationQueue.deleteOne({'_id': savedMsg._id}, (err, result) => {
+            if (err) {
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+            }
+
+            logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+          })
           // logger.serverLog(TAG,
           //   `At send tweet broadcast response ${JSON.stringify(
           //   res.body.message_id)}`, true)
