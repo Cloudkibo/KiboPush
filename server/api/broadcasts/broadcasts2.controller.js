@@ -190,8 +190,6 @@ exports.sendConversation = function (req, res) {
                   if (err) logger.serverLog(TAG, err)
                   let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
                   newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
-                  console.log('newPayload', newPayload)
-                  console.log('newPayload', newPayload[pindex].listItems[lindex].buttons)
                 })
               })
             })
