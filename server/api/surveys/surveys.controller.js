@@ -162,6 +162,7 @@ exports.allSurveys = function (req, res) {
                 return res.status(404)
                 .json({status: 'failed', description: 'responses count not found'})
               }
+              console.log('surveys', surveys.length)
               res.status(200).json({
                 status: 'success',
                 payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
