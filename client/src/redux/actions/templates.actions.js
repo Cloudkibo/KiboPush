@@ -164,8 +164,12 @@ export function loadSurveysList () {
 
 export function loadSurveysListNew (data) {
   // here we will fetch list of subscribers from endpoint
+  console.log('loadSurveysListNew', data)
   return (dispatch) => {
-    callApi('templates/getAllSurveys', 'post', data).then(res => dispatch(showSurveysNew(res.payload)))
+    callApi('templates/getAllSurveys', 'post', data).then(res => {
+      console.log('response from loadSurveysListNew', res)
+      dispatch(showSurveysNew(res.payload))
+    })
   }
 }
 
@@ -178,8 +182,12 @@ export function loadPollsList () {
 
 export function loadPollsListNew (data) {
   // here we will fetch list of subscribers from endpoint
+  console.log('loadPollsListNew', data)
   return (dispatch) => {
-    callApi('templates/getAllPolls', 'post', data).then(res => dispatch(showPollsNew(res.payload)))
+    callApi('templates/getAllPolls', 'post', data).then(res => {
+      console.log('response from loadPollsListNew', res)
+      dispatch(showPollsNew(res.payload))
+    })
   }
 }
 
