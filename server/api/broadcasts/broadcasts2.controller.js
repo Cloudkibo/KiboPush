@@ -158,6 +158,44 @@ exports.sendConversation = function (req, res) {
               })
             })
           }
+          if (payloadItem.componentType === 'gallery') {
+            payloadItem.cards.forEach((card, cindex) => {
+              card.buttons.forEach((button, bindex) => {
+                let URLObject = new URL({
+                  originalURL: button.url,
+                  module: {
+                    id: broadcast._id,
+                    type: 'broadcast'
+                  }
+                })
+                URLObject.save((err, savedurl) => {
+                  if (err) logger.serverLog(TAG, err)
+                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                  newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
+                })
+              })
+            })
+          }
+          if (payloadItem.componentType === 'list') {
+            payloadItem.listItems.forEach((element, lindex) => {
+              element.buttons.forEach((button, bindex) => {
+                let URLObject = new URL({
+                  originalURL: button.url,
+                  module: {
+                    id: broadcast._id,
+                    type: 'broadcast'
+                  }
+                })
+                URLObject.save((err, savedurl) => {
+                  if (err) logger.serverLog(TAG, err)
+                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                  newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
+                  console.log('newPayload', newPayload)
+                  console.log('newPayload', newPayload[pindex].listItems[lindex].buttons)
+                })
+              })
+            })
+          }
         })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
