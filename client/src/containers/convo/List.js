@@ -26,7 +26,7 @@ class List extends React.Component {
     this.topElementStyle = this.topElementStyle.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: 2}],
+      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle='COMPACT' />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='COMPACT' topElementStyle={this.topElementStyle} />, key: 2}],
       showPlus: false,
       pageNumber: 2,
       buttons: [],
@@ -36,26 +36,28 @@ class List extends React.Component {
 
   componentDidMount () {
     if (this.props.cards && this.props.cards.length > 0) {
+      console.log('this.props.cards', this.props)
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k + 1} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} />, key: k})
+        tmp.push({element: <Card id={k + 1} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
       }
       console.log()
-      this.setState({cards: tmp, broadcast: this.props.cards})
+      this.setState({cards: tmp, broadcast: this.props.cards, topElementStyle: this.props.list.topElementStyle})
     }
     if (this.props.listDetails && this.props.listDetails !== '') {
+      console.log('this.props.listDetails', this.props.listDetails)
       var cards = this.props.listDetails.listItems
       var card = {}
       var temp = []
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
-        card = {element: <Card id={i + 1} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: i}
+        card = {element: <Card id={i + 1} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.props.listDetails.topElementStyle} />, key: i}
         cardMessage.push(cards[i])
         temp.push(card)
       }
-      this.setState({cards: temp})
+      this.setState({cards: temp, topElementStyle: this.props.listDetails.topElementStyle})
       this.setState({showPlus: true})
       this.setState({broadcast: cardMessage})
     }
@@ -127,7 +129,7 @@ class List extends React.Component {
 
   addElement () {
     var temp = this.state.cards
-    temp.push({element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} />, key: temp.length + 1})
+    temp.push({element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.state.topElementStyle} />, key: temp.length + 1})
     this.setState({cards: temp, pageNumber: temp.length})
   }
 
@@ -142,6 +144,7 @@ class List extends React.Component {
       //   return index !== obj.id
       // })
       var temp = []
+
       for (var i = 0; i < this.state.cards.length; i++) {
         if (obj.id !== this.state.cards[i].element.props.id) {
           temp.push(this.state.cards[i])

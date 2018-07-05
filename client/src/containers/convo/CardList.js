@@ -82,8 +82,9 @@ class Card extends React.Component {
       openPopover: false
     })
     if (this.state.checkbox) {
-      console.log('in checkbox')
       this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('COMPACT')
     }
   }
   handleClick (e) {
@@ -121,6 +122,9 @@ class Card extends React.Component {
         this.setState({ subtitle: cardProps.cardDetails.subtitle })
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
+      }
+      if (cardProps.id === 1 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
+        this.setState({ checkbox: true })
       }
     }
   }
@@ -330,7 +334,7 @@ class Card extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onClick={this.handleCheckbox} onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />

@@ -75,7 +75,7 @@ class CreateBroadcastTemplate extends React.Component {
         } else if (this.props.template.payload[i].componentType === 'file') {
           temp.push({content: (<File id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'list') {
-          temp.push({content: (<List id={temp.length} key={temp.length} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+          temp.push({content: (<List id={temp.length} key={temp.length} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         }
       }
       var options = this.state.categoryValue
@@ -377,9 +377,9 @@ class CreateBroadcastTemplate extends React.Component {
         if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
           return this.msg.error('A list must have atleast 2 elements')
         }
-        if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
-          return this.msg.error('Please select an image for top item with large style in list')
-        }
+        // if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
+        //   return this.msg.error('Please select an image for top item with large style in list')
+        // }
         for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
           if (!this.state.broadcast[i].listItems[j].title) {
             return this.msg.error('Element in list must have a title.')
