@@ -75,7 +75,7 @@ class CreateBroadcastTemplate extends React.Component {
         } else if (this.props.template.payload[i].componentType === 'file') {
           temp.push({content: (<File id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'list') {
-          temp.push({content: (<List id={temp.length} key={temp.length} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+          temp.push({content: (<List id={temp.length} key={temp.length} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         }
       }
       var options = this.state.categoryValue
