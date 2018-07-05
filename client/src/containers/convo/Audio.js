@@ -142,12 +142,11 @@ class Audio extends React.Component {
             </Files>
           }
           { this.state.showPreview &&
-            <div style={{padding: '10px', marginTop: '40px'}}>
+            <div style={{marginTop: '40px'}}>
               <ReactPlayer
                 url={this.state.file.url}
                 controls
                 width='100%'
-                height='auto'
                 onPlay={this.onTestURLAudio(this.state.file.url)}
               />
             </div>

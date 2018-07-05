@@ -77,7 +77,11 @@ export function saveMenu (data, handleSaveMenu, msg) {
         msg.success('Menu saved successfully')
       } else {
         dispatch(saveMenuFailure(res))
-        msg.error('Failed to save Menu')
+        if (res.description) {
+          msg.error(res.description)
+        } else {
+          msg.error('Failed to save Menu')
+        }
       }
       handleSaveMenu(res)
     })
