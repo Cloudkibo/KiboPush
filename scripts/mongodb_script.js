@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+let mongoose = require('mongoose')
 const logger = require('../server/components/logger')
 const config = require('../server/config/environment')
 const AutomationQueue = require('../server/api/automation_queue/automation_queue.model')
@@ -6,7 +6,6 @@ const SurveyQuestions = require('../server/api/surveys/surveyquestions.model')
 const Surveys = require('../server/api/surveys/surveys.model')
 const Pages = require('../server/api/pages/Pages.model')
 const Users = require('../server/api/user/Users.model')
-const Lists = require('../server/api/lists/lists.model')
 const Subscribers = require('../server/api/subscribers/Subscribers.model')
 const SurveyPage = require('../server/api/page_survey/page_survey.model')
 const PollPage = require('../server/api/page_poll/page_poll.model')
@@ -14,65 +13,52 @@ const Polls = require('../server/api/polls/Polls.model')
 const AutoPostingMessages = require('../server/api/autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require('../server/api/autoposting_messages/autoposting_subscriber_messages.model')
 const URL = require('../server/api/URLforClickedCount/URL.model')
-const AutoPosting = require('../server/api/autoposting/autopostings.model')
 const TAG = 'scripts/monodb_script.js'
 
-let _ = require('lodash')
-
 const request = require('request')
+let Twit = require('twit')
 const needle = require('needle')
-const utility = require('../server/api/broadcasts/broadcasts.utility')
 const compUtility = require('../server/components/utility')
 
-mongoose.connect(config.mongo.uri)
+mongoose = mongoose.connect(config.mongo.uri)
 
 AutomationQueue.find({}, (err, data) => {
   if (err) {
-    return logger.serverLog(TAG, `queue messages not found ${JSON.stringify(err)}`)
+    logger.serverLog(TAG, `queue messages not found ${JSON.stringify(err)}`)
   }
   if (data) {
-    data.forEach((message) => {
+    for (let i = 0; i < data.length; i++) {
+      let message = data[i]
       if (message.scheduledTime.getTime() < new Date().getTime()) {
         if (message.type === 'survey') {
           /* Getting the company user who has connected the facebook account */
-          Pages.findOne({ companyId: message.companyId, connected: true }, (err, userPage) => {
+
+          Subscribers.findOne({ '_id': message.subscriberId }, (err, subscriber) => {
             if (err) {
-              logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-              return {
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              }
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
             }
 
-            Users.findOne({ _id: userPage.userId }, (err, connectedUser) => {
+            Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
               if (err) {
-                return {
-                  status: 'failed',
-                  description: `Internal Server Error ${JSON.stringify(err)}`
-                }
+                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
               }
-              var currentUser = connectedUser
 
-              /*
-              Expected request body
-              { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
-              */
-              // we will send only first question to fb subsribers
-              // find questions
-              SurveyQuestions.find({ surveyId: message.automatedMessageId })
-                .populate('surveyId')
-                .exec((err2, questions) => {
-                  if (err2) {
-                    return {
-                      status: 'failed',
-                      description: `Internal Server Error ${JSON.stringify(err2)}`
-                    }
+              Users.findOne({ '_id': page.userId }, (err, connectedUser) => {
+                if (err) {
+                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                }
+
+                var currentUser = connectedUser
+                SurveyQuestions.find({ 'surveyId': message.automatedMessageId }, (err, questions) => {
+                  if (err) {
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
-                  Surveys.findOne({ _id: message.automatedMessageId }, (err, survey) => {
+
+                  Surveys.findOne({ '_id': message.automatedMessageId }, (err, survey) => {
                     if (err) {
-                      return logger.serverLog(TAG,
-                        `At surveys ${JSON.stringify(err)}`)
+                      logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                     }
+
                     if (questions.length > 0) {
                       let firstQuestion = questions[0]
                       // create buttons
@@ -95,664 +81,200 @@ AutomationQueue.find({}, (err, data) => {
                           })
                         })
                       }
-                      let pagesFindCriteria = { companyId: message.companyId, connected: true }
-                      if (message.isSegmented) {
-                        if (message.segmentationPageIds.length > 0) {
-                          pagesFindCriteria = _.merge(pagesFindCriteria, {
-                            pageId: {
-                              $in: message.segmentationPageIds
+
+                      const messageData = {
+                        attachment: {
+                          type: 'template',
+                          payload: {
+                            template_type: 'button',
+                            text: `${survey.description}\nPlease respond to these questions. \n${firstQuestion.statement}`,
+                            buttons
+                          }
+                        }
+                      }
+
+                      const data = {
+                        messaging_type: 'UPDATE',
+                        recipient: { id: subscriber.senderId }, // this is the subscriber id
+                        message: messageData
+                      }
+                      // checks the age of function using callback
+                      compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                        if (err) {
+                          logger.serverLog(TAG, 'inside error')
+                          logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                        }
+                        if (isLastMessage) {
+                          logger.serverLog(TAG, 'inside scheduler suvery send')
+                          needle.post(
+                            `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                            data, (err, resp) => {
+                              if (err) {
+                                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                              }
+                              let surveyPage = new SurveyPage({
+                                pageId: page.pageId,
+                                userId: currentUser._id,
+                                subscriberId: subscriber.senderId,
+                                surveyId: message._id,
+                                seen: false,
+                                companyId: message.companyId
+                              })
+
+                              surveyPage.save((err2) => {
+                                if (err2) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Scheduler Survey Broadcast create failed',
+                                    err2
+                                  })
+                                }
+                                AutomationQueue.deleteOne({'_id': message._id}, (err, result) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                  }
+
+                                  logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+                                })
+                              })
+                            })
+                        } else {
+                          logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                          let timeNow = new Date()
+                          message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
+
+                          message.save((error) => {
+                            if (error) {
+                              logger.serverLog(TAG, {
+                                status: 'failed',
+                                description: 'Automation Queue Survey Message create failed',
+                                error
+                              })
                             }
                           })
                         }
-                      }
-                      Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
-                        if (err) {
-                          return {
-                            status: 'failed',
-                            description: `Internal Server Error ${JSON.stringify(err)}`
-                          }
-                        }
-                        for (let z = 0; z < pages.length; z++) {
-                          if (message.isList === true) {
-                            let ListFindCriteria = {}
-                            ListFindCriteria = _.merge(ListFindCriteria,
-                              {
-                                _id: {
-                                  $in: message.segmentationList
-                                }
-                              })
-                            Lists.find(ListFindCriteria, (err, lists) => {
-                              if (err) {
-                                return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                              }
-                              let subsFindCriteria = { pageId: pages[z]._id }
-                              let listData = []
-                              if (lists.length > 1) {
-                                for (let i = 0; i < lists.length; i++) {
-                                  for (let j = 0; j < lists[i].content.length; j++) {
-                                    if (exists(listData, lists[i].content[j]) === false) {
-                                      listData.push(lists[i].content[j])
-                                    }
-                                  }
-                                }
-                                subsFindCriteria = _.merge(subsFindCriteria, {
-                                  _id: {
-                                    $in: listData
-                                  }
-                                })
-                              } else {
-                                subsFindCriteria = _.merge(subsFindCriteria, {
-                                  _id: {
-                                    $in: lists[0].content
-                                  }
-                                })
-                              }
-                              Subscribers.find(subsFindCriteria, (err, subscribers) => {
-                                if (err) {
-                                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                                }
-
-                                needle.get(
-                                  `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                                  (err, resp) => {
-                                    if (err) {
-                                      logger.serverLog(TAG,
-                                        `Page access token from graph api error ${JSON.stringify(
-                                          err)}`)
-                                    }
-                                    let req = {
-                                      'body': {
-                                        'segmentationTags': message.segmentationTags,
-                                        'segmentationSurvey': message.segmentationSurvey
-                                      }
-                                    }
-                                    utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                                      subscribers = taggedSubscribers
-                                      utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
-                                        subscribers = repliedSubscribers
-                                        for (let j = 0; j < subscribers.length; j++) {
-                                          const messageData = {
-                                            attachment: {
-                                              type: 'template',
-                                              payload: {
-                                                template_type: 'button',
-                                                text: `${survey.description}\nPlease respond to these questions. \n${firstQuestion.statement}`,
-                                                buttons
-                                              }
-                                            }
-                                          }
-                                          const data = {
-                                            messaging_type: 'UPDATE',
-                                            recipient: { id: subscribers[j].senderId }, // this is the subscriber id
-                                            message: messageData
-                                          }
-
-                                          // checks the age of function using callback
-                                          compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
-                                            if (err) {
-                                              logger.serverLog(TAG, 'inside error')
-                                              return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
-                                            }
-                                            if (isLastMessage) {
-                                              logger.serverLog(TAG, 'inside scheduler suvery send')
-                                              needle.post(
-                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                                data, (err, resp) => {
-                                                  if (err) {
-                                                    return {
-                                                      status: 'failed',
-                                                      description: JSON.stringify(err)
-                                                    }
-                                                  }
-                                                  let surveyPage = new SurveyPage({
-                                                    pageId: pages[z].pageId,
-                                                    userId: currentUser._id,
-                                                    subscriberId: subscribers[j].senderId,
-                                                    surveyId: message._id,
-                                                    seen: false,
-                                                    companyId: message.companyId
-                                                  })
-
-                                                  surveyPage.save((err2) => {
-                                                    if (err2) {
-                                                      logger.serverLog(TAG, {
-                                                        status: 'failed',
-                                                        description: 'Scheduler Survey Broadcast create failed',
-                                                        err2
-                                                      })
-                                                    }
-                                                  })
-                                                })
-                                            } else {
-                                              logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
-                                              let timeNow = new Date()
-                                              message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
-
-                                              message.save((error) => {
-                                                if (error) {
-                                                  logger.serverLog(TAG, {
-                                                    status: 'failed',
-                                                    description: 'Automation Queue Survey Message create failed',
-                                                    error
-                                                  })
-                                                }
-                                              })
-                                            }
-                                          })
-                                        }
-                                      })
-                                    })
-                                  })
-                              })
-                            })
-                          } else {
-                            let subscriberFindCriteria = {
-                              pageId: pages[z]._id,
-                              isSubscribed: true
-                            }
-                            if (message.isSegmented) {
-                              if (message.segmentationGender.length > 0) {
-                                subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                                  {
-                                    gender: {
-                                      $in: message.segmentationGender
-                                    }
-                                  })
-                              }
-                              if (message.segmentationLocale.length > 0) {
-                                subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                                  locale: {
-                                    $in: message.segmentationLocale
-                                  }
-                                })
-                              }
-                            }
-                            Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                              if (err) {
-                                return { status: 'failed', description: 'Subscribers not found' }
-                              }
-
-                              needle.get(
-                                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                                (err, resp) => {
-                                  if (err) {
-                                    logger.serverLog(TAG,
-                                      `Page access token from graph api error ${JSON.stringify(
-                                        err)}`)
-                                  }
-                                  let req = {
-                                    'body': {
-                                      'segmentationTags': message.segmentationTags,
-                                      'segmentationSurvey': message.segmentationSurvey
-                                    }
-                                  }
-                                  utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                                    subscribers = taggedSubscribers
-                                    utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
-                                      subscribers = repliedSubscribers
-                                      for (let j = 0; j < subscribers.length; j++) {
-                                        const messageData = {
-                                          attachment: {
-                                            type: 'template',
-                                            payload: {
-                                              template_type: 'button',
-                                              text: `${survey.description}\nPlease respond to these questions. \n${firstQuestion.statement}`,
-                                              buttons
-                                            }
-                                          }
-                                        }
-                                        const data = {
-                                          messaging_type: 'UPDATE',
-                                          recipient: { id: subscribers[j].senderId }, // this is the subscriber id
-                                          message: messageData
-                                        }
-
-                                        // this calls the needle when the last message was older than 30 minutes
-                                        // checks the age of function using callback
-                                        compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
-                                          if (err) {
-                                            logger.serverLog(TAG, 'inside error')
-                                            return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
-                                          }
-                                          if (isLastMessage) {
-                                            needle.post(
-                                              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                              data, (err, resp) => {
-                                                if (err) {
-                                                  return {
-                                                    status: 'failed',
-                                                    description: JSON.stringify(err)
-                                                  }
-                                                }
-                                                let surveyPage = new SurveyPage({
-                                                  pageId: pages[z].pageId,
-                                                  userId: currentUser._id,
-                                                  subscriberId: subscribers[j].senderId,
-                                                  surveyId: message._id,
-                                                  seen: false,
-                                                  companyId: message.companyId
-                                                })
-
-                                                surveyPage.save((err2) => {
-                                                  if (err2) {
-                                                    logger.serverLog(TAG, {
-                                                      status: 'failed',
-                                                      description: 'Survey Broadcast create failed',
-                                                      err2
-                                                    })
-                                                  }
-                                                  // not using now
-                                                  // Sessions.findOne({
-                                                  //   subscriber_id: subscribers[j]._id,
-                                                  //   page_id: pages[z]._id,
-                                                  //   company_id: pages[z].userId._id
-                                                  // }, (err, session) => {
-                                                  //   if (err) {
-                                                  //     return logger.serverLog(TAG,
-                                                  //       `At get session ${JSON.stringify(err)}`)
-                                                  //   }
-                                                  //   if (!session) {
-                                                  //     return logger.serverLog(TAG,
-                                                  //       `No chat session was found for surveys`)
-                                                  //   }
-                                                  //   const chatMessage = new LiveChat({
-                                                  //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
-                                                  //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
-                                                  //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
-                                                  //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                                                  //     session_id: session._id,
-                                                  //     company_id: pages[z].userId._id, // this is admin id till we have companies
-                                                  //     payload: {
-                                                  //       componentType: 'survey',
-                                                  //       payload: messageData
-                                                  //     }, // this where message content will go
-                                                  //     status: 'unseen' // seen or unseen
-                                                  //   })
-                                                  //   chatMessage.save((err, chatMessageSaved) => {
-                                                  //     if (err) {
-                                                  //       return logger.serverLog(TAG,
-                                                  //         `At save chat${JSON.stringify(err)}`)
-                                                  //     }
-                                                  //     logger.serverLog(TAG,
-                                                  //       'Chat message saved for surveys sent')
-                                                  //   })
-                                                  // })
-                                                })
-                                              })
-                                          } else {
-                                            logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
-                                            let timeNow = new Date()
-                                            message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
-
-                                            message.save((error) => {
-                                              if (error) {
-                                                logger.serverLog(TAG, {
-                                                  status: 'failed',
-                                                  description: 'Automation Queue Survey Message create failed',
-                                                  error
-                                                })
-                                              }
-                                            })
-                                          }
-                                        })
-                                      }
-                                    })
-                                  })
-                                })
-                            })
-                          }
-                        }
-                        return { status: 'success', payload: 'Survey sent successfully.' }
                       })
                     } else {
-                      return { status: 'failed', description: 'Survey Questions not found' }
+                      logger.serverLog(TAG, 'Survey Questions not found - scheduler')
                     }
                   })
                 })
+              })
             })
           })
         } else if (message.type === 'poll') {
           /* Getting the company user who has connected the facebook account */
-
-          Pages.findOne({ companyId: message.companyId, connected: true }, (err, userPage) => {
+          AutoPostingMessages.findOne({'_id': message.automatedMessageId}, (err, autopostingMessage) => {
             if (err) {
-              logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-              return {
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              }
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
             }
-
-            Users.findOne({ _id: userPage.userId }, (err, connectedUser) => {
+            Subscribers.findOne({ '_id': message.subscriberId }, (err, subscriber) => {
               if (err) {
-                return {
-                  status: 'failed',
-                  description: `Internal Server Error ${JSON.stringify(err)}`
-                }
+                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
               }
-              let currentUser = connectedUser
-
-              /*
-              Expected request body
-              { platform: 'facebook',statement: req.body.statement,options: req.body.options,sent: 0 });
-              */
-
-              Polls.findOne({ '_id': message.automatedMessageId }, (err, poll) => {
+              Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
                 if (err) {
-                  return {
-                    status: 'failed',
-                    description: `Internal Server Error ${JSON.stringify(err)}`
+                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                }
+                Users.findOne({'_id': page.userId}, (err, connectedUser) => {
+                  if (err) {
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
-                }
-
-                const messageData = {
-                  text: poll.statement,
-                  quick_replies: [
-                    {
-                      'content_type': 'text',
-                      'title': poll.options[0],
-                      'payload': JSON.stringify(
-                        { poll_id: poll._id, option: poll.options[0] })
-                    },
-                    {
-                      'content_type': 'text',
-                      'title': poll.options[1],
-                      'payload': JSON.stringify(
-                        { poll_id: poll._id, option: poll.options[1] })
-                    },
-                    {
-                      'content_type': 'text',
-                      'title': poll.options[2],
-                      'payload': JSON.stringify(
-                        { poll_id: poll._id, option: poll.options[2] })
+                  Polls.findOne({'_id': message.automatedMessageId}, (err, poll) => {
+                    if (err) {
+                      logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                     }
-                  ]
-                }
+                    let currentUser = connectedUser
+                    const messageData = {
+                      text: poll.statement,
+                      quick_replies: [
+                        {
+                          'content_type': 'text',
+                          'title': poll.options[0],
+                          'payload': JSON.stringify(
+                            { poll_id: poll._id, option: poll.options[0] })
+                        },
+                        {
+                          'content_type': 'text',
+                          'title': poll.options[1],
+                          'payload': JSON.stringify(
+                            { poll_id: poll._id, option: poll.options[1] })
+                        },
+                        {
+                          'content_type': 'text',
+                          'title': poll.options[2],
+                          'payload': JSON.stringify(
+                            { poll_id: poll._id, option: poll.options[2] })
+                        }
+                      ]
+                    }
+                    const data = {
+                      messaging_type: 'UPDATE',
+                      recipient: { id: subscriber.senderId }, // this is the subscriber id
+                      message: messageData
+                    }
 
-                let pagesFindCriteria = { companyId: message.companyId, connected: true }
-                if (poll.isSegmented) {
-                  if (poll.segmentationPageIds.length > 0) {
-                    pagesFindCriteria = _.merge(pagesFindCriteria, {
-                      pageId: {
-                        $in: poll.segmentationPageIds
+                    // this calls the needle when the last message was older than 30 minutes
+                    // checks the age of function using callback
+                    compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                      if (err) {
+                        logger.serverLog(TAG, 'inside error')
+                        logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                      }
+                      if (isLastMessage) {
+                        needle.post(
+                          `https://graph.facebook.com/v2.6/me/messages?access_token=${page.accessToken}`,
+                          data, (err, resp) => {
+                            if (err) {
+                              logger.serverLog(TAG, err)
+                              logger.serverLog(TAG,
+                                `Error occured at subscriber :${JSON.stringify(
+                                  subscriber)}`)
+                            }
+                            let pollBroadcast = new PollPage({
+                              pageId: page.pageId,
+                              userId: currentUser._id,
+                              companyId: message.companyId,
+                              subscriberId: subscriber.senderId,
+                              pollId: poll._id,
+                              seen: false
+                            })
+
+                            pollBroadcast.save((err2) => {
+                              if (err2) {
+                                logger.serverLog(TAG, {
+                                  status: 'failed',
+                                  description: 'PollBroadcast create failed',
+                                  err2
+                                })
+                              }
+
+                              AutomationQueue.deleteOne({'_id': message._id}, (err, result) => {
+                                if (err) {
+                                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                }
+
+                                logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+                              })
+                            })
+                          })
+                      } else {
+                        logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
+                        let timeNow = new Date()
+                        message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
+
+                        message.save((error) => {
+                          if (error) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'Automation Queue poll Message create failed',
+                              error
+                            })
+                          }
+                        })
                       }
                     })
-                  }
-                }
-                Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
-                  if (err) {
-                    logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                    return {
-                      status: 'failed',
-                      description: `Internal Server Error${JSON.stringify(err)}`
-                    }
-                  }
-                  for (let z = 0; z < pages.length; z++) {
-                    if (poll.isList === true) {
-                      let ListFindCriteria = {}
-                      ListFindCriteria = _.merge(ListFindCriteria,
-                        {
-                          _id: {
-                            $in: poll.segmentationList
-                          }
-                        })
-                      Lists.find(ListFindCriteria, (err, lists) => {
-                        if (err) {
-                          return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                        }
-                        let subsFindCriteria = { pageId: pages[z]._id }
-                        let listData = []
-                        if (lists.length > 1) {
-                          for (let i = 0; i < lists.length; i++) {
-                            for (let j = 0; j < lists[i].content.length; j++) {
-                              if (exists(listData, lists[i].content[j]) === false) {
-                                listData.push(lists[i].content[j])
-                              }
-                            }
-                          }
-                          subsFindCriteria = _.merge(subsFindCriteria, {
-                            _id: {
-                              $in: listData
-                            }
-                          })
-                        } else {
-                          subsFindCriteria = _.merge(subsFindCriteria, {
-                            _id: {
-                              $in: lists[0].content
-                            }
-                          })
-                        }
-                        Subscribers.find(subsFindCriteria, (err, subscribers) => {
-                          if (err) {
-                            return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                          }
-
-                          needle.get(
-                            `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                            (err, resp) => {
-                              if (err) {
-                                logger.serverLog(TAG,
-                                  `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                              }
-                              let req = {
-                                'body': {
-                                  'segmentationTags': poll.segmentationTags,
-                                  'segmentationSurvey': poll.segmentationSurvey
-                                }
-                              }
-                              utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                                subscribers = taggedSubscribers
-                                for (let j = 0; j < subscribers.length; j++) {
-                                  const data = {
-                                    messaging_type: 'UPDATE',
-                                    recipient: { id: subscribers[j].senderId }, // this is the subscriber id
-                                    message: messageData
-                                  }
-
-                                  // this calls the needle when the last message was older than 30 minutes
-                                  // checks the age of function using callback
-                                  compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
-                                    if (err) {
-                                      logger.serverLog(TAG, 'inside error')
-                                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
-                                    }
-                                    if (isLastMessage) {
-                                      needle.post(
-                                        `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                        data, (err, resp) => {
-                                          if (err) {
-                                            logger.serverLog(TAG, err)
-                                            logger.serverLog(TAG,
-                                              `Error occured at subscriber :${JSON.stringify(
-                                                subscribers[j])}`)
-                                          }
-                                          let pollBroadcast = new PollPage({
-                                            pageId: pages[z].pageId,
-                                            userId: currentUser._id,
-                                            companyId: message.companyId,
-                                            subscriberId: subscribers[j].senderId,
-                                            pollId: poll._id,
-                                            seen: false
-                                          })
-
-                                          pollBroadcast.save((err2) => {
-                                            if (err2) {
-                                              logger.serverLog(TAG, {
-                                                status: 'failed',
-                                                description: 'PollBroadcast create failed',
-                                                err2
-                                              })
-                                            }
-                                          })
-                                        })
-                                    } else {
-                                      logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
-                                      let timeNow = new Date()
-                                      message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
-
-                                      message.save((error) => {
-                                        if (error) {
-                                          logger.serverLog(TAG, {
-                                            status: 'failed',
-                                            description: 'Automation Queue poll Message create failed',
-                                            error
-                                          })
-                                        }
-                                      })
-                                    }
-                                  })
-                                }
-                              })
-                            })
-                        })
-                      })
-                    } else {
-                      let subscriberFindCriteria = { pageId: pages[z]._id, isSubscribed: true }
-
-                      if (poll.isSegmented) {
-                        if (poll.segmentationGender.length > 0) {
-                          subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                            {
-                              gender: {
-                                $in: poll.segmentationGender
-                              }
-                            })
-                        }
-                        if (poll.segmentationLocale.length > 0) {
-                          subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                            locale: {
-                              $in: poll.segmentationLocale
-                            }
-                          })
-                        }
-                      }
-
-                      Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                        if (err) {
-                          return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
-                        }
-
-                        needle.get(
-                          `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                          (err, resp) => {
-                            if (err) {
-                              logger.serverLog(TAG,
-                                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-                            }
-                            if (subscribers.length > 0) {
-                              let req = {
-                                'body': {
-                                  'segmentationTags': poll.segmentationTags,
-                                  'segmentationPoll': poll.segmentationPoll
-                                }
-                              }
-                              utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                                subscribers = taggedSubscribers
-                                utility.applyPollFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
-                                  subscribers = repliedSubscribers
-                                  for (let j = 0; j < subscribers.length; j++) {
-                                    const data = {
-                                      messaging_type: 'UPDATE',
-                                      recipient: { id: subscribers[j].senderId }, // this is the subscriber id
-                                      message: messageData
-                                    }
-                                    // this calls the needle when the last message was older than 30 minutes
-                                    // checks the age of function using callback
-                                    compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
-                                      if (err) {
-                                        logger.serverLog(TAG, 'inside error')
-                                        return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
-                                      }
-                                      if (isLastMessage) {
-                                        needle.post(
-                                          `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
-                                          data, (err, resp) => {
-                                            if (err) {
-                                              logger.serverLog(TAG, err)
-                                              logger.serverLog(TAG,
-                                                `Error occured at subscriber :${JSON.stringify(
-                                                  subscribers[j])}`)
-                                            }
-                                            let pollBroadcast = new PollPage({
-                                              pageId: pages[z].pageId,
-                                              userId: currentUser._id,
-                                              companyId: message.companyId,
-                                              subscriberId: subscribers[j].senderId,
-                                              pollId: poll._id,
-                                              seen: false
-                                            })
-
-                                            pollBroadcast.save((err2) => {
-                                              if (err2) {
-                                                logger.serverLog(TAG, {
-                                                  status: 'failed',
-                                                  description: 'PollBroadcast create failed',
-                                                  err2
-                                                })
-                                              }
-                                              // not using now
-                                              // Sessions.findOne({
-                                              //   subscriber_id: subscribers[j]._id,
-                                              //   page_id: pages[z]._id,
-                                              //   company_id: pages[z].userId._id
-                                              // }, (err, session) => {
-                                              //   if (err) {
-                                              //     return logger.serverLog(TAG,
-                                              //       `At get session ${JSON.stringify(err)}`)
-                                              //   }
-                                              //   if (!session) {
-                                              //     return logger.serverLog(TAG,
-                                              //       `No chat session was found for polls`)
-                                              //   }
-                                              //   const chatMessage = new LiveChat({
-                                              //     sender_id: pages[z]._id, // this is the page id: _id of Pageid
-                                              //     recipient_id: subscribers[j]._id, // this is the subscriber id: _id of subscriberId
-                                              //     sender_fb_id: pages[z].pageId, // this is the (facebook) :page id of pageId
-                                              //     recipient_fb_id: subscribers[j].senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                                              //     session_id: session._id,
-                                              //     company_id: pages[z].userId._id, // this is admin id till we have companies
-                                              //     payload: {
-                                              //       componentType: 'poll',
-                                              //       payload: messageData
-                                              //     }, // this where message content will go
-                                              //     status: 'unseen' // seen or unseen
-                                              //   })
-                                              //   chatMessage.save((err, chatMessageSaved) => {
-                                              //     if (err) {
-                                              //       return logger.serverLog(TAG,
-                                              //         `At save chat${JSON.stringify(err)}`)
-                                              //     }
-                                              //     logger.serverLog(TAG,
-                                              //       'Chat message saved for poll sent')
-                                              //   })
-                                              // })
-                                            })
-                                          })
-                                      } else {
-                                        logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
-                                        let timeNow = new Date()
-                                        message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
-
-                                        message.save((error) => {
-                                          if (error) {
-                                            logger.serverLog(TAG, {
-                                              status: 'failed',
-                                              description: 'Automation Queue poll Message create failed',
-                                              error
-                                            })
-                                          }
-                                        })
-                                      }
-                                    })
-                                  }
-                                })
-                              })
-                            }
-                          })
-                      })
-                    }
-                  }
-                  return { status: 'success', payload: 'Polls sent successfully.' }
+                  })
                 })
               })
             })
@@ -760,173 +282,270 @@ AutomationQueue.find({}, (err, data) => {
         } else if (message.type === 'autoposting-wordpress') {
           AutoPostingMessages.findOne({ '_id': message.automatedMessageId }, (err, autopostingMessage) => {
             if (err) {
-              return {
-                status: 'failed',
-                description: `Internal Server Error ${JSON.stringify(err)}`
-              }
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
             }
-
-            AutoPosting.find({ '_id': autopostingMessage.autopostingId, isActive: true })
-              .populate('userId')
-              .exec((err, autopostings) => {
+            Subscribers.findOne({'_id': message.subscriberId}, (err, subscriber) => {
+              if (err) {
+                logger.serverLog(TAG, 'Internal Server Error on connect')
+              }
+              Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
                 if (err) {
-                  return logger.serverLog(TAG, 'Internal Server Error on connect')
+                  logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
-                // logger.serverLog(TAG, `Tweet received and pages listening to it ${autopostings.length} and account is ${tweet.user.screen_name}`)
+                let messageData = {}
 
-                autopostings.forEach(postingItem => {
-                  let pagesFindCriteria = {
-                    companyId: message.companyId,
-                    connected: true
+                URL.findOne({ 'originalURL': autopostingMessage.message_id }, (err, savedurl) => {
+                  if (err) logger.serverLog(TAG, err)
+                  let newURL = config.domain + '/api/URL/' + savedurl._id
+                  messageData = {
+                    'messaging_type': 'UPDATE',
+                    'recipient': JSON.stringify({
+                      'id': subscriber.senderId
+                    }),
+                    'message': JSON.stringify({
+                      'attachment': {
+                        'type': 'template',
+                        'payload': {
+                          'template_type': 'generic',
+                          'elements': [
+                            {
+                              'title': 'Wordpress blog Post title',
+                              'image_url': config.domain + '/img/wordpress.png',
+                              'subtitle': 'sent using kibopush.com',
+                              'buttons': [
+                                {
+                                  'type': 'web_url',
+                                  'url': newURL,
+                                  'title': 'View Wordpress Blog Post'
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    })
                   }
-                  if (postingItem.isSegmented) {
-                    if (postingItem.segmentationPageIds && postingItem.segmentationPageIds.length > 0) {
-                      pagesFindCriteria = _.merge(pagesFindCriteria, {
-                        pageId: {
-                          $in: postingItem.segmentationPageIds
+                  // Logic to control the autoposting when last activity is less than 30 minutes
+                  compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                    if (err) {
+                      logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                    }
+
+                    if (isLastMessage) {
+                      logger.serverLog(TAG, 'inside autoposting wordpress send')
+                      sendAutopostingMessage(messageData, page, message)
+                    } else {
+                      // Logic to add into queue will go here
+                      logger.serverLog(TAG, 'inside adding to autoposting queue')
+                      let timeNow = new Date()
+                      message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
+
+                      message.save((error) => {
+                        if (error) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'Automation Queue autoposting-wordpress Message create failed',
+                            error
+                          })
                         }
                       })
                     }
+                  })
+                })
+
+                let newSubscriberMsg = new AutopostingSubscriberMessages({
+                  pageId: page.pageId,
+                  companyId: message.companyId,
+                  autopostingId: autopostingMessage.autopostingId,
+                  autoposting_messages_id: autopostingMessage._id,
+                  subscriberId: subscriber.senderId
+                })
+
+                newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                  if (err) logger.serverLog(TAG, err)
+                  logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
+                })
+              })
+            })
+          })
+        } else if (message.type === 'autoposting-twitter') {
+          let twitterClient = new Twit({
+            consumer_key: config.twitter.consumer_key,
+            consumer_secret: config.twitter.consumer_secret,
+            access_token: config.twitter.consumer_token,
+            access_token_secret: config.twitter.consumer_token_secret
+          })
+          AutoPostingMessages.findOne({ '_id': message.automatedMessageId }, (err, autopostingMessage) => {
+            if (err) {
+              logger.serverLog(TAG, 'Internal Server Error on connect')
+            }
+            twitterClient.get('statuses/show/:id', { id: autopostingMessage.message_id }, (err, tweet) => {
+              if (err) {
+                logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+              }
+              Subscribers.findOne({'_id': message.subscriberId}, (err, subscriber) => {
+                if (err) {
+                  logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                }
+                Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                  if (err) {
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
-
-                  Pages.find(pagesFindCriteria, (err, pages) => {
-                    if (err) {
-                      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                  let messageData = {}
+                  if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
+                    messageData = {
+                      'messaging_type': 'UPDATE',
+                      'recipient': JSON.stringify({
+                        'id': subscriber.senderId
+                      }),
+                      'message': JSON.stringify({
+                        'text': tweet.text,
+                        'metadata': 'This is a meta data for tweet'
+                      })
                     }
-                    pages.forEach(page => {
-                      let subscriberFindCriteria = {
-                        pageId: page._id,
-                        isSubscribed: true
+                    // Logic to control the autoposting when last activity is less than 30 minutes
+                    compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                      if (err) {
+                        logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                       }
 
-                      if (postingItem.isSegmented) {
-                        if (postingItem.segmentationGender.length > 0) {
-                          subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                            {
-                              gender: {
-                                $in: postingItem.segmentationGender
-                              }
-                            })
-                        }
-                        if (postingItem.segmentationLocale.length > 0) {
-                          subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                            {
-                              locale: {
-                                $in: postingItem.segmentationLocale
-                              }
-                            })
-                        }
-                      }
+                      if (isLastMessage) {
+                        logger.serverLog(TAG, 'inside autoposting send')
+                        sendAutopostingMessage(messageData, page, message)
+                      } else {
+                        // Logic to add into queue will go here
+                        logger.serverLog(TAG, 'inside adding autoposting-twitter to autoposting queue')
+                        let timeNow = new Date()
+                        message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
 
-                      Subscribers.find(subscriberFindCriteria,
-                        (err, subscribers) => {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `Error ${JSON.stringify(err)}`)
-                          }
-                          if (subscribers.length > 0) {
-                            if (err) logger.serverLog(TAG, err)
-                            utility.applyTagFilterIfNecessary({ body: postingItem }, subscribers, (taggedSubscribers) => {
-                              taggedSubscribers.forEach(subscriber => {
-                                let messageData = {}
-
-                                URL.findOne({ 'originalURL': autopostingMessage.message_id }, (err, savedurl) => {
-                                  if (err) logger.serverLog(TAG, err)
-                                  let newURL = config.domain + '/api/URL/' + savedurl._id
-                                  messageData = {
-                                    'messaging_type': 'UPDATE',
-                                    'recipient': JSON.stringify({
-                                      'id': subscriber.senderId
-                                    }),
-                                    'message': JSON.stringify({
-                                      'attachment': {
-                                        'type': 'template',
-                                        'payload': {
-                                          'template_type': 'generic',
-                                          'elements': [
-                                            {
-                                              'title': 'Wordpress blog Post title',
-                                              'image_url': config.domain + '/img/wordpress.png',
-                                              'subtitle': 'sent using kibopush.com',
-                                              'buttons': [
-                                                {
-                                                  'type': 'web_url',
-                                                  'url': newURL,
-                                                  'title': 'View Wordpress Blog Post'
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      }
-                                    })
-                                  }
-                                  // Logic to control the autoposting when last activity is less than 30 minutes
-                                  compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
-                                    if (err) {
-                                      logger.serverLog(TAG, 'inside error')
-                                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
-                                    }
-
-                                    if (isLastMessage) {
-                                      logger.serverLog(TAG, 'inside autoposting wordpress send')
-                                      sendAutopostingMessage(messageData, page, autopostingMessage)
-                                    } else {
-                                      // Logic to add into queue will go here
-                                      logger.serverLog(TAG, 'inside adding to autoposting queue')
-                                      let timeNow = new Date()
-                                      message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
-
-                                      message.save((error) => {
-                                        if (error) {
-                                          logger.serverLog(TAG, {
-                                            status: 'failed',
-                                            description: 'Automation Queue autoposting-wordpress Message create failed',
-                                            error
-                                          })
-                                        }
-                                      })
-                                    }
-                                  })
-                                })
-
-                                let newSubscriberMsg = new AutopostingSubscriberMessages({
-                                  pageId: page.pageId,
-                                  companyId: postingItem.companyId,
-                                  autopostingId: postingItem._id,
-                                  autoposting_messages_id: autopostingMessage._id,
-                                  subscriberId: subscriber.senderId
-                                })
-
-                                newSubscriberMsg.save((err, savedSubscriberMsg) => {
-                                  if (err) logger.serverLog(TAG, err)
-                                  logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
-                                })
-                              })
+                        message.save((error) => {
+                          if (error) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'Automation Queue autoposting-twitter Message create failed',
+                              error
                             })
                           }
                         })
+                      }
                     })
+                  } else {
+                    let URLObject = new URL({
+                      originalURL: tweet.entities.media[0].url,
+                      subscriberId: subscriber._id,
+                      module: {
+                        id: autopostingMessage._id,
+                        type: 'autoposting'
+                      }
+                    })
+
+                    URLObject.save((err, savedurl) => {
+                      if (err) {
+                        logger.serverLog(TAG, err)
+                      }
+                      let newURL = config.domain + '/api/URL/' + savedurl._id
+                      messageData = {
+                        'messaging_type': 'UPDATE',
+                        'recipient': JSON.stringify({
+                          'id': subscriber.senderId
+                        }),
+                        'message': JSON.stringify({
+                          'attachment': {
+                            'type': 'template',
+                            'payload': {
+                              'template_type': 'generic',
+                              'elements': [
+                                {
+                                  'title': tweet.text,
+                                  'image_url': tweet.entities.media[0].media_url,
+                                  'subtitle': 'sent using kibopush.com',
+                                  'buttons': [
+                                    {
+                                      'type': 'web_url',
+                                      'url': newURL,
+                                      'title': 'View Tweet'
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        })
+                      }
+                      // Logic to control the autoposting when last activity is less than 30 minutes
+                      compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                        if (err) {
+                          logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                        }
+
+                        if (isLastMessage) {
+                          logger.serverLog(TAG, 'inside autoposting autoposting twitter send')
+                          sendAutopostingMessage(messageData, page, message)
+                        } else {
+                          // Logic to add into queue will go here
+                          logger.serverLog(TAG, 'inside adding to autoposting queue')
+                          let timeNow = new Date()
+                          message.scheduledTime = timeNow.setMinutes(timeNow.getMinutes() + 30)
+
+                          message.save((error) => {
+                            if (error) {
+                              logger.serverLog(TAG, {
+                                status: 'failed',
+                                description: 'Automation Queue autoposting-twitter Message create failed',
+                                error
+                              })
+                            }
+                          })
+                        }
+                      })
+                    })
+                  }
+                  let newSubscriberMsg = new AutopostingSubscriberMessages({
+                    pageId: page.pageId,
+                    companyId: message.companyId,
+                    autopostingId: autopostingMessage.autopostingId,
+                    autoposting_messages_id: autopostingMessage._id,
+                    subscriberId: subscriber.senderId
+                  })
+
+                  newSubscriberMsg.save((err, savedSubscriberMsg) => {
+                    if (err) {
+                      logger.serverLog(TAG, err)
+                    }
+                    logger.serverLog(TAG, `autoposting subsriber message saved for subscriber id ${subscriber.senderId}`)
                   })
                 })
               })
+            })
           })
+        } else if (message.type === 'autoposting-fb') {
+          // whoever fixes autoposting fb will add following
+
+          /*
+          message sequencing
+          autoposting-fb
+          broadcast
+          */
         }
-      } else {
+        if (!(i + 1 < data.length)) {
+          setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
+        }
+      } else if (!(i + 1 < data.length)) {
         // Do work to reschedule the message
+        setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
       }
-    })
+    }
   }
   // mongoose.disconnect()
 })
 
-function exists (list, content) {
-  for (let i = 0; i < list.length; i++) {
-    if (JSON.stringify(list[i]) === JSON.stringify(content)) {
-      return true
-    }
-  }
-  return false
+function closeDB () {
+  console.log('last index reached')
+  mongoose.disconnect(function (err) {
+    if (err) throw err
+    console.log('disconnected')
+    process.exit()
+  })
 }
 
 function sendAutopostingMessage (messageData, page, savedMsg) {
@@ -940,7 +559,7 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
     },
     function (err, res) {
       if (err) {
-        return logger.serverLog(TAG,
+        logger.serverLog(TAG,
           `At send wordpress broadcast ${JSON.stringify(
             err)}`)
       } else {
@@ -949,6 +568,13 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
             `At send wordpress broadcast response ${JSON.stringify(
               res.body.error)}`)
         } else {
+          AutomationQueue.deleteOne({'_id': savedMsg._id}, (err, result) => {
+            if (err) {
+              logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+            }
+
+            logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+          })
           // logger.serverLog(TAG,
           //   `At send tweet broadcast response ${JSON.stringify(
           //   res.body.message_id)}`, true)

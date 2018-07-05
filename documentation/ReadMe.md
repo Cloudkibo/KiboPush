@@ -45,6 +45,8 @@ We need to set the following variables: (Just copy paste and then change the val
     MONGO_URI=<DATABASE STRING>
     STRIPE_KEY=<STRIPE SECRET KEY>
     STRIPE_PUB_KEY=<STRIPE PUBLISHABLE KEY>
+    NODE_PATH =<NODE INSTALLATION PATH>
+    CRON_SCRIPT_PATH =<PATH TO NODE SCRIPT>
 
 
 Now, run the following command to install dependencies:

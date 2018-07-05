@@ -1,0 +1,3 @@
+# Don't you dare to change this.
+
+echo "$(echo '* * * * * '$NODE_PATH $CRON_SCRIPT_PATH ; crontab -l)" | crontab -
