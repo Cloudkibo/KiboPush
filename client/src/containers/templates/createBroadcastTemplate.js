@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
+import List from '../convo/List'
 import Video from '../convo/Video'
 import Audio from '../convo/Audio'
 import File from '../convo/File'
@@ -38,6 +39,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.newConvo = this.newConvo.bind(this)
@@ -72,6 +74,8 @@ class CreateBroadcastTemplate extends React.Component {
           temp.push({content: (<Video id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'file') {
           temp.push({content: (<File id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+        } else if (this.props.template.payload[i].componentType === 'list') {
+          temp.push({content: (<List id={temp.length} key={temp.length} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         }
       }
       var options = this.state.categoryValue
@@ -271,6 +275,27 @@ class CreateBroadcastTemplate extends React.Component {
 
     this.setState({broadcast: temp})
   }
+  handleList (obj) {
+    console.log('in create convo handleList', obj)
+    console.log('in create convo handleList', this.state.broadcast)
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.listItems = obj.listItems
+        data.topElementStyle = obj.topElementStyle
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    console.log('temp', temp)
+    this.setState({broadcast: temp})
+  }
 
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
@@ -283,13 +308,45 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   createBroadcastTemplate () {
+    for (let i = 0; i < this.state.broadcast.length; i++) {
+      if (this.state.broadcast[i].componentType === 'card') {
+        if (!this.state.broadcast[i].buttons) {
+          return this.msg.error('Card must have at least one button.')
+        } else if (this.state.broadcast[i].buttons.length === 0) {
+          return this.msg.error('Card must have at least one button.')
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'gallery') {
+        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
+          if (!this.state.broadcast[i].cards[j].buttons) {
+            return this.msg.error('Card in gallery must have at least one button.')
+          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            return this.msg.error('Card in gallery must have at least one button.')
+          }
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'list') {
+        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
+          return this.msg.error('A list must have atleast 2 elements')
+        }
+        if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
+          return this.msg.error('Please select an image for top item with large style in list')
+        }
+        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
+          if (!this.state.broadcast[i].listItems[j].title) {
+            return this.msg.error('Element in list must have a title.')
+          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
+            return this.msg.error('Element in list must have a subtitle.')
+          }
+        }
+      }
+    }
     if (this.state.categoryValue.length > 0) {
       var broadcastTemplate = {
         title: this.state.convoTitle,
         category: this.state.categoryValue,
         payload: this.state.broadcast
       }
-
       this.props.createBroadcast(broadcastTemplate, this.msg)
       this.setState({broadcast: [], list: []})
     } else {
@@ -298,6 +355,40 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   editBroadcastTemplate () {
+    console.log('this.state.broadcast', this.state.broadcast)
+    for (let i = 0; i < this.state.broadcast.length; i++) {
+      if (this.state.broadcast[i].componentType === 'card') {
+        if (!this.state.broadcast[i].buttons) {
+          return this.msg.error('Card must have at least one button.')
+        } else if (this.state.broadcast[i].buttons.length === 0) {
+          return this.msg.error('Card must have at least one button.')
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'gallery') {
+        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
+          if (!this.state.broadcast[i].cards[j].buttons) {
+            return this.msg.error('Card in gallery must have at least one button.')
+          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            return this.msg.error('Card in gallery must have at least one button.')
+          }
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'list') {
+        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
+          return this.msg.error('A list must have atleast 2 elements')
+        }
+        if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
+          return this.msg.error('Please select an image for top item with large style in list')
+        }
+        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
+          if (!this.state.broadcast[i].listItems[j].title) {
+            return this.msg.error('Element in list must have a title.')
+          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
+            return this.msg.error('Element in list must have a subtitle.')
+          }
+        }
+      }
+    }
     if (this.state.categoryValue.length > 0) {
       var broadcastTemplate = {
         _id: this.props.template._id,
@@ -305,7 +396,6 @@ class CreateBroadcastTemplate extends React.Component {
         category: this.state.categoryValue,
         payload: this.state.broadcast
       }
-
       this.props.editBroadcast(broadcastTemplate, this.msg)
     } else {
       this.msg.error('Please select a category')
@@ -413,6 +503,14 @@ class CreateBroadcastTemplate extends React.Component {
                                     <div className='align-center'>
                                       <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                       <h6>File</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                      <h6>List</h6>
                                     </div>
                                   </div>
                                 </div>

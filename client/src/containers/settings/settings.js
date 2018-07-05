@@ -84,7 +84,7 @@ class Settings extends React.Component {
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setState({
-        openTab: 'welcomeMessage'
+        openTab: 'welcomeMessage', show: false
       })
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'webhook') {
