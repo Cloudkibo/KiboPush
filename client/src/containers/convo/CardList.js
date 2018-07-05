@@ -84,7 +84,7 @@ class Card extends React.Component {
     if (this.state.checkbox) {
       this.props.topElementStyle('LARGE')
     } else {
-      this.props.topElementStyle('COMPACT')
+      this.props.topElementStyle('compact')
     }
   }
   handleClick (e) {

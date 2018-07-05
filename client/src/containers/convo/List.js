@@ -26,11 +26,11 @@ class List extends React.Component {
     this.topElementStyle = this.topElementStyle.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle='COMPACT' />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='COMPACT' topElementStyle={this.topElementStyle} />, key: 2}],
+      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle='compact' />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} removeElement={this.removeElement} topStyle='compact' topElementStyle={this.topElementStyle} />, key: 2}],
       showPlus: false,
       pageNumber: 2,
       buttons: [],
-      topElementStyle: 'COMPACT'
+      topElementStyle: 'compact'
     }
   }
 

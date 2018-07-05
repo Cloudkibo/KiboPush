@@ -585,6 +585,7 @@ function prepareMessageData (subscriberId, body, fname, lname) {
 
 /* eslint-disable */
 function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname) {
+  console.log('payload', payload)
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
   let batch = []  // to display typing on bubble :)
   payload.forEach((item, index) => {
