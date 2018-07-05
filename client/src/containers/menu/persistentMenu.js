@@ -69,10 +69,11 @@ class Menu extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Menu'
     var compProp = this.props
+    var self = this
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        compProp.getIndexBypage(compProp.pages[0].pageId, this.handleIndexByPage)
+        compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
       }
     })
     if (this.props.location.state && this.props.location.state.action === 'replyWithMessage') {
