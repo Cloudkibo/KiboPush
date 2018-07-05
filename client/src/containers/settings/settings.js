@@ -459,7 +459,7 @@ class Settings extends React.Component {
                           </a>
                         </li>
                         }
-                        {this.props.user && this.props.user.role === 'buyer' &&
+                        {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan === 'plan_C' || this.props.currentPlan === 'plan_D') &&
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon flaticon-mark' />
