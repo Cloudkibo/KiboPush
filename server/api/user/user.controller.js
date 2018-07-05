@@ -1000,7 +1000,8 @@ exports.enableDelete = function (req, res) {
           to: 'sojharo@cloudkibo.com',
           from: 'support@cloudkibo.com',
           subject: 'KiboPush: Delete User Information',
-          text: 'Delete User Information'
+          text: 'Delete User Information',
+          cc: 'jekram@cloudkibo.com'
         })
 
         emailAdmin.setHtml(
@@ -1096,7 +1097,8 @@ exports.cancelDeletion = function (req, res) {
           to: 'sojharo@cloudkibo.com',
           from: 'support@cloudkibo.com',
           subject: 'KiboPush: Cancel Deletion Process',
-          text: 'Cancel Deletion Process'
+          text: 'Cancel Deletion Process',
+          cc: 'jekram@cloudkibo.com'
         })
 
         emailAdmin.setHtml(
