@@ -72,6 +72,25 @@ After this, we can run the server by running the script kibo_script.
     ./kibo_script
 
 
+####MONGODB START FAILURE AT SERVER ( code=exited, status=14 )
+
+Quick Fix
+
+1 — Go to the TMP directory: cd /tmp
+2 — Check if you have the mongodb sock file: ls *.sock
+3 — Change the user:group permission: chown mongodb:mongodb <YOUR_SOCK>
+4 — Start MongoDB: sudo service mongod start
+5 — Check the MongoDB status: sudo service mongod status
+
+    NOTE: If there is no sock file, then we won't be running the command to add sock file in mongodb user group.
+
+    <YOUR_SOCK> will be the name of sock file.
+
+    For example, in staging server it is "mongodb-27017.sock"
+
+    You can check the name in "cd /tmp" and then by "running ls *.sock"
+
+
 ##CRONJOB GUIDE
 
 In order to remove the cronjobs, we can run the following command.
