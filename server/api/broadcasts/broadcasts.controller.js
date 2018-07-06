@@ -7,6 +7,7 @@ const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.mo
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
+const Bots = require('./../smart_replies/Bots.model')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -40,7 +41,7 @@ const Webhooks = require(
 //  './../sequenceMessaging/message.model')
 // const SequenceSubscriberMessages = require(
 //  './../sequenceMessaging/sequenceSubscribersMessages.model')
-const {sendBroadcast} = require('./broadcasts2.controller')
+const { sendBroadcast } = require('./broadcasts2.controller')
 const utility = require('./broadcasts.utility')
 const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
@@ -54,7 +55,7 @@ let config = require('./../../config/environment')
 var array = []
 
 exports.indexx = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email},
+  CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
       if (err) {
         return res.status(500).json({
@@ -69,27 +70,28 @@ exports.indexx = function (req, res) {
         })
       }
       if (req.params.days === '0') {
-        Broadcasts.find({companyId: companyUser.companyId}, (err, broadcasts) => {
+        Broadcasts.find({ companyId: companyUser.companyId }, (err, broadcasts) => {
           if (err) {
             return res.status(404)
-              .json({status: 'failed', description: 'Broadcasts not found'})
+              .json({ status: 'failed', description: 'Broadcasts not found' })
           }
-          BroadcastPage.find({companyId: companyUser.companyId},
+          BroadcastPage.find({ companyId: companyUser.companyId },
             (err, broadcastpages) => {
               if (err) {
                 return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
+                  .json({ status: 'failed', description: 'Broadcasts not found' })
               }
               res.status(200).json({
                 status: 'success',
-                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
               })
             })
         })
       } else {
         Broadcasts.aggregate([
           {
-            $match: {companyId: companyUser.companyId,
+            $match: {
+              companyId: companyUser.companyId,
               'datetime': {
                 $gte: new Date(
                   (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
@@ -101,17 +103,17 @@ exports.indexx = function (req, res) {
         ], (err, broadcasts) => {
           if (err) {
             return res.status(404)
-              .json({status: 'failed', description: 'Broadcasts not found'})
+              .json({ status: 'failed', description: 'Broadcasts not found' })
           }
-          BroadcastPage.find({companyId: companyUser.companyId},
+          BroadcastPage.find({ companyId: companyUser.companyId },
             (err, broadcastpages) => {
               if (err) {
                 return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
+                  .json({ status: 'failed', description: 'Broadcasts not found' })
               }
               res.status(200).json({
                 status: 'success',
-                payload: {broadcasts: broadcasts, broadcastpages: broadcastpages}
+                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
               })
             })
         })
@@ -120,7 +122,7 @@ exports.indexx = function (req, res) {
 }
 
 exports.index = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email},
+  CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
       if (err) {
         return res.status(500).json({
@@ -143,7 +145,7 @@ exports.index = function (req, res) {
                 (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
               $lt: new Date(
                 (new Date().getTime()))
-            } : {$exists: true}
+            } : { $exists: true }
           }
           Broadcasts.aggregate([
             { $match: findCriteria },
@@ -151,26 +153,26 @@ exports.index = function (req, res) {
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
-                .json({status: 'failed', description: 'BroadcastsCount not found'})
+                .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
-            .exec((err, broadcasts) => {
-              if (err) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
-              }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+            Broadcasts.aggregate([{ $match: findCriteria }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+              .exec((err, broadcasts) => {
+                if (err) {
+                  return res.status(404)
+                    .json({ status: 'failed', description: 'Broadcasts not found' })
+                }
+                BroadcastPage.find({ companyId: companyUser.companyId },
+                  (err, broadcastpages) => {
+                    if (err) {
+                      return res.status(404)
+                        .json({ status: 'failed', description: 'Broadcasts not found' })
+                    }
+                    res.status(200).json({
+                      status: 'success',
+                      payload: { broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    })
                   })
-                })
-            })
+              })
           })
         } else {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
@@ -178,26 +180,26 @@ exports.index = function (req, res) {
           if (req.body.filter_criteria.type_value === 'miscellaneous') {
             findCriteria = {
               companyId: companyUser.companyId,
-              'payload.1': {$exists: true},
-              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'payload.1': { $exists: true },
+              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
                   (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
-              } : {$exists: true}
+              } : { $exists: true }
             }
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : {$exists: true},
-              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
+              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
                   (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
-              } : {$exists: true}
+              } : { $exists: true }
             }
           }
           Broadcasts.aggregate([
@@ -206,26 +208,26 @@ exports.index = function (req, res) {
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
-                .json({status: 'failed', description: 'BroadcastsCount not found'})
+                .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
-            .exec((err, broadcasts) => {
-              if (err) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
-              }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'BroadcastPage not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+            Broadcasts.aggregate([{ $match: findCriteria }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+              .exec((err, broadcasts) => {
+                if (err) {
+                  return res.status(404)
+                    .json({ status: 'failed', description: 'Broadcasts not found' })
+                }
+                BroadcastPage.find({ companyId: companyUser.companyId },
+                  (err, broadcastpages) => {
+                    if (err) {
+                      return res.status(404)
+                        .json({ status: 'failed', description: 'BroadcastPage not found' })
+                    }
+                    res.status(200).json({
+                      status: 'success',
+                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    })
                   })
-                })
-            })
+              })
           })
         }
       } else if (req.body.first_page === 'next') {
@@ -237,7 +239,7 @@ exports.index = function (req, res) {
                 (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
               $lt: new Date(
                 (new Date().getTime()))
-            } : {$exists: true}
+            } : { $exists: true }
           }
           Broadcasts.aggregate([
             { $match: findCriteria },
@@ -245,26 +247,26 @@ exports.index = function (req, res) {
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
-                .json({status: 'failed', description: 'BroadcastsCount not found'})
+                .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
-            .exec((err, broadcasts) => {
-              if (err) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
-              }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+              .exec((err, broadcasts) => {
+                if (err) {
+                  return res.status(404)
+                    .json({ status: 'failed', description: 'Broadcasts not found' })
+                }
+                BroadcastPage.find({ companyId: companyUser.companyId },
+                  (err, broadcastpages) => {
+                    if (err) {
+                      return res.status(404)
+                        .json({ status: 'failed', description: 'Broadcasts not found' })
+                    }
+                    res.status(200).json({
+                      status: 'success',
+                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    })
                   })
-                })
-            })
+              })
           })
         } else {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
@@ -272,26 +274,26 @@ exports.index = function (req, res) {
           if (req.body.filter_criteria.type_value === 'miscellaneous') {
             findCriteria = {
               companyId: companyUser.companyId,
-              'payload.1': {$exists: true},
-              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'payload.1': { $exists: true },
+              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
                   (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
-              } : {$exists: true}
+              } : { $exists: true }
             }
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : {$exists: true},
-              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
+              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
                   (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
-              } : {$exists: true}
+              } : { $exists: true }
             }
           }
 
@@ -301,26 +303,26 @@ exports.index = function (req, res) {
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
-                .json({status: 'failed', description: 'BroadcastsCount not found'})
+                .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
-            .exec((err, broadcasts) => {
-              if (err) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
-              }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+              .exec((err, broadcasts) => {
+                if (err) {
+                  return res.status(404)
+                    .json({ status: 'failed', description: 'Broadcasts not found' })
+                }
+                BroadcastPage.find({ companyId: companyUser.companyId },
+                  (err, broadcastpages) => {
+                    if (err) {
+                      return res.status(404)
+                        .json({ status: 'failed', description: 'Broadcasts not found' })
+                    }
+                    res.status(200).json({
+                      status: 'success',
+                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    })
                   })
-                })
-            })
+              })
           })
         }
       } else if (req.body.first_page === 'previous') {
@@ -332,7 +334,7 @@ exports.index = function (req, res) {
                 (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
               $lt: new Date(
                 (new Date().getTime()))
-            } : {$exists: true}
+            } : { $exists: true }
           }
           Broadcasts.aggregate([
             { $match: findCriteria },
@@ -340,26 +342,26 @@ exports.index = function (req, res) {
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
-                .json({status: 'failed', description: 'BroadcastsCount not found'})
+                .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
-            .exec((err, broadcasts) => {
-              if (err) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
-              }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).limit(req.body.number_of_records)
+              .exec((err, broadcasts) => {
+                if (err) {
+                  return res.status(404)
+                    .json({ status: 'failed', description: 'Broadcasts not found' })
+                }
+                BroadcastPage.find({ companyId: companyUser.companyId },
+                  (err, broadcastpages) => {
+                    if (err) {
+                      return res.status(404)
+                        .json({ status: 'failed', description: 'Broadcasts not found' })
+                    }
+                    res.status(200).json({
+                      status: 'success',
+                      payload: { broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    })
                   })
-                })
-            })
+              })
           })
         } else {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
@@ -367,26 +369,26 @@ exports.index = function (req, res) {
           if (req.body.filter_criteria.type_value === 'miscellaneous') {
             findCriteria = {
               companyId: companyUser.companyId,
-              'payload.1': {$exists: true},
-              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'payload.1': { $exists: true },
+              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
                   (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
-              } : {$exists: true}
+              } : { $exists: true }
             }
           } else {
             findCriteria = {
               companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : {$exists: true},
-              title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
+              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
+              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
                 $gte: new Date(
                   (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
                 $lt: new Date(
                   (new Date().getTime()))
-              } : {$exists: true}
+              } : { $exists: true }
             }
           }
 
@@ -396,26 +398,26 @@ exports.index = function (req, res) {
           ], (err, broadcastsCount) => {
             if (err) {
               return res.status(404)
-                .json({status: 'failed', description: 'BroadcastsCount not found'})
+                .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
-            .exec((err, broadcasts) => {
-              if (err) {
-                return res.status(404)
-                  .json({status: 'failed', description: 'Broadcasts not found'})
-              }
-              BroadcastPage.find({companyId: companyUser.companyId},
-                (err, broadcastpages) => {
-                  if (err) {
-                    return res.status(404)
-                      .json({status: 'failed', description: 'Broadcasts not found'})
-                  }
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages}
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+              .exec((err, broadcasts) => {
+                if (err) {
+                  return res.status(404)
+                    .json({ status: 'failed', description: 'Broadcasts not found' })
+                }
+                BroadcastPage.find({ companyId: companyUser.companyId },
+                  (err, broadcastpages) => {
+                    if (err) {
+                      return res.status(404)
+                        .json({ status: 'failed', description: 'Broadcasts not found' })
+                    }
+                    res.status(200).json({
+                      status: 'success',
+                      payload: { broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    })
                   })
-                })
-            })
+              })
           })
         }
       }
@@ -429,13 +431,13 @@ exports.show = function (req, res) {
     .exec((err, broadcast) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+          .json({ status: 'failed', description: 'Internal Server Error' })
       }
       if (!broadcast) {
         return res.status(404)
-          .json({status: 'failed', description: 'Broadcast not found'})
+          .json({ status: 'failed', description: 'Broadcast not found' })
       }
-      return res.status(200).json({status: 'success', payload: broadcast})
+      return res.status(200).json({ status: 'success', payload: broadcast })
     })
 }
 
@@ -452,9 +454,9 @@ exports.verifyhook = function (req, res) {
 exports.getfbMessage = function (req, res) {
   // This is body in chatwebhook {"object":"page","entry":[{"id":"1406610126036700","time":1501650214088,"messaging":[{"recipient":{"id":"1406610126036700"},"timestamp":1501650214088,"sender":{"id":"1389982764379580"},"postback":{"payload":"{\"poll_id\":121212,\"option\":\"option1\"}","title":"Option 1"}}]}]}
 
-// {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
+  // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
   logger.serverLog(TAG,
-  `something received from facebook FIRST ${JSON.stringify(req.body)}`)
+    `something received from facebook FIRST ${JSON.stringify(req.body)}`)
 
   let subscriberSource = 'direct_message'
   let phoneNumber = ''
@@ -465,7 +467,7 @@ exports.getfbMessage = function (req, res) {
     'customer_matching') {
     subscriberSource = 'customer_matching'
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
-    Pages.find({pageId: req.body.entry[0].id}, (err, pages) => {
+    Pages.find({ pageId: req.body.entry[0].id }, (err, pages) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
@@ -475,12 +477,12 @@ exports.getfbMessage = function (req, res) {
           pageId: page._id,
           companyId: page.companyId
         }, {
-          hasSubscribed: true
-        }, (err2, phonenumbersaved) => {
-          if (err2) {
-            logger.serverLog(TAG, err2)
-          }
-        })
+            hasSubscribed: true
+          }, (err2, phonenumbersaved) => {
+            if (err2) {
+              logger.serverLog(TAG, err2)
+            }
+          })
       })
     })
   }
@@ -541,7 +543,7 @@ exports.getfbMessage = function (req, res) {
           const pageId = event.recipient.id
           // handleMessageFromSomeOtherApp(event)
           // get accesstoken of page
-          Pages.find({pageId: pageId, connected: true})
+          Pages.find({ pageId: pageId, connected: true })
             .populate('userId')
             .exec((err, pages) => {
               if (err) {
@@ -557,7 +559,7 @@ exports.getfbMessage = function (req, res) {
                     let pageAccessToken = resp2.body.access_token
                     const options = {
                       url: `https://graph.facebook.com/v2.6/${sender}?access_token=${pageAccessToken}`,
-                      qs: {access_token: page.accessToken},
+                      qs: { access_token: page.accessToken },
                       method: 'GET'
 
                     }
@@ -598,7 +600,7 @@ exports.getfbMessage = function (req, res) {
                         } else if (subscriberSource === 'chat_plugin') {
                           payload.source = 'chat_plugin'
                         }
-                        Subscribers.findOne({senderId: sender},
+                        Subscribers.findOne({ senderId: sender },
                           (err, subscriber) => {
                             if (err) logger.serverLog(TAG, err)
                             if (subscriber === null) {
@@ -608,7 +610,7 @@ exports.getfbMessage = function (req, res) {
                                   if (err2) {
                                     logger.serverLog(TAG, err2)
                                   }
-                                  Webhooks.findOne({pageId: pageId}).populate('userId').exec((err, webhook) => {
+                                  Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
                                     if (err) logger.serverLog(TAG, err)
                                     if (webhook && webhook.isEnabled) {
                                       needle.get(webhook.webhook_url, (err, r) => {
@@ -618,7 +620,7 @@ exports.getfbMessage = function (req, res) {
                                           if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
                                             var data = {
                                               subscription_type: 'NEW_SUBSCRIBER',
-                                              payload: JSON.stringify({subscriber: subsriber, recipient: pageId, sender: sender})
+                                              payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
                                             }
                                             needle.post(webhook.webhook_url, data,
                                               (error, response) => {
@@ -665,7 +667,7 @@ exports.getfbMessage = function (req, res) {
                               } else if (!subscriber.isSubscribed) {
                                 // subscribing the subscriber again in case he
                                 // or she unsubscribed and removed chat
-                                Subscribers.update({senderId: sender}, {
+                                Subscribers.update({ senderId: sender }, {
                                   isSubscribed: true,
                                   isEnabledByPage: true
                                 }, (err, subscriber) => {
@@ -729,7 +731,7 @@ exports.getfbMessage = function (req, res) {
           logger.serverLog(TAG, 'This indeed is PAGE POST OF AUTOPOSTING')
           if (event.value.verb === 'add' &&
             (['status', 'photo', 'video', 'share'].indexOf(event.value.item) >
-            -1)) {
+              -1)) {
             if (event.value.item === 'share' && event.value.link) {
               og(event.value.link, (err, meta) => {
                 if (err) {
@@ -760,7 +762,7 @@ exports.getfbMessage = function (req, res) {
     let pageId = req.body.entry[0].id
     let newPageName = req.body.entry[0].changes[0].value
     logger.serverLog(TAG, `Page name update request ${JSON.stringify(req.body)}`)
-    Pages.update({pageId: pageId}, {$set: {pageName: newPageName}}, {multi: true}, (err, page) => {
+    Pages.update({ pageId: pageId }, { $set: { pageName: newPageName } }, { multi: true }, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
       } else {
@@ -768,9 +770,9 @@ exports.getfbMessage = function (req, res) {
       }
     })
   }
-  return res.status(200).json({status: 'success', description: 'got the data.'})
+  return res.status(200).json({ status: 'success', description: 'got the data.' })
 }
-function updateList (phoneNumber, sender, page) {
+function updateList(phoneNumber, sender, page) {
   PhoneNumber.find({
     number: phoneNumber,
     hasSubscribed: true,
@@ -797,7 +799,7 @@ function updateList (phoneNumber, sender, page) {
             temp.push(subscribers[i]._id)
           }
           Lists.update(
-            {listName: number[0].fileName, companyId: page.companyId}, {
+            { listName: number[0].fileName, companyId: page.companyId }, {
               content: temp
             }, (err2, savedList) => {
               if (err) {
@@ -808,18 +810,18 @@ function updateList (phoneNumber, sender, page) {
   })
 }
 
-function sendCommentReply (body) {
+function sendCommentReply(body) {
   let index = 1
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
   }).populate('pageId userId').exec((err, post) => {
     if (err) {
     }
-    FacebookPosts.update({post_id: body.entry[0].changes[0].value.post_id}, {$inc: {count: 1}}, (err, updated) => {
+    FacebookPosts.update({ post_id: body.entry[0].changes[0].value.post_id }, { $inc: { count: 1 } }, (err, updated) => {
       if (err) {
       }
       logger.serverLog(TAG,
-      `response from comment on facebook ${JSON.stringify(post)}`)
+        `response from comment on facebook ${JSON.stringify(post)}`)
       if (post && post.pageId) {
         needle.get(
           `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
@@ -827,7 +829,7 @@ function sendCommentReply (body) {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            let messageData = {message: post.reply}
+            let messageData = { message: post.reply }
             needle.post(
               `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
               messageData, (err, resp) => {
@@ -835,7 +837,7 @@ function sendCommentReply (body) {
                   logger.serverLog(TAG, err)
                 }
                 logger.serverLog(TAG,
-                `response from comment on facebook ${JSON.stringify(resp.body)}`)
+                  `response from comment on facebook ${JSON.stringify(resp.body)}`)
                 if (body.entry[0].changes[0].value.post_id.message) {
                   if (post.includedKeywords && post.includedKeywords.length > 0) {
                     for (let i = 0; i < post.includedKeywords.length; i++) {
@@ -847,7 +849,7 @@ function sendCommentReply (body) {
                   }
                 }
                 logger.serverLog(TAG,
-                `value of index ${JSON.stringify(index)}`)
+                  `value of index ${JSON.stringify(index)}`)
               })
           })
       }
@@ -855,14 +857,14 @@ function sendCommentReply (body) {
   })
 }
 
-function sendAutopostingMessage (messageData, page, savedMsg) {
+function sendAutopostingMessage(messageData, page, savedMsg) {
   request(
     {
       'method': 'POST',
       'json': true,
       'formData': messageData,
       'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-      page.accessToken
+        page.accessToken
     },
     function (err, res) {
       if (err) {
@@ -890,8 +892,8 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
     })
 }
 
-function handleThePagePostsForAutoPosting (event, status) {
-  AutoPosting.find({accountUniqueName: event.value.sender_id, isActive: true})
+function handleThePagePostsForAutoPosting(event, status) {
+  AutoPosting.find({ accountUniqueName: event.value.sender_id, isActive: true })
     .populate('userId')
     .exec((err, autopostings) => {
       if (err) {
@@ -968,7 +970,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                   if (err) logger.serverLog(TAG, err)
 
                   if (subscribers.length > 0) {
-                    utility.applyTagFilterIfNecessary({body: postingItem}, subscribers, (taggedSubscribers) => {
+                    utility.applyTagFilterIfNecessary({ body: postingItem }, subscribers, (taggedSubscribers) => {
                       taggedSubscribers.forEach(subscriber => {
                         let messageData = {}
 
@@ -1099,7 +1101,7 @@ function handleThePagePostsForAutoPosting (event, status) {
                         } else if (event.value.item === 'photo') {
                           let URLObject = new URL({
                             originalURL: 'https://www.facebook.com/' +
-                            event.value.sender_id,
+                              event.value.sender_id,
                             subscriberId: subscriber._id,
                             module: {
                               id: savedMsg._id,
@@ -1250,12 +1252,12 @@ function handleThePagePostsForAutoPosting (event, status) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function handleMessageFromSomeOtherApp (event) {
+function handleMessageFromSomeOtherApp(event) {
   logger.serverLog(TAG, 'going to save message coming from other app')
   const pageId = event.sender.id
   const receiverId = event.recipient.id
   // get accesstoken of page
-  Pages.find({pageId: pageId, connected: true})
+  Pages.find({ pageId: pageId, connected: true })
     .populate('userId')
     .exec((err, pages) => {
       if (err) {
@@ -1264,7 +1266,7 @@ function handleMessageFromSomeOtherApp (event) {
       pages.forEach((page) => {
         const options = {
           url: `https://graph.facebook.com/v2.6/${receiverId}?access_token=${page.accessToken}`,
-          qs: {access_token: page.accessToken},
+          qs: { access_token: page.accessToken },
           method: 'GET'
 
         }
@@ -1288,7 +1290,7 @@ function handleMessageFromSomeOtherApp (event) {
               pageId: page._id,
               isSubscribed: true
             }
-            Subscribers.findOne({senderId: receiverId}, (err, subscriber) => {
+            Subscribers.findOne({ senderId: receiverId }, (err, subscriber) => {
               if (err) logger.serverLog(TAG, err)
               if (subscriber === null) {
                 // subsriber not found, create subscriber
@@ -1306,7 +1308,7 @@ function handleMessageFromSomeOtherApp (event) {
                       action: 'new_subscriber',
                       payload: {
                         name: subscriberCreated.firstName + ' ' +
-                        subscriberCreated.lastName,
+                          subscriberCreated.lastName,
                         subscriber: subscriberCreated
                       }
                     }
@@ -1328,14 +1330,14 @@ function handleMessageFromSomeOtherApp (event) {
 }
 
 function createSession (page, subscriber, event) {
-  CompanyProfile.findOne({_id: page.companyId},
+  CompanyProfile.findOne({ _id: page.companyId },
     function (err, company) {
       if (err) {
         return logger.serverLog(TAG, err)
       }
 
       if (!(company.automated_options === 'DISABLE_CHAT')) {
-        Sessions.findOne({page_id: page._id, subscriber_id: subscriber._id},
+        Sessions.findOne({ page_id: page._id, subscriber_id: subscriber._id },
           (err, session) => {
             if (err) logger.serverLog(TAG, err)
             if (session === null) {
@@ -1376,9 +1378,20 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-  botController.respond(page.pageId, subscriber.senderId, event.message.text)
 
-  Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+  Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
+    if (err) {
+      logger.serverLog(TAG, err)
+    }
+    if (bot) {
+      if (bot.blockedSubscribers.indexOf(subscriber._id) === -1) {
+        logger.serverLog(TAG, 'going to send bot reply')
+        botController.respond(page.pageId, subscriber.senderId, event.message.text)
+      }
+    }
+  })
+
+  Webhooks.findOne({ pageId: page.pageId }).populate('userId').exec((err, webhook) => {
     if (err) logger.serverLog(TAG, err)
     if (webhook && webhook.isEnabled) {
       logger.serverLog(TAG, `webhook in live chat ${webhook}`)
@@ -1424,7 +1437,7 @@ function saveLiveChat (page, subscriber, session, event) {
   }
 }
 
-function saveChatInDb (page, session, chatPayload, subscriber, event) {
+function saveChatInDb(page, session, chatPayload, subscriber, event) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
@@ -1445,17 +1458,17 @@ function saveChatInDb (page, session, chatPayload, subscriber, event) {
   })
 }
 
-function addAdminAsSubscriber (payload) {
-  Users.findOne({_id: payload.messaging[0].optin.ref}, (err, user) => {
+function addAdminAsSubscriber(payload) {
+  Users.findOne({ _id: payload.messaging[0].optin.ref }, (err, user) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
-    CompanyUsers.findOne({domain_email: user.domain_email},
+    CompanyUsers.findOne({ domain_email: user.domain_email },
       (err, companyUser) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-        Pages.findOne({pageId: payload.id, companyId: companyUser.companyId},
+        Pages.findOne({ pageId: payload.id, companyId: companyUser.companyId },
           (err, page) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -1486,27 +1499,27 @@ function addAdminAsSubscriber (payload) {
   })
 }
 
-function updateseenstatus (req) {
+function updateseenstatus(req) {
   BroadcastPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
-    {seen: true},
-    {multi: true}, (err, updated) => {
+    { pageId: req.recipient.id, subscriberId: req.sender.id, seen: false },
+    { seen: true },
+    { multi: true }, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
   PollPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
-    {seen: true},
-    {multi: true}, (err, updated) => {
+    { pageId: req.recipient.id, subscriberId: req.sender.id, seen: false },
+    { seen: true },
+    { multi: true }, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
     })
   SurveyPage.update(
-    {pageId: req.recipient.id, subscriberId: req.sender.id, seen: false},
-    {seen: true},
-    {multi: true}, (err, updated) => {
+    { pageId: req.recipient.id, subscriberId: req.sender.id, seen: false },
+    { seen: true },
+    { multi: true }, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
@@ -1516,14 +1529,14 @@ function updateseenstatus (req) {
       sender_fb_id: req.recipient.id,
       recipient_fb_id: req.sender.id,
       seen: false,
-      datetime: {$lte: new Date(req.read.watermark)}
+      datetime: { $lte: new Date(req.read.watermark) }
     },
-    {seenDateTime: new Date(req.read.watermark), seen: true},
-    {multi: true}, (err, updated) => {
+    { seenDateTime: new Date(req.read.watermark), seen: true },
+    { multi: true }, (err, updated) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      LiveChat.findOne({sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id}, (err, chat) => {
+      LiveChat.findOne({ sender_fb_id: req.recipient.id, recipient_fb_id: req.sender.id }, (err, chat) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
@@ -1541,9 +1554,9 @@ function updateseenstatus (req) {
         }
       })
     })
-    // updating seen count for autoposting
+  // updating seen count for autoposting
   AutopostingSubscriberMessages.distinct('autoposting_messages_id',
-    {subscriberId: req.sender.id, pageId: req.recipient.id, seen: false},
+    { subscriberId: req.sender.id, pageId: req.recipient.id, seen: false },
     (err, AutopostingMessagesIds) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -1553,19 +1566,19 @@ function updateseenstatus (req) {
           subscriberId: req.sender.id,
           pageId: req.recipient.id,
           seen: false,
-          datetime: {$lte: new Date(req.read.watermark)}
+          datetime: { $lte: new Date(req.read.watermark) }
         },
-        {seen: true},
-        {multi: true}, (err, updated) => {
+        { seen: true },
+        { multi: true }, (err, updated) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
 
           AutopostingMessagesIds.forEach(autopostingMessagesId => {
             AutopostingMessages.update(
-              {_id: autopostingMessagesId},
-              {$inc: {seen: 1}},
-              {multi: true}, (err, updated) => {
+              { _id: autopostingMessagesId },
+              { $inc: { seen: 1 } },
+              { multi: true }, (err, updated) => {
                 if (err) {
                   logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                 }
@@ -1606,13 +1619,13 @@ function updateseenstatus (req) {
   //   })
 }
 
-function sendMenuReply (req) {
+function sendMenuReply(req) {
   let parsedData = JSON.parse(req.postback.payload)
-  Subscribers.findOne({senderId: req.sender.id}).exec((err, subscriber) => {
+  Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
     if (err) {
       return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
     }
-    Pages.findOne({pageId: req.recipient.id, connected: true}, (err, page) => {
+    Pages.findOne({ pageId: req.recipient.id, connected: true }, (err, page) => {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
@@ -1621,11 +1634,11 @@ function sendMenuReply (req) {
   })
 }
 
-function savepoll (req, resp) {
+function savepoll(req, resp) {
   // find subscriber from sender id
   // var resp = JSON.parse(req.postback.payload)
   var temp = true
-  Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+  Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG,
         `Error occurred in finding subscriber ${JSON.stringify(
@@ -1651,7 +1664,7 @@ function savepoll (req, resp) {
       subscriberId: subscriber._id
 
     }
-    Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
+    Webhooks.findOne({ pageId: req.recipient.id }).populate('userId').exec((err, webhook) => {
       logger.serverLog(TAG, `webhook ${webhook}`)
       if (err) logger.serverLog(TAG, err)
       if (webhook && webhook.isEnabled) {
@@ -1663,7 +1676,7 @@ function savepoll (req, resp) {
             if (webhook && webhook.optIn.POLL_RESPONSE) {
               var data = {
                 subscription_type: 'POLL_RESPONSE',
-                payload: JSON.stringify({sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message})
+                payload: JSON.stringify({ sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message })
               }
               logger.serverLog(TAG, `data for poll response ${data}`)
               needle.post(webhook.webhook_url, data,
@@ -1689,14 +1702,14 @@ function savepoll (req, resp) {
   })
 }
 
-function handleUnsubscribe (resp, req) {
+function handleUnsubscribe(resp, req) {
   let messageData = {}
   if (resp.action === 'yes') {
     messageData = {
       text: 'You have unsubscribed from our broadcasts. Send "start" to subscribe again.'
     }
-    Subscribers.update({senderId: req.sender.id},
-      {isSubscribed: false}, (err) => {
+    Subscribers.update({ senderId: req.sender.id },
+      { isSubscribed: false }, (err) => {
         if (err) {
           logger.serverLog(TAG,
             `Subscribers update subscription: ${JSON.stringify(
@@ -1717,7 +1730,7 @@ function handleUnsubscribe (resp, req) {
       }
       const data = {
         messaging_type: 'RESPONSE',
-        recipient: {id: req.sender.id}, // this is the subscriber id
+        recipient: { id: req.sender.id }, // this is the subscriber id
         message: messageData
       }
       needle.post(
@@ -1730,12 +1743,12 @@ function handleUnsubscribe (resp, req) {
     })
 }
 
-function sendautomatedmsg (req, page) {
-      // const sender = req.sender.id
-      // const page = req.recipient.id
-      //  'message_is'
-      //  'message_contains'
-      //  'message_begins'
+function sendautomatedmsg(req, page) {
+  // const sender = req.sender.id
+  // const page = req.recipient.id
+  //  'message_is'
+  //  'message_contains'
+  //  'message_begins'
   if (req.message && req.message.text) {
     let index = -3
     if (req.message.text.toLowerCase() === 'stop' ||
@@ -1793,7 +1806,7 @@ function sendautomatedmsg (req, page) {
           }
           unsubscribeResponse = true
         } else if (index === -111) {
-          Subscribers.find({senderId: req.sender.id, unSubscribedBy: 'subscriber'}, (err, subscribers) => {
+          Subscribers.find({ senderId: req.sender.id, unSubscribedBy: 'subscriber' }, (err, subscribers) => {
             if (err) {
               logger.serverLog(TAG,
                 `Subscribers update subscription: ${JSON.stringify(
@@ -1803,8 +1816,8 @@ function sendautomatedmsg (req, page) {
               messageData = {
                 text: 'You have subscribed to our broadcasts. Send "stop" to unsubscribe'
               }
-              Subscribers.update({senderId: req.sender.id},
-                {isSubscribed: true}, (err) => {
+              Subscribers.update({ senderId: req.sender.id },
+                { isSubscribed: true }, (err) => {
                   if (err) {
                     logger.serverLog(TAG,
                       `Subscribers update subscription: ${JSON.stringify(
@@ -1813,7 +1826,7 @@ function sendautomatedmsg (req, page) {
                 })
               const data = {
                 messaging_type: 'RESPONSE',
-                recipient: {id: req.sender.id}, // this is the subscriber id
+                recipient: { id: req.sender.id }, // this is the subscriber id
                 message: messageData
               }
               needle.post(
@@ -1826,7 +1839,7 @@ function sendautomatedmsg (req, page) {
 
         const data = {
           messaging_type: 'RESPONSE',
-          recipient: {id: req.sender.id}, // this is the subscriber id
+          recipient: { id: req.sender.id }, // this is the subscriber id
           message: messageData
         }
         if (messageData.text !== undefined || unsubscribeResponse) {
@@ -1834,7 +1847,7 @@ function sendautomatedmsg (req, page) {
             `https://graph.facebook.com/v2.6/me/messages?access_token=${response.body.access_token}`,
             data, (err4, respp) => {
               if (!unsubscribeResponse) {
-                Subscribers.findOne({senderId: req.sender.id},
+                Subscribers.findOne({ senderId: req.sender.id },
                   (err, subscriber) => {
                     if (err) return logger.serverLog(TAG, err)
                     if (!subscriber) {
@@ -1865,7 +1878,7 @@ function sendautomatedmsg (req, page) {
                         }, // this where message content will go
                         status: 'unseen' // seen or unseen
                       })
-                      Webhooks.findOne({pageId: page.pageId}).populate('userId').exec((err, webhook) => {
+                      Webhooks.findOne({ pageId: page.pageId }).populate('userId').exec((err, webhook) => {
                         if (err) logger.serverLog(TAG, err)
                         if (webhook && webhook.isEnabled) {
                           logger.serverLog(TAG, `webhook in live chat ${webhook}`)
@@ -1925,13 +1938,13 @@ function sendautomatedmsg (req, page) {
       })
   }
 }
-function savesurvey (req) {
+function savesurvey(req) {
   // this is the response of survey question
   // first save the response of survey
   // find subscriber from sender id
   var resp = JSON.parse(req.postback.payload)
 
-  Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+  Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG,
         `Error occurred in finding subscriber${JSON.stringify(
@@ -1945,7 +1958,7 @@ function savesurvey (req) {
       questionId: resp.question_id,
       subscriberId: subscriber._id
     }
-    Webhooks.findOne({pageId: req.recipient.id}).populate('userId').exec((err, webhook) => {
+    Webhooks.findOne({ pageId: req.recipient.id }).populate('userId').exec((err, webhook) => {
       if (err) logger.serverLog(TAG, err)
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
@@ -1955,7 +1968,7 @@ function savesurvey (req) {
             if (webhook && webhook.optIn.SURVEY_RESPONSE) {
               var data = {
                 subscription_type: 'SURVEY_RESPONSE',
-                payload: JSON.stringify({sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id})
+                payload: JSON.stringify({ sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, response: resp.option, surveyId: resp.survey_id, questionId: resp.question_id })
               }
               needle.post(webhook.webhook_url, data,
                 (error, response) => {
@@ -1972,7 +1985,7 @@ function savesurvey (req) {
       surveyId: resp.survey_id,
       questionId: resp.question_id,
       subscriberId: subscriber._id
-    }, {response: resp.option, datetime: Date.now()}, {upsert: true}, (err1, surveyresponse, raw) => {
+    }, { response: resp.option, datetime: Date.now() }, { upsert: true }, (err1, surveyresponse, raw) => {
       // SurveyResponse.create(surveybody, (err1, surveyresponse) => {
       if (err1) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err1)}`)
@@ -1984,7 +1997,7 @@ function savesurvey (req) {
       // send the next question
       SurveyQuestions.find({
         surveyId: resp.survey_id,
-        _id: {$gt: resp.question_id}
+        _id: { $gt: resp.question_id }
       }).populate('surveyId').exec((err2, questions) => {
         if (err2) {
           logger.serverLog(TAG, `Survey questions not found ${JSON.stringify(
@@ -2033,7 +2046,7 @@ function savesurvey (req) {
               }
               const data = {
                 messaging_type: 'RESPONSE',
-                recipient: {id: req.sender.id}, // this is the subscriber id
+                recipient: { id: req.sender.id }, // this is the subscriber id
                 message: messageData
               }
               needle.post(
@@ -2090,8 +2103,8 @@ function savesurvey (req) {
                 })
             })
         } else { // else send thank you message
-          Surveys.update({_id: mongoose.Types.ObjectId(resp.survey_id)},
-            {$inc: {isresponded: 1 - surveyresponse.nModified}},
+          Surveys.update({ _id: mongoose.Types.ObjectId(resp.survey_id) },
+            { $inc: { isresponded: 1 - surveyresponse.nModified } },
             (err, subscriber) => {
               if (err) {
                 logger.serverLog(TAG,
@@ -2119,7 +2132,7 @@ function savesurvey (req) {
               }
               const data = {
                 messaging_type: 'RESPONSE',
-                recipient: {id: req.sender.id}, // this is the subscriber id
+                recipient: { id: req.sender.id }, // this is the subscriber id
                 message: messageData
               }
               needle.post(
@@ -2178,20 +2191,20 @@ function savesurvey (req) {
   })
 }
 
-function subscribeToSequence (sequenceId, req) {
-  Sequences.findOne({_id: sequenceId}, (err, sequence) => {
+function subscribeToSequence(sequenceId, req) {
+  Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
         `Internal Server Error ${JSON.stringify(err)}`)
     }
 
-    Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+    Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
       if (err) {
         logger.serverLog(TAG,
           `Internal Server Error ${JSON.stringify(err)}`)
       }
 
-      SequenceSubscribers.findOne({subscriberId: subscriber._id}, (err, sequenceSubscriber) => {
+      SequenceSubscribers.findOne({ subscriberId: subscriber._id }, (err, sequenceSubscriber) => {
         if (err) {
           logger.serverLog(TAG,
             `Internal Server Error ${JSON.stringify(err)}`)
@@ -2199,13 +2212,13 @@ function subscribeToSequence (sequenceId, req) {
 
         // CASE-1 Subscriber already exists
         if (sequenceSubscriber !== {}) {
-          SequenceSubscribers.update({_id: sequenceSubscriber._id}, {status: 'subscribed'}, (err, updated) => {
+          SequenceSubscribers.update({ _id: sequenceSubscriber._id }, { status: 'subscribed' }, (err, updated) => {
             if (err) {
               logger.serverLog(TAG,
                 `Internal Server Error ${JSON.stringify(err)}`)
             }
           })
-        // CASE-2 Subscriber doesn't exist
+          // CASE-2 Subscriber doesn't exist
         } else {
           let sequenceSubscriberPayload = {
             sequenceId: sequenceId,
@@ -2237,20 +2250,20 @@ function subscribeToSequence (sequenceId, req) {
   })
 }
 
-function unsubscribeFromSequence (sequenceId, req) {
-  Sequences.findOne({_id: sequenceId}, (err, sequence) => {
+function unsubscribeFromSequence(sequenceId, req) {
+  Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
         `Internal Server Error ${JSON.stringify(err)}`)
     }
 
-    Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+    Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
       if (err) {
         logger.serverLog(TAG,
           `Internal Server Error ${JSON.stringify(err)}`)
       }
 
-      SequenceSubscribers.findOne({subscriberId: subscriber._id}, (err, sequenceSubscriber) => {
+      SequenceSubscribers.findOne({ subscriberId: subscriber._id }, (err, sequenceSubscriber) => {
         if (err) {
           logger.serverLog(TAG,
             `Internal Server Error ${JSON.stringify(err)}`)
@@ -2258,13 +2271,13 @@ function unsubscribeFromSequence (sequenceId, req) {
 
         // CASE-1 Subscriber already exists
         if (sequenceSubscriber !== {}) {
-          SequenceSubscribers.update({_id: sequenceSubscriber._id}, {status: 'unsubscribed'}, (err, updated) => {
+          SequenceSubscribers.update({ _id: sequenceSubscriber._id }, { status: 'unsubscribed' }, (err, updated) => {
             if (err) {
               logger.serverLog(TAG,
                 `Internal Server Error ${JSON.stringify(err)}`)
             }
           })
-        // CASE-2 Subscriber doesn't exist
+          // CASE-2 Subscriber doesn't exist
         } else {
           let sequenceSubscriberPayload = {
             sequenceId: sequenceId,

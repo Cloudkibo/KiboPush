@@ -4,6 +4,7 @@ const config = require('../server/config/environment')
 const AutomationQueue = require('../server/api/automation_queue/automation_queue.model')
 const SurveyQuestions = require('../server/api/surveys/surveyquestions.model')
 const Surveys = require('../server/api/surveys/surveys.model')
+const Bots = require('../server/api/smart_replies/Bots.model')
 const Pages = require('../server/api/pages/Pages.model')
 const Users = require('../server/api/user/Users.model')
 const Subscribers = require('../server/api/subscribers/Subscribers.model')
@@ -526,6 +527,32 @@ AutomationQueue.find({}, (err, data) => {
           autoposting-fb
           broadcast
           */
+        } else if (message.type === 'bot') {
+          Bots.findOne({'_id': message.automatedMessageId}, (err, bot) => {
+            if (err) {
+              logger.serverLog(TAG, err)
+            }
+
+            if (bot) {
+              let arr = bot.blockedSubscribers
+              arr.splice(arr.indexOf(message.subscriberId), 1)
+              bot.blockedSubscribers = arr
+
+              bot.save((err) => {
+                if (err) {
+                  logger.serverLog(TAG, err)
+                }
+                logger.serverLog(TAG, 'removed sub-bot from queue')
+                AutomationQueue.deleteOne({'_id': message._id}, (err, result) => {
+                  if (err) {
+                    logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                  }
+
+                  logger.serverLog(TAG, 'successfully deleted ' + JSON.stringify(result))
+                })
+              })
+            }
+          })
         }
         if (!(i + 1 < data.length)) {
           setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
