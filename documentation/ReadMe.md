@@ -82,6 +82,14 @@ Quick Fix
 4 — Start MongoDB: sudo service mongod start
 5 — Check the MongoDB status: sudo service mongod status
 
+    NOTE: If there is no sock file, then we won't be running the command to add sock file in mongodb user group.
+
+    <YOUR_SOCK> will be the name of sock file.
+
+    For example, in staging server it is "mongodb-27017.sock"
+
+    You can check the name in "cd /tmp" and then by "running ls *.sock"
+
 
 ##CRONJOB GUIDE
 
