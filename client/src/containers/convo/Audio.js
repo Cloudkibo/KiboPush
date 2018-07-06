@@ -29,7 +29,7 @@ class Audio extends React.Component {
       errorMsg: '',
       showErrorDialogue: false,
       loading: false,
-      showPreview: false
+      showPreview: true
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
@@ -147,6 +147,7 @@ class Audio extends React.Component {
                 url={this.state.file.url}
                 controls
                 width='100%'
+                height='50px'
                 onPlay={this.onTestURLAudio(this.state.file.url)}
               />
             </div>

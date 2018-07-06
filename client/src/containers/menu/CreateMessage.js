@@ -272,7 +272,7 @@ class CreateMessage extends React.Component {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.message.filter((component) => { return (component.id !== obj.id) })
     this.setState({ list: temp, message: temp2 })
-    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, temp2)
+    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, temp2, false)
     var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
     this.props.saveCurrentMenuItem(currentState)
   }
@@ -292,15 +292,21 @@ class CreateMessage extends React.Component {
     }
     return menu
   }
-  setCreateMessage (clickedIndex, payload) {
+  setCreateMessage (clickedIndex, payload, saveMessage) {
     var temp = this.props.currentMenuItem.itemMenus
     var index = clickedIndex.split('-')
+    var error = false
     var menu = this.getMenuHierarchy(clickedIndex)
     switch (menu) {
       case 'item':
         var temp1 = []
         for (var i = 0; i < payload.length; i++) {
           temp1.push(payload[i])
+        }
+        if (saveMessage && JSON.stringify(temp1).length > 1000) {
+          this.msg.error('Message is too long')
+          error = true
+          break
         }
         temp[index[1]].payload = JSON.stringify(temp1)
         break
@@ -309,6 +315,11 @@ class CreateMessage extends React.Component {
         for (var j = 0; j < payload.length; j++) {
           temp2.push(payload[j])
         }
+        if (saveMessage && JSON.stringify(temp2).length > 1000) {
+          this.msg.error('Message is too long')
+          error = true
+          break
+        }
         temp[index[1]].submenu[index[2]].payload = JSON.stringify(temp2)
         break
       case 'nestedMenu':
@@ -316,10 +327,18 @@ class CreateMessage extends React.Component {
         for (var k = 0; k < payload.length; k++) {
           temp3.push(payload[k])
         }
+        if (saveMessage && JSON.stringify(temp3).length > 1000) {
+          this.msg.error('Message is too long')
+          error = true
+          break
+        }
         temp[index[1]].submenu[index[2]].submenu[index[3]].payload = JSON.stringify(temp3)
         break
       default:
         break
+    }
+    if (error) {
+      temp = ''
     }
     return temp
   }
@@ -358,10 +377,17 @@ class CreateMessage extends React.Component {
         }
       }
     }
-    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.message)
-    var currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
-    this.props.saveCurrentMenuItem(currentState)
-    this.msg.success('Message Saved Successfully')
+    var saveMessage = true
+    var currentState
+    var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.message, saveMessage)
+    if (updatedMenuItem !== '') {
+      currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+      this.props.saveCurrentMenuItem(currentState)
+      this.msg.success('Message Saved Successfully')
+    } else {
+      currentState = { itemMenus: this.props.currentMenuItem.itemMenus, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+      this.props.saveCurrentMenuItem(currentState)
+    }
   }
 
   render () {

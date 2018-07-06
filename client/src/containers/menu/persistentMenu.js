@@ -90,7 +90,7 @@ class Menu extends React.Component {
         case 'submenu':
           if (menuReturned[index[1]].submenu[index[2]].payload && menuReturned[index[1]].submenu[index[2]].payload.length < 1) {
             menuReturned[index[1]].submenu[index[2]].type = ''
-            menuReturned[index[1]].submenu[index[2]] = null
+            menuReturned[index[1]].submenu[index[2]].payload = null
           }
           break
         case 'nestedMenu':
