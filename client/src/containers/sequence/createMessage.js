@@ -250,7 +250,7 @@ class CreateMessage extends React.Component {
   }
 
   handleList (obj) {
-    console.log(obj)
+    console.log('obj', obj)
     var temp = this.state.broadcast
     var isPresent = false
     obj.listItems.forEach((d) => {
@@ -259,6 +259,7 @@ class CreateMessage extends React.Component {
     temp.map((data) => {
       if (data.id === obj.id) {
         data.listItems = obj.listItems
+        data.topElementStyle = obj.topElementStyle
         isPresent = true
       }
     })
@@ -335,20 +336,18 @@ class CreateMessage extends React.Component {
           return this.msg.error('A list must have atleast 2 elements')
         }
         if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
-          this.initTab()
           return this.msg.error('Please select an image for top item with large style in list')
         }
         for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
           if (!this.state.broadcast[i].listItems[j].title) {
-            this.initTab()
             return this.msg.error('Element in list must have a title.')
           } else if (!this.state.broadcast[i].listItems[j].subtitle) {
-            this.initTab()
             return this.msg.error('Element in list must have a subtitle.')
           }
         }
       }
     }
+    console.log('edit Message', this.state.broadcast)
     this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
     this.setState({stay: true})
     browserHistory.push({
