@@ -29,7 +29,7 @@ class Audio extends React.Component {
       errorMsg: '',
       showErrorDialogue: false,
       loading: false,
-      showPreview: true
+      showPreview: false
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
