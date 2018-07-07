@@ -259,19 +259,10 @@ class CreateConvo extends React.Component {
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick (e) {
-    if (this.validateFields()) {
-      /* eslint-disable */
-      $('[href="#tab_1"]').removeClass('active')
-      /* eslint-enable */
-      this.setState({tabActive: 'target', resetTarget: false})
-    } else {
-      /* eslint-disable */
-      $('[href="#tab_2"]').removeClass('active')
-      $('[href="#tab_1"]').tab('show')
-      e.preventDefault()
-      return false
-      /* eslint-enable */
-    }
+    /* eslint-disable */
+    $('[href="#tab_1"]').removeClass('active')
+    /* eslint-enable */
+    this.setState({tabActive: 'target', resetTarget: false})
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
