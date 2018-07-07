@@ -58,7 +58,8 @@ class CreateConvo extends React.Component {
       isList: false,
       lists: [],
       tabActive: 'broadcast',
-      resetTarget: false
+      resetTarget: false,
+      isValidBroadcast: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -89,10 +90,139 @@ class CreateConvo extends React.Component {
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
+    this.validateFields = this.validateFields.bind(this)
+  }
+
+  validateFields () {
+    var isValid = true
+    console.log('this.state.broadcast', this.state.broadcast)
+    for (let i = 0; i < this.state.broadcast.length; i++) {
+      if (this.state.broadcast[i].componentType === 'text') {
+        if (this.state.broadcast[i].text === undefined || this.state.broadcast[i].text === '') {
+          this.msg.error('Text cannot be empty')
+          isValid = false
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'audio') {
+        if (this.state.broadcast[i].file_url === undefined || this.state.broadcast[i].file_url === '') {
+          this.msg.error('Select an audio file')
+          isValid = false
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'video') {
+        if (this.state.broadcast[i].file_url === undefined || this.state.broadcast[i].file_url === '') {
+          this.msg.error('Select a video file')
+          isValid = false
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'file') {
+        if (this.state.broadcast[i].file_url === undefined || this.state.broadcast[i].file_url === '') {
+          this.msg.error('Select a valid file')
+          isValid = false
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'image') {
+        if (this.state.broadcast[i].image_url === undefined || this.state.broadcast[i].image_url === '') {
+          this.msg.error('Select a valid image')
+          isValid = false
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'card') {
+        if (this.state.broadcast[i].image_url === undefined || this.state.broadcast[i].image_url === '') {
+          this.msg.error('Card must have an image')
+          isValid = false
+          break
+        }
+        if (this.state.broadcast[i].title === undefined || this.state.broadcast[i].title === '') {
+          this.msg.error('Card must have a Title')
+          isValid = false
+          break
+        }
+        if (this.state.broadcast[i].description === undefined || this.state.broadcast[i].description === '') {
+          this.msg.error('Card must have a subtitle')
+          isValid = false
+          break
+        }
+        if (!this.state.broadcast[i].buttons) {
+          this.msg.error('Card must have at least one button.')
+          isValid = false
+          break
+        } else if (this.state.broadcast[i].buttons.length === 0) {
+          this.msg.error('Card must have at least one button.')
+          isValid = false
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'gallery') {
+        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
+          if (!this.state.broadcast[i].cards[j].buttons) {
+            this.msg.error('Card in gallery must have at least one button.')
+            isValid = false
+            break
+          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
+            this.msg.error('Card in gallery must have at least one button.')
+            isValid = false
+            break
+          }
+          if (this.state.broadcast[i].cards[j].title === undefined || this.state.broadcast[i].cards[j].title === '') {
+            this.msg.error('Card in gallery must have a title.')
+            isValid = false
+            break
+          }
+          if (this.state.broadcast[i].cards[j].subtitle === undefined || this.state.broadcast[i].cards[j].subtitle === '') {
+            this.msg.error('Card in gallery must have a subtitle.')
+            isValid = false
+            break
+          }
+          if (this.state.broadcast[i].cards[j].image_url === undefined || this.state.broadcast[i].cards[j].image_url === '') {
+            this.msg.error('Card in gallery must have an image.')
+            isValid = false
+            break
+          }
+        }
+        if (!isValid) {
+          break
+        }
+      }
+      if (this.state.broadcast[i].componentType === 'list') {
+        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
+          this.msg.error('A list must have atleast 2 elements')
+          isValid = false
+          break
+        }
+        if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
+          this.msg.error('Please select an image for top item with large style in list')
+          isValid = false
+          break
+        }
+        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
+          if (!this.state.broadcast[i].listItems[j].title) {
+            this.msg.error('Element in list must have a title.')
+            isValid = false
+            break
+          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
+            this.msg.error('Element in list must have a subtitle.')
+            isValid = false
+            break
+          }
+        }
+        if (!isValid) {
+          break
+        }
+      }
+    }
+    this.setState({
+      isValidBroadcast: isValid
+    })
   }
 
   onNext () {
-    /* eslint-disable */
+  /* eslint-disable */
     $('[href="#tab_1"]').removeClass('active')
     $('[href="#tab_2"]').tab('show')
     /* eslint-enable */
@@ -128,11 +258,20 @@ class CreateConvo extends React.Component {
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
-  onTargetClick () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'target', resetTarget: false})
+  onTargetClick (e) {
+    if (this.validateFields()) {
+      /* eslint-disable */
+      $('[href="#tab_1"]').removeClass('active')
+      /* eslint-enable */
+      this.setState({tabActive: 'target', resetTarget: false})
+    } else {
+      /* eslint-disable */
+      $('[href="#tab_2"]').removeClass('active')
+      $('[href="#tab_1"]').tab('show')
+      e.preventDefault()
+      return false
+      /* eslint-enable */
+    }
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
@@ -245,7 +384,6 @@ class CreateConvo extends React.Component {
         data.title = obj.title
         data.buttons = obj.buttons
         data.description = obj.description
-        data.image_url = obj.image_url
         isPresent = true
       }
     })
@@ -308,7 +446,6 @@ class CreateConvo extends React.Component {
   }
   handleList (obj) {
     console.log('in create convo handleList', obj)
-    console.log('in create convo handleList', this.state.broadcast)
     var temp = this.state.broadcast
     var isPresent = false
     obj.listItems.forEach((d) => {
@@ -330,7 +467,7 @@ class CreateConvo extends React.Component {
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
-    this.setState({list: temp, broadcast: temp2})
+    this.setState({list: temp, broadcast: temp2, isValidBroadcast: false})
   }
 
   sendConvo () {
@@ -345,48 +482,6 @@ class CreateConvo extends React.Component {
     var isSegmentedValue = false
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
-    }
-    console.log('this.state.broadcast', this.state.broadcast)
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'list') {
-        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
-          this.initTab()
-          return this.msg.error('A list must have atleast 2 elements')
-        }
-        if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
-          this.initTab()
-          return this.msg.error('Please select an image for top item with large style in list')
-        }
-        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
-          if (!this.state.broadcast[i].listItems[j].title) {
-            this.initTab()
-            return this.msg.error('Element in list must have a title.')
-          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
-            this.initTab()
-            return this.msg.error('Element in list must have a subtitle.')
-          }
-        }
-      }
     }
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
@@ -547,7 +642,10 @@ class CreateConvo extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
-                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.validateFields}>
+                                Save
+                              </button>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0 || !this.state.isValidBroadcast)} onClick={this.onNext}>
                                 Next
                               </button>
                             </div>
@@ -577,8 +675,8 @@ class CreateConvo extends React.Component {
                             {
                               this.props.location.state && this.props.location.state.module === 'convo' &&
                               <li>
-                                { this.state.broadcast.length > 0
-                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                { this.state.broadcast.length > 0 && this.state.isValidBroadcast
+                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={(e) => this.onTargetClick(e)}>Targeting </a>
                                   : <a>Targeting </a>
                                 }
                               </li>
