@@ -254,7 +254,9 @@ class EditButton extends React.Component {
 
 function mapStateToProps (state) {
   console.log(state)
-  return {}
+  return {
+    sequences: (state.sequenceInfo.sequences)
+  }
 }
 
 function mapDispatchToProps (dispatch) {

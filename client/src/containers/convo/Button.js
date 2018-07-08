@@ -64,7 +64,10 @@ class Button extends React.Component {
   }
 
   onSequenceChange (e) {
-    this.setState({sequenceValue: e.target.value, disabled: false})
+    if (this.state.title !== '') {
+      this.setState({disabled: false})
+    }
+    this.setState({sequenceValue: e.target.value})
   }
 
   handleClick (e) {
@@ -120,7 +123,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if (isWebURL(this.state.url) && event.target.value !== '') {
+    if (((this.state.openWebsite && isWebURL(event.target.value)) || this.state.sequenceValue !== '') && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -130,7 +133,7 @@ class Button extends React.Component {
 
   changeUrl (event) {
     console.log('event', event.target.value)
-    if (isWebURL(event.target.value) && this.state.title !== '') {
+    if (isWebURL(this.state.url) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
