@@ -30,6 +30,7 @@ class Card extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
+    this.removeImage = this.removeImage.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -127,6 +128,9 @@ class Card extends React.Component {
         this.setState({ checkbox: true })
       }
     }
+  }
+  removeImage () {
+    this.setState({imgSrc: ''})
   }
   _onChange () {
   // Assuming only image
@@ -334,16 +338,16 @@ class Card extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%'}} />
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
             : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
            }
-            {this.state.imgSrc !== '' &&
-            <i className='fa fa-times-circle-o' style={{fontSize: '1rem', marginLeft: '-5px', marginRight: '-5px'}} />
-            }
           </div>
+          }
+          {this.state.imgSrc !== '' &&
+          <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
           }
         </div>
         <br />
