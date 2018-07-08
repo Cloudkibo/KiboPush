@@ -562,6 +562,9 @@ AutomationQueue.find({}, (err, data) => {
         setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
       }
     }
+    if (data.length === 0) {
+      setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
+    }
   }
   // mongoose.disconnect()
 })
