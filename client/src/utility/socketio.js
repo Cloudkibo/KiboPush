@@ -68,6 +68,7 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   if (data.action === 'new_chat') {
+    console.log('new message received from customer')
     store.dispatch(socketUpdate(data.payload))
     store.dispatch(loadDashboardData())
   } else if (data.action === 'message_seen') {

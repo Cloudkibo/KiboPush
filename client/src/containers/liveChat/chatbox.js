@@ -224,6 +224,10 @@ class ChatBox extends React.Component {
   updateScrollTop () {
     if (this.previousScrollHeight && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
+    } else {
+      this.scrollToTop()
+      setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
+      this.props.disableScroll()
     }
   }
 
@@ -618,11 +622,6 @@ class ChatBox extends React.Component {
 
   componentDidUpdate (nextProps) {
     this.updateScrollTop()
-    if (this.props.userChat && this.props.userChat.length > 0 && this.props.scroll) {
-      this.scrollToTop()
-      setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
-      this.props.disableScroll()
-    }
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
     }

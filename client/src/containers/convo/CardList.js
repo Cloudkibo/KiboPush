@@ -342,7 +342,7 @@ class Card extends React.Component {
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-            : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
+            : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
            }
           </div>
           }
