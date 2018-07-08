@@ -61,6 +61,7 @@ exports.index = function (req, res) {
 
 exports.search = function (req, res) {
   let parametersMissing = false
+  console.log('body: ', req.body)
 
   if (!_.has(req.body, 'session_id')) parametersMissing = true
   if (!_.has(req.body, 'text')) parametersMissing = true

@@ -38,7 +38,7 @@ import RightArrow from '../convo/RightArrow'
 import LeftArrow from '../convo/LeftArrow'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactTooltip from 'react-tooltip'
-import { Link, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { Element, Events, scrollSpy, scroller } from 'react-scroll'
 // import MediaCapturer from 'react-multimedia-capture'
 const styles = {
   iconclass: {

@@ -23,16 +23,16 @@ router.post('/getUrlMeta',
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.geturlmeta)
 
-router.post('/:session_id',
-  auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
-  auth.doesRolePermitsThisAction('livechatPermission'),
-  controller.index)
-
 router.post('/search',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('live_chat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.search)
+
+router.post('/:session_id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesRolePermitsThisAction('livechatPermission'),
+  controller.index)
 
 module.exports = router
