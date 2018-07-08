@@ -197,11 +197,14 @@ export function fetchSingleSession (sessionid, appendDeleteInfo) {
   }
 }
 
-export function fetchUserChats (sessionid, data) {
+export function fetchUserChats (sessionid, data, handleFunction) {
   return (dispatch) => {
     callApi(`livechat/${sessionid}`, 'post', data)
       .then(res => {
         dispatch(showUserChats(res.payload, data))
+        if (handleFunction) {
+          handleFunction(data.messageId)
+        }
       })
   }
 }
@@ -246,7 +249,7 @@ export function searchChat (data) {
       if (res.status === 'success') {
         dispatch(showSearchChat(res.payload))
       } else {
-        console.log(res.description)
+        console.log('response got from server', res.description)
       }
     })
   }
