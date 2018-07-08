@@ -1437,7 +1437,7 @@ function saveLiveChat (page, subscriber, session, event) {
   }
 }
 
-function saveChatInDb(page, session, chatPayload, subscriber, event) {
+function saveChatInDb (page, session, chatPayload, subscriber, event) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
@@ -1450,7 +1450,8 @@ function saveChatInDb(page, session, chatPayload, subscriber, event) {
           chat_id: chat._id,
           text: chatPayload.payload.text,
           name: subscriber.firstName + ' ' + subscriber.lastName,
-          subscriber: subscriber
+          subscriber: subscriber,
+          message: chat
         }
       }
     })
@@ -1458,7 +1459,7 @@ function saveChatInDb(page, session, chatPayload, subscriber, event) {
   })
 }
 
-function addAdminAsSubscriber(payload) {
+function addAdminAsSubscriber (payload) {
   Users.findOne({ _id: payload.messaging[0].optin.ref }, (err, user) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -1499,7 +1500,7 @@ function addAdminAsSubscriber(payload) {
   })
 }
 
-function updateseenstatus(req) {
+function updateseenstatus (req) {
   BroadcastPage.update(
     { pageId: req.recipient.id, subscriberId: req.sender.id, seen: false },
     { seen: true },

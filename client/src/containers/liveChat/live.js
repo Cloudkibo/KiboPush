@@ -13,6 +13,7 @@ import { fetchOpenSessions, fetchCloseSessions,
   resetSocket,
   resetUnreadSession,
   showChatSessions,
+  updateUserChat,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -258,7 +259,7 @@ class LiveChat extends React.Component {
 
     if (nextProps.socketSession && nextProps.socketSession !== '' && nextProps.openSessions && nextProps.closeSessions) {
       if (this.props.userChat && this.props.userChat.length > 0 && nextProps.socketSession !== '' && this.props.userChat[0].session_id === nextProps.socketSession) {
-        // this.props.fetchUserChats(nextProps.socketSession)
+        this.props.updateUserChat(nextProps.socketMessage, this.props.userChat)
         this.props.resetSocket()
       } else if (nextProps.socketSession !== '') {
         this.props.fetchSingleSession(nextProps.socketSession, {appendTo: 'open', deleteFrom: 'close'})
@@ -834,7 +835,8 @@ function mapStateToProps (state) {
     socketData: (state.liveChat.socketData),
     teams: (state.teamsInfo.teams),
     teamUniqueAgents: (state.teamsInfo.teamUniqueAgents),
-    subscriberTags: (state.tagsInfo.subscriberTags)
+    subscriberTags: (state.tagsInfo.subscriberTags),
+    socketMessage: (state.liveChat.socketMessage)
   }
 }
 
@@ -849,7 +851,8 @@ function mapDispatchToProps (dispatch) {
     markRead: markRead,
     showChatSessions: showChatSessions,
     loadTeamsList: loadTeamsList,
-    getSubscriberTags: getSubscriberTags
+    getSubscriberTags: getSubscriberTags,
+    updateUserChat: updateUserChat
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)

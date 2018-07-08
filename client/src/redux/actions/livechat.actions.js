@@ -1,3 +1,4 @@
+
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
@@ -12,6 +13,16 @@ export function showChatSessions (sessions) {
   return {
     type: ActionTypes.SHOW_CHAT_SESSIONS,
     sessions: sorted
+  }
+}
+
+export function updateUserChat (message, chat) {
+  console.log('updateUserChat called', message)
+  let userChat = chat
+  userChat.push(message)
+  return {
+    type: ActionTypes.UPDATE_USER_CHAT,
+    chat: userChat
   }
 }
 

@@ -122,12 +122,18 @@ export function liveChat (state = initialState, action) {
         socketSession: action.data.session_id,
         unreadSession: action.data.session_id,
         socketData: action.data,
+        socketMessage: action.data.message,
         changedStatus: ''
       })
 
     case ActionTypes.SOCKET_UPDATE_SEEN:
       return Object.assign({}, state, {
         socketSession: action.data.session_id
+      })
+
+    case ActionTypes.UPDATE_USER_CHAT:
+      return Object.assign({}, state, {
+        userChat: action.chat
       })
 
     case ActionTypes.RESET_SOCKET:
