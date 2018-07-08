@@ -147,6 +147,7 @@ class Audio extends React.Component {
                 url={this.state.file.url}
                 controls
                 width='100%'
+                height='50px'
                 onPlay={this.onTestURLAudio(this.state.file.url)}
               />
             </div>

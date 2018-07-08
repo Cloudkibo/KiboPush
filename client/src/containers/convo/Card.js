@@ -188,11 +188,11 @@ class Card extends React.Component {
 
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
+      fileurl: data.fileurl,
+      image_url: data.image_url,
+      fileName: data.fileName,
+      type: data.type,
+      size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button})
@@ -217,7 +217,10 @@ class Card extends React.Component {
           </div>
         }
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
-          <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
+          {
+          this.state.loading
+          ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
             this.refs.file.click()
           }}>
             <input
@@ -229,11 +232,12 @@ class Card extends React.Component {
               title=' '
               onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
-          (this.state.imgSrc === '')
-          ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-          : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
-         }
+            (this.state.imgSrc === '')
+            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
+           }
           </div>
+          }
           <div>
             <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
             <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
@@ -245,16 +249,6 @@ class Card extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
         </div>
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
-            </div>
-          </ModalContainer>
-          : <span />
-        }
       </div>
     )
   }

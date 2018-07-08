@@ -245,6 +245,7 @@ class CreateConvo extends React.Component {
         data.title = obj.title
         data.buttons = obj.buttons
         data.description = obj.description
+        data.image_url = obj.image_url
         isPresent = true
       }
     })
