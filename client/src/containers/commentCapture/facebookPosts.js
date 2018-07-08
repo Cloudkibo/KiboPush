@@ -98,7 +98,7 @@ class FacebookPosts extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.posts) {
-      this.setState({postsData: nextProps.posts})
+      this.setState({postsData: nextProps.posts, totalLength: nextProps.posts.length})
     }
   }
 

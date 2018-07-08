@@ -271,7 +271,7 @@ class Card extends React.Component {
 
   render () {
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -340,6 +340,9 @@ class Card extends React.Component {
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
             : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
            }
+            {this.state.imgSrc !== '' &&
+            <i className='fa fa-times-circle-o' style={{fontSize: '1rem', marginLeft: '-5px', marginRight: '-5px'}} />
+            }
           </div>
           }
         </div>
