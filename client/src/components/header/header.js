@@ -377,11 +377,11 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : 'hello'}</span>
+                          <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : ''}</span>
                           <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : (this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.gender === 'female') ? 'icons/femaleUser.jpg' : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
                         </span>
                         <span className='m-topbar__username m--hide'>
-                          {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                          {(this.props.user) ? this.props.user.name : ''}
                         </span>
                       </a>
                       <div className='m-dropdown__wrapper'>
@@ -394,7 +394,7 @@ class Header extends React.Component {
                               </div>
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>
-                                  {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                                  {(this.props.user) ? this.props.user.name : ''}
                                 </span>
                                 <span className='m-card-user__email'>
                                   {(this.props.user) ? this.props.user.email : ''}
