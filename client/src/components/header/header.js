@@ -376,16 +376,12 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <div className='row'>
-                            <div className='col-md-4 col-lg-4 col-sm-4'>
-                              <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
-                            </div>
-                            <div className='col-md-4 col-lg-4 col-sm-4' style={{marginTop: '10px', marginLeft: '-10px'}}>
-                              <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : ''}</span>
-                            </div>
-                            <div className='col-md-4 col-lg-4 col-sm-4' style={{marginTop: '10px', marginLeft: '-10px'}}>
-                              <i className='fa fa-chevron-down' />
-                            </div>
+                          <div style={{display: 'inline-block', marginRight: '5px'}}>
+                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          </div>
+                          <div style={{display: 'inline-block', height: '41px'}}>
+                            <span className='m-nav__link-text' style={{lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center'}}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
+                            </span>
                           </div>
                         </span>
                         <span className='m-topbar__username m--hide'>
