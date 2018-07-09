@@ -922,11 +922,15 @@ exports.enable = function (req, res) {
                                       err)}`
                                   })
                                 }
+                                let msg = 'Page is already connected'
+                                if (userInfo && userInfo.facebookInfo) {
+                                  msg = `Page is already connected by ${userInfo.facebookInfo.name}. In order to manage this page please ask ${userInfo.facebookInfo.name} to create a team account and invite you.`
+                                }
                                 res.status(200).json({
                                   status: 'success',
                                   payload: {
                                     pages: pages,
-                                    msg: `Page is already connected by ${userInfo.facebookInfo.name}. In order to manage this page please ask ${userInfo.facebookInfo.name} to create a team account and invite you.`
+                                    msg: msg
                                   }
                                 })
                               })
