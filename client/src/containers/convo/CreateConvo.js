@@ -59,7 +59,7 @@ class CreateConvo extends React.Component {
       lists: [],
       tabActive: 'broadcast',
       resetTarget: false,
-      isValidBroadcast: false
+      setTarget: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -216,22 +216,27 @@ class CreateConvo extends React.Component {
         }
       }
     }
-    this.setState({
-      isValidBroadcast: isValid
-    })
+    return isValid
   }
 
-  onNext () {
-  /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    $('[href="#tab_2"]').tab('show')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+  onNext (e) {
+    if (this.validateFields()) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target'})
+    }
   }
+
   onPrevious () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
@@ -247,22 +252,32 @@ class CreateConvo extends React.Component {
   }
   initTab () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onTargetClick (e) {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'target', resetTarget: false})
+    if (this.validateFields()) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target', resetTarget: false})
+    }
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
@@ -458,7 +473,7 @@ class CreateConvo extends React.Component {
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
-    this.setState({list: temp, broadcast: temp2, isValidBroadcast: false})
+    this.setState({list: temp, broadcast: temp2})
   }
 
   sendConvo () {
@@ -633,10 +648,7 @@ class CreateConvo extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
-                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.validateFields}>
-                                Save
-                              </button>
-                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0 || !this.state.isValidBroadcast)} onClick={this.onNext}>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
                                 Next
                               </button>
                             </div>
@@ -661,15 +673,15 @@ class CreateConvo extends React.Component {
                         <div className='col-12'>
                           <ul className='nav nav-tabs'>
                             <li>
-                              <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
+                              <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             {
                               this.props.location.state && this.props.location.state.module === 'convo' &&
                               <li>
-                                { this.state.broadcast.length > 0 && this.state.isValidBroadcast
-                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={(e) => this.onTargetClick(e)}>Targeting </a>
-                                  : <a>Targeting </a>
-                                }
+                                {this.state.broadcast.length > 0
+                                ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                : <a>Targeting</a>
+                              }
                               </li>
                             }
                           </ul>
