@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import Halogen from 'halogen'
-import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import AlertContainer from 'react-alert'
 

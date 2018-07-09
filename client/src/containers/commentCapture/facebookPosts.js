@@ -76,8 +76,11 @@ class FacebookPosts extends React.Component {
     this.props.saveCurrentPost(post)
   }
   displayData (n, posts, searchValue) {
+    console.log('searchVal', searchValue)
     var searchVal = ''
-    if (searchValue) {
+    if (searchValue && searchValue === 'empty') {
+      searchValue = ''
+    } else if (searchValue) {
       searchVal = searchValue
     } else {
       searchVal = this.state.searchValue
@@ -92,9 +95,10 @@ class FacebookPosts extends React.Component {
     } else {
       limit = offset + 10
     }
+    console.log('offset', offset)
     for (var i = offset; i < limit; i++) {
       if (searchVal !== '') {
-        let postText = this.getPostText(this.props.posts[i].payload)
+        let postText = this.getPostText(posts[i].payload)
         if (postText.toLowerCase().includes(searchVal.toLowerCase())) {
           data[index] = posts[i]
           index++
@@ -119,6 +123,7 @@ class FacebookPosts extends React.Component {
   }
 
   searchPosts (event) {
+    console.log('event.target.value', event.target.value)
     this.setState({
       searchValue: event.target.value
     })
@@ -132,11 +137,13 @@ class FacebookPosts extends React.Component {
           }
         }
       }
+      this.displayData(0, filtered, event.target.value)
+      this.setState({ totalLength: filtered.length })
     } else {
       filtered = this.props.posts
+      this.displayData(0, filtered, 'empty')
+      this.setState({ totalLength: filtered.length })
     }
-    this.displayData(0, filtered, event.target.value)
-    this.setState({ totalLength: filtered.length })
   }
 
   render () {
