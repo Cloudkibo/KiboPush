@@ -378,7 +378,7 @@ class Header extends React.Component {
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
                           <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : 'hello'}</span>
-                          <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : (this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.gender === 'female') ? 'icons/femaleUser.jpg' : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
                         </span>
                         <span className='m-topbar__username m--hide'>
                           {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
@@ -390,7 +390,7 @@ class Header extends React.Component {
                           <div className='m-dropdown__header m--align-center'>
                             <div className='m-card-user m-card-user--skin-dark'>
                               <div className='m-card-user__pic'>
-                                <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless' alt='' />
+                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : (this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.gender === 'female') ? 'icons/femaleUser.jpg' : 'icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
                               </div>
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>
