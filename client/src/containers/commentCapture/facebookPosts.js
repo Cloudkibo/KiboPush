@@ -75,8 +75,14 @@ class FacebookPosts extends React.Component {
   onEdit (post) {
     this.props.saveCurrentPost(post)
   }
-  displayData (n, posts) {
-    console.log('in display data')
+  displayData (n, posts, searchValue) {
+    var searchVal = ''
+    if (searchValue) {
+      searchVal = searchValue
+    } else {
+      searchVal = this.state.searchValue
+    }
+    console.log('in display data', searchVal)
     let offset = n * 10
     let data = []
     let limit
@@ -87,9 +93,9 @@ class FacebookPosts extends React.Component {
       limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
-      if (this.state.searchValue !== '') {
+      if (searchVal !== '') {
         let postText = this.getPostText(this.props.posts[i].payload)
-        if (postText.toLowerCase().includes(this.state.searchValue.toLowerCase())) {
+        if (postText.toLowerCase().includes(searchVal.toLowerCase())) {
           data[index] = posts[i]
           index++
         }
@@ -129,7 +135,7 @@ class FacebookPosts extends React.Component {
     } else {
       filtered = this.props.posts
     }
-    this.displayData(0, filtered)
+    this.displayData(0, filtered, event.target.value)
     this.setState({ totalLength: filtered.length })
   }
 
