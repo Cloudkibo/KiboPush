@@ -272,6 +272,7 @@ class FacebookPosts extends React.Component {
           fileData.append('filename', file.name)
           fileData.append('filetype', file.type)
           fileData.append('filesize', file.size)
+          fileData.append('pageId', this.props.pages[0]._id)
           fileData.append('componentType', componentType)
           console.log('file', file)
           this.setState({

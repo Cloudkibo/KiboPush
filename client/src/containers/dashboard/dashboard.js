@@ -18,6 +18,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
+import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -45,7 +46,8 @@ class Dashboard extends React.Component {
       sentseendata1: [],
       chartData: [],
       selectedDays: 10,
-      topPages: []
+      topPages: [],
+      loading: true
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -171,6 +173,9 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/addPageWizard'
         })
+      }
+      if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
+        this.setState({loading: false})
       }
       if (nextprops.sentseendata) {
         var temp = []
@@ -367,47 +372,52 @@ class Dashboard extends React.Component {
               <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
-          <div className='row'>
+          {this.state.loading
+          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          : <div>
+            <div className='row'>
+              {
+                this.props.pages && this.props.pages.length > 0 &&
+                <PageLikesSubscribers connectedPages={this.props.pages} />
+              }
+              {
+                this.props.dashboard &&
+                <CardBoxes data={this.props.dashboard} />
+              }
+            </div>
             {
-              this.props.pages && this.props.pages.length > 0 &&
-              <PageLikesSubscribers connectedPages={this.props.pages} />
+              this.props.sentseendata &&
+              <CardsWithProgress data={this.props.sentseendata} />
             }
             {
-              this.props.dashboard &&
-              <CardBoxes data={this.props.dashboard} />
+             this.props.topPages && this.props.topPages.length > 1 &&
+               <div className='row'>
+                 <TopPages pagesData={this.props.topPages} />
+               </div>
             }
-          </div>
-          {
-            this.props.sentseendata &&
-            <CardsWithProgress data={this.props.sentseendata} />
-          }
-          {
-           this.props.topPages && this.props.topPages.length > 1 &&
-             <div className='row'>
-               <TopPages pagesData={this.props.topPages} />
-             </div>
-          }
-          <div className='row'>
-            <Reports
-              iconClassName={'fa fa-line-chart'}
-              title={'Reports'}
-              lineChartData={this.state.chartData}
-              onDaysChange={this.onDaysChange}
-              selectedDays={this.state.selectedDays}
-              />
-          </div>
-          <div className='row'>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                <span>
-                  <i className='fa fa-download' />
+            <div className='row'>
+              <Reports
+                iconClassName={'fa fa-line-chart'}
+                title={'Reports'}
+                lineChartData={this.state.chartData}
+                onDaysChange={this.onDaysChange}
+                selectedDays={this.state.selectedDays}
+                />
+            </div>
+            <div className='row'>
+              <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                   <span>
-                    Export Records in CSV File
+                    <i className='fa fa-download' />
+                    <span>
+                      Export Records in CSV File
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
+        }
         </div>
       </div>
     )
