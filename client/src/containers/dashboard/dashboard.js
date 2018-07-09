@@ -375,49 +375,49 @@ class Dashboard extends React.Component {
           {this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
           : <div>
-          <div className='row'>
+            <div className='row'>
+              {
+                this.props.pages && this.props.pages.length > 0 &&
+                <PageLikesSubscribers connectedPages={this.props.pages} />
+              }
+              {
+                this.props.dashboard &&
+                <CardBoxes data={this.props.dashboard} />
+              }
+            </div>
             {
-              this.props.pages && this.props.pages.length > 0 &&
-              <PageLikesSubscribers connectedPages={this.props.pages} />
+              this.props.sentseendata &&
+              <CardsWithProgress data={this.props.sentseendata} />
             }
             {
-              this.props.dashboard &&
-              <CardBoxes data={this.props.dashboard} />
+             this.props.topPages && this.props.topPages.length > 1 &&
+               <div className='row'>
+                 <TopPages pagesData={this.props.topPages} />
+               </div>
             }
-          </div>
-          {
-            this.props.sentseendata &&
-            <CardsWithProgress data={this.props.sentseendata} />
-          }
-          {
-           this.props.topPages && this.props.topPages.length > 1 &&
-             <div className='row'>
-               <TopPages pagesData={this.props.topPages} />
-             </div>
-          }
-          <div className='row'>
-            <Reports
-              iconClassName={'fa fa-line-chart'}
-              title={'Reports'}
-              lineChartData={this.state.chartData}
-              onDaysChange={this.onDaysChange}
-              selectedDays={this.state.selectedDays}
-              />
-          </div>
-          <div className='row'>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                <span>
-                  <i className='fa fa-download' />
+            <div className='row'>
+              <Reports
+                iconClassName={'fa fa-line-chart'}
+                title={'Reports'}
+                lineChartData={this.state.chartData}
+                onDaysChange={this.onDaysChange}
+                selectedDays={this.state.selectedDays}
+                />
+            </div>
+            <div className='row'>
+              <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                   <span>
-                    Export Records in CSV File
+                    <i className='fa fa-download' />
+                    <span>
+                      Export Records in CSV File
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      }
+        }
         </div>
       </div>
     )
