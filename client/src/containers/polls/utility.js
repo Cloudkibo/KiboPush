@@ -7,7 +7,6 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
   let subscribersMatchTag = []
   let subscribersMatchPolls = []
 
-  // Need to add tagValue.length === 0 once tags are complete
   if (pageValue.length === 0 && genderValue.length === 0 && localeValue.length === 0 && tagValue.length === 0 && (!polls || (polls && polls.selectedPolls.length === 0))) {
     return true
   }
@@ -38,7 +37,6 @@ export function checkConditions (pageValue, genderValue, localeValue, tagValue, 
       }
     }
   }
-  // Uncomment once tags are complete
   if (tagValue.length > 0) {
     for (var o = 0; o < subscribers.length; o++) {
       for (var p = 0; p < tagValue.length; p++) {
