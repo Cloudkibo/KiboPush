@@ -34,17 +34,23 @@ exports.broadcast = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-
-    Broadcasts.update({_id: URLObject.module.id}, {$inc: {clicks: 1}}, (err, updatedData) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      res.writeHead(301, {Location: URLObject.originalURL.startsWith('http') ? URLObject.originalURL : `https://${URLObject.originalURL}`})
-      res.end()
-    })
+    if (URLObject) {
+      Broadcasts.update({_id: URLObject.module.id}, {$inc: {clicks: 1}}, (err, updatedData) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        res.writeHead(301, {Location: URLObject.originalURL.startsWith('http') ? URLObject.originalURL : `https://${URLObject.originalURL}`})
+        res.end()
+      })
+    } else {
+      res.status(400).json({
+        status: 'failed',
+        description: 'No URL found with id ' + req.params.id
+      })
+    }
   })
 }
 

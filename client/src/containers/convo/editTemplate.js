@@ -34,6 +34,7 @@ import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { Link } from 'react-router'
 import { registerAction } from '../../utility/socketio'
+import {loadTags} from '../../redux/actions/tags.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class EditTemplate extends React.Component {
@@ -47,6 +48,7 @@ class EditTemplate extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       showMessengerModal: false,
@@ -61,6 +63,7 @@ class EditTemplate extends React.Component {
     props.getuserdetails()
     props.getFbAppId()
     props.getAdminSubscriptions()
+    props.loadTags()
     props.loadSubscribersList()
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
@@ -410,7 +413,7 @@ class EditTemplate extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
     for (let i = 0; i < this.state.broadcast.length; i++) {
@@ -484,6 +487,14 @@ class EditTemplate extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
@@ -492,6 +503,7 @@ class EditTemplate extends React.Component {
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
           segmentationTimeZone: '',
+          segmentationTags: tagIDs,
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
           isList: isListValue
@@ -530,8 +542,16 @@ class EditTemplate extends React.Component {
         isListValue = true
       }
       var isSegmentedValue = false
-      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
+      }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
+          }
+        }
       }
       var data = {
         platform: 'facebook',
@@ -542,6 +562,7 @@ class EditTemplate extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
+        segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
@@ -889,7 +910,8 @@ function mapStateToProps (state) {
     currentBroadcast: (state.templatesInfo.currentBroadcast),
     subscribers: (state.subscribersInfo.subscribers),
     fbAppId: state.basicInfo.fbAppId,
-    adminPageSubscription: state.basicInfo.adminPageSubscription
+    adminPageSubscription: state.basicInfo.adminPageSubscription,
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -907,7 +929,8 @@ function mapDispatchToProps (dispatch) {
       createWelcomeMessage: createWelcomeMessage,
       loadSubscribersList: loadSubscribersList,
       getAdminSubscriptions: getAdminSubscriptions,
-      getFbAppId: getFbAppId
+      getFbAppId: getFbAppId,
+      loadTags: loadTags
     },
     dispatch)
 }
