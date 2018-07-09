@@ -347,19 +347,16 @@ router.get('/updatePicture', (req, res) => {
     }
     users.forEach(user => {
       if (user.facebookInfo) {
-        console.log('user.facebookInfo', user.facebookInfo.fbId)
         needle.get(
           `https://graph.facebook.com/v2.10/${user.facebookInfo.fbId}?fields=picture&access_token=${user.facebookInfo.fbToken}`,
           (err, resp) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            console.log('resp', resp.body.picture.data.url)
             Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
               if (err) {
                 logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
               }
-              console.log('updated', updated)
             })
           })
       }
