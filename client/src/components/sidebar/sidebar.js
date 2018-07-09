@@ -77,7 +77,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-statistics' />
+              <i className='m-menu__link-icon flaticon-statistics' title='Operational Dashboard' />
               <span className='m-menu__link-text'>Operational Dashboard</span>
             </Link>
           </li>
@@ -94,7 +94,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-comment' />
+              <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
               <span className='m-menu__link-text'>Comment Capture</span>
             </Link>
           </li>
@@ -111,7 +111,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/sequenceMessaging' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-dashboard' />
+              <i className='m-menu__link-icon flaticon-dashboard' title='Sequence Messaging' />
               <span className='m-menu__link-text'>Sequence Messaging</span>
             </Link>
           </li>
@@ -128,7 +128,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/dashboard' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-squares-4' />
+              <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
               <span className='m-menu__link-text'>Dashboard</span>
             </Link>
           </li>
@@ -145,7 +145,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/broadcasts' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-paper-plane' />
+              <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasts' />
               <span className='m-menu__link-text'>Broadcasts</span>
             </Link>
           </li>
@@ -162,7 +162,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/templates' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-file-1' />
+              <i className='m-menu__link-icon flaticon-file-1' title='Templates' />
               <span className='m-menu__link-text'>Templates</span>
             </Link>
           </li>
@@ -179,7 +179,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/surveys' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-statistics' />
+              <i className='m-menu__link-icon flaticon-statistics' title='Surveys' />
               <span className='m-menu__link-text'>Surveys</span>
             </Link>
           </li>
@@ -196,7 +196,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/poll' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-graphic-2' />
+              <i className='m-menu__link-icon flaticon-graphic-2' title='Polls' />
               <span className='m-menu__link-text'>Polls</span>
             </Link>
           </li>
@@ -214,7 +214,7 @@ class Sidebar extends Component {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/bots' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-comment' />
+            <i className='m-menu__link-icon flaticon-comment' title='Smart Replies' />
             <span className='m-menu__link-text'>Smart Replies</span>
           </Link>
         </li>
@@ -234,7 +234,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-chat-1' />
+              <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
               <span className='m-menu__link-text'>Live Chat (Beta)</span>
             </Link>
           </li>
@@ -251,7 +251,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-time-3' />
+              <i className='m-menu__link-icon flaticon-time-3' title='Auto Posting' />
               <span className='m-menu__link-text'>Auto Posting</span>
             </Link>
           </li>
@@ -268,7 +268,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/menu' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-menu-button' />
+              <i className='m-menu__link-icon flaticon-menu-button' title='Persistent Menu' />
               <span className='m-menu__link-text'>Persistent Menu</span>
             </Link>
           </li>
@@ -285,7 +285,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/pages' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-add' />
+              <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
               <span className='m-menu__link-text'>Manage Pages</span>
             </Link>
           </li>
@@ -302,7 +302,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-user-ok' />
+              <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
               <span className='m-menu__link-text'>Subscribers</span>
             </Link>
           </li>
@@ -317,7 +317,7 @@ class Sidebar extends Component {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/segmentedLists' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-list' />
+            <i className='m-menu__link-icon flaticon-list' title='Segment Subscribers' />
             <span className='m-menu__link-text'>Segment Subscribers</span>
           </Link>
         </li>
@@ -332,7 +332,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/welcomeMessage' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-menu-button' />
+              <i className='m-menu__link-icon flaticon-menu-button' title='Welcome Message' />
               <span className='m-menu__link-text'>Welcome Message</span>
             </Link>
           </li>
@@ -349,7 +349,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-user-add' />
+              <i className='m-menu__link-icon flaticon-user-add' title='Invite Memebers' />
               <span className='m-menu__link-text'>Invite Members</span>
             </Link>
           </li>
@@ -366,7 +366,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/members' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-users' />
+              <i className='m-menu__link-icon flaticon-users' title='Members' />
               <span className='m-menu__link-text'>Members</span>
             </Link>
           </li>
@@ -383,7 +383,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/teams' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-map' />
+              <i className='m-menu__link-icon flaticon-map' title='Teams' />
               <span className='m-menu__link-text'>Teams</span>
             </Link>
           </li>
@@ -408,7 +408,7 @@ class Sidebar extends Component {
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
             data-menu-vertical='true'
-            data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
+            data-menu-scrollable='true' data-menu-dropdown-timeout='500'>
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
               {this.showDashboard()}
@@ -431,7 +431,7 @@ class Sidebar extends Component {
               {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-list-3' />
+                    <i className='m-menu__link-icon flaticon-list-3' title='Invite using phone number' />
                     <span className='m-menu__link-text'>Invite using phone number</span>
                   </Link>
                 </li>
@@ -439,7 +439,7 @@ class Sidebar extends Component {
               {this.state.settings &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <Link to='/settings' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-cogwheel' />
+                    <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
                     <span className='m-menu__link-text'>Settings</span>
                   </Link>
                 </li>
@@ -447,7 +447,7 @@ class Sidebar extends Component {
               {this.state.userGuide &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-info' />
+                    <i className='m-menu__link-icon flaticon-info' title='User Guide' />
                     <span className='m-menu__link-text'>User Guide</span>
                   </a>
                 </li>
@@ -455,7 +455,7 @@ class Sidebar extends Component {
               {this.state.waitingResponse &&
                 <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                   <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-cogwheel' />
+                    <i className='m-menu__link-icon flaticon-cogwheel' title='Waiting Response' />
                     <span className='m-menu__link-text'>Waiting Response</span>
                   </Link>
                 </li>
