@@ -151,8 +151,8 @@ class ViewMessage extends React.Component {
                                         ))
                                       }
                                     </Slider>
-                                    : b.componentType === 'text' &&
-                                    <div>
+                                    : b.componentType === 'text'
+                                    ? <div>
                                       <div className='m-messenger__message-text'>
                                         {b.text}
                                       </div>
@@ -165,6 +165,42 @@ class ViewMessage extends React.Component {
                                         ))
                                       }
                                     </div>
+                                    : b.componentType === 'list' &&
+                                    <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
+                                      {b.listItems.map((item, i) => (
+                                        <a key={i} href={item.default_action && item.default_action !== '' ? '//' + item.default_action.url : null} target='_blank' style={{width: '-webkit-fill-available'}} className='btn btn-sm'>
+                                          <div style={{padding: '10px', maxWidth: 400, marginBottom: '-19px', backgroundImage: b.topElementStyle === 'LARGE' && i === 0 ? 'url(' + b.listItems[0].image_url + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: b.componentType === 'LARGE' ? '350px' : ''}} className='ui-block hoverbordersolid'>
+                                            <div className='row'>
+                                              <div className={b.topElementStyle === 'LARGE' && i === 0 ? 'col-md-12' : 'col-md-4'} style={{marginLeft: '10px'}}>
+                                                <div style={{textAlign: 'left', fontWeight: 'bold'}}>{item.title}</div>
+                                                <div style={{textAlign: 'left', color: '#ccc'}}>{item.subtitle}</div>
+                                              </div>
+                                              {b.topElementStyle === 'LARGE' && i === 0
+                                                ? null
+                                              : item.image_url && item.image_url !== '' &&
+                                              <img style={{maxHeight: '50px', maxWidth: '50px', float: 'right'}} src={item.image_url} />
+                                            }
+                                            </div>
+                                            <br />
+                                            {
+                                              item.buttons && item.buttons.length > 0 &&
+                                              item.buttons.map((button, i) => (
+                                                <a key={i} href={'//' + button.url} target='_blank' style={{width: '80%', marginTop: '5px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                                  <span>{button.title}</span>
+                                                </a>
+                                              ))
+                                            }
+                                          </div>
+                                        </a>
+                                        ))}
+                                        {b.buttons && b.buttons.length > 0 &&
+                                        b.buttons.map((button, i) => (
+                                          <a key={i} href={'//' + button.url} target='_blank' style={{width: '70%', marginTop: '15px', whiteSpace: 'inherit'}} className='btn btn-secondary btn-sm'>
+                                            <span>{button.title}</span>
+                                          </a>
+                                        ))
+                                        }
+                                      </div>
                                   ))
                                 }
                               </div>

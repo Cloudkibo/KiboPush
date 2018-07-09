@@ -76,6 +76,7 @@ class FacebookPosts extends React.Component {
     this.props.saveCurrentPost(post)
   }
   displayData (n, posts) {
+    console.log('in display data')
     let offset = n * 10
     let data = []
     let limit
@@ -86,8 +87,16 @@ class FacebookPosts extends React.Component {
       limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
-      data[index] = posts[i]
-      index++
+      if (this.state.searchValue !== '') {
+        let postText = this.getPostText(this.props.posts[i].payload)
+        if (postText.toLowerCase().includes(this.state.searchValue.toLowerCase())) {
+          data[index] = posts[i]
+          index++
+        }
+      } else {
+        data[index] = posts[i]
+        index++
+      }
     }
     this.setState({postsData: data})
   }
@@ -98,7 +107,8 @@ class FacebookPosts extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.posts) {
-      this.setState({postsData: nextProps.posts})
+      this.displayData(0, nextProps.posts)
+      this.setState({totalLength: nextProps.posts.length})
     }
   }
 

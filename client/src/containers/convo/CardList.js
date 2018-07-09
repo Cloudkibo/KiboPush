@@ -30,6 +30,7 @@ class Card extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
+    this.removeImage = this.removeImage.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -52,6 +53,23 @@ class Card extends React.Component {
     console.log('value', e.target.value)
     if (e.target.value) {
       this.setState({disabled: false})
+    }
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button,
+      default_action: {type: 'web_url', url: this.state.elementUrl}
+    })
+    if (e.target.value) {
+      this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('compact')
     }
   }
   changeUrl (event) {
@@ -128,6 +146,19 @@ class Card extends React.Component {
       }
     }
   }
+  removeImage () {
+    this.setState({imgSrc: ''})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: '',
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button})
+  }
   _onChange () {
   // Assuming only image
     var file = this.refs.file.files[0]
@@ -158,7 +189,7 @@ class Card extends React.Component {
       //   fileName: file.name,
       //   type: file.type,
       //   image_url: '',
-      //   size: file.size}, this.updateImageUrl, this.setLoading)
+      //   size: file.size}, this.updateImageUrl, this.setLoading)szerxcdtfvygbuhnijmk,l;.'scvbtyumiop[]'
     }
   }
 
@@ -271,7 +302,7 @@ class Card extends React.Component {
 
   render () {
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -334,13 +365,16 @@ class Card extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px'}} />
             {
             (this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-            : <img style={{maxHeight: '140px', maxWidth: '100px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
+            : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
            }
           </div>
+          }
+          {this.state.imgSrc !== '' && !this.state.checkbox &&
+          <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
           }
         </div>
         <br />

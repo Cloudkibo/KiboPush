@@ -194,6 +194,20 @@ exports.sendConversation = function (req, res) {
                   })
                 })
               }
+              if (element.default_action) {
+                let URLObject = new URL({
+                  originalURL: element.default_action.url,
+                  module: {
+                    id: broadcast._id,
+                    type: 'broadcast'
+                  }
+                })
+                URLObject.save((err, savedurl) => {
+                  if (err) logger.serverLog(TAG, err)
+                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                  newPayload[pindex].listItems[lindex].default_action.url = newURL
+                })
+              }
             })
           }
         })
