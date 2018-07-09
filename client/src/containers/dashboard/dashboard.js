@@ -18,6 +18,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
+import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -45,7 +46,8 @@ class Dashboard extends React.Component {
       sentseendata1: [],
       chartData: [],
       selectedDays: 10,
-      topPages: []
+      topPages: [],
+      loading: true
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -171,6 +173,9 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/addPageWizard'
         })
+      }
+      if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
+        this.setState({loading: false})
       }
       if (nextprops.sentseendata) {
         var temp = []
@@ -367,6 +372,9 @@ class Dashboard extends React.Component {
               <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
+          {this.state.loading
+          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          : <div>
           <div className='row'>
             {
               this.props.pages && this.props.pages.length > 0 &&
@@ -408,6 +416,8 @@ class Dashboard extends React.Component {
               </button>
             </div>
           </div>
+        </div>
+      }
         </div>
       </div>
     )
