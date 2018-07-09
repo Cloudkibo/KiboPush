@@ -54,6 +54,23 @@ class Card extends React.Component {
     if (e.target.value) {
       this.setState({disabled: false})
     }
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button,
+      default_action: {type: 'web_url', url: this.state.elementUrl}
+    })
+    if (e.target.value) {
+      this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('compact')
+    }
   }
   changeUrl (event) {
     console.log('event', event.target.value)
@@ -131,6 +148,16 @@ class Card extends React.Component {
   }
   removeImage () {
     this.setState({imgSrc: ''})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: '',
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button})
   }
   _onChange () {
   // Assuming only image
@@ -162,7 +189,7 @@ class Card extends React.Component {
       //   fileName: file.name,
       //   type: file.type,
       //   image_url: '',
-      //   size: file.size}, this.updateImageUrl, this.setLoading)
+      //   size: file.size}, this.updateImageUrl, this.setLoading)szerxcdtfvygbuhnijmk,l;.'scvbtyumiop[]'
     }
   }
 
@@ -346,7 +373,7 @@ class Card extends React.Component {
            }
           </div>
           }
-          {this.state.imgSrc !== '' &&
+          {this.state.imgSrc !== '' && !this.state.checkbox &&
           <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
           }
         </div>
