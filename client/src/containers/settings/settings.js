@@ -652,28 +652,26 @@ class Settings extends React.Component {
                             </div>
                             <br /><br />
                             {
-                              this.state.NGPKey &&
-                                <div>
-                                  <div className='form-group m-form__group row'>
-                                    <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
-                                    <div className='col-7 input-group'>
-                                      <input className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
-                                    </div>
-                                  </div>
-                                  <div className='form-group m-form__group row'>
-                                    <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
-                                      NGP API Key
-                                    </label>
-                                    <div className='col-7 input-group'>
-                                      <input className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
-                                    </div>
+                              <div>
+                                <div className='form-group m-form__group row'>
+                                  <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
+                                  <div className='col-7 input-group'>
+                                    <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
                                   </div>
                                 </div>
+                                <div className='form-group m-form__group row'>
+                                  <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                                      NGP API Key
+                                    </label>
+                                  <div className='col-7 input-group'>
+                                    <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                  </div>
+                                </div>
+                              </div>
                             }
                             <br />
                             {
-                              this.state.NGPKey &&
-                              <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
+                              <button disabled={!this.state.NGPKey} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
                             }
                             <br />
                           </div>
