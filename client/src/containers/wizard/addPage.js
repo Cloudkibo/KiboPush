@@ -117,7 +117,7 @@ class AddPage extends React.Component {
                         </Link>
                       </div>
                       <div style={{display: 'inline-block', padding: '5px'}}>
-                        <Link to='/dashboard' className='btn btn-primary'>
+                        <Link to='/dashboard' className='btn btn-secondary'>
                           Skip
                         </Link>
                       </div>
