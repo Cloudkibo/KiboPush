@@ -72,6 +72,7 @@ export function enablePage (page) {
           dispatch(userpageconnect(res.payload))
         } else {
           dispatch(updateOtherPages(res.payload.pages))
+          dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
         }
       })
   }
@@ -95,7 +96,10 @@ export function removePage (page) {
 export function removePageInAddPage (page) {
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
-    .then(res => dispatch(updateOtherPages(res.payload)))
+    .then(res => {
+      dispatch(updateOtherPages(res.payload))
+      dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
+    })
   }
 }
 

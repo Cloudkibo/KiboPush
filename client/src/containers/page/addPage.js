@@ -11,7 +11,6 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
 import {
   addPages,
   enablePage,
@@ -73,6 +72,13 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <Header />

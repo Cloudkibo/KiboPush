@@ -131,6 +131,7 @@ class List extends React.Component {
     var temp = this.state.cards
     temp.push({element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.state.topElementStyle} />, key: temp.length + 1})
     this.setState({cards: temp, pageNumber: temp.length})
+    console.log('temp in addElement', temp)
   }
 
   removeElement (obj) {
@@ -150,10 +151,11 @@ class List extends React.Component {
           temp.push(this.state.cards[i])
         }
       }
+      this.setState({cards: temp, broadcast: temp})
       console.log('temp', temp)
       // var temp = this.state.cards
       // temp.splice(this.state.pageNumber - 1, 1)
-      this.setState({cards: temp})
+      //  this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(temp)), buttons: this.state.buttons, topElementStyle: this.state.topElementStyle})
     }
   //   this.props.handleCard({id: this.props.id,
   //     componentType: 'card',

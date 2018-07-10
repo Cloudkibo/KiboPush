@@ -180,7 +180,7 @@ class FacebookPosts extends React.Component {
         facebookPost: post
       })
       if (fileData.get('componentType') === 'video') {
-        this.setStatus({
+        this.setState({
           isVideo: true
         })
       }
