@@ -167,7 +167,7 @@ class Bot extends React.Component {
     } else {
       this.setState({botsData: [], totalLength: 0})
     }
-    if (nextProps.pages && nextProps.pages.length > 0) {
+    if (nextProps.pages && nextProps.pages.length > 0 && nextProps.bots) {
       // this.state.pageSelected = nextProps.pages[0]._id
       this.updateAllowedPages(nextProps.pages, nextProps.bots)
     }

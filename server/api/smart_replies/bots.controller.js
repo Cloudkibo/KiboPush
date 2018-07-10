@@ -46,10 +46,13 @@ function getWitResponse (message, token, bot, pageId, senderId) {
     },
     (err, witres) => {
       if (err) {
-        logger.serverLog(TAG,
-          'Error Occured In Getting Response From WIT.AI app')
+        logger.serverLog(TAG, 'Error Occured In Getting Response From WIT.AI app')
+        return
       }
-
+      if (!witres.body) {
+        logger.serverLog(TAG, 'Error Occured In Getting Response From WIT.AI app')
+        return
+      }
       // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
       if (Object.keys(JSON.parse(witres.body).entities).length === 0) {
         logger.serverLog(TAG, 'No response found')
@@ -87,7 +90,7 @@ function sendMessenger (message, pageId, senderId) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       return
     }
-    if(subscriber === null){
+    if (subscriber === null) {
       return
     }
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
@@ -298,10 +301,7 @@ exports.edit = function (req, res) {
       _id: req.body.botId
     }).populate('pageId').exec((err, bot) => {
       if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
+        return logger.serverLog(TAG, 'Error Occured In editing the bot')
       }
       logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
