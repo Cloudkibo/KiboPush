@@ -27,6 +27,7 @@ import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
 import List from '../convo/List'
+import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -311,41 +312,8 @@ class CreateMessage extends React.Component {
   }
 
   sendConvo () {
-    if (this.state.broadcast.length === 0) {
+    if (!validateFields(this.state.broadcast, this.msg)) {
       return
-    }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'list') {
-        if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
-          return this.msg.error('A list must have atleast 2 elements')
-        }
-        if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
-          return this.msg.error('Please select an image for top item with large style in list')
-        }
-        for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
-          if (!this.state.broadcast[i].listItems[j].title) {
-            return this.msg.error('Element in list must have a title.')
-          } else if (!this.state.broadcast[i].listItems[j].subtitle) {
-            return this.msg.error('Element in list must have a subtitle.')
-          }
-        }
-      }
     }
     console.log('edit Message', this.state.broadcast)
     this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
