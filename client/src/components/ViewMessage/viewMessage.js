@@ -65,7 +65,7 @@ class ViewMessage extends React.Component {
                             <div className='m-messenger__message-pic'>
                               <img src='icons/user.png' alt='' />
                             </div>
-                            <div style={{maxWidth: '235px'}} className='m-messenger__message-body'>
+                            <div style={{maxWidth: '235px', minWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
                               <div className='m-messenger__message-content'>
                                 {
@@ -81,7 +81,7 @@ class ViewMessage extends React.Component {
                                       />
                                     </div>
                                     : b.componentType === 'audio'
-                                    ? <div style={{marginTop: '40px'}}>
+                                    ? <div style={{marginTop: '20px', marginBottom: '60px'}}>
                                       <ReactPlayer
                                         url={b.fileurl.url}
                                         controls
