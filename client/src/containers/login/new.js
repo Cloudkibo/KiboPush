@@ -43,6 +43,7 @@ class Login extends React.Component {
         password: this.refs.password.value.trim()
       }
     }
+
     this.props.logIn(data, this.msg)
   }
   check () {
