@@ -207,12 +207,12 @@ class Header extends React.Component {
               </button>
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
+                  {this.props.user &&
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{marginRight: '-15px'}}>
                       <label style={{fontWeight: 'inherit', marginTop: '25px'}}>Advanced Mode:
                       </label>
                     </li>
-                    {this.props.user &&
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <span className='m-switch m-switch--outline m-switch--icon m-switch--success' style={{marginTop: '17px'}}>
                         <label>
@@ -221,7 +221,6 @@ class Header extends React.Component {
                         </label>
                       </span>
                     </li>
-                    }
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
@@ -459,6 +458,7 @@ class Header extends React.Component {
                       <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li>
                   </ul>
+                }
                 </div>
               </div>
             </div>

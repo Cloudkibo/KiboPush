@@ -409,6 +409,7 @@ class Sidebar extends Component {
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
+            {this.props.user &&
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
               {this.showDashboard()}
@@ -461,6 +462,7 @@ class Sidebar extends Component {
                 </li>
              }
             </ul>
+          }
           </div>
 
         </div>
