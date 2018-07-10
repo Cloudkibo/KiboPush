@@ -352,6 +352,7 @@ class Convo extends React.Component {
                             <option value='audio'>audio</option>
                             <option value='video'>video</option>
                             <option value='file'>file</option>
+                            <option value='list'>list</option>
                             <option value='miscellaneous'>miscellaneous</option>
                             <option value=''>all</option>
                           </select>
