@@ -138,13 +138,15 @@ exports.index = function (req, res) {
       }
       if (req.body.first_page === 'first') {
         if (!req.body.filter) {
+          let startDate = new Date()  // Current date
+          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+          startDate.setHours(0)   // Set the hour, minute and second components to 0
+          startDate.setMinutes(0)
+          startDate.setSeconds(0)
           let findCriteria = {
             companyId: companyUser.companyId,
             'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: new Date(
-                (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-              $lt: new Date(
-                (new Date().getTime()))
+              $gte: startDate
             } : { $exists: true }
           }
           Broadcasts.aggregate([
@@ -178,27 +180,31 @@ exports.index = function (req, res) {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
           let findCriteria = {}
           if (req.body.filter_criteria.type_value === 'miscellaneous') {
+            let startDate = new Date()  // Current date
+            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+            startDate.setHours(0)   // Set the hour, minute and second components to 0
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
             findCriteria = {
               companyId: companyUser.companyId,
               'payload.1': { $exists: true },
               title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: new Date(
-                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
+                $gte: startDate
               } : { $exists: true }
             }
           } else {
+            let startDate = new Date()  // Current date
+            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+            startDate.setHours(0)   // Set the hour, minute and second components to 0
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
             findCriteria = {
               companyId: companyUser.companyId,
               'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
               title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: new Date(
-                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
+                $gte: startDate
               } : { $exists: true }
             }
           }
@@ -232,13 +238,15 @@ exports.index = function (req, res) {
         }
       } else if (req.body.first_page === 'next') {
         if (!req.body.filter) {
+          let startDate = new Date()  // Current date
+          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+          startDate.setHours(0)   // Set the hour, minute and second components to 0
+          startDate.setMinutes(0)
+          startDate.setSeconds(0)
           let findCriteria = {
             companyId: companyUser.companyId,
             'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: new Date(
-                (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
-              $lt: new Date(
-                (new Date().getTime()))
+              $gte: startDate
             } : { $exists: true }
           }
           Broadcasts.aggregate([
@@ -272,27 +280,31 @@ exports.index = function (req, res) {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
           let findCriteria = {}
           if (req.body.filter_criteria.type_value === 'miscellaneous') {
+            let startDate = new Date()  // Current date
+            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+            startDate.setHours(0)   // Set the hour, minute and second components to 0
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
             findCriteria = {
               companyId: companyUser.companyId,
               'payload.1': { $exists: true },
               title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: new Date(
-                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
+                $gte: startDate
               } : { $exists: true }
             }
           } else {
+            let startDate = new Date()  // Current date
+            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+            startDate.setHours(0)   // Set the hour, minute and second components to 0
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
             findCriteria = {
               companyId: companyUser.companyId,
               'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
               title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: new Date(
-                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
+                $gte: startDate
               } : { $exists: true }
             }
           }
@@ -327,13 +339,15 @@ exports.index = function (req, res) {
         }
       } else if (req.body.first_page === 'previous') {
         if (!req.body.filter) {
+          let startDate = new Date()  // Current date
+          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+          startDate.setHours(0)   // Set the hour, minute and second components to 0
+          startDate.setMinutes(0)
+          startDate.setSeconds(0)
           let findCriteria = {
             companyId: companyUser.companyId,
             'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: new Date(
-                (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
-              $lt: new Date(
-                (new Date().getTime()))
+              $gte: startDate
             } : { $exists: true }
           }
           Broadcasts.aggregate([
@@ -367,27 +381,31 @@ exports.index = function (req, res) {
           let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
           let findCriteria = {}
           if (req.body.filter_criteria.type_value === 'miscellaneous') {
+            let startDate = new Date()  // Current date
+            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+            startDate.setHours(0)   // Set the hour, minute and second components to 0
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
             findCriteria = {
               companyId: companyUser.companyId,
               'payload.1': { $exists: true },
               title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: new Date(
-                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
+                $gte: startDate
               } : { $exists: true }
             }
           } else {
+            let startDate = new Date()  // Current date
+            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+            startDate.setHours(0)   // Set the hour, minute and second components to 0
+            startDate.setMinutes(0)
+            startDate.setSeconds(0)
             findCriteria = {
               companyId: companyUser.companyId,
               'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
               title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
               'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: new Date(
-                  (new Date().getTime() - (req.body.filter_criteria.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
+                $gte: startDate
               } : { $exists: true }
             }
           }
