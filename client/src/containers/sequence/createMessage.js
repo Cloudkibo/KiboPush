@@ -29,13 +29,11 @@ import Gallery from '../convo/Gallery'
 import List from '../convo/List'
 import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
-import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { browserHistory } from 'react-router'
-
 
 class CreateMessage extends React.Component {
   constructor (props, context) {
