@@ -78,6 +78,8 @@ class Gallery extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('this.state.broadcast', this.state.broadcast)
+    console.log('obj', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
