@@ -94,6 +94,7 @@ class Card extends React.Component {
   }
 
   handleChange (event) {
+    console.log('+onChange')
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,

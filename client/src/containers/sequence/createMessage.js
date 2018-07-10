@@ -139,7 +139,7 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'list') {
-        temp.push({content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} listDetails={payload[i]} />)})
+        temp.push({content: (<List id={temp.length} key={temp.length} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -332,6 +332,7 @@ class CreateMessage extends React.Component {
         }
       }
       if (this.state.broadcast[i].componentType === 'list') {
+        console.log('this.state.broadcast', this.state.broadcast[i])
         if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
           return this.msg.error('A list must have atleast 2 elements')
         }

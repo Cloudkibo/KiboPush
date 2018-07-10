@@ -40,7 +40,7 @@ class List extends React.Component {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k + 1} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
+        tmp.push({element: <Card id={k} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
       }
       console.log()
       this.setState({cards: tmp, broadcast: this.props.cards, topElementStyle: this.props.list.topElementStyle})
@@ -94,6 +94,7 @@ class List extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('this.state.broadcast', this.state.broadcast)
     console.log('in card', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
@@ -136,6 +137,8 @@ class List extends React.Component {
 
   removeElement (obj) {
     console.log('obj', obj)
+    console.log('this.state.broadcast', this.state.broadcast)
+    console.log('this.state.cards', this.state.cards)
     if (this.state.cards.length < 3) {
       this.msg.error('A List must have atleast 2 elements')
     } else {
@@ -145,14 +148,24 @@ class List extends React.Component {
       //   return index !== obj.id
       // })
       var temp = []
-
+      var temp1 = []
       for (var i = 0; i < this.state.cards.length; i++) {
         if (obj.id !== this.state.cards[i].element.props.id) {
-          temp.push(this.state.cards[i])
+          temp1.push(this.state.cards[i])
+          if (this.state.cards[i].element.props.cardDetails) {
+            temp.push(this.state.cards[i].element.props.cardDetails)
+          } else {
+            for (var j = 0; j < this.state.broadcast.length; j++) {
+              if (this.state.broadcast[j].id === this.state.cards[i].element.props.id) {
+                temp.push(this.state.broadcast[i])
+              }
+            }
+          }
         }
       }
-      this.setState({cards: temp, broadcast: temp})
       console.log('temp', temp)
+      this.setState({cards: temp1, broadcast: temp})
+      this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(temp)), buttons: this.state.buttons, topElementStyle: this.state.topElementStyle})
       // var temp = this.state.cards
       // temp.splice(this.state.pageNumber - 1, 1)
       //  this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(temp)), buttons: this.state.buttons, topElementStyle: this.state.topElementStyle})
