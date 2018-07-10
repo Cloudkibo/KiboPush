@@ -14,6 +14,7 @@ import File from '../convo/File'
 import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
+import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -51,6 +52,7 @@ class CreateMessage extends React.Component {
     this.getPayloadByIndex = this.getPayloadByIndex.bind(this)
     this.gotoMenu = this.gotoMenu.bind(this)
   }
+
   gotoMenu () {
     this.props.history.push({
       pathname: `/menu`,
@@ -344,38 +346,8 @@ class CreateMessage extends React.Component {
   }
 
   saveMessage () {
-    if (this.state.message.length === 0) {
+    if (!validateFields(this.state.message, this.msg)) {
       return
-    }
-    for (let i = 0; i < this.state.message.length; i++) {
-      if (this.state.message[i].componentType === 'card') {
-        if (!this.state.message[i].title) {
-          return this.msg.error('Card must have a title')
-        }
-        if (!this.state.message[i].description) {
-          return this.msg.error('Card must have a subtitle')
-        }
-        if (!this.state.message[i].buttons) {
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.message[i].buttons.length === 0) {
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.message[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.message[i].cards.length; j++) {
-          if (!this.state.message[i].cards[j].title) {
-            return this.msg.error('Card in gallery must have a title')
-          }
-          if (!this.state.message[i].cards[j].subtitle) {
-            return this.msg.error('Card in gallery must have a subtitle')
-          }
-          if (!this.state.message[i].cards[j].buttons) {
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.message[i].cards[j].buttons.length === 0) {
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
     }
     var saveMessage = true
     var currentState
