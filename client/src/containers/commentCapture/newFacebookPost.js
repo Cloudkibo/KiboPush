@@ -143,6 +143,7 @@ class FacebookPosts extends React.Component {
     })
   }
   removeAttachment (attachment) {
+    console.log('remove attachment', attachment)
     var id = attachment.id
     var facebookPost = this.state.facebookPost
     var attachments = []
@@ -156,6 +157,7 @@ class FacebookPosts extends React.Component {
       attachments: attachments,
       facebookPost: facebookPost
     })
+    console.log('attachments', attachments)
   }
   handleUpload (res, fileData) {
     this.setState({
@@ -256,6 +258,7 @@ class FacebookPosts extends React.Component {
   }
 
   onFileChange (e, componentType) {
+    console.log('e.target.files', e.target.files, componentType)
     if (!this.validateFile(e.target.files, componentType)) {
       var files = e.target.files
       console.log('file', files)
