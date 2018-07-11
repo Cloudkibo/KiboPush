@@ -408,7 +408,8 @@ class Sidebar extends Component {
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
             data-menu-vertical='true'
-            data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
+            data-menu-scrollable='true' m-menu-dropdown-timeout='500'
+            style={{width: 'inherit', overflow: 'visible', position: 'fixed', height: '600px'}}>
             {this.props.user &&
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
