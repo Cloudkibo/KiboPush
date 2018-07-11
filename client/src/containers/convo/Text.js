@@ -36,7 +36,8 @@ class Text extends React.Component {
       text: props.txt ? props.txt : '',
       showEmojiPicker: false,
       count: 0,
-      showUserOptions: false
+      showUserOptions: false,
+      numOfButtons: 0
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
@@ -102,7 +103,8 @@ class Text extends React.Component {
   addButton (obj) {
     var temp = this.state.button
     temp.push(obj)
-    this.setState({button: temp, count: 1})
+
+    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
     this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   editButton (obj) {
@@ -124,7 +126,7 @@ class Text extends React.Component {
       }
     })
     var temp = this.state.button
-    this.setState({button: temp})
+    this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
   }
 
   render () {
@@ -208,7 +210,7 @@ class Text extends React.Component {
             <div className='col-12 nameOptions' onClick={(e) => this.getName(e, 'user_full_name')}>Full Name</div>
           </PopoverBody>
         </Popover>
-        <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: '-70px', marginRight: '5px'}}>
+        <div className='m-messenger__form-tools pull-right messengerTools' style={{backgroundColor: '#F1F0F0', marginTop: (-75 - (35 * (this.state.numOfButtons * 0.915))), marginRight: '5px'}}>
           <div id='userOptions' data-tip='options' style={{display: 'inline-block', float: 'left'}}>
             <i onClick={this.toggleUserOptions} style={{height: '24px',
               width: '24px',
