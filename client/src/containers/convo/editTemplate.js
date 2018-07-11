@@ -27,6 +27,7 @@ import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
 import Targeting from './Targeting'
+import { validateFields } from './utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -404,7 +405,7 @@ class EditTemplate extends React.Component {
   }
 
   sendConvo () {
-    if (this.state.broadcast.length === 0) {
+    if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
     //  this.setState({tabActive: 'broadcast'})
@@ -416,69 +417,7 @@ class EditTemplate extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-      for (let i = 0; i < this.state.broadcast.length; i++) {
-        if (this.state.broadcast[i].componentType === 'card') {
-          if (!this.state.broadcast[i].buttons) {
-            this.initTab()
-            return this.msg.error('Card must have at least one button.')
-          } else if (this.state.broadcast[i].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card must have at least one button.')
-          }
-        }
-        if (this.state.broadcast[i].componentType === 'gallery') {
-          for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-            if (!this.state.broadcast[i].cards[j].buttons) {
-              this.initTab()
-              return this.msg.error('Card in gallery must have at least one button.')
-            } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-              this.initTab()
-              return this.msg.error('Card in gallery must have at least one button.')
-            }
-          }
-        }
-        if (this.state.broadcast[i].componentType === 'list') {
-          if (this.state.broadcast[i].listItems && this.state.broadcast[i].listItems.length < 2) {
-            this.initTab()
-            return this.msg.error('A list must have atleast 2 elements')
-          }
-          if (this.state.broadcast[i].topElementStyle === 'LARGE' && this.state.broadcast[i].listItems[0].image_url === '') {
-            this.initTab()
-            return this.msg.error('Please select an image for top item with large style in list')
-          }
-          for (let j = 0; j < this.state.broadcast[i].listItems.length; j++) {
-            if (!this.state.broadcast[i].listItems[j].title) {
-              this.initTab()
-              return this.msg.error('Element in list must have a title.')
-            } else if (!this.state.broadcast[i].listItems[j].subtitle) {
-              this.initTab()
-              return this.msg.error('Element in list must have a subtitle.')
-            }
-          }
-        }
-      }
-    }
+
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       console.log('broadcast state', this.state.broadcast)
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
