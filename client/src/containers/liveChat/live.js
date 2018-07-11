@@ -14,6 +14,7 @@ import { fetchOpenSessions, fetchCloseSessions,
   resetUnreadSession,
   showChatSessions,
   updateUserChat,
+  clearSearchResult,
   markRead } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -87,6 +88,7 @@ class LiveChat extends React.Component {
 
   hideSearch () {
     this.setState({showSearch: false})
+    this.props.clearSearchResult()
   }
 
   componentDidMount () {
@@ -852,7 +854,8 @@ function mapDispatchToProps (dispatch) {
     showChatSessions: showChatSessions,
     loadTeamsList: loadTeamsList,
     getSubscriberTags: getSubscriberTags,
-    updateUserChat: updateUserChat
+    updateUserChat: updateUserChat,
+    clearSearchResult: clearSearchResult
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
