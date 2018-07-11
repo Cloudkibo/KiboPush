@@ -1,7 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 class Sidebar extends React.Component {
+  constructor (props) {
+    super(props)
+    this.redirectFunction = this.redirectFunction.bind(this)
+  }
+  redirectFunction (redirectionLink) {
+    browserHistory.push({
+      pathname: redirectionLink,
+      state: 'history'
+    })
+  }
   render () {
     return (
       <div className='col-xl-3 col-lg-12 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
@@ -23,7 +33,7 @@ class Sidebar extends React.Component {
                 </div>
               : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
                 <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                  <Link to='/addPageWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <Link onClick={() => this.redirectFunction('/addPageWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                     <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                       <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>1</span>
                     </span>
@@ -54,7 +64,7 @@ class Sidebar extends React.Component {
               </div>
               : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
                 <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                  <Link to='/inviteUsingLinkWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/inviteUsingLinkWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                     <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                       <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>2</span>
                     </span>
@@ -85,7 +95,7 @@ class Sidebar extends React.Component {
               </div>
               : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
                 <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                  <Link to='/greetingTextWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/greetingTextWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                     <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                       <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>3</span>
                     </span>
@@ -116,7 +126,7 @@ class Sidebar extends React.Component {
               </div>
               : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
                 <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                  <Link to='welcomeMessageWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/welcomeMessageWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                     <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                       <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>4</span>
                     </span>
@@ -147,7 +157,7 @@ class Sidebar extends React.Component {
               </div>
               : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
                 <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                  <Link to='autopostingWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/autopostingWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                     <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                       <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>5</span>
                     </span>
@@ -178,7 +188,7 @@ class Sidebar extends React.Component {
               </div>
               : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
                 <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                  <Link to='/menuWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                  <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/menuWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                     <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                       <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>6</span>
                     </span>
@@ -209,7 +219,7 @@ class Sidebar extends React.Component {
             </div>
             : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                <Link to='/responseMethods' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/responseMethods')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                   <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                     <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>7</span>
                   </span>
@@ -240,7 +250,7 @@ class Sidebar extends React.Component {
             </div>
             : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                <Link to='/paymentMethodsWizard' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/paymentMethodsWizard')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                   <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                     <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>8</span>
                   </span>
@@ -271,7 +281,7 @@ class Sidebar extends React.Component {
             </div>
             : <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0'}}>
               <div className='m-wizard__step-info' style={{width: '100%', display: 'table'}}>
-                <Link to='/finish' className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0'}}>
+                <Link onClick={this.props.pages && this.props.pages.length === 0 ? this.props.showError : () => this.redirectFunction('/finish')} className='m-wizard__step-number' style={{display: 'table-cell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0 0.0715rem 0', cursor: 'pointer'}}>
                   <span style={{backgroundColor: '#f4f5f8', width: '4rem', height: '4rem', borderRadius: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
                     <span style={{color: '#a4a6ae', fontSize: '1.7rem', fontWeight: '500'}}>9</span>
                   </span>
