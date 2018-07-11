@@ -64,6 +64,52 @@ exports.movePlan = function (req, res) {
   })
 }
 
+exports.addAccountType = function (req, res) {
+  Users.find({}, (err, users) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'Error at find all users: ' + JSON.stringify(err)
+      })
+    }
+    users.forEach((user, index) => {
+      CompanyUsers.findOne({domain_email: user.domain_email}, (err, cu) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Error at find company user: ' + JSON.stringify(err)
+          })
+        }
+        CompanyProfile.findOne({_id: cu.companyId}, (err, cp) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: 'Error at updating company profile: ' + JSON.stringify(err)
+            })
+          }
+          if (cp.stripe.plan === 'plan_A' || cp.stripe.plan === 'plan_B') {
+            user.accountType = 'individual'
+          } else if (cp.stripe.plan === 'plan_C' || cp.stripe.plan === 'plan_D') {
+            user.accountType = 'team'
+          }
+          user.save((err) => {
+            if (err) {
+              return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+            }
+          })
+        })
+      })
+      if (index === (users.length - 1)) {
+        return res.status(200).json({
+          status: 'success',
+          description: 'Successfuly added!'
+        })
+      }
+    })
+  })
+}
+
 exports.index = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
