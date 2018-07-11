@@ -3,6 +3,8 @@
  */
 
 import React from 'react'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { browserHistory } from 'react-router'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
@@ -369,6 +371,7 @@ class Settings extends React.Component {
   render () {
     return (
       <div>
+        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
@@ -392,326 +395,330 @@ class Settings extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Settings</h3>
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Settings</h3>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='m-content'>
-            <div className='row'>
-              <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height'>
-                  <div className='m-portlet__body'>
-                    <div className='m-card-profile'>
-                      <div className='m-card-profile__title m--hide'>
-                        Your Profile
-                      </div>
-                      {/* <div className='m-card-profile__pic'>
-                        <div className='m-card-profile__pic-wrapper'>
-                          <img src={(this.props.user) ? this.props.user.profilePic : ''} alt='' style={{width: '100px'}} />
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                  <div className='m-portlet m-portlet--full-height'>
+                    <div className='m-portlet__body'>
+                      <div className='m-card-profile'>
+                        <div className='m-card-profile__title m--hide'>
+                          Your Profile
                         </div>
-                      </div> */}
-                      <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} className='m-card-profile__details'>
-                        <span className='m-card-profile__name'>
-                          {(this.props.user) ? this.props.user.name : ''}
-                        </span>
-                        <span className='m-card-profile__email'>
-                          {(this.props.user) ? this.props.user.email : ''}
-                        </span>
-                        <span className='m-card-profile__email' style={{display: 'block'}}>
-                          {this.state.planInfo}
-                        </span>
+                        {/* <div className='m-card-profile__pic'>
+                          <div className='m-card-profile__pic-wrapper'>
+                            <img src={(this.props.user) ? this.props.user.profilePic : ''} alt='' style={{width: '100px'}} />
+                          </div>
+                        </div> */}
+                        <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} className='m-card-profile__details'>
+                          <span className='m-card-profile__name'>
+                            {(this.props.user) ? this.props.user.name : ''}
+                          </span>
+                          <span className='m-card-profile__email'>
+                            {(this.props.user) ? this.props.user.email : ''}
+                          </span>
+                          <span className='m-card-profile__email' style={{display: 'block'}}>
+                            {this.state.planInfo}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <ul className='m-nav m-nav--hover-bg m-portlet-fit--sides'>
-                      <li className='m-nav__separator m-nav__separator--fit' />
-                      <li className='m-nav__section m--hide'>
-                        <span className='m-nav__section-text'>Section</span>
-                      </li>
-                      {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
+                      <ul className='m-nav m-nav--hover-bg m-portlet-fit--sides'>
+                        <li className='m-nav__separator m-nav__separator--fit' />
+                        <li className='m-nav__section m--hide'>
+                          <span className='m-nav__section-text'>Section</span>
+                        </li>
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
+                          <li className='m-nav__item'>
+                            <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                              <i className='m-nav__link-icon flaticon-share' />
+                              <span className='m-nav__link-text'>API</span>
+                            </a>
+                          </li>
+                        }
                         <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                          <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
+                            <i className='m-nav__link-icon flaticon-lock-1' />
+                            <span className='m-nav__link-text'>Change Password</span>
+                          </a>
+                        </li>
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon flaticon-share' />
-                            <span className='m-nav__link-text'>API</span>
+                            <span className='m-nav__link-text'>NGP Integration</span>
+                          </a>
+                        </li>
+                        }
+                        {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan === 'plan_C' || this.props.currentPlan === 'plan_D') &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-mark' />
+                            <span className='m-nav__link-text'>User Permissions</span>
+                          </a>
+                        </li>
+                        }
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
+                            <i className='m-nav__link-icon flaticon-exclamation' />
+                            <span className='m-nav__link-text'>Greeting Text</span>
+                          </a>
+                        </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setWelcomeMessage} style={{cursor: 'pointer'}} >
+                            <i className='m-nav__link-icon flaticon-menu-button' />
+                            <span className='m-nav__link-text'>Welcome Message</span>
+                          </a>
+                        </li>
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setSubscribeToMessenger} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-alarm' />
+                            <span className='m-nav__link-text'>HTML Widget</span>
+                          </a>
+                        </li>
+                        { this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-list-2' />
+                            <span className='m-nav__link-text'> Live Chat Response Methods</span>
+                          </a>
+                        </li>
+                        }
+                        { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon fa fa-facebook' />
+                            <span className='m-nav__link-text'>Connect with Facebook</span>
+                          </a>
+                        </li>
+                        }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon la la-plug' />
+                            <span className='m-nav__link-text'>Add KiboPush Widget</span>
                           </a>
                         </li>
                       }
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
-                          <i className='m-nav__link-icon flaticon-lock-1' />
-                          <span className='m-nav__link-text'>Change Password</span>
-                        </a>
-                      </li>
-                      {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-share' />
-                          <span className='m-nav__link-text'>NGP Integration</span>
-                        </a>
-                      </li>
-                      }
-                      {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan === 'plan_C' || this.props.currentPlan === 'plan_D') &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-mark' />
-                          <span className='m-nav__link-text'>User Permissions</span>
-                        </a>
-                      </li>
-                      }
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
-                          <i className='m-nav__link-icon flaticon-exclamation' />
-                          <span className='m-nav__link-text'>Greeting Text</span>
-                        </a>
-                      </li>
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setWelcomeMessage} style={{cursor: 'pointer'}} >
-                          <i className='m-nav__link-icon flaticon-menu-button' />
-                          <span className='m-nav__link-text'>Welcome Message</span>
-                        </a>
-                      </li>
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setSubscribeToMessenger} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-alarm' />
-                          <span className='m-nav__link-text'>HTML Widget</span>
-                        </a>
-                      </li>
-                      { this.props.user && this.props.user.role === 'buyer' &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-list-2' />
-                          <span className='m-nav__link-text'> Live Chat Response Methods</span>
-                        </a>
-                      </li>
-                      }
-                      { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon fa fa-facebook' />
-                          <span className='m-nav__link-text'>Connect with Facebook</span>
-                        </a>
-                      </li>
-                      }
-                      { this.props.user && this.props.user.isSuperUser &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon la la-plug' />
-                          <span className='m-nav__link-text'>Add KiboPush Widget</span>
-                        </a>
-                      </li>
-                    }
-                      { this.props.user && this.props.user.isSuperUser &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon fa fa-cc-mastercard' />
-                          <span className='m-nav__link-text'>Payment Methods</span>
-                        </a>
-                      </li>
-                      }
-                      { this.props.user && this.props.user.isSuperUser &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon fa fa-money' />
-                          <span className='m-nav__link-text'>Billing</span>
-                        </a>
-                      </li>
-                    }
-                      { this.props.user && this.props.user.isSuperUser &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon la la-link' />
-                          <span className='m-nav__link-text'>Webhooks</span>
-                        </a>
-                      </li>
-                      }
-                      { this.props.user && this.props.user.role === 'buyer' &&
-                      <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-delete' />
-                          <span className='m-nav__link-text'>Delete Information</span>
-                        </a>
-                      </li>
-                      }
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              { this.state.openTab === 'showAPI' && this.state.showAPIbyPlan &&
-              <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-tools'>
-                      <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
-                        <li className='nav-item m-tabs__item'>
-                          <span className='nav-link m-tabs__link active'>
-                            <i className='flaticon-share m--hide' />
-                            API
-                          </span>
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon fa fa-cc-mastercard' />
+                            <span className='m-nav__link-text'>Payment Methods</span>
+                          </a>
                         </li>
+                        }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon fa fa-money' />
+                            <span className='m-nav__link-text'>Billing</span>
+                          </a>
+                        </li>
+                      }
+                        { this.props.user && this.props.user.isSuperUser &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon la la-link' />
+                            <span className='m-nav__link-text'>Webhooks</span>
+                          </a>
+                        </li>
+                        }
+                        { this.props.user && this.props.user.role === 'buyer' &&
+                        <li className='m-nav__item'>
+                          <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-delete' />
+                            <span className='m-nav__link-text'>Delete Information</span>
+                          </a>
+                        </li>
+                        }
                       </ul>
                     </div>
                   </div>
-                  <div className='tab-content'>
-                    <div className='tab-pane active' id='m_user_profile_tab_1'>
-                      <form className='m-form m-form--fit m-form--label-align-right'>
-                        <div className='m-portlet__body'>
-                          <div className='form-group m-form__group m--margin-top-10 m--hide'>
-                            <div className='alert m-alert m-alert--default' role='alert'>
-                              The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
-                            </div>
-                          </div>
-                          <div className='form-group m-form__group row'>
-                            <div className='col-lg-8 col-md-8 col-sm-12' />
-                            <div className='col-lg-4 col-md-4 col-sm-4'>
-                              <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
-                                <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
-                                  <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <br /><br />
-                          <div className='form-group m-form__group row'>
-                            <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
-                            <div className='col-7 input-group'>
-                              <input className='form-control m-input' type='text' readOnly value={this.state.buttonState ? this.state.APIKey : ''} />
-                            </div>
-                          </div>
-                          <div className='form-group m-form__group row'>
-                            <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
-                              API Secret
-                            </label>
-                            <div className='col-7 input-group'>
-                              <input className='form-control m-input' type={this.state.type} readOnly value={this.state.buttonState ? this.state.APISecret : ''} />
-                              <span className='input-group-btn'>
-                                <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>{this.state.buttonText}</button>
-                              </span>
-                            </div>
-                          </div>
-                          <br />
-                          {
-                            this.state.APIKey &&
-                            <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
-                          }
-                          <br />
-                        </div>
-                      </form>
-                      <div className='form-group m-form__group'>
-                        <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                          For API documentation, please visit <a href='https://app.kibopush.com/docs' target='_blank'>https://app.kibopush.com/docs</a>
-                        </div>
+                </div>
+                { this.state.openTab === 'showAPI' && this.state.showAPIbyPlan &&
+                <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <span className='nav-link m-tabs__link active'>
+                              <i className='flaticon-share m--hide' />
+                              API
+                            </span>
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                    <div className='tab-pane active' id='m_user_profile_tab_2' />
-                  </div>
-                </div>
-              </div>
-              }
-              { this.state.openTab === 'showNGP' &&
-              <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-tools'>
-                      <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
-                        <li className='nav-item m-tabs__item'>
-                          <span className='nav-link m-tabs__link active'>
-                            <i className='flaticon-share m--hide' />
-                            NGP Integration
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className='tab-content'>
-                    <div className='tab-pane active' id='m_user_profile_tab_1'>
-                      <form className='m-form m-form--fit m-form--label-align-right'>
-                        <div className='m-portlet__body'>
-                          <div className='form-group m-form__group m--margin-top-10 m--hide'>
-                            <div className='alert m-alert m-alert--default' role='alert'>
-                              The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
+                    <div className='tab-content'>
+                      <div className='tab-pane active' id='m_user_profile_tab_1'>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group m--margin-top-10 m--hide'>
+                              <div className='alert m-alert m-alert--default' role='alert'>
+                                The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
+                              </div>
                             </div>
+                            <div className='form-group m-form__group row'>
+                              <div className='col-lg-8 col-md-8 col-sm-12' />
+                              <div className='col-lg-4 col-md-4 col-sm-4'>
+                                <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                                  <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
+                                    <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <br /><br />
+                            <div className='form-group m-form__group row'>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
+                              <div className='col-7 input-group'>
+                                <input className='form-control m-input' type='text' readOnly value={this.state.buttonState ? this.state.APIKey : ''} />
+                              </div>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                                API Secret
+                              </label>
+                              <div className='col-7 input-group'>
+                                <input className='form-control m-input' type={this.state.type} readOnly value={this.state.buttonState ? this.state.APISecret : ''} />
+                                <span className='input-group-btn'>
+                                  <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>{this.state.buttonText}</button>
+                                </span>
+                              </div>
+                            </div>
+                            <br />
+                            {
+                              this.state.APIKey &&
+                              <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
+                            }
+                            <br />
                           </div>
-                          <div className='form-group m-form__group row'>
-                            <div className='col-lg-8 col-md-8 col-sm-12' />
-                            <div className='col-lg-4 col-md-4 col-sm-4'>
-                              <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
-                                <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
-                                  <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
-                                </div>
-                              </div>
-                            </div>
+                        </form>
+                        <div className='form-group m-form__group'>
+                          <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                            For API documentation, please visit <a href='https://app.kibopush.com/docs' target='_blank'>https://app.kibopush.com/docs</a>
                           </div>
-                          <br /><br />
-                          {
-                            <div>
-                              <div className='form-group m-form__group row'>
-                                <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
-                                <div className='col-7 input-group'>
-                                  <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
-                                </div>
-                              </div>
-                              <div className='form-group m-form__group row'>
-                                <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
-                                    NGP API Key
-                                  </label>
-                                <div className='col-7 input-group'>
-                                  <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
-                                </div>
-                              </div>
-                            </div>
-                          }
-                          <br />
-                          {
-                            <button disabled={!this.state.NGPKey} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
-                          }
-                          <br />
                         </div>
-                      </form>
+                      </div>
+                      <div className='tab-pane active' id='m_user_profile_tab_2' />
                     </div>
-                    <div className='tab-pane active' id='m_user_profile_tab_2' />
                   </div>
                 </div>
+                }
+                { this.state.openTab === 'showNGP' &&
+                <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <span className='nav-link m-tabs__link active'>
+                              <i className='flaticon-share m--hide' />
+                              NGP Integration
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className='tab-content'>
+                      <div className='tab-pane active' id='m_user_profile_tab_1'>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group m--margin-top-10 m--hide'>
+                              <div className='alert m-alert m-alert--default' role='alert'>
+                                The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
+                              </div>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <div className='col-lg-8 col-md-8 col-sm-12' />
+                              <div className='col-lg-4 col-md-4 col-sm-4'>
+                                <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                                  <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
+                                    <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <br /><br />
+                            {
+                              <div>
+                                <div className='form-group m-form__group row'>
+                                  <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
+                                  <div className='col-7 input-group'>
+                                    <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
+                                  </div>
+                                </div>
+                                <div className='form-group m-form__group row'>
+                                  <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                                      NGP API Key
+                                    </label>
+                                  <div className='col-7 input-group'>
+                                    <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                            <br />
+                            {
+                              <button disabled={!this.state.NGPKey} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
+                            }
+                            <br />
+                          </div>
+                        </form>
+                      </div>
+                      <div className='tab-pane active' id='m_user_profile_tab_2' />
+                    </div>
+                  </div>
+                </div>
+                }
+                { this.state.openTab === 'resetPassword' &&
+                  <ResetPassword />
+                }
+                { this.state.openTab === 'permissions' &&
+                  <ShowPermissions />
+                }
+                { this.state.openTab === 'greetingMessage' &&
+                  <GreetingMessage user={this.props.user} />
+                }
+                { this.state.openTab === 'subscribeToMessenger' &&
+                  <SubscribeToMessenger />
+                }
+                { this.state.openTab === 'welcomeMessage' &&
+                  <WelcomeMessage />
+                }
+                { this.state.openTab === 'connectFb' &&
+                  <ConnectFb />
+                }
+                { this.state.openTab === 'chatWidget' &&
+                  <ChatWidget />
+                }
+                { this.state.openTab === 'billing' &&
+                  <Billing showPaymentMethods={this.setPayementMethods} />
+                }
+                { this.state.openTab === 'paymentMethods' &&
+                  <PaymentMethods />
+                }
+                { this.state.openTab === 'responseMethods' &&
+                  <ResponseMethods />
+                }
+                { this.state.openTab === 'deleteUserData' &&
+                  <DeleteUserData />
+                }
+                { this.state.openTab === 'webhook' &&
+                  <Webhook />
+                }
               </div>
-              }
-              { this.state.openTab === 'resetPassword' &&
-                <ResetPassword />
-              }
-              { this.state.openTab === 'permissions' &&
-                <ShowPermissions />
-              }
-              { this.state.openTab === 'greetingMessage' &&
-                <GreetingMessage user={this.props.user} />
-              }
-              { this.state.openTab === 'subscribeToMessenger' &&
-                <SubscribeToMessenger />
-              }
-              { this.state.openTab === 'welcomeMessage' &&
-                <WelcomeMessage />
-              }
-              { this.state.openTab === 'connectFb' &&
-                <ConnectFb />
-              }
-              { this.state.openTab === 'chatWidget' &&
-                <ChatWidget />
-              }
-              { this.state.openTab === 'billing' &&
-                <Billing showPaymentMethods={this.setPayementMethods} />
-              }
-              { this.state.openTab === 'paymentMethods' &&
-                <PaymentMethods />
-              }
-              { this.state.openTab === 'responseMethods' &&
-                <ResponseMethods />
-              }
-              { this.state.openTab === 'deleteUserData' &&
-                <DeleteUserData />
-              }
-              { this.state.openTab === 'webhook' &&
-                <Webhook />
-              }
             </div>
           </div>
         </div>
