@@ -1,7 +1,9 @@
 const Messages = require('./message.model')
 const Sequences = require('./sequence.model')
 const SequenceSubscribers = require('./sequenceSubscribers.model')
+const SequenceMessages = require('./message.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const SequenceMessageQueue = require('./../SequenceMessageQueue/SequenceMessageQueue.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
@@ -533,36 +535,72 @@ exports.subscribeToSequence = function (req, res) {
       })
     }
 
-    req.body.subscriberIds.forEach(subscriberId => {
-      let sequenceSubscriberPayload = {
-        sequenceId: req.body.sequenceId,
-        subscriberId: subscriberId,
-        companyId: companyUser.companyId,
-        status: 'subscribed'
-      }
-      const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+    console.log(req.body)
 
-      // save model to MongoDB
-      sequenceSubcriber.save((err, subscriberCreated) => {
+    req.body.subscriberIds.forEach(subscriberId => {
+    // Following code will run when user subscribes to sequence
+      SequenceMessages.find({sequenceId: req.body.sequenceId})
+      .where('isActive').equals('true')
+      .exec((err, messages) => {
         if (err) {
           res.status(500).json({
             status: 'Failed',
             description: 'Failed to insert record'
           })
-        } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-          require('./../../config/socketio').sendMessageToClient({
-            room_id: companyUser.companyId,
-            body: {
-              action: 'sequence_update',
-              payload: {
-                sequence_id: req.body.sequenceId
-              }
-            }
-          })
-          res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
         }
-      })
-    })
+
+        console.log({messages})
+
+        messages.forEach(message => {
+          let sequenceQueuePayload = {
+            sequenceId: req.body.sequenceId,
+            subscriberId: subscriberId,
+            companyId: companyUser.companyId,
+            sequenceMessageId: message._id,
+            queueScheduledTime: new Date()      // Needs to be updated after #3704
+
+          }
+
+          const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+          sequenceMessageForQueue.save((err, messageQueueCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record in Queue'
+              })
+            }
+            let sequenceSubscriberPayload = {
+              sequenceId: req.body.sequenceId,
+              subscriberId: subscriberId,
+              companyId: companyUser.companyId,
+              status: 'subscribed'
+            }
+            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+            // save model to MongoDB
+            sequenceSubcriber.save((err, subscriberCreated) => {
+              if (err) {
+                res.status(500).json({
+                  status: 'Failed',
+                  description: 'Failed to insert record'
+                })
+              } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+                require('./../../config/socketio').sendMessageToClient({
+                  room_id: companyUser.companyId,
+                  body: {
+                    action: 'sequence_update',
+                    payload: {
+                      sequence_id: req.body.sequenceId
+                    }
+                  }
+                })
+                res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
+              }
+            })  // Sequence subscriber save ends here
+          })  //  save ends here
+        })  // Messages Foreach ends here
+      }) // Sequence message find ends here
+    })  //  Foreach ends of subscriber id
   })
 }
 
