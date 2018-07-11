@@ -7,6 +7,7 @@ const Sessions = require('./../sessions/sessions.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const Pages = require('./../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const Polls = require('./../polls/Polls.model')
@@ -365,12 +366,12 @@ router.get('/updatePicture', (req, res) => {
   res.status(200).json({status: 'success', payload: []})
 })
 router.get('/updateSubcribersPicture', (req, res) => {
-  CompanyProfile.find({}).populate('ownerId').exec((err, profiles) => {
+  CompanyUsers.find({}).populate('userId').exec((err, profiles) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     }
     profiles.forEach(profile => {
-      Subscribers.find({companyId: profile._id}).populate('pageId').exec((err, users) => {
+      Subscribers.find({companyId: profile.companyId}).populate('pageId').exec((err, users) => {
         if (err) {
           logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
@@ -378,7 +379,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
         users.forEach(user => {
           if (user.pageId && user.pageId.pageId) {
             needle.get(
-            `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.ownerId.facebookInfo.fbToken}`,
+            `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
             (err, respp) => {
               if (err) {
                 logger.serverLog(TAG,
