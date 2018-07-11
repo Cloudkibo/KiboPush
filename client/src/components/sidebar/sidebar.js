@@ -406,7 +406,7 @@ class Sidebar extends Component {
         <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + '%'}}>
           <div
             id='m_ver_menu'
-            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark '
+            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
             data-menu-vertical='true'
             data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
             {this.props.user &&
