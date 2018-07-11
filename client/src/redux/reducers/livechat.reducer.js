@@ -17,9 +17,6 @@ export function liveChat (state = initialState, action) {
         openSessions: state.openSessions.concat(action.openSessions),
         count: action.count
       })
-      // return Object.assign({}, state, {
-      //   sessions: action.sessions
-      // })
 
     case ActionTypes.SHOW_OPEN_CHAT_SESSIONS_OVERWRITE:
       return Object.assign({}, state, {
@@ -178,6 +175,10 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.SHOW_SEARCH_CHAT:
       return Object.assign({}, state, {
         searchChat: action.data
+      })
+    case ActionTypes.CLEAR_SEARCH_RESULT:
+      return Object.assign({}, state, {
+        searchChat: undefined
       })
 
     default:
