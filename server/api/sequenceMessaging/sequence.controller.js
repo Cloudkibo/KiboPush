@@ -535,8 +535,6 @@ exports.subscribeToSequence = function (req, res) {
       })
     }
 
-    console.log(req.body)
-
     req.body.subscriberIds.forEach(subscriberId => {
     // Following code will run when user subscribes to sequence
       SequenceMessages.find({sequenceId: req.body.sequenceId})
@@ -548,8 +546,6 @@ exports.subscribeToSequence = function (req, res) {
             description: 'Failed to insert record'
           })
         }
-
-        console.log({messages})
 
         messages.forEach(message => {
           let sequenceQueuePayload = {
