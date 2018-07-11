@@ -52,6 +52,60 @@ class AddSurvey extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
+    this.checkValidation = this.checkValidation.bind(this)
+  }
+
+  checkValidation () {
+    let flag = 0
+    let questionLengthFlag = 0
+    if (this.state.surveyQuestions.length === 0) {
+      questionLengthFlag = 1
+    }
+
+    for (let j = 0; j < this.state.surveyQuestions.length; j++) {
+      if (this.state.surveyQuestions[j].options.length > 0) {
+        for (let k = 0; k <
+        this.state.surveyQuestions[j].options.length; k++) {
+          if (this.state.surveyQuestions[j].options[k] === '') {
+            flag = 1
+          }
+        }
+      }
+      // Checking if any Question statement is empty.
+      if (this.state.surveyQuestions[j].statement === '') {
+        flag = 1
+      }
+    }
+
+    if (this.state.description === '') {
+      flag = 1
+    }
+
+    if (this.state.title === '') {
+      flag = 1
+    }
+
+    if (flag === 1 || questionLengthFlag === 1) {
+      if (flag === 1) {
+        this.setState({
+          alertMessage: 'Please fill all the fields.',
+          alertType: 'danger'
+        })
+      }
+
+      if (questionLengthFlag === 1) {
+        this.setState({
+          alertMessage: 'A survey form requires atleast one question',
+          alertType: 'danger'
+        })
+      }
+    } else {
+      this.setState({
+        alertMessage: '',
+        alertType: ''
+      })
+      this.showDialog()
+    }
   }
 
   showDialog () {
@@ -83,10 +137,10 @@ class AddSurvey extends React.Component {
     }
   }
   updateDescription (e) {
-    this.setState({description: e.target.value})
+    this.setState({description: e.target.value, alertType: '', alertMessage: ''})
   }
   updateTitle (e) {
-    this.setState({title: e.target.value})
+    this.setState({title: e.target.value, alertType: '', alertMessage: ''})
   }
   createSurvey () {
     //  e.preventDefault()
@@ -205,7 +259,7 @@ class AddSurvey extends React.Component {
       'choiceCount': choiceCount,
       'options': choiceValues
     })
-    this.setState({surveyQuestions: surveyQuestions})
+    this.setState({surveyQuestions: surveyQuestions, alertMessage: '', alertType: ''})
     if (this.state.surveyQuestions.length > 0) {
       this.setState({
         alertMessage: '',
@@ -265,13 +319,13 @@ class AddSurvey extends React.Component {
   handleChange (i, event) {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[i].statement = event.target.value
-    this.setState({surveyQuestions})
+    this.setState({surveyQuestions: surveyQuestions, alertMessage: '', alertType: ''})
   }
 
   onhandleChoiceChange (qindex, choiceIndex, event) {
     let surveyQuestions = this.state.surveyQuestions.slice()
     surveyQuestions[qindex].options[choiceIndex] = event.target.value
-    this.setState({surveyQuestions})
+    this.setState({surveyQuestions: surveyQuestions, alertMessage: '', alertType: ''})
   }
 
   /* handleQuestionType (e) {
@@ -612,7 +666,7 @@ class AddSurvey extends React.Component {
                       <div className='col-12'>
                         <div className='m-form__actions' style={{'float': 'right'}}>
                           <button className='btn btn-primary'
-                            onClick={this.showDialog}> Create Survey
+                            onClick={this.checkValidation}> Create Survey
                           </button>
                           <Link
                             to='/surveys'

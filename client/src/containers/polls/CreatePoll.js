@@ -50,6 +50,8 @@ class CreatePoll extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
+    this.checkValidation = this.checkValidation.bind(this)
+    this.showError = this.showError.bind(this)
   }
 
   componentDidMount () {
@@ -72,6 +74,20 @@ class CreatePoll extends React.Component {
       tagValue: targeting.tagValue,
       pollValue: targeting.pollValue
     })
+  }
+
+  checkValidation () {
+    if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '' || this.state.statement === '') {
+      console.log('vald' + this.state.option1 + ' ' + this.state.option2 + ' ' + this.state.option3 + ' ' + this.state.statement)
+      this.setState({alert: true})
+    } else {
+      this.showDialog()
+    }
+  }
+
+  showError () {
+    this.setState({alert: true})
   }
 
   createPoll () {
@@ -127,19 +143,19 @@ class CreatePoll extends React.Component {
   }
 
   updateStatment (e) {
-    this.setState({statement: e.target.value})
+    this.setState({statement: e.target.value, alert: false})
   }
 
   updateOptions (e, opt) {
     switch (opt) {
       case 1:
-        this.setState({option1: e.target.value})
+        this.setState({option1: e.target.value, alert: false})
         break
       case 2:
-        this.setState({option2: e.target.value})
+        this.setState({option2: e.target.value, alert: false})
         break
       case 3:
-        this.setState({option3: e.target.value})
+        this.setState({option3: e.target.value, alert: false})
         break
 
       default:
@@ -332,7 +348,9 @@ class CreatePoll extends React.Component {
                       <div className='col-12'>
                         <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
                           <button className='btn btn-primary'
-                            onClick={this.showDialog}> Create Poll
+                            onClick={() => {
+                              this.checkValidation()
+                            }}> Create Poll
                           </button>
                           <Link
                             to='/poll'

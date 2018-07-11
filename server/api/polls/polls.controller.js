@@ -159,13 +159,15 @@ exports.allPolls = function (req, res) {
       })
     }
     if (req.body.first_page === 'first') {
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
       let findCriteria = {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
-          $gte: new Date(
-            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
-          $lt: new Date(
-            (new Date().getTime()))
+          $gte: startDate
         } : {$exists: true}
       }
       Polls.aggregate([
@@ -223,13 +225,15 @@ exports.allPolls = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'next') {
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
       let findCriteria = {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
-          $gte: new Date(
-            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
-          $lt: new Date(
-            (new Date().getTime()))
+          $gte: startDate
         } : {$exists: true}
       }
       Polls.aggregate([
@@ -287,13 +291,15 @@ exports.allPolls = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'previous') {
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
       let findCriteria = {
         companyId: companyUser.companyId,
         'datetime': req.body.days !== '0' ? {
-          $gte: new Date(
-            (new Date().getTime() - (req.body.days * 24 * 60 * 60 * 1000))),
-          $lt: new Date(
-            (new Date().getTime()))
+          $gte: startDate
         } : {$exists: true}
       }
       Polls.aggregate([
