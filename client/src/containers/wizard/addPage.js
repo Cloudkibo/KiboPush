@@ -77,7 +77,7 @@ class AddPage extends React.Component {
   goToNext () {
     console.log('props.pages', this.props.pages)
     if (this.props.pages && this.props.pages.length === 0) {
-      this.msg.error('Please select a page')
+      this.msg.error('Please connect atleast one page')
     } else {
       browserHistory.push({
         pathname: `/inviteUsingLinkWizard`
@@ -108,8 +108,8 @@ class AddPage extends React.Component {
                   onClose={this.closeDialog}>
                   <ModalDialog style={{width: '500px'}}
                     onClose={this.closeDialog}>
-                    <h3>Welcome to KiboPush :)</h3>
-                    <p>Are you sure you want to delete this integration?</p>
+                    <h3>Welcome to KiboPush</h3>
+                    <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
                     <div style={{width: '100%', textAlign: 'center'}}>
                       <div style={{display: 'inline-block', padding: '5px'}}>
                         <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
