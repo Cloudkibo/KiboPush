@@ -376,29 +376,28 @@ router.get('/updateSubcribersPicture', (req, res) => {
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
         }
         users.forEach(user => {
-          needle.get(
-          `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.ownerId.facebookInfo.fbToken}`,
-          (err, respp) => {
-            if (err) {
-              logger.serverLog(TAG,
-              `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-            }
-            console.log('respp', respp.body)
+          if (user.pageId && user.pageId.pageId) {
             needle.get(
-              `https://graph.facebook.com/v2.10/${user.senderId}?fields=picture&access_token=${respp.body.access_token}`,
-              (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                }
-                console.log('resp.body', resp.body)
-                Subscribers.update({_id: user._id}, {profilePic: resp.body.picture.data.url}, (err, updated) => {
+            `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.ownerId.facebookInfo.fbToken}`,
+            (err, respp) => {
+              if (err) {
+                logger.serverLog(TAG,
+                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+              }
+              needle.get(
+                `https://graph.facebook.com/v2.10/${user.senderId}?fields=picture&access_token=${respp.body.access_token}`,
+                (err, resp) => {
                   if (err) {
-                    logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
-                  console.log('updated', updated)
+                  Subscribers.update({_id: user._id}, {profilePic: resp.body.picture.data.url}, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                    }
+                  })
                 })
-              })
-          })
+            })
+          }
         })
       })
     })
