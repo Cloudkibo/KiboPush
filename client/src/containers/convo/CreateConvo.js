@@ -18,7 +18,9 @@ import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { checkConditions } from '../polls/utility'
+import { validateFields } from './utility'
 import Image from './Image'
+import List from './List'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
@@ -57,7 +59,8 @@ class CreateConvo extends React.Component {
       isList: false,
       lists: [],
       tabActive: 'broadcast',
-      resetTarget: false
+      resetTarget: false,
+      setTarget: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -71,6 +74,7 @@ class CreateConvo extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -89,17 +93,24 @@ class CreateConvo extends React.Component {
     this.handleTargetValue = this.handleTargetValue.bind(this)
   }
 
-  onNext () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    $('[href="#tab_2"]').tab('show')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+  onNext (e) {
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target'})
+    }
   }
+
   onPrevious () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
@@ -115,22 +126,32 @@ class CreateConvo extends React.Component {
   }
   initTab () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
-  onTargetClick () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'target', resetTarget: false})
+  onTargetClick (e) {
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target', resetTarget: false})
+    }
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
@@ -303,6 +324,25 @@ class CreateConvo extends React.Component {
 
     this.setState({broadcast: temp})
   }
+  handleList (obj) {
+    console.log('in create convo handleList', obj)
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.listItems = obj.listItems
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    console.log('temp', temp)
+    this.setState({broadcast: temp})
+  }
 
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
@@ -323,28 +363,7 @@ class CreateConvo extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-    }
+
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
@@ -529,15 +548,15 @@ class CreateConvo extends React.Component {
                         <div className='col-12'>
                           <ul className='nav nav-tabs'>
                             <li>
-                              <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
+                              <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             {
                               this.props.location.state && this.props.location.state.module === 'convo' &&
                               <li>
-                                { this.state.broadcast.length > 0
-                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                                  : <a>Targeting </a>
-                                }
+                                {this.state.broadcast.length > 0
+                                ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                : <a>Targeting</a>
+                              }
                               </li>
                             }
                           </ul>
@@ -563,7 +582,7 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}) }}>
                                         <div className='align-center'>
                                           <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                           <h6>Card</h6>
@@ -601,6 +620,14 @@ class CreateConvo extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
                                         </div>
                                       </div>
                                     </div>

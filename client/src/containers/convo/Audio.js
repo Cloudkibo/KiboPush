@@ -87,6 +87,8 @@ class Audio extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
+        fileData.append('pageId', this.props.pages[0]._id)
+        fileData.append('componentType', 'audio')
         var fileInfo = {
           id: this.props.id,
           componentType: 'audio',
@@ -140,12 +142,12 @@ class Audio extends React.Component {
             </Files>
           }
           { this.state.showPreview &&
-            <div style={{padding: '10px', marginTop: '40px'}}>
+            <div style={{marginTop: '40px'}}>
               <ReactPlayer
                 url={this.state.file.url}
                 controls
                 width='100%'
-                height='auto'
+                height='50px'
                 onPlay={this.onTestURLAudio(this.state.file.url)}
               />
             </div>
@@ -173,7 +175,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    pages: (state.pagesInfo.pages)
   }
 }
 

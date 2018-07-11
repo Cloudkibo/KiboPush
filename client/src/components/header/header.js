@@ -136,12 +136,19 @@ class Header extends React.Component {
     return Math.floor(seconds) + ' seconds ago'
   }
 
-  gotoView (id, _id) {
+  gotoView (id, _id, type) {
     this.props.markRead({notificationId: _id})
-    browserHistory.push({
-      pathname: `/liveChat`,
-      state: {id: id}
-    })
+    if (type === 'webhookFailed') {
+      browserHistory.push({
+        pathname: `/settings`,
+        state: {module: 'webhook'}
+      })
+    } else {
+      browserHistory.push({
+        pathname: `/liveChat`,
+        state: {id: id}
+      })
+    }
   }
 
   render () {
@@ -200,12 +207,12 @@ class Header extends React.Component {
               </button>
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
+                  {this.props.user &&
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{marginRight: '-15px'}}>
                       <label style={{fontWeight: 'inherit', marginTop: '25px'}}>Advanced Mode:
                       </label>
                     </li>
-                    {this.props.user &&
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <span className='m-switch m-switch--outline m-switch--icon m-switch--success' style={{marginTop: '17px'}}>
                         <label>
@@ -214,7 +221,6 @@ class Header extends React.Component {
                         </label>
                       </span>
                     </li>
-                    }
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
@@ -261,7 +267,7 @@ class Header extends React.Component {
                                                   this.state.unseenNotifications.map((unseen, i) => (
                                                     <div className='m-list-timeline__item'>
                                                       <span className='m-list-timeline__badge m-list-timeline__badge--brand' />
-                                                      <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id)} style={{cursor: 'pointer'}}>
+                                                      <span className='m-list-timeline__text' onClick={() => this.gotoView(unseen.category.id, unseen._id, unseen.category.type)} style={{cursor: 'pointer'}}>
                                                         {unseen.message}
                                                       </span>
                                                       <span className='m-list-timeline__time' style={{width: '100px'}}>
@@ -366,15 +372,19 @@ class Header extends React.Component {
                         </div>
                       </div>
                     </li>
-
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : 'hello'}</span>
-                          <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          <div style={{display: 'inline-block', marginRight: '5px'}}>
+                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          </div>
+                          <div style={{display: 'inline-block', height: '41px'}}>
+                            <span className='m-nav__link-text' style={{lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center'}}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
+                            </span>
+                          </div>
                         </span>
                         <span className='m-topbar__username m--hide'>
-                          {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                          {(this.props.user) ? this.props.user.name : ''}
                         </span>
                       </a>
                       <div className='m-dropdown__wrapper'>
@@ -383,11 +393,11 @@ class Header extends React.Component {
                           <div className='m-dropdown__header m--align-center'>
                             <div className='m-card-user m-card-user--skin-dark'>
                               <div className='m-card-user__pic'>
-                                <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless' alt='' />
+                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
                               </div>
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>
-                                  {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
+                                  {(this.props.user) ? this.props.user.name : ''}
                                 </span>
                                 <span className='m-card-user__email'>
                                   {(this.props.user) ? this.props.user.email : ''}
@@ -448,6 +458,7 @@ class Header extends React.Component {
                       <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
                     </li>
                   </ul>
+                }
                 </div>
               </div>
             </div>

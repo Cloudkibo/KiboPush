@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
+const CompanyProfile = require('../api/companyprofile/companyprofile.model')
 const Plans = require('../api/permissions_plan/permissions_plan.model')
 const Permissions = require('../api/permissions/permissions.model')
 const ApiSettings = require('../api/api_settings/api_settings.model')
@@ -17,6 +18,7 @@ const Pages = require('../api/pages/Pages.model')
 const CompanyUsers = require('../api/companyuser/companyuser.model')
 const _ = require('lodash')
 
+// const PassportFacebookExtension = require('passport-facebook-extension')
 const logger = require('../components/logger')
 
 const TAG = 'auth/auth.service.js'
@@ -50,9 +52,52 @@ function isAuthenticated () {
           return res.status(401)
             .json({status: 'failed', description: 'Unauthorized'})
         }
-
+        // logger.serverLog(TAG, `User authenticated: ${JSON.stringify(user)}`)
         req.user = user
         next()
+
+        // if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
+        //   let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
+        //     config.facebook.clientSecret)
+
+        //   // todo do this for permissions error
+        //   FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
+        //     .then(permissions => {
+        //       req.user = user
+        //       next()
+        //     })
+        //     .fail(e => {
+        //       logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
+        //       user.permissionsRevoked = true
+        //       req.user = user
+        //       next()
+        //     })
+        // } else {
+        //   req.user = user
+        //   next()
+        // }
+      })
+    })
+    .use((req, res, next) => {
+      CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyuser) => {
+        if (err) {
+          return res.status(500)
+            .json({status: 'failed', description: 'Internal Server Error'})
+        }
+        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+          if (err) {
+            return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+          }
+          if (!company) {
+            return res.status(404)
+              .json({status: 'failed', description: 'Company Not Found. Contact support for more information.'})
+          }
+
+          req.user.plan = company.stripe.plan
+          req.user.last4 = company.stripe.last4
+          next()
+        })
       })
     })
 }
@@ -121,7 +166,7 @@ function doesPlanPermitsThisAction (action) {
             description: 'Fatal Error. Plan not set. Please contact support.'
           })
       }
-      if (plan[req.user.plan][action]) {
+      if (req.user && req.user.plan && plan[req.user.plan][action]) {
         next()
       } else {
         res.status(403)
@@ -249,13 +294,20 @@ function fbConnectDone (req, res) {
       return res.status(401)
         .json({status: 'failed', description: 'Unauthorized'})
     }
-
     req.user = user
     user.facebookInfo = fbPayload
     user.save((err) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      // set permissionsRevoked to false to indicate that permissions were regranted
+      if (user.permissionsRevoked) {
+        Users.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: false}, {multi: true}, (err, resp) => {
+          if (err) {
+            logger.serverLog(TAG, `Error updating permissionsRevoked field`)
+          }
+        })
       }
       fetchPages(`https://graph.facebook.com/v2.10/${
         fbPayload.fbId}/accounts?access_token=${

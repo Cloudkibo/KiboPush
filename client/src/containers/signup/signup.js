@@ -9,16 +9,21 @@ import { connect } from 'react-redux'
 import { isWebURL } from './../../utility/utils'
 import { log } from './../../utility/socketio'
 import { Link } from 'react-router'
+import ReCAPTCHA from 'react-google-recaptcha'
+
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Progress from 'react-progressbar'
 import AlertContainer from 'react-alert'
 var taiPasswordStrength = require('tai-password-strength')
 var strengthTester = new taiPasswordStrength.PasswordStrength()
+var googleKey = '6LeBK2IUAAAAANBk4VMXqUYqMmUhlyu3iyCYPBfQ'
 const TAG = 'containers/login/login'
 
 class Signup extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      eulaAgreed: false,
       domain: false,
       password: false,
       strength: '',
@@ -28,12 +33,18 @@ class Signup extends React.Component {
       isurl: false,
       pwdlength: true,
       error: false,
-      account_type: 'none'
+      account_type: 'none',
+      isShowingModal: false,
+      captchaSuccess: false
     }
     this.check = this.check.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.equal = this.equal.bind(this)
+    this.onChangeCaptcha = this.onChangeCaptcha.bind(this)
+
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
   }
   check () {
     this.setState({domain: true})
@@ -41,6 +52,12 @@ class Signup extends React.Component {
       this.setState({isurl: true})
     }
   }
+
+  onChangeCaptcha (value) {
+    console.log('Captcha value:', value)
+    this.setState({captchaSuccess: true})
+  }
+
   componentDidMount () {
     log(TAG, 'signup Container Mounted')
   }
@@ -48,13 +65,22 @@ class Signup extends React.Component {
     this.setState({error: false})
     if (nextprops.successSignup) {
       this.props.history.push({
-        pathname: '/connectFb',
+        pathname: '/resendVerificationEmail',
         state: { account_type: this.state.account_type }
       })
     } else if (nextprops.errorSignup) {
       //  this.setState({error: nextprops.errorSignup})
     }
   }
+
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
+
   handlePwdChange (event) {
     this.setState({password: true})
     if (event.target.value.length <= 6) {
@@ -132,6 +158,15 @@ class Signup extends React.Component {
       this.setState({ismatch: false})
     }
   }
+
+  acceptEULA (e) {
+    if (e.target.checked) {
+      this.setState({eulaAgreed: true})
+    } else {
+      this.setState({eulaAgreed: false})
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -148,9 +183,9 @@ class Signup extends React.Component {
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
           data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request'
         />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin m-login--signup' id='m_login' style={{height: 130 + 'vh'}}>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin m-login--signup' id='m_login' style={{height: this.state.account_type === 'team' || this.state.account_type === 'individual' ? null : 100 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
-            <div className='m-stack m-stack--hor m-stack--desktop'>
+            <div style={{marginTop: -60}} className='m-stack m-stack--hor m-stack--desktop'>
               <div className='m-stack__item m-stack__item--fluid'>
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
@@ -166,6 +201,7 @@ class Signup extends React.Component {
                       <div className='m-login__desc'>
                         Enter your details to create your account:
                       </div>
+
                     </div>
                     {
                     (this.state.account_type !== 'none') &&
@@ -214,8 +250,19 @@ class Signup extends React.Component {
                           <div id='email-error' style={{color: 'red'}}>Passwords do not match</div>
                         }
                       </div>
+                      <div className='form-group m-form__group'>
+                        <ReCAPTCHA
+                          ref='recaptcha'
+                          sitekey={googleKey}
+                          onChange={this.onChangeCaptcha}
+                          />
+                      </div>
                       <div className='m-login__form-action'>
-                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                        <div class='checkbox'>
+                          <input type='checkbox' onChange={e => this.acceptEULA(e)} />
+                          <label style={{marginBottom: 35, marginLeft: 15, fontSize: 13}}>I've read and accept the <a onClick={this.showDialog} href='#eulaAgreement'>terms and conditions</a></label>
+                        </div>
+                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess}>
                           Sign Up
                         </button>
                         <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
@@ -245,6 +292,53 @@ class Signup extends React.Component {
                           </span>
                         </center>
                       </div>
+                    }
+                    {
+                          this.state.isShowingModal &&
+                          <ModalContainer style={{width: '600px'}}
+                            onClose={this.closeDialog}>
+                            <ModalDialog style={{width: '600px'}}
+                              onClose={this.closeDialog} >
+                              <center>
+                                <div style={{
+                                  width: '500px',
+                                  height: '20pc',
+                                  overflowY: 'scroll',
+                                  textAlign: 'left',
+                                  whiteSpace: 'pre-wrap',
+                                  border: '1px solid black',
+                                  padding: 10
+                                }}>
+
+                                  <p>This End-User License Agreement ("EULA") is a legal agreement between you and CloudKibo</p>
+                                  <p>This EULA agreement governs your acquisition and use of our KiboPush software ("Software") directly from CloudKibo or indirectly through a CloudKibo authorized reseller or distributor (a "Reseller").</p>
+                                  <p>Please read this EULA agreement carefully before completing the installation process and using the KiboPush software. It provides a license to use the KiboPush software and contains warranty information and liability disclaimers.</p>
+                                  <p>If you register for a free trial of the KiboPush software, this EULA agreement will also govern that trial. By clicking "accept" or installing and/or using the KiboPush software, you are confirming your acceptance of the Software and agreeing to become bound by the terms of this EULA agreement.</p>
+                                  <p>If you are entering into this EULA agreement on behalf of a company or other legal entity, you represent that you have the authority to bind such entity and its affiliates to these terms and conditions. If you do not have such authority or if you do not agree with the terms and conditions of this EULA agreement, do not install or use the Software, and you must not accept this EULA agreement.</p>
+                                  <p>This EULA agreement shall apply only to the Software supplied by CloudKibo herewith regardless of whether other software is referred to or described herein. The terms also apply to any CloudKibo updates, supplements, Internet-based services, and support services for the Software, unless other terms accompany those items on delivery. If so, those terms apply.</p>
+                                  <p><strong>License Grant</strong></p>
+                                  <p>CloudKibo hereby grants you a personal, non-transferable, non-exclusive licence to use the KiboPush software on your devices in accordance with the terms of this EULA agreement.</p>
+                                  <p>You are permitted to load the KiboPush software (for example a PC, laptop, mobile or tablet) under your control. You are responsible for ensuring your device meets the minimum requirements of the KiboPush software.</p>
+                                  <p>You are not permitted to:</p>
+                                  <ul>
+                                    <li>Edit, alter, modify, adapt, translate or otherwise change the whole or any part of the Software nor permit the whole or any part of the Software to be combined with or become incorporated in any other software, nor decompile, disassemble or reverse engineer the Software or attempt to do any such things</li>
+                                    <li>Reproduce, copy, distribute, resell or otherwise use the Software for any commercial purpose</li>
+                                    <li>Allow any third party to use the Software on behalf of or for the benefit of any third party</li>
+                                    <li>Use the Software in any way which breaches any applicable local, national or international law</li>
+                                    <li>use the Software for any purpose that CloudKibo considers is a breach of this EULA agreement</li>
+                                  </ul>
+                                  <p><strong>Intellectual Property and Ownership</strong></p>
+                                  <p>CloudKibo shall at all times retain ownership of the Software as originally downloaded by you and all subsequent downloads of the Software by you. The Software (and the copyright, and other intellectual property rights of whatever nature in the Software, including any modifications made thereto) are and shall remain the property of CloudKibo.</p>
+                                  <p>CloudKibo reserves the right to grant licences to use the Software to third parties.</p>
+                                  <p><strong>Termination</strong></p>
+                                  <p>This EULA agreement is effective from the date you first use the Software and shall continue until terminated. You may terminate it at any time upon written notice to CloudKibo.</p>
+                                  <p>It will also terminate immediately if you fail to comply with any term of this EULA agreement. Upon such termination, the licenses granted by this EULA agreement will immediately terminate and you agree to stop all access and use of the Software. The provisions that by their nature continue and survive will survive any termination of this EULA agreement.</p>
+                                  <p><strong>Governing Law</strong></p>
+                                  <p>This EULA agreement, and any dispute arising out of or in connection with this EULA agreement, shall be governed by and construed in accordance with the laws of United States.</p>
+                                </div>
+                              </center>
+                            </ModalDialog>
+                          </ModalContainer>
                     }
                   </div>
                 </div>

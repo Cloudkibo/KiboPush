@@ -50,6 +50,8 @@ class CreatePoll extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSend = this.goToSend.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
+    this.checkValidation = this.checkValidation.bind(this)
+    this.showError = this.showError.bind(this)
   }
 
   componentDidMount () {
@@ -72,6 +74,20 @@ class CreatePoll extends React.Component {
       tagValue: targeting.tagValue,
       pollValue: targeting.pollValue
     })
+  }
+
+  checkValidation () {
+    if (this.state.option1 === '' || this.state.option2 === '' ||
+      this.state.option3 === '' || this.state.statement === '') {
+      console.log('vald' + this.state.option1 + ' ' + this.state.option2 + ' ' + this.state.option3 + ' ' + this.state.statement)
+      this.setState({alert: true})
+    } else {
+      this.showDialog()
+    }
+  }
+
+  showError () {
+    this.setState({alert: true})
   }
 
   createPoll () {
@@ -127,19 +143,19 @@ class CreatePoll extends React.Component {
   }
 
   updateStatment (e) {
-    this.setState({statement: e.target.value})
+    this.setState({statement: e.target.value, alert: false})
   }
 
   updateOptions (e, opt) {
     switch (opt) {
       case 1:
-        this.setState({option1: e.target.value})
+        this.setState({option1: e.target.value, alert: false})
         break
       case 2:
-        this.setState({option2: e.target.value})
+        this.setState({option2: e.target.value, alert: false})
         break
       case 3:
-        this.setState({option3: e.target.value})
+        this.setState({option3: e.target.value, alert: false})
         break
 
       default:
@@ -326,15 +342,22 @@ class CreatePoll extends React.Component {
                       }
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.showDialog}> Create Poll
-                        </button>
-                        <Link
-                          to='/poll'
-                          className='btn btn-secondary' style={{'marginLeft': '10px'}}>
-                          Cancel
-                        </Link>
+                      <div className='col-12'>
+                        <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this poll after 30 mins of ending the conversation.</p>
+                      </div>
+                      <div className='col-12'>
+                        <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
+                          <button className='btn btn-primary'
+                            onClick={() => {
+                              this.checkValidation()
+                            }}> Create Poll
+                          </button>
+                          <Link
+                            to='/poll'
+                            className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                            Cancel
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

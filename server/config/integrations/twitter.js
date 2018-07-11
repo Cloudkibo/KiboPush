@@ -8,11 +8,13 @@ let AutoPosting = require('../../api/autoposting/autopostings.model')
 let Pages = require('../../api/pages/Pages.model')
 const URL = require('../../api/URLforClickedCount/URL.model')
 let Subscribers = require('../../api/subscribers/Subscribers.model')
+const AutomationQueue = require('../../api/automation_queue/automation_queue.model')
 const AutopostingMessages = require('../../api/autoposting_messages/autoposting_messages.model')
 const AutopostingSubscriberMessages = require('../../api/autoposting_messages/autoposting_subscriber_messages.model')
 let request = require('request')
 let _ = require('lodash')
 let utility = require('../../api/broadcasts/broadcasts.utility')
+const compUtility = require('../../components/utility')
 
 const logger = require('../../components/logger')
 const TAG = 'config/integrations/twitter.js'
@@ -114,6 +116,7 @@ function connect () {
                             autoposting_type: 'twitter',
                             autopostingId: postingItem._id,
                             sent: subscribers.length,
+                            message_id: tweet.id,
                             seen: 0,
                             clicked: 0
                           })
@@ -134,7 +137,39 @@ function connect () {
                                       'metadata': 'This is a meta data for tweet'
                                     })
                                   }
-                                  sendAutopostingMessage(messageData, page, savedMsg)
+                                  // Logic to control the autoposting when last activity is less than 30 minutes
+                                  compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, 'inside error')
+                                      return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                    }
+
+                                    if (isLastMessage) {
+                                      logger.serverLog(TAG, 'inside autoposting send')
+                                      sendAutopostingMessage(messageData, page, savedMsg)
+                                    } else {
+                                      // Logic to add into queue will go here
+                                      logger.serverLog(TAG, 'inside adding autoposting-twitter to autoposting queue')
+                                      let timeNow = new Date()
+                                      let automatedQueueMessage = new AutomationQueue({
+                                        automatedMessageId: savedMsg._id,
+                                        subscriberId: subscriber._id,
+                                        companyId: savedMsg.companyId,
+                                        type: 'autoposting-twitter',
+                                        scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                      })
+
+                                      automatedQueueMessage.save((error) => {
+                                        if (error) {
+                                          logger.serverLog(TAG, {
+                                            status: 'failed',
+                                            description: 'Automation Queue autoposting-twitter Message create failed',
+                                            error
+                                          })
+                                        }
+                                      })
+                                    }
+                                  })
                                 } else {
                                   let URLObject = new URL({
                                     originalURL: tweet.entities.media[0].url,
@@ -177,7 +212,39 @@ function connect () {
                                         }
                                       })
                                     }
-                                    sendAutopostingMessage(messageData, page, savedMsg)
+                                    // Logic to control the autoposting when last activity is less than 30 minutes
+                                    compUtility.checkLastMessageAge(subscriber.senderId, (err, isLastMessage) => {
+                                      if (err) {
+                                        logger.serverLog(TAG, 'inside error')
+                                        return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
+                                      }
+
+                                      if (isLastMessage) {
+                                        logger.serverLog(TAG, 'inside autoposting autoposting twitter send')
+                                        sendAutopostingMessage(messageData, page, savedMsg)
+                                      } else {
+                                        // Logic to add into queue will go here
+                                        logger.serverLog(TAG, 'inside adding to autoposting queue')
+                                        let timeNow = new Date()
+                                        let automatedQueueMessage = new AutomationQueue({
+                                          automatedMessageId: savedMsg._id,
+                                          subscriberId: subscriber._id,
+                                          companyId: savedMsg.companyId,
+                                          type: 'autoposting-twitter',
+                                          scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                        })
+
+                                        automatedQueueMessage.save((error) => {
+                                          if (error) {
+                                            logger.serverLog(TAG, {
+                                              status: 'failed',
+                                              description: 'Automation Queue autoposting-twitter Message create failed',
+                                              error
+                                            })
+                                          }
+                                        })
+                                      }
+                                    })
                                   })
                                 }
 
@@ -186,8 +253,7 @@ function connect () {
                                   companyId: postingItem.companyId,
                                   autopostingId: postingItem._id,
                                   autoposting_messages_id: savedMsg._id,
-                                  subscriberId: subscriber.senderId,
-                                  payload: messageData
+                                  subscriberId: subscriber.senderId
                                 })
 
                                 newSubscriberMsg.save((err, savedSubscriberMsg) => {
@@ -234,11 +300,11 @@ function sendAutopostingMessage (messageData, page, savedMsg) {
         }
       }
     })
-  AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
-    if (err) {
-      logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
-    }
-  })
+  // AutopostingMessages.update({_id: savedMsg._id}, {payload: messageData}, (err, updated) => {
+  //   if (err) {
+  //     logger.serverLog(TAG, `ERROR at updating AutopostingMessages ${JSON.stringify(err)}`)
+  //   }
+  // })
 }
 
 function restart () {

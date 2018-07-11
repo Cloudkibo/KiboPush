@@ -283,15 +283,20 @@ class CreateBot extends React.Component {
                       <br />
                     </div>
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.createBot}> Create
-                        </button>
-                        <Link
-                          to='/bots'
-                          className='btn btn-secondary' style={{'marginLeft': '10px'}}>
-                          Cancel
-                        </Link>
+                      <div className='col-12'>
+                        <p style={{marginTop: '10px'}}> <b>Note:</b> Bot will not respond to those subscribers who are having chat with an agent for past 30 minutes.</p>
+                      </div>
+                      <div className='col-12'>
+                        <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
+                          <button className='btn btn-primary'
+                            onClick={this.createBot}> Create
+                          </button>
+                          <Link
+                            to='/bots'
+                            className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                            Cancel
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -9,7 +9,6 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import Halogen from 'halogen'
-import { ModalContainer } from 'react-modal-dialog'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import AlertContainer from 'react-alert'
 
@@ -86,7 +85,7 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, {fileurl: '',
+      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -95,6 +94,7 @@ class Card extends React.Component {
   }
 
   handleChange (event) {
+    console.log('+onChange')
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
       fileurl: this.state.fileurl,
@@ -188,11 +188,11 @@ class Card extends React.Component {
 
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
+      fileurl: data.fileurl,
+      image_url: data.image_url,
+      fileName: data.fileName,
+      type: data.type,
+      size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button})
@@ -209,13 +209,20 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
-          <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i className='fa fa-times fa-stack-2x' />
-          </span>
-        </div>
+        { this.props.singleCard &&
+          <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
+            <span style={{cursor: 'pointer'}} className='fa-stack'>
+              <i className='fa fa-times fa-stack-2x' />
+            </span>
+          </div>
+        }
         <div style={{minHeight: 350, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
-          <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock'>
+          {
+          this.state.loading
+          ? <div className='align-center' style={{minHeight: 170, padding: '50px'}}><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='cardimageblock' onClick={() => {
+            this.refs.file.click()
+          }}>
             <input
               ref='file'
               type='file'
@@ -223,15 +230,14 @@ class Card extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
-
+              onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
-          (this.state.imgSrc === '')
-          ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-          : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
-         }
-
+            (this.state.imgSrc === '')
+            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
+           }
           </div>
+          }
           <div>
             <input onChange={this.handleChange} value={this.state.title} className='form-control' style={{fontSize: '20px', fontWeight: 'bold', paddingTop: '5px', borderStyle: 'none'}} type='text' placeholder='Enter Title...' maxLength='80' />
             <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', width: 100 + '%', height: 100 + '%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
@@ -243,16 +249,6 @@ class Card extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
         </div>
-        {
-          this.state.loading
-          ? <ModalContainer>
-            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-              className='align-center'>
-              <center><Halogen.RingLoader color='#716aca' /></center>
-            </div>
-          </ModalContainer>
-          : <span />
-        }
       </div>
     )
   }
@@ -260,7 +256,9 @@ class Card extends React.Component {
 
 function mapStateToProps (state) {
   console.log(state)
-  return {}
+  return {
+    pages: (state.pagesInfo.pages)
+  }
 }
 
 function mapDispatchToProps (dispatch) {

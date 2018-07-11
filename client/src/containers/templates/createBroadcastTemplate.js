@@ -9,12 +9,14 @@ import { connect } from 'react-redux'
 import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
+import List from '../convo/List'
 import Video from '../convo/Video'
 import Audio from '../convo/Audio'
 import File from '../convo/File'
 import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
+import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
@@ -38,6 +40,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.newConvo = this.newConvo.bind(this)
@@ -63,7 +66,7 @@ class CreateBroadcastTemplate extends React.Component {
         } else if (this.props.template.payload[i].componentType === 'image') {
           temp.push({content: (<Image id={temp.length} key={temp.length} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
-          temp.push({content: (<Card id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Card id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
           temp.push({content: (<Gallery id={temp.length} key={temp.length} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
@@ -72,6 +75,8 @@ class CreateBroadcastTemplate extends React.Component {
           temp.push({content: (<Video id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'file') {
           temp.push({content: (<File id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+        } else if (this.props.template.payload[i].componentType === 'list') {
+          temp.push({content: (<List id={temp.length} key={temp.length} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         }
       }
       var options = this.state.categoryValue
@@ -271,6 +276,27 @@ class CreateBroadcastTemplate extends React.Component {
 
     this.setState({broadcast: temp})
   }
+  handleList (obj) {
+    console.log('in create convo handleList', obj)
+    console.log('in create convo handleList', this.state.broadcast)
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.listItems = obj.listItems
+        data.topElementStyle = obj.topElementStyle
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    console.log('temp', temp)
+    this.setState({broadcast: temp})
+  }
 
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
@@ -283,13 +309,15 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   createBroadcastTemplate () {
+    if (!validateFields(this.state.broadcast, this.msg)) {
+      return
+    }
     if (this.state.categoryValue.length > 0) {
       var broadcastTemplate = {
         title: this.state.convoTitle,
         category: this.state.categoryValue,
         payload: this.state.broadcast
       }
-
       this.props.createBroadcast(broadcastTemplate, this.msg)
       this.setState({broadcast: [], list: []})
     } else {
@@ -298,6 +326,9 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   editBroadcastTemplate () {
+    if (!validateFields(this.state.broadcast, this.msg)) {
+      return
+    }
     if (this.state.categoryValue.length > 0) {
       var broadcastTemplate = {
         _id: this.props.template._id,
@@ -305,7 +336,6 @@ class CreateBroadcastTemplate extends React.Component {
         category: this.state.categoryValue,
         payload: this.state.broadcast
       }
-
       this.props.editBroadcast(broadcastTemplate, this.msg)
     } else {
       this.msg.error('Please select a category')
@@ -315,7 +345,7 @@ class CreateBroadcastTemplate extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -375,7 +405,7 @@ class CreateBroadcastTemplate extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}) }}>
                                     <div className='align-center'>
                                       <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
@@ -413,6 +443,14 @@ class CreateBroadcastTemplate extends React.Component {
                                     <div className='align-center'>
                                       <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                       <h6>File</h6>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='col-3'>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                    <div className='align-center'>
+                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                      <h6>List</h6>
                                     </div>
                                   </div>
                                 </div>

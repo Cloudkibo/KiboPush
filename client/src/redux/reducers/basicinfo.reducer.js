@@ -6,7 +6,10 @@ const initialState = {
   socketStatus: false,
   getStartedSeen: true,
   fbAppId: '',
-  adminPageSubscription: []
+  adminPageSubscription: [],
+  captchaKey: '',
+  stripeKey: '',
+  error: ''
 }
 
 export function basicInfo (state = initialState, action) {
@@ -21,16 +24,23 @@ export function basicInfo (state = initialState, action) {
         browserVersion: action.data
       })
 
+    case ActionTypes.GET_AUTOMATED_OPTIONS:
+      return Object.assign({}, state, {
+        automated_options: action.data
+      })
+
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data,
-        updatedUser: ''
+        updatedUser: '',
+        error: ''
       })
 
     case ActionTypes.LOAD_UPDATED_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data,
-        updatedUser: action.data
+        updatedUser: action.data,
+        error: ''
       })
 
     case ActionTypes.SET_SOCKET_STATUS:
@@ -48,6 +58,15 @@ export function basicInfo (state = initialState, action) {
     case ActionTypes.STORE_ADMIN_SUB_ID:
       return Object.assign({}, state, {
         adminPageSubscription: action.data
+      })
+    case ActionTypes.LOAD_KEYS:
+      return Object.assign({}, state, {
+        captchaKey: action.captchaKey,
+        stripeKey: action.stripeKey
+      })
+    case ActionTypes.FETCH_PLAN:
+      return Object.assign({}, state, {
+        error: action.data
       })
 
     default:

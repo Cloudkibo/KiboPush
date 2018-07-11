@@ -545,7 +545,7 @@ class CreateSubList extends React.Component {
                                   </th>
                                   <th data-field='text'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
-                                    <span>Text</span>
+                                    <span>Value</span>
                                   </th>
                                   <th data-field='remove'
                                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>

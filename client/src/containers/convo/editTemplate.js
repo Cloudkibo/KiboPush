@@ -22,10 +22,12 @@ import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
+import List from './List'
 import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
 import Targeting from './Targeting'
+import { validateFields } from './utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -33,6 +35,7 @@ import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { Link } from 'react-router'
 import { registerAction } from '../../utility/socketio'
+import {loadTags} from '../../redux/actions/tags.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class EditTemplate extends React.Component {
@@ -46,6 +49,7 @@ class EditTemplate extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       showMessengerModal: false,
@@ -60,6 +64,7 @@ class EditTemplate extends React.Component {
     props.getuserdetails()
     props.getFbAppId()
     props.getAdminSubscriptions()
+    props.loadTags()
     props.loadSubscribersList()
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
@@ -72,6 +77,7 @@ class EditTemplate extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -205,12 +211,17 @@ class EditTemplate extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
+        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'gallery') {
         temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
+      } else if (payload[i].componentType === 'list') {
+        temp.push({content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} listDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -329,6 +340,30 @@ class EditTemplate extends React.Component {
     this.setState({broadcast: temp})
   }
 
+  handleList (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data, i) => {
+      if (data.id === obj.id) {
+        // var newObj = {}
+        // newObj.image_url = obj.cards.image
+        // newObj.subtitle = obj.cards.subtitle
+        // newObj.title = obj.cards.title
+
+        temp[i].listItems = obj.listItems
+        temp[i].topElementStyle = obj.topElementStyle
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
   handleImage (obj) {
     var temp = this.state.broadcast
     var isPresent = false
@@ -370,7 +405,7 @@ class EditTemplate extends React.Component {
   }
 
   sendConvo () {
-    if (this.state.broadcast.length === 0) {
+    if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
     //  this.setState({tabActive: 'broadcast'})
@@ -379,31 +414,10 @@ class EditTemplate extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-    }
+
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       console.log('broadcast state', this.state.broadcast)
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
@@ -412,6 +426,14 @@ class EditTemplate extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
@@ -420,6 +442,7 @@ class EditTemplate extends React.Component {
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
           segmentationTimeZone: '',
+          segmentationTags: tagIDs,
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
           isList: isListValue
@@ -458,8 +481,16 @@ class EditTemplate extends React.Component {
         isListValue = true
       }
       var isSegmentedValue = false
-      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
+      }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
+          }
+        }
       }
       var data = {
         platform: 'facebook',
@@ -470,6 +501,7 @@ class EditTemplate extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
+        segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
@@ -496,7 +528,7 @@ class EditTemplate extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -606,7 +638,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}) }}>
                                         <div className='align-center'>
                                           <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                           <h6>Card</h6>
@@ -644,6 +676,14 @@ class EditTemplate extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
                                         </div>
                                       </div>
                                     </div>
@@ -809,7 +849,8 @@ function mapStateToProps (state) {
     currentBroadcast: (state.templatesInfo.currentBroadcast),
     subscribers: (state.subscribersInfo.subscribers),
     fbAppId: state.basicInfo.fbAppId,
-    adminPageSubscription: state.basicInfo.adminPageSubscription
+    adminPageSubscription: state.basicInfo.adminPageSubscription,
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -827,7 +868,8 @@ function mapDispatchToProps (dispatch) {
       createWelcomeMessage: createWelcomeMessage,
       loadSubscribersList: loadSubscribersList,
       getAdminSubscriptions: getAdminSubscriptions,
-      getFbAppId: getFbAppId
+      getFbAppId: getFbAppId,
+      loadTags: loadTags
     },
     dispatch)
 }

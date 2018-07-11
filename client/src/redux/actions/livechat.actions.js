@@ -1,3 +1,4 @@
+
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
@@ -12,6 +13,16 @@ export function showChatSessions (sessions) {
   return {
     type: ActionTypes.SHOW_CHAT_SESSIONS,
     sessions: sorted
+  }
+}
+
+export function updateUserChat (message, chat) {
+  console.log('updateUserChat called', message)
+  let userChat = chat
+  userChat.push(message)
+  return {
+    type: ActionTypes.UPDATE_USER_CHAT,
+    chat: userChat
   }
 }
 
@@ -82,11 +93,20 @@ export function setActiveSession (sessionId) {
   }
 }
 
-export function showUserChats (userChat) {
-  console.log('showUserChats response', userChat)
-  return {
-    type: ActionTypes.SHOW_USER_CHAT,
-    userChat
+export function showUserChats (payload, originalData) {
+  console.log('showUserChats response', payload)
+  if (originalData.page === 'first') {
+    return {
+      type: ActionTypes.SHOW_USER_CHAT_OVERWRITE,
+      userChat: payload.chat,
+      chatCount: payload.count
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_USER_CHAT,
+      userChat: payload.chat,
+      chatCount: payload.count
+    }
   }
 }
 
@@ -131,6 +151,13 @@ export function showChangeStatus (data) {
   }
 }
 
+export function showSearchChat (data) {
+  return {
+    type: ActionTypes.SHOW_SEARCH_CHAT,
+    data
+  }
+}
+
 // export function fetchSessions () {
 //   return (dispatch) => {
 //     callApi('sessions')
@@ -170,10 +197,15 @@ export function fetchSingleSession (sessionid, appendDeleteInfo) {
   }
 }
 
-export function fetchUserChats (sessionid) {
+export function fetchUserChats (sessionid, data, handleFunction) {
   return (dispatch) => {
-    callApi(`livechat/${sessionid}`)
-      .then(res => dispatch(showUserChats(res.payload)))
+    callApi(`livechat/${sessionid}`, 'post', data)
+      .then(res => {
+        dispatch(showUserChats(res.payload, data))
+        if (handleFunction) {
+          handleFunction(data.messageId)
+        }
+      })
   }
 }
 
@@ -207,6 +239,18 @@ export function sendAttachment (data, handleSendAttachment) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       handleSendAttachment(res)
+    })
+  }
+}
+
+export function searchChat (data) {
+  return (dispatch) => {
+    callApi('livechat/search', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showSearchChat(res.payload))
+      } else {
+        console.log('response got from server', res.description)
+      }
     })
   }
 }

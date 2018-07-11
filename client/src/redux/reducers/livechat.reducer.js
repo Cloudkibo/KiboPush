@@ -99,9 +99,21 @@ export function liveChat (state = initialState, action) {
                     ? (state.closeCount - 1) : state.closeCount
       })
 
-    case ActionTypes.SHOW_USER_CHAT:
+    case ActionTypes.SHOW_USER_CHAT_OVERWRITE:
       return Object.assign({}, state, {
         userChat: action.userChat,
+        chatCount: action.chatCount,
+        changedStatus: ''
+      })
+
+    case ActionTypes.SHOW_USER_CHAT:
+      let chat = [...state.userChat, ...action.userChat]
+      let orderedChat = chat.sort(function (a, b) {
+        return new Date(a.datetime) - new Date(b.datetime)
+      })
+      return Object.assign({}, state, {
+        userChat: orderedChat,
+        chatCount: action.chatCount,
         changedStatus: ''
       })
 
@@ -110,12 +122,18 @@ export function liveChat (state = initialState, action) {
         socketSession: action.data.session_id,
         unreadSession: action.data.session_id,
         socketData: action.data,
+        socketMessage: action.data.message,
         changedStatus: ''
       })
 
     case ActionTypes.SOCKET_UPDATE_SEEN:
       return Object.assign({}, state, {
         socketSession: action.data.session_id
+      })
+
+    case ActionTypes.UPDATE_USER_CHAT:
+      return Object.assign({}, state, {
+        userChat: action.chat
       })
 
     case ActionTypes.RESET_SOCKET:
@@ -156,6 +174,10 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.CHANGE_STATUS:
       return Object.assign({}, state, {
         changedStatus: action.data
+      })
+    case ActionTypes.SHOW_SEARCH_CHAT:
+      return Object.assign({}, state, {
+        searchChat: action.data
       })
 
     default:

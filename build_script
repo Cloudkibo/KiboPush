@@ -16,9 +16,9 @@ uglify_js()
 
 compile_react()
 {
-   echo "Build reactjs bundle..."
-   browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]
-   echo "Done with reactjs bundle"
+  echo "Build reactjs bundle..."
+  browserify client/src/app.js -o client/public/js/bundle.js -t [ babelify --presets [ es2015 react ] ]
+  echo "Done with reactjs bundle"
 }
 
 compile_react

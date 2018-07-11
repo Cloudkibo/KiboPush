@@ -449,7 +449,7 @@ class WaitingReplyList extends React.Component {
                                     className='m-datatable__cell'>
                                     <span
                                       style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other'}
+                                      {subscriber.subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
                                     </span>
                                   </td>
                                   <td data-field='Gender' className='m-datatable__cell'>

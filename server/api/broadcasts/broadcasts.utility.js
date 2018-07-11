@@ -34,7 +34,7 @@ function validateInput (body) {
           for (let j = 0; j < body.payload[i].buttons.length; j++) {
             if (body.payload[i].buttons[j].type === 'web_url') {
               if (!utility.validateUrl(
-                  body.payload[i].buttons[j].url)) return false
+                body.payload[i].buttons[j].url)) return false
             }
           }
         }
@@ -54,7 +54,7 @@ function validateInput (body) {
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
             if (!utility.validateUrl(
-                body.payload[i].buttons[j].url)) return false
+              body.payload[i].buttons[j].url)) return false
           }
         }
       }
@@ -71,11 +71,53 @@ function validateInput (body) {
           if (body.payload[i].cards[j].buttons === undefined) return false
           if (body.payload[i].cards[j].buttons.length === 0) return false
           if (!utility.validateUrl(
-              body.payload[i].cards[j].image_url)) return false
+            body.payload[i].cards[j].image_url)) return false
           for (let k = 0; k < body.payload[i].cards[j].buttons.length; k++) {
             if (body.payload[i].cards[j].buttons[k].type === 'web_url') {
               if (!utility.validateUrl(
-                  body.payload[i].cards[j].buttons[k].url)) return false
+                body.payload[i].cards[j].buttons[k].url)) return false
+            }
+          }
+        }
+      }
+      if (body.payload[i].componentType === 'list') {
+        if (body.payload[i].listItems === undefined) return false
+        if (body.payload[i].listItems.length === 0) return false
+        if (body.payload[i].topElementStyle === undefined ||
+        body.payload[i].topElementStyle === '') return false
+        for (let m = 0; m < body.payload[i].buttons.length; m++) {
+          if (body.payload[i].buttons[m].type === undefined ||
+          body.payload[i].buttons[m].type === '') return false
+          if (body.payload[i].buttons[m].title === undefined ||
+          body.payload[i].buttons[m].title === '') return false
+          if (body.payload[i].buttons[m].type === 'web_url') {
+            if (!utility.validateUrl(
+              body.payload[i].buttons[m].url)) return false
+          }
+        }
+        for (let j = 0; j < body.payload[i].listItems.length; j++) {
+          if (body.payload[i].listItems[j].title === undefined ||
+            body.payload[i].listItems[j].title === '') return false
+          if (body.payload[i].listItems[j].subtitle === undefined ||
+            body.payload[i].listItems[j].subtitle === '') return false
+          if (body.payload[i].listItems[j].default_action && (
+            body.payload[i].listItems[j].default_action.type === undefined ||
+            body.payload[i].listItems[j].default_action.type === '')) return false
+          if (body.payload[i].listItems[j].default_action && (
+            body.payload[i].listItems[j].default_action.url === undefined ||
+            body.payload[i].listItems[j].default_action.url === '')) return false
+          if (body.payload[i].listItems[j].image_url && !utility.validateUrl(
+              body.payload[i].listItems[j].image_url)) return false
+          if (body.payload[i].listItems[j].buttons) {
+            for (let k = 0; k < body.payload[i].listItems[j].buttons.length; k++) {
+              if (body.payload[i].listItems[j].buttons[k].title === undefined ||
+              body.payload[i].listItems[j].buttons[k].title === '') return false
+              if (body.payload[i].listItems[j].buttons[k].type === undefined ||
+              body.payload[i].listItems[j].buttons[k].type === '') return false
+              if (body.payload[i].listItems[j].buttons[k].type === 'web_url') {
+                if (!utility.validateUrl(
+                    body.payload[i].listItems[j].buttons[k].url)) return false
+              }
             }
           }
         }
@@ -86,22 +128,47 @@ function validateInput (body) {
   return true
 }
 
-function prepareSendAPIPayload (subscriberId, body, isResponse) {
+function prepareSendAPIPayload (subscriberId, body, fname, lname, isResponse) {
   let messageType = isResponse ? 'RESPONSE' : 'UPDATE'
   let payload = {}
+  let text = body.text
   if (body.componentType === 'text' && !body.buttons) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
         'id': subscriberId
       }),
       'message': JSON.stringify({
-        'text': body.text,
+        'text': text,
         'metadata': 'This is a meta data'
       })
     }
     return payload
   } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
+    }
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -112,14 +179,14 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'type': 'template',
           'payload': {
             'template_type': 'button',
-            'text': body.text,
+            'text': text,
             'buttons': body.buttons
           }
         }
       })
     }
   } else if (['image', 'audio', 'file', 'video'].indexOf(
-      body.componentType) > -1) {
+    body.componentType) > -1) {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
     let fileReaderStream
     if (body.componentType === 'file') {
@@ -145,7 +212,7 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
     // todo test this one. we are not removing as we need to keep it for live chat
     // if (!isForLiveChat) deleteFile(body.fileurl)
   } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
-      body.componentType) > -1) {
+    body.componentType) > -1) {
     payload = {
       'messaging_type': messageType,
       'recipient': JSON.stringify({
@@ -195,6 +262,24 @@ function prepareSendAPIPayload (subscriberId, body, isResponse) {
           'payload': {
             'template_type': 'generic',
             'elements': body.cards
+          }
+        }
+      })
+    }
+  } else if (body.componentType === 'list') {
+    payload = {
+      'messaging_type': messageType,
+      'recipient': JSON.stringify({
+        'id': subscriberId
+      }),
+      'message': JSON.stringify({
+        'attachment': {
+          'type': 'template',
+          'payload': {
+            'template_type': 'list',
+            'top_element_style': body.topElementStyle,
+            'elements': body.listItems,
+            'buttons': body.buttons
           }
         }
       })
@@ -261,7 +346,7 @@ function parseUrl (text) {
 
 function applyTagFilterIfNecessary (req, subscribers, fn) {
   if (req.body.segmentationTags && req.body.segmentationTags.length > 0) {
-    TagSubscribers.find({tagId: {$in: req.body.segmentationTags}},
+    TagSubscribers.find({ tagId: { $in: req.body.segmentationTags } },
       (err, tagSubscribers) => {
         if (err) {
           return logger.serverLog(TAG,
@@ -288,8 +373,8 @@ function applyTagFilterIfNecessary (req, subscribers, fn) {
                 datetime: subscribers[i].datetime,
                 isEnabledByPage: subscribers[i].isEnabledByPage,
                 isSubscribed: subscribers[i].isSubscribed,
-                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-                unSubscribedBy: subscribers[i].unSubscribedBy
+                unSubscribedBy: subscribers[i].unSubscribedBy,
+                source: subscribers[i].source
               })
             }
           }
@@ -303,7 +388,7 @@ function applyTagFilterIfNecessary (req, subscribers, fn) {
 
 function applySurveyFilterIfNecessary (req, subscribers, fn) {
   if (req.body.segmentationSurvey && req.body.segmentationSurvey.length > 0) {
-    SurveyResponses.find({surveyId: {$in: req.body.segmentationSurvey}})
+    SurveyResponses.find({ surveyId: { $in: req.body.segmentationSurvey } })
       .populate('subscriberId')
       .exec((err, responses) => {
         if (err) {
@@ -331,8 +416,8 @@ function applySurveyFilterIfNecessary (req, subscribers, fn) {
                 datetime: subscribers[i].datetime,
                 isEnabledByPage: subscribers[i].isEnabledByPage,
                 isSubscribed: subscribers[i].isSubscribed,
-                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-                unSubscribedBy: subscribers[i].unSubscribedBy
+                unSubscribedBy: subscribers[i].unSubscribedBy,
+                source: subscribers[i].source
               })
             }
           }
@@ -345,7 +430,7 @@ function applySurveyFilterIfNecessary (req, subscribers, fn) {
 }
 function applyPollFilterIfNecessary (req, subscribers, fn) {
   if (req.body.segmentationPoll && req.body.segmentationPoll.length > 0) {
-    PollResponses.find({pollId: {$in: req.body.segmentationPoll}})
+    PollResponses.find({ pollId: { $in: req.body.segmentationPoll } })
       .populate('subscriberId')
       .exec((err, responses) => {
         if (err) {
@@ -373,8 +458,8 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
                 datetime: subscribers[i].datetime,
                 isEnabledByPage: subscribers[i].isEnabledByPage,
                 isSubscribed: subscribers[i].isSubscribed,
-                isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
-                unSubscribedBy: subscribers[i].unSubscribedBy
+                unSubscribedBy: subscribers[i].unSubscribedBy,
+                source: subscribers[i].source
               })
             }
           }
@@ -385,6 +470,138 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
     fn(subscribers)
   }
 }
+
+function prepareMessageData (subscriberId, body, fname, lname) {
+  let payload = {}
+  let text = body.text
+  if (body.componentType === 'text' && !body.buttons) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
+    }
+    payload = {
+      'text': text,
+      'metadata': 'This is a meta data'
+    }
+    return payload
+  } else if (body.componentType === 'text' && body.buttons) {
+    if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
+      text = text.replace(
+        '{{user_full_name}}', fname + ' ' + lname)
+    }
+    if (body.text.includes('{{user_first_name}}')) {
+      text = text.replace(
+        '{{user_first_name}}', fname)
+    }
+    if (body.text.includes('{{user_last_name}}')) {
+      text = text.replace(
+        '{{user_last_name}}', lname)
+    }
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'button',
+          'text': text,
+          'buttons': body.buttons
+        }
+      }
+    }
+  } else if (['image', 'audio', 'file', 'video'].indexOf(
+    body.componentType) > -1) {
+    payload = {
+      'attachment': {
+        'type': body.componentType,
+        'payload': {
+          'attachment_id': body.fileurl.attachment_id
+        }
+      }
+    }
+    return payload
+    // todo test this one. we are not removing as we need to keep it for live chat
+    // if (!isForLiveChat) deleteFile(body.fileurl)
+  } else if (['gif', 'sticker', 'thumbsUp'].indexOf(
+    body.componentType) > -1) {
+    payload = {
+      'attachment': {
+        'type': 'image',
+        'payload': {
+          'url': body.fileurl
+        }
+      }
+    }
+  } else if (body.componentType === 'card') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': [
+            {
+              'title': body.title,
+              'image_url': body.image_url,
+              'subtitle': body.description,
+              'buttons': body.buttons
+            }
+          ]
+        }
+      }
+    }
+  } else if (body.componentType === 'gallery') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': body.cards
+        }
+      }
+    }
+  } else if (body.componentType === 'list') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'list',
+          'top_element_style': body.topElementStyle,
+          'elements': body.listItems,
+          'buttons': body.buttons
+        }
+      }
+    }
+  }
+  logger.serverLog(TAG,
+    `Return Payload ${JSON.stringify(payload)}`)
+  return payload
+}
+
+/* eslint-disable */
+function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname) {
+  let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
+  let batch = []  // to display typing on bubble :)
+  payload.forEach((item, index) => {
+    // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
+    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, fname, lname)))
+    if (index === 0) {
+      batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
+    } else {
+      batch.push({ "method": "POST", "name": `message${index + 1}`, "depends_on": `message${index}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
+    }
+    if (index === (payload.length - 1)) {
+      sendBroadcast(JSON.stringify(batch), page)
+    }
+  })
+}
+/* eslint-enable */
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
@@ -392,3 +609,4 @@ exports.validateInput = validateInput
 exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
+exports.getBatchData = getBatchData

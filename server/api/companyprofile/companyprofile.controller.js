@@ -40,6 +40,104 @@ exports.index = function (req, res) {
     })
 }
 
+exports.setCard = function (req, res) {
+  var stripeToken = req.body.stripeToken
+
+  if (!stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please provide a valid card.`
+    })
+  }
+
+  Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!company) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Company not found'})
+    }
+
+    company.setCard(stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Card has been attached successfuly!'
+      })
+    })
+  })
+}
+
+exports.updatePlan = function (req, res) {
+  var plan = req.body.plan
+  var stripeToken = null
+
+  if (req.user.plan === plan) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `The selected plan is the same as the current plan.`
+    })
+  }
+
+  if (req.body.stripeToken) {
+    stripeToken = req.body.stripeToken
+  }
+
+  if (!req.user.last4 && !req.body.stripeToken) {
+    return res.status(500).json({
+      status: 'failed',
+      description: `Please add a card to your account before choosing a plan.`
+    })
+  }
+
+  Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    if (!company) {
+      return res.status(404)
+        .json({status: 'failed', description: 'Company not found'})
+    }
+
+    company.setPlan(plan, stripeToken, function (err) {
+      if (err) {
+        if (err.code && err.code === 'card_declined') {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'Your card was declined. Please provide a valid card.'
+          })
+        }
+        return res.status(500).json({
+          status: 'failed',
+          description: 'internal server error' + JSON.stringify(err)
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        description: 'Plan has been updated successfuly!'
+      })
+    })
+  })
+}
+
 exports.invite = function (req, res) {
   let parametersMissing = false
 
@@ -325,4 +423,81 @@ exports.members = function (req, res) {
           res.status(200).json({status: 'success', payload: members})
         })
     })
+}
+
+exports.updateAutomatedOptions = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+
+      Companyprofile.findOne({_id: companyUser.companyId}, (err, profile) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+
+        profile.automated_options = req.body.automated_options
+        profile.save((err, updatedProfile) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          } else {
+            return res.status(200).json({status: 'success', payload: updatedProfile})
+          }
+        })
+      })
+    })
+}
+
+exports.getAutomatedOptions = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email},
+    (err, companyUser) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!companyUser) {
+        return res.status(404).json({
+          status: 'failed',
+          description: 'The user account does not belong to any company. Please contact support'
+        })
+      }
+      Companyprofile.findOne({_id: companyUser.companyId},
+        function (err, company) {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          res.status(200).json({status: 'success', payload: company})
+        })
+    })
+}
+
+exports.getKeys = function (req, res) {
+  if (config.env === 'production') {
+    res.status(200).json({status: 'success', captchaKey: '6Lf9kV4UAAAAALTke6FGn_KTXZdWPDorAQEKQbER', stripeKey: config.stripeOptions.stripePubKey})
+  } else if (config.env === 'staging') {
+    res.status(200).json({status: 'success', captchaKey: '6LdWsF0UAAAAAK4UFpMYmabq7HwQ6XV-lyWd7Li6', stripeKey: config.stripeOptions.stripePubKey})
+  } else if (config.env === 'development') {
+    res.status(200).json({status: 'success', captchaKey: '6LckQ14UAAAAAFH2D15YXxH9o9EQvYP3fRsL2YOU', stripeKey: config.stripeOptions.stripePubKey})
+  }
 }

@@ -351,6 +351,7 @@ class CustomerMatching extends React.Component {
       return
     }
     this.setState({phoneNumbers: this.inputPhoneNumbers.value.split(';')})
+    this.setState({disabled: false})
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({disabled: false})
     }

@@ -122,6 +122,8 @@ class Survey extends React.Component {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({ surveysData: [], totalLength: 0 })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({

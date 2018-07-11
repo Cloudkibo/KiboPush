@@ -34,7 +34,8 @@ class Bot extends React.Component {
       searchValue: '',
       createBotDialogButton: false,
       pageNumber: 0,
-      filter: false
+      filter: false,
+      pages: []
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -50,9 +51,14 @@ class Bot extends React.Component {
     this.changeStatus = this.changeStatus.bind(this)
     this.searchBot = this.searchBot.bind(this)
     this.onFilter = this.onFilter.bind(this)
+    this.updateAllowedPages = this.updateAllowedPages.bind(this)
   }
 
   showDialog () {
+    if (this.state.pages.length === 0) {
+      this.msg.error('You have already added bots on all pages.')
+      return
+    }
     this.setState({isShowingModal: true})
   }
 
@@ -156,11 +162,29 @@ class Bot extends React.Component {
     console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       this.displayData(0, nextProps.bots)
+      this.updateAllowedPages(nextProps.pages, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
+    } else {
+      this.setState({botsData: [], totalLength: 0})
     }
-    if (nextProps.pages && nextProps.pages.length > 0) {
-      this.state.pageSelected = nextProps.pages[0]._id
+    if (nextProps.pages && nextProps.pages.length > 0 && nextProps.bots) {
+      // this.state.pageSelected = nextProps.pages[0]._id
+      this.updateAllowedPages(nextProps.pages, nextProps.bots)
     }
+  }
+
+  updateAllowedPages (pages, bots) {
+    var temp = pages.filter((page) => {
+      for (let i = 0; i < bots.length; i++) {
+        // console.log('Comparing the two', bots[i].pageId._id, page._id, bots[i].pageId._id === page._id)
+        if (bots[i].pageId._id === page._id) {
+          return false
+        }
+      }
+      return true
+    })
+    // console.log('Updating the allowed pages', temp)
+    this.setState({pages: temp, pageSelected: temp[0]._id})
   }
 
   changePage (e) {
@@ -359,7 +383,7 @@ class Bot extends React.Component {
                                     <label className='control-label'>Assigned to Page:&nbsp;&nbsp;&nbsp;</label>
                                     <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                                       {
-                                        this.props.pages.map((page, i) => (
+                                        this.state.pages.map((page, i) => (
                                           <option key={i} value={page._id}>{page.pageName}</option>
                                         ))
                                       }
