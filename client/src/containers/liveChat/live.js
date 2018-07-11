@@ -5,8 +5,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { fetchOpenSessions, fetchCloseSessions,
   fetchSingleSession,
   fetchUserChats,
@@ -297,471 +295,467 @@ class LiveChat extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              {
-                this.state.loading
-                ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-                  className='align-center'>
-                  <center><Halogen.RingLoader color='#716aca' /></center>
-                </div>
-                : <div className='row'>
-                  <div className='col-12'>
-                    <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                      <div className='m-alert__icon'>
-                        <i className='flaticon-exclamation m--font-brand' />
-                      </div>
-                      <div className='m-alert__text'>
-                        View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
-                      </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-content'>
+            {
+              this.state.loading
+              ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+                className='align-center'>
+                <center><Halogen.RingLoader color='#716aca' /></center>
+              </div>
+              : <div className='row'>
+                <div className='col-12'>
+                  <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                    <div className='m-alert__icon'>
+                      <i className='flaticon-exclamation m--font-brand' />
+                    </div>
+                    <div className='m-alert__text'>
+                      View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
                     </div>
                   </div>
-                  <div className='col-xl-4'>
-                    <div className='m-portlet m-portlet--full-height' >
-                      <div className='m-portlet__head'>
-                        <div style={{paddingTop: '20px'}} className='row'>
-                          <div className='col-md-10'>
-                            <div className='m-input-icon m-input-icon--left'>
-                              <input type='text' onChange={this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
-                              <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                <span><i className='la la-search' /></span>
-                              </span>
-                            </div>
+                </div>
+                <div className='col-xl-4'>
+                  <div className='m-portlet m-portlet--full-height' >
+                    <div className='m-portlet__head'>
+                      <div style={{paddingTop: '20px'}} className='row'>
+                        <div className='col-md-10'>
+                          <div className='m-input-icon m-input-icon--left'>
+                            <input type='text' onChange={this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                            <span className='m-input-icon__icon m-input-icon__icon--left'>
+                              <span><i className='la la-search' /></span>
+                            </span>
                           </div>
-                          <div style={{paddingLeft: 0}} className='col-md-2'>
-                            <div className='m-portlet__head-tools'>
-                              <ul className='m-portlet__nav'>
-                                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                                  <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                                    <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
-                                  </a>
-                                  {
-                                    this.state.showDropDown &&
-                                    <div className='m-dropdown__wrapper'>
-                                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                                      <div className='m-dropdown__inner'>
-                                        <div className='m-dropdown__body'>
-                                          <div className='m-dropdown__content'>
-                                            <ul className='m-nav'>
-                                              <li className='m-nav__section m-nav__section--first'>
-                                                <span className='m-nav__section-text'>
-                                                  Sort By:
-                                                </span>
-                                              </li>
-                                              <li className='m-nav__item'>
-                                                <a onClick={() => this.handleSort(1)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                  {
-                                                    this.state.sortValue === 'old'
-                                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                      <i className='la la-check' /> Oldest to Newest
-                                                    </span>
-                                                    : <span className='m-nav__link-text'>
-                                                      Oldest to Newest
-                                                    </span>
-                                                  }
-                                                </a>
-                                              </li>
-                                              <li className='m-nav__item'>
-                                                <a onClick={() => this.handleSort(-1)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                  {
-                                                    this.state.sortValue === 'new'
-                                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                      <i className='la la-check' /> Newest to Oldest
-                                                    </span>
-                                                    : <span className='m-nav__link-text'>
-                                                      Newest to Oldest
-                                                    </span>
-                                                  }
-                                                </a>
-                                              </li>
-                                              <li className='m-nav__section m-nav__section--first'>
-                                                <span className='m-nav__section-text'>
-                                                  Filter by:
-                                                </span>
-                                              </li>
-                                              {
-                                                this.props.pages.map((page, i) => (
-                                                  <li key={page.pageId} className='m-nav__item'>
-                                                    <a onClick={() => this.handleFilter(page._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                      {
-                                                        page.pageId === this.state.filterValue
-                                                        ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                          <i className='la la-check' /> {page.pageName}
-                                                        </span>
-                                                        : <span className='m-nav__link-text'>
-                                                          {page.pageName}
-                                                        </span>
-                                                      }
-                                                    </a>
-                                                  </li>
-                                                ))
-                                              }
-                                              <li className='m-nav__separator m-nav__separator--fit' />
-                                              <li className='m-nav__item'>
+                        </div>
+                        <div style={{paddingLeft: 0}} className='col-md-2'>
+                          <div className='m-portlet__head-tools'>
+                            <ul className='m-portlet__nav'>
+                              <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                                  <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
+                                </a>
+                                {
+                                  this.state.showDropDown &&
+                                  <div className='m-dropdown__wrapper'>
+                                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                    <div className='m-dropdown__inner'>
+                                      <div className='m-dropdown__body'>
+                                        <div className='m-dropdown__content'>
+                                          <ul className='m-nav'>
+                                            <li className='m-nav__section m-nav__section--first'>
+                                              <span className='m-nav__section-text'>
+                                                Sort By:
+                                              </span>
+                                            </li>
+                                            <li className='m-nav__item'>
+                                              <a onClick={() => this.handleSort(1)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                 {
-                                                  (this.state.filterValue !== '' || this.state.sortValue !== '')
-                                                  ? <a onClick={() => this.hideDropDown} style={{borderColor: '#34bfa3', color: '#34bfa3'}} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
-                                                    Done
-                                                  </a>
-                                                  : <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                                    Cancel
-                                                  </a>
+                                                  this.state.sortValue === 'old'
+                                                  ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                    <i className='la la-check' /> Oldest to Newest
+                                                  </span>
+                                                  : <span className='m-nav__link-text'>
+                                                    Oldest to Newest
+                                                  </span>
                                                 }
-                                              </li>
-                                            </ul>
-                                          </div>
+                                              </a>
+                                            </li>
+                                            <li className='m-nav__item'>
+                                              <a onClick={() => this.handleSort(-1)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                {
+                                                  this.state.sortValue === 'new'
+                                                  ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                    <i className='la la-check' /> Newest to Oldest
+                                                  </span>
+                                                  : <span className='m-nav__link-text'>
+                                                    Newest to Oldest
+                                                  </span>
+                                                }
+                                              </a>
+                                            </li>
+                                            <li className='m-nav__section m-nav__section--first'>
+                                              <span className='m-nav__section-text'>
+                                                Filter by:
+                                              </span>
+                                            </li>
+                                            {
+                                              this.props.pages.map((page, i) => (
+                                                <li key={page.pageId} className='m-nav__item'>
+                                                  <a onClick={() => this.handleFilter(page._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                    {
+                                                      page.pageId === this.state.filterValue
+                                                      ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                        <i className='la la-check' /> {page.pageName}
+                                                      </span>
+                                                      : <span className='m-nav__link-text'>
+                                                        {page.pageName}
+                                                      </span>
+                                                    }
+                                                  </a>
+                                                </li>
+                                              ))
+                                            }
+                                            <li className='m-nav__separator m-nav__separator--fit' />
+                                            <li className='m-nav__item'>
+                                              {
+                                                (this.state.filterValue !== '' || this.state.sortValue !== '')
+                                                ? <a onClick={() => this.hideDropDown} style={{borderColor: '#34bfa3', color: '#34bfa3'}} className='btn btn-outline-success m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                  Done
+                                                </a>
+                                                : <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                                  Cancel
+                                                </a>
+                                              }
+                                            </li>
+                                          </ul>
                                         </div>
                                       </div>
                                     </div>
-                                  }
-                                </li>
-                              </ul>
-                            </div>
+                                  </div>
+                                }
+                              </li>
+                            </ul>
                           </div>
                         </div>
                       </div>
-                      <div style={{padding: '0rem 2.2rem'}}>
-                        <ul className='nav nav-tabs m-tabs-line' role='tablist'>
-                          <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
-                              Open
-                            </a>
-                          </li>
-                          <li className='nav-item m-tabs__item'>
-                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
-                              Closed
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      { this.props.openSessions && this.props.closeSessions && this.props.openSessions.length === 0 && this.props.closeSessions.length === 0
-                      ? <center><p>No data to display</p></center>
-                      : <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
-                        <div className='tab-content'>
-                          {
-                            this.state.tabValue === 'open'
-                            ? <div className='tab-pane active' id='m_widget4_tab1_content'>
-                              <div className='m-widget4'>
-                                {
-                                  this.props.openSessions && this.props.openSessions.length > 0
-                                  ? (this.props.openSessions.map((session) => (
-                                    <div key={session._id}>
-                                      <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
-                                        <div className='m-widget4__img m-widget4__img--pic'>
-                                          <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
-                                        </div>
-                                        <div className='m-widget4__info'>
-                                          <span className='m-widget4__title'>
-                                            {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
-                                          </span>
-                                          <br />
-                                          {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
+                    </div>
+                    <div style={{padding: '0rem 2.2rem'}}>
+                      <ul className='nav nav-tabs m-tabs-line' role='tablist'>
+                        <li className='nav-item m-tabs__item'>
+                          <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
+                            Open
+                          </a>
+                        </li>
+                        <li className='nav-item m-tabs__item'>
+                          <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('closed')}>
+                            Closed
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    { this.props.openSessions && this.props.closeSessions && this.props.openSessions.length === 0 && this.props.closeSessions.length === 0
+                    ? <center><p>No data to display</p></center>
+                    : <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
+                      <div className='tab-content'>
+                        {
+                          this.state.tabValue === 'open'
+                          ? <div className='tab-pane active' id='m_widget4_tab1_content'>
+                            <div className='m-widget4'>
+                              {
+                                this.props.openSessions && this.props.openSessions.length > 0
+                                ? (this.props.openSessions.map((session) => (
+                                  <div key={session._id}>
+                                    <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                      <div className='m-widget4__img m-widget4__img--pic'>
+                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
+                                      </div>
+                                      <div className='m-widget4__info'>
+                                        <span className='m-widget4__title'>
+                                          {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
+                                        </span>
+                                        <br />
+                                        {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                            ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text}</span>
+                                            : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                            ? <span>You: {(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 25) + '...' : session.lastPayload.text }</span>
+                                            : <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 20) + '...' : session.lastPayload.text}</span>
+                                          }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent an image</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent an image</span>
+                                          : <span>{session.lastRepliedBy.name} sent an image</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent a video</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent a video</span>
+                                          : <span>{session.lastRepliedBy.name} sent a video</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent an audio</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent an audio</span>
+                                          : <span>{session.lastRepliedBy.name} sent an audio</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent a file</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent a file</span>
+                                          : <span>{session.lastRepliedBy.name} sent a file</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent a card</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent a card</span>
+                                          : <span>{session.lastRepliedBy.name} sent a card</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent a gallery</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent a gallery</span>
+                                          : <span>{session.lastRepliedBy.name} sent a gallery</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent a gif</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent a gif</span>
+                                          : <span>{session.lastRepliedBy.name} sent a gif</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
+                                          ? <span>{session.subscriber_id.firstName} sent a sticker</span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You sent a sticker</span>
+                                          : <span>{session.lastRepliedBy.name} sent a sticker</span>
+                                        }
+                                        </span>
+                                      }
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy.type
+                                          ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
+                                          : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
+                                          ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
+                                          : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
+                                        }
+                                        </span>
+                                      }
+                                        <br />
+                                        <span className='m-widget4__sub'>
+                                          <i className='fa fa-facebook-square' />&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <i className='fa fa-calendar' />&nbsp;&nbsp;
+                                          {timeSince(session.lastDateTime)}
+                                        </span>
+                                      </div>
+                                      <div className='m-widget4__ext'>
+                                        {
+                                        session.unreadCount &&
+                                        <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                                          {session.unreadCount}
+                                        </a>
+                                      }
+                                      </div>
+                                    </div>
+                                  </div>
+                                )))
+                                : <p style={{marginLeft: '30px'}}>No data to display</p>
+                              }
+                              {this.props.openSessions.length < this.props.openCount &&
+                              <center>
+                                <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreOpen}>Load More</a>
+                              </center>
+                              }
+                            </div>
+                          </div>
+                          : <div className='tab-pane active' id='m_widget4_tab1_content'>
+                            <div className='m-widget4'>
+                              {
+                                this.props.closeSessions && this.props.closeSessions.length > 0
+                                ? (this.props.closeSessions.map((session) => (
+                                  <div key={session._id}>
+                                    <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
+                                      <div className='m-widget4__img m-widget4__img--pic'>
+                                        <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
+                                      </div>
+                                      <div className='m-widget4__info'>
+                                        <span className='m-widget4__title'>
+                                          {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
+                                        </span>
+                                        <br />
+                                        {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
                                           <span className='m-widget4__sub'>
                                             {!session.lastRepliedBy
-                                              ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text}</span>
+                                              ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text }</span>
                                               : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You: {(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 25) + '...' : session.lastPayload.text }</span>
-                                              : <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 20) + '...' : session.lastPayload.text}</span>
+                                              ? <span>You: {(session.lastPayload.text.length > 25) ? session.lastPayload.text.slice(0, 25) + '...' : session.lastPayload.text}</span>
+                                              : <span>{session.lastRepliedBy.name}: {(session.lastPayload.text.length > 20) ? session.lastPayload.text.slice(0, 20) + '...' : session.lastPayload.text}</span>
                                             }
                                           </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an image</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent an image</span>
                                             : <span>{session.lastRepliedBy.name} sent an image</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a video</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a video</span>
                                             : <span>{session.lastRepliedBy.name} sent a video</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent an audio</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent an audio</span>
                                             : <span>{session.lastRepliedBy.name} sent an audio</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a file</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a file</span>
                                             : <span>{session.lastRepliedBy.name} sent a file</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a card</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a card</span>
                                             : <span>{session.lastRepliedBy.name} sent a card</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gallery</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a gallery</span>
                                             : <span>{session.lastRepliedBy.name} sent a gallery</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a gif</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a gif</span>
                                             : <span>{session.lastRepliedBy.name} sent a gif</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy
                                             ? <span>{session.subscriber_id.firstName} sent a sticker</span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You sent a sticker</span>
                                             : <span>{session.lastRepliedBy.name} sent a sticker</span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy.type
+                                        {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
+                                        <span className='m-widget4__sub'>
+                                          {!session.lastRepliedBy.type
                                             ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
                                             : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
                                             ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
                                             : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
                                           }
-                                          </span>
+                                        </span>
                                         }
-                                          <br />
-                                          <span className='m-widget4__sub'>
-                                            <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                            {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <i className='fa fa-calendar' />&nbsp;&nbsp;
-                                            {timeSince(session.lastDateTime)}
-                                          </span>
-                                        </div>
-                                        <div className='m-widget4__ext'>
-                                          {
-                                          session.unreadCount &&
-                                          <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                                            {session.unreadCount}
-                                          </a>
-                                        }
-                                        </div>
+                                        <br />
+                                        <span className='m-widget4__sub'>
+                                          <i className='fa fa-facebook-square' />&nbsp;&nbsp;
+                                          {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <i className='fa fa-calendar' />&nbsp;&nbsp;
+                                          {timeSince(session.lastDateTime)}
+                                        </span>
+                                      </div>
+                                      <div className='m-widget4__ext'>
+                                        {
+                                        session.unreadCount &&
+                                        <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                                          {session.unreadCount}
+                                        </a>
+                                      }
                                       </div>
                                     </div>
+                                  </div>
                                   )))
-                                  : <p style={{marginLeft: '30px'}}>No data to display</p>
-                                }
-                                {this.props.openSessions.length < this.props.openCount &&
-                                <center>
-                                  <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                  <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreOpen}>Load More</a>
-                                </center>
-                                }
-                              </div>
-                            </div>
-                            : <div className='tab-pane active' id='m_widget4_tab1_content'>
-                              <div className='m-widget4'>
-                                {
-                                  this.props.closeSessions && this.props.closeSessions.length > 0
-                                  ? (this.props.closeSessions.map((session) => (
-                                    <div key={session._id}>
-                                      <div style={session._id === ((this.state.activeSession !== '' && this.state.activeSession !== 'none') && this.state.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle} onClick={() => this.changeActiveSession(session)} className='m-widget4__item'>
-                                        <div className='m-widget4__img m-widget4__img--pic'>
-                                          <img style={{width: '56px', height: '56px'}} src={session.subscriber_id.profilePic} alt='' />
-                                        </div>
-                                        <div className='m-widget4__info'>
-                                          <span className='m-widget4__title'>
-                                            {session.subscriber_id.firstName + ' ' + session.subscriber_id.lastName}
-                                          </span>
-                                          <br />
-                                          {(session.lastPayload && ((!session.lastPayload.componentType && session.lastPayload.text) || (session.lastPayload.componentType && session.lastPayload.componentType === 'text'))) &&
-                                            <span className='m-widget4__sub'>
-                                              {!session.lastRepliedBy
-                                                ? <span>{(session.lastPayload.text.length > 30) ? session.lastPayload.text.slice(0, 30) + '...' : session.lastPayload.text }</span>
-                                                : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                                ? <span>You: {(session.lastPayload.text.length > 25) ? session.lastPayload.text.slice(0, 25) + '...' : session.lastPayload.text}</span>
-                                                : <span>{session.lastRepliedBy.name}: {(session.lastPayload.text.length > 20) ? session.lastPayload.text.slice(0, 20) + '...' : session.lastPayload.text}</span>
-                                              }
-                                            </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'image' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent an image</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent an image</span>
-                                              : <span>{session.lastRepliedBy.name} sent an image</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'video' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent a video</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent a video</span>
-                                              : <span>{session.lastRepliedBy.name} sent a video</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'audio' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent an audio</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent an audio</span>
-                                              : <span>{session.lastRepliedBy.name} sent an audio</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'file' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent a file</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent a file</span>
-                                              : <span>{session.lastRepliedBy.name} sent a file</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'card' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent a card</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent a card</span>
-                                              : <span>{session.lastRepliedBy.name} sent a card</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gallery' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent a gallery</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent a gallery</span>
-                                              : <span>{session.lastRepliedBy.name} sent a gallery</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'gif' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent a gif</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent a gif</span>
-                                              : <span>{session.lastRepliedBy.name} sent a gif</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'sticker' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy
-                                              ? <span>{session.subscriber_id.firstName} sent a sticker</span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You sent a sticker</span>
-                                              : <span>{session.lastRepliedBy.name} sent a sticker</span>
-                                            }
-                                          </span>
-                                          }
-                                          {session.lastPayload && session.lastPayload.componentType && session.lastPayload.componentType === 'thumbsUp' &&
-                                          <span className='m-widget4__sub'>
-                                            {!session.lastRepliedBy.type
-                                              ? <span>{session.subscriber_id.firstName}: <i className='fa fa-thumbs-o-up' /></span>
-                                              : session.lastRepliedBy.type === 'agent' && session.lastRepliedBy.id === this.props.user._id
-                                              ? <span>You:&nbsp;<i className='fa fa-thumbs-o-up' /></span>
-                                              : <span>{session.lastRepliedBy.name}: <i className='fa fa-thumbs-o-up' /></span>
-                                            }
-                                          </span>
-                                          }
-                                          <br />
-                                          <span className='m-widget4__sub'>
-                                            <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                                            {(session.page_id.pageName.length > 10) ? session.page_id.pageName.slice(0, 10) + '...' : session.page_id.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <i className='fa fa-calendar' />&nbsp;&nbsp;
-                                            {timeSince(session.lastDateTime)}
-                                          </span>
-                                        </div>
-                                        <div className='m-widget4__ext'>
-                                          {
-                                          session.unreadCount &&
-                                          <a style={{backgroundColor: '#d9534f', color: '#fff'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                                            {session.unreadCount}
-                                          </a>
-                                        }
-                                        </div>
-                                      </div>
-                                    </div>
-                                    )))
-                                  : <p style={{marginLeft: '30px'}}>No data to display</p>
-                                }
-                                {this.props.closeSessions.length < this.props.closeCount &&
-                                <center>
-                                  <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                  <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>
-                                </center>
+                                : <p style={{marginLeft: '30px'}}>No data to display</p>
                               }
-                              </div>
+                              {this.props.closeSessions.length < this.props.closeCount &&
+                              <center>
+                                <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMoreClose}>Load More</a>
+                              </center>
+                            }
                             </div>
-                          }
-                        </div>
+                          </div>
+                        }
                       </div>
-                    }
+                    </div>
+                  }
+                  </div>
+                </div>
+                {
+                  (this.state.activeSession === '' || this.state.activeSession === 'none') &&
+                  <div className='col-xl-8'>
+                    <div className='m-portlet m-portlet--full-height'>
+                      <div style={{textAlign: 'center'}} className='m-portlet__body'>
+                        <p>Please select a session to view its chat.</p>
+                      </div>
                     </div>
                   </div>
-                  {
-                    (this.state.activeSession === '' || this.state.activeSession === 'none') &&
-                    <div className='col-xl-8'>
-                      <div className='m-portlet m-portlet--full-height'>
-                        <div style={{textAlign: 'center'}} className='m-portlet__body'>
-                          <p>Please select a session to view its chat.</p>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                  {
-                    this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
-                    <ChatBox scroll={this.state.scroll} disableScroll={this.disableScroll} showSearch={this.showSearch} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
-                  }
-                  {
-                    this.state.activeSession !== '' && this.state.activeSession !== 'none' && !this.state.showSearch &&
-                    <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
-                  }
-                  {
-                    this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.showSearch &&
-                    <Search currentSession={this.state.activeSession} hideSearch={this.hideSearch} />
-                  }
-                </div>
-              }
-            </div>
+                }
+                {
+                  this.state.activeSession !== '' && this.state.activeSession !== 'none' &&
+                  <ChatBox scroll={this.state.scroll} disableScroll={this.disableScroll} showSearch={this.showSearch} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                }
+                {
+                  this.state.activeSession !== '' && this.state.activeSession !== 'none' && !this.state.showSearch &&
+                  <Profile teams={this.props.teams} agents={this.props.teamUniqueAgents} subscriberTags={this.props.subscriberTags} currentSession={this.state.activeSession} changeActiveSessionFromChatbox={this.changeActiveSessionFromChatbox} />
+                }
+                {
+                  this.state.activeSession !== '' && this.state.activeSession !== 'none' && this.state.showSearch &&
+                  <Search currentSession={this.state.activeSession} hideSearch={this.hideSearch} />
+                }
+              </div>
+            }
           </div>
         </div>
         {
