@@ -93,7 +93,7 @@ class Profile extends React.Component {
                   </div>
                 ))
                 : this.props.searchChatMsgs && this.props.searchChatMsgs.length === 0 &&
-                <p>No search result found!</p>
+                <p style={{textAlign: 'center'}}>No search result found!</p>
               }
             </div>
           </div>
