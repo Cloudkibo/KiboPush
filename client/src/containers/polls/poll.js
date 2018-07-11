@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -220,7 +218,6 @@ class Poll extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -242,245 +239,241 @@ class Poll extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Manage Polls</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Manage Polls</h3>
               </div>
             </div>
-            <div className='m-content'>
-              {
-              this.props.subscribers && this.props.subscribers.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
+          </div>
+          <div className='m-content'>
+            {
+            this.props.subscribers && this.props.subscribers.length === 0 &&
+            <div className='alert alert-success'>
+              <h4 className='block'>0 Subscribers</h4>
+                Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
+            </div>
+            }
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-technology m--font-accent' />
               </div>
-              }
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding polls? Here is the <a href='http://kibopush.com/polls/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-                </div>
+              <div className='m-alert__text'>
+                Need help in understanding polls? Here is the <a href='http://kibopush.com/polls/' target='_blank'>documentation</a>.
+                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
               </div>
-              <div className='row'>
-                <div className='col-xl-12'>
-                  <div className='m-portlet'>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Polls
-                          </h3>
-                        </div>
+            </div>
+            <div className='row'>
+              <div className='col-xl-12'>
+                <div className='m-portlet'>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                          Polls
+                        </h3>
                       </div>
-                      <div className='m-portlet__head-tools'>
-                        {
-                          this.props.subscribers && this.props.subscribers.length === 0
-                          ? <span />
-                          : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                    </div>
+                    <div className='m-portlet__head-tools'>
+                      {
+                        this.props.subscribers && this.props.subscribers.length === 0
+                        ? <span />
+                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                          <span>
+                            <i className='la la-plus' />
                             <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create Poll
-                              </span>
+                              Create Poll
                             </span>
-                          </button>
+                          </span>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                  <div className='m-portlet__body'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1' />
+                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        {
+                          this.state.isShowingModal &&
+                          <ModalContainer style={{width: '500px'}}
+                            onClose={this.closeDialog}>
+                            <ModalDialog style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <h3>Create Poll</h3>
+                              <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
+                              <div style={{width: '100%', textAlign: 'center'}}>
+                                <div style={{display: 'inline-block', padding: '5px'}}>
+                                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                                    Create New Poll
+                                  </button>
+                                </div>
+                                <div style={{display: 'inline-block', padding: '5px'}}>
+                                  <Link to='/showTemplatePolls' className='btn btn-primary'>
+                                    Use Template
+                                  </Link>
+                                </div>
+                              </div>
+                            </ModalDialog>
+                          </ModalContainer>
+                        }
+                        {
+                          this.state.isShowingModalDelete &&
+                          <ModalContainer style={{width: '500px'}}
+                            onClose={this.closeDialogDelete}>
+                            <ModalDialog style={{width: '500px'}}
+                              onClose={this.closeDialogDelete}>
+                              <h3>Delete Poll</h3>
+                              <p>Are you sure you want to delete this poll?</p>
+                              <button style={{float: 'right'}}
+                                className='btn btn-primary btn-sm'
+                                onClick={() => {
+                                  this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+                                  this.closeDialogDelete()
+                                }}>Delete
+                              </button>
+                            </ModalDialog>
+                          </ModalContainer>
                         }
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      <div className='row align-items-center'>
-                        <div className='col-xl-8 order-2 order-xl-1' />
-                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
-                            this.state.isShowingModal &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialog}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialog}>
-                                <h3>Create Poll</h3>
-                                <p>To create a new poll from scratch, click on Create New Poll. To use a template poll and modify it, click on Use Template</p>
-                                <div style={{width: '100%', textAlign: 'center'}}>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
-                                      Create New Poll
-                                    </button>
-                                  </div>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/showTemplatePolls' className='btn btn-primary'>
-                                      Use Template
-                                    </Link>
-                                  </div>
-                                </div>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                          {
-                            this.state.isShowingModalDelete &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialogDelete}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialogDelete}>
-                                <h3>Delete Poll</h3>
-                                <p>Are you sure you want to delete this poll?</p>
-                                <button style={{float: 'right'}}
-                                  className='btn btn-primary btn-sm'
-                                  onClick={() => {
-                                    this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
-                                    this.closeDialogDelete()
-                                  }}>Delete
-                                </button>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
+                    <div className='form-row'>
+                      <div className='form-group col-md-6' />
+                      <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                        <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                          Show records for last:&nbsp;&nbsp;
+                        </span>
+                        <div style={{width: '200px'}}>
+                          <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
                         </div>
+                        <span htmlFor='example-text-input' className='col-form-label'>
+                        &nbsp;&nbsp;days
+                        </span>
                       </div>
-                      <div className='form-row'>
-                        <div className='form-group col-md-6' />
-                        <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
-                          <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
-                            Show records for last:&nbsp;&nbsp;
-                          </span>
-                          <div style={{width: '200px'}}>
-                            <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
-                          </div>
-                          <span htmlFor='example-text-input' className='col-form-label'>
-                          &nbsp;&nbsp;days
-                          </span>
-                        </div>
-                      </div>
-                      { this.state.pollsData && this.state.pollsData.length > 0
-                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                          <thead className='m-datatable__head'>
-                            <tr className='m-datatable__row'
-                              style={{height: '53px'}}>
-                              <th data-field='platform'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Platform</span>
-                              </th>
-                              <th data-field='statement'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Statement</span>
-                              </th>
-                              <th data-field='datetime'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '150px'}}>Created At</span>
-                              </th>
-                              <th data-field='sent'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Sent</span>
-                              </th>
-                              <th data-field='seen'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '50px'}}>Seen</span>
-                              </th>
-                              <th data-field='responses'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '100px'}}>Responses</span>
-                              </th>
-                              <th data-field='actions'
-                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{width: '200px'}}>Actions</span>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className='m-datatable__body'>
-                            {
-                            this.state.pollsData.map((poll, i) => (
-                              <tr data-row={i}
-                                className='m-datatable__row m-datatable__row--even'
-                                style={{height: '55px'}} key={i}>
-                                <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}>{poll.platform}</span></td>
-                                <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{poll.statement}</span></td>
-                                <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
-                                <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.sent}</span></td>
-                                <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td>
-                                <td data-field='responses' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.responses}</span></td>
-                                <td data-field='actions' className='m-datatable__cell'>
-                                  <span style={{width: '200px'}}>
-                                    <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoViewPoll(poll)}>
-                                      View
-                                    </button>
-                                    <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoView(poll)}>Report
-                                    </button>
-                                    { this.props.subscribers && this.props.subscribers.length === 0
-                                    ? <span style={{width: '150px'}}>
-                                      <button className='btn btn-sm' disabled
-                                        style={{float: 'left', margin: 2}}
-                                        onClick={() => this.sendPoll(poll)}>
-                                        Send
-                                      </button>
-                                    </span>
-                                    : <span style={{width: '150px'}}>
-                                      <button className='btn btn-primary btn-sm'
-                                        style={{float: 'left', margin: 2}}
-                                        onClick={() => this.sendPoll(poll)}>
-                                        Send
-                                      </button>
-                                    </span>
-                                    }
-                                    { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
-                                      ? <button className='btn btn-primary btn-sm'
-                                        style={{float: 'left', margin: 2}}
-                                        onClick={() => this.showDialogDelete(poll._id)}>
-                                      Delete
+                    </div>
+                    { this.state.pollsData && this.state.pollsData.length > 0
+                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{height: '53px'}}>
+                            <th data-field='platform'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '100px'}}>Platform</span>
+                            </th>
+                            <th data-field='statement'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>Statement</span>
+                            </th>
+                            <th data-field='datetime'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>Created At</span>
+                            </th>
+                            <th data-field='sent'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '50px'}}>Sent</span>
+                            </th>
+                            <th data-field='seen'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '50px'}}>Seen</span>
+                            </th>
+                            <th data-field='responses'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '100px'}}>Responses</span>
+                            </th>
+                            <th data-field='actions'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '200px'}}>Actions</span>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className='m-datatable__body'>
+                          {
+                          this.state.pollsData.map((poll, i) => (
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even'
+                              style={{height: '55px'}} key={i}>
+                              <td data-field='platform' className='m-datatable__cell'><span style={{width: '100px'}}>{poll.platform}</span></td>
+                              <td data-field='statement' className='m-datatable__cell'><span style={{width: '150px'}}>{poll.statement}</span></td>
+                              <td data-field='datetime' className='m-datatable__cell'><span style={{width: '150px'}}>{handleDate(poll.datetime)}</span></td>
+                              <td data-field='sent' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.sent}</span></td>
+                              <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td>
+                              <td data-field='responses' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.responses}</span></td>
+                              <td data-field='actions' className='m-datatable__cell'>
+                                <span style={{width: '200px'}}>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.gotoViewPoll(poll)}>
+                                    View
                                   </button>
-                                  : <div>
-                                    {poll.sent === 0
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.gotoView(poll)}>Report
+                                  </button>
+                                  { this.props.subscribers && this.props.subscribers.length === 0
+                                  ? <span style={{width: '150px'}}>
+                                    <button className='btn btn-sm' disabled
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.sendPoll(poll)}>
+                                      Send
+                                    </button>
+                                  </span>
+                                  : <span style={{width: '150px'}}>
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.sendPoll(poll)}>
+                                      Send
+                                    </button>
+                                  </span>
+                                  }
+                                  { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
                                     ? <button className='btn btn-primary btn-sm'
                                       style={{float: 'left', margin: 2}}
                                       onClick={() => this.showDialogDelete(poll._id)}>
                                     Delete
                                 </button>
-                                : <button className='btn btn-primary btn-sm' disabled
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.showDialogDelete(poll._id)}>
-                                Delete
-                                </button>
-                                  }
-                                  </div>
+                                : <div>
+                                  {poll.sent === 0
+                                  ? <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.showDialogDelete(poll._id)}>
+                                  Delete
+                              </button>
+                              : <button className='btn btn-primary btn-sm' disabled
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.showDialogDelete(poll._id)}>
+                              Delete
+                              </button>
                                 }
-                                  </span>
-                                </td>
-                              </tr>
-                            ))
-                          }
-                          </tbody>
-                        </table>
-                        <div className='pagination'>
-                          <ReactPaginate previousLabel={'previous'}
-                            nextLabel={'next'}
-                            breakLabel={<a>...</a>}
-                            breakClassName={'break-me'}
-                            pageCount={Math.ceil(this.state.totalLength / 10)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={this.handlePageClick}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'}
-                            forcePage={this.state.pageNumber} />
-                        </div>
+                                </div>
+                              }
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                        </tbody>
+                      </table>
+                      <div className='pagination'>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'}
+                          forcePage={this.state.pageNumber} />
                       </div>
-                      : <span>
-                        <p> No data to display </p>
-                      </span>
-                    }
                     </div>
+                    : <span>
+                      <p> No data to display </p>
+                    </span>
+                  }
                   </div>
                 </div>
               </div>

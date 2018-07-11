@@ -270,3 +270,6 @@ a.broadcastTabs.active {
   background-color: #34bfa3;
   color: white;
 }
+#m_ver_menu .mCSB_dragger_bar {
+  background: #e2e5ec !important
+}
