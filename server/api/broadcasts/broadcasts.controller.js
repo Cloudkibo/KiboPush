@@ -2251,7 +2251,7 @@ function subscribeToSequence (sequenceId, req) {
 
             messages.forEach(message => {
               if (message.schedule.condition === 'immediately') {
-                console.log('we will use the sending script here')
+                // console.log('we will use the sending script here')
               } else {
                 let sequenceQueuePayload = {
                   sequenceId: sequenceId,

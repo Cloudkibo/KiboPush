@@ -62,7 +62,7 @@ exports.createMessage = function (req, res) {
                 subscriberId: sequence.subscriberId,
                 companyId: companyUser.companyId,
                 sequenceMessageId: messageCreated._id,
-                queueScheduledTime: req.body.schedule.date    // Needs to be updated after #3704
+                queueScheduledTime: req.body.schedule.date
 
               }
 
@@ -163,7 +163,7 @@ exports.setSchedule = function (req, res) {
       }
       if (req.body.condition === 'immediately') {
         if (message.isActive === true) {
-          console.log('send the message immediately and remove from queue')
+          // console.log('send the message immediately and remove from queue')
         }
       } else {
         SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
@@ -222,7 +222,7 @@ exports.setStatus = function (req, res) {
       }
       // this will update the status in queue. Queue will only send active messages
       if (message.schedule.condition === 'immediately') {
-        console.log('message will be send immediately and remove from queue')
+        // console.log('message will be send immediately and remove from queue')
       } else {
         SequenceMessageQueue.update({sequenceMessageId: req.body.messageId}, {isActive: req.body.isActive}, {multi: true}, (err, result) => {
           if (err) {
@@ -602,14 +602,14 @@ exports.subscribeToSequence = function (req, res) {
 
         messages.forEach(message => {
           if (message.schedule.condition === 'immediately') {
-            console.log('we will use the sending script here')
+            // console.log('we will use the sending script here')
           } else {
             let sequenceQueuePayload = {
               sequenceId: req.body.sequenceId,
               subscriberId: subscriberId,
               companyId: companyUser.companyId,
               sequenceMessageId: message._id,
-              queueScheduledTime: message.schedule.date,    // Needs to be updated after #3704
+              queueScheduledTime: message.schedule.date,
               isActive: message.isActive
             }
 
