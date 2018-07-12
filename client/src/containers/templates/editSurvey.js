@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -401,118 +399,114 @@ class createSurvey extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Edit Template Survey</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Edit Template Survey</h3>
               </div>
             </div>
-            <div className='m-content'>
+          </div>
+          <div className='m-content'>
 
-              <div className='row'>
-                <div
-                  className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div
-                      className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
+            <div className='row'>
+              <div
+                className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                <div className='row align-items-center'>
+                  <div className='col-xl-8 order-2 order-xl-1' />
+                  <div
+                    className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                    {
+                      this.state.isShowingModal &&
+                      <ModalContainer style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <ModalDialog style={{width: '500px'}}
                           onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Add Category</h3>
-                            <input className='form-control'
-                              placeholder='Enter category' ref='newCategory' />
-                            <br />
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.closeDialog()
-                                this.saveCategory()
-                              }}>Save
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      <div
-                        className='m-separator m-separator--dashed d-xl-none' />
-                    </div>
+                          <h3>Add Category</h3>
+                          <input className='form-control'
+                            placeholder='Enter category' ref='newCategory' />
+                          <br />
+                          <button style={{float: 'right'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.closeDialog()
+                              this.saveCategory()
+                            }}>Save
+                          </button>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    <div
+                      className='m-separator m-separator--dashed d-xl-none' />
                   </div>
                 </div>
-                <div
-                  className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                  <div className='m-portlet m-portlet--mobile'>
-                    <div className='m-portlet__body'>
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='titl'>
-                          <label className='control-label'><h5>Title</h5></label>
-                          <input className='form-control'
-                            value={this.state.title} onChange={(e) => this.updateTitle(e)} />
-                        </div>
+              </div>
+              <div
+                className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                <div className='m-portlet m-portlet--mobile'>
+                  <div className='m-portlet__body'>
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='titl'>
+                        <label className='control-label'><h5>Title</h5></label>
+                        <input className='form-control'
+                          value={this.state.title} onChange={(e) => this.updateTitle(e)} />
                       </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Description</h5></label>
-                          <textarea className='form-control'
-                            placeholder='Enter form description here'
-                            rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
-                        </div>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='desc'>
+                        <label className='control-label'><h5>Description</h5></label>
+                        <textarea className='form-control'
+                          placeholder='Enter form description here'
+                          rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
                       </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Category</h5></label>
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectcategory' />
-                              <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               Add category
-                             </button>
-                            </div>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='desc'>
+                        <label className='control-label'><h5>Category</h5></label>
+                        <div className='m-form'>
+                          <div className='form-group m-form__group'>
+                            <select id='selectcategory' />
+                            <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
+                             Add category
+                           </button>
                           </div>
                         </div>
                       </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <h5> Add Questions </h5>
-                        {this.createUI()}
-                      </div>
-                      <div className='col-sm-6 col-md-4'>
-                        <button id='questions' className='btn btn-primary btn-sm'
-                          onClick={this.addClick.bind(this)}> Add Questions
-                      </button>
-                      </div>
-                      <br /><br />
-                      <div className='add-options-message'>
-
-                        <button className='btn btn-primary pull-right'
-                          onClick={this.createSurvey}> Save
-                      </button>
-                        <Link
-                          to='/templates'
-                          style={{float: 'right', margin: 2}}
-                          className='btn btn-border-think btn-transparent c-grey pull-right'>
-                        Back
-                      </Link>
-                        <br />
-                      </div>
-                      {this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-
-                    }
                     </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <h5> Add Questions </h5>
+                      {this.createUI()}
+                    </div>
+                    <div className='col-sm-6 col-md-4'>
+                      <button id='questions' className='btn btn-primary btn-sm'
+                        onClick={this.addClick.bind(this)}> Add Questions
+                    </button>
+                    </div>
+                    <br /><br />
+                    <div className='add-options-message'>
+
+                      <button className='btn btn-primary pull-right'
+                        onClick={this.createSurvey}> Save
+                    </button>
+                      <Link
+                        to='/templates'
+                        style={{float: 'right', margin: 2}}
+                        className='btn btn-border-think btn-transparent c-grey pull-right'>
+                      Back
+                    </Link>
+                      <br />
+                    </div>
+                    {this.state.alertMessage !== '' &&
+                    <center>
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+
+                  }
                   </div>
                 </div>
               </div>

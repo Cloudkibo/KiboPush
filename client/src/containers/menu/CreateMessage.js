@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
@@ -374,127 +372,124 @@ class CreateMessage extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='row'>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-content'>
+            <div className='row'>
 
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <div>
-                    <div className='row' >
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                            <h6>Text</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                            <h6>Image</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                            <h6>Card</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                            <h6>Gallery</h6>
-                          </div>
+              <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                <div style={{padding: '25px'}} className='row' />
+                <div>
+                  <div className='row' >
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                          <h6>Text</h6>
                         </div>
                       </div>
                     </div>
-                    <div className='row'>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                            <h6>Audio</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                            <h6>Video</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                            <h6>File</h6>
-                          </div>
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                          <h6>Image</h6>
                         </div>
                       </div>
                     </div>
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                          <h6>Card</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                          <h6>Gallery</h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                          <h6>Audio</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                          <h6>Video</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='col-3'>
+                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                        <div className='align-center'>
+                          <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                          <h6>File</h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                  <div className='row'>
                     <br />
-                    <div className='row'>
-                      <br />
-                      <br />
-                      <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
-                      <button onClick={this.gotoMenu} style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button>
-                    </div>
+                    <br />
+                    <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
+                    <button onClick={this.gotoMenu} style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button>
                   </div>
                 </div>
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <StickyDiv offsetTop={70} zIndex={1}>
-                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                      <div style={{padding: '5px'}}>
-                        <h3>Message</h3>
-                      </div>
-                      {
-                        JSON.stringify(this.props.currentMenuItem.menuitems)
-                      }
+              </div>
+              <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                <div style={{padding: '25px'}} className='row' />
+                <StickyDiv offsetTop={70} zIndex={1}>
+                  <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                    <div style={{padding: '5px'}}>
+                      <h3>Message</h3>
                     </div>
-                  </StickyDiv>
-
-                  {
-                this.state.showMessengerModal &&
-                <ModalContainer style={{width: '500px'}}
-                  onClose={() => { this.setState({showMessengerModal: false}) }}>
-                  <ModalDialog style={{width: '500px'}}
-                    onClose={() => { this.setState({showMessengerModal: false}) }}>
-                    <h3>Connect to Messenger:</h3>
-                    <MessengerPlugin
-                      appId='1429073230510150'
-                      pageId={this.state.pageValue}
-                      passthroughParams={this.props.user._id}
-                      onClick={() => { this.setState({showMessengerModal: false}) }}
-                    />
-                  </ModalDialog>
-                </ModalContainer>
-              }
-                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
-
+                    {
+                      JSON.stringify(this.props.currentMenuItem.menuitems)
+                    }
                   </div>
+                </StickyDiv>
+
+                {
+              this.state.showMessengerModal &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={() => { this.setState({showMessengerModal: false}) }}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={() => { this.setState({showMessengerModal: false}) }}>
+                  <h3>Connect to Messenger:</h3>
+                  <MessengerPlugin
+                    appId='1429073230510150'
+                    pageId={this.state.pageValue}
+                    passthroughParams={this.props.user._id}
+                    onClick={() => { this.setState({showMessengerModal: false}) }}
+                  />
+                </ModalDialog>
+              </ModalContainer>
+            }
+                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                  {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+                  <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 
                 </div>
 
               </div>
+
             </div>
           </div>
         </div>
       </div>
+
     )
   }
 }

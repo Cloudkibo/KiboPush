@@ -1,7 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -251,266 +249,261 @@ class WaitingReplyList extends React.Component {
   render () {
     return (
       <div>
-        <Header />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='row'>
-                <div className='col-xl-12 col-md-12 col-sm-12'>
-                  <div className='m-portlet m-portlet-mobile '>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Subscribers waiting for response
-                          </h3>
-                        </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-content'>
+            <div className='row'>
+              <div className='col-xl-12 col-md-12 col-sm-12'>
+                <div className='m-portlet m-portlet-mobile '>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                          Subscribers waiting for response
+                        </h3>
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                        <div className='row align-items-center'>
-                          <div className='col-xl-12 order-2 order-xl-1'>
-                            <div className='form-group m-form__group row align-items-center'>
-                              <div className='col-md-6'>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{marginTop: '10px'}}>
-                                    <label style={{width: '60px'}}>Gender:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
-                                      <option key='' value='' disabled>Filter by Gender...</option>
-                                      <option key='ALL' value=''>All</option>
-                                      <option key='male' value='male'>Male</option>
-                                      <option key='female' value='female'>Female</option>
-                                      <option key='other' value='other'>Other</option>
-                                    </select>
-                                  </div>
+                  </div>
+                  <div className='m-portlet__body'>
+                    <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                      <div className='row align-items-center'>
+                        <div className='col-xl-12 order-2 order-xl-1'>
+                          <div className='form-group m-form__group row align-items-center'>
+                            <div className='col-md-6'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='' style={{marginTop: '10px'}}>
+                                  <label style={{width: '60px'}}>Gender:</label>
                                 </div>
-                                <div className='d-md-none m--margin-bottom-10' />
-                              </div>
-                              <div className='col-md-6'>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{marginTop: '10px'}}>
-                                    <label style={{width: '60px'}}>Page:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
-                                      <option key='' value='' disabled>Filter by Page...</option>
-                                      <option key='ALL' value=''>ALL</option>
-                                      {
-                                        this.props.pages.map((page, i) => (
-                                          <option key={i} value={page._id}>{page.pageName}</option>
-                                        ))
-                                      }
-                                    </select>
-                                  </div>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
+                                    <option key='' value='' disabled>Filter by Gender...</option>
+                                    <option key='ALL' value=''>All</option>
+                                    <option key='male' value='male'>Male</option>
+                                    <option key='female' value='female'>Female</option>
+                                    <option key='other' value='other'>Other</option>
+                                  </select>
                                 </div>
                               </div>
-                              <div className='col-md-6'>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{marginTop: '10px'}}>
-                                    <label style={{width: '60px'}}>Locale:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
-                                      <option key='' value='' disabled>Filter by Locale...</option>
-                                      <option key='ALL' value=''>ALL</option>
-                                      {
-                                        this.props.locales && this.props.locales.map((locale, i) => (
-                                          <option key={i} value={locale}>{locale}</option>
-                                        ))
-                                      }
-                                    </select>
-                                  </div>
+                              <div className='d-md-none m--margin-bottom-10' />
+                            </div>
+                            <div className='col-md-6'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='' style={{marginTop: '10px'}}>
+                                  <label style={{width: '60px'}}>Page:</label>
+                                </div>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
+                                    <option key='' value='' disabled>Filter by Page...</option>
+                                    <option key='ALL' value=''>ALL</option>
+                                    {
+                                      this.props.pages.map((page, i) => (
+                                        <option key={i} value={page._id}>{page.pageName}</option>
+                                      ))
+                                    }
+                                  </select>
                                 </div>
                               </div>
-                              <div className='col-md-6' style={{marginTop: '20px'}}>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='' style={{marginTop: '10px'}}>
-                                    <label style={{width: '60px'}}>Tags:</label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
-                                      <option key='' value='' disabled>Filter by Tags...</option>
-                                      <option key='ALL' value=''>ALL</option>
-                                      {
-                                        this.state.tagOptions.map((tag, i) => (
-                                          <option key={i} value={tag.value}>{tag.label}</option>
-                                        ))
-                                      }
-                                    </select>
-                                  </div>
+                            </div>
+                            <div className='col-md-6'>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='' style={{marginTop: '10px'}}>
+                                  <label style={{width: '60px'}}>Locale:</label>
+                                </div>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
+                                    <option key='' value='' disabled>Filter by Locale...</option>
+                                    <option key='ALL' value=''>ALL</option>
+                                    {
+                                      this.props.locales && this.props.locales.map((locale, i) => (
+                                        <option key={i} value={locale}>{locale}</option>
+                                      ))
+                                    }
+                                  </select>
                                 </div>
                               </div>
-                              <div className='col-md-6' style={{marginTop: '20px'}}>
-                                <div className='m-input-icon m-input-icon--left'>
-                                  <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                    <span><i className='la la-search' /></span>
-                                  </span>
+                            </div>
+                            <div className='col-md-6' style={{marginTop: '20px'}}>
+                              <div className='m-form__group m-form__group--inline'>
+                                <div className='' style={{marginTop: '10px'}}>
+                                  <label style={{width: '60px'}}>Tags:</label>
                                 </div>
+                                <div className='m-form__control'>
+                                  <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
+                                    <option key='' value='' disabled>Filter by Tags...</option>
+                                    <option key='ALL' value=''>ALL</option>
+                                    {
+                                      this.state.tagOptions.map((tag, i) => (
+                                        <option key={i} value={tag.value}>{tag.label}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-md-6' style={{marginTop: '20px'}}>
+                              <div className='m-input-icon m-input-icon--left'>
+                                <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                  <span><i className='la la-search' /></span>
+                                </span>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      { this.state.waitingList && this.state.waitingList.length > 0
-                        ? <div>
-                          <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                            <table className='m-datatable__table'
-                              id='m-datatable--27866229129' style={{
-                                display: 'block',
-                                height: 'auto',
-                                overflowX: 'auto'
-                              }}>
-                              <thead className='m-datatable__head'>
-                                <tr className='m-datatable__row'
-                                  style={{height: '53px'}}>
-                                  <th data-field='Profile Picture'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
-                                  </th>
-                                  <th data-field='Name'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Name</span>
-                                  </th>
-                                  <th data-field='Page'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Page</span>
-                                  </th>
-                                  <th data-field='PhoneNumber'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>PhoneNumber</span>
-                                  </th>
-                                  <th data-field='Source'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
-                                  </th>
-                                  <th data-field='Gender'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
-                                  </th>
-                                  <th data-field='Locale'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
-                                  </th>
-                                  <th data-field='Tag'
-                                    className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{width: '50px', overflow: 'inherit'}}>Tags</span>
-                                  </th>
-                                  <th data-field='redirect'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '150px', overflow: 'inherit'}}> Click to Respond</span>
-                                  </th>
-                                </tr>
-                              </thead>
-
-                              <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                {
-                              this.state.waitingList.map((subscriber, i) => (
-                                <tr data-row={i}
-                                  className='m-datatable__row m-datatable__row--even'
-                                  style={{height: '55px'}} key={i}>
-                                  <td data-field='Profile Picture'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      <img alt='pic'
-                                        src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                        className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
-                                    />
-                                    </span>
-                                  </td>
-
-                                  <td data-field='Name'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>{subscriber.firstName} {subscriber.lastName}</span>
-                                  </td>
-
-                                  <td data-field='Page'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.pageId.pageName}
-                                    </span>
-                                  </td>
-                                  <td data-field='phoneNumber'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.phoneNumber}
-                                    </span>
-                                  </td>
-                                  <td data-field='source'
-                                    className='m-datatable__cell'>
-                                    <span
-                                      style={{width: '100px', overflow: 'inherit'}}>
-                                      {subscriber.subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
-                                    </span>
-                                  </td>
-                                  <td data-field='Gender' className='m-datatable__cell'>
-                                    <span style={{width: '50px'}}>
-                                      {
-                                        subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
-                                      }
-                                    </span>
-                                  </td>
-                                  <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
-                                  <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
-                                    <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
-                                      {
-                                        subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
-                                      }
-                                    </span>
-                                    {subscriber.tags && subscriber.tags.length > 0 &&
-                                      <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
-                                          {
-                                              subscriber.tags.map((tag, i) => (
-                                                <span key={i} style={{display: 'block'}}>{tag}</span>
-                                              ))
-                                          }
-                                        </UncontrolledTooltip>
-                                    }
-                                  </td>
-                                  <td data-field='redirect' className='m-datatable__cell'><span style={{overflow: 'inherit'}}>
-                                    <button className='btn btn-primary btn-sm'
-                                      style={{margin: 2}} onClick={() => this.openChat(subscriber)}>
-                                      Start Conversation
-                                  </button></span></td>
-                                </tr>
-                              ))
-                            }
-                              </tbody>
-                            </table>
-                            <ReactPaginate previousLabel={'previous'}
-                              nextLabel={'next'}
-                              breakLabel={<a>...</a>}
-                              breakClassName={'break-me'}
-                              pageCount={Math.ceil(this.state.totalLength / 4)}
-                              marginPagesDisplayed={1}
-                              pageRangeDisplayed={3}
-                              onPageChange={this.handlePageClick}
-                              containerClassName={'pagination'}
-                              subContainerClassName={'pages pagination'}
-                              activeClassName={'active'} />
-
-                          </div>
-                        </div>
-                      : <div className='table-responsive'>
-                        <p> No data to display </p>
-                      </div>
-                    }
                     </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit'>
-                      <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                        <Link to='/' className='btn btn-primary'>
-                          Back
-                        </Link>
+                    { this.state.waitingList && this.state.waitingList.length > 0
+                      ? <div>
+                        <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                          <table className='m-datatable__table'
+                            id='m-datatable--27866229129' style={{
+                              display: 'block',
+                              height: 'auto',
+                              overflowX: 'auto'
+                            }}>
+                            <thead className='m-datatable__head'>
+                              <tr className='m-datatable__row'
+                                style={{height: '53px'}}>
+                                <th data-field='Profile Picture'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px', overflow: 'inherit'}}>Profile Picture</span>
+                                </th>
+                                <th data-field='Name'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px', overflow: 'inherit'}}>Name</span>
+                                </th>
+                                <th data-field='Page'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px', overflow: 'inherit'}}>Page</span>
+                                </th>
+                                <th data-field='PhoneNumber'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px', overflow: 'inherit'}}>PhoneNumber</span>
+                                </th>
+                                <th data-field='Source'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px', overflow: 'inherit'}}>Source</span>
+                                </th>
+                                <th data-field='Gender'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '50px', overflow: 'inherit'}}>Gender</span>
+                                </th>
+                                <th data-field='Locale'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
+                                </th>
+                                <th data-field='Tag'
+                                  className='m-datatable__cell--center m-datatable__cell'>
+                                  <span style={{width: '50px', overflow: 'inherit'}}>Tags</span>
+                                </th>
+                                <th data-field='redirect'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                  <span style={{width: '150px', overflow: 'inherit'}}> Click to Respond</span>
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                              {
+                            this.state.waitingList.map((subscriber, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='Profile Picture'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '100px', overflow: 'inherit'}}>
+                                    <img alt='pic'
+                                      src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                      className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
+                                  />
+                                  </span>
+                                </td>
+
+                                <td data-field='Name'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '100px', overflow: 'inherit'}}>{subscriber.firstName} {subscriber.lastName}</span>
+                                </td>
+
+                                <td data-field='Page'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '100px', overflow: 'inherit'}}>
+                                    {subscriber.pageId.pageName}
+                                  </span>
+                                </td>
+                                <td data-field='phoneNumber'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '100px', overflow: 'inherit'}}>
+                                    {subscriber.phoneNumber}
+                                  </span>
+                                </td>
+                                <td data-field='source'
+                                  className='m-datatable__cell'>
+                                  <span
+                                    style={{width: '100px', overflow: 'inherit'}}>
+                                    {subscriber.subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
+                                  </span>
+                                </td>
+                                <td data-field='Gender' className='m-datatable__cell'>
+                                  <span style={{width: '50px'}}>
+                                    {
+                                      subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
+                                    }
+                                  </span>
+                                </td>
+                                <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
+                                <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
+                                  <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
+                                    {
+                                      subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
+                                    }
+                                  </span>
+                                  {subscriber.tags && subscriber.tags.length > 0 &&
+                                    <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
+                                        {
+                                            subscriber.tags.map((tag, i) => (
+                                              <span key={i} style={{display: 'block'}}>{tag}</span>
+                                            ))
+                                        }
+                                      </UncontrolledTooltip>
+                                  }
+                                </td>
+                                <td data-field='redirect' className='m-datatable__cell'><span style={{overflow: 'inherit'}}>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{margin: 2}} onClick={() => this.openChat(subscriber)}>
+                                    Start Conversation
+                                </button></span></td>
+                              </tr>
+                            ))
+                          }
+                            </tbody>
+                          </table>
+                          <ReactPaginate previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 4)}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'} />
+
+                        </div>
                       </div>
+                    : <div className='table-responsive'>
+                      <p> No data to display </p>
+                    </div>
+                  }
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
+                      <Link to='/' className='btn btn-primary'>
+                        Back
+                      </Link>
                     </div>
                   </div>
                 </div>
