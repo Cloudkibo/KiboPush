@@ -32,7 +32,7 @@ class Card extends React.Component {
     this.changeUrl = this.changeUrl.bind(this)
     this.removeImage = this.removeImage.bind(this)
     this.state = {
-      imgSrc: props.img ? props.img : '',
+      imgSrc: props.img ? props.img : 'https://staging.kibopush.com/api/broadcasts/download/f8a4ede5279201871254015.jpeg',
       title: props.title ? props.title : '',
       button: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',

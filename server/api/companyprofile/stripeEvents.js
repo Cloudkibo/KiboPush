@@ -194,7 +194,7 @@ var knownEvents = {
   }
 }
 
-exports.callWebhook = function (req, res, next) {
+module.exports = function (req, res, next) {
   console.log('event called')
   if (req.stripeEvent && req.stripeEvent.type && knownEvents[req.stripeEvent.type]) {
     knownEvents[req.stripeEvent.type](req, res, next)
