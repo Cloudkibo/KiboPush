@@ -178,6 +178,15 @@ exports.setStatus = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'Record not found'})
       }
+      // this will update the status in queue. Queue will only send active messages
+      SequenceMessageQueue.update({sequenceMessageId: req.body.messageId}, {isActive: req.body.isActive}, {multi: true}, (err, result) => {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+        }
+
+        logger.serverLog(TAG, 'updated the status in queue')
+      })
       message.isActive = req.body.isActive
       message.save((err2) => {
         if (err2) {
@@ -537,9 +546,7 @@ exports.subscribeToSequence = function (req, res) {
 
     req.body.subscriberIds.forEach(subscriberId => {
     // Following code will run when user subscribes to sequence
-      SequenceMessages.find({sequenceId: req.body.sequenceId})
-      .where('isActive').equals('true')
-      .exec((err, messages) => {
+      SequenceMessages.find({sequenceId: req.body.sequenceId}, (err, messages) => {
         if (err) {
           res.status(500).json({
             status: 'Failed',

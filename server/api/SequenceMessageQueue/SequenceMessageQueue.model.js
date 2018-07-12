@@ -6,7 +6,8 @@ const sequenceMessageQueueSchema = new Schema({
   subscriberId: {type: Schema.ObjectId, ref: 'subscribers'},
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   sequenceMessageId: { type: Schema.ObjectId, ref: 'sequenceMessages' },
-  queueScheduledTime: {type: Date}
+  queueScheduledTime: {type: Date},
+  isActive: { type: Boolean, default: false }
 })
 
 module.exports = mongoose.model('sequenceMessageQueue', sequenceMessageQueueSchema)
