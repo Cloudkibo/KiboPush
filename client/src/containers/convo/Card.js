@@ -139,7 +139,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   editButton (obj) {
@@ -173,7 +173,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   setLoading () {
