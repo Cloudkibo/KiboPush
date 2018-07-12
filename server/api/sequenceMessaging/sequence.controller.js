@@ -51,6 +51,33 @@ exports.createMessage = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
+        SequenceSubscribers.find({sequenceId: req.body.sequenceId}, (err, sequences) => {
+          if (err) {
+            return logger.serverLog(TAG, 'subscriber find error create message')
+          }
+          if (sequences.length > 0) {
+            sequences.forEach(sequence => {
+              let sequenceQueuePayload = {
+                sequenceId: req.body.sequenceId,
+                subscriberId: sequence.subscriberId,
+                companyId: companyUser.companyId,
+                sequenceMessageId: messageCreated._id,
+                queueScheduledTime: req.body.schedule.date    // Needs to be updated after #3704
+
+              }
+
+              const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+              sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                if (err) {
+                  res.status(500).json({
+                    status: 'Failed',
+                    description: 'Failed to insert record in Queue'
+                  })
+                }
+              })
+            })
+          }
+        })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
@@ -134,6 +161,21 @@ exports.setSchedule = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'Record not found'})
       }
+      if (req.body.condition === 'immediately') {
+        if (message.isActive === true) {
+          console.log('send the message immediately and remove from queue')
+        }
+      } else {
+        SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
+        (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+        })
+      }
       message.schedule = {condition: req.body.condition, days: req.body.days, date: req.body.date}
       message.save((err2) => {
         if (err2) {
@@ -179,14 +221,18 @@ exports.setStatus = function (req, res) {
           .json({status: 'failed', description: 'Record not found'})
       }
       // this will update the status in queue. Queue will only send active messages
-      SequenceMessageQueue.update({sequenceMessageId: req.body.messageId}, {isActive: req.body.isActive}, {multi: true}, (err, result) => {
-        if (err) {
-          return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
-        }
+      if (message.schedule.condition === 'immediately') {
+        console.log('message will be send immediately and remove from queue')
+      } else {
+        SequenceMessageQueue.update({sequenceMessageId: req.body.messageId}, {isActive: req.body.isActive}, {multi: true}, (err, result) => {
+          if (err) {
+            return res.status(500)
+            .json({status: 'failed', description: 'Internal Server Error'})
+          }
 
-        logger.serverLog(TAG, 'updated the status in queue')
-      })
+          logger.serverLog(TAG, 'updated the status in queue')
+        })
+      }
       message.isActive = req.body.isActive
       message.save((err2) => {
         if (err2) {
