@@ -275,6 +275,11 @@ class GreetingMessage extends React.Component {
                       You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
                     </div>
                   }
+                  <div className='form-group m-form__group'>
+                    <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                      Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                    </div>
+                  </div>
                   <div className='form-group m-form__group row'>
                     <label className='col-3 col-form-label' style={{textAlign: 'left'}}>  Change Page</label>
                     <div className='col-8 input-group'>
@@ -346,11 +351,6 @@ class GreetingMessage extends React.Component {
                           : <button style={{display: 'inline-block'}} className='btn btn-primary' disabled>Save</button>
                         }
                       </div>
-                    </div>
-                  </div>
-                  <div className='form-group m-form__group'>
-                    <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                      Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
                     </div>
                   </div>
                 </div>

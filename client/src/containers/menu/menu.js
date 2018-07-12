@@ -40,7 +40,8 @@ class Menu extends React.Component {
       disabled: true,
       savedisabled: true,
       selecteditem: null,
-      isShowingModal: false
+      isShowingModal: false,
+      showVideo: true
     }
 
     this.option1 = 'Add submenu'
