@@ -548,53 +548,58 @@ exports.subscribeToSequence = function (req, res) {
         }
 
         messages.forEach(message => {
-          let sequenceQueuePayload = {
-            sequenceId: req.body.sequenceId,
-            subscriberId: subscriberId,
-            companyId: companyUser.companyId,
-            sequenceMessageId: message._id,
-            queueScheduledTime: new Date()      // Needs to be updated after #3704
-
-          }
-
-          const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
-          sequenceMessageForQueue.save((err, messageQueueCreated) => {
-            if (err) {
-              res.status(500).json({
-                status: 'Failed',
-                description: 'Failed to insert record in Queue'
-              })
-            }
-            let sequenceSubscriberPayload = {
+          if (message.schedule.condition === 'immediately') {
+            console.log('we will use the sending script here')
+          } else {
+            let sequenceQueuePayload = {
               sequenceId: req.body.sequenceId,
               subscriberId: subscriberId,
               companyId: companyUser.companyId,
-              status: 'subscribed'
-            }
-            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+              sequenceMessageId: message._id,
+              queueScheduledTime: message.schedule.date    // Needs to be updated after #3704
 
-            // save model to MongoDB
-            sequenceSubcriber.save((err, subscriberCreated) => {
+            }
+
+            const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+            sequenceMessageForQueue.save((err, messageQueueCreated) => {
               if (err) {
                 res.status(500).json({
                   status: 'Failed',
-                  description: 'Failed to insert record'
+                  description: 'Failed to insert record in Queue'
                 })
-              } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-                require('./../../config/socketio').sendMessageToClient({
-                  room_id: companyUser.companyId,
-                  body: {
-                    action: 'sequence_update',
-                    payload: {
-                      sequence_id: req.body.sequenceId
-                    }
-                  }
-                })
-                res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
               }
-            })  // Sequence subscriber save ends here
-          })  //  save ends here
+            }) //  save ends here
+          }  // else ends here
         })  // Messages Foreach ends here
+
+        let sequenceSubscriberPayload = {
+          sequenceId: req.body.sequenceId,
+          subscriberId: subscriberId,
+          companyId: companyUser.companyId,
+          status: 'subscribed'
+        }
+        const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+        // save model to MongoDB
+        sequenceSubcriber.save((err, subscriberCreated) => {
+          if (err) {
+            res.status(500).json({
+              status: 'Failed',
+              description: 'Failed to insert record'
+            })
+          } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: req.body.sequenceId
+                }
+              }
+            })
+            res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
+          }
+        })  // Sequence subscriber save ends here
       }) // Sequence message find ends here
     })  //  Foreach ends of subscriber id
   })
@@ -626,23 +631,33 @@ exports.unsubscribeToSequence = function (req, res) {
     }
 
     req.body.subscriberIds.forEach(subscriberId => {
-      SequenceSubscribers.update(
-      {sequenceId: req.body.sequenceId, subscriberId: subscriberId},
-      {status: 'unsubscribed'}, {multi: true}, (err, updated) => {
+      SequenceSubscribers.remove({sequenceId: req.body.sequenceId})
+      .where('subscriberId').equals(subscriberId)
+      .exec((err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-          require('./../../config/socketio').sendMessageToClient({
-            room_id: companyUser.companyId,
-            body: {
-              action: 'sequence_update',
-              payload: {
-                sequence_id: req.body.sequenceId
-              }
-            }
-          })
-          res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
         }
+
+        SequenceMessageQueue.remove({sequenceId: req.body.sequenceId})
+        .where('subscriberId').equals(subscriberId)
+        .exec((err, result) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: req.body.sequenceId
+                }
+              }
+            })
+            res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
+          }
+        })
       })
     })
   })
