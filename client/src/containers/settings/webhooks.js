@@ -353,6 +353,11 @@ class Webhook extends React.Component {
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
                     <div className='m-portlet__body'>
+                      <div className='form-group m-form__group'>
+                        <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                          Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                        </div>
+                      </div>
                       {
                         this.state.isShowingModal &&
                         <ModalContainer style={{width: '500px'}}
@@ -527,12 +532,6 @@ class Webhook extends React.Component {
                                           You haven't connected any endpoint yet. Please click on Add endpoint button to add your URL.
                                          </div>
                                     }
-                                    <br />
-                                    <div className='form-group m-form__group'>
-                                      <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                                        Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
-                                      </div>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
