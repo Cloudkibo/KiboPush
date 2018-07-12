@@ -290,7 +290,6 @@ class CreateMessage extends React.Component {
     this.setState({message: temp})
   }
 
-
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.message.filter((component) => { return (component.id !== obj.id) })
