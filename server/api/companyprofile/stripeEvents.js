@@ -26,6 +26,8 @@ var knownEvents = {
   },
   'charge.succeeded': function (req, res, next) {
     logger.serverLog(TAG, `${req.stripeEvent.type} event processed`)
+    logger.serverLog(TAG, `event processed req.body ${req.body}`)
+    logger.serverLog(TAG, ` event processed req.stripeEvent ${req.stripeEvent}`)
     res.status(200).end()
   },
   'charge.failed': function (req, res, next) {
@@ -118,6 +120,8 @@ var knownEvents = {
   },
   'invoice.payment_succeeded': function (req, res, next) {
     logger.serverLog(TAG, `${req.stripeEvent.type} event processed`)
+    logger.serverLog(TAG, `event processed req.body ${req.body}`)
+    logger.serverLog(TAG, ` event processed req.stripeEvent ${req.stripeEvent}`)
     res.status(200).end()
   },
   'invoice.payment_failed ': function (req, res, next) {
@@ -190,7 +194,8 @@ var knownEvents = {
   }
 }
 
-module.exports = function (req, res, next) {
+exports.callWebhook = function (req, res, next) {
+  console.log('event called')
   if (req.stripeEvent && req.stripeEvent.type && knownEvents[req.stripeEvent.type]) {
     knownEvents[req.stripeEvent.type](req, res, next)
   } else {

@@ -81,7 +81,7 @@ router.get('/getKeys', auth.isAuthenticated(), controller.getKeys)
   // use this url to receive stripe webhook events
 router.post('/stripe/events',
   stripeWebhook.middleware,
-  stripeEvents
+  stripeEvents.callWebhook
 )
 
 module.exports = router
