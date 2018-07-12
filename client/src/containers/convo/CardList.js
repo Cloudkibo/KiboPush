@@ -308,15 +308,23 @@ class Card extends React.Component {
           <PopoverBody>
             <div>
               <br />
-              {this.props.id === 1 &&
-                <div>
+              {this.props.cardDetails && this.props.id === 0
+                ? <div>
                   <span>
                     <input type='checkbox' value={!this.state.checkbox} onChange={this.handleCheckbox} checked={this.state.checkbox} />&nbsp;&nbsp;
                     Make first item large
                   </span>
                   <br /><br />
                 </div>
-              }
+                : (!this.props.cardDetails && this.props.id === 1) &&
+                  <div>
+                    <span>
+                      <input type='checkbox' value={!this.state.checkbox} onChange={this.handleCheckbox} checked={this.state.checkbox} />&nbsp;&nbsp;
+                      Make first item large
+                    </span>
+                    <br /><br />
+                  </div>
+                }
               <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter URL...' value={this.state.elementUrl} />
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
@@ -374,8 +382,10 @@ class Card extends React.Component {
           </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
-          <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
-          }
+            <div onClick={this.removeImage}>
+          <i className='fa fa-times-circle-o' style={{fontSize: '1rem', marginLeft: '5px'}} onClick={this.removeImage} />
+          </div>
+        }
         </div>
         <br />
         <div className='row'>
