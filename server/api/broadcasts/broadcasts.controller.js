@@ -495,12 +495,12 @@ exports.getfbMessage = function (req, res) {
           pageId: page._id,
           companyId: page.companyId
         }, {
-            hasSubscribed: true
-          }, (err2, phonenumbersaved) => {
-            if (err2) {
-              logger.serverLog(TAG, err2)
-            }
-          })
+          hasSubscribed: true
+        }, (err2, phonenumbersaved) => {
+          if (err2) {
+            logger.serverLog(TAG, err2)
+          }
+        })
       })
     })
   }
@@ -790,7 +790,7 @@ exports.getfbMessage = function (req, res) {
   }
   return res.status(200).json({ status: 'success', description: 'got the data.' })
 }
-function updateList(phoneNumber, sender, page) {
+function updateList (phoneNumber, sender, page) {
   PhoneNumber.find({
     number: phoneNumber,
     hasSubscribed: true,
@@ -828,7 +828,7 @@ function updateList(phoneNumber, sender, page) {
   })
 }
 
-function sendCommentReply(body) {
+function sendCommentReply (body) {
   let index = 1
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
@@ -875,7 +875,7 @@ function sendCommentReply(body) {
   })
 }
 
-function sendAutopostingMessage(messageData, page, savedMsg) {
+function sendAutopostingMessage (messageData, page, savedMsg) {
   request(
     {
       'method': 'POST',
@@ -910,7 +910,7 @@ function sendAutopostingMessage(messageData, page, savedMsg) {
     })
 }
 
-function handleThePagePostsForAutoPosting(event, status) {
+function handleThePagePostsForAutoPosting (event, status) {
   AutoPosting.find({ accountUniqueName: event.value.sender_id, isActive: true })
     .populate('userId')
     .exec((err, autopostings) => {
@@ -1270,7 +1270,7 @@ function handleThePagePostsForAutoPosting(event, status) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function handleMessageFromSomeOtherApp(event) {
+function handleMessageFromSomeOtherApp (event) {
   logger.serverLog(TAG, 'going to save message coming from other app')
   const pageId = event.sender.id
   const receiverId = event.recipient.id
@@ -1638,7 +1638,7 @@ function updateseenstatus (req) {
   //   })
 }
 
-function sendMenuReply(req) {
+function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
     if (err) {
@@ -1653,7 +1653,7 @@ function sendMenuReply(req) {
   })
 }
 
-function savepoll(req, resp) {
+function savepoll (req, resp) {
   // find subscriber from sender id
   // var resp = JSON.parse(req.postback.payload)
   var temp = true
@@ -1721,7 +1721,7 @@ function savepoll(req, resp) {
   })
 }
 
-function handleUnsubscribe(resp, req) {
+function handleUnsubscribe (resp, req) {
   let messageData = {}
   if (resp.action === 'yes') {
     messageData = {
@@ -1762,7 +1762,7 @@ function handleUnsubscribe(resp, req) {
     })
 }
 
-function sendautomatedmsg(req, page) {
+function sendautomatedmsg (req, page) {
   // const sender = req.sender.id
   // const page = req.recipient.id
   //  'message_is'
@@ -1957,7 +1957,7 @@ function sendautomatedmsg(req, page) {
       })
   }
 }
-function savesurvey(req) {
+function savesurvey (req) {
   // this is the response of survey question
   // first save the response of survey
   // find subscriber from sender id
@@ -2210,7 +2210,7 @@ function savesurvey(req) {
   })
 }
 
-function subscribeToSequence(sequenceId, req) {
+function subscribeToSequence (sequenceId, req) {
   Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
@@ -2269,7 +2269,7 @@ function subscribeToSequence(sequenceId, req) {
   })
 }
 
-function unsubscribeFromSequence(sequenceId, req) {
+function unsubscribeFromSequence (sequenceId, req) {
   Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
