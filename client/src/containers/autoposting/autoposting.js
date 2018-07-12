@@ -206,7 +206,7 @@ class Autoposting extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='RDOnbzldnoc'
+                  videoId='vXN_lF7ivJY'
                   opts={{
                     height: '390',
                     width: '640',

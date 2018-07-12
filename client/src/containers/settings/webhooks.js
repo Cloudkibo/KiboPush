@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
+import YouTube from 'react-youtube'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -28,7 +29,8 @@ class Webhook extends React.Component {
       errorUrl: '',
       errorToken: false,
       pageEdit: '',
-      id: ''
+      id: '',
+      showVideo: false
     }
     props.loadWebhook()
     props.loadMyPagesList()
@@ -303,6 +305,27 @@ class Webhook extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='LxlrENo0vW8'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -504,6 +527,11 @@ class Webhook extends React.Component {
                                           You haven't connected any endpoint yet. Please click on Add endpoint button to add your URL.
                                          </div>
                                     }
+                                    <div className='form-group m-form__group'>
+                                      <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                                        Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
