@@ -6,9 +6,9 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Invitations = require('./../invitations/invitations.model')
 const Permissions = require('./../permissions/permissions.model')
 const Users = require('./../user/Users.model')
+const Plans = require('./../plans/plans.model')
 const Inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
 const config = require('./../../config/environment/index')
-
 const logger = require('../../components/logger')
 const TAG = 'api/companyprofile/companyprofile.controller.js'
 
@@ -38,6 +38,40 @@ exports.index = function (req, res) {
           res.status(200).json({status: 'success', payload: company})
         })
     })
+}
+
+exports.addPlanID = function (req, res) {
+  Companyprofile.find({}, (err, companies) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    companies.forEach((company, index) => {
+      Plans.findOne({unique_ID: company.stripe.plan}, (err, plan) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        company.planId = plan._id
+        company.save((err) => {
+          if (err) {
+            return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+          }
+        })
+      })
+      if (index === (companies.length - 1)) {
+        return res.status(200).json({
+          status: 'success',
+          description: 'Successfuly added!'
+        })
+      }
+    })
+  })
 }
 
 exports.setCard = function (req, res) {
