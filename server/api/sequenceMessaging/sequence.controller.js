@@ -683,17 +683,39 @@ exports.deleteSequence = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
       }
-      require('./../../config/socketio').sendMessageToClient({
-        room_id: companyUser.companyId,
-        body: {
-          action: 'sequence_delete',
-          payload: {
-            sequence_id: req.params.id
-          }
+
+      SequenceSubscribers.deleteMany({sequenceId: req.params.id}, (err, result) => {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
         }
-      })
-      res.status(201).json({status: 'success', payload: deleted})
-    })
+
+        SequenceMessageQueue.deleteMany({sequenceId: req.params.id}, (err, result) => {
+          if (err) {
+            return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+          }
+
+          SequenceMessages.deleteMany({sequenceId: req.params.id}, (err, result) => {
+            if (err) {
+              return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+            }
+
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'sequence_delete',
+                payload: {
+                  sequence_id: req.params.id
+                }
+              }
+            })
+            res.status(201).json({status: 'success', payload: deleted})
+          })  //  ends sequence message delete
+        }) // ends queue deletemany
+      })  // ends sequence-sub deletemany
+    })  //  ends sequence delete one
   })
 }
 
@@ -712,22 +734,30 @@ exports.deleteMessage = function (req, res) {
       })
     }
 
-    Messages.deleteOne({_id: req.params.id}, (err, deleted) => {
+    SequenceMessages.deleteOne({_id: req.params.id}, (err, deleted) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
       }
-      require('./../../config/socketio').sendMessageToClient({
-        room_id: companyUser.companyId,
-        body: {
-          action: 'sequence_delete',
-          payload: {
-            sequence_id: req.params.id
-          }
+
+      SequenceMessageQueue.deleteMany({sequenceMessageId: req.params.id}, (err, result) => {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
         }
-      })
-      res.status(201).json({status: 'success', payload: deleted})
-    })
+
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'sequence_delete',
+            payload: {
+              sequence_id: req.params.id
+            }
+          }
+        })
+        res.status(201).json({status: 'success', payload: deleted})
+      })  // message queue deletemany ends here
+    })  // sequence message deleteOne ends here
   })
 }
 
