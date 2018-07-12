@@ -336,6 +336,9 @@ class LiveChat extends React.Component {
                   Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
                 </div>
                 <br />
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
                 <div className='m-alert__text'>
                   To view Facebook guidelines regarding types of messages <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Click here.</Link>
                 </div>
