@@ -609,8 +609,8 @@ exports.subscribeToSequence = function (req, res) {
               subscriberId: subscriberId,
               companyId: companyUser.companyId,
               sequenceMessageId: message._id,
-              queueScheduledTime: message.schedule.date    // Needs to be updated after #3704
-
+              queueScheduledTime: message.schedule.date,    // Needs to be updated after #3704
+              isActive: message.isActive
             }
 
             const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
@@ -691,9 +691,7 @@ exports.unsubscribeToSequence = function (req, res) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
 
-        SequenceMessageQueue.remove({sequenceId: req.body.sequenceId})
-        .where('subscriberId').equals(subscriberId)
-        .exec((err, result) => {
+        SequenceMessageQueue.remove({sequenceId: req.body.sequenceId, subscriberId: subscriberId}, (err, result) => {
           if (err) {
             return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }

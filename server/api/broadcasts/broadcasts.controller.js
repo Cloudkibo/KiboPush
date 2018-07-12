@@ -4,6 +4,8 @@
 //
 const Sequences = require('../sequenceMessaging/sequence.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
+const SequenceMessages = require('../sequenceMessaging/message.model')
+const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
@@ -2210,7 +2212,7 @@ function savesurvey(req) {
   })
 }
 
-function subscribeToSequence(sequenceId, req) {
+function subscribeToSequence (sequenceId, req) {
   Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
@@ -2230,7 +2232,7 @@ function subscribeToSequence(sequenceId, req) {
         }
 
         // CASE-1 Subscriber already exists
-        if (sequenceSubscriber !== {}) {
+        if (sequenceSubscriber !== {} && sequenceSubscriber !== null) {
           SequenceSubscribers.update({ _id: sequenceSubscriber._id }, { status: 'subscribed' }, (err, updated) => {
             if (err) {
               logger.serverLog(TAG,
@@ -2239,28 +2241,62 @@ function subscribeToSequence(sequenceId, req) {
           })
           // CASE-2 Subscriber doesn't exist
         } else {
-          let sequenceSubscriberPayload = {
-            sequenceId: sequenceId,
-            subscriberId: subscriber._id,
-            companyId: sequence.companyId,
-            status: 'subscribed'
-          }
-          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
-
-          // save model to MongoDB
-          sequenceSubcriber.save((err, subscriberCreated) => {
+          SequenceMessages.find({sequenceId: sequenceId}, (err, messages) => {
             if (err) {
-              logger.serverLog(TAG,
-                `Failed to insert record`)
-            }
-            require('./../../config/socketio').sendMessageToClient({
-              room_id: sequence.companyId,
-              body: {
-                action: 'sequence_update',
-                payload: {
-                  sequence_id: sequenceId
-                }
+              return {
+                status: 'Failed',
+                description: 'Failed to insert record'
               }
+            }
+
+            messages.forEach(message => {
+              if (message.schedule.condition === 'immediately') {
+                console.log('we will use the sending script here')
+              } else {
+                let sequenceQueuePayload = {
+                  sequenceId: sequenceId,
+                  subscriberId: subscriber._id,
+                  companyId: subscriber.companyId,
+                  sequenceMessageId: message._id,
+                  queueScheduledTime: message.schedule.date,    // Needs to be updated after #3704
+                  isActive: message.isActive
+                }
+
+                const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+                sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                  if (err) {
+                    return {
+                      status: 'Failed',
+                      description: 'Failed to insert record in Queue'
+                    }
+                  }
+                }) //  save ends here
+              }  // else ends here
+            })  // Messages Foreach ends here
+
+            let sequenceSubscriberPayload = {
+              sequenceId: sequenceId,
+              subscriberId: subscriber._id,
+              companyId: sequence.companyId,
+              status: 'subscribed'
+            }
+            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+            // save model to MongoDB
+            sequenceSubcriber.save((err, subscriberCreated) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Failed to insert record`)
+              }
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: sequence.companyId,
+                body: {
+                  action: 'sequence_update',
+                  payload: {
+                    sequence_id: sequenceId
+                  }
+                }
+              })
             })
           })
         }
@@ -2269,7 +2305,7 @@ function subscribeToSequence(sequenceId, req) {
   })
 }
 
-function unsubscribeFromSequence(sequenceId, req) {
+function unsubscribeFromSequence (sequenceId, req) {
   Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
@@ -2282,47 +2318,28 @@ function unsubscribeFromSequence(sequenceId, req) {
           `Internal Server Error ${JSON.stringify(err)}`)
       }
 
-      SequenceSubscribers.findOne({ subscriberId: subscriber._id }, (err, sequenceSubscriber) => {
+      SequenceSubscribers.remove({sequenceId: sequenceId})
+      .where('subscriberId').equals(subscriber._id)
+      .exec((err, updated) => {
         if (err) {
-          logger.serverLog(TAG,
-            `Internal Server Error ${JSON.stringify(err)}`)
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
 
-        // CASE-1 Subscriber already exists
-        if (sequenceSubscriber !== {}) {
-          SequenceSubscribers.update({ _id: sequenceSubscriber._id }, { status: 'unsubscribed' }, (err, updated) => {
-            if (err) {
-              logger.serverLog(TAG,
-                `Internal Server Error ${JSON.stringify(err)}`)
-            }
-          })
-          // CASE-2 Subscriber doesn't exist
-        } else {
-          let sequenceSubscriberPayload = {
-            sequenceId: sequenceId,
-            subscriberId: subscriber._id,
-            companyId: sequence.companyId,
-            status: 'unsubscribed'
+        SequenceMessageQueue.deleteMany({sequenceId: sequenceId, subscriberId: subscriber._id}, (err, result) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
 
-          // save model to MongoDB
-          sequenceSubcriber.save((err, subscriberCreated) => {
-            if (err) {
-              logger.serverLog(TAG,
-                `Failed to insert record`)
-            }
-            require('./../../config/socketio').sendMessageToClient({
-              room_id: sequence.companyId,
-              body: {
-                action: 'sequence_update',
-                payload: {
-                  sequence_id: sequenceId
-                }
+          require('./../../config/socketio').sendMessageToClient({
+            room_id: sequence.companyId,
+            body: {
+              action: 'sequence_update',
+              payload: {
+                sequence_id: sequenceId
               }
-            })
+            }
           })
-        }
+        })
       })
     })
   })
