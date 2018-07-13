@@ -87,7 +87,7 @@ class Media extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, this.props.pages[0]._id, 'media', {fileurl: '',
+      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -101,10 +101,10 @@ class Media extends React.Component {
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
       fileData.append('pageId', this.props.pages[0]._id)
-      fileData.append('componentType', 'media')
+      fileData.append('componentType', 'video')
       var fileInfo = {
         id: this.props.id,
-        componentType: 'media',
+        componentType: 'video',
         fileName: file.name,
         type: file.type,
         size: file.size
@@ -137,7 +137,7 @@ class Media extends React.Component {
     })
     this.setState({button: temp})
     this.props.handleMedia({id: this.props.id,
-      componentType: 'card',
+      componentType: 'media',
       fileurl: this.state.fileurl,
       image_url: this.state.image_url,
       fileName: this.state.fileName,
