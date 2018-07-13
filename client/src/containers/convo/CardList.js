@@ -146,7 +146,9 @@ class Card extends React.Component {
       }
     }
   }
-  removeImage () {
+  removeImage (event) {
+    console.log('remove image')
+    event.stopPropagation()
     this.setState({imgSrc: ''})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
@@ -159,8 +161,10 @@ class Card extends React.Component {
       description: this.state.subtitle,
       buttons: this.state.button})
   }
-  _onChange () {
+  _onChange (event) {
   // Assuming only image
+    event.stopPropagation()
+    console.log('+onChange')
     var file = this.refs.file.files[0]
     if (file) {
       if (file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -308,15 +312,23 @@ class Card extends React.Component {
           <PopoverBody>
             <div>
               <br />
-              {this.props.id === 1 &&
-                <div>
+              {this.props.cardDetails && this.props.id === 0
+                ? <div>
                   <span>
                     <input type='checkbox' value={!this.state.checkbox} onChange={this.handleCheckbox} checked={this.state.checkbox} />&nbsp;&nbsp;
                     Make first item large
                   </span>
                   <br /><br />
                 </div>
-              }
+                : (!this.props.cardDetails && this.props.id === 1) &&
+                  <div>
+                    <span>
+                      <input type='checkbox' value={!this.state.checkbox} onChange={this.handleCheckbox} checked={this.state.checkbox} />&nbsp;&nbsp;
+                      Make first item large
+                    </span>
+                    <br /><br />
+                  </div>
+                }
               <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter URL...' value={this.state.elementUrl} />
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
@@ -357,7 +369,7 @@ class Card extends React.Component {
             </center>
           </div>
           {!this.state.checkbox &&
-          <div style={{display: 'flex', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
+          <div style={{display: 'inline-grid', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
               ref='file'
               type='file'
@@ -368,13 +380,15 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-            : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
+            ? <img style={{maxHeight: '40px', margin: 'auto'}} src='icons/picture.png' alt='Text' />
+          : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
           </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
-          <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
+            <div className='col-md-2' style={{display: 'contents'}} onClick={this.removeImage}>
+              <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
+            </div>
           }
         </div>
         <br />

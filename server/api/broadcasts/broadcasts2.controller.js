@@ -144,6 +144,24 @@ exports.sendConversation = function (req, res) {
         req.body.payload.forEach((payloadItem, pindex) => {
           if (payloadItem.buttons) {
             payloadItem.buttons.forEach((button, bindex) => {
+              if (!(button.type === 'postback')) {
+                let URLObject = new URL({
+                  originalURL: button.url,
+                  module: {
+                    id: broadcast._id,
+                    type: 'broadcast'
+                  }
+                })
+                URLObject.save((err, savedurl) => {
+                  if (err) logger.serverLog(TAG, err)
+                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                  newPayload[pindex].buttons[bindex].url = newURL
+                })
+              }
+            })
+          }
+          if (payloadItem.componentType === 'media' && payloadItem.buttons) {
+            payloadItem.buttons.forEach((button, bindex) => {
               let URLObject = new URL({
                 originalURL: button.url,
                 module: {

@@ -28,6 +28,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { timeSince } from './utilities'
 import { registerAction } from '../../utility/socketio'
+import YouTube from 'react-youtube'
 
 const styles = {
   sessionStyle: {
@@ -56,7 +57,8 @@ class LiveChat extends React.Component {
       isShowingModalGuideLines: false,
       tabValue: 'open',
       filter: false,
-      scroll: true
+      scroll: true,
+      showVideo: false
     }
     props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
     props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: 1, page_value: '', search_value: ''}})
@@ -299,11 +301,48 @@ class LiveChat extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='NYf0DrcNwTo'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <Header />
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank'>Click Here. </a>
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
+                </div>
+                <br />
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                  To view Facebook guidelines regarding types of messages <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Click here.</Link>
+                </div>
+              </div>
               {
                 this.state.loading
                 ? <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
@@ -311,16 +350,6 @@ class LiveChat extends React.Component {
                   <center><Halogen.RingLoader color='#716aca' /></center>
                 </div>
                 : <div className='row'>
-                  <div className='col-12'>
-                    <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                      <div className='m-alert__icon'>
-                        <i className='flaticon-exclamation m--font-brand' />
-                      </div>
-                      <div className='m-alert__text'>
-                        View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
-                      </div>
-                    </div>
-                  </div>
                   <div className='col-xl-4'>
                     <div className='m-portlet m-portlet--full-height' >
                       <div className='m-portlet__head'>

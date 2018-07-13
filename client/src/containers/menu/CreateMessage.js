@@ -14,6 +14,7 @@ import File from '../convo/File'
 import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
+import List from '../convo/List'
 import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
@@ -41,6 +42,7 @@ class CreateMessage extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
     this.handleImage = this.handleImage.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -269,6 +271,24 @@ class CreateMessage extends React.Component {
 
     this.setState({ message: temp })
   }
+  handleList (obj) {
+    var temp = this.state.message
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.listItems = obj.listItems
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    console.log('temp', temp)
+    this.setState({message: temp})
+  }
 
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
@@ -440,6 +460,14 @@ class CreateMessage extends React.Component {
                           <div className='align-center'>
                             <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                             <h6>File</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-3'>
+                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                          <div className='align-center'>
+                            <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                            <h6>List</h6>
                           </div>
                         </div>
                       </div>

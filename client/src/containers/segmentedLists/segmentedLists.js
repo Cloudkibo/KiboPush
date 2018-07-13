@@ -15,6 +15,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 
 class SegmentedList extends React.Component {
   constructor (props, context) {
@@ -24,7 +25,8 @@ class SegmentedList extends React.Component {
       deleteid: '',
       customerLists: [],
       totalLength: 0,
-      pageNumber: 0
+      pageNumber: 0,
+      showVideo: false
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
@@ -123,6 +125,27 @@ class SegmentedList extends React.Component {
         <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='5ett7iCFirs'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -142,6 +165,7 @@ class SegmentedList extends React.Component {
                 </div>
                 <div className='m-alert__text'>
                   Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segment-subscribers/' target='_blank'>Click Here </a>
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>

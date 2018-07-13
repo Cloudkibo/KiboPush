@@ -103,7 +103,7 @@ class CreateSequence extends React.Component {
       }
       var utcDate = new Date(d1).toISOString()
       d1.setHours(d1.getHours() + 5)
-      utcDate = new Date(d1).toISOString()
+      utcDate = new Date(d1).toISOString()   // We can keep the date for queue schedule purposes == don't remvoe it
       this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
     }
   }

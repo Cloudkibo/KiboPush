@@ -55,12 +55,6 @@ router.post('/delete',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.delete)
 
-router.post('/savePendingSubscribersQueue',
-    auth.isAuthenticated(),
-    // auth.doesPlanPermitsThisAction('workflows'),
-    // auth.doesRolePermitsThisAction('workflowPermission'),
-    controller.savePendingSubscribersQueue)
-
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
 

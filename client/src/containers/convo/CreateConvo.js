@@ -28,6 +28,7 @@ import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
 import Targeting from './Targeting'
+import Media from './Media'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -71,6 +72,7 @@ class CreateConvo extends React.Component {
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
+    this.handleMedia = this.handleMedia.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
@@ -264,6 +266,41 @@ class CreateConvo extends React.Component {
         data.title = obj.title
         data.buttons = obj.buttons
         data.description = obj.description
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
+  handleMedia (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      if (obj.error === 'file size error') {
+        this.msg.error('File size cannot exceed 25MB')
+        return
+      }
+      if (obj.error === 'invalid file') {
+        this.msg.error('File is not valid')
+        return
+      }
+    }
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.fileName = obj.fileName
+        data.mediaType = obj.mediaType
+        data.fileurl = obj.fileurl
+        data.size = obj.size
+        data.type = obj.type
+        data.buttons = obj.buttons
+        data.image_url = obj.image_url
         isPresent = true
       }
     })
@@ -628,6 +665,16 @@ class CreateConvo extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
                                           <h6>List</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='row'>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                          <h6>Media</h6>
                                         </div>
                                       </div>
                                     </div>

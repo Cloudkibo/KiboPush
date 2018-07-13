@@ -4,6 +4,8 @@
 //
 const Sequences = require('../sequenceMessaging/sequence.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
+const SequenceMessages = require('../sequenceMessaging/message.model')
+const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
@@ -495,12 +497,12 @@ exports.getfbMessage = function (req, res) {
           pageId: page._id,
           companyId: page.companyId
         }, {
-            hasSubscribed: true
-          }, (err2, phonenumbersaved) => {
-            if (err2) {
-              logger.serverLog(TAG, err2)
-            }
-          })
+          hasSubscribed: true
+        }, (err2, phonenumbersaved) => {
+          if (err2) {
+            logger.serverLog(TAG, err2)
+          }
+        })
       })
     })
   }
@@ -790,7 +792,7 @@ exports.getfbMessage = function (req, res) {
   }
   return res.status(200).json({ status: 'success', description: 'got the data.' })
 }
-function updateList(phoneNumber, sender, page) {
+function updateList (phoneNumber, sender, page) {
   PhoneNumber.find({
     number: phoneNumber,
     hasSubscribed: true,
@@ -828,7 +830,7 @@ function updateList(phoneNumber, sender, page) {
   })
 }
 
-function sendCommentReply(body) {
+function sendCommentReply (body) {
   let index = 1
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
@@ -875,7 +877,7 @@ function sendCommentReply(body) {
   })
 }
 
-function sendAutopostingMessage(messageData, page, savedMsg) {
+function sendAutopostingMessage (messageData, page, savedMsg) {
   request(
     {
       'method': 'POST',
@@ -910,7 +912,7 @@ function sendAutopostingMessage(messageData, page, savedMsg) {
     })
 }
 
-function handleThePagePostsForAutoPosting(event, status) {
+function handleThePagePostsForAutoPosting (event, status) {
   AutoPosting.find({ accountUniqueName: event.value.sender_id, isActive: true })
     .populate('userId')
     .exec((err, autopostings) => {
@@ -1270,7 +1272,7 @@ function handleThePagePostsForAutoPosting(event, status) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function handleMessageFromSomeOtherApp(event) {
+function handleMessageFromSomeOtherApp (event) {
   logger.serverLog(TAG, 'going to save message coming from other app')
   const pageId = event.sender.id
   const receiverId = event.recipient.id
@@ -1638,7 +1640,7 @@ function updateseenstatus (req) {
   //   })
 }
 
-function sendMenuReply(req) {
+function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
   Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
     if (err) {
@@ -1653,7 +1655,7 @@ function sendMenuReply(req) {
   })
 }
 
-function savepoll(req, resp) {
+function savepoll (req, resp) {
   // find subscriber from sender id
   // var resp = JSON.parse(req.postback.payload)
   var temp = true
@@ -1721,7 +1723,7 @@ function savepoll(req, resp) {
   })
 }
 
-function handleUnsubscribe(resp, req) {
+function handleUnsubscribe (resp, req) {
   let messageData = {}
   if (resp.action === 'yes') {
     messageData = {
@@ -1762,7 +1764,7 @@ function handleUnsubscribe(resp, req) {
     })
 }
 
-function sendautomatedmsg(req, page) {
+function sendautomatedmsg (req, page) {
   // const sender = req.sender.id
   // const page = req.recipient.id
   //  'message_is'
@@ -1957,7 +1959,7 @@ function sendautomatedmsg(req, page) {
       })
   }
 }
-function savesurvey(req) {
+function savesurvey (req) {
   // this is the response of survey question
   // first save the response of survey
   // find subscriber from sender id
@@ -2210,7 +2212,7 @@ function savesurvey(req) {
   })
 }
 
-function subscribeToSequence(sequenceId, req) {
+function subscribeToSequence (sequenceId, req) {
   Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
@@ -2230,7 +2232,7 @@ function subscribeToSequence(sequenceId, req) {
         }
 
         // CASE-1 Subscriber already exists
-        if (sequenceSubscriber !== {}) {
+        if (sequenceSubscriber !== {} && sequenceSubscriber !== null) {
           SequenceSubscribers.update({ _id: sequenceSubscriber._id }, { status: 'subscribed' }, (err, updated) => {
             if (err) {
               logger.serverLog(TAG,
@@ -2239,28 +2241,62 @@ function subscribeToSequence(sequenceId, req) {
           })
           // CASE-2 Subscriber doesn't exist
         } else {
-          let sequenceSubscriberPayload = {
-            sequenceId: sequenceId,
-            subscriberId: subscriber._id,
-            companyId: sequence.companyId,
-            status: 'subscribed'
-          }
-          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
-
-          // save model to MongoDB
-          sequenceSubcriber.save((err, subscriberCreated) => {
+          SequenceMessages.find({sequenceId: sequenceId}, (err, messages) => {
             if (err) {
-              logger.serverLog(TAG,
-                `Failed to insert record`)
-            }
-            require('./../../config/socketio').sendMessageToClient({
-              room_id: sequence.companyId,
-              body: {
-                action: 'sequence_update',
-                payload: {
-                  sequence_id: sequenceId
-                }
+              return {
+                status: 'Failed',
+                description: 'Failed to insert record'
               }
+            }
+
+            messages.forEach(message => {
+              if (message.schedule.condition === 'immediately') {
+                // console.log('we will use the sending script here')
+              } else {
+                let sequenceQueuePayload = {
+                  sequenceId: sequenceId,
+                  subscriberId: subscriber._id,
+                  companyId: subscriber.companyId,
+                  sequenceMessageId: message._id,
+                  queueScheduledTime: message.schedule.date,    // Needs to be updated after #3704
+                  isActive: message.isActive
+                }
+
+                const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+                sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                  if (err) {
+                    return {
+                      status: 'Failed',
+                      description: 'Failed to insert record in Queue'
+                    }
+                  }
+                }) //  save ends here
+              }  // else ends here
+            })  // Messages Foreach ends here
+
+            let sequenceSubscriberPayload = {
+              sequenceId: sequenceId,
+              subscriberId: subscriber._id,
+              companyId: sequence.companyId,
+              status: 'subscribed'
+            }
+            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+            // save model to MongoDB
+            sequenceSubcriber.save((err, subscriberCreated) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Failed to insert record`)
+              }
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: sequence.companyId,
+                body: {
+                  action: 'sequence_update',
+                  payload: {
+                    sequence_id: sequenceId
+                  }
+                }
+              })
             })
           })
         }
@@ -2269,7 +2305,7 @@ function subscribeToSequence(sequenceId, req) {
   })
 }
 
-function unsubscribeFromSequence(sequenceId, req) {
+function unsubscribeFromSequence (sequenceId, req) {
   Sequences.findOne({ _id: sequenceId }, (err, sequence) => {
     if (err) {
       logger.serverLog(TAG,
@@ -2282,47 +2318,28 @@ function unsubscribeFromSequence(sequenceId, req) {
           `Internal Server Error ${JSON.stringify(err)}`)
       }
 
-      SequenceSubscribers.findOne({ subscriberId: subscriber._id }, (err, sequenceSubscriber) => {
+      SequenceSubscribers.remove({sequenceId: sequenceId})
+      .where('subscriberId').equals(subscriber._id)
+      .exec((err, updated) => {
         if (err) {
-          logger.serverLog(TAG,
-            `Internal Server Error ${JSON.stringify(err)}`)
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
 
-        // CASE-1 Subscriber already exists
-        if (sequenceSubscriber !== {}) {
-          SequenceSubscribers.update({ _id: sequenceSubscriber._id }, { status: 'unsubscribed' }, (err, updated) => {
-            if (err) {
-              logger.serverLog(TAG,
-                `Internal Server Error ${JSON.stringify(err)}`)
-            }
-          })
-          // CASE-2 Subscriber doesn't exist
-        } else {
-          let sequenceSubscriberPayload = {
-            sequenceId: sequenceId,
-            subscriberId: subscriber._id,
-            companyId: sequence.companyId,
-            status: 'unsubscribed'
+        SequenceMessageQueue.deleteMany({sequenceId: sequenceId, subscriberId: subscriber._id}, (err, result) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-          const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
 
-          // save model to MongoDB
-          sequenceSubcriber.save((err, subscriberCreated) => {
-            if (err) {
-              logger.serverLog(TAG,
-                `Failed to insert record`)
-            }
-            require('./../../config/socketio').sendMessageToClient({
-              room_id: sequence.companyId,
-              body: {
-                action: 'sequence_update',
-                payload: {
-                  sequence_id: sequenceId
-                }
+          require('./../../config/socketio').sendMessageToClient({
+            room_id: sequence.companyId,
+            body: {
+              action: 'sequence_update',
+              payload: {
+                sequence_id: sequenceId
               }
-            })
+            }
           })
-        }
+        })
       })
     })
   })

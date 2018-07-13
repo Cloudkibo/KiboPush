@@ -206,7 +206,7 @@ class Autoposting extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='RDOnbzldnoc'
+                  videoId='vXN_lF7ivJY'
                   opts={{
                     height: '390',
                     width: '640',
@@ -231,6 +231,15 @@ class Autoposting extends React.Component {
               </div>
             </div>
             <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/auto-posting/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
+              </div>
               <div
                 className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
                 role='alert'>
@@ -240,15 +249,6 @@ class Autoposting extends React.Component {
                 <div className='m-alert__text'>
                   Connect several feeds and information sources to send
                   updates to your subscribers
-                </div>
-              </div>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/auto-posting/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='m-portlet m-portlet--mobile'>

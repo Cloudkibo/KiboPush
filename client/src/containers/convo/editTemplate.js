@@ -22,6 +22,7 @@ import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
+import Media from './Media'
 import List from './List'
 import Text from './Text'
 import Card from './Card'
@@ -80,6 +81,7 @@ class EditTemplate extends React.Component {
     this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleMedia = this.handleMedia.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
@@ -212,6 +214,11 @@ class EditTemplate extends React.Component {
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
         temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
+      } else if (payload[i].componentType === 'media') {
+        temp.push({content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -380,7 +387,30 @@ class EditTemplate extends React.Component {
 
     this.setState({broadcast: temp})
   }
-
+  handleMedia (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      }
+      return
+    }
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.fileName = obj.fileName
+        data.fileurl = obj.fileurl
+        data.size = obj.size
+        data.type = obj.type
+        data.buttons = obj.buttons
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
   handleFile (obj) {
     var temp = this.state.broadcast
     var isPresent = false
@@ -684,6 +714,16 @@ class EditTemplate extends React.Component {
                                         <div className='align-center'>
                                           <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
                                           <h6>List</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='row'>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                          <h6>Media</h6>
                                         </div>
                                       </div>
                                     </div>

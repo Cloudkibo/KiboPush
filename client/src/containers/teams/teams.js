@@ -214,7 +214,7 @@ class Teams extends React.Component {
                   <i className='flaticon-technology m--font-accent' />
                 </div>
                 <div className='m-alert__text'>
-                  Need help in understanding teams? Here is the <a href='#' target='_blank'>documentation</a>.
+                  Need help in understanding teams? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>.
                 </div>
               </div>
               <div className='row'>

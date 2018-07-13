@@ -14,6 +14,7 @@ import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
 import Halogen from 'halogen'
+import YouTube from 'react-youtube'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -30,7 +31,8 @@ class Menu extends React.Component {
       disabledWebUrl: true,
       showPreview: false,
       isEditMessage: false,
-      loading: false
+      loading: false,
+      showVideo: false
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -626,6 +628,27 @@ class Menu extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='2I7qnG03zVs'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <Header />
         <div id='menuPopover' />
         {
