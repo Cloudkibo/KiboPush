@@ -100,6 +100,8 @@ class Media extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
+      fileData.append('pageId', this.props.pages[0]._id)
+      fileData.append('componentType', 'media')
       var fileInfo = {
         id: this.props.id,
         componentType: 'media',
