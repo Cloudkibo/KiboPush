@@ -80,7 +80,7 @@ class Media extends React.Component {
     }
     if (file && image) {
       this.setState({
-        mediaType: image
+        mediaType: 'image'
       })
       if (file.type && file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         if (this.props.handleMedia) {
