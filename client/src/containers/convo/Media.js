@@ -39,7 +39,8 @@ class Media extends React.Component {
       image_url: '',
       loading: false,
       showPreview: false,
-      file: ''
+      file: '',
+      mediaType: ''
     }
   }
   showDialog (page) {
@@ -70,7 +71,13 @@ class Media extends React.Component {
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
+    if (file.size > 25000000) {
+      this.props.handleMedia({error: 'file size error'})
+    }
     if (file && image) {
+      this.setState({
+        mediaType: image
+      })
       if (file.type && file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         if (this.props.handleMedia) {
           this.props.handleMedia({error: 'invalid image'})
@@ -94,7 +101,7 @@ class Media extends React.Component {
         size: file.size}, this.updateImageUrl, this.setLoading)
     }
     if (file && video) {
-      this.setState({file: file})
+      this.setState({file: file, mediaType: 'video'})
       var fileData = new FormData()
       fileData.append('file', file)
       fileData.append('filename', file.name)
@@ -120,6 +127,7 @@ class Media extends React.Component {
     this.setState({button: temp})
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
+      mediaType: this.state.mediaType,
       fileurl: this.state.fileurl,
       image_url: this.state.image_url,
       fileName: this.state.fileName,
@@ -138,6 +146,7 @@ class Media extends React.Component {
     this.setState({button: temp})
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
+      mediaType: this.state.mediaType,
       fileurl: this.state.fileurl,
       image_url: this.state.image_url,
       fileName: this.state.fileName,
@@ -151,6 +160,7 @@ class Media extends React.Component {
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
       fileurl: this.state.fileurl,
+      mediaType: this.state.mediaType,
       image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
@@ -170,6 +180,7 @@ class Media extends React.Component {
 
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
+      mediaType: this.state.mediaType,
       fileurl: data.fileurl,
       image_url: data.image_url,
       fileName: data.fileName,
@@ -180,13 +191,15 @@ class Media extends React.Component {
   updateFileUrl (data) {
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
+      image_url: '',
       type: data.type,
       size: data.size })
 
     this.props.handleMedia({id: this.props.id,
       componentType: 'media',
+      mediaType: this.state.mediaType,
       fileurl: data.fileurl,
-      image_url: this.state.image_url,
+      image_url: '',
       fileName: data.fileName,
       type: data.type,
       size: data.size,
@@ -249,9 +262,11 @@ class Media extends React.Component {
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
+        { this.state.button.length < 3 &&
         <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
           <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
         </div>
+        }
       </div>
     )
   }

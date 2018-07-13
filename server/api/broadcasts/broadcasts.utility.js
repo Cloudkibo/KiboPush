@@ -58,6 +58,18 @@ function validateInput (body) {
           }
         }
       }
+      if (body.payload[i].componentType === 'media') {
+        if (body.payload[i].fileurl === undefined ||
+          body.payload[i].fileurl === '') return false
+        if (body.payload[i].mediaType === undefined ||
+          body.payload[i].mediaType === '') return false
+        for (let j = 0; j < body.payload[i].buttons.length; j++) {
+          if (body.payload[i].buttons[j].type === 'web_url') {
+            if (!utility.validateUrl(
+              body.payload[i].buttons[j].url)) return false
+          }
+        }
+      }
       if (body.payload[i].componentType === 'gallery') {
         if (body.payload[i].cards === undefined) return false
         if (body.payload[i].cards.length === 0) return false
@@ -574,6 +586,22 @@ function prepareMessageData (subscriberId, body, fname, lname) {
           'top_element_style': body.topElementStyle,
           'elements': body.listItems,
           'buttons': body.buttons
+        }
+      }
+    }
+  } else if (body.componentType === 'media') {
+    payload = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'media',
+          'elements': [
+            {
+              'attachment_id': body.fileurl.attachment_id,
+              'media_type': body.mediaType,
+              'buttons': body.buttons
+            }
+          ]
         }
       }
     }
