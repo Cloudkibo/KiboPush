@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import Button from './Button'
 import EditButton from './EditButton'
 import Halogen from 'halogen'
-import { uploadImage } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadFile } from '../../redux/actions/convos.actions'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ReactPlayer from 'react-player'
 
@@ -263,6 +263,9 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({uploadImage: uploadImage}, dispatch)
+  return bindActionCreators({
+    uploadImage: uploadImage,
+    uploadFile: uploadFile
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Media)
