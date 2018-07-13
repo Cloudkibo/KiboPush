@@ -32,11 +32,12 @@ class AddPage extends React.Component {
       timeout: 2000,
       showWarning: false,
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : '',
-      isShowingModal: true
+      isShowingModal: (props.location && props.location.state) ? false : true
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToNext = this.goToNext.bind(this)
+    this.showError = this.showError.bind(this)
   }
 
   gotoView () {
@@ -46,7 +47,9 @@ class AddPage extends React.Component {
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
-
+  showError () {
+    this.msg.error('Please connect atleast one page')
+  }
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
     this.props.updateChecks({wizardSeen: true})
@@ -77,7 +80,7 @@ class AddPage extends React.Component {
   goToNext () {
     console.log('props.pages', this.props.pages)
     if (this.props.pages && this.props.pages.length === 0) {
-      this.msg.error('Please select a page')
+      this.msg.error('Please connect atleast one page')
     } else {
       browserHistory.push({
         pathname: `/inviteUsingLinkWizard`
@@ -108,8 +111,8 @@ class AddPage extends React.Component {
                   onClose={this.closeDialog}>
                   <ModalDialog style={{width: '500px'}}
                     onClose={this.closeDialog}>
-                    <h3>Welcome to KiboPush :)</h3>
-                    <p>Are you sure you want to delete this integration?</p>
+                    <h3>Welcome to KiboPush</h3>
+                    <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
                     <div style={{width: '100%', textAlign: 'center'}}>
                       <div style={{display: 'inline-block', padding: '5px'}}>
                         <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
@@ -129,7 +132,7 @@ class AddPage extends React.Component {
                 <div className='m-portlet__body m-portlet__body--no-padding'>
                   <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                     <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='1' />
+                      <Sidebar step='1' pages={this.props.pages} showError={this.showError} />
                       <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', boxShadow: 'none'}}>
                         <div className='m-portlet__head'>
                           <div className='m-portlet__head-caption'>

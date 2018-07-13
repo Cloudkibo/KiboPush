@@ -93,6 +93,12 @@ export function setActiveSession (sessionId) {
   }
 }
 
+export function clearSearchResult () {
+  return {
+    type: ActionTypes.CLEAR_SEARCH_RESULT
+  }
+}
+
 export function showUserChats (payload, originalData) {
   console.log('showUserChats response', payload)
   if (originalData.page === 'first') {

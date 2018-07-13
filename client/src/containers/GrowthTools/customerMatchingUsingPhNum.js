@@ -1,5 +1,7 @@
 import React from 'react'
 import Files from 'react-files'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { bindActionCreators } from 'redux'
 import Halogen from 'halogen'
 import { Link } from 'react-router'
@@ -472,343 +474,348 @@ class CustomerMatching extends React.Component {
     }
     return (
       <div>
-      <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-      <div style={{float: 'left', clear: 'both'}}
-        ref={(el) => { this.top = el }} />
-      {
-        this.state.showVideo &&
-        <ModalContainer style={{width: '680px'}}
-          onClose={() => { this.setState({showVideo: false}) }}>
-          <ModalDialog style={{width: '680px'}}
+        <Header />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <div>
-              <YouTube
-                videoId='r2z8GV_qWvY'
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 1
-                  }
-                }}
-              />
-            </div>
-          </ModalDialog>
-        </ModalContainer>
-      }
-      {
-        this.state.showFileColumns &&
-        <ModalContainer style={{width: '680px'}}
-          onClose={this.closeDialogFileColumns}>
-          <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='gytuYccBcyQ'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.showFileColumns &&
+          <ModalContainer style={{width: '680px'}}
             onClose={this.closeDialogFileColumns}>
-            <div className='form-group m-form__group col-12'>
-              <label className='col-lg-12 col-form-label'>
-                Select column for customer names
-              </label>
-              <div className='col-lg-8'>
-                <Select
-                  options={this.state.columns}
-                  onChange={this.handleNameColumn}
-                  value={this.state.nameColumn}
-                  placeholder='Select Field'
-                />
-              </div>
-              { this.state.columnAlerts && this.state.nameColumn === '' && <span className='m-form__help' >
-                <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
-                </span>
-              }
-            </div>
-            <div className='form-group m-form__group col-12'>
-              <label className='col-lg-12 col-form-label'>
-                Select column for customer phone numbers
-              </label>
-              <div className='col-lg-8'>
-                <Select
-                  options={this.state.columns}
-                  onChange={this.handlePhoneColumn}
-                  value={this.state.phoneColumn}
-                  placeholder='Select Field'
-                />
-              </div>
-              { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
-                <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
-                </span>
-              }
-            </div>
-            { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
-              <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
-              </span>
-            }
-            <button style={{float: 'right', marginLeft: '10px'}}
-              className='btn btn-primary btn-sm'
-              onClick={() => {
-                this.saveColumns()
-              }}>Save
-            </button>
-            <button style={{float: 'right'}}
-              className='btn btn-primary btn-sm'
-              onClick={() => {
-                this.setState({
-                  phoneColumn: '',
-                  nameColumn: '',
-                  disabled: true
-                })
-                this.closeDialogFileColumns()
-              }}>Cancel
-            </button>
-          </ModalDialog>
-        </ModalContainer>
-      }
-      {
-        this.state.isShowingModalFileName &&
-        <ModalContainer style={{width: '500px'}}
-          onClose={this.closeDialogFileName}>
-          <ModalDialog style={{width: '500px'}}
-            onClose={this.closeDialogFileName}>
-            <p>A customer list file name with a similar name exists.
-             Do you want to replace the list ?</p>
-            <button style={{float: 'right', marginLeft: '10px'}}
-              className='btn btn-primary btn-sm'
-              onClick={() => {
-                this.handleSubmit()
-                this.closeDialogFileName()
-              }}>Yes
-            </button>
-            <button style={{float: 'right'}}
-              className='btn btn-primary btn-sm'
-              onClick={() => {
-                this.closeDialogFileName()
-              }}>Cancel
-            </button>
-          </ModalDialog>
-        </ModalContainer>
-      }
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Invite using
-                  Phone Number (Experimental Feature)</h3>
-              </div>
-            </div>
-          </div>
-          <div className='m-content'>
-            {
-                this.props.pages &&
-                this.props.pages.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Pages Connected</h4>
-                  You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
+            <ModalDialog style={{width: '680px'}}
+              onClose={this.closeDialogFileColumns}>
+              <div className='form-group m-form__group col-12'>
+                <label className='col-lg-12 col-form-label'>
+                  Select column for customer names
+                </label>
+                <div className='col-lg-8'>
+                  <Select
+                    options={this.state.columns}
+                    onChange={this.handleNameColumn}
+                    value={this.state.nameColumn}
+                    placeholder='Select Field'
+                  />
                 </div>
-          }
-
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+                { this.state.columnAlerts && this.state.nameColumn === '' && <span className='m-form__help' >
+                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  </span>
+                }
               </div>
-              <div className='m-alert__text'>
-              Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>
-              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              <div className='form-group m-form__group col-12'>
+                <label className='col-lg-12 col-form-label'>
+                  Select column for customer phone numbers
+                </label>
+                <div className='col-lg-8'>
+                  <Select
+                    options={this.state.columns}
+                    onChange={this.handlePhoneColumn}
+                    value={this.state.phoneColumn}
+                    placeholder='Select Field'
+                  />
+                </div>
+                { this.state.columnAlerts && this.state.phoneColumn === '' && <span className='m-form__help' >
+                  <span style={{color: 'red', paddingLeft: '14px'}}>Select a field</span>
+                  </span>
+                }
+              </div>
+              { this.state.columnAlerts && (this.state.nameColumn !== '' && this.state.nameColumn.value === this.state.phoneColumn.value) && <span className='m-form__help' >
+                <span style={{color: 'red', marginLeft: '28px'}}> You cannot select same fields for both columns</span>
+                </span>
+              }
+              <button style={{float: 'right', marginLeft: '10px'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.saveColumns()
+                }}>Save
+              </button>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.setState({
+                    phoneColumn: '',
+                    nameColumn: '',
+                    disabled: true
+                  })
+                  this.closeDialogFileColumns()
+                }}>Cancel
+              </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalFileName &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogFileName}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogFileName}>
+              <p>A customer list file name with a similar name exists.
+               Do you want to replace the list ?</p>
+              <button style={{float: 'right', marginLeft: '10px'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.handleSubmit()
+                  this.closeDialogFileName()
+                }}>Yes
+              </button>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.closeDialogFileName()
+                }}>Cancel
+              </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Invite using
+                    Phone Number (Experimental Feature)</h3>
+                </div>
               </div>
             </div>
-
-            <div
-              className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
-              role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-exclamation m--font-brand' />
-              </div>
-              <div className='m-alert__text'>
-                Upload a file with '.csv' extension containing phone numbers
-                of your customers to invite them for a chat on messenger.
-                Then select columns from your file that contain customers&#39; names and phone numbers.
-                An invitation message will be sent on
-                Facebook messenger
-                to all the customers listed using their phone
-                numbers.
-                <br /><br />
-                <b>Note: </b>This is an experimental feature and it is
-                specific
-                for pages that belong to United States of America (One of the
-                page admins should be from USA). There is a one time fee for each page that you have connected.
-                For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
-              </div>
-            </div>
-            <div className='row'>
-              <div
-                className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet m-portlet--mobile'>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                          Invite customers using phone number
-                        </h3>
-                      </div>
-                    </div>
-                    <div className='m-portlet__head-tools'>
-                      {
-                      this.state.customerLists.length === 0
-                        ? <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                          <span>
-                            <i className='la la-list' />
-                            <span>
-                                View Customers Lists
-                            </span>
-                          </span>
-                        </Link>
-                        : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' to='/customerLists'>
-                          <span>
-                            <i className='la la-list' />
-                            <span>
-                              View Customers Lists
-                            </span>
-                          </span>
-                        </Link>
-                      }
-                    </div>
+            <div className='m-content'>
+              {
+                  this.props.pages &&
+                  this.props.pages.length === 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Pages Connected</h4>
+                    You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
                   </div>
+            }
 
-                  <div className='m-portlet__body'>
-                    <div className='form-group m-form__group row'>
-                      <label className='col-2 col-form-label'>
-                        Change Page
-                      </label>
-                      <div className='col-6'>
-                        <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
-                          {
-                            this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                              <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                            ))
-                          }
-                        </select>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>&nbsp;
+                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
+              </div>
+
+              <div
+                className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+                role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation m--font-brand' />
+                </div>
+                <div className='m-alert__text'>
+                  Upload a file with '.csv' extension containing phone numbers
+                  of your customers to invite them for a chat on messenger.
+                  Then select columns from your file that contain customers&#39; names and phone numbers.
+                  An invitation message will be sent on
+                  Facebook messenger
+                  to all the customers listed using their phone
+                  numbers.
+                  <br /><br />
+                  <b>Note: </b>This is an experimental feature and it is
+                  specific
+                  for pages that belong to United States of America (One of the
+                  page admins should be from USA). There is a one time fee for each page that you have connected.
+                  For further Details on how to make the payment, please contact us <a href='https://www.messenger.com/t/kibopush' target='_blank'>here</a>
+                </div>
+              </div>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Invite customers using phone number
+                          </h3>
+                        </div>
                       </div>
-                    </div>
-                    <div className='form-group m-form__group row'>
-                      <label className='col-2 col-form-label' />
-                      <div className='col-lg-6 col-md-9 col-sm-12'>
+                      <div className='m-portlet__head-tools'>
                         {
-                          this.state.file !== ''
-                          ? <div className='m-dropzone dropzone dz-clickable'
-                            id='m-dropzone-one'>
-                            <div style={{marginTop: '10%'}}>
-                              <span onClick={this.removeFile} style={{float: 'right'}} className='fa-stack'>
-                                <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
+                        this.state.customerLists.length === 0
+                          ? <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                            <span>
+                              <i className='la la-list' />
+                              <span>
+                                  View Customers Lists
                               </span>
-                              <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
-                              {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>}
-                            </div>
-                            <span className='m-form__help'>
-                              {
-                                this.state.fileErrors.map(
-                                  m => <span style={{color: 'red'}}>{m.errorMsg}</span>
-                                )
-                              }
                             </span>
-                          </div>
-                          : <div className='m-dropzone dropzone dz-clickable'
-                            id='m-dropzone-one'>
-                            {
-                              this.state.manually
-                              ? <div>
-                                <label>{'Enter phone number separated by semi colon {;}'}</label>
-                                <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
-                                {
-                                  this.state.numbersError.length > 0 &&
-                                  <span className='m-form__help'>
-                                    <span style={{color: 'red'}}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
-                                  </span>
-                                }
-                              </div>
-                              : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
-                            }
-                            <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
-                            <Files
-                              className='file-upload-area'
-                              onChange={this.onFilesChange}
-                              onError={this.onFilesError}
-                              accepts={[
-                                'text/comma-separated-values',
-                                'text/csv',
-                                'application/csv',
-                                '.csv',
-                                'application/vnd.ms-excel']}
-                              multiple={false}
-                              maxFileSize={25000000}
-                              minFileSize={0}
-                              clickable>
-                              <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
-                            </Files>
-                          </div>
+                          </Link>
+                          : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' to='/customerLists'>
+                            <span>
+                              <i className='la la-list' />
+                              <span>
+                                View Customers Lists
+                              </span>
+                            </span>
+                          </Link>
                         }
                       </div>
                     </div>
-                    <div className='form-group m-form__group row'>
-                      <label className='col-lg-2 col-form-label'>
-                        Invitation Message
-                      </label>
-                      <div className='col-lg-6'>
-                        <textarea
-                          className='form-control m-input m-input--solid'
-                          id='exampleTextarea' rows='3'
-                          placeholder='Enter Invitation Message'
-                          value={this.state.textAreaValue}
-                          onChange={this.onTextChange} />
-                        <span className='m-form__help'>
-                          {
-                            this.state.messageErrors.map(
-                              m => <span style={{color: 'red'}}>{m.errorMsg}</span>
-                            )
-                          }
-                        </span>
-                      </div>
-                    </div>
-                    <div className='m-form'>
-                      <div className='m-portlet__body'>
-                        <div className='m-portlet__foot m-portlet__foot--fit'>
-                          <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                            <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
-                              Reset
-                            </button>
-                            { ((this.props.pages && this.props.pages.length === 0) || this.state.disabled)
-                              ? <button type='submit' className='btn btn-primary' disabled>
-                                Submit
-                              </button>
-                              : <button onClick={this.onSubmit} type='submit' className='btn btn-primary'>
-                                Submit
-                              </button>
-                            }
 
-                            <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getSampleFile}>
-                              <span>
-                                <i className='fa fa-download' />
-                                <span>
-                                  Download Sample CSV file
+                    <div className='m-portlet__body'>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-2 col-form-label'>
+                          Change Page
+                        </label>
+                        <div className='col-6'>
+                          <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                            {
+                              this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                              ))
+                            }
+                          </select>
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-2 col-form-label' />
+                        <div className='col-lg-6 col-md-9 col-sm-12'>
+                          {
+                            this.state.file !== ''
+                            ? <div className='m-dropzone dropzone dz-clickable'
+                              id='m-dropzone-one'>
+                              <div style={{marginTop: '10%'}}>
+                                <span onClick={this.removeFile} style={{float: 'right'}} className='fa-stack'>
+                                  <i style={{color: '#ccc', cursor: 'pointer'}} className='fa fa-times fa-stack-1x fa-inverse' />
                                 </span>
-                              </span>
-                            </button>
-                          </div>
-                          {
-                            this.state.loading
-                            ? <ModalContainer>
-                              <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-                                className='align-center'>
-                                <center><Halogen.RingLoader color='#716aca' /></center>
+                                <h4><i style={{fontSize: '20px'}} className='fa fa-file-text-o' /> {this.state.file[0].name}</h4>
+                                {this.state.fileErrors.length < 1 && <button style={{cursor: 'pointer', marginTop: '20px'}} onClick={() => this.setState({showFileColumns: true})} className='btn m-btn--pill btn-success'>Select Columns</button>}
                               </div>
-                            </ModalContainer>
-                            : <span />
-                          }
-                          {
-                            this.state.alertMessage !== '' &&
-                            <div className='alert alert-success' role='alert'>
-                              {this.state.alertMessage} <br />
+                              <span className='m-form__help'>
+                                {
+                                  this.state.fileErrors.map(
+                                    m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                                  )
+                                }
+                              </span>
+                            </div>
+                            : <div className='m-dropzone dropzone dz-clickable'
+                              id='m-dropzone-one'>
                               {
-                                this.state.file && this.state.file !== '' &&
-                                <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                this.state.manually
+                                ? <div>
+                                  <label>{'Enter phone number separated by semi colon {;}'}</label>
+                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  {
+                                    this.state.numbersError.length > 0 &&
+                                    <span className='m-form__help'>
+                                      <span style={{color: 'red'}}>One or more numbers are incorrect. Please make sure that all numbers must start with + sign.</span>
+                                    </span>
+                                  }
+                                </div>
+                                : <button style={{cursor: 'pointer'}} onClick={() => this.enterPhoneNoManually()} className='btn m-btn--pill btn-success'>Enter phone numbers manually</button>
                               }
+                              <h4 style={{marginTop: '20px', marginBottom: '15px'}}>OR</h4>
+                              <Files
+                                className='file-upload-area'
+                                onChange={this.onFilesChange}
+                                onError={this.onFilesError}
+                                accepts={[
+                                  'text/comma-separated-values',
+                                  'text/csv',
+                                  'application/csv',
+                                  '.csv',
+                                  'application/vnd.ms-excel']}
+                                multiple={false}
+                                maxFileSize={25000000}
+                                minFileSize={0}
+                                clickable>
+                                <button style={{cursor: 'pointer'}} className='btn m-btn--pill btn-success'>Upload CSV File</button>
+                              </Files>
                             </div>
                           }
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Invitation Message
+                        </label>
+                        <div className='col-lg-6'>
+                          <textarea
+                            className='form-control m-input m-input--solid'
+                            id='exampleTextarea' rows='3'
+                            placeholder='Enter Invitation Message'
+                            value={this.state.textAreaValue}
+                            onChange={this.onTextChange} />
+                          <span className='m-form__help'>
+                            {
+                              this.state.messageErrors.map(
+                                m => <span style={{color: 'red'}}>{m.errorMsg}</span>
+                              )
+                            }
+                          </span>
+                        </div>
+                      </div>
+                      <div className='m-form'>
+                        <div className='m-portlet__body'>
+                          <div className='m-portlet__foot m-portlet__foot--fit'>
+                            <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                              <button style={{marginRight: '10px'}} className='btn btn-primary'onClick={this.clickAlert}>
+                                Reset
+                              </button>
+                              { ((this.props.pages && this.props.pages.length === 0) || this.state.disabled)
+                                ? <button type='submit' className='btn btn-primary' disabled>
+                                  Submit
+                                </button>
+                                : <button onClick={this.onSubmit} type='submit' className='btn btn-primary'>
+                                  Submit
+                                </button>
+                              }
+
+                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getSampleFile}>
+                                <span>
+                                  <i className='fa fa-download' />
+                                  <span>
+                                    Download Sample CSV file
+                                  </span>
+                                </span>
+                              </button>
+                            </div>
+                            {
+                              this.state.loading
+                              ? <ModalContainer>
+                                <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+                                  className='align-center'>
+                                  <center><Halogen.RingLoader color='#716aca' /></center>
+                                </div>
+                              </ModalContainer>
+                              : <span />
+                            }
+                            {
+                              this.state.alertMessage !== '' &&
+                              <div className='alert alert-success' role='alert'>
+                                {this.state.alertMessage} <br />
+                                {
+                                  this.state.file && this.state.file !== '' &&
+                                  <a href='#' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
+                                }
+                              </div>
+                            }
+                          </div>
                         </div>
                       </div>
                     </div>

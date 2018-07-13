@@ -38,6 +38,13 @@
           break
         }
       }
+      if (broadcast[i].componentType === 'media') {
+        if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
+          msg.error('Select an image or video')
+          isValid = false
+          break
+        }
+      }
       if (broadcast[i].componentType === 'card') {
         if (broadcast[i].image_url === undefined || broadcast[i].image_url === '') {
           msg.error('Card must have an image')

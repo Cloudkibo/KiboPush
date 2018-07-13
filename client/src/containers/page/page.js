@@ -3,6 +3,8 @@
  */
 
 import React from 'react'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
@@ -168,6 +170,7 @@ class Page extends React.Component {
   render () {
     return (
       <div>
+        <Header />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -176,7 +179,7 @@ class Page extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='3XenbHoDZkA'
+                  videoId='9kY3Fmj_tbM'
                   opts={{
                     height: '390',
                     width: '640',
@@ -189,204 +192,208 @@ class Page extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Manage Pages</h3>
-              </div>
-            </div>
-          </div>
-          <div className='m-content'>
-            { !this.state.connectedPages
-              ? <div className='alert alert-success'>
-                <h4 className='block'>0 Connected Pages</h4>
-                You do not have any connected pages. Please click on Connect Facebook Pages to connect your Facebook Pages.
-              </div>
-            : <div>
-              { this.props.subscribers &&
-                this.props.subscribers.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not
-                  have any subscriber, you will not be able to broadcast
-                  message, polls and surveys.
-                  Lets invite subscribers first. Dont worry, we will guide
-                  you on how you can invite subscribers.
-                  Click on 'Invite Subscribers' button on right side of the
-                  page title.
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Manage Pages</h3>
                 </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              { !this.state.connectedPages
+                ? <div className='alert alert-success'>
+                  <h4 className='block'>0 Connected Pages</h4>
+                  You do not have any connected pages. Please click on Connect Facebook Pages to connect your Facebook Pages.
+                </div>
+              : <div>
+                { this.props.subscribers &&
+                  this.props.subscribers.length === 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Subscribers</h4>
+                    Your connected pages have zero subscribers. Unless you do not
+                    have any subscriber, you will not be able to broadcast
+                    message, polls and surveys.
+                    Lets invite subscribers first. Dont worry, we will guide
+                    you on how you can invite subscribers.
+                    Click on 'Invite Subscribers' button on right side of the
+                    page title.
+                  </div>
+                }
+              </div>
               }
-            </div>
-            }
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding pages? Here is the <a href='http://kibopush.com/manage-pages/' target='_blank'>documentation</a>.
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                Need help in understanding pages? Here is the <a href='http://kibopush.com/manage-pages/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-              </div>
-            </div>
-            <div className='row'>
-              <div
-                className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet m-portlet--mobile'>
-                  <div>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <span className='m-portlet__head-icon'>
-                            <i className='flaticon-calendar' />
-                          </span>
-                          <h3 className='m-portlet__head-text m--font-primary'>
-                          Pages
-                        </h3>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div>
+                      <div className='m-portlet__head'>
+                        <div className='m-portlet__head-caption'>
+                          <div className='m-portlet__head-title'>
+                            <span className='m-portlet__head-icon'>
+                              <i className='flaticon-calendar' />
+                            </span>
+                            <h3 className='m-portlet__head-text m--font-primary'>
+                            Pages
+                          </h3>
+                          </div>
+
+                        </div>
+                        <div className='m-portlet__head-tools'>
+                          <ul className='m-portlet__nav'>
+                            <li className='m-portlet__nav-item'>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.goToAddPages}>
+                                <span>
+                                  <i className='la la-plus' />
+                                  <span>
+                                    Connect Facebook Pages
+                                  </span>
+                                </span>
+                              </button>
+                            </li>
+
+                          </ul>
                         </div>
 
                       </div>
-                      <div className='m-portlet__head-tools'>
-                        <ul className='m-portlet__nav'>
-                          <li className='m-portlet__nav-item'>
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.goToAddPages}>
-                              <span>
-                                <i className='la la-plus' />
-                                <span>
-                                  Connect Facebook Pages
-                                </span>
-                              </span>
-                            </button>
-                          </li>
-
-                        </ul>
-                      </div>
-
-                    </div>
-                    {
-                  this.state.isShowingModal &&
-                  <ModalContainer style={{width: '500px'}}
-                    onClose={this.closeDialog}>
-                    <ModalDialog style={{width: '500px'}}
+                      {
+                    this.state.isShowingModal &&
+                    <ModalContainer style={{width: '500px'}}
                       onClose={this.closeDialog}>
-                      <h3>Remove Page</h3>
-                      <p>If you remove this page you will loose all of its
-                        subscribers and you will not be able to send messages,
-                        polls, and surveys to them. Are you sure to remove
-                        this page?</p>
-                      <button style={{float: 'right'}}
-                        className='btn btn-primary btn-sm'
-                        onClick={() => this.removePage(
-                                this.state.page)}>Remove
-                      </button>
-                    </ModalDialog>
-                  </ModalContainer>
-                }
-                    <div className='m-portlet__body'>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <h3>Remove Page</h3>
+                        <p>If you remove this page you will loose all of its
+                          subscribers and you will not be able to send messages,
+                          polls, and surveys to them. Are you sure to remove
+                          this page?</p>
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => this.removePage(
+                                  this.state.page)}>Remove
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                      <div className='m-portlet__body'>
 
-                      <div className='row align-items-center'>
-                        <div className='col-xl-4 col-lg-4 col-md-4'>
-                          <div className='m-input-icon m-input-icon--left'>
-                            <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} placeholder='Search...' id='generalSearch' />
-                            <span className='m-input-icon__icon m-input-icon__icon--left'>
-                              <span><i className='la la-search' /></span>
-                            </span>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-4 col-lg-4 col-md-4'>
+                            <div className='m-input-icon m-input-icon--left'>
+                              <input type='text' className='form-control m-input m-input--solid' onChange={this.searchPages} placeholder='Search...' id='generalSearch' />
+                              <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                <span><i className='la la-search' /></span>
+                              </span>
+                            </div>
                           </div>
                         </div>
+                        <br />
+                        <br />
+                        <br />
+
+                        { this.state.pagesData && this.state.pagesData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{height: '53px'}}>
+                              <th data-field='platform' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Page Pic</span>
+                              </th>
+                              <th data-field='statement' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Page Name</span>
+                              </th>
+                              <th data-field='datetime' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Likes</span>
+                              </th>
+                              <th data-field='sent' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span >Subscribers</span>
+                              </th>
+                              <th data-field='seen' style={{width: 100}}
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span>Actions</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className='m-datatable__body'>
+                            {
+                            this.state.pagesData.map((page, i) => (
+                              (page.connected) ? <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={page.pagePic} /></span></td>
+                                <td data-field='statement' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span >{page.pageName}</span></td>
+                                <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{page.likes}</span></td>
+                                <td data-field='sent' style={{width: 100, paddingLeft: 75 + 'px', textAlign: 'center'}} className='m-datatable__cell'><span >{page.subscribers}</span></td>
+                                <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
+                                  <span >
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'right', margin: 2}}
+                                      onClick={() => this.showDialog(page)}>
+                                      Remove
+                                    </button>
+
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'right', margin: 2}}
+                                      onClick={() => this.inviteSubscribers(page)}>
+                                      Invite Subscribers
+                                    </button>
+
+                                  </span>
+                                </td>
+                              </tr> : ''
+                            ))
+                          }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'}
+                            forcePage={this.state.pageNumber} />
+                        </div>
                       </div>
-                      <br />
-                      <br />
-                      <br />
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
 
-                      { this.state.pagesData && this.state.pagesData.length > 0
-                    ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                      <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                        <thead className='m-datatable__head'>
-                          <tr className='m-datatable__row'
-                            style={{height: '53px'}}>
-                            <th data-field='platform' style={{width: 100}}
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span >Page Pic</span>
-                            </th>
-                            <th data-field='statement' style={{width: 100}}
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span>Page Name</span>
-                            </th>
-                            <th data-field='datetime' style={{width: 100}}
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span>Likes</span>
-                            </th>
-                            <th data-field='sent' style={{width: 100}}
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span >Subscribers</span>
-                            </th>
-                            <th data-field='seen' style={{width: 100}}
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span>Actions</span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className='m-datatable__body'>
-                          {
-                          this.state.pagesData.map((page, i) => (
-                            (page.connected) ? <tr data-row={i}
-                              className='m-datatable__row m-datatable__row--even'
-                              style={{height: '55px'}} key={i}>
-                              <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={page.pagePic} /></span></td>
-                              <td data-field='statement' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span >{page.pageName}</span></td>
-                              <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{page.likes}</span></td>
-                              <td data-field='sent' style={{width: 100, paddingLeft: 75 + 'px', textAlign: 'center'}} className='m-datatable__cell'><span >{page.subscribers}</span></td>
-                              <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
-                                <span >
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'right', margin: 2}}
-                                    onClick={() => this.showDialog(page)}>
-                                    Remove
-                                  </button>
-
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'right', margin: 2}}
-                                    onClick={() => this.inviteSubscribers(page)}>
-                                    Invite Subscribers
-                                  </button>
-
-                                </span>
-                              </td>
-                            </tr> : ''
-                          ))
-                        }
-                        </tbody>
-                      </table>
-                      <div className='pagination'>
-                        <ReactPaginate
-                          previousLabel={'previous'}
-                          nextLabel={'next'}
-                          breakLabel={<a>...</a>}
-                          breakClassName={'break-me'}
-                          pageCount={Math.ceil(this.state.totalLength / 10)}
-                          marginPagesDisplayed={2}
-                          pageRangeDisplayed={3}
-                          onPageChange={this.handlePageClick}
-                          containerClassName={'pagination'}
-                          subContainerClassName={'pages pagination'}
-                          activeClassName={'active'}
-                          forcePage={this.state.pageNumber} />
                       </div>
-                    </div>
-                    : <span>
-                      <p> No data to display </p>
-                    </span>
-                  }
-
                     </div>
                   </div>
+
                 </div>
 
               </div>
-
             </div>
           </div>
         </div>
       </div>
+
     )
   }
 }

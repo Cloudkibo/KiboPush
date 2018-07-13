@@ -201,14 +201,14 @@ class Teams extends React.Component {
                 <h3 className='m-subheader__title'>Manage Teams</h3>
               </div>
             </div>
-          </div>
-          <div className='m-content'>
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
-              </div>
-              <div className='m-alert__text'>
-                Need help in understanding teams? Here is the <a href='#' target='_blank'>documentation</a>.
+            <div className='m-content'>
+              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                <div className='m-alert__icon'>
+                  <i className='flaticon-technology m--font-accent' />
+                </div>
+                <div className='m-alert__text'>
+                  Need help in understanding teams? Here is the <a href='http://kibopush.com/teams/' target='_blank'>documentation</a>.
+                </div>
               </div>
             </div>
             <div className='row'>

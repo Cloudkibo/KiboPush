@@ -7,6 +7,8 @@ import {
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import YouTube from 'react-youtube'
 
 class WelcomeMessage extends React.Component {
   constructor (props, context) {
@@ -15,7 +17,8 @@ class WelcomeMessage extends React.Component {
       showDropDown: false,
       surveysData: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      showVideo: false
     }
     props.loadMyPagesList()
     this.switchInitialized = false
@@ -81,6 +84,27 @@ class WelcomeMessage extends React.Component {
   render () {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='7AEdAMXW6gE'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -96,9 +120,12 @@ class WelcomeMessage extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              <label style={{fontWeight: 'inherit'}}>
-                Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
-              </label>
+              <div className='form-group m-form__group'>
+                <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                  Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
+                  Or Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                </div>
+              </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
