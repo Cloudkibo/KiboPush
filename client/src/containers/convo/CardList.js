@@ -146,7 +146,9 @@ class Card extends React.Component {
       }
     }
   }
-  removeImage () {
+  removeImage (event) {
+    console.log('remove image')
+    event.stopPropagation()
     this.setState({imgSrc: ''})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
@@ -159,8 +161,10 @@ class Card extends React.Component {
       description: this.state.subtitle,
       buttons: this.state.button})
   }
-  _onChange () {
+  _onChange (event) {
   // Assuming only image
+    event.stopPropagation()
+    console.log('+onChange')
     var file = this.refs.file.files[0]
     if (file) {
       if (file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -365,7 +369,7 @@ class Card extends React.Component {
             </center>
           </div>
           {!this.state.checkbox &&
-          <div style={{display: 'flex', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
+          <div style={{display: 'inline-grid', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
               ref='file'
               type='file'
@@ -376,16 +380,16 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-            : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px'}} src={this.state.imgSrc} />
+            ? <img style={{maxHeight: '40px', margin: 'auto'}} src='icons/picture.png' alt='Text' />
+          : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
           </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
-            <div onClick={this.removeImage}>
-          <i className='fa fa-times-circle-o' style={{fontSize: '1rem', marginLeft: '5px'}} onClick={this.removeImage} />
-          </div>
-        }
+            <div className='col-md-2' style={{display: 'contents'}} onClick={this.removeImage}>
+              <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
+            </div>
+          }
         </div>
         <br />
         <div className='row'>
