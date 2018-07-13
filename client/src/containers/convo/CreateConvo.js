@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import {
   createbroadcast,
@@ -665,13 +663,13 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                   </div>
-                                  <div className='row'>
-                                    <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}) }}>
-                                        <div className='align-center'>
-                                          <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
-                                          <h6>Media</h6>
-                                        </div>
+                                </div>
+                                <div className='row'>
+                                  <div className='col-3'>
+                                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='align-center'>
+                                        <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                        <h6>Media</h6>
                                       </div>
                                     </div>
                                   </div>

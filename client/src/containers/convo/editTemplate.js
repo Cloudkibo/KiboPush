@@ -730,132 +730,133 @@ class EditTemplate extends React.Component {
                                     </div>
                                   </div>
                                 }
-                              </div>
-                              <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                                <StickyDiv zIndex={1}>
-                                  <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                                    <div style={{padding: '5px'}}>
-                                      {this.props.location.state && this.props.location.state.module === 'welcome'
-                                        ? <h3>Welcome Message</h3>
-                                        : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
-                                      }
-                                    </div>
-                                  </div>
-                                </StickyDiv>
-                                {
-                                  this.state.isShowingModal &&
-                                  <ModalContainer style={{width: '500px'}}
-                                    onClose={this.closeDialog}>
-                                    <ModalDialog style={{width: '500px'}}
-                                      onClose={this.closeDialog}>
-                                      <h3>Rename:</h3>
-                                      <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                                      <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                                    </ModalDialog>
-                                  </ModalContainer>
-                                }
-                                {
-                                  this.state.isShowingModalResetAlert &&
-                                  <ModalContainer style={{width: '500px'}}
-                                    onClose={this.closeResetAlertDialog}>
-                                    <ModalDialog style={{width: '500px'}}
-                                      onClose={this.closeResetAlertDialog}>
-                                      <p>Are you sure you want to reset the message ?</p>
-                                      <button style={{float: 'right', marginLeft: '10px'}}
-                                        className='btn btn-primary btn-sm'
-                                        onClick={() => {
-                                          this.newConvo()
-                                          this.closeResetAlertDialog()
-                                        }}>Yes
-                                      </button>
-                                      <button style={{float: 'right'}}
-                                        className='btn btn-primary btn-sm'
-                                        onClick={() => {
-                                          this.closeResetAlertDialog()
-                                        }}>Cancel
-                                      </button>
-                                    </ModalDialog>
-                                  </ModalContainer>
-                                }
-                                {
-                                  this.state.isShowingModalGuideLines &&
-                                  <ModalContainer style={{width: '500px'}}
-                                    onClose={this.closeGuideLinesDialog}>
-                                    <ModalDialog style={{width: '500px'}}
-                                      onClose={this.closeGuideLinesDialog}>
-                                      <h4>Message Types</h4>
-                                      <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
-                                      <div className='panel-group accordion' id='accordion1'>
-                                        <div className='panel panel-default'>
-                                          <div className='panel-heading guidelines-heading'>
-                                            <h4 className='panel-title'>
-                                              <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
-                                            </h4>
-                                          </div>
-                                          <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                                            <div className='panel-body'>
-                                              <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className='panel panel-default'>
-                                          <div className='panel-heading guidelines-heading'>
-                                            <h4 className='panel-title'>
-                                              <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
-                                            </h4>
-                                          </div>
-                                          <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                                            <div className='panel-body'>
-                                              Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className='panel panel-default'>
-                                          <div className='panel-heading guidelines-heading'>
-                                            <h4 className='panel-title'>
-                                              <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
-                                            </h4>
-                                          </div>
-                                          <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                                            <div className='panel-body'>
-                                              After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
-                                            </div>
-                                          </div>
-                                        </div>
+                                </div>
+                                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                                  <StickyDiv zIndex={1}>
+                                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                                      <div style={{padding: '5px'}}>
+                                        {this.props.location.state && this.props.location.state.module === 'welcome'
+                                          ? <h3>Welcome Message</h3>
+                                          : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                                        }
                                       </div>
-                                    </ModalDialog>
-                                  </ModalContainer>
-                                }
-                                {
-                                  this.state.showMessengerModal &&
-                                  <ModalContainer style={{width: '500px'}}
-                                    onClose={() => { this.setState({showMessengerModal: false}) }}>
-                                    <ModalDialog style={{width: '500px'}}
+                                    </div>
+                                  </StickyDiv>
+                                  {
+                                    this.state.isShowingModal &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeDialog}>
+                                        <h3>Rename:</h3>
+                                        <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                                        <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  {
+                                    this.state.isShowingModalResetAlert &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeResetAlertDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeResetAlertDialog}>
+                                        <p>Are you sure you want to reset the message ?</p>
+                                        <button style={{float: 'right', marginLeft: '10px'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.newConvo()
+                                            this.closeResetAlertDialog()
+                                          }}>Yes
+                                        </button>
+                                        <button style={{float: 'right'}}
+                                          className='btn btn-primary btn-sm'
+                                          onClick={() => {
+                                            this.closeResetAlertDialog()
+                                          }}>Cancel
+                                        </button>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  {
+                                    this.state.isShowingModalGuideLines &&
+                                    <ModalContainer style={{width: '500px'}}
+                                      onClose={this.closeGuideLinesDialog}>
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={this.closeGuideLinesDialog}>
+                                        <h4>Message Types</h4>
+                                        <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
+                                        <div className='panel-group accordion' id='accordion1'>
+                                          <div className='panel panel-default'>
+                                            <div className='panel-heading guidelines-heading'>
+                                              <h4 className='panel-title'>
+                                                <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
+                                              </h4>
+                                            </div>
+                                            <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                              <div className='panel-body'>
+                                                <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className='panel panel-default'>
+                                            <div className='panel-heading guidelines-heading'>
+                                              <h4 className='panel-title'>
+                                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
+                                              </h4>
+                                            </div>
+                                            <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                              <div className='panel-body'>
+                                                Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className='panel panel-default'>
+                                            <div className='panel-heading guidelines-heading'>
+                                              <h4 className='panel-title'>
+                                                <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
+                                              </h4>
+                                            </div>
+                                            <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                              <div className='panel-body'>
+                                                After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  {
+                                    this.state.showMessengerModal &&
+                                    <ModalContainer style={{width: '500px'}}
                                       onClose={() => { this.setState({showMessengerModal: false}) }}>
-                                      <h3>Connect to Messenger:</h3>
-                                      <MessengerPlugin
-                                        appId={this.props.fbAppId}
-                                        pageId={JSON.stringify(this.state.pageValue[0])}
-                                        passthroughParams={this.props.user._id}
-                                        onClick={() => { this.setState({showMessengerModal: false}) }}
-                                      />
-                                    </ModalDialog>
-                                  </ModalContainer>
-                                }
-                                <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                                  {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+                                      <ModalDialog style={{width: '500px'}}
+                                        onClose={() => { this.setState({showMessengerModal: false}) }}>
+                                        <h3>Connect to Messenger:</h3>
+                                        <MessengerPlugin
+                                          appId={this.props.fbAppId}
+                                          pageId={JSON.stringify(this.state.pageValue[0])}
+                                          passthroughParams={this.props.user._id}
+                                          onClick={() => { this.setState({showMessengerModal: false}) }}
+                                        />
+                                      </ModalDialog>
+                                    </ModalContainer>
+                                  }
+                                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
 
-                                  <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+                                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
 
+                                  </div>
                                 </div>
                               </div>
                             </div>
+                            { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
+                            <div className='tab-pane' id='tab_2'>
+                              <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
+                            </div>
+                            }
                           </div>
-                          { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
-                          <div className='tab-pane' id='tab_2'>
-                            <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='broadcast' />
-                          </div>
-                          }
                         </div>
                       </div>
                     </div>
