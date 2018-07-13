@@ -301,30 +301,7 @@ class EditTemplate extends React.Component {
 
     this.setState({broadcast: temp})
   }
-  andleMedia (obj) {
-    if (obj.error) {
-      if (obj.error === 'invalid image') {
-        this.msg.error('Please select an image of type jpg, gif, bmp or png')
-      }
-      return
-    }
-    var temp = this.state.broadcast
-    var isPresent = false
-    temp.map((data) => {
-      if (data.id === obj.id) {
-        data.fileName = obj.fileName
-        data.fileurl = obj.fileurl
-        data.size = obj.size
-        data.type = obj.type
-        data.buttons = obj.buttons
-        isPresent = true
-      }
-    })
-    if (!isPresent) {
-      temp.push(obj)
-    }
-    this.setState({broadcast: temp})
-  }
+
   handleCard (obj) {
     var temp = this.state.broadcast
     var isPresent = false
