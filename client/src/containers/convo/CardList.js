@@ -32,7 +32,7 @@ class Card extends React.Component {
     this.changeUrl = this.changeUrl.bind(this)
     this.removeImage = this.removeImage.bind(this)
     this.state = {
-      imgSrc: props.img ? props.img : '',
+      imgSrc: props.img ? props.img : 'https://staging.kibopush.com/api/broadcasts/download/f8a4ede5279201871254015.jpeg',
       title: props.title ? props.title : '',
       button: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',
@@ -364,8 +364,10 @@ class Card extends React.Component {
               <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '90%' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             </center>
           </div>
+          <div className='col-md-4'>
+            <div className='row'>
           {!this.state.checkbox &&
-          <div style={{display: 'flex', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
+          <div style={{display: 'flex', backgroundColor: '#F2F3F8', paddingRight: '10px'}} className='cardimageblock col-md-10'>
             <input
               ref='file'
               type='file'
@@ -382,10 +384,12 @@ class Card extends React.Component {
           </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
-            <div onClick={this.removeImage}>
-          <i className='fa fa-times-circle-o' style={{fontSize: '1rem', marginLeft: '5px'}} onClick={this.removeImage} />
+            <div className='col-md-2' onClick={this.removeImage}>
+          <i className='fa fa-times-circle-o' style={{fontSize: '1rem', marginLeft: '-8px'}} onClick={this.removeImage} />
           </div>
         }
+      </div>
+    </div>
         </div>
         <br />
         <div className='row'>
