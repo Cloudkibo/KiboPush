@@ -285,6 +285,10 @@ class CreateConvo extends React.Component {
         this.msg.error('File size cannot exceed 25MB')
         return
       }
+      if (obj.error === 'invalid file') {
+        this.msg.error('File is not valid')
+        return
+      }
     }
     var temp = this.state.broadcast
     var isPresent = false
