@@ -32,7 +32,7 @@ class Card extends React.Component {
     this.changeUrl = this.changeUrl.bind(this)
     this.removeImage = this.removeImage.bind(this)
     this.state = {
-      imgSrc: props.img ? props.img : 'https://staging.kibopush.com/api/broadcasts/download/f8a4ede5279201871254015.jpeg',
+      imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
       button: props.buttons ? props.buttons : [],
       subtitle: props.subtitle ? props.subtitle : '',
@@ -385,9 +385,9 @@ class Card extends React.Component {
            }
           </div>
           }
-            {this.state.imgSrc !== '' && !this.state.checkbox &&
-              <div className='col-md-2' style={{display: 'contents'}} onClick={this.removeImage}>
-            <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
+          {this.state.imgSrc !== '' && !this.state.checkbox &&
+            <div className='col-md-2' style={{display: 'contents'}} onClick={this.removeImage}>
+              <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
             </div>
           }
         </div>
