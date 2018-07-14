@@ -144,18 +144,18 @@ class Dashboard extends React.Component {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
       if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-        browserHistory.push({
-          pathname: '/connectFb',
-          state: { account_type: 'individual' }
-        })
+        // browserHistory.push({
+        //   pathname: '/connectFb',
+        //   state: { account_type: 'individual' }
+        // })
       } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
-        if (nextprops.pages && nextprops.pages.length === 0) {
-          console.log('going to push')
-          browserHistory.push({
-            pathname: '/connectFb',
-            state: { account_type: 'team' }
-          })
-        }
+        // if (nextprops.pages && nextprops.pages.length === 0) {
+        //   console.log('going to push')
+        //   browserHistory.push({
+        //     pathname: '/connectFb',
+        //     state: { account_type: 'team' }
+        //   })
+        // }
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
