@@ -6,7 +6,6 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { fetchAllPlans, deletePlan } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
@@ -31,6 +30,7 @@ class Plans extends React.Component {
   }
 
   onDelete (companyCount, id) {
+    console.log('id', id)
     if (companyCount > 0) {
       this.msg.error('Please migrate all companies of this plan before deleting')
     } else {
@@ -98,6 +98,13 @@ class Plans extends React.Component {
                       <div className='m-portlet__head-tools'>
                         <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
+                            <span>
+                              Migrate Companies
+                            </span>
+                          </span>
+                        </button>&nbsp;&nbsp;
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          <span>
                             <i className='la la-plus' />
                             <span>
                               Add Plan
@@ -110,7 +117,7 @@ class Plans extends React.Component {
                       <div className='tab-content'>
                         <div className='tab-pane active m-scrollable' role='tabpanel'>
                           <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                            <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                            <div style={{height: '550px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
                               <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                                 <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                                   <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
@@ -120,7 +127,7 @@ class Plans extends React.Component {
                                           <div className='m-widget5__content' style={{verticalAlign: 'bottom'}}>
                                             <h4 className='m-widget5__title'>
                                               {plan.name}&nbsp;&nbsp;
-                                              {(plan.unique_ID === 'plan_A' || plan.unique_ID === 'plan_C' || plan.default_individual || plan.default_team) &&
+                                              {(plan.unique_ID === 'plan_B' || plan.unique_ID === 'plan_D' || plan.default_individual || plan.default_team) &&
                                                 <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                                   <span className='m--font-success'>Default</span>
                                                 </span>
@@ -128,16 +135,16 @@ class Plans extends React.Component {
                                             </h4>
                                             <div className='m-widget5__info'>
                                               <span className='m-widget5__author'>
-                                                Pricing:&nbsp;
+                                                Amount:&nbsp;
                                               </span>
                                               <span className='m-widget5__info-author m--font-info'>
-                                                Free
+                                                ${plan.amount}
                                               </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                               <span className='m-widget5__info-label'>
                                               Trial Period:&nbsp;
                                               </span>
                                               <span className='m-widget5__info-author m--font-info'>
-                                                {plan.trial_period}
+                                                {plan.trial_period} days
                                               </span>
                                             </div>
                                           </div>
@@ -163,9 +170,8 @@ class Plans extends React.Component {
                                               </span>
                                             </center>
                                           </div>
-                                          {plan.unique_ID === 'plan_A' || plan.unique_ID === 'plan_C'
-                                          ? null
-                                          : <div className='m-widget5__stats1'>
+                                          <div className='m-widget5__stats1'>
+                                            {plan.unique_ID !== 'plan_B' && plan.unique_ID !== 'plan_D' && !plan.default_individual && !plan.default_team &&
                                             <center style={{cursor: 'pointer'}} onClick={() => this.onDelete(plan.companyCount, plan.unique_ID)}>
                                               <span className='m-widget5__number'>
                                                 <i className='fa fa-trash' style={{fontSize: '1.5rem'}} />
@@ -175,8 +181,8 @@ class Plans extends React.Component {
                                                 Delete
                                               </span>
                                             </center>
+                                          }
                                           </div>
-                                        }
                                         </div>
                                       ))}
                                     </div>

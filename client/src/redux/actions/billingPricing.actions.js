@@ -10,7 +10,10 @@ export function fetchPlans (data) {
 
 export function fetchAllPlans () {
   return (dispatch) => {
-    callApi('plans').then(res => dispatch(fetchPlans(res.payload)))
+    callApi('plans').then(res => {
+      console.log('res', res)
+      dispatch(fetchPlans(res.payload))
+    })
   }
 }
 
