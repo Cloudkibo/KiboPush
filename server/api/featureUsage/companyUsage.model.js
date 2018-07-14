@@ -27,7 +27,6 @@ let CompanyUsageSchema = new Schema({
   broadcast_sequences: Number,  // number of sequences user can create
   messages_per_sequence: Number, // number of messages per sequence
   segmentation_lists: Number
-
 })
 
 module.exports = mongoose.model('company_usage', CompanyUsageSchema)
