@@ -59,6 +59,7 @@ module.exports = function (app) {
   app.use('/api/webhooks', require('./api/webhooks'))
   app.use('/api/planPermissions', require('./api/permissions_plan'))
   app.use('/api/plans', require('./api/plans'))
+  app.use('/api/usage', require('./api/featureUsage'))
 
   app.use('/auth', require('./auth'))
 
