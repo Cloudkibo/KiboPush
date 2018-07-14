@@ -1,5 +1,80 @@
 const Features = require('./permissions_plan.model')
 const Plans = require('./../plans/plans.model')
+const _ = require('lodash')
+
+exports.index = function (req, res) {
+  Features.findOne({plan_id: req.params.id}, (err, features) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: features
+    })
+  })
+}
+
+exports.update = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'features')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  Features.findOne({plan_id: req.body.features.plan_id}, (err, features) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    features = req.body.features
+    features.save((err2) => {
+      if (err2) {
+        return res.status(500)
+          .json({status: 'failed', description: 'Features update failed'})
+      }
+      res.status(200).json({
+        status: 'success',
+        payload: features
+      })
+    })
+  })
+}
+
+exports.create = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'name')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  let feature = req.body.name.replace(' ', '_')
+  let query = {}
+  query[feature] = false
+
+  Features.update({}, query, {multi: true}, (err, updated) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      description: 'Feature has been added successfully!'
+    })
+  })
+}
 
 exports.populatePlanPermissions = function (req, res) {
   Plans.find({}, (err, plans) => {
