@@ -136,38 +136,54 @@ class EditTemplate extends React.Component {
       tagValue: targeting.tagValue
     })
   }
-  onNext () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    $('[href="#tab_2"]').tab('show')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+  onNext (e) {
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target'})
+    }
   }
   onPrevious () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'broadcast', resetTarget: false})
+    this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target', resetTarget: false})
+    }
   }
   componentWillReceiveProps (nextprops) {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
@@ -613,7 +629,7 @@ class EditTemplate extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
-                              <button className='btn btn-primary' onClick={this.onNext}>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
                                 Next
                               </button>
                             </div>
@@ -639,10 +655,13 @@ class EditTemplate extends React.Component {
                           { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                           <ul className='nav nav-tabs'>
                             <li>
-                              <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
+                              <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             <li>
-                              <a href='#tab_2' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                              { this.state.broadcast.length > 0
+                                ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                : <a>Targeting</a>
+                              }
                             </li>
                           </ul>
                           }
@@ -652,7 +671,7 @@ class EditTemplate extends React.Component {
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                                   <div className='row' >
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: temp.length, text: '', button: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                           <h6>Text</h6>
@@ -660,7 +679,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}); this.handleImage({id: temp.length, componentType: 'image', image_url: '', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                           <h6>Image</h6>
@@ -668,7 +687,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: temp.length, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                           <h6>Card</h6>
@@ -676,7 +695,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: temp.length, componentType: 'gallery', cards: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                           <h6>Gallery</h6>
@@ -686,7 +705,7 @@ class EditTemplate extends React.Component {
                                   </div>
                                   <div className='row'>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'audio', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                           <h6>Audio</h6>
@@ -694,7 +713,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'video', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                           <h6>Video</h6>
@@ -702,7 +721,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'file', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
@@ -710,7 +729,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}); this.handleList({id: temp.length, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                                         <div className='align-center'>
                                           <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
                                           <h6>List</h6>
@@ -720,7 +739,7 @@ class EditTemplate extends React.Component {
                                   </div>
                                   <div className='row'>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}); this.handleMedia({id: temp.length, componentType: 'media', fileurl: '', buttons: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                           <h6>Media</h6>
