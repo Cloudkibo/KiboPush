@@ -24,23 +24,23 @@ exports.populatePlan = function (req, res) {
           .json({status: 'failed', description: 'Failed to insert record2'})
       }
       planData = {
-        name: 'Team Basic Plan',
-        unique_ID: 'plan_D'
+        name: 'Team Premium Plan',
+        unique_ID: 'plan_C',
+        interval: 'monthly',
+        default_premium: true
       }
-      let planD = new Plans(planData)
-      planD.save((err) => {
+      let planC = new Plans(planData)
+      planC.save((err) => {
         if (err) {
           return res.status(500)
             .json({status: 'failed', description: 'Failed to insert record3'})
         }
         planData = {
-          name: 'Team Premium Plan',
-          unique_ID: 'plan_C',
-          interval: 'monthly',
-          default_premium: true
+          name: 'Team Basic Plan',
+          unique_ID: 'plan_D'
         }
-        let planC = new Plans(planData)
-        planC.save((err) => {
+        let planD = new Plans(planData)
+        planD.save((err) => {
           if (err) {
             return res.status(500)
               .json({status: 'failed', description: 'Failed to insert record4'})

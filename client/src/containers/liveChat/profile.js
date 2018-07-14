@@ -286,7 +286,7 @@ class Profile extends React.Component {
                   {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
                 </a>
                 {
-                  (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
+                  (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                   <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
                     {
                       this.props.currentSession.is_assigned &&

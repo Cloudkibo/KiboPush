@@ -10,7 +10,8 @@ const VerificationToken = require(
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
 const Invitations = require('./../invitations/invitations.model')
 const Permissions = require('./../permissions/permissions.model')
-const Plans = require('./../permissions_plan/permissions_plan.model')
+const PlanFeatures = require('./../permissions_plan/permissions_plan.model')
+const Plans = require('./../plans/plans.model')
 const auth = require('./../../auth/auth.service')
 const config = require('./../../config/environment/index')
 const _ = require('lodash')
@@ -23,46 +24,6 @@ const moment = require('moment')
 // const PassportFacebookExtension = require('passport-facebook-extension')
 
 const TAG = 'api/user/user.controller.js'
-
-exports.movePlan = function (req, res) {
-  Users.find({}, (err, users) => {
-    if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: 'Error at find all users: ' + JSON.stringify(err)
-      })
-    }
-    let companies = []
-    users.forEach((user, index) => {
-      user = JSON.parse(JSON.stringify(user))
-      CompanyUsers.findOne({domain_email: user.domain_email}, (err, cu) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'Error at find company user: ' + JSON.stringify(err)
-          })
-        }
-        if (companies.indexOf(cu.companyId) === -1) {
-          companies.push(cu.companyId)
-          CompanyProfile.update({_id: cu.companyId}, {'stripe.plan': user.plan}, (err, companyUpdated) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: 'Error at updating company profile: ' + JSON.stringify(err)
-              })
-            }
-          })
-        }
-      })
-      if (index === (users.length - 1)) {
-        return res.status(200).json({
-          status: 'success',
-          description: 'Successfuly moved!'
-        })
-      }
-    })
-  })
-}
 
 exports.addAccountType = function (req, res) {
   Users.find({}, (err, users) => {
@@ -80,16 +41,16 @@ exports.addAccountType = function (req, res) {
             description: 'Error at find company user: ' + JSON.stringify(err)
           })
         }
-        CompanyProfile.findOne({_id: cu.companyId}, (err, cp) => {
+        CompanyProfile.findOne({_id: cu.companyId}).populate('planId').exec((err, cp) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
               description: 'Error at updating company profile: ' + JSON.stringify(err)
             })
           }
-          if (cp.stripe.plan === 'plan_A' || cp.stripe.plan === 'plan_B') {
+          if (cp.planId.unique_ID === 'plan_A' || cp.planId.unique_ID === 'plan_B') {
             user.accountType = 'individual'
-          } else if (cp.stripe.plan === 'plan_C' || cp.stripe.plan === 'plan_D') {
+          } else if (cp.planId.unique_ID === 'plan_C' || cp.planId.unique_ID === 'plan_D') {
             user.accountType = 'team'
           }
           user.save((err) => {
@@ -132,7 +93,7 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      CompanyProfile.findOne({_id: companyUser.companyId}, (err, company) => {
+      CompanyProfile.findOne({_id: companyUser.companyId}).populate('planId').exec((err, company) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
@@ -158,7 +119,7 @@ exports.index = function (req, res) {
               description: 'Permissions not set for this user. Please contact support'
             })
           }
-          Plans.findOne({}, (err, plan) => {
+          PlanFeatures.findOne({plan_id: company.planId._id}, (err, plan) => {
             if (err) {
               return res.status(500).json({
                 status: 'failed',
@@ -189,9 +150,9 @@ exports.index = function (req, res) {
             user = user.toObject()
             user.companyId = companyUser.companyId
             user.permissions = permissions
-            user.currentPlan = company.stripe.plan
+            user.currentPlan = company.planId
             user.last4 = company.stripe.last4
-            user.plan = plan[company.stripe.plan]
+            user.plan = plan
             res.status(200).json({status: 'success', payload: user})
           })
         })
@@ -273,7 +234,7 @@ exports.updateMode = function (req, res) {
             description: 'The user account does not belong to any company. Please contact support'
           })
         }
-        CompanyProfile.findOne({_id: companyUser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyUser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(500).json({
               status: 'failed',
@@ -294,7 +255,7 @@ exports.updateMode = function (req, res) {
                 description: 'Permissions not set for this user. Please contact support'
               })
             }
-            Plans.findOne({}, (err, plan) => {
+            PlanFeatures.findOne({plan_id: company.planId._id}, (err, plan) => {
               if (err) {
                 return res.status(500).json({
                   status: 'failed',
@@ -310,8 +271,8 @@ exports.updateMode = function (req, res) {
               user = user.toObject()
               user.companyId = companyUser.companyId
               user.permissions = permissions
-              user.currentPlan = company.stripe.plan
-              user.plan = plan[company.stripe.plan]
+              user.currentPlan = company.planId
+              user.plan = plan
               res.status(200).json({status: 'success', payload: user})
             })
           })
@@ -375,6 +336,7 @@ exports.create = function (req, res) {
               domain: req.body.domain.toLowerCase(),
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
+              accountType: 'team',
               role: 'buyer'
             })
 
@@ -386,170 +348,179 @@ exports.create = function (req, res) {
                 })
               }
 
-              let companyprofileData = new CompanyProfile({
-                companyName: req.body.company_name,
-                companyDetail: req.body.company_description,
-                ownerId: user._id,
-                'stripe.plan': 'plan_D'
-              })
-
-              companyprofileData.save(function (err, companySaved) {
+              Plans.findOne({unique_ID: 'plan_D'}, (err, defaultPlan) => {
                 if (err) {
                   return res.status(422).json({
                     status: 'failed',
-                    description: 'profile save error: ' + JSON.stringify(err)
+                    description: 'Internal Server Error: ' + JSON.stringify(err)
                   })
                 }
 
-                // Create customer on stripe
-                companySaved.createCustomer(req.body.email, req.body.name, function (err) {
-                  if (err) {
-                    logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
-                      err)}`)
-                  }
+                let companyprofileData = new CompanyProfile({
+                  companyName: req.body.company_name,
+                  companyDetail: req.body.company_description,
+                  ownerId: user._id,
+                  planId: defaultPlan._id
                 })
 
-                let companyUserData = new CompanyUsers({
-                  companyId: companySaved._id,
-                  userId: user._id,
-                  domain_email: user.domain_email,
-                  role: 'buyer'
-                })
-
-                companyUserData.save(function (err, companyUserSaved) {
+                companyprofileData.save(function (err, companySaved) {
                   if (err) {
                     return res.status(422).json({
                       status: 'failed',
-                      description: 'profile user save error: ' + JSON.stringify(err)
+                      description: 'profile save error: ' + JSON.stringify(err)
                     })
                   }
-                  let permissions = new Permissions({
-                    companyId: companySaved._id,
-                    userId: user._id
+
+                  // Create customer on stripe
+                  companySaved.createCustomer(req.body.email, req.body.name, function (err) {
+                    if (err) {
+                      logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
+                        err)}`)
+                    }
                   })
 
-                  permissions.save(function (err, permissionSaved) {
+                  let companyUserData = new CompanyUsers({
+                    companyId: companySaved._id,
+                    userId: user._id,
+                    domain_email: user.domain_email,
+                    role: 'buyer'
+                  })
+
+                  companyUserData.save(function (err, companyUserSaved) {
                     if (err) {
                       return res.status(422).json({
                         status: 'failed',
                         description: 'profile user save error: ' + JSON.stringify(err)
                       })
                     }
-                    let token = auth.signToken(user._id)
-                    res.status(201)
-                    .json({status: 'success', token: token, userid: user._id, type: 'company'})
+                    let permissions = new Permissions({
+                      companyId: companySaved._id,
+                      userId: user._id
+                    })
+
+                    permissions.save(function (err, permissionSaved) {
+                      if (err) {
+                        return res.status(422).json({
+                          status: 'failed',
+                          description: 'profile user save error: ' + JSON.stringify(err)
+                        })
+                      }
+                      let token = auth.signToken(user._id)
+                      res.status(201)
+                      .json({status: 'success', token: token, userid: user._id, type: 'company'})
+                    })
                   })
-                })
 
-                var today = new Date()
-                var uid = crypto.randomBytes(5).toString('hex')
-                let tokenString = 'f' + uid + '' + today.getFullYear() + '' +
-                  (today.getMonth() + 1) + '' + today.getDate() + '' +
-                  today.getHours() + '' + today.getMinutes() + '' +
-                  today.getSeconds()
+                  var today = new Date()
+                  var uid = crypto.randomBytes(5).toString('hex')
+                  let tokenString = 'f' + uid + '' + today.getFullYear() + '' +
+                    (today.getMonth() + 1) + '' + today.getDate() + '' +
+                    today.getHours() + '' + today.getMinutes() + '' +
+                    today.getSeconds()
 
-                let newToken = new VerificationToken({
-                  userId: user._id,
-                  token: tokenString
-                })
+                  let newToken = new VerificationToken({
+                    userId: user._id,
+                    token: tokenString
+                  })
 
-                newToken.save(function (err) {
-                  if (err) {
-                    logger.serverLog(TAG, `New Token save : ${JSON.stringify(
-                      err)}`)
-                  }
-                })
-
-                let mailchimp = new MailChimp('2d154e5f15ca18180d52c40ad6e5971e-us12')
-
-                mailchimp.post({
-                  path: '/lists/5a4e866849/members',
-                  body: {
-                    email_address: req.body.email,
-                    merge_fields: {
-                      FNAME: req.body.name
-                    },
-                    status: 'subscribed'
-                  }
-                }, function (err, result) {
-                  if (err) {
-                    logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
-                  } else {
-                    logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
-                  }
-                })
-
-                let sendgrid = require('sendgrid')(config.sendgrid.username,
-                  config.sendgrid.password)
-
-                let email = new sendgrid.Email({
-                  to: req.body.email,
-                  from: 'support@cloudkibo.com',
-                  subject: 'KiboPush: Account Verification',
-                  text: 'Welcome to KiboPush'
-                })
-
-                email.setHtml(
-                  '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-                  '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-                  '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-                  '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-                  '<p style="color: #ffffff">Verify your account</p> </td></tr> </table> </td> </tr> </table> ' +
-                  '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-                  '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-                  '<tr> <td class="wrapper last"> <p> Hello, <br> Thank you for joining KiboPush. <br>Use the following link to verify your account <br>  </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-                  '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' +
-                  config.domain + '/api/email_verification/verify/' +
-                  tokenString +
-                  '"> ' + config.domain + '/api/email_verification/verify/' +
-                  tokenString +
-                  '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-                  '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-
-                // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
-
-                sendgrid.send(email, function (err, json) {
-                  if (err) {
-                    logger.serverLog(TAG,
-                      `Internal Server Error on sending email : ${JSON.stringify(
-                        err)}`)
-                  }
-                })
-
-                var email2 = new sendgrid.Email({
-                  to: ['sojharo@gmail.com', 'sojharo@live.com', 'jawaid@cloudkibo.com', 'jekram@hotmail.com', 'dayem@cloudkibo.com', 'surendar@cloudkibo.com'],
-                  from: 'support@cloudkibo.com',
-                  subject: 'KiboPush: Account created by ' + req.body.name,
-                  text: 'Welcome to KiboPush',
-                  cc: 'sojharo@live.com'
-                })
-
-                // email2.setHtml('<h1>KiboSupport</h1><br><br>The following domain has created an account with KiboSupport. <br><br> <b>Domain Name: </b>'+ req.body.website);
-
-                email2.setHtml(
-                  '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-                  '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-                  '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-                  '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-                  '<p style="color: #ffffff"> New account created on KiboPush. </p> </td></tr> </table> </td> </tr> </table> ' +
-                  '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-                  '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-                  '<tr> <td class="wrapper last"> <p> Hello, <br> This is to inform you that following domain has created an account with KiboPush  </p> <p> <ul> <li>Domain Name: ' +
-                  req.body.domain.toLowerCase() + '</li> ' +
-                  '<li>Name: ' + req.body.name + '</li><li>Company Name: ' +
-                  req.body.company_name + '</li><li>Email Address: ' + req.body.email +
-                  ' </li> </ul> </p>  <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-                  '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-                  '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-
-                if (config.env === 'production') {
-                  sendgrid.send(email2, function (err, json) {
+                  newToken.save(function (err) {
                     if (err) {
-                      logger.serverLog(TAG,
-                        `Internal Server Error on sending email : ${err}`)
+                      logger.serverLog(TAG, `New Token save : ${JSON.stringify(
+                        err)}`)
                     }
                   })
-                }
+
+                  let mailchimp = new MailChimp('2d154e5f15ca18180d52c40ad6e5971e-us12')
+
+                  mailchimp.post({
+                    path: '/lists/5a4e866849/members',
+                    body: {
+                      email_address: req.body.email,
+                      merge_fields: {
+                        FNAME: req.body.name
+                      },
+                      status: 'subscribed'
+                    }
+                  }, function (err, result) {
+                    if (err) {
+                      logger.serverLog(TAG, `welcome email error: ${JSON.stringify(err)}`)
+                    } else {
+                      logger.serverLog(TAG, `welcome email successfuly sent: ${JSON.stringify(result)}`)
+                    }
+                  })
+
+                  let sendgrid = require('sendgrid')(config.sendgrid.username,
+                    config.sendgrid.password)
+
+                  let email = new sendgrid.Email({
+                    to: req.body.email,
+                    from: 'support@cloudkibo.com',
+                    subject: 'KiboPush: Account Verification',
+                    text: 'Welcome to KiboPush'
+                  })
+
+                  email.setHtml(
+                    '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                    '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                    '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                    '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                    '<p style="color: #ffffff">Verify your account</p> </td></tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                    '<tr> <td class="wrapper last"> <p> Hello, <br> Thank you for joining KiboPush. <br>Use the following link to verify your account <br>  </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+                    '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' +
+                    config.domain + '/api/email_verification/verify/' +
+                    tokenString +
+                    '"> ' + config.domain + '/api/email_verification/verify/' +
+                    tokenString +
+                    '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                    '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+                  // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
+
+                  sendgrid.send(email, function (err, json) {
+                    if (err) {
+                      logger.serverLog(TAG,
+                        `Internal Server Error on sending email : ${JSON.stringify(
+                          err)}`)
+                    }
+                  })
+
+                  var email2 = new sendgrid.Email({
+                    to: ['sojharo@gmail.com', 'sojharo@live.com', 'jawaid@cloudkibo.com', 'jekram@hotmail.com', 'dayem@cloudkibo.com', 'surendar@cloudkibo.com'],
+                    from: 'support@cloudkibo.com',
+                    subject: 'KiboPush: Account created by ' + req.body.name,
+                    text: 'Welcome to KiboPush',
+                    cc: 'sojharo@live.com'
+                  })
+
+                  // email2.setHtml('<h1>KiboSupport</h1><br><br>The following domain has created an account with KiboSupport. <br><br> <b>Domain Name: </b>'+ req.body.website);
+
+                  email2.setHtml(
+                    '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                    '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                    '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                    '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                    '<p style="color: #ffffff"> New account created on KiboPush. </p> </td></tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                    '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                    '<tr> <td class="wrapper last"> <p> Hello, <br> This is to inform you that following domain has created an account with KiboPush  </p> <p> <ul> <li>Domain Name: ' +
+                    req.body.domain.toLowerCase() + '</li> ' +
+                    '<li>Name: ' + req.body.name + '</li><li>Company Name: ' +
+                    req.body.company_name + '</li><li>Email Address: ' + req.body.email +
+                    ' </li> </ul> </p>  <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+                    '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                    '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+                  if (config.env === 'production') {
+                    sendgrid.send(email2, function (err, json) {
+                      if (err) {
+                        logger.serverLog(TAG,
+                          `Internal Server Error on sending email : ${err}`)
+                      }
+                    })
+                  }
+                })
               })
             })
           }
@@ -583,6 +554,7 @@ exports.create = function (req, res) {
           domain: domain,
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
+          accountType: 'individual',
           role: 'buyer'
         })
 
@@ -594,148 +566,157 @@ exports.create = function (req, res) {
             })
           }
 
-          let companyprofileData = new CompanyProfile({
-            companyName: 'Pending ' + domain,
-            companyDetail: 'Pending ' + domain,
-            ownerId: user._id,
-            'stripe.plan': 'plan_B'
-          })
-
-          companyprofileData.save(function (err, companySaved) {
+          Plans.findOne({unique_ID: 'plan_D'}, (err, defaultPlan) => {
             if (err) {
               return res.status(422).json({
                 status: 'failed',
-                description: 'profile save error: ' + JSON.stringify(err)
+                description: 'Internal Server Error: ' + JSON.stringify(err)
               })
             }
 
-            // Create customer on stripe
-            companySaved.createCustomer(req.body.email, req.body.name, function (err) {
-              if (err) {
-                logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
-                  err)}`)
-              }
+            let companyprofileData = new CompanyProfile({
+              companyName: 'Pending ' + domain,
+              companyDetail: 'Pending ' + domain,
+              ownerId: user._id,
+              planId: defaultPlan._id
             })
 
-            let companyUserData = new CompanyUsers({
-              companyId: companySaved._id,
-              userId: user._id,
-              domain_email: user.domain_email,
-              role: 'buyer'
-            })
-
-            companyUserData.save(function (err, companyUserSaved) {
+            companyprofileData.save(function (err, companySaved) {
               if (err) {
                 return res.status(422).json({
                   status: 'failed',
-                  description: 'profile user save error: ' + JSON.stringify(err)
+                  description: 'profile save error: ' + JSON.stringify(err)
                 })
               }
-              let permissions = new Permissions({
-                companyId: companySaved._id,
-                userId: user._id
+
+              // Create customer on stripe
+              companySaved.createCustomer(req.body.email, req.body.name, function (err) {
+                if (err) {
+                  logger.serverLog(TAG, `Failed to add customer on stripe : ${JSON.stringify(
+                    err)}`)
+                }
               })
 
-              permissions.save(function (err, permissionSaved) {
+              let companyUserData = new CompanyUsers({
+                companyId: companySaved._id,
+                userId: user._id,
+                domain_email: user.domain_email,
+                role: 'buyer'
+              })
+
+              companyUserData.save(function (err, companyUserSaved) {
                 if (err) {
                   return res.status(422).json({
                     status: 'failed',
                     description: 'profile user save error: ' + JSON.stringify(err)
                   })
                 }
-                let token = auth.signToken(user._id)
-                res.status(201)
-                .json({status: 'success', token: token, userid: user._id, type: 'individual'})
+                let permissions = new Permissions({
+                  companyId: companySaved._id,
+                  userId: user._id
+                })
+
+                permissions.save(function (err, permissionSaved) {
+                  if (err) {
+                    return res.status(422).json({
+                      status: 'failed',
+                      description: 'profile user save error: ' + JSON.stringify(err)
+                    })
+                  }
+                  let token = auth.signToken(user._id)
+                  res.status(201)
+                  .json({status: 'success', token: token, userid: user._id, type: 'individual'})
+                })
               })
-            })
 
-            var today = new Date()
-            var uid = crypto.randomBytes(5).toString('hex')
-            let tokenString = 'f' + uid + '' + today.getFullYear() + '' +
-              (today.getMonth() + 1) + '' + today.getDate() + '' +
-              today.getHours() + '' + today.getMinutes() + '' +
-              today.getSeconds()
+              var today = new Date()
+              var uid = crypto.randomBytes(5).toString('hex')
+              let tokenString = 'f' + uid + '' + today.getFullYear() + '' +
+                (today.getMonth() + 1) + '' + today.getDate() + '' +
+                today.getHours() + '' + today.getMinutes() + '' +
+                today.getSeconds()
 
-            let newToken = new VerificationToken({
-              userId: user._id,
-              token: tokenString
-            })
+              let newToken = new VerificationToken({
+                userId: user._id,
+                token: tokenString
+              })
 
-            newToken.save(function (err) {
-              if (err) {
-                logger.serverLog(TAG, `New Token save : ${JSON.stringify(
-                  err)}`)
-              }
-            })
-
-            let sendgrid = require('sendgrid')(config.sendgrid.username,
-              config.sendgrid.password)
-
-            let email = new sendgrid.Email({
-              to: req.body.email,
-              from: 'support@cloudkibo.com',
-              subject: 'KiboPush: Account Verification',
-              text: 'Welcome to KiboPush'
-            })
-
-            email.setHtml(
-              '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-              '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-              '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-              '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-              '<p style="color: #ffffff">Verify your account</p> </td></tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-              '<tr> <td class="wrapper last"> <p> Hello ' + req.body.name + ', <br> Thank you for joining KiboPush. <br>Use the following link to verify your account <br>  </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-              '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' +
-              config.domain + '/api/email_verification/verify/' +
-              tokenString +
-              '"> ' + config.domain + '/api/email_verification/verify/' +
-              tokenString +
-              '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-              '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-
-            // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
-
-            sendgrid.send(email, function (err, json) {
-              if (err) {
-                logger.serverLog(TAG,
-                  `Internal Server Error on sending email : ${JSON.stringify(
-                    err)}`)
-              }
-            })
-
-            var email2 = new sendgrid.Email({
-              to: ['sojharo@gmail.com', 'sojharo@live.com', 'jawaid@cloudkibo.com', 'jekram@hotmail.com', 'dayem@cloudkibo.com', 'surendar@cloudkibo.com'],
-              from: 'support@cloudkibo.com',
-              subject: 'KiboPush: Account created by ' + req.body.name,
-              text: 'Welcome to KiboPush'
-            })
-
-            // email2.setHtml('<h1>KiboSupport</h1><br><br>The following domain has created an account with KiboSupport. <br><br> <b>Domain Name: </b>'+ req.body.website);
-
-            email2.setHtml(
-              '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
-              '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
-              '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
-              '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
-              '<p style="color: #ffffff"> New account created on KiboPush. </p> </td></tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
-              '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
-              '<tr> <td class="wrapper last"> <p> Hello, <br> This is to inform you that following individual has created an account with KiboPush  </p> <p> <ul>' +
-              '<li>Name: ' + req.body.name + '</li><li>Email: ' + req.body.email +
-              ' </li> </ul> </p>  <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
-              '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
-              '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-
-            if (config.env === 'production') {
-              sendgrid.send(email2, function (err, json) {
+              newToken.save(function (err) {
                 if (err) {
-                  logger.serverLog(TAG,
-                    `Internal Server Error on sending email : ${err}`)
+                  logger.serverLog(TAG, `New Token save : ${JSON.stringify(
+                    err)}`)
                 }
               })
-            }
+
+              let sendgrid = require('sendgrid')(config.sendgrid.username,
+                config.sendgrid.password)
+
+              let email = new sendgrid.Email({
+                to: req.body.email,
+                from: 'support@cloudkibo.com',
+                subject: 'KiboPush: Account Verification',
+                text: 'Welcome to KiboPush'
+              })
+
+              email.setHtml(
+                '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                '<p style="color: #ffffff">Verify your account</p> </td></tr> </table> </td> </tr> </table> ' +
+                '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                '<tr> <td class="wrapper last"> <p> Hello ' + req.body.name + ', <br> Thank you for joining KiboPush. <br>Use the following link to verify your account <br>  </p> <p>To accept invitation please click the following URL to activate your account:</p> <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+                '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> <a href="' +
+                config.domain + '/api/email_verification/verify/' +
+                tokenString +
+                '"> ' + config.domain + '/api/email_verification/verify/' +
+                tokenString +
+                '</a> </td> <td class="expander"> </td> </tr> </table> <p> If clicking the URL above does not work, copy and paste the URL into a browser window. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+              // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
+
+              sendgrid.send(email, function (err, json) {
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Internal Server Error on sending email : ${JSON.stringify(
+                      err)}`)
+                }
+              })
+
+              var email2 = new sendgrid.Email({
+                to: ['sojharo@gmail.com', 'sojharo@live.com', 'jawaid@cloudkibo.com', 'jekram@hotmail.com', 'dayem@cloudkibo.com', 'surendar@cloudkibo.com'],
+                from: 'support@cloudkibo.com',
+                subject: 'KiboPush: Account created by ' + req.body.name,
+                text: 'Welcome to KiboPush'
+              })
+
+              // email2.setHtml('<h1>KiboSupport</h1><br><br>The following domain has created an account with KiboSupport. <br><br> <b>Domain Name: </b>'+ req.body.website);
+
+              email2.setHtml(
+                '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
+                '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
+                '<!-- BEGIN: Header Container --> <table class="container" align="center"> <tr> <td> <table class="row "> <tr>  </tr> </table> <!-- END: Logo --> </td> <td class="wrapper vertical-middle last" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;"> <!-- BEGIN: Social Icons --> <table class="six columns"> ' +
+                '<tr> <td> <table class="wrapper social-icons" align="right" style="float: right;"> <tr> <td class="vertical-middle" style="padding-top: 0;padding-bottom: 0;vertical-align: middle;padding: 0 2px !important;width: auto !important;"> ' +
+                '<p style="color: #ffffff"> New account created on KiboPush. </p> </td></tr> </table> </td> </tr> </table> ' +
+                '<!-- END: Social Icons --> </td> </tr> </table> </td> </tr> </table> ' +
+                '<!-- END: Header Container --> </td> </tr> </table> <!-- END: Header --> <!-- BEGIN: Content --> <table class="container content" align="center"> <tr> <td> <table class="row note"> ' +
+                '<tr> <td class="wrapper last"> <p> Hello, <br> This is to inform you that following individual has created an account with KiboPush  </p> <p> <ul>' +
+                '<li>Name: ' + req.body.name + '</li><li>Email: ' + req.body.email +
+                ' </li> </ul> </p>  <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
+                '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
+                '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
+
+              if (config.env === 'production') {
+                sendgrid.send(email2, function (err, json) {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Internal Server Error on sending email : ${err}`)
+                  }
+                })
+              }
+            })
           })
         })
       }
@@ -776,6 +757,7 @@ exports.joinCompany = function (req, res) {
         domain: invitationToken.domain,
         password: req.body.password,
         domain_email: invitationToken.domain + '' + req.body.email,
+        accountType: 'team',
         role: role
       })
 
@@ -1066,7 +1048,7 @@ exports.enableDelete = function (req, res) {
             '<li>' + req.user._id + '</li>' +
             '<li>' + req.user.email + '</li>' +
             '<li>' + req.user.role + '</li>' +
-            '<li>' + req.user.plan + '</li>' +
+            '<li>' + req.user.plan.unique_ID + '</li>' +
           '</ul>' +
          '<!-- END: Content -->' +
         '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
@@ -1162,7 +1144,7 @@ exports.cancelDeletion = function (req, res) {
             '<li>' + req.user._id + '</li>' +
             '<li>' + req.user.email + '</li>' +
             '<li>' + req.user.role + '</li>' +
-            '<li>' + req.user.plan + '</li>' +
+            '<li>' + req.user.plan.unique_ID + '</li>' +
           '</ul>' +
          '<!-- END: Content -->' +
         '<!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This ia a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +

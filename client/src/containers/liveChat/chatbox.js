@@ -186,7 +186,7 @@ class ChatBox extends React.Component {
 
   getRepliedByMsg (msg) {
     if (
-      (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
+      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
       msg.replied_by && msg.replied_by.type === 'agent' && this.props.user._id !== msg.replied_by.id
     ) {
       return `${msg.replied_by.name} replied`

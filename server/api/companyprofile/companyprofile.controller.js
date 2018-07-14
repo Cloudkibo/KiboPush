@@ -121,7 +121,7 @@ exports.updatePlan = function (req, res) {
   var plan = req.body.plan
   var stripeToken = null
 
-  if (req.user.plan === plan) {
+  if (req.user.plan.unique_ID === plan) {
     return res.status(500).json({
       status: 'failed',
       description: `The selected plan is the same as the current plan.`
