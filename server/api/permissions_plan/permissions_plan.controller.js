@@ -62,7 +62,7 @@ exports.create = function (req, res) {
   let query = {}
   query[feature] = false
 
-  Features.update({}, query, {multi: true}, (err, updated) => {
+  Features.update({}, {$set: query}, {multi: true}, (err, updated) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
