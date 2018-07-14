@@ -67,7 +67,7 @@ class Header extends React.Component {
       //   reviewsWritten_int: 14
       // })
       // console.log('FS identify Executed')
-      var plan = nextProps.user.currentPlan
+      var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
     }
     if (nextProps.notifications) {
