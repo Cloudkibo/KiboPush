@@ -40,7 +40,7 @@
       }
       if (broadcast[i].componentType === 'media') {
         if (broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') {
-          msg.error('Select an image or video')
+          msg.error('Select an image or video in media component')
           isValid = false
           break
         }
@@ -61,17 +61,18 @@
           isValid = false
           break
         }
-        if (!broadcast[i].buttons) {
-          msg.error('Card must have at least one button.')
-          isValid = false
-          break
-        } else if (broadcast[i].buttons.length === 0) {
+        if (!broadcast[i].buttons || broadcast[i].buttons.length === 0) {
           msg.error('Card must have at least one button.')
           isValid = false
           break
         }
       }
       if (broadcast[i].componentType === 'gallery') {
+        if (!broadcast[i].cards || broadcast[i].cards.length === 0) {
+          msg.error('All cards in a gallery cannnot be empty')
+          isValid = false
+          break
+        }
         for (let j = 0; j < broadcast[i].cards.length; j++) {
           if (!broadcast[i].cards[j].buttons) {
             msg.error('Card in gallery must have at least one button.')
@@ -103,6 +104,11 @@
         }
       }
       if (broadcast[i].componentType === 'list') {
+        if (!broadcast[i].listItems || broadcast[i].listItems.length === 0) {
+          msg.error('All items in a list cannnot be empty')
+          isValid = false
+          break
+        }
         if (broadcast[i].listItems && broadcast[i].listItems.length < 2) {
           msg.error('A list must have atleast 2 elements')
           isValid = false
