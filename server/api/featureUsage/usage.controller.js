@@ -73,14 +73,14 @@ exports.create = function (req, res) {
   let queryCompany = {}
   queryCompany[name] = 0
 
-  PlanUsage.update({}, queryPlan, {multi: true}, (err, updatedplan) => {
+  PlanUsage.update({}, {$set: queryPlan}, {multi: true}, (err, updatedplan) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    CompanyUsage.update({}, queryCompany, {multi: true}, (err, updatedcompany) => {
+    CompanyUsage.update({}, {$set: queryCompany}, {multi: true}, (err, updatedcompany) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
