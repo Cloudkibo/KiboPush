@@ -38,9 +38,9 @@ class PaymentMethods extends React.Component {
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps plan', nextprops)
     if (nextprops.user) {
-      if (nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_C') {
+      if (nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_C') {
         this.setState({selectedRadio: 'premium'})
-      } else if (nextprops.user.currentPlan === 'plan_B' || nextprops.user.currentPlan === 'plan_D') {
+      } else if (nextprops.user.currentPlan.unique_ID === 'plan_B' || nextprops.user.currentPlan.unique_ID === 'plan_D') {
         this.setState({selectedRadio: 'free'})
       }
     }
@@ -64,15 +64,15 @@ class PaymentMethods extends React.Component {
   }
   save () {
     if (this.state.selectedRadio === 'free') {
-      if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
+      if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
-      } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+      } else if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_D'}, this.msg)
       }
     } else if (this.state.selectedRadio === 'premium') {
-      if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
+      if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A'}, this.msg)
-      } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+      } else if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C'}, this.msg)
       }
     }
