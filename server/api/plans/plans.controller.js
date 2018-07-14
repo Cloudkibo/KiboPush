@@ -265,7 +265,7 @@ exports.populatePlan = function (req, res) {
         unique_ID: 'plan_C',
         amount: 15,
         interval: 'monthly',
-        default_premium: true
+        default_team: true
       }
       let planC = new Plans(planData)
       planC.save((err) => {
