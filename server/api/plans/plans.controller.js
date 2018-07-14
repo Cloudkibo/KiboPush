@@ -178,6 +178,63 @@ exports.delete = function (req, res) {
   })
 }
 
+exports.changeDefaultPlan = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'plan_id')) parametersMissing = true
+  if (!_.has(req.body, 'account_type')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  let updateCriteria = {}
+  if (req.body.account_type === 'individual') {
+    updateCriteria = {default_individual: true}
+  } else if (req.body.account_type === 'team') {
+    updateCriteria = {default_team: true}
+  }
+
+  Plans.update({_id: req.body.plan_id}, updateCriteria, (err, updated) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      description: 'Default plan changed successfully!'
+    })
+  })
+}
+
+exports.migrateCompanies = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'from')) parametersMissing = true
+  if (!_.has(req.body, 'to')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  CompanyProfile.update({planId: req.body.from}, {planId: req.body.to}, {multi: true}, (err, updated) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      description: 'Companies have been migrated successfully!'
+    })
+  })
+}
+
 exports.populatePlan = function (req, res) {
   let planData = {
     name: 'Individual Basic Plan',

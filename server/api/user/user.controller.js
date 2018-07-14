@@ -566,7 +566,7 @@ exports.create = function (req, res) {
             })
           }
 
-          Plans.findOne({unique_ID: 'plan_D'}, (err, defaultPlan) => {
+          Plans.findOne({unique_ID: 'plan_B'}, (err, defaultPlan) => {
             if (err) {
               return res.status(422).json({
                 status: 'failed',
