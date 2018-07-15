@@ -18,7 +18,9 @@ import { bindActionCreators } from 'redux'
 import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { Link } from 'react-router'
 import { checkConditions } from '../polls/utility'
+import { validateFields } from './utility'
 import Image from './Image'
+import List from './List'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
@@ -26,6 +28,7 @@ import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
 import Targeting from './Targeting'
+import Media from './Media'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -57,7 +60,8 @@ class CreateConvo extends React.Component {
       isList: false,
       lists: [],
       tabActive: 'broadcast',
-      resetTarget: false
+      resetTarget: false,
+      setTarget: false
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -68,9 +72,11 @@ class CreateConvo extends React.Component {
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
     this.closeResetAlertDialog = this.closeResetAlertDialog.bind(this)
     this.handleSendBroadcast = this.handleSendBroadcast.bind(this)
+    this.handleMedia = this.handleMedia.bind(this)
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
@@ -89,17 +95,24 @@ class CreateConvo extends React.Component {
     this.handleTargetValue = this.handleTargetValue.bind(this)
   }
 
-  onNext () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    $('[href="#tab_2"]').tab('show')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+  onNext (e) {
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target'})
+    }
   }
+
   onPrevious () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
@@ -115,22 +128,32 @@ class CreateConvo extends React.Component {
   }
   initTab () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
-  onTargetClick () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'target', resetTarget: false})
+  onTargetClick (e) {
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target', resetTarget: false})
+    }
   }
   handleSendBroadcast (res) {
     if (res.status === 'success') {
@@ -252,12 +275,49 @@ class CreateConvo extends React.Component {
     this.setState({broadcast: temp})
   }
 
+  handleMedia (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      if (obj.error === 'file size error') {
+        this.msg.error('File size cannot exceed 25MB')
+        return
+      }
+      if (obj.error === 'invalid file') {
+        this.msg.error('File is not valid')
+        return
+      }
+    }
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.fileName = obj.fileName
+        data.mediaType = obj.mediaType
+        data.fileurl = obj.fileurl
+        data.size = obj.size
+        data.type = obj.type
+        data.buttons = obj.buttons
+        data.image_url = obj.image_url
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
   handleGallery (obj) {
     var temp = this.state.broadcast
     var isPresent = false
-    obj.cards.forEach((d) => {
-      delete d.id
-    })
+    if (obj.cards) {
+      obj.cards.forEach((d) => {
+        delete d.id
+      })
+    }
     temp.map((data) => {
       if (data.id === obj.id) {
         data.cards = obj.cards
@@ -303,6 +363,25 @@ class CreateConvo extends React.Component {
 
     this.setState({broadcast: temp})
   }
+  handleList (obj) {
+    console.log('in create convo handleList', obj)
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.listItems = obj.listItems
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    console.log('temp', temp)
+    this.setState({broadcast: temp})
+  }
 
   removeComponent (obj) {
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
@@ -323,28 +402,7 @@ class CreateConvo extends React.Component {
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-    }
+
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
@@ -529,15 +587,15 @@ class CreateConvo extends React.Component {
                         <div className='col-12'>
                           <ul className='nav nav-tabs'>
                             <li>
-                              <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
+                              <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             {
                               this.props.location.state && this.props.location.state.module === 'convo' &&
                               <li>
-                                { this.state.broadcast.length > 0
-                                  ? <a href='#tab_2' data-toggle='tab' aria-expanded='false'className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
-                                  : <a>Targeting </a>
-                                }
+                                {this.state.broadcast.length > 0
+                                ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                : <a>Targeting</a>
+                              }
                               </li>
                             }
                           </ul>
@@ -547,7 +605,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                                   <div className='row' >
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: temp.length, text: '', button: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                           <h6>Text</h6>
@@ -555,7 +613,7 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: temp.length, componentType: 'image', image_url: '', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                           <h6>Image</h6>
@@ -563,7 +621,7 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: temp.length, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                           <h6>Card</h6>
@@ -571,7 +629,7 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: temp.length, componentType: 'gallery', cards: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                           <h6>Gallery</h6>
@@ -581,7 +639,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                   <div className='row'>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: temp.length, componentType: 'audio', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                           <h6>Audio</h6>
@@ -589,7 +647,7 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: temp.length, componentType: 'video', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                           <h6>Video</h6>
@@ -597,10 +655,28 @@ class CreateConvo extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: temp.length, componentType: 'file', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: temp.length, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='row'>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: temp.length, componentType: 'media', fileurl: '', buttons: []}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                          <h6>Media</h6>
                                         </div>
                                       </div>
                                     </div>

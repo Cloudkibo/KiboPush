@@ -136,11 +136,14 @@ i.greetingMessage.fa.fa-smile-o:hover {
   padding: 0 15px;
 }
 a.broadcastTabs.active {
-  color: #555;
+  color: blue;
   background-color: #fff !important;
   border: 1px solid #ddd;
   border-bottom-color: transparent;
   cursor: default;
+}
+.broadcastTabs {
+  cursor: pointer
 }
 .tagList {
   display: inline-block !important
@@ -169,13 +172,29 @@ a.broadcastTabs.active {
   left: -110px !important;
   height: auto !important
 }
+.popover.show.buttonPopoverList {
+  height: auto !important
+}
 .buttonPopover > .popover-inner {
+  height: auto !important;
+}
+.popover.show.menuPopover {
+  height: auto !important
+}
+.menuPopover > .popover-inner {
   height: auto !important;
 }
 .popover.show.subscriberPopover {
   height: auto !important
 }
 .subscriberPopover > .popover-inner {
+  height: auto !important;
+}
+.popover.show.chatPopover {
+  height: auto !important;
+  left: 20px !important;
+}
+.chatPopover > .popover-inner {
   height: auto !important;
 }
 .popover.show.liveChatPopover {
@@ -238,4 +257,16 @@ a.broadcastTabs.active {
   padding: 10px;
   width: 100%;
   text-align: left
+}
+#menuPopover {
+  display: none
+}
+.replyWithMessage {
+  width: 100%;
+  text-align: center;
+}
+.alert-email {
+  padding: 20px;
+  background-color: #34bfa3;
+  color: white;
 }

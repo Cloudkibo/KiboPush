@@ -62,7 +62,7 @@ class Image extends React.Component {
         showPreview: false,
         loading: true
       })
-      this.props.uploadImage(file, {
+      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {
         id: this.props.id,
         componentType: 'image',
         fileName: file.name,
@@ -133,7 +133,8 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    pages: (state.pagesInfo.pages)
   }
 }
 

@@ -587,7 +587,7 @@ class Subscriber extends React.Component {
         'Page': subscriber.pageId.pageName,
         'PhoneNumber': subscriber.phoneNumber,
         'Email': subscriber.email,
-        'Source': subscriber.isSubscribedByPhoneNumber ? 'PhoneNumber' : 'Other',
+        'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
         'Locale': subscriber.locale,
         'Gender': subscriber.gender,
         'tags': subscriber.tags
@@ -1450,7 +1450,7 @@ class Subscriber extends React.Component {
                                 </div>
                                 <div className='col-md-4'>
                                   {
-                                    this.state.subscriber.isSubscribedByPhoneNumber
+                                    this.state.subscriber.source === 'customer_matching'
                                     ? <div>
                                       <span style={{fontWeight: 600}}>Source:</span>
                                       <br />

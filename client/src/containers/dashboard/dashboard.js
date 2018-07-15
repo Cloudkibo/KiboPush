@@ -18,6 +18,7 @@ import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
+import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -25,6 +26,8 @@ import Reports from '../operationalDashboard/reports'
 import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
+// import Connect from '../facebookConnect/connect'
+
 var json2csv = require('json2csv')
 
 class Dashboard extends React.Component {
@@ -43,7 +46,8 @@ class Dashboard extends React.Component {
       sentseendata1: [],
       chartData: [],
       selectedDays: 10,
-      topPages: []
+      topPages: [],
+      loading: true
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -131,18 +135,27 @@ class Dashboard extends React.Component {
     }
   }
   componentWillReceiveProps (nextprops) {
-    if (nextprops.user && nextprops.user.emailVerified === false &&
-      (nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D')) {
+    console.log('in componentWillReceiveProps dashboard', nextprops)
+    if (nextprops.user && nextprops.user.emailVerified === false) {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
     }
     if (nextprops.user) {
-      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_ B') && !nextprops.user.facebookInfo) {
+      joinRoom(nextprops.user.companyId)
+      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
+      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
+        if (nextprops.pages && nextprops.pages.length === 0) {
+          console.log('going to push')
+          browserHistory.push({
+            pathname: '/connectFb',
+            state: { account_type: 'team' }
+          })
+        }
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
@@ -155,9 +168,14 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
+      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        console.log('going to push add page wizard')
+        browserHistory.push({
+          pathname: '/addPageWizard'
+        })
       }
-      if (nextprops.user) {
-        joinRoom(nextprops.user.companyId)
+      if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
+        this.setState({loading: false})
       }
       if (nextprops.sentseendata) {
         var temp = []
@@ -167,11 +185,6 @@ class Dashboard extends React.Component {
       if (nextprops.graphData) {
         this.setChartData(nextprops.graphData)
       }
-    }
-    if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-      browserHistory.push({
-        pathname: '/addPageWizard'
-      })
     }
   }
   setChartData (graphData) {
@@ -359,47 +372,52 @@ class Dashboard extends React.Component {
               <GettingStarted pages={this.props.pages} /> */ }
             </div>
           }
-          <div className='row'>
+          {this.state.loading
+          ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
+          : <div>
+            <div className='row'>
+              {
+                this.props.pages && this.props.pages.length > 0 &&
+                <PageLikesSubscribers connectedPages={this.props.pages} />
+              }
+              {
+                this.props.dashboard &&
+                <CardBoxes data={this.props.dashboard} />
+              }
+            </div>
             {
-              this.props.pages && this.props.pages.length > 0 &&
-              <PageLikesSubscribers connectedPages={this.props.pages} />
+              this.props.sentseendata &&
+              <CardsWithProgress data={this.props.sentseendata} />
             }
             {
-              this.props.dashboard &&
-              <CardBoxes data={this.props.dashboard} />
+             this.props.topPages && this.props.topPages.length > 1 &&
+               <div className='row'>
+                 <TopPages pagesData={this.props.topPages} />
+               </div>
             }
-          </div>
-          {
-            this.props.sentseendata &&
-            <CardsWithProgress data={this.props.sentseendata} />
-          }
-          {
-           this.props.topPages && this.props.topPages.length > 1 &&
-             <div className='row'>
-               <TopPages pagesData={this.props.topPages} />
-             </div>
-          }
-          <div className='row'>
-            <Reports
-              iconClassName={'fa fa-line-chart'}
-              title={'Reports'}
-              lineChartData={this.state.chartData}
-              onDaysChange={this.onDaysChange}
-              selectedDays={this.state.selectedDays}
-              />
-          </div>
-          <div className='row'>
-            <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                <span>
-                  <i className='fa fa-download' />
+            <div className='row'>
+              <Reports
+                iconClassName={'fa fa-line-chart'}
+                title={'Reports'}
+                lineChartData={this.state.chartData}
+                onDaysChange={this.onDaysChange}
+                selectedDays={this.state.selectedDays}
+                />
+            </div>
+            <div className='row'>
+              <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                   <span>
-                    Export Records in CSV File
+                    <i className='fa fa-download' />
+                    <span>
+                      Export Records in CSV File
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
+        }
         </div>
       </div>
     )

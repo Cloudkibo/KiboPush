@@ -10,6 +10,8 @@ import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import YouTube from 'react-youtube'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
@@ -19,7 +21,8 @@ class InviteSubscribers extends React.Component {
     this.state = {
       fblink: '',
       copied: false,
-      selectPage: {}
+      selectPage: {},
+      showVideo: false
     }
   }
 
@@ -89,6 +92,27 @@ class InviteSubscribers extends React.Component {
     return (
       <div>
         <Header />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='e89WqM7SjQA'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -106,6 +130,7 @@ class InviteSubscribers extends React.Component {
                 </div>
                 <div className='m-alert__text'>
                   Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank'>Click Here </a>
+                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
                 </div>
               </div>
               <div className='row'>

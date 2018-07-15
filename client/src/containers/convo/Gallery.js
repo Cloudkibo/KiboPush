@@ -78,6 +78,8 @@ class Gallery extends React.Component {
   }
 
   handleCard (obj) {
+    console.log('this.state.broadcast', this.state.broadcast)
+    console.log('obj', obj)
     if (obj.error) {
       if (obj.error === 'invalid image') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
@@ -124,13 +126,18 @@ class Gallery extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', height: 20 + 'px', zIndex: 6, right: 100 + 'px'}}>
+        {/* <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{position: 'absolute', height: 20 + 'px', zIndex: 6, right: '85px', top: '70px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
-        </div>
+        </div>  */}
         {
-          <div style={{position: 'absolute', float: 'left', zIndex: '2', marginTop: '-10px'}}>
+          <div style={{marginLeft: '-100px', zIndex: '2', marginBottom: '-15px', position: 'relative'}}>
+            <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', zIndex: 6, marginRight: '-30px'}}>
+              <span style={{cursor: 'pointer'}} className='fa-stack'>
+                <i className='fa fa-times fa-stack-2x' />
+              </span>
+            </div>
             <span className='m-badge m-badge--brand m-badge--wide' onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
             <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
             <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>

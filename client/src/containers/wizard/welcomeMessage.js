@@ -275,6 +275,11 @@ class EditTemplate extends React.Component {
       return
     }
     for (let i = 0; i < this.state.broadcast.length; i++) {
+      if (this.state.broadcast[i].componentType === 'text') {
+        if (this.state.broadcast[i].text === '') {
+          return this.msg.error('Text cannot be empty')
+        }
+      }
       if (this.state.broadcast[i].componentType === 'card') {
         if (!this.state.broadcast[i].buttons) {
           return this.msg.error('Card must have at least one button.')

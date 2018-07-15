@@ -25,7 +25,8 @@ class Autoposting extends React.Component {
       showListItems: true,
       alertMessage: '',
       alertType: '',
-      deleteid: ''
+      deleteid: '',
+      showWordPressGuide: false
     }
     props.loadAutopostingList()
     props.clearAlertMessages()
@@ -35,6 +36,8 @@ class Autoposting extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.gotoSettings = this.gotoSettings.bind(this)
     this.updateDeleteID = this.updateDeleteID.bind(this)
+    this.viewGuide = this.viewGuide.bind(this)
+    this.closeGuide = this.closeGuide.bind(this)
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -50,7 +53,16 @@ class Autoposting extends React.Component {
       }
     })
   }
-
+  viewGuide () {
+    this.setState({
+      showWordPressGuide: true
+    })
+  }
+  closeGuide () {
+    this.setState({
+      showWordPressGuide: false
+    })
+  }
   componentWillReceiveProps (nextProps) {
     if (nextProps.successMessage) {
       this.msg.success(nextProps.successMessage)
@@ -97,6 +109,80 @@ class Autoposting extends React.Component {
     }
     return (
       <div>
+        {
+        this.state.showWordPressGuide &&
+        <ModalContainer style={{width: '500px', top: '80px'}}
+          onClose={this.closeGuide}>
+          <ModalDialog style={{width: '500px', top: '80px'}}
+            onClose={this.closeGuide}>
+            <h4>Guielines for integrating WordPress blogs</h4>
+            <div className='panel-group accordion' id='accordion1'>
+              <div className='panel panel-default'>
+                <div className='panel-heading guidelines-heading'>
+                  <h4 className='panel-title'>
+                    <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>WordPress.com</a>
+                  </h4>
+                </div>
+                <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                  <div className='panel-body'>
+                    <p>If you have admin rights on WordPress, follow the steps below to create a webhook</p>
+                    <ul>
+                      <li>
+                      Go to Settings -> Webhooks on WordPress dashboard
+                      </li>
+                      <li>
+                      Choose Action: 'Publish_Post'
+                      </li>
+                      <li>
+                      Select all the fields
+                      </li>
+                      <li>
+                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      </li>
+                      <li>
+                      Click on 'Add new webhook'
+                      </li>
+                    </ul>
+                    <p> Once you have added our webhook on WORDPRESS.COM, our endpoint will be notified whenever a new post is published.
+                    Your blog post details will be automatically broadcasted to your subscribers </p>
+                  </div>
+                </div>
+              </div>
+              <div className='panel panel-default'>
+                <div className='panel-heading guidelines-heading'>
+                  <h4 className='panel-title'>
+                    <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>WordPress.org (self-hosted version).</a>
+                  </h4>
+                </div>
+                <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                  <div className='panel-body'>
+                    <p>On self-hosted wordpress sites, install a plug-in 'HookPress by KiboPush' and follow the steps below to allow autoposting</p>
+                    <ul>
+                      <li>
+                      Go to Settings -> Webhooks on WordPress dashboard
+                      </li>
+                      <li>
+                      Choose Action: 'Publish_Post'
+                      </li>
+                      <li>
+                      Select All the fields
+                      </li>
+                      <li>
+                      Add our webhook endpoint: 'https://app.kibopush.com/webhooks/wordpress/webhook'
+                      </li>
+                      <li>
+                      Click on 'Add new webhook'
+                      </li>
+                    </ul>
+                    <p> Once you have added our webhook on WORDPRESS.ORG through HookPress plug-in, our endpoint will be notified whenever a new post is published.
+                    Your blog post details will be automatically broadcasted to your subscribers </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ModalDialog>
+        </ModalContainer>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div style={{float: 'left', clear: 'both'}}
@@ -109,7 +195,7 @@ class Autoposting extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='RDOnbzldnoc'
+                  videoId='vXN_lF7ivJY'
                   opts={{
                     height: '390',
                     width: '640',
@@ -155,7 +241,7 @@ class Autoposting extends React.Component {
                                   onClose={this.closeDialog}>
                                   <ModalDialog style={{width: '500px'}}
                                     onClose={this.closeDialog}>
-                                    <AddChannel onClose={this.closeDialog} />
+                                    <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} />
                                   </ModalDialog>
                                 </ModalContainer>
                               }
@@ -200,7 +286,7 @@ class Autoposting extends React.Component {
                                     this.props.autopostingData && this.props.autopostingData.length > 0
                                       ? this.props.autopostingData.map((item, i) => (
                                         <div className='m-widget5'>
-                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState />
+                                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState viewGuide openGuidelines={this.viewGuide} />
                                         </div>
                                     ))
                                       : <div>

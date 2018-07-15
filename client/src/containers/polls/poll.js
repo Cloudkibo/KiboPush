@@ -128,6 +128,8 @@ class Poll extends React.Component {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.polls)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({ pollsData: [], totalLength: 0 })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -227,7 +229,7 @@ class Poll extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='fY-YEtYtGhA'
+                  videoId='DpcqcTdguTg'
                   opts={{
                     height: '390',
                     width: '640',

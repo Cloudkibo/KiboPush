@@ -22,10 +22,13 @@ import Image from './Image'
 import Video from './Video'
 import Audio from './Audio'
 import File from './File'
+import Media from './Media'
+import List from './List'
 import Text from './Text'
 import Card from './Card'
 import Gallery from './Gallery'
 import Targeting from './Targeting'
+import { validateFields } from './utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -33,6 +36,7 @@ import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { Link } from 'react-router'
 import { registerAction } from '../../utility/socketio'
+import {loadTags} from '../../redux/actions/tags.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class EditTemplate extends React.Component {
@@ -46,6 +50,7 @@ class EditTemplate extends React.Component {
       pageValue: [],
       genderValue: [],
       localeValue: [],
+      tagValue: [],
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
       showMessengerModal: false,
@@ -60,6 +65,7 @@ class EditTemplate extends React.Component {
     props.getuserdetails()
     props.getFbAppId()
     props.getAdminSubscriptions()
+    props.loadTags()
     props.loadSubscribersList()
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.setEditComponents(this.props.location.state.payload)
@@ -72,8 +78,10 @@ class EditTemplate extends React.Component {
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
     this.handleGallery = this.handleGallery.bind(this)
+    this.handleList = this.handleList.bind(this)
     this.handleImage = this.handleImage.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleMedia = this.handleMedia.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
     this.testConvo = this.testConvo.bind(this)
@@ -128,38 +136,54 @@ class EditTemplate extends React.Component {
       tagValue: targeting.tagValue
     })
   }
-  onNext () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    $('[href="#tab_2"]').tab('show')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+  onNext (e) {
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target'})
+    }
   }
   onPrevious () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   initTab () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
-    $('[href="#tab_1"]').tab('show')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
     this.setState({tabActive: 'broadcast'})
   }
   onBroadcastClick () {
     /* eslint-disable */
-    $('[href="#tab_2"]').removeClass('active')
+    $('#tab_1').addClass('active')
+    $('#tab_2').removeClass('active')
+    $('#titleBroadcast').addClass('active')
+    $('#titleTarget').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'broadcast', resetTarget: false})
+    this.setState({tabActive: 'broadcast'})
   }
   onTargetClick () {
-    /* eslint-disable */
-    $('[href="#tab_1"]').removeClass('active')
-    /* eslint-enable */
-    this.setState({tabActive: 'target'})
+    if (validateFields(this.state.broadcast, this.msg)) {
+      /* eslint-disable */
+        $('#tab_1').removeClass('active')
+        $('#tab_2').addClass('active')
+        $('#titleBroadcast').removeClass('active')
+        $('#titleTarget').addClass('active')
+        /* eslint-enable */
+      this.setState({tabActive: 'target', resetTarget: false})
+    }
   }
   componentWillReceiveProps (nextprops) {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
@@ -205,12 +229,22 @@ class EditTemplate extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
+        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
+      } else if (payload[i].componentType === 'media') {
+        temp.push({content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'gallery') {
         temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
+      } else if (payload[i].componentType === 'list') {
+        temp.push({content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} listDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -329,6 +363,30 @@ class EditTemplate extends React.Component {
     this.setState({broadcast: temp})
   }
 
+  handleList (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    obj.listItems.forEach((d) => {
+      delete d.id
+    })
+    temp.map((data, i) => {
+      if (data.id === obj.id) {
+        // var newObj = {}
+        // newObj.image_url = obj.cards.image
+        // newObj.subtitle = obj.cards.subtitle
+        // newObj.title = obj.cards.title
+
+        temp[i].listItems = obj.listItems
+        temp[i].topElementStyle = obj.topElementStyle
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
+
   handleImage (obj) {
     var temp = this.state.broadcast
     var isPresent = false
@@ -345,7 +403,30 @@ class EditTemplate extends React.Component {
 
     this.setState({broadcast: temp})
   }
-
+  handleMedia (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+      }
+      return
+    }
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data) => {
+      if (data.id === obj.id) {
+        data.fileName = obj.fileName
+        data.fileurl = obj.fileurl
+        data.size = obj.size
+        data.type = obj.type
+        data.buttons = obj.buttons
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
   handleFile (obj) {
     var temp = this.state.broadcast
     var isPresent = false
@@ -370,7 +451,7 @@ class EditTemplate extends React.Component {
   }
 
   sendConvo () {
-    if (this.state.broadcast.length === 0) {
+    if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
     //  this.setState({tabActive: 'broadcast'})
@@ -379,31 +460,10 @@ class EditTemplate extends React.Component {
       isListValue = true
     }
     var isSegmentedValue = false
-    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+    if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
       isSegmentedValue = true
     }
-    for (let i = 0; i < this.state.broadcast.length; i++) {
-      if (this.state.broadcast[i].componentType === 'card') {
-        if (!this.state.broadcast[i].buttons) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        } else if (this.state.broadcast[i].buttons.length === 0) {
-          this.initTab()
-          return this.msg.error('Card must have at least one button.')
-        }
-      }
-      if (this.state.broadcast[i].componentType === 'gallery') {
-        for (let j = 0; j < this.state.broadcast[i].cards.length; j++) {
-          if (!this.state.broadcast[i].cards[j].buttons) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          } else if (this.state.broadcast[i].cards[j].buttons.length === 0) {
-            this.initTab()
-            return this.msg.error('Card in gallery must have at least one button.')
-          }
-        }
-      }
-    }
+
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       console.log('broadcast state', this.state.broadcast)
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
@@ -412,6 +472,14 @@ class EditTemplate extends React.Component {
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
+            }
+          }
+        }
         var data = {
           platform: 'facebook',
           payload: this.state.broadcast,
@@ -420,6 +488,7 @@ class EditTemplate extends React.Component {
           segmentationLocale: this.state.localeValue,
           segmentationGender: this.state.genderValue,
           segmentationTimeZone: '',
+          segmentationTags: tagIDs,
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
           isList: isListValue
@@ -458,8 +527,16 @@ class EditTemplate extends React.Component {
         isListValue = true
       }
       var isSegmentedValue = false
-      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0) {
+      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
         isSegmentedValue = true
+      }
+      let tagIDs = []
+      for (let i = 0; i < this.props.tags.length; i++) {
+        for (let j = 0; j < this.state.tagValue.length; j++) {
+          if (this.props.tags[i].tag === this.state.tagValue[j]) {
+            tagIDs.push(this.props.tags[i]._id)
+          }
+        }
       }
       var data = {
         platform: 'facebook',
@@ -470,6 +547,7 @@ class EditTemplate extends React.Component {
         segmentationPageIds: this.state.pageValue,
         segmentationLocale: this.state.localeValue,
         segmentationGender: this.state.genderValue,
+        segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
         isList: isListValue
@@ -496,7 +574,7 @@ class EditTemplate extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -551,7 +629,7 @@ class EditTemplate extends React.Component {
                               <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.showResetAlertDialog}>
                                 Reset
                               </button>
-                              <button className='btn btn-primary' onClick={this.onNext}>
+                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
                                 Next
                               </button>
                             </div>
@@ -577,10 +655,13 @@ class EditTemplate extends React.Component {
                           { !(this.props.location.state && this.props.location.state.module === 'welcome') &&
                           <ul className='nav nav-tabs'>
                             <li>
-                              <a href='#tab_1' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onBroadcastClick}>Broadcast </a>
+                              <a id='titleBroadcast' className='broadcastTabs active' onClick={this.onBroadcastClick}>Broadcast </a>
                             </li>
                             <li>
-                              <a href='#tab_2' data-toggle='tab' aria-expanded='true' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                              { this.state.broadcast.length > 0
+                                ? <a id='titleTarget' className='broadcastTabs' onClick={this.onTargetClick}>Targeting </a>
+                                : <a>Targeting</a>
+                              }
                             </li>
                           </ul>
                           }
@@ -590,7 +671,7 @@ class EditTemplate extends React.Component {
                                 <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                                   <div className='row' >
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: temp.length, text: '', button: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                           <h6>Text</h6>
@@ -598,7 +679,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}); this.handleImage({id: temp.length, componentType: 'image', image_url: '', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                           <h6>Image</h6>
@@ -606,7 +687,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: temp.length, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                           <h6>Card</h6>
@@ -614,7 +695,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: temp.length, componentType: 'gallery', cards: []}) }}>
                                         <div className='align-center'>
                                           <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                           <h6>Gallery</h6>
@@ -624,7 +705,7 @@ class EditTemplate extends React.Component {
                                   </div>
                                   <div className='row'>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'audio', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                           <h6>Audio</h6>
@@ -632,7 +713,7 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'video', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                           <h6>Video</h6>
@@ -640,10 +721,28 @@ class EditTemplate extends React.Component {
                                       </div>
                                     </div>
                                     <div className='col-3'>
-                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'file', fileurl: ''}) }}>
                                         <div className='align-center'>
                                           <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                           <h6>File</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}); this.handleList({id: temp.length, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                          <h6>List</h6>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='row'>
+                                    <div className='col-3'>
+                                      <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}); this.handleMedia({id: temp.length, componentType: 'media', fileurl: '', buttons: []}) }}>
+                                        <div className='align-center'>
+                                          <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                          <h6>Media</h6>
                                         </div>
                                       </div>
                                     </div>
@@ -809,7 +908,8 @@ function mapStateToProps (state) {
     currentBroadcast: (state.templatesInfo.currentBroadcast),
     subscribers: (state.subscribersInfo.subscribers),
     fbAppId: state.basicInfo.fbAppId,
-    adminPageSubscription: state.basicInfo.adminPageSubscription
+    adminPageSubscription: state.basicInfo.adminPageSubscription,
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -827,7 +927,8 @@ function mapDispatchToProps (dispatch) {
       createWelcomeMessage: createWelcomeMessage,
       loadSubscribersList: loadSubscribersList,
       getAdminSubscriptions: getAdminSubscriptions,
-      getFbAppId: getFbAppId
+      getFbAppId: getFbAppId,
+      loadTags: loadTags
     },
     dispatch)
 }

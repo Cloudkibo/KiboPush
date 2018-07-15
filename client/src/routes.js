@@ -12,7 +12,7 @@ import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
 import ViewPageSubscribers from './containers/dashboard/viewPageSubscribers'
-import MainMenu from './containers/menu/menu'
+import MainMenu from './containers/menu/persistentMenu'
 import CreateMessage from './containers/menu/CreateMessage'
 import GrowthTools from './containers/GrowthTools/growthTools'
 import ShareOptions from './containers/GrowthTools/ShareOptions'
@@ -89,9 +89,10 @@ import InviteUsingLinkWizard from './containers/wizard/inviteUsingLink'
 import GreetingTextWizard from './containers/wizard/greetingText'
 import WelcomeMessageWizard from './containers/wizard/welcomeMessage'
 import AutopostingWizard from './containers/wizard/autoposting'
-import MenuWizard from './containers/wizard/menu'
+import MenuWizard from './containers/wizard/persistentMenu'
 import PaymentMethodsWizard from './containers/wizard/paymentMethods'
 import Finish from './containers/wizard/finish'
+import ResponseMethods from './containers/wizard/responseMethods'
 import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
@@ -224,6 +225,7 @@ const routes = (
     <Route path='/menuWizard' component={MenuWizard} onEnter={requireAuth} />
     <Route path='/paymentMethodsWizard' component={PaymentMethodsWizard} onEnter={requireAuth} />
     <Route path='/finish' component={Finish} onEnter={requireAuth} />
+    <Route path='/responseMethods' component={ResponseMethods} onEnter={requireAuth} />
     <Route path='/surveysByDays' component={SurveysByDays} onEnter={requireAuth} />
     <Route path='/pollsByDays' component={PollsByDays} onEnter={requireAuth} />
     <Route path='/broadcastsByDays' component={BroadcastsByDays} onEnter={requireAuth} />

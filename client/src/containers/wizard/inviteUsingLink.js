@@ -9,7 +9,7 @@ import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
@@ -34,8 +34,14 @@ class InviteSubscribers extends React.Component {
     this.sendTestMessage = this.sendTestMessage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
-
+  goBack () {
+    browserHistory.push({
+      pathname: '/addPageWizard',
+      state: 'history'
+    })
+  }
   getlink () {
     let linkurl = 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweb.facebook.com%2F' +
       this.state.selectPage.pageName + '-' +
@@ -340,12 +346,12 @@ class InviteSubscribers extends React.Component {
                           <div className='m-form__actions'>
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' >
-                                <Link to='/addPageWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <button onClick={this.goBack} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <i className='la la-arrow-left' />
                                     <span>Back</span>&nbsp;&nbsp;
                                   </span>
-                                </Link>
+                                </button>
                               </div>
                               <div className='col-lg-6 m--align-right'>
                                 <Link to='/greetingTextWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>

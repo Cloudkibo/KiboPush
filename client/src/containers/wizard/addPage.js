@@ -6,21 +6,23 @@ import React from 'react'
 import Header from './header'
 import Sidebar from './sidebar'
 import { connect } from 'react-redux'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { updateChecks } from '../../redux/actions/wizard.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
-
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
   addPages,
   enablePage,
-  removePageInAddPage
+  removePageInAddPage,
+  loadMyPagesListNew
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 
 class AddPage extends React.Component {
   constructor (props) {
     super(props)
+    props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
     props.getuserdetails()
     props.addPages()
     this.state = {
@@ -29,10 +31,13 @@ class AddPage extends React.Component {
       alertmsg: '',
       timeout: 2000,
       showWarning: false,
-      descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : ''
+      descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : '',
+      isShowingModal: (props.location && props.location.state) ? false : true
     }
+    this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToNext = this.goToNext.bind(this)
+    this.showError = this.showError.bind(this)
   }
 
   gotoView () {
@@ -42,17 +47,23 @@ class AddPage extends React.Component {
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
-
+  showError () {
+    this.msg.error('Please connect atleast one page')
+  }
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
     this.props.updateChecks({wizardSeen: true})
   }
 
-  closeDialog () {
-    this.setState({showWarning: false})
+  showDialog () {
+    this.setState({isShowingModal: true})
   }
 
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
   componentWillReceiveProps (nextprops) {
+    console.log('componentWillReceiveProps in addpages', nextprops)
     if (nextprops.message && nextprops.message !== '') {
       this.msg.error('The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.')
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
@@ -67,8 +78,14 @@ class AddPage extends React.Component {
     }
   }
   goToNext () {
-    browserHistory.push({
-    })
+    console.log('props.pages', this.props.pages)
+    if (this.props.pages && this.props.pages.length === 0) {
+      this.msg.error('Please connect atleast one page')
+    } else {
+      browserHistory.push({
+        pathname: `/inviteUsingLinkWizard`
+      })
+    }
   }
   onDismissAlert () {
     this.setState({showAlert: false, alertmsg: ''})
@@ -76,7 +93,7 @@ class AddPage extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'top right',
+      position: 'bottom right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -88,11 +105,34 @@ class AddPage extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
+              {
+                this.state.isShowingModal &&
+                <ModalContainer style={{width: '500px'}}
+                  onClose={this.closeDialog}>
+                  <ModalDialog style={{width: '500px'}}
+                    onClose={this.closeDialog}>
+                    <h3>Welcome to KiboPush</h3>
+                    <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
+                    <div style={{width: '100%', textAlign: 'center'}}>
+                      <div style={{display: 'inline-block', padding: '5px'}}>
+                        <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
+                          Continue
+                        </Link>
+                      </div>
+                      <div style={{display: 'inline-block', padding: '5px'}}>
+                        <Link to='/dashboard' className='btn btn-secondary'>
+                          Skip
+                        </Link>
+                      </div>
+                    </div>
+                  </ModalDialog>
+                </ModalContainer>
+              }
               <div className='m-portlet m-portlet--full-height'>
                 <div className='m-portlet__body m-portlet__body--no-padding'>
                   <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                     <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='1' />
+                      <Sidebar step='1' pages={this.props.pages} showError={this.showError} />
                       <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', boxShadow: 'none'}}>
                         <div className='m-portlet__head'>
                           <div className='m-portlet__head-caption'>
@@ -168,20 +208,19 @@ class AddPage extends React.Component {
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' />
                               <div className='col-lg-6 m--align-right'>
-                                { this.props.otherPages && this.props.otherPages.length > 0
+                                { /* this.props.otherPages && this.props.otherPages.length > 0
                                ? <Link to='/inviteUsingLinkWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                  <span>
                                    <span>Next</span>&nbsp;&nbsp;
                                    <i className='la la-arrow-right' />
                                  </span>
-                               </Link>
-                                : <Link className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled>
+                               </Link> */}
+                                <button onClick={this.goToNext} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
                                   </span>
-                                </Link>
-                               }
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -202,6 +241,7 @@ class AddPage extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
+    pages: (state.pagesInfo.pages),
     otherPages: (state.pagesInfo.otherPages),
     page_connected: (state.pagesInfo.page_connected),
     message: (state.pagesInfo.message)
@@ -214,7 +254,8 @@ function mapDispatchToProps (dispatch) {
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
     addPages: addPages,
-    updateChecks: updateChecks
+    updateChecks: updateChecks,
+    loadMyPagesListNew: loadMyPagesListNew
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddPage)

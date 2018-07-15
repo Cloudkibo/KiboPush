@@ -75,7 +75,17 @@ class FacebookPosts extends React.Component {
   onEdit (post) {
     this.props.saveCurrentPost(post)
   }
-  displayData (n, posts) {
+  displayData (n, posts, searchValue) {
+    console.log('searchVal', searchValue)
+    var searchVal = ''
+    if (searchValue && searchValue === 'empty') {
+      searchValue = ''
+    } else if (searchValue) {
+      searchVal = searchValue
+    } else {
+      searchVal = this.state.searchValue
+    }
+    console.log('in display data', searchVal)
     let offset = n * 10
     let data = []
     let limit
@@ -85,9 +95,18 @@ class FacebookPosts extends React.Component {
     } else {
       limit = offset + 10
     }
+    console.log('offset', offset)
     for (var i = offset; i < limit; i++) {
-      data[index] = posts[i]
-      index++
+      if (searchVal !== '') {
+        let postText = this.getPostText(posts[i].payload)
+        if (postText.toLowerCase().includes(searchVal.toLowerCase())) {
+          data[index] = posts[i]
+          index++
+        }
+      } else {
+        data[index] = posts[i]
+        index++
+      }
     }
     this.setState({postsData: data})
   }
@@ -98,11 +117,13 @@ class FacebookPosts extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.posts) {
-      this.setState({postsData: nextProps.posts})
+      this.displayData(0, nextProps.posts)
+      this.setState({totalLength: nextProps.posts.length})
     }
   }
 
   searchPosts (event) {
+    console.log('event.target.value', event.target.value)
     this.setState({
       searchValue: event.target.value
     })
@@ -116,11 +137,13 @@ class FacebookPosts extends React.Component {
           }
         }
       }
+      this.displayData(0, filtered, event.target.value)
+      this.setState({ totalLength: filtered.length })
     } else {
       filtered = this.props.posts
+      this.displayData(0, filtered, 'empty')
+      this.setState({ totalLength: filtered.length })
     }
-    this.displayData(0, filtered)
-    this.setState({ totalLength: filtered.length })
   }
 
   render () {

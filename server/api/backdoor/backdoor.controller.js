@@ -22,6 +22,38 @@ const PollPage = require('../page_poll/page_poll.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const config = require('./../../config/environment/index')
 const LiveChat = require('../livechat/livechat.model')
+const Autopostings = require('../autoposting/autopostings.model')
+const AutopostingMessages = require('./../autoposting_messages/autoposting_messages.model')
+const AutopostingSubscriberMessages = require('./../autoposting_messages/autoposting_subscriber_messages.model')
+const FacebookPosts = require('./../facebook_posts/facebook_posts.model')
+const GrowthTools = require('./../growthtools/growthtools.model')
+const Invitations = require('./../invitations/invitations.model')
+const InviteAgentToken = require('./../inviteagenttoken/inviteagenttoken.model')
+const Lists = require('./../lists/lists.model')
+const ApiNgp = require('./../api_ngp/api_ngp.model')
+const ApiSettings = require('./../api_settings/api_settings.model')
+const Menu = require('./../menu/menu.model')
+const Migrations = require('./../migrations/migrations.model')
+const Notifications = require('./../notifications/notifications.model')
+const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
+const PasswordResetToken = require('./../passwordresettoken/passwordresettoken.model')
+const Permissions = require('./../permissions/permissions.model')
+const Sequences = require('./../sequenceMessaging/sequence.model')
+const SequenceMessages = require('./../sequenceMessaging/message.model')
+const SequenceSubscribers = require('./../sequenceMessaging/sequenceSubscribers.model')
+const SequenceSubscriberMessages = require('./../sequenceMessaging/sequenceSubscribersMessages.model')
+const SmartReplies = require('./../smart_replies/Bots.model')
+const Answers = require('./../smart_replies/Answers.model')
+const Tags = require('./../tags/tags.model')
+const TagSubscribers = require('./../tags_subscribers/tags_subscribers.model')
+const Teams = require('./../teams/teams.model')
+const TeamAgents = require('./../teams/team_agents.model')
+const TeamPages = require('./../teams/team_pages.model')
+const BotTemplates = require('./../templates/bots_template.model')
+const BroadcastTemplates = require('./../templates/broadcastTemplate.model')
+const Category = require('./../templates/category.model')
+const VerificationToken = require('./../verificationtoken/verificationtoken.model')
+const Webhooks = require('./../webhooks/webhooks.model')
 const mongoose = require('mongoose')
 var json2csv = require('json2csv')
 
@@ -43,54 +75,27 @@ exports.index = function (req, res) {
 }
 
 exports.getAllUsers = function (req, res) {
-  /*
-  body = {
-    first_page:
-    last_id:
-    number_of_records:
-    filter_criteria: {
-      search_value:
-      gender_value:
-      locale_value:
-    }
+  let findCriteria = {}
+  let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+  if (req.body.filter_criteria.search_value !== '') {
+    findCriteria = Object.assign(findCriteria, {name: {$regex: search}})
   }
-  */
-  if (req.body.first_page) {
-    let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-    let findCriteria = {
-      name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      'facebookInfo.locale': req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
-      'facebookInfo.gender': req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true}
+  if (req.body.filter_criteria.locale_value !== '') {
+    findCriteria = Object.assign(findCriteria, {'facebookInfo.locale': req.body.filter_criteria.locale_value})
+  }
+  if (req.body.filter_criteria.gender_value !== '') {
+    findCriteria = Object.assign(findCriteria, {'facebookInfo.gender': req.body.filter_criteria.gender_value})
+  }
+
+  Users.find(findCriteria).exec((err, usersData) => {
+    if (err) {
+      return res.status(404).json({
+        status: 'failed',
+        description: `Error in getting users ${JSON.stringify(err)}`
+      })
     }
-    Users.find(findCriteria).exec((err, usersData) => {
-      if (err) {
-        return res.status(404).json({
-          status: 'failed',
-          description: `Error in getting users ${JSON.stringify(err)}`
-        })
-      }
-      // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-      //   let usersPayloadData = []
-      //   for (let i = 0; i < usersData.length; i++) {
-      //     if (usersData[i].facebookInfo) {
-      //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-      //           usersPayloadData.push(usersData[i])
-      //         }
-      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-      //         if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-      //           usersPayloadData.push(usersData[i])
-      //         }
-      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-      //           usersPayloadData.push(usersData[i])
-      //         }
-      //       }
-      //     }
-      //   }
-      //   usersData = usersPayloadData
-      // }
-      // logger.serverLog(TAG, `usersData after ${JSON.stringify(usersData)}`)
+
+    if (req.body.first_page) {
       Users.aggregate([{$match: findCriteria}, {$sort: {createdAt: -1}}]).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
@@ -137,68 +142,8 @@ exports.getAllUsers = function (req, res) {
             payload: {users: [], count: usersData.length}
           })
         }
-        // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-        //   let usersPayload = []
-        //   for (let i = 0; i < users.length; i++) {
-        //     if (users[i].facebookInfo) {
-        //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-        //           usersPayload.push(users[i])
-        //         }
-        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-        //         if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-        //           usersPayload.push(users[i])
-        //         }
-        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-        //           usersPayload.push(users[i])
-        //         }
-        //       } else {
-        //         usersPayload = users
-        //       }
-        //     }
-        //   }
-        //   users = usersPayload
-        // }
       })
-    })
-  } else {
-    let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-    let findCriteria = {
-      name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      'facebookInfo.locale': req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true},
-      'facebookInfo.gender': req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true}
-    }
-    Users.find(findCriteria).exec((err, usersData) => {
-      if (err) {
-        return res.status(404).json({
-          status: 'failed',
-          description: `Error in getting users ${JSON.stringify(err)}`
-        })
-      }
-      // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-      //   let usersPayloadData
-      //   for (let i = 0; i < usersData.length; i++) {
-      //     if (usersData[i].facebookInfo) {
-      //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-      //           usersPayloadData.push(usersData[i])
-      //         }
-      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-      //         if (usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-      //           usersPayloadData.push(usersData[i])
-      //         }
-      //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-      //         if (usersData[i].facebookInfo.locale === req.body.filter_criteria.locale_value && usersData[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-      //           usersPayloadData.push(usersData[i])
-      //         }
-      //       } else {
-      //         usersPayloadData = usersData
-      //       }
-      //     }
-      //   }
-      //   usersData = usersPayloadData
-      // }
+    } else {
       Users.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {createdAt: -1}}]).limit(req.body.number_of_records)
       .exec((err, users) => {
         if (err) {
@@ -207,29 +152,6 @@ exports.getAllUsers = function (req, res) {
             description: `Error in getting users ${JSON.stringify(err)}`
           })
         }
-        // if (req.body.filter && (req.body.filter_criteria.locale_value !== '' || req.body.filter_criteria.gender_value !== '')) {
-        //   let usersPayload = []
-        //   for (let i = 0; i < users.length; i++) {
-        //     if (users[i].facebookInfo) {
-        //       if (req.body.filter_criteria.gender_value === '' && req.body.filter_criteria.locale_value !== '') {
-        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value) {
-        //           usersPayload.push(users[i])
-        //         }
-        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value === '') {
-        //         if (users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-        //           usersPayload.push(users[i])
-        //         }
-        //       } else if (req.body.filter_criteria.gender_value !== '' && req.body.filter_criteria.locale_value !== '') {
-        //         if (users[i].facebookInfo.locale === req.body.filter_criteria.locale_value && users[i].facebookInfo.gender === req.body.filter_criteria.gender_value) {
-        //           usersPayload.push(users[i])
-        //         }
-        //       } else {
-        //         usersPayload = users
-        //       }
-        //     }
-        //   }
-        //   users = usersPayload
-        // }
         let usersPayload = []
         if (users.length > 0) {
           users.forEach((user) => {
@@ -269,8 +191,8 @@ exports.getAllUsers = function (req, res) {
           })
         }
       })
-    })
-  }
+    }
+  })
 }
 
 exports.allpages = function (req, res) {
@@ -1372,100 +1294,106 @@ exports.uploadFile = function (req, res) {
         description: `Error in getting users ${JSON.stringify(err)}`
       })
     }
-    Pages.find({}, (err, pages) => {
+    Pages.find({}).populate('userId').exec((err, pages) => {
       if (err) {
         return res.status(404).json({
           status: 'failed',
           description: `Error in getting pages ${JSON.stringify(err)}`
         })
       }
-
+      logger.serverLog(TAG, `Pages ${JSON.stringify(pages.length)}`)
       let usersPayload = []
       for (let i = 0; i < pages.length; i++) {
-        for (let j = 0; j < users.length; j++) {
-          if (pages[i].userId.toString() === users[j]._id.toString()) {
-            Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
+        Users.find({_id: pages[i].userId}, (err, users) => {
+          if (err) {
+            return res.status(404).json({
+              status: 'failed',
+              description: `Error in getting users ${JSON.stringify(err)}`
+            })
+          }
+          if (users && users.length > 0) {
+
+          } else {
+            logger.serverLog(TAG, `user not found for page ${JSON.stringify(pages[i])}`)
+          }
+        })
+        if (pages[i].userId) {
+          Subscribers.find({pageId: pages[i]._id, isEnabledByPage: true, isSubscribed: true}, (err, subscribers) => {
+            if (err) {
+              return res.status(404).json({
+                status: 'failed',
+                description: `Error in getting pages ${JSON.stringify(err)}`
+              })
+            }
+            Broadcasts.find({pageIds: pages[i].pageId}, (err, broadcasts) => {
               if (err) {
                 return res.status(404).json({
                   status: 'failed',
                   description: `Error in getting pages ${JSON.stringify(err)}`
                 })
               }
-              Broadcasts.find({pageIds: pages[i].pageId}, (err, broadcasts) => {
+              Surveys.find({pageIds: pages[i].pageId}, (err, surveys) => {
                 if (err) {
                   return res.status(404).json({
                     status: 'failed',
                     description: `Error in getting pages ${JSON.stringify(err)}`
                   })
                 }
-                Surveys.find({pageIds: pages[i].pageId}, (err, surveys) => {
+                Polls.find({pageIds: pages[i].pageId}, (err, polls) => {
                   if (err) {
                     return res.status(404).json({
                       status: 'failed',
                       description: `Error in getting pages ${JSON.stringify(err)}`
                     })
                   }
-                  Polls.find({pageIds: pages[i].pageId}, (err, polls) => {
+                  LiveChat.find({sender_id: pages[i]._id}, (err, liveChat) => {
                     if (err) {
                       return res.status(404).json({
                         status: 'failed',
                         description: `Error in getting pages ${JSON.stringify(err)}`
                       })
                     }
-                    LiveChat.find({sender_id: pages[i]._id}, (err, liveChat) => {
-                      if (err) {
-                        return res.status(404).json({
-                          status: 'failed',
-                          description: `Error in getting pages ${JSON.stringify(err)}`
-                        })
-                      }
-                      logger.serverLog(TAG, `Subscribers ${JSON.stringify(subscribers.length)}`)
-                      logger.serverLog(TAG, `Broadcasts ${JSON.stringify(Broadcasts.length)}`)
-                      logger.serverLog(TAG, `SUrveys ${JSON.stringify(surveys.length)}`)
-                      logger.serverLog(TAG, `Polls ${JSON.stringify(subscribers.length)}`)
-                      logger.serverLog(TAG, `LiveChat ${JSON.stringify(liveChat.length)}`)
 
-                      usersPayload.push({
-                        Page: pages[i].pageName,
-                        isConnected: pages[i].connected,
-                        Name: users[j].name,
-                        Gender: users[j].facebookInfo ? users[j].facebookInfo.gender : '',
-                        Email: users[j].email,
-                        Locale: users[j].facebookInfo ? users[j].facebookInfo.locale : '',
-                        CreatedAt: users[j].createdAt,
-                        Likes: pages[i].likes,
-                        Subscribers: subscribers && subscribers.length > 0 ? subscribers.length : 0,
-                        Broadcasts: broadcasts && broadcasts.length > 0 ? broadcasts.length : 0,
-                        Surveys: surveys && surveys.length > 0 ? surveys.length : 0,
-                        Polls: polls && polls.length > 0 ? polls.length : 0,
-                        lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
-                      })
-                      if (pages.length === usersPayload.length) {
-                        var info = usersPayload
-                        var keys = []
-                        var val = info[0]
-
-                        for (var k in val) {
-                          var subKey = k
-                          keys.push(subKey)
-                        }
-                        json2csv({ data: info, fields: keys }, function (err, csv) {
-                          if (err) {
-                            logger.serverLog(TAG,
-                                          `Error at exporting csv file ${JSON.stringify(err)}`)
-                          }
-                          res.status(200).json({
-                            status: 'success',
-                            payload: csv
-                          })
-                        })
-                      }
+                    usersPayload.push({
+                      Page: pages[i].pageName,
+                      isConnected: pages[i].connected,
+                      Name: pages[i].userId.name,
+                      Gender: pages[i].userId.facebookInfo ? pages[i].userId.facebookInfo.gender : '',
+                      Email: pages[i].userId.email,
+                      Locale: pages[i].userId.facebookInfo ? pages[i].userId.facebookInfo.locale : '',
+                      CreatedAt: pages[i].userId.createdAt,
+                      Likes: pages[i].likes,
+                      Subscribers: subscribers && subscribers.length > 0 ? subscribers.length : 0,
+                      Broadcasts: broadcasts && broadcasts.length > 0 ? broadcasts.length : 0,
+                      Surveys: surveys && surveys.length > 0 ? surveys.length : 0,
+                      Polls: polls && polls.length > 0 ? polls.length : 0,
+                      lastMessaged: liveChat && liveChat.length > 0 ? liveChat[liveChat.length - 1].datetime : ''
                     })
+                    if (i === pages.length - 1) {
+                      var info = usersPayload
+                      var keys = []
+                      var val = info[0]
+
+                      for (var k in val) {
+                        var subKey = k
+                        keys.push(subKey)
+                      }
+                      json2csv({ data: info, fields: keys }, function (err, csv) {
+                        if (err) {
+                          logger.serverLog(TAG,
+                                        `Error at exporting csv file ${JSON.stringify(err)}`)
+                        }
+                        res.status(200).json({
+                          status: 'success',
+                          payload: csv
+                        })
+                      })
+                    }
                   })
                 })
               })
             })
-          }
+          })
         }
       }
     //  let dir = path.resolve(__dirname, './my-file.csv')
@@ -3630,7 +3558,7 @@ exports.sendEmail = function (req, res) {
 
                   // email.setHtml('<h1>KiboPush</h1><br><br>Use the following link to verify your account <br><br> <a href="https://app.kibopush.com/api/email_verification/verify/' + tokenString + '"> https://app.kibopush.com/api/email_verification/verify/' + tokenString + '</a>')
 
-                  email.setHtml('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/> <meta http-equiv="X-UA-Compatible" content="IE=Edge"/><!--[if (gte mso 9)|(IE)]> <xml> <o:OfficeDocumentSettings> <o:AllowPNG/> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]--><!--[if (gte mso 9)|(IE)]> <style type="text/css"> body{width: 600px;margin: 0 auto;}table{border-collapse: collapse;}table, td{mso-table-lspace: 0pt;mso-table-rspace: 0pt;}img{-ms-interpolation-mode: bicubic;}</style><![endif]--> <style type="text/css"> body, p, div{font-family: arial; font-size: 14px;}body{color: #000000;}body a{color: #1188E6; text-decoration: none;}p{margin: 0; padding: 0;}table.wrapper{width:100% !important; table-layout: fixed; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}img.max-width{max-width: 100% !important;}.column.of-2{width: 50%;}.column.of-3{width: 33.333%;}.column.of-4{width: 25%;}@media screen and (max-width:480px){.preheader .rightColumnContent, .footer .rightColumnContent{text-align: left !important;}.preheader .rightColumnContent div, .preheader .rightColumnContent span, .footer .rightColumnContent div, .footer .rightColumnContent span{text-align: left !important;}.preheader .rightColumnContent, .preheader .leftColumnContent{font-size: 80% !important; padding: 5px 0;}table.wrapper-mobile{width: 100% !important; table-layout: fixed;}img.max-width{height: auto !important; max-width: 480px !important;}a.bulletproof-button{display: block !important; width: auto !important; font-size: 80%; padding-left: 0 !important; padding-right: 0 !important;}.columns{width: 100% !important;}.column{display: block !important; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; margin-left: 0 !important; margin-right: 0 !important;}}</style> </head> <body> <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size: 14px; font-family: arial; color: #000000; background-color: #ebebeb;"> <div class="webkit"> <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#ebebeb"> <tr> <td valign="top" bgcolor="#ebebeb" width="100%"> <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0"> <tr> <td width="100%"> <table width="100%" cellpadding="0" cellspacing="0" border="0"> <tr> <td><!--[if mso]> <center> <table><tr><td width="600"><![endif]--> <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width:600px;" align="center"> <tr> <td role="modules-container" style="padding: 0px 0px 0px 0px; color: #000000; text-align: left;" bgcolor="#ffffff" width="100%" align="left"> <table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;"> <tr> <td role="module-content"> <p></p></td></tr></table> <table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="font-size:6px;line-height:10px;padding:35px 0px 0px 0px;background-color:#ffffff;" valign="top" align="center"> <img class="max-width" border="0" style="display:block;color:#000000;text-decoration:none;font-family:Helvetica, arial, sans-serif;font-size:16px;" width="600" height="100" src="https://marketing-image-production.s3.amazonaws.com/uploads/63fe9859761f80dce4c7d46736baaa15ca671ce6533ec000c93401c7ac150bbec5ddae672e81ff4f6686750ed8e3fad14a60fc562df6c6fdf70a6ef40b2d9c56.png" alt="Logo"> </td></tr></table> <table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;" height="100%" valign="top" bgcolor=""> <h1 style="text-align: center;"><span style="color:#B7451C;"><span style="font-size:20px;"><span style="font-family:arial,helvetica,sans-serif;">KiboPush Weekly Report</span></span></span></h1> </td></tr></table> <table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="padding:30px 045px 30px 45px;line-height:22px;text-align:inherit;" height="100%" valign="top" bgcolor=""> <div>Hello ' + user.name + ',</div><div>&nbsp;</div><div>Hope you are doing great&nbsp;:)</div><div>&nbsp;</div><div>You have become an important part of our community. You have been very active on KiboPush. We are very pleased to share the weekly report of your activities.</div><div>&nbsp;</div><ul><li>New Subscribers =&gt; ' + data.subscribers + '</li><li>New Chats =&gt; ' + data.liveChat + '</li><li>New Broadcasts =&gt; ' + data.broadcasts + '</li><li>New Surveys =&gt; ' + data.surveys + '</li><li>New Polls =&gt; ' + data.polls + '</li></ul><div>If you any queries, you can send message to our <a href="https://www.facebook.com/kibopush/" style="background-color: rgb(255, 255, 255); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; font-family: arial; font-size: 14px;">&nbsp;Facebook Page</a>. Our admins will get back to you. Or, you can join our <a href="https://www.facebook.com/groups/kibopush/">Facebook Community</a>.</div><div>&nbsp;</div><div>Thank you for your continuous support!</div><div>&nbsp;</div><div>Regards,</div><div>KiboPush Team</div><div>CloudKibo</div></td></tr></table> <table class="module" role="module" data-type="social" align="right" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tbody> <tr> <td valign="top" style="padding:10px 0px 30px 0px;font-size:6px;line-height:10px;background-color:#f5f5f5;"> <table align="right"> <tbody> <tr> <td style="padding: 0px 5px;"> <a role="social-icon-link" href="https://www.facebook.com/kibopush/" target="_blank" alt="Facebook" data-nolink="false" title="Facebook " style="-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;display:inline-block;background-color:#3B579D;"> <img role="social-icon" alt="Facebook" title="Facebook " height="30" width="30" style="height: 30px, width: 30px" src="https://marketing-image-production.s3.amazonaws.com/social/white/facebook.png"/> </a> </td><td style="padding: 0px 5px;"> <a role="social-icon-link" href="https://twitter.com/kibodeveloper" target="_blank" alt="Twitter" data-nolink="false" title="Twitter " style="-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;display:inline-block;background-color:#7AC4F7;"> <img role="social-icon" alt="Twitter" title="Twitter " height="30" width="30" style="height: 30px, width: 30px" src="https://marketing-image-production.s3.amazonaws.com/social/white/twitter.png"/> </a> </td></tr></tbody> </table> </td></tr></tbody> </table> </td></tr></table><!--[if mso]> </td></tr></table> </center><![endif]--> </td></tr></table> </td></tr></table> </td></tr></table> </div></center> </body></html>')
+                  email.setHtml('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/> <meta http-equiv="X-UA-Compatible" content="IE=Edge"/><!--[if (gte mso 9)|(IE)]> <xml> <o:OfficeDocumentSettings> <o:AllowPNG/> <o:PixelsPerInch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]--><!--[if (gte mso 9)|(IE)]> <style type="text/css"> body{width: 600px;margin: 0 auto;}table{border-collapse: collapse;}table, td{mso-table-lspace: 0pt;mso-table-rspace: 0pt;}img{-ms-interpolation-mode: bicubic;}</style><![endif]--> <style type="text/css"> body, p, div{font-family: arial; font-size: 14px;}body{color: #000000;}body a{color: #1188E6; text-decoration: none;}p{margin: 0; padding: 0;}table.wrapper{width:100% !important; table-layout: fixed; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}img.max-width{max-width: 100% !important;}.column.of-2{width: 50%;}.column.of-3{width: 33.333%;}.column.of-4{width: 25%;}@media screen and (max-width:480px){.preheader .rightColumnContent, .footer .rightColumnContent{text-align: left !important;}.preheader .rightColumnContent div, .preheader .rightColumnContent span, .footer .rightColumnContent div, .footer .rightColumnContent span{text-align: left !important;}.preheader .rightColumnContent, .preheader .leftColumnContent{font-size: 80% !important; padding: 5px 0;}table.wrapper-mobile{width: 100% !important; table-layout: fixed;}img.max-width{height: auto !important; max-width: 480px !important;}a.bulletproof-button{display: block !important; width: auto !important; font-size: 80%; padding-left: 0 !important; padding-right: 0 !important;}.columns{width: 100% !important;}.column{display: block !important; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; margin-left: 0 !important; margin-right: 0 !important;}}</style> </head> <body> <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size: 14px; font-family: arial; color: #000000; background-color: #ebebeb;"> <div class="webkit"> <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#ebebeb"> <tr> <td valign="top" bgcolor="#ebebeb" width="100%"> <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0"> <tr> <td width="100%"> <table width="100%" cellpadding="0" cellspacing="0" border="0"> <tr> <td><!--[if mso]> <center> <table><tr><td width="600"><![endif]--> <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width:600px;" align="center"> <tr> <td role="modules-container" style="padding: 0px 0px 0px 0px; color: #000000; text-align: left;" bgcolor="#ffffff" width="100%" align="left"> <table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;"> <tr> <td role="module-content"> <p></p></td></tr></table> <table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="font-size:6px;line-height:10px;padding:35px 0px 0px 0px;background-color:#ffffff;" valign="top" align="center"> <img class="max-width" border="0" style="display:block;color:#000000;text-decoration:none;font-family:Helvetica, arial, sans-serif;font-size:16px;" width="600" height="100" src="https://marketing-image-production.s3.amazonaws.com/uploads/63fe9859761f80dce4c7d46736baaa15ca671ce6533ec000c93401c7ac150bbec5ddae672e81ff4f6686750ed8e3fad14a60fc562df6c6fdf70a6ef40b2d9c56.png" alt="Logo"> </td></tr></table> <table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="padding:18px 0px 18px 0px;line-height:22px;text-align:inherit;" height="100%" valign="top" bgcolor=""> <h1 style="text-align: center;"><span style="color:#B7451C;"><span style="font-size:20px;"><span style="font-family:arial,helvetica,sans-serif;">KiboPush Weekly Report</span></span></span></h1> </td></tr></table> <table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tr> <td style="padding:30px 045px 30px 45px;line-height:22px;text-align:inherit;" height="100%" valign="top" bgcolor=""> <div>Hello ' + user.name + ',</div><div>&nbsp;</div><div>Hope you are doing great&nbsp;:)</div><div>&nbsp;</div><div>You have become an important part of our community. You have been very active on KiboPush. We are very pleased to share the weekly report of your activities.</div><div>&nbsp;</div><ul><li>New Subscribers =&gt; ' + data.subscribers + '</li><li>New Chats =&gt; ' + data.liveChat + '</li><li>New Broadcasts =&gt; ' + data.broadcasts + '</li><li>New Surveys =&gt; ' + data.surveys + '</li><li>New Polls =&gt; ' + data.polls + '</li></ul><div>If you have any queries, you can send message to our <a href="https://www.facebook.com/kibopush/" style="background-color: rgb(255, 255, 255); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; font-family: arial; font-size: 14px;">&nbsp;Facebook Page</a>. Our admins will get back to you. Or, you can join our <a href="https://www.facebook.com/groups/kibopush/">Facebook Community</a>.</div><div>&nbsp;</div><div>Thank you for your continuous support!</div><div>&nbsp;</div><div>Regards,</div><div>KiboPush Team</div><div>CloudKibo</div></td></tr></table> <table class="module" role="module" data-type="social" align="right" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;"> <tbody> <tr> <td valign="top" style="padding:10px 0px 30px 0px;font-size:6px;line-height:10px;background-color:#f5f5f5;"> <table align="right"> <tbody> <tr> <td style="padding: 0px 5px;"> <a role="social-icon-link" href="https://www.facebook.com/kibopush/" target="_blank" alt="Facebook" data-nolink="false" title="Facebook " style="-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;display:inline-block;background-color:#3B579D;"> <img role="social-icon" alt="Facebook" title="Facebook " height="30" width="30" style="height: 30px, width: 30px" src="https://marketing-image-production.s3.amazonaws.com/social/white/facebook.png"/> </a> </td><td style="padding: 0px 5px;"> <a role="social-icon-link" href="https://twitter.com/kibodeveloper" target="_blank" alt="Twitter" data-nolink="false" title="Twitter " style="-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;display:inline-block;background-color:#7AC4F7;"> <img role="social-icon" alt="Twitter" title="Twitter " height="30" width="30" style="height: 30px, width: 30px" src="https://marketing-image-production.s3.amazonaws.com/social/white/twitter.png"/> </a> </td></tr></tbody> </table> </td></tr></tbody> </table> </td></tr></table><!--[if mso]> </td></tr></table> </center><![endif]--> </td></tr></table> </td></tr></table> </td></tr></table> </div></center> </body></html>')
                   sendgrid.send(email, function (err, json) {
                     if (err) {
                       logger.serverLog(TAG,
@@ -3665,92 +3593,894 @@ exports.allLocales = function (req, res) {
     })
   })
 }
-exports.deletePages = function (req, res) {
-  Surveys.find({}).exec((err, surveys) => {
+exports.deleteLiveChat = function (req, res) {
+  CompanyUsers.findOne({userId: req.params.id}, (err, companyUser) => {
     if (err) {
-    }
-    for (let i = 0; i < surveys.length; i++) {
-      SurveyPage.find({surveyId: surveys[i]._id}, (err, surveypages) => {
-        if (err) {
-        }
-        if (!surveypages) {
-          Surveys.findById(surveys[i]._id, (err, survey) => {
-            if (err) {
-              return res.status(500)
-                .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            if (!survey) {
-              return res.status(404)
-                .json({status: 'failed', description: 'Record not found'})
-            }
-            survey.remove((err2) => {
-              if (err2) {
-                return res.status(500)
-                  .json({status: 'failed', description: 'poll update failed'})
-              }
-            })
-          })
-        }
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-  })
-  Polls.find({}).exec((err, polls) => {
-    if (err) {
-    }
-    for (let i = 0; i < polls.length; i++) {
-      PollPage.find({pollId: polls[i]._id}, (err, pollpages) => {
-        if (err) {
-        }
-        if (!pollpages) {
-          Polls.findById(polls[i]._id, (err, poll) => {
-            if (err) {
+    Sessions.find({company_id: companyUser.companyId}).exec((err, sessions) => {
+      if (err) {
+      }
+      if (sessions && sessions.length > 0) {
+        sessions.forEach((session) => {
+          session.remove((err2) => {
+            if (err2) {
               return res.status(500)
-                .json({status: 'failed', description: 'Internal Server Error'})
+                .json({status: 'failed', description: 'poll update failed'})
             }
-            if (!poll) {
-              return res.status(404)
-                .json({status: 'failed', description: 'Record not found'})
-            }
-            poll.remove((err2) => {
-              if (err2) {
-                return res.status(500)
-                  .json({status: 'failed', description: 'poll update failed'})
-              }
-            })
           })
-        }
+        })
+      }
+    })
+    LiveChat.find({company_id: companyUser.companyId}).exec((err, liveChats) => {
+      if (err) {
+      }
+      if (liveChats && liveChats.length > 0) {
+        liveChats.forEach((liveChat) => {
+          liveChat.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    res.status(200).json({
+      status: 'success'
+    })
+  })
+}
+exports.deleteSubscribers = function (req, res) {
+  CompanyUsers.findOne({userId: req.params.id}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-  })
-  Broadcasts.find({}).exec((err, broadcasts) => {
-    if (err) {
-    }
-    for (let i = 0; i < broadcasts.length; i++) {
-      BroadcastPage.find({broadcastId: broadcasts[i]._id}, (err, broadcastpages) => {
-        if (err) {
-        }
-        if (!broadcastpages) {
-          Broadcasts.findById(broadcasts[i]._id, (err, broadcast) => {
-            if (err) {
+    Subscribers.find({companyId: companyUser.companyId}).exec((err, subscribers) => {
+      if (err) {
+      }
+      if (subscribers && subscribers.length > 0) {
+        subscribers.forEach((subscriber) => {
+          subscriber.remove((err2) => {
+            if (err2) {
               return res.status(500)
-                .json({status: 'failed', description: 'Internal Server Error'})
+                .json({status: 'failed', description: 'poll update failed'})
             }
-            if (!broadcast) {
-              return res.status(404)
-                .json({status: 'failed', description: 'Record not found'})
-            }
-            broadcast.remove((err2) => {
-              if (err2) {
-                return res.status(500)
-                  .json({status: 'failed', description: 'poll update failed'})
-              }
-            })
           })
-        }
+        })
+      }
+    })
+    AutopostingSubscriberMessages.find({companyId: companyUser.companyId}).exec((err, autopostingSubscriberMessages) => {
+      if (err) {
+      }
+      if (autopostingSubscriberMessages && autopostingSubscriberMessages.length > 0) {
+        autopostingSubscriberMessages.forEach((autopostingSubscriberMessage) => {
+          autopostingSubscriberMessage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    BroadcastPage.find({companyId: companyUser.companyId}).exec((err, broadcastPages) => {
+      if (err) {
+      }
+      if (broadcastPages && broadcastPages.length > 0) {
+        broadcastPages.forEach((broadcastPage) => {
+          broadcastPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    SurveyPage.find({companyId: companyUser.companyId}).exec((err, surveyPages) => {
+      if (err) {
+      }
+      if (surveyPages && surveyPages.length > 0) {
+        surveyPages.forEach((surveyPage) => {
+          surveyPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    PollPage.find({companyId: companyUser.companyId}).exec((err, pollPages) => {
+      if (err) {
+      }
+      if (pollPages && pollPages.length > 0) {
+        pollPages.forEach((pollPage) => {
+          pollPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    SequenceSubscribers.find({companyId: companyUser.companyId}).exec((err, sequenceSubscribers) => {
+      if (err) {
+      }
+      if (sequenceSubscribers && sequenceSubscribers.length > 0) {
+        sequenceSubscribers.forEach((sequenceSubscriber) => {
+          sequenceSubscriber.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    SequenceSubscriberMessages.find({companyId: companyUser.companyId}).exec((err, sequenceSubscriberMessages) => {
+      if (err) {
+      }
+      if (sequenceSubscriberMessages && sequenceSubscriberMessages.length > 0) {
+        sequenceSubscriberMessages.forEach((sequenceSubscriberMessage) => {
+          sequenceSubscriberMessages.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Sessions.find({company_id: companyUser.companyId}).exec((err, sessions) => {
+      if (err) {
+      }
+      if (sessions && sessions.length > 0) {
+        sessions.forEach((session) => {
+          session.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    LiveChat.find({company_id: companyUser.companyId}).exec((err, liveChats) => {
+      if (err) {
+      }
+      if (liveChats && liveChats.length > 0) {
+        liveChats.forEach((liveChat) => {
+          liveChat.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    TagSubscribers.find({companyId: companyUser.companyId}).exec((err, tagSubscribers) => {
+      if (err) {
+      }
+      if (tagSubscribers && tagSubscribers.length > 0) {
+        tagSubscribers.forEach((tagSubscriber) => {
+          tagSubscriber.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    res.status(200).json({
+      status: 'success'
+    })
+  })
+}
+exports.deleteAccount = function (req, res) {
+  CompanyUsers.findOne({userId: req.params.id}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-  })
-  res.status(200).json({
-    status: 'success'
+    Autopostings.find({companyId: companyUser.companyId}).exec((err, autopostings) => {
+      if (err) {
+      }
+      if (autopostings && autopostings.length > 0) {
+        autopostings.forEach((autoposting) => {
+          autoposting.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    AutopostingMessages.find({companyId: companyUser.companyId}).exec((err, autopostingMessages) => {
+      if (err) {
+      }
+      if (autopostingMessages && autopostingMessages.length > 0) {
+        autopostingMessages.forEach((autopostingMessage) => {
+          autopostingMessage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    AutopostingSubscriberMessages.find({companyId: companyUser.companyId}).exec((err, autopostingSubscriberMessages) => {
+      if (err) {
+      }
+      if (autopostingSubscriberMessages && autopostingSubscriberMessages.length > 0) {
+        autopostingSubscriberMessages.forEach((autopostingSubscriberMessage) => {
+          autopostingSubscriberMessage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Broadcasts.find({companyId: companyUser.companyId}).exec((err, broadcasts) => {
+      if (err) {
+      }
+      if (broadcasts && broadcasts.length > 0) {
+        broadcasts.forEach((broadcast) => {
+          broadcast.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    BroadcastPage.find({companyId: companyUser.companyId}).exec((err, broadcastPages) => {
+      if (err) {
+      }
+      if (broadcastPages && broadcastPages.length > 0) {
+        broadcastPages.forEach((broadcastPage) => {
+          broadcastPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Surveys.find({companyId: companyUser.companyId}).exec((err, surveys) => {
+      if (err) {
+      }
+      let surveyIds = []
+      if (surveys && surveys.length > 0) {
+        surveys.forEach((survey) => {
+          surveyIds.push(survey._id)
+          survey.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+          if (surveyIds.length === surveys.length - 1) {
+            SurveyQuestions.find({surveyId: surveyIds}).exec((err, surveyQuestions) => {
+              if (err) {
+              }
+              if (surveyQuestions && surveyQuestions.length > 0) {
+                surveyQuestions.forEach((surveyQuestion) => {
+                  surveyQuestion.remove((err2) => {
+                    if (err2) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'poll update failed'})
+                    }
+                  })
+                })
+              }
+            })
+            SurveyResponses.find({surveyId: surveyIds}).exec((err, surveyResponses) => {
+              if (err) {
+              }
+              if (surveyResponses && surveyResponses.length > 0) {
+                surveyResponses.forEach((surveyResponse) => {
+                  surveyResponse.remove((err2) => {
+                    if (err2) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'poll update failed'})
+                    }
+                  })
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+    SurveyPage.find({companyId: companyUser.companyId}).exec((err, surveyPages) => {
+      if (err) {
+      }
+      if (surveyPages && surveyPages.length > 0) {
+        surveyPages.forEach((surveyPage) => {
+          surveyPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Polls.find({companyId: companyUser.companyId}).exec((err, polls) => {
+      if (err) {
+      }
+      let pollIds = []
+      if (polls && polls.length > 0) {
+        polls.forEach((poll) => {
+          pollIds.push(poll._id)
+          poll.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+          if (pollIds.length === polls.length - 1) {
+            PollResponse.find({pollId: pollIds}).exec((err, pollResponses) => {
+              if (err) {
+              }
+              if (pollResponses && pollResponses.length > 0) {
+                pollResponses.forEach((pollResponse) => {
+                  pollResponse.remove((err2) => {
+                    if (err2) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'poll update failed'})
+                    }
+                  })
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+    PollPage.find({companyId: companyUser.companyId}).exec((err, pollPages) => {
+      if (err) {
+      }
+      if (pollPages && pollPages.length > 0) {
+        pollPages.forEach((pollPage) => {
+          pollPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    ApiNgp.find({company_id: companyUser.companyId}).exec((err, apiNgps) => {
+      if (err) {
+      }
+      if (apiNgps && apiNgps.length > 0) {
+        apiNgps.forEach((apiNgp) => {
+          apiNgp.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    ApiSettings.find({company_id: companyUser.companyId}).exec((err, apiSettings) => {
+      if (err) {
+      }
+      if (apiSettings && apiSettings.length > 0) {
+        apiSettings.forEach((apiSetting) => {
+          apiSetting.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    FacebookPosts.find({companyId: companyUser.companyId}).exec((err, facebookPosts) => {
+      if (err) {
+      }
+      if (facebookPosts && facebookPosts.length > 0) {
+        facebookPosts.forEach((facebookPost) => {
+          facebookPost.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    GrowthTools.find({companyId: companyUser.companyId}).exec((err, growthTools) => {
+      if (err) {
+      }
+      if (growthTools && growthTools.length > 0) {
+        growthTools.forEach((growthTool) => {
+          growthTool.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Invitations.find({companyId: companyUser.companyId}).exec((err, invitations) => {
+      if (err) {
+      }
+      if (invitations && invitations.length > 0) {
+        invitations.forEach((invitation) => {
+          invitation.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    InviteAgentToken.find({companyId: companyUser.companyId}).exec((err, inviteAgentTokens) => {
+      if (err) {
+      }
+      if (inviteAgentTokens && inviteAgentTokens.length > 0) {
+        inviteAgentTokens.forEach((inviteAgentToken) => {
+          inviteAgentToken.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Lists.find({companyId: companyUser.companyId}).exec((err, lists) => {
+      if (err) {
+      }
+      if (lists && lists.length > 0) {
+        lists.forEach((list) => {
+          list.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    LiveChat.find({company_id: companyUser.companyId}).exec((err, liveChats) => {
+      if (err) {
+      }
+      if (liveChats && liveChats.length > 0) {
+        liveChats.forEach((liveChat) => {
+          liveChat.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Menu.find({companyId: companyUser.companyId}).exec((err, menus) => {
+      if (err) {
+      }
+      if (menus && menus.length > 0) {
+        menus.forEach((menu) => {
+          menu.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Migrations.find({userId: req.params.id}).exec((err, migrations) => {
+      if (err) {
+      }
+      if (migrations && migrations.length > 0) {
+        migrations.forEach((migration) => {
+          migration.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Notifications.find({companyId: companyUser.companyId}).exec((err, notifications) => {
+      if (err) {
+      }
+      if (notifications && notifications.length > 0) {
+        notifications.forEach((notification) => {
+          notification.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    PageAdminSubscriptions.find({companyId: companyUser.companyId}).exec((err, pageAdminSubscriptions) => {
+      if (err) {
+      }
+      if (pageAdminSubscriptions && pageAdminSubscriptions.length > 0) {
+        pageAdminSubscriptions.forEach((pageAdminSubscription) => {
+          pageAdminSubscription.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Pages.find({companyId: companyUser.companyId}).exec((err, pages) => {
+      if (err) {
+      }
+      if (pages && pages.length > 0) {
+        pages.forEach((page) => {
+          page.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    PasswordResetToken.find({userId: req.params.id}).exec((err, passwordResetTokens) => {
+      if (err) {
+      }
+      if (passwordResetTokens && passwordResetTokens.length > 0) {
+        passwordResetTokens.forEach((passwordResetToken) => {
+          PasswordResetToken.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Permissions.find({companyId: companyUser.companyId}).exec((err, permissions) => {
+      if (err) {
+      }
+      if (permissions && permissions.length > 0) {
+        permissions.forEach((permission) => {
+          permission.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Sequences.find({companyId: companyUser.companyId}).exec((err, sequences) => {
+      if (err) {
+      }
+      let sequenceIds = []
+      if (sequences && sequences.length > 0) {
+        sequences.forEach((sequence) => {
+          sequenceIds.push(sequence._id)
+          sequence.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+          if (sequenceIds.length === sequences.length - 1) {
+            SequenceMessages.find({sequenceId: sequenceIds}).exec((err, messages) => {
+              if (err) {
+              }
+              if (messages && messages.length > 0) {
+                messages.forEach((message) => {
+                  message.remove((err2) => {
+                    if (err2) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'poll update failed'})
+                    }
+                  })
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+    SequenceSubscribers.find({companyId: companyUser.companyId}).exec((err, sequenceSubscribers) => {
+      if (err) {
+      }
+      if (sequenceSubscribers && sequenceSubscribers.length > 0) {
+        sequenceSubscribers.forEach((sequenceSubscriber) => {
+          sequenceSubscriber.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    SequenceSubscriberMessages.find({companyId: companyUser.companyId}).exec((err, sequenceSubscriberMessages) => {
+      if (err) {
+      }
+      if (sequenceSubscriberMessages && sequenceSubscriberMessages.length > 0) {
+        sequenceSubscriberMessages.forEach((sequenceSubscriberMessage) => {
+          sequenceSubscriberMessages.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Sessions.find({company_id: companyUser.companyId}).exec((err, sessions) => {
+      if (err) {
+      }
+      if (sessions && sessions.length > 0) {
+        sessions.forEach((session) => {
+          session.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    SmartReplies.find({userId: req.params.id}).exec((err, bots) => {
+      if (err) {
+      }
+      let botIds = []
+      if (bots && bots.length > 0) {
+        bots.forEach((bot) => {
+          botIds.push(bot._id)
+          bot.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+          if (botIds.length === bots.length - 1) {
+            Answers.find({botId: botIds}).exec((err, answers) => {
+              if (err) {
+              }
+              if (answers && answers.length > 0) {
+                answers.forEach((answer) => {
+                  answer.remove((err2) => {
+                    if (err2) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'poll update failed'})
+                    }
+                  })
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+    Subscribers.find({companyId: companyUser.companyId}).exec((err, subscribers) => {
+      if (err) {
+      }
+      if (subscribers && subscribers.length > 0) {
+        subscribers.forEach((subscriber) => {
+          subscriber.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Tags.find({companyId: companyUser.companyId}).exec((err, tags) => {
+      if (err) {
+      }
+      if (tags && tags.length > 0) {
+        tags.forEach((tag) => {
+          tag.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    TagSubscribers.find({companyId: companyUser.companyId}).exec((err, tagSubscribers) => {
+      if (err) {
+      }
+      if (tagSubscribers && tagSubscribers.length > 0) {
+        tagSubscribers.forEach((tagSubscriber) => {
+          tagSubscriber.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Teams.find({companyId: companyUser.companyId}).exec((err, teams) => {
+      if (err) {
+      }
+      if (teams && teams.length > 0) {
+        teams.forEach((team) => {
+          team.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    TeamAgents.find({companyId: companyUser.companyId}).exec((err, teamAgents) => {
+      if (err) {
+      }
+      if (teamAgents && teamAgents.length > 0) {
+        teamAgents.forEach((teamAgent) => {
+          teamAgent.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    TeamPages.find({companyId: companyUser.companyId}).exec((err, teamPages) => {
+      if (err) {
+      }
+      if (teamPages && teamPages.length > 0) {
+        teamPages.forEach((teamPage) => {
+          teamPage.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    BotTemplates.find({companyId: companyUser.companyId}).exec((err, botTemplates) => {
+      if (err) {
+      }
+      if (botTemplates && botTemplates.length > 0) {
+        botTemplates.forEach((botTemplate) => {
+          botTemplate.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    BroadcastTemplates.find({companyId: companyUser.companyId}).exec((err, broadcastTemplates) => {
+      if (err) {
+      }
+      if (broadcastTemplates && broadcastTemplates.length > 0) {
+        broadcastTemplates.forEach((broadcastTemplate) => {
+          broadcastTemplate.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Category.find({companyId: companyUser.companyId}).exec((err, categories) => {
+      if (err) {
+      }
+      if (categories && categories.length > 0) {
+        categories.forEach((category) => {
+          category.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    VerificationToken.find({userId: req.params.id}).exec((err, verificationTokens) => {
+      if (err) {
+      }
+      if (verificationTokens && verificationTokens.length > 0) {
+        verificationTokens.forEach((verificationToken) => {
+          verificationToken.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    Webhooks.find({companyId: companyUser.companyId}).exec((err, webhooks) => {
+      if (err) {
+      }
+      if (webhooks && webhooks.length > 0) {
+        webhooks.forEach((webhook) => {
+          webhook.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+        })
+      }
+    })
+    CompanyProfile.find({ownerId: req.params.id}).exec((err, companyProfiles) => {
+      if (err) {
+      }
+      if (companyProfiles && companyProfiles.length > 0) {
+        companyProfiles.forEach((companyProfile) => {
+          companyProfile.remove((err2) => {
+            if (err2) {
+              return res.status(500)
+                .json({status: 'failed', description: 'poll update failed'})
+            }
+          })
+          CompanyUsers.find({companyId: companyProfile._id}).exec((err, companyUsers) => {
+            if (err) {
+            }
+            if (companyUsers && companyUsers.length > 0) {
+              companyUsers.forEach((companyUser) => {
+                companyUser.remove((err2) => {
+                  if (err2) {
+                    return res.status(500)
+                      .json({status: 'failed', description: 'poll update failed'})
+                  }
+                })
+                Users.findOne({_id: companyUser.userId}).exec((err, user) => {
+                  if (err) {
+                  }
+                  user.remove((err2) => {
+                    if (err2) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'poll update failed'})
+                    }
+                  })
+                })
+              })
+            }
+          })
+        })
+      }
+    })
+    res.status(200).json({
+      status: 'success'
+    })
   })
 }

@@ -44,7 +44,8 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.LOAD_TOP_PAGES_LIST:
       console.log('loadTopPages', action.data)
       return Object.assign({}, state, {
-        toppages: action.data
+        toppages: action.data,
+        response: ''
       })
 
     case ActionTypes.LOAD_BACKDOOR_PAGES_LIST:
@@ -150,6 +151,10 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.LOAD_LOCALES_LIST_BACKDOOR:
       return Object.assign({}, state, {
         locales: action.data
+      })
+    case ActionTypes.DELETE_ACCOUNT_RESPONSE:
+      return Object.assign({}, state, {
+        response: action.data
       })
 
     default:

@@ -122,6 +122,8 @@ class Survey extends React.Component {
     if (nextProps.surveys && nextProps.count) {
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
+    } else {
+      this.setState({ surveysData: [], totalLength: 0 })
     }
     if (nextProps.successMessage || nextProps.errorMessage) {
       this.setState({
@@ -203,7 +205,7 @@ class Survey extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='xKa09wiYbrg'
+                  videoId='bizOCjXE6tM'
                   opts={{
                     height: '390',
                     width: '640',

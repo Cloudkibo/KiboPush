@@ -14,6 +14,9 @@ const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 let utility = require('./../broadcasts/broadcasts.utility')
+const Sessions = require('./../sessions/sessions.model')
+const _ = require('lodash')
+const mongoose = require('mongoose')
 
 function transformPayload (payload) {
   var transformed = []
@@ -43,12 +46,15 @@ function getWitResponse (message, token, bot, pageId, senderId) {
     },
     (err, witres) => {
       if (err) {
-        logger.serverLog(TAG,
-          'Error Occured In Getting Response From WIT.AI app')
+        logger.serverLog(TAG, 'Error Occured In Getting Response From WIT.AI app')
+        return
       }
-
+      if (!witres.body) {
+        logger.serverLog(TAG, 'Error Occured In Getting Response From WIT.AI app')
+        return
+      }
       // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
-      if (Object.keys(JSON.parse(witres.body).entities).length == 0) {
+      if (Object.keys(JSON.parse(witres.body).entities).length === 0) {
         logger.serverLog(TAG, 'No response found')
         Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, db_res) => {
           if (err) {
@@ -70,7 +76,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
           }
         })
         for (let i = 0; i < bot.payload.length; i++) {
-          if (bot.payload[i].intent_name == intent.value) {
+          if (bot.payload[i].intent_name === intent.value) {
             sendMessenger(bot.payload[i].answer, pageId, senderId)
           }
         }
@@ -79,90 +85,73 @@ function getWitResponse (message, token, bot, pageId, senderId) {
 }
 
 function sendMessenger (message, pageId, senderId) {
-  let messageData = utility.prepareSendAPIPayload(
-                senderId,
-                 {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, true)
-  Pages.findOne({pageId: pageId}, (err, page) => {
+  Subscribers.findOne({senderId: senderId}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      return
     }
-    request(
-      {
-        'method': 'POST',
-        'json': true,
-        'formData': messageData,
-        'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-              page.accessToken
-      },
-            (err, res) => {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send message live chat ${JSON.stringify(err)}`)
-              } else {
-                if (res.statusCode !== 200) {
-                  logger.serverLog(TAG,
-                    `At send message live chat response ${JSON.stringify(
-                      res.body.error)}`)
+    if (subscriber === null) {
+      return
+    }
+    logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
+    let messageData = utility.prepareSendAPIPayload(
+                  senderId,
+                   {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName, subscriber.lastName, true)
+    Pages.findOne({pageId: pageId}, (err, page) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      request(
+        {
+          'method': 'POST',
+          'json': true,
+          'formData': messageData,
+          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
+        },
+              (err, res) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At send message live chat ${JSON.stringify(err)}`)
                 } else {
-                  logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+                  if (res.statusCode !== 200) {
+                    logger.serverLog(TAG,
+                      `At send message live chat response ${JSON.stringify(
+                        res.body.error)}`)
+                  } else {
+                    logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+                  }
                 }
-              }
-            })
+              })
+    })
   })
 }
 
-exports.respond = function (payload) {
-  // Need to extract the pageID and message from facebook and also the senderID
-  // logger.serverLog(TAG, `Getting this in respond ${JSON.stringify(payload)}`)
-  if (payload.object && payload.object !== 'page') {
-    logger.serverLog(TAG, `Payload received is not for bot`)
-    return
-  }
-  if (!payload.entry) {
-    logger.serverLog(TAG, `Payload received is not for bot does not contain entry`)
-  	return
-  }
-  if (!payload.entry[0].messaging) {
-    logger.serverLog(TAG, `Payload received is not for bot does contain messaging field`)
-  	return
-  }
-  if (!payload.entry[0].messaging[0]) {
-    logger.serverLog(TAG, `Payload received is not for bot does not contain messaging array`)
-  	return
-  }
-  var messageDetails = payload.entry[0].messaging[0]
-  var pageId = messageDetails.recipient.id
-  var senderId = messageDetails.sender.id
-
-  if (!messageDetails.message) {
-  	return
-  }
-  if (messageDetails.message.is_echo) {
-    return
-  }
-  var text = messageDetails.message.text
+exports.respond = function (pageId, senderId, text) {
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
-  Pages.findOne({pageId: pageId}, (err, page) => {
+  Pages.find({pageId: pageId}, (err, page) => {
     if (err) {
-      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      logger.serverLog(TAG, `ERROR PAGE ID ISSUE ${JSON.stringify(err)}`)
+      return
     }
-    if (page && page._id) {
-      Bots.findOne({pageId: page._id}, (err, bot) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-
-  	 	// Return if no bot found
-        if (!bot) {
-          logger.serverLog(TAG, `Couldnt find the bot while trying to respond`)
-          return
-        }
-        if (bot.isActive === 'true') {
-              // Write the bot response logic here
-          logger.serverLog(TAG, 'Responding using the bot as status is Active')
-          getWitResponse(text, bot.witToken, bot, pageId, senderId)
-        }
-      })
+    logger.serverLog(TAG, `PAGES FETCHED ${JSON.stringify(page)}`)
+    for (let i = 0; i < page.length; i++) {
+      if (page[i] && page[i]._id) {
+        Bots.findOne({pageId: page[i]._id}, (err, bot) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          } else {
+            if (!bot) {
+              logger.serverLog(TAG, `Couldnt find the bot while trying to respond ${page[i]._id}`)
+            }
+            if (bot && bot.isActive === 'true') {
+                // Write the bot response logic here
+              logger.serverLog(TAG, 'Responding using the bot as status is Active')
+              getWitResponse(text, bot.witToken, bot, pageId, senderId)
+            }
+          }
+        })
+      }
     }
   })
 }
@@ -242,6 +231,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
+  logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   var uniquebotName = req.body.botName + req.user._id + Date.now()
   request(
     {
@@ -311,10 +301,7 @@ exports.edit = function (req, res) {
       _id: req.body.botId
     }).populate('pageId').exec((err, bot) => {
       if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
+        return logger.serverLog(TAG, 'Error Occured In editing the bot')
       }
       logger.serverLog(TAG,
               `returning Bot details ${JSON.stringify(bot)}`)
@@ -370,10 +357,10 @@ exports.delete = function (req, res) {
       }
       logger.serverLog(TAG,
               `Deleting Bot details on WitAI ${JSON.stringify(bot)}`)
-      if (bot.length == 0) {
-      	logger.serverLog(TAG,
+      if (bot.length === 0) {
+        logger.serverLog(TAG,
               `Cannot find a bot to delete`)
-      	return
+        return
       }
 
       request(
@@ -459,10 +446,10 @@ exports.waitingReply = function (req, res) {
             datetime: subscribers[i].datetime,
             isEnabledByPage: subscribers[i].isEnabledByPage,
             isSubscribed: subscribers[i].isSubscribed,
-            isSubscribedByPhoneNumber: subscribers[i].isSubscribedByPhoneNumber,
             phoneNumber: subscribers[i].phoneNumber,
             unSubscribedBy: subscribers[i].unSubscribedBy,
-            tags: []
+            tags: [],
+            source: subscribers[i].source
           })
         }
         TagsSubscribers.find({subscriberId: {$in: subsArray}})

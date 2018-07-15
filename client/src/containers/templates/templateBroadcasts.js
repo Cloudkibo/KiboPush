@@ -80,6 +80,7 @@ class TemplateBroadcasts extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
@@ -161,7 +162,7 @@ class TemplateBroadcasts extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -361,6 +362,7 @@ class TemplateBroadcasts extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state', state)
   return {
     broadcasts: state.templatesInfo.broadcasts,
     count: state.templatesInfo.broadcastsCount,

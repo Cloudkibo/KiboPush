@@ -103,7 +103,7 @@ class CreateSequence extends React.Component {
       }
       var utcDate = new Date(d1).toISOString()
       d1.setHours(d1.getHours() + 5)
-      utcDate = new Date(d1).toISOString()
+      utcDate = new Date(d1).toISOString()   // We can keep the date for queue schedule purposes == don't remvoe it
       this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
     }
   }
@@ -228,6 +228,9 @@ class CreateSequence extends React.Component {
               	<div className='m-portlet__body'>
                   {this.props.messages && this.props.messages.length > 0
                   ? <div className='row'>
+                    <div className='col-12'>
+                      <p style={{marginTop: '10px'}}> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive messages from this sequence after 30 mins of ending the conversation.</p>
+                    </div>
                     <div className='col-xl-2 col-lg-2 col-md-2 col-sm-2'>
                       <div className='m-list-timeline'>
                         <div style={{float: 'right', textAlign: 'right'}}>

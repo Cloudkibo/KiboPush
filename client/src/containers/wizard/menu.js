@@ -487,7 +487,7 @@ class Menu extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='CUyrESx7MyM'
+                  videoId='2I7qnG03zVs'
                   opts={{
                     height: '390',
                     width: '640',
@@ -758,7 +758,7 @@ class Menu extends React.Component {
                                 </Link>
                               </div>
                               <div className='col-lg-6 m--align-right'>
-                                <Link to='/finish' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <Link to='/paymentMethodsWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                   <span>
                                     <span>Next</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />

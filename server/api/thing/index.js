@@ -7,6 +7,7 @@ const Sessions = require('./../sessions/sessions.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const LiveChat = require('../livechat/livechat.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
+const CompanyUsers = require('./../companyuser/companyuser.model')
 const Pages = require('./../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const Polls = require('./../polls/Polls.model')
@@ -16,9 +17,10 @@ const PagePolls = require('./../page_poll/page_poll.model')
 const PageSurveys = require('./../page_survey/page_survey.model')
 const PageBroadcasts = require('./../page_broadcast/page_broadcast.model')
 const mongoose = require('mongoose')
-
+const request = require('request')
 const logger = require('../../components/logger')
 const TAG = 'api/thing/index'
+const needle = require('needle')
 
 router.get('/', (req, res) => {
   res.status(200).json({status: 'success', payload: []})
@@ -244,6 +246,164 @@ router.get('/updateBroadcasts', (req, res) => {
     })
     res.status(200).json({status: 'success', payload: []})
   })
+})
+
+router.get('/updateAutomatedOptions', (req, res) => {
+  CompanyProfile.update({}, {$set: {automated_options: 'MIX_CHAT'}}, {multi: true}, (err, profiles) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    } else {
+      res.status(200).json({status: 'success', payload: profiles})
+    }
+  })
+})
+
+router.get('/updateSubcribersSource', (req, res) => {
+  Subscribers.find({}, (err, subscribers) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    subscribers.forEach((subscriber) => {
+      let user = JSON.parse(JSON.stringify(subscriber))
+      if (user.isSubscribedByPhoneNumber === true) {
+        Subscribers.update({_id: user._id}, {source: 'customer_matching'}, {multi: true}, (err, subs) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+        })
+      } else {
+        Subscribers.update({_id: user._id}, {source: 'direct_message'}, {multi: true}, (err, subs) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+        })
+      }
+    })
+    res.status(200).json({status: 'success', payload: []})
+  })
+})
+
+router.get('/updatePageNames', (req, res) => {
+  Pages.find({}, (err, pages) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in retrieving pages: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'failed', description: `Error in retrieving pages: ${JSON.stringify(err)}`})
+    }
+    let updatedPages = []
+    let requests = pages.map((page) => {
+      return new Promise((resolve, reject) => {
+        request(
+          {
+            'method': 'GET',
+            'json': true,
+            'uri': `https://graph.facebook.com/v3.0/${page.pageId}?access_token=${page.accessToken}`
+          }, function (err, resp) {
+          if (err) {
+            logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
+            reject(err)
+          } else {
+            resolve(resp)
+            if (page.pageName !== resp.body.name) {
+              updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
+              Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
+                } else {
+                  logger.serverLog(TAG, `Updated page name. Previous page name in database: ${page.pageName}, Actual page name: ${resp.body.name}`)
+                }
+              })
+            }
+          }
+        })
+      })
+    })
+    Promise.all(requests)
+      .then(() => res.status(200).json({status: 'success', payload: updatedPages}))
+      .catch((err) => res.status(500).json({status: 'failed', description: `Error: ${JSON.stringify(err)}`}))
+  })
+})
+
+router.get('/updateEulaField', (req, res) => {
+  Users.find({}, (err, users) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
+    }
+    users.forEach(user => {
+      Users.update({_id: user._id}, {eulaAccepted: true}, (err, resp) => {
+        if (err) {
+          logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+        }
+      })
+    })
+  })
+  res.status(200).json({status: 'success', payload: []})
+})
+
+router.get('/updatePicture', (req, res) => {
+  Users.find({}, (err, users) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
+    }
+    users.forEach(user => {
+      if (user.facebookInfo) {
+        needle.get(
+          `https://graph.facebook.com/v2.10/${user.facebookInfo.fbId}?fields=picture&access_token=${user.facebookInfo.fbToken}`,
+          (err, resp) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
+              if (err) {
+                logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+              }
+            })
+          })
+      }
+    })
+  })
+  res.status(200).json({status: 'success', payload: []})
+})
+router.get('/updateSubcribersPicture', (req, res) => {
+  CompanyUsers.find({}).populate('userId').exec((err, profiles) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    profiles.forEach(profile => {
+      Subscribers.find({companyId: profile.companyId}).populate('pageId').exec((err, users) => {
+        if (err) {
+          logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
+          res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
+        }
+        users.forEach(user => {
+          if (user.pageId && user.pageId.pageId) {
+            needle.get(
+            `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
+            (err, respp) => {
+              if (err) {
+                logger.serverLog(TAG,
+                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+              }
+              needle.get(
+                `https://graph.facebook.com/v2.10/${user.senderId}?fields=picture&access_token=${respp.body.access_token}`,
+                (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                  Subscribers.update({_id: user._id}, {profilePic: resp.body.picture.data.url}, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                    }
+                  })
+                })
+            })
+          }
+        })
+      })
+    })
+  })
+  res.status(200).json({status: 'success', payload: []})
 })
 
 module.exports = router

@@ -40,7 +40,8 @@ class Menu extends React.Component {
       disabled: true,
       savedisabled: true,
       selecteditem: null,
-      isShowingModal: false
+      isShowingModal: false,
+      showVideo: true
     }
 
     this.option1 = 'Add submenu'
@@ -549,7 +550,7 @@ class Menu extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='CUyrESx7MyM'
+                  videoId='2I7qnG03zVs'
                   opts={{
                     height: '390',
                     width: '640',

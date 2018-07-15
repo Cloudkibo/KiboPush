@@ -14,6 +14,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from './viewScreen'
+import YouTube from 'react-youtube'
 
 const styles = {
   iconclass: {
@@ -38,7 +39,8 @@ class GreetingMessage extends React.Component {
       selectPage: {},
       textCount: 160,
       showPreview: false,
-      previewMessage: ''
+      previewMessage: '',
+      showVideo: false
     }
     this.saveGreetingMessage = this.saveGreetingMessage.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
@@ -193,6 +195,27 @@ class GreetingMessage extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='LEN-grb6Rdc'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <Popover placement='left' isOpen={this.state.showEmojiPicker} className='greetingPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
           <PopoverBody>
             <div>
@@ -252,6 +275,11 @@ class GreetingMessage extends React.Component {
                       You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
                     </div>
                   }
+                  <div className='form-group m-form__group'>
+                    <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                      Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                    </div>
+                  </div>
                   <div className='form-group m-form__group row'>
                     <label className='col-3 col-form-label' style={{textAlign: 'left'}}>  Change Page</label>
                     <div className='col-8 input-group'>

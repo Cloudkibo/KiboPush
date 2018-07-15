@@ -15,7 +15,7 @@ export function invitationsInfo (state = {}, action) {
       })
     case ActionTypes.ADD_INVITATION:
       return Object.assign({}, state, {
-        invitations: [...state.workflows, action.data]
+        invitations: action.data
       })
     case ActionTypes.INVITATION_SUCCESS:
       return Object.assign({}, state, {

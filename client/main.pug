@@ -10,6 +10,17 @@ html(lang="en")
     meta(name="description" content="Latest updates and statistic charts")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    //script(type='text/javascript').
+      window.__kibo_company_id = "5aae50b46f9da939b8659d12";
+      (function () {
+        var wa = document.createElement('script');
+        wa.type = 'text/javascript';
+        wa.async = true;
+        wa.src = 'https://localhost:3000/scripts/widgetAppSrc.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wa, s);
+      })();
+    // script(src="https://kibopush-sojharo.ngrok.io/scripts/widgetAppSrc.js" type="text/javascript")
     // begin::Web font
     // Facebook Pixel Code
     script.
@@ -37,6 +48,14 @@ html(lang="en")
         },
       })
     // end::Web font
+    // LuckyOrange Code Start
+    script(type='text/javascript').
+      window.__lo_site_id = 114153;
+      (function() {
+      var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+      wa.src = 'https://d10lpsik1i8c69.cloudfront.net/w.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+      })();
     link(rel="shortcut icon" href="assets/demo/default/media/img/logo/favicon.ico")
     // Slick Carousel
     link(rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css")
@@ -74,47 +93,7 @@ html(lang="en")
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'UA-104907011-1');
-    script.
-      window['_fs_debug'] = false
-      window['_fs_host'] = 'fullstory.com'
-      window['_fs_org'] = '65VXP'
-      window['_fs_namespace'] = 'FS';
-      (function (m, n, e, t, l, o, g, y) {
-        if (e in m && m.console && m.console.log) {
-          m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].')
-          return
-        }
-        g = m[e] = function (a, b) {g.q ? g.q.push([a, b]) : g._api(a, b)}
-        g.q = []
-        o = n.createElement(t)
-        o.async = 1
-        o.src = 'https://' + _fs_host + '/s/fs.js'
-        y = n.getElementsByTagName(t)[0]
-        y.parentNode.insertBefore(o, y)
-        g.identify = function (i, v) {
-          g(l, {uid: i})
-          if (v) g(l, v)
-        }
-        g.setUserVars = function (v) {g(l, v)}
-        g.identifyAccount = function (i, v) {
-          o = 'account'
-          v = v || {}
-          v.acctId = i
-          g(o, v)
-        }
-        g.clearUserCookie = function (c, d, i) {
-          if (!c || document.cookie.match('fs_uid=[`;`]*`[`;`]*`[`;`]*`')) {
-            d = n.domain
-            while (1) {
-              n.cookie = 'fs_uid=;domain=' + d +
-                ';path=/;expires=' + new Date(0).toUTCString()
-              i = d.indexOf('.')
-              if (i < 0)break
-              d = d.slice(i + 1)
-            }
-          }
-        }
-      })(window, document, window['_fs_namespace'], 'script', 'user')
+
     //
       <script type="text/javascript">
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
@@ -168,7 +147,11 @@ html(lang="en")
       }
       var env = readCookie("environment");
       if (env !== "development") {
-        Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307').install()
+        Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
+          autoBreadcrumbs: {
+          console: false
+        }
+      }).install()
       }
     script(src="js/bundle.js")
     // Js effects for material design. + Tooltips

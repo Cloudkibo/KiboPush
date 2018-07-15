@@ -1,7 +1,9 @@
 const Messages = require('./message.model')
 const Sequences = require('./sequence.model')
 const SequenceSubscribers = require('./sequenceSubscribers.model')
+const SequenceMessages = require('./message.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const SequenceMessageQueue = require('./../SequenceMessageQueue/SequenceMessageQueue.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
@@ -49,6 +51,33 @@ exports.createMessage = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
+        SequenceSubscribers.find({sequenceId: req.body.sequenceId}, (err, sequences) => {
+          if (err) {
+            return logger.serverLog(TAG, 'subscriber find error create message')
+          }
+          if (sequences.length > 0) {
+            sequences.forEach(sequence => {
+              let sequenceQueuePayload = {
+                sequenceId: req.body.sequenceId,
+                subscriberId: sequence.subscriberId,
+                companyId: companyUser.companyId,
+                sequenceMessageId: messageCreated._id,
+                queueScheduledTime: req.body.schedule.date
+
+              }
+
+              const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+              sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                if (err) {
+                  res.status(500).json({
+                    status: 'Failed',
+                    description: 'Failed to insert record in Queue'
+                  })
+                }
+              })
+            })
+          }
+        })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
@@ -132,6 +161,21 @@ exports.setSchedule = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'Record not found'})
       }
+      if (req.body.condition === 'immediately') {
+        if (message.isActive === true) {
+          // console.log('send the message immediately and remove from queue')
+        }
+      } else {
+        SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
+        (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+        })
+      }
       message.schedule = {condition: req.body.condition, days: req.body.days, date: req.body.date}
       message.save((err2) => {
         if (err2) {
@@ -175,6 +219,19 @@ exports.setStatus = function (req, res) {
       if (!message) {
         return res.status(404)
           .json({status: 'failed', description: 'Record not found'})
+      }
+      // this will update the status in queue. Queue will only send active messages
+      if (message.schedule.condition === 'immediately') {
+        // console.log('message will be send immediately and remove from queue')
+      } else {
+        SequenceMessageQueue.update({sequenceMessageId: req.body.messageId}, {isActive: req.body.isActive}, {multi: true}, (err, result) => {
+          if (err) {
+            return res.status(500)
+            .json({status: 'failed', description: 'Internal Server Error'})
+          }
+
+          logger.serverLog(TAG, 'updated the status in queue')
+        })
       }
       message.isActive = req.body.isActive
       message.save((err2) => {
@@ -534,35 +591,70 @@ exports.subscribeToSequence = function (req, res) {
     }
 
     req.body.subscriberIds.forEach(subscriberId => {
-      let sequenceSubscriberPayload = {
-        sequenceId: req.body.sequenceId,
-        subscriberId: subscriberId,
-        companyId: companyUser.companyId,
-        status: 'subscribed'
-      }
-      const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
-
-      // save model to MongoDB
-      sequenceSubcriber.save((err, subscriberCreated) => {
+    // Following code will run when user subscribes to sequence
+      SequenceMessages.find({sequenceId: req.body.sequenceId}, (err, messages) => {
         if (err) {
           res.status(500).json({
             status: 'Failed',
             description: 'Failed to insert record'
           })
-        } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-          require('./../../config/socketio').sendMessageToClient({
-            room_id: companyUser.companyId,
-            body: {
-              action: 'sequence_update',
-              payload: {
-                sequence_id: req.body.sequenceId
-              }
-            }
-          })
-          res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
         }
-      })
-    })
+
+        messages.forEach(message => {
+          if (message.schedule.condition === 'immediately') {
+            // console.log('we will use the sending script here')
+          } else {
+            let sequenceQueuePayload = {
+              sequenceId: req.body.sequenceId,
+              subscriberId: subscriberId,
+              companyId: companyUser.companyId,
+              sequenceMessageId: message._id,
+              queueScheduledTime: message.schedule.date,
+              isActive: message.isActive
+            }
+
+            const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+            sequenceMessageForQueue.save((err, messageQueueCreated) => {
+              if (err) {
+                res.status(500).json({
+                  status: 'Failed',
+                  description: 'Failed to insert record in Queue'
+                })
+              }
+            }) //  save ends here
+          }  // else ends here
+        })  // Messages Foreach ends here
+
+        let sequenceSubscriberPayload = {
+          sequenceId: req.body.sequenceId,
+          subscriberId: subscriberId,
+          companyId: companyUser.companyId,
+          status: 'subscribed'
+        }
+        const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+        // save model to MongoDB
+        sequenceSubcriber.save((err, subscriberCreated) => {
+          if (err) {
+            res.status(500).json({
+              status: 'Failed',
+              description: 'Failed to insert record'
+            })
+          } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: req.body.sequenceId
+                }
+              }
+            })
+            res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
+          }
+        })  // Sequence subscriber save ends here
+      }) // Sequence message find ends here
+    })  //  Foreach ends of subscriber id
   })
 }
 
@@ -592,23 +684,31 @@ exports.unsubscribeToSequence = function (req, res) {
     }
 
     req.body.subscriberIds.forEach(subscriberId => {
-      SequenceSubscribers.update(
-      {sequenceId: req.body.sequenceId, subscriberId: subscriberId},
-      {status: 'unsubscribed'}, {multi: true}, (err, updated) => {
+      SequenceSubscribers.remove({sequenceId: req.body.sequenceId})
+      .where('subscriberId').equals(subscriberId)
+      .exec((err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-          require('./../../config/socketio').sendMessageToClient({
-            room_id: companyUser.companyId,
-            body: {
-              action: 'sequence_update',
-              payload: {
-                sequence_id: req.body.sequenceId
-              }
-            }
-          })
-          res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
         }
+
+        SequenceMessageQueue.remove({sequenceId: req.body.sequenceId, subscriberId: subscriberId}, (err, result) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: req.body.sequenceId
+                }
+              }
+            })
+            res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
+          }
+        })
       })
     })
   })
@@ -634,17 +734,39 @@ exports.deleteSequence = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
       }
-      require('./../../config/socketio').sendMessageToClient({
-        room_id: companyUser.companyId,
-        body: {
-          action: 'sequence_delete',
-          payload: {
-            sequence_id: req.params.id
-          }
+
+      SequenceSubscribers.deleteMany({sequenceId: req.params.id}, (err, result) => {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
         }
-      })
-      res.status(201).json({status: 'success', payload: deleted})
-    })
+
+        SequenceMessageQueue.deleteMany({sequenceId: req.params.id}, (err, result) => {
+          if (err) {
+            return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+          }
+
+          SequenceMessages.deleteMany({sequenceId: req.params.id}, (err, result) => {
+            if (err) {
+              return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+            }
+
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'sequence_delete',
+                payload: {
+                  sequence_id: req.params.id
+                }
+              }
+            })
+            res.status(201).json({status: 'success', payload: deleted})
+          })  //  ends sequence message delete
+        }) // ends queue deletemany
+      })  // ends sequence-sub deletemany
+    })  //  ends sequence delete one
   })
 }
 
@@ -663,22 +785,30 @@ exports.deleteMessage = function (req, res) {
       })
     }
 
-    Messages.deleteOne({_id: req.params.id}, (err, deleted) => {
+    SequenceMessages.deleteOne({_id: req.params.id}, (err, deleted) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
       }
-      require('./../../config/socketio').sendMessageToClient({
-        room_id: companyUser.companyId,
-        body: {
-          action: 'sequence_delete',
-          payload: {
-            sequence_id: req.params.id
-          }
+
+      SequenceMessageQueue.deleteMany({sequenceMessageId: req.params.id}, (err, result) => {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
         }
-      })
-      res.status(201).json({status: 'success', payload: deleted})
-    })
+
+        require('./../../config/socketio').sendMessageToClient({
+          room_id: companyUser.companyId,
+          body: {
+            action: 'sequence_delete',
+            payload: {
+              sequence_id: req.params.id
+            }
+          }
+        })
+        res.status(201).json({status: 'success', payload: deleted})
+      })  // message queue deletemany ends here
+    })  // sequence message deleteOne ends here
   })
 }
 

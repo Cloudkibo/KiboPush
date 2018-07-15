@@ -42,7 +42,7 @@ exports.getAllPolls = function (req, res) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
     }
     TemplatePolls.aggregate([
       { $match: findCriteria },
@@ -71,7 +71,7 @@ exports.getAllPolls = function (req, res) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
     }
     TemplatePolls.aggregate([
       { $match: findCriteria },
@@ -100,7 +100,7 @@ exports.getAllPolls = function (req, res) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
     }
     TemplatePolls.aggregate([
       { $match: findCriteria },
@@ -144,7 +144,7 @@ exports.getAllSurveys = function (req, res) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
     }
     TemplateSurveys.aggregate([
       { $match: findCriteria },
@@ -173,7 +173,7 @@ exports.getAllSurveys = function (req, res) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
     }
     TemplateSurveys.aggregate([
       { $match: findCriteria },
@@ -202,7 +202,7 @@ exports.getAllSurveys = function (req, res) {
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
-      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.search_value : {$exists: true}
+      category: req.body.filter_criteria.category_value !== '' ? req.body.filter_criteria.category_value : {$exists: true}
     }
     TemplateSurveys.aggregate([
       { $match: findCriteria },
