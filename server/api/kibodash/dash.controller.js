@@ -13,23 +13,23 @@
  const mongoose = require('mongoose')
 // var json2csv = require('json2csv')
 
-exports.platformWiseData = function (req, res) {
-  res.status(200).json({
-    status: 'success',
-    payload: {text: 'I am a barbie girl in the barbie world'}
-  })
+ exports.platformWiseData = function (req, res) {
+   res.status(200).json({
+     status: 'success',
+     payload: {text: 'I am a barbie girl in the barbie world'}
+   })
  }
 
-exports.pageWiseData = function (req, res) {
-  res.status(200).json({
-    status: 'success',
-    payload: {text: 'Sher aya k chor aya!!!'}
-  })
-}
+ exports.pageWiseData = function (req, res) {
+   res.status(200).json({
+     status: 'success',
+     payload: {text: 'Sher aya k chor aya!!!'}
+   })
+ }
 
-exports.userWiseData = function (req, res) {
-  res.status(200).json({
-    status: 'success',
-    payload: {text: 'The man who walks with the crowd can get no further than the crowd'}
-  })
-}
+ exports.userWiseData = function (req, res) {
+   res.status(200).json({
+     status: 'success',
+     payload: {text: 'The man who walks with the crowd can get no further than the crowd'}
+   })
+ }
