@@ -101,9 +101,7 @@ class CreateSequence extends React.Component {
       } else if (this.state.condition === 'day(s)') {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
-      var utcDate = new Date(d1).toISOString()
-      d1.setHours(d1.getHours() + 5)
-      utcDate = new Date(d1).toISOString()   // We can keep the date for queue schedule purposes == don't remvoe it
+      let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
       this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
     }
   }
@@ -243,7 +241,7 @@ class CreateSequence extends React.Component {
                           <div>
                           <div className='m-list-timeline__time'>
                             <div className='row' style={{height: '57px', width: 'max-content', cursor: 'pointer'}} id={'buttonTarget-' + message._id} ref={(b) => { this.target = b }} onClick={() => this.handleClick(message._id, i)}>
-                              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: `${i*33+97}px`}}>
+                              <span className='m-list-timeline__text' style={{ width: '200px', marginTop: '6px', verticalAlign: 'middle', lineHeight: `${i*33+97}px`}}>
                                 {message.schedule.condition === 'immediately'
                                 ? <u>immediately</u>
                                 : <u>After {message.schedule.days} {message.schedule.condition}</u>
