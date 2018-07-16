@@ -300,7 +300,6 @@ class CreateConvo extends React.Component {
         temp[i].size = obj.size
         temp[i].type = obj.type
         temp[i].buttons = obj.buttons
-        temp[i].image_url = obj.image_url
         isPresent = true
       }
     })
