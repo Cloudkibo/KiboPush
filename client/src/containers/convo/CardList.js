@@ -102,6 +102,17 @@ class Card extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
   }
   handleClose (e) {
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button
+    })
     this.setState({openPopover: false, elementUrl: ''})
   }
   handleToggle () {
@@ -133,7 +144,10 @@ class Card extends React.Component {
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
       }
-      if (cardProps.id === 1 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
+      if (cardProps.default_action) {
+        this.setState({elementUrl: cardProps.default_action.url})
+      }
+      if (cardProps.id === 0 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
         this.setState({ checkbox: true })
       }
     }
@@ -330,7 +344,7 @@ class Card extends React.Component {
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> {this.state.elementUrl === '' ? 'Cancel' : 'Edit' }</button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> {this.state.elementUrl === '' ? 'Cancel' : 'Remove' }</button>
               <br />
               <br />
             </div>
