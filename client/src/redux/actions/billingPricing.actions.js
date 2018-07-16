@@ -17,6 +17,36 @@ export function fetchAllPlans () {
   }
 }
 
+export function createPlan (data, msg) {
+  console.log('data for createPlan', data)
+  return (dispatch) => {
+    callApi('plans/create', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Plan added successfully')
+          dispatch(fetchAllPlans())
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+
+export function updatePlan (data, msg) {
+  console.log('data for updatePlan', data)
+  return (dispatch) => {
+    callApi('plans/update', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Plan updated successfully')
+          dispatch(fetchAllPlans())
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+
 export function deletePlan (id, msg) {
   return (dispatch) => {
     callApi(`plans/delete/${id}`, 'delete')
