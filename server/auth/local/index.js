@@ -98,6 +98,22 @@ router.post('/', function (req, res, next) {
               })(req, res, next)
             })
           })
+          } else {
+            passport.authenticate('local', function (err, user, info) {
+              let error = err || info
+              if (error) return res.status(401).json(error)
+              if (!user) {
+                return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
+              }
+
+              let token = auth.signToken(user._id)
+              res.json({token: token})
+              if (user.facebookInfo) {
+                auth.fetchPages(`https://graph.facebook.com/v2.10/${
+                    user.facebookInfo.fbId}/accounts?access_token=${
+                    user.facebookInfo.fbToken}`, user)
+              }
+            })(req, res, next)
           }
         })
       })
@@ -180,6 +196,22 @@ router.post('/', function (req, res, next) {
                 })(req, res, next)
               })
             })
+          } else {
+            passport.authenticate('local', function (err, user, info) {
+              let error = err || info
+              if (error) return res.status(401).json(error)
+              if (!user) {
+                return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
+              }
+
+              let token = auth.signToken(user._id)
+              res.json({token: token})
+              if (user.facebookInfo) {
+                auth.fetchPages(`https://graph.facebook.com/v2.10/${
+                    user.facebookInfo.fbId}/accounts?access_token=${
+                    user.facebookInfo.fbToken}`, user)
+              }
+            })(req, res, next)
           }
         })
       })
