@@ -88,7 +88,7 @@ class Media extends React.Component {
           this.setState({
             mediaType: 'video'
           })
-        } else if (mediaType === 'audio') {
+        } else if (mediaType === 'image') {
           this.setState({
             mediaType: 'image'
           })
