@@ -48,6 +48,7 @@ export function updatePlan (data, msg) {
 }
 
 export function deletePlan (id, msg) {
+  console.log('id for delete', id)
   return (dispatch) => {
     callApi(`plans/delete/${id}`, 'delete')
       .then(res => {
