@@ -33,6 +33,7 @@ export function forgotSuccess () {
 }
 
 export function logIn (data, msg) {
+  console.log('data in login', data)
   let headers1 = {
     'content-type': 'application/json'
   }
