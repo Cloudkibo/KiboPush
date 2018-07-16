@@ -257,10 +257,10 @@ class CreateMessage extends React.Component {
     obj.listItems.forEach((d) => {
       delete d.id
     })
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.listItems = obj.listItems
-        data.topElementStyle = obj.topElementStyle
+        temp[i].listItems = obj.listItems
+        temp[i].topElementStyle = obj.topElementStyle
         isPresent = true
       }
     })
