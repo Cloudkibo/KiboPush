@@ -29,7 +29,9 @@ class Login extends React.Component {
     this.onSubmit = this.onSubmit.bind(this)
   }
   onSubmit (event) {
+    console.log('onSubmit')
     event.preventDefault()
+    console.log('onSubmit')
     var data = {}
     if (this.state.account_type === 'team') {
       data = {
