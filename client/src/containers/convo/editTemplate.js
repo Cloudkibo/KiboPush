@@ -412,13 +412,13 @@ class EditTemplate extends React.Component {
     }
     var temp = this.state.broadcast
     var isPresent = false
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.fileName = obj.fileName
-        data.fileurl = obj.fileurl
-        data.size = obj.size
-        data.type = obj.type
-        data.buttons = obj.buttons
+        temp[i].fileName = obj.fileName
+        temp[i].fileurl = obj.fileurl
+        temp[i].size = obj.size
+        temp[i].type = obj.type
+        temp[i].buttons = obj.buttons
         isPresent = true
       }
     })
