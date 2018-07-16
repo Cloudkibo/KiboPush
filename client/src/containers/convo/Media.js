@@ -245,10 +245,10 @@ class Media extends React.Component {
               title=' '
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
-            (this.state.imgSrc === '')
+            (this.state.mediaType === 'image' && this.state.imgSrc === '')
             ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
             : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
-           }
+            }
             { this.state.showPreview &&
               <div style={{padding: '10px', marginTop: '40px'}}>
                 <ReactPlayer
