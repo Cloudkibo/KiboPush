@@ -261,7 +261,7 @@ class Convo extends React.Component {
                   this.props.pages && this.props.pages.length === 0
                   ? <div className='alert alert-success'>
                     <h4 className='block'>0 Pages Connected</h4>
-                    You have no pages connected. Please connect your facebook page to use this feature. <Link to='/addPages' >Add Pages</Link>
+                    You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{color: 'blue', cursor: 'pointer'}} to='/addPages' >Add Pages</Link>
                   </div>
                 : this.props.subscribers && this.props.subscribers.length === 0 &&
                   <div className='alert alert-success'>
@@ -468,6 +468,7 @@ class Convo extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    pages: (state.pagesInfo.pages),
     broadcasts: (state.broadcastsInfo.broadcasts),
     count: (state.broadcastsInfo.count),
     successMessage: (state.broadcastsInfo.successMessage),

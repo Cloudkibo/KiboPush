@@ -330,7 +330,7 @@ class Card extends React.Component {
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> {this.state.elementUrl === '' ? Cancel : Edit }</button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> {this.state.elementUrl === '' ? 'Cancel' : 'Edit' }</button>
               <br />
               <br />
             </div>
