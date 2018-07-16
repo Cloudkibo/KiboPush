@@ -110,7 +110,8 @@ class Media extends React.Component {
     }
     if (file && image) {
       this.setState({
-        mediaType: 'image'
+        mediaType: 'image',
+        showPreview: false
       })
       if (file.type && file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         if (this.props.handleMedia) {
@@ -134,7 +135,7 @@ class Media extends React.Component {
         size: file.size}, this.updateImageUrl, this.setLoading)
     }
     if (file && video) {
-      this.setState({mediaType: 'video'})
+      this.setState({mediaType: 'video', showPreview: false})
       var fileData = new FormData()
       fileData.append('file', file)
       fileData.append('filename', file.name)
