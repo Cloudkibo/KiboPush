@@ -298,8 +298,9 @@ router.get('/updatePageNames', (req, res) => {
             reject(userErr)
           } else {
             let accessToken = page.accessToken
-            if (userRes.facebookInfo) {
+            if (userRes && userRes.facebookInfo) {
               accessToken = userRes.facebookInfo.fbToken
+              console.log(`request: https://graph.facebook.com/v3.0/${page.pageId}?access_token=${accessToken}`)
             }
             request(
               {
@@ -311,7 +312,7 @@ router.get('/updatePageNames', (req, res) => {
                 logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
                 reject(err)
               } else {
-                if (page.pageName !== resp.body.name) {
+                if (!resp.body.error && page.pageName !== resp.body.name && resp.body.name) {
                   updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
                   Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
                     if (err) {
