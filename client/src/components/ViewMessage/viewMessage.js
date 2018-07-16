@@ -127,9 +127,20 @@ class ViewMessage extends React.Component {
                                     ? <div>
                                       <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
                                         <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                          <a href={b.fileurl.url} target='_blank'>
-                                            <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
-                                          </a>
+                                          { b.mediaType === 'image' &&
+                                            <a href={b.fileurl.url} target='_blank'>
+                                              <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
+                                            </a>
+                                           }
+                                          { b.mediaType === 'video' &&
+                                            <ReactPlayer
+                                              url={b.fileurl.url}
+                                              controls
+                                              width='100%'
+                                              height='140px'
+                                              onPlay={this.onTestURLVideo(b.fileurl.url)}
+                                            />
+                                          }
                                         </div>
                                       </div>
                                       {
