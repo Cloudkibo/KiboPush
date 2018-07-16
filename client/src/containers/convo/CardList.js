@@ -51,19 +51,33 @@ class Card extends React.Component {
   handleCheckbox (e) {
     this.setState({checkbox: !this.state.checkbox})
     console.log('value', e.target.value)
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: this.state.button,
-      default_action: {type: 'web_url', url: this.state.elementUrl}
-    })
-    if (e.target.value) {
+    if (this.state.elementUrl !== '') {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button,
+        default_action: {type: 'web_url', url: this.state.elementUrl}
+      })
+    } else {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button
+      })
+    }
+    if (e.target.value === true) {
       this.props.topElementStyle('LARGE')
     } else {
       this.props.topElementStyle('compact')
@@ -144,8 +158,8 @@ class Card extends React.Component {
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
       }
-      if (cardProps.default_action) {
-        this.setState({elementUrl: cardProps.default_action.url})
+      if (cardProps.cardDetails.default_action) {
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
       }
       if (cardProps.id === 0 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
         this.setState({ checkbox: true })

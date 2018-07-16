@@ -31,7 +31,7 @@ router.post('/', function (req, res, next) {
           description: 'This workspace name is not registered with us or your account does not belong to this domain'
         })
       }
-
+      logger.serverLog(TAG, `User in login: ${JSON.stringify(user)}`)
       CompanyUsers.findOne({domain_email: user.domain_email}, (err, companyuser) => {
         if (err) {
           return res.status(501)
@@ -43,6 +43,7 @@ router.post('/', function (req, res, next) {
             return res.status(501)
             .json({status: 'failed', description: 'Internal Server Error'})
           }
+          logger.serverLog(TAG, `company in login: ${JSON.stringify(company)}`)
           if (['plan_C', 'plan_D'].indexOf(company.stripe.plan) < 0) {
             return res.status(401)
             .json({
