@@ -414,6 +414,7 @@ class EditTemplate extends React.Component {
     var isPresent = false
     temp.map((data, i) => {
       if (data.id === obj.id) {
+        temp[i].mediaType = obj.mediaType
         temp[i].fileName = obj.fileName
         temp[i].fileurl = obj.fileurl
         temp[i].size = obj.size

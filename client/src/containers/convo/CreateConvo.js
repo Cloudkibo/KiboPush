@@ -300,7 +300,6 @@ class CreateConvo extends React.Component {
         temp[i].size = obj.size
         temp[i].type = obj.type
         temp[i].buttons = obj.buttons
-        temp[i].image_url = obj.image_url
         isPresent = true
       }
     })
@@ -372,7 +371,7 @@ class CreateConvo extends React.Component {
     })
     temp.map((data, i) => {
       if (data.id === obj.id) {
-        temp[i].listItems = obj.listItems
+        temp[i] = obj
         isPresent = true
       }
     })

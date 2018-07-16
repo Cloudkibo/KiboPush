@@ -27,20 +27,28 @@ class Media extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
+    this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.state = {
       errorMsg: '',
       showErrorDialogue: false,
-      imgSrc: props.img ? props.img : '',
+      imgSrc: '',
       button: props.buttons ? props.buttons : [],
       fileurl: '',
       fileName: '',
       type: '',
       size: '',
-      image_url: '',
       loading: false,
       showPreview: false,
       file: '',
+      previewUrl: '',
       mediaType: ''
+    }
+  }
+  onTestURLVideo (url) {
+    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
+    var truef = videoEXTENSIONS.test(url)
+
+    if (truef === false) {
     }
   }
   showDialog (page) {
@@ -61,9 +69,33 @@ class Media extends React.Component {
       this.setState({
         //  id: cardProps.id,
         componentType: 'media',
-        imgSrc: mediaProps.media.image_url,
-        button: mediaProps.media.buttons
+        button: mediaProps.media.buttons,
+        showPreview: false
       })
+      if (mediaProps.media.buttons) {
+        this.setState({
+          button: mediaProps.media.buttons
+        })
+      }
+      if (mediaProps.media.fileurl && mediaProps.media.fileurl.url) {
+        this.setState({
+          previewUrl: mediaProps.media.fileurl.url
+        })
+      }
+      if (mediaProps.media.type) {
+        var mediaType = mediaProps.media.type
+        var video = mediaType.type.match('video.*')
+        var image = mediaType.type.match('image.*')
+        if (video) {
+          thi.setState({
+            mediaType: 'video'
+          })
+        } else if (image) {
+          thi.setState({
+            mediaType: 'image'
+          })
+        }
+      }
     }
   }
   _onChange () {
@@ -101,11 +133,10 @@ class Media extends React.Component {
       this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
-        image_url: '',
         size: file.size}, this.updateImageUrl, this.setLoading)
     }
     if (file && video) {
-      this.setState({file: file, mediaType: 'video'})
+      this.setState({mediaType: 'video'})
       var fileData = new FormData()
       fileData.append('file', file)
       fileData.append('filename', file.name)
@@ -133,7 +164,6 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -152,7 +182,6 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -165,7 +194,6 @@ class Media extends React.Component {
       componentType: 'media',
       fileurl: this.state.fileurl,
       mediaType: this.state.mediaType,
-      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
@@ -178,7 +206,6 @@ class Media extends React.Component {
   updateImageUrl (data) {
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
-      image_url: data.image_url,
       type: data.type,
       size: data.size })
 
@@ -186,7 +213,6 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: data.fileurl,
-      image_url: data.image_url,
       fileName: data.fileName,
       type: data.type,
       size: data.size,
@@ -195,7 +221,6 @@ class Media extends React.Component {
   updateFileUrl (data) {
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
-      image_url: '',
       type: data.type,
       size: data.size })
 
@@ -203,7 +228,6 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: data.fileurl,
-      image_url: '',
       fileName: data.fileName,
       type: data.type,
       size: data.size,
@@ -244,22 +268,44 @@ class Media extends React.Component {
               accept='image/*, video/*'
               title=' '
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
-            {
-            (this.state.mediaType === 'image' && this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-            : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
-            }
-            { this.state.showPreview &&
-              <div style={{padding: '10px', marginTop: '40px'}}>
-                <ReactPlayer
-                  url={this.state.file.url}
-                  controls
-                  width='100%'
-                  height='auto'
-                  onPlay={this.onTestURLVideo(this.state.file.url)}
-                />
-              </div>
-            }
+            <div style={{width: '100%'}}>
+              {
+                (!this.state.showPreview && this.state.fileName === '') &&
+                <div className='align-center' style={{marginTop: '50px'}}>
+                  <img style={{maxHeight: 40, margin: 'auto'}} src='icons/media.png' alt='Text' />
+                  <h4 style={{pointerEvents: 'none', zIndex: -1}}> Media </h4>
+                </div>
+              }
+              {
+                (!this.state.showPreview && this.state.fileurl && this.state.fileurl !== '') &&
+                  <div className='align-center'>
+                    { this.state.mediaType === 'image' &&
+                    <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
+                  }
+                    { this.state.mediaType === 'video' &&
+                    <div style={{marginTop: '50px'}}>
+                      <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                      <h4 style={{wordBreak: 'break-word'}}>{this.state.fileName !== '' ? this.state.fileName : 'Video'}</h4>
+                    </div>
+                  }
+                  </div>
+              }
+              {
+                this.state.showPreview && this.state.mediaType === 'image' &&
+                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.previewUrl} />
+              }
+              { this.state.showPreview && this.state.mediaType === 'video' &&
+                <div style={{padding: '10px'}}>
+                  <ReactPlayer
+                    url={this.state.previewUrl}
+                    controls
+                    width='100%'
+                    height='auto'
+                    onPlay={this.onTestURLVideo(this.state.previewUrl)}
+                  />
+                </div>
+              }
+            </div>
           </div>
           }
         </div>
