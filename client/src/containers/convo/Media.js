@@ -70,7 +70,7 @@ class Media extends React.Component {
         //  id: cardProps.id,
         componentType: 'media',
         button: mediaProps.media.buttons,
-        showPreview: false
+        showPreview: true
       })
       if (mediaProps.media.buttons) {
         this.setState({
@@ -82,15 +82,13 @@ class Media extends React.Component {
           previewUrl: mediaProps.media.fileurl.url
         })
       }
-      if (mediaProps.media.type) {
-        var mediaType = mediaProps.media.type
-        var video = mediaType.type.match('video.*')
-        var image = mediaType.type.match('image.*')
-        if (video) {
+      if (mediaProps.media.mediaType) {
+        var mediaType = mediaProps.media.mediaType
+        if (mediaType === 'video') {
           thi.setState({
             mediaType: 'video'
           })
-        } else if (image) {
+        } else if (mediaType === 'audio') {
           thi.setState({
             mediaType: 'image'
           })

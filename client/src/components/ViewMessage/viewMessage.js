@@ -123,6 +123,24 @@ class ViewMessage extends React.Component {
                                         ))
                                       }
                                     </div>
+                                    : b.componentType === 'media'
+                                    ? <div>
+                                      <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
+                                        <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
+                                          <a href={b.fileurl.url} target='_blank'>
+                                            <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
+                                          </a>
+                                        </div>
+                                      </div>
+                                      {
+                                        b.buttons && b.buttons.length > 0 &&
+                                        b.buttons.map((button, i) => (
+                                          <a key={i} href={'//' + button.url} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
+                                            <span>{button.title}</span>
+                                          </a>
+                                        ))
+                                      }
+                                    </div>
                                     : b.componentType === 'gallery'
                                     ? <Slider ref={(c) => { this.slider = c }} {...settings}>
                                       {
