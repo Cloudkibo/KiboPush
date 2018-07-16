@@ -97,14 +97,16 @@ function validateInput (body) {
         if (body.payload[i].listItems.length === 0) return false
         if (body.payload[i].topElementStyle === undefined ||
         body.payload[i].topElementStyle === '') return false
-        for (let m = 0; m < body.payload[i].buttons.length; m++) {
-          if (body.payload[i].buttons[m].type === undefined ||
-          body.payload[i].buttons[m].type === '') return false
-          if (body.payload[i].buttons[m].title === undefined ||
-          body.payload[i].buttons[m].title === '') return false
-          if (body.payload[i].buttons[m].type === 'web_url') {
-            if (!utility.validateUrl(
-              body.payload[i].buttons[m].url)) return false
+        if (body.payload[i].buttons) {
+          for (let m = 0; m < body.payload[i].buttons.length; m++) {
+            if (body.payload[i].buttons[m].type === undefined ||
+            body.payload[i].buttons[m].type === '') return false
+            if (body.payload[i].buttons[m].title === undefined ||
+            body.payload[i].buttons[m].title === '') return false
+            if (body.payload[i].buttons[m].type === 'web_url') {
+              if (!utility.validateUrl(
+                body.payload[i].buttons[m].url)) return false
+            }
           }
         }
         for (let j = 0; j < body.payload[i].listItems.length; j++) {
