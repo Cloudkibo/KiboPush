@@ -560,7 +560,7 @@ function prepareMessageData (subscriberId, body, fname, lname) {
           'elements': [
             {
               'title': body.title,
-              'image_url': body.image_url,
+              'image_url': body.fileurl.url,
               'subtitle': body.description,
               'buttons': body.buttons
             }
