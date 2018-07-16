@@ -188,6 +188,10 @@ SequenceMessagesQueue.find({}, (err, data) => {
       setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
     }
   } // If data clause check
+  if (data.length === 0) {
+    // Do work to reschedule the message
+    setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
+  }
 })  // Quence find ends here
 
 function closeDB () {
