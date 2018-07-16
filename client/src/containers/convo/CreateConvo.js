@@ -371,7 +371,8 @@ class CreateConvo extends React.Component {
     })
     temp.map((data, i) => {
       if (data.id === obj.id) {
-        temp[i] = obj
+        temp[i].listItems = obj.listItems
+        temp[i].topElementStyle = obj.topElementStyle
         isPresent = true
       }
     })

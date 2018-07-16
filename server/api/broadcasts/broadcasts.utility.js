@@ -44,13 +44,11 @@ function validateInput (body) {
           body.payload[i].title === '') return false
         if (body.payload[i].fileurl === undefined ||
           body.payload[i].fileurl === '') return false
-        if (body.payload[i].image_url === undefined ||
-          body.payload[i].image_url === '') return false
         if (body.payload[i].description === undefined ||
           body.payload[i].description === '') return false
         if (body.payload[i].buttons === undefined) return false
         if (body.payload[i].buttons.length === 0) return false
-        if (!utility.validateUrl(body.payload[i].image_url)) return false
+        if (!utility.validateUrl(body.payload[i].fileurl.url)) return false
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
             if (!utility.validateUrl(
