@@ -20,7 +20,8 @@ class Header extends React.Component {
       ignore: true,
       planInfo: '',
       seenNotifications: [],
-      unseenNotifications: []
+      unseenNotifications: [],
+      showDropDown: false
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -28,8 +29,17 @@ class Header extends React.Component {
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.timeSince = this.timeSince.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+  }
+  showDropDown () {
+    console.log('showDropDown')
+    this.setState({showDropDown: true})
   }
 
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
   changeStatus (e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
   }
@@ -209,7 +219,7 @@ class Header extends React.Component {
                 <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark '>
                   <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
                     <li className='m-menu__item m-menu__item--submenu m-menu__item--rel m-menu__item--open-dropdown' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                      <a href='#' className='m-menu__link m-menu__toggle'>
+                      <a onClick={this.showDropDown} className='m-menu__link m-menu__toggle'>
                         <i className='m-menu__link-icon flaticon-settings' />
                         <span className='m-menu__link-text'>
                           Settings
@@ -217,6 +227,7 @@ class Header extends React.Component {
                         <i className='m-menu__hor-arrow la la-angle-down' />
                         <i className='m-menu__ver-arrow la la-angle-right' />
                       </a>
+                      {this.state.showDropDown &&
                       <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
                         <span className='m-menu__arrow m-menu__arrow--adjust' style={{left: '73px'}} />
                         <ul className='m-menu__subnav'>
@@ -254,6 +265,7 @@ class Header extends React.Component {
                           </li>
                         </ul>
                       </div>
+                    }
                     </li>
                   </ul>
                 </div>
