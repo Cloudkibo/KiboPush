@@ -67,7 +67,7 @@ class Header extends React.Component {
       //   reviewsWritten_int: 14
       // })
       // console.log('FS identify Executed')
-      var plan = nextProps.user.currentPlan
+      var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
     }
     if (nextProps.notifications) {
@@ -205,6 +205,59 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
+              {this.props.user && this.props.user.isSuperUser &&
+                <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark '>
+                  <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
+                    <li className='m-menu__item m-menu__item--submenu m-menu__item--rel m-menu__item--open-dropdown' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
+                      <a href='#' className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-settings' />
+                        <span className='m-menu__link-text'>
+                          Settings
+                        </span>
+                        <i className='m-menu__hor-arrow la la-angle-down' />
+                        <i className='m-menu__ver-arrow la la-angle-right' />
+                      </a>
+                      <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
+                        <span className='m-menu__arrow m-menu__arrow--adjust' style={{left: '73px'}} />
+                        <ul className='m-menu__subnav'>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <Link to='/plans' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-cc-stripe' />
+                              <span className='m-menu__link-text'>
+                                Plans
+                              </span>
+                            </Link>
+                          </li>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <a href='../../header/actions.html' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-key' />
+                              <span className='m-menu__link-text'>
+                                Permissions
+                              </span>
+                            </a>
+                          </li>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <a href='../../header/actions.html' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-th-list' />
+                              <span className='m-menu__link-text'>
+                                Features
+                              </span>
+                            </a>
+                          </li>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <a href='../../header/actions.html' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-pie-chart' />
+                              <span className='m-menu__link-text'>
+                                Usage
+                              </span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              }
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   {this.props.user &&

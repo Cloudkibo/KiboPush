@@ -283,13 +283,13 @@ class Settings extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('iin componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
-      (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
+      (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_B')) {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
     }
     if (nextProps.user && this.state.show) {
-      var plan = nextProps.user.currentPlan
+      var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
     }
     if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
@@ -437,7 +437,7 @@ class Settings extends React.Component {
                         <li className='m-nav__section m--hide'>
                           <span className='m-nav__section-text'>Section</span>
                         </li>
-                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
+                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C') &&
                           <li className='m-nav__item'>
                             <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
                               <i className='m-nav__link-icon flaticon-share' />
@@ -459,7 +459,11 @@ class Settings extends React.Component {
                           </a>
                         </li>
                         }
+<<<<<<< HEAD
                         {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
+=======
+                        {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.currentPlan.unique_ID === 'plan_D') &&
+>>>>>>> 76230cd73439ae97355e638b65b0d7973006db26
                         <li className='m-nav__item'>
                           <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
                             <i className='m-nav__link-icon flaticon-mark' />
