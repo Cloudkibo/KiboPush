@@ -170,53 +170,56 @@ exports.setSchedule = function (req, res) {
       }
       if (req.body.condition === 'immediately') {
         if (message.isActive === true) {
-          SequenceMessageQueue.findOne({'sequenceMessageId': message._id}, (err, messageFromQueue) => {
+          SequenceMessageQueue.find({'sequenceMessageId': message._id}, (err, messagesFromQueue) => {
             if (err) {
               return res.status(404)
               .json({status: 'failed', description: 'Record not found'})
             }
-            if (messageFromQueue) {
-              Subscribers.findOne({'_id': messageFromQueue.subscriberId}, (err, subscriber) => {
-                if (err) {
-                  return res.status(404)
-                  .json({status: 'failed', description: 'Record not found'})
-                }
-
-                Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+            for (let i = 0; i < messagesFromQueue.length; i++) {
+              let messageFromQueue = messagesFromQueue[i]
+              if (messageFromQueue) {
+                Subscribers.findOne({'_id': messageFromQueue.subscriberId}, (err, subscriber) => {
                   if (err) {
                     return res.status(404)
                     .json({status: 'failed', description: 'Record not found'})
                   }
-                  if (message.payload.length > 0) {
-                    AppendURLCount(message, (newPayload) => {
-                      let sequenceSubMessage = new SequenceSubscriberMessage({
-                        subscriberId: messageFromQueue.subscriberId,
-                        messageId: message._id,
-                        companyId: messageFromQueue.companyId,
-                        datetime: new Date(),
-                        seen: false
-                      })
 
-                      sequenceSubMessage.save((err2, result) => {
-                        if (err2) {
-                          logger.serverLog(TAG, {
-                            status: 'failed',
-                            description: 'Sequence Message Subscriber addition create failed',
-                            err2
-                          })
-                        }
+                  Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                    if (err) {
+                      return res.status(404)
+                      .json({status: 'failed', description: 'Record not found'})
+                    }
+                    if (message.payload.length > 0) {
+                      AppendURLCount(message, (newPayload) => {
+                        let sequenceSubMessage = new SequenceSubscriberMessage({
+                          subscriberId: messageFromQueue.subscriberId,
+                          messageId: message._id,
+                          companyId: messageFromQueue.companyId,
+                          datetime: new Date(),
+                          seen: false
+                        })
 
-                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
-                        SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
-                          if (err) {
-                            logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                        sequenceSubMessage.save((err2, result) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'Sequence Message Subscriber addition create failed',
+                              err2
+                            })
                           }
+
+                          BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                          SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
+                            if (err) {
+                              logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                            }
+                          })
                         })
                       })
-                    })
-                  }
+                    }
+                  })
                 })
-              })
+              }
             }
           })
         }
@@ -277,54 +280,57 @@ exports.setStatus = function (req, res) {
       }
       // this will update the status in queue. Queue will only send active messages
       if (message.schedule.condition === 'immediately') {
-        SequenceMessageQueue.findOne({'sequenceMessageId': message._id}, (err, messageFromQueue) => {
+        SequenceMessageQueue.find({'sequenceMessageId': message._id}, (err, messagesFromQueue) => {
           if (err) {
             return res.status(404)
             .json({status: 'failed', description: 'Record not found'})
           }
-          if (messageFromQueue) {
-            Subscribers.findOne({'_id': messageFromQueue.subscriberId}, (err, subscriber) => {
-              if (err) {
-                return res.status(404)
-                .json({status: 'failed', description: 'Record not found'})
-              }
-
-              Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+          for (let i = 0; i < messagesFromQueue.length; i++) {
+            let messageFromQueue = messagesFromQueue[i]
+            if (messageFromQueue) {
+              Subscribers.findOne({'_id': messageFromQueue.subscriberId}, (err, subscriber) => {
                 if (err) {
                   return res.status(404)
                   .json({status: 'failed', description: 'Record not found'})
                 }
 
-                if (message.payload.length > 0) {
-                  AppendURLCount(message, (newPayload) => {
-                    let sequenceSubMessage = new SequenceSubscriberMessage({
-                      subscriberId: messageFromQueue.subscriberId,
-                      messageId: message._id,
-                      companyId: messageFromQueue.companyId,
-                      datetime: new Date(),
-                      seen: false
-                    })
+                Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                  if (err) {
+                    return res.status(404)
+                    .json({status: 'failed', description: 'Record not found'})
+                  }
 
-                    sequenceSubMessage.save((err2, result) => {
-                      if (err2) {
-                        logger.serverLog(TAG, {
-                          status: 'failed',
-                          description: 'Sequence Message Subscriber addition create failed',
-                          err2
-                        })
-                      }
+                  if (message.payload.length > 0) {
+                    AppendURLCount(message, (newPayload) => {
+                      let sequenceSubMessage = new SequenceSubscriberMessage({
+                        subscriberId: messageFromQueue.subscriberId,
+                        messageId: message._id,
+                        companyId: messageFromQueue.companyId,
+                        datetime: new Date(),
+                        seen: false
+                      })
 
-                      BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
-                      SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
-                        if (err) {
-                          logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                      sequenceSubMessage.save((err2, result) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'Sequence Message Subscriber addition create failed',
+                            err2
+                          })
                         }
+
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                        SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
+                          if (err) {
+                            logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                          }
+                        })
                       })
                     })
-                  })
-                }
+                  }
+                })
               })
-            })
+            }
           }
         })
       } else {

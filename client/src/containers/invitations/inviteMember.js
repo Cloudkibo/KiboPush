@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import {
   addInvitation,
@@ -125,136 +123,129 @@ class InviteMembers extends React.Component {
     return (
 
       <div>
-        <Header />
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Invite Member to
-                    Company</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Invite Member to
+                  Company</h3>
               </div>
             </div>
-            <div className='m-content'>
-              <div
-                className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
-                role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-exclamation m--font-brand' />
-                </div>
-                <div className='m-alert__text'>
-                  Invitation email would be sent by KiboPush on behalf of your
-                  company
+          </div>
+          <div className='m-content'>
+            <div
+              className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+              role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation m--font-brand' />
+              </div>
+              <div className='m-alert__text'>
+                Invitation email would be sent by KiboPush on behalf of your
+                company
+              </div>
+            </div>
+            <div className='m-portlet m-portlet--mobile'>
+              <div className='m-portlet__head'>
+                <div className='m-portlet__head-caption'>
+                  <div className='m-portlet__head-title'>
+                    <h3 className='m-portlet__head-text'>
+                      Form
+                    </h3>
+                  </div>
                 </div>
               </div>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Form
-                      </h3>
+              <form className='m-form m-form--label-align-right' onSubmit={this.createNewInvitations}>
+                <div className='m-portlet__body'>
+                  <div className='m-form__section m-form__section--first'>
+                    <div className='form-group m-form__group row'>
+                      <label className='col-lg-2 col-form-label'>
+                        Name
+                      </label>
+                      <div className='col-lg-6'>
+                        <input className='form-control m-input'
+                          onChange={this.changeName}
+                          value={this.state.name}
+                          id='exampleInputReply' />
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <form className='m-form m-form--label-align-right' onSubmit={this.createNewInvitations}>
-                  <div className='m-portlet__body'>
-                    <div className='m-form__section m-form__section--first'>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Name
-                        </label>
-                        <div className='col-lg-6'>
-                          <input className='form-control m-input'
-                            onChange={this.changeName}
-                            value={this.state.name}
-                            id='exampleInputReply' />
-                        </div>
+                    <div className='form-group m-form__group row'>
+                      <label className='col-lg-2 col-form-label'>
+                        Email
+                      </label>
+                      <div className='col-lg-6'>
+                        <input className='form-control m-input'
+                          onChange={this.changeEmail}
+                          value={this.state.email}
+                          type='email'
+                          required
+                          id='exampleInputReply' />
                       </div>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Email
-                        </label>
-                        <div className='col-lg-6'>
-                          <input className='form-control m-input'
-                            onChange={this.changeEmail}
-                            value={this.state.email}
-                            type='email'
-                            required
-                            id='exampleInputReply' />
-                        </div>
-                      </div>
-                      <div className='form-group m-form__group row'>
-                        <label className='col-lg-2 col-form-label'>
-                          Invite as
-                        </label>
-                        <div className='col-lg-6'>
-                          <div className='m-radio-list'>
-                            <label className='m-radio m-radio--bold'>
-                              <input type='radio' name='example_5_1' value='agent'
-                                onChange={this.changeRadio} />
-                              Agent
-                              <span />
-                            </label>
-                            <label className='m-radio m-radio--bold'>
-                              <input type='radio' name='example_5_1' value='admin'
-                                onChange={this.changeRadio} />
-                              Admin
-                              <span />
-                            </label>
-                          </div>
+                    </div>
+                    <div className='form-group m-form__group row'>
+                      <label className='col-lg-2 col-form-label'>
+                        Invite as
+                      </label>
+                      <div className='col-lg-6'>
+                        <div className='m-radio-list'>
+                          <label className='m-radio m-radio--bold'>
+                            <input type='radio' name='example_5_1' value='agent'
+                              onChange={this.changeRadio} />
+                            Agent
+                            <span />
+                          </label>
+                          <label className='m-radio m-radio--bold'>
+                            <input type='radio' name='example_5_1' value='admin'
+                              onChange={this.changeRadio} />
+                            Admin
+                            <span />
+                          </label>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className='m-portlet__foot m-portlet__foot--fit'>
-                    <div className='m-form__actions m-form__actions'>
-                      <div className='row'>
-                        <div className='col-lg-2' />
-                        <div className='col-lg-6'>
-                          <button className='btn btn-primary' type='submit'>
-                            Invite
-                          </button>
-                          <span>&nbsp;&nbsp;</span>
-                          <Link to='inviteMembers'>
-                            <button className='btn btn-secondary'>
-                              Cancel
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                      <div className='row'>
+                </div>
+                <div className='m-portlet__foot m-portlet__foot--fit'>
+                  <div className='m-form__actions m-form__actions'>
+                    <div className='row'>
+                      <div className='col-lg-2' />
+                      <div className='col-lg-6'>
+                        <button className='btn btn-primary' type='submit'>
+                          Invite
+                        </button>
                         <span>&nbsp;&nbsp;</span>
+                        <Link to='inviteMembers'>
+                          <button className='btn btn-secondary'>
+                            Cancel
+                          </button>
+                        </Link>
                       </div>
-                      <div className='row'>
-                        <div className='col-lg-2' />
-                        <div className='col-lg-6'>
-                          {
-                            this.state.alertMessage !== '' &&
-                            <center>
-                              <Alert type={this.state.alertType}
-                                timeout={this.state.timeout}
-                                showIcon={this.state.alertMessage !== ''}
-                                onDismiss={this.clearAlert}>
-                                {this.state.alertMessage}
-                              </Alert>
-                            </center>
-                          }
-                        </div>
+                    </div>
+                    <div className='row'>
+                      <span>&nbsp;&nbsp;</span>
+                    </div>
+                    <div className='row'>
+                      <div className='col-lg-2' />
+                      <div className='col-lg-6'>
+                        {
+                          this.state.alertMessage !== '' &&
+                          <center>
+                            <Alert type={this.state.alertType}
+                              timeout={this.state.timeout}
+                              showIcon={this.state.alertMessage !== ''}
+                              onDismiss={this.clearAlert}>
+                              {this.state.alertMessage}
+                            </Alert>
+                          </center>
+                        }
                       </div>
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }
