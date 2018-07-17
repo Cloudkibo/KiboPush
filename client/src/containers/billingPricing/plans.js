@@ -23,6 +23,7 @@ class Plans extends React.Component {
       isShowingModalDelete: false,
       isShowingModal: false,
       isShowingModalUpdate: false,
+      isShowingModalMigrate: false,
       deleteid: '',
       name: '',
       interval: 'month',
@@ -36,13 +37,17 @@ class Plans extends React.Component {
       editName: '',
       editTrial: 0,
       editInterval: 'month',
-      editAmount: 0
+      editAmount: 0,
+      migrateTo: '',
+      migrateFrom: ''
     }
     props.fetchAllPlans()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showDialogMigrate = this.showDialogMigrate.bind(this)
+    this.closeDialogMigrate = this.closeDialogMigrate.bind(this)
     this.showDialogUpdate = this.showDialogUpdate.bind(this)
     this.closeDialogUpdate = this.closeDialogUpdate.bind(this)
     this.onDelete = this.onDelete.bind(this)
@@ -54,6 +59,7 @@ class Plans extends React.Component {
     this.updateAmount = this.updateAmount.bind(this)
     this.updateInterval = this.updateInterval.bind(this)
     this.updateTrial = this.updateTrial.bind(this)
+    this.migrateCompanies = this.migrateCompanies.bind(this)
   }
 
   goToCreate () {
@@ -61,7 +67,7 @@ class Plans extends React.Component {
       this.msg.error('Please enter name')
     } else {
       this.setState({isShowingModal: false})
-      this.props.createPlan({name: this.state.name, amount: this.state.amount, interval: this.state.interval, trial_period: this.state.trial}, this.msg)
+      this.props.createPlan({name: this.state.name, amount: parseInt(this.state.amount), interval: this.state.interval, trial_period: parseInt(this.state.trial)}, this.msg)
     }
   }
   goToCancel () {
@@ -72,7 +78,7 @@ class Plans extends React.Component {
       this.msg.error('Please enter name')
     } else {
       this.setState({isShowingModalUpdate: false})
-      this.props.updatePlan({name: this.state.editName, unique_id: this.state.editId, trial_period: this.state.editTrial}, this.msg)
+      this.props.updatePlan({name: this.state.editName, unique_id: this.state.editId, trial_period: parseInt(this.state.editTrial)}, this.msg)
     }
   }
   goToUpdateCancel () {
@@ -132,7 +138,16 @@ class Plans extends React.Component {
   closeDialogUpdate () {
     this.setState({isShowingModalUpdate: false})
   }
+  showDialogMigrate () {
+    this.setState({isShowingModalMigrate: true})
+  }
 
+  closeDialogMigrate () {
+    this.setState({isShowingModalMigrate: false})
+  }
+  migrateCompanies (from, to) {
+
+  }
   render () {
     var alertOptions = {
       offset: 75,
@@ -281,6 +296,49 @@ class Plans extends React.Component {
                     <div style={{display: 'inline-block', padding: '5px'}}>
                       <button style={{color: 'white'}} onClick={this.goToUpdate} className='btn btn-primary'>
                         Update
+                      </button>
+                    </div>
+                  </div>
+                </ModalDialog>
+              </ModalContainer>
+            }
+            {
+              this.state.isShowingModalMigrate &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeDialogMigrate}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeDialogMigrate}>
+                  <center><h3>Migrate Companies</h3></center>
+                  <div className='m-form'>
+                    <label className='control-label' style={{fontWeight: 'normal'}}>Migrate Companies From:</label><br />
+                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.interval} onChange={(e) => this.updateInterval(e, 'create')}>
+                      {
+                        this.state.planOptions.map((plan, i) => (
+                          <option key={i} value={plan.value}>{plan.text}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <div className='m-form'>
+                    <label className='control-label' style={{fontWeight: 'normal'}}>Migrate Companies To:</label><br />
+                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.interval} onChange={(e) => this.updateInterval(e, 'create')}>
+                      {
+                        this.state.planOptions.map((plan, i) => (
+                          <option key={i} value={plan.value}>{plan.text}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <br /><br />
+                  <div style={{width: '100%', textAlign: 'right'}}>
+                    <div style={{display: 'inline-block', padding: '5px'}}>
+                      <button className='btn btn-secondary' onClick={this.goToCancel}>
+                        Cancel
+                      </button>
+                    </div>
+                    <div style={{display: 'inline-block', padding: '5px'}}>
+                      <button style={{color: 'white'}} onClick={this.goToCreate} className='btn btn-primary'>
+                        Create
                       </button>
                     </div>
                   </div>
