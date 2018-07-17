@@ -151,6 +151,13 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({message: message})
       }
+      else if (payload[i].componentType === 'list') {
+        temp.push({content: (<List id={temp.length} key={temp.length} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
+
+      }
     }
   }
   componentWillReceiveProps (nextProps) {
