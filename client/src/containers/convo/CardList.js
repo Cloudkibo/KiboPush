@@ -77,7 +77,7 @@ class Card extends React.Component {
         buttons: this.state.button
       })
     }
-    if (e.target.value === true) {
+    if (e.target.value === 'true') {
       this.props.topElementStyle('LARGE')
     } else {
       this.props.topElementStyle('compact')
