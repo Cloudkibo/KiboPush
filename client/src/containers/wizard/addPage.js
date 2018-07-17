@@ -32,7 +32,7 @@ class AddPage extends React.Component {
       timeout: 2000,
       showWarning: false,
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : '',
-      isShowingModal: !((props.location && props.location.state))
+      isShowingModal: (props.location && props.location.state) ? false : true
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
