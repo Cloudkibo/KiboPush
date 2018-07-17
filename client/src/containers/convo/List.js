@@ -221,20 +221,19 @@ class List extends React.Component {
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
-        <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-          {
+        {
             this.state.cards.map((card, i) => (
               <div key={card.key}>{card.element}</div>
             ))
           }
-          { this.state.cards.length < 4 &&
+        { this.state.cards.length < 4 &&
           <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
             <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
               <h6 onClick={this.addElement}> + Add Element </h6>
             </div>
             </div>
           }
-          {this.state.buttons && this.state.buttons.length > 0
+        {this.state.buttons && this.state.buttons.length > 0
             ? this.state.buttons.map((obj, index) => {
               return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
             })
@@ -243,7 +242,6 @@ class List extends React.Component {
           </div>
 
         }
-        </div>
       </div>
     )
   }
