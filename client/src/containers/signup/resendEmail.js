@@ -77,7 +77,7 @@ class ResendEmail extends React.Component {
                   <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={this.resend}>
                     Resend Verification Email
                   </button>
-                  {this.props.user && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') &&
+                  {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_ B') &&
                   <Link id='m_login_signup_cancel' to='/dashboard' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                     Cancel
                   </Link>

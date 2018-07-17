@@ -248,3 +248,6 @@ export const SHOW_SUBSCRIBER_SEQUENCE = 'SHOW_SUBSCRIBER_SEQUENCE'
 // constants for Comment Capture
 export const SHOW_FACEBOOK_POSTS = 'SHOW_FACEBOOK_POSTS'
 export const CURRENT_POST = 'CURRENT_POST'
+
+//  constants for billingPricing
+export const FETCH_ALL_PLANS = 'FETCH_ALL_PLANS'

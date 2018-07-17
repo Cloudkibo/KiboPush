@@ -199,6 +199,7 @@ export function saveMessageSeq (data, msg) {
 }
 
 export function deleteSequence (id, msg) {
+  console.log('id', id)
   return (dispatch) => {
     callApi(`sequenceMessaging/deleteSequence/${id}`, 'delete')
       .then(res => {
