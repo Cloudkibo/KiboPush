@@ -152,13 +152,16 @@ class CreateMessage extends React.Component {
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
-      }
-      else if (payload[i].componentType === 'list') {
+      } else if (payload[i].componentType === 'list') {
         temp.push({content: (<List id={temp.length} key={temp.length} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
-
+      } else if (payload[i].componentType === 'media') {
+        temp.push({content: (<Media id={temp.length} key={temp.length} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       }
     }
   }
