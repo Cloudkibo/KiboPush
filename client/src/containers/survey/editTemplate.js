@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -506,122 +504,118 @@ class EditTemplate extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Template Survey</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Create Template Survey</h3>
               </div>
             </div>
-            <div className='m-content'>
+          </div>
+          <div className='m-content'>
 
-              <div className='row'>
-                <div
-                  className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                  <div className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
-                    <div className='m-portlet__body'>
-                      <div className='row align-items-center'>
-                        <div className='col-xl-8 order-2 order-xl-1' />
-                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
-                            this.state.isShowingModal &&
-                            <ModalContainer style={{width: '500px'}}
+            <div className='row'>
+              <div
+                className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                <div className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
+                  <div className='m-portlet__body'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1' />
+                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        {
+                          this.state.isShowingModal &&
+                          <ModalContainer style={{width: '500px'}}
+                            onClose={this.closeDialog}>
+                            <ModalDialog style={{width: '500px'}}
                               onClose={this.closeDialog}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialog}>
-                                <p>Do you want to send this survey right away or save it for later use? </p>
-                                <div style={{width: '100%', textAlign: 'center'}}>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <button className='btn btn-primary' onClick={() => {
-                                      this.closeDialog()
-                                      this.goToSend()
-                                    }}>
-                                      Send
-                                    </button>
-                                  </div>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <button className='btn btn-primary' onClick={() => {
-                                      this.createSurvey()
-                                    }}>
-                                      Save
-                                    </button>
-                                  </div>
+                              <p>Do you want to send this survey right away or save it for later use? </p>
+                              <div style={{width: '100%', textAlign: 'center'}}>
+                                <div style={{display: 'inline-block', padding: '5px'}}>
+                                  <button className='btn btn-primary' onClick={() => {
+                                    this.closeDialog()
+                                    this.goToSend()
+                                  }}>
+                                    Send
+                                  </button>
                                 </div>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                        </div>
+                                <div style={{display: 'inline-block', padding: '5px'}}>
+                                  <button className='btn btn-primary' onClick={() => {
+                                    this.createSurvey()
+                                  }}>
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </ModalDialog>
+                          </ModalContainer>
+                        }
                       </div>
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='titl'>
-                          <label className='control-label'><h5>Title</h5></label>
-                          <input className='form-control'
-                            value={this.state.title} onChange={(e) => this.updateTitle(e)} />
-                        </div>
-                      </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Description</h5></label>
-                          <textarea className='form-control'
-                            placeholder='Enter form description here'
-                            rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
-                        </div>
-                      </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <h5> Add Questions </h5>
-                        {this.createUI()}
-                      </div>
-                      <div className='col-sm-6 col-md-4'>
-                        <button id='questions' className='btn btn-primary btn-sm'
-                          onClick={this.addClick.bind(this)}> Add Questions
-                      </button>
-                      </div>
-                      {this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-
-                    }
                     </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='col-12'>
-                        <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this survey after 30 mins of ending the conversation.</p>
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='titl'>
+                        <label className='control-label'><h5>Title</h5></label>
+                        <input className='form-control'
+                          value={this.state.title} onChange={(e) => this.updateTitle(e)} />
                       </div>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.showDialog}> Create Survey
-                        </button>
-                        <Link
-                          to='/showTemplateSurveys'
-                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                          Cancel
-                        </Link>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='desc'>
+                        <label className='control-label'><h5>Description</h5></label>
+                        <textarea className='form-control'
+                          placeholder='Enter form description here'
+                          rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
                       </div>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <h5> Add Questions </h5>
+                      {this.createUI()}
+                    </div>
+                    <div className='col-sm-6 col-md-4'>
+                      <button id='questions' className='btn btn-primary btn-sm'
+                        onClick={this.addClick.bind(this)}> Add Questions
+                    </button>
+                    </div>
+                    {this.state.alertMessage !== '' &&
+                    <center>
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+
+                  }
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                    <div className='col-12'>
+                      <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this survey after 30 mins of ending the conversation.</p>
+                    </div>
+                    <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
+                      <button className='btn btn-primary'
+                        onClick={this.showDialog}> Create Survey
+                      </button>
+                      <Link
+                        to='/showTemplateSurveys'
+                        className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                        Cancel
+                      </Link>
                     </div>
                   </div>
                 </div>
-                <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '100%'}}>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                          Targeting
-                          </h3>
-                        </div>
+              </div>
+              <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                <div className='m-portlet' style={{height: '100%'}}>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                        Targeting
+                        </h3>
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='survey' />
-                    </div>
+                  </div>
+                  <div className='m-portlet__body'>
+                    <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='survey' />
                   </div>
                 </div>
               </div>

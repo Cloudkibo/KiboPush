@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -175,15 +173,10 @@ class CreateSequence extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             {
               this.state.isShowingModalDelete &&
               <ModalContainer style={{width: '500px'}}
@@ -329,11 +322,11 @@ class CreateSequence extends React.Component {
                                   <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                                   <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '10px', cursor: 'pointer'}}>
                                     <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-																		<label>
-																			<input type="checkbox" defaultChecked={message.isActive} name="" onChange={(e) => this.changeStatus(e, message._id)} />
-																			<span></span>
-																		</label>
-									                 </span>
+    																<label>
+    																	<input type="checkbox" defaultChecked={message.isActive} name="" onChange={(e) => this.changeStatus(e, message._id)} />
+    																	<span></span>
+    																</label>
+    							                 </span>
                                     <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
                                     <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.sent}</span>
                                     <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.seen}</span>
@@ -362,8 +355,6 @@ class CreateSequence extends React.Component {
         </div>
       </div>
     </div>
-</div>
-</div>
     )
   }
 }

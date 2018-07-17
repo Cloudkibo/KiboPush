@@ -52,11 +52,7 @@ class Sidebar extends Component {
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
   }
-  componentDidMount () {
-    if (!this.state.ignore) {
-      this.setState({ignore: true})
-    }
-  }
+
   openUserGuide () {
     this.setState({isShowingModal: true})
   }
@@ -408,7 +404,7 @@ class Sidebar extends Component {
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
             data-menu-vertical='true'
-            data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
+            data-menu-scrollable='true'>
             {this.props.user &&
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}
