@@ -112,6 +112,8 @@ class List extends React.Component {
         data.subtitle = obj.description
         if (obj.default_action) {
           data.default_action = obj.default_action
+        } else if (data.default_action) {
+          delete data.default_action
         }
         isPresent = true
       }

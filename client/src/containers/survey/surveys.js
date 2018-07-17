@@ -192,8 +192,9 @@ class Survey extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <Header />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -215,59 +216,55 @@ class Survey extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Manage Surveys</h3>
-              </div>
+
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Manage Surveys</h3>
             </div>
           </div>
-          <div className='m-content'>
-            {
-              this.props.subscribers && this.props.subscribers.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
-                </div>
-            }
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
-              </div>
-              <div className='m-alert__text'>
-                Need help in understanding surveys? Here is the <a href='http://kibopush.com/surveys/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-              </div>
+        </div>
+        <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0
+            ? <div className='alert alert-success'>
+              <h4 className='block'>0 Pages Connected</h4>
+              You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{color: 'blue', cursor: 'pointer'}} to='/addPages' >Add Pages</Link>
             </div>
-            <div className='row'>
-              <div
-                className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet m-portlet--mobile'>
+            : this.props.subscribers && this.props.subscribers.length === 0 &&
+            <div className='alert alert-success'>
+              <h4 className='block'>0 Subscribers</h4>
+                Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
+              </div>
+          }
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding surveys? Here is the <a href='http://kibopush.com/surveys/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+            </div>
+          </div>
+          <div className='row'>
+            <div
+              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
+              <div className='m-portlet m-portlet--mobile'>
 
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                          Surveys
-                        </h3>
-                      </div>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Surveys
+                      </h3>
                     </div>
-                    <div className='m-portlet__head-tools'>
-                      {
-                        this.props.subscribers && this.props.subscribers.length === 0
-                        ? <a href='#'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create Survey
-                              </span>
-                            </span>
-                          </button>
-                        </a>
-                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    {
+                      this.props.subscribers && this.props.subscribers.length === 0
+                      ? <a href='#'>
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
                           <span>
                             <i className='la la-plus' />
                             <span>
@@ -275,176 +272,184 @@ class Survey extends React.Component {
                             </span>
                           </span>
                         </button>
-                        }
+                      </a>
+                      : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Create Survey
+                          </span>
+                        </span>
+                      </button>
+                      }
+                  </div>
+                </div>
+
+                <div className='m-portlet__body'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      {
+                        this.state.isShowingModal &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialog}>
+                          <ModalDialog style={{width: '500px'}}
+                            onClose={this.closeDialog}>
+                            <h3>Create Survey</h3>
+                            <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
+                            <div style={{width: '100%', textAlign: 'center'}}>
+                              <div style={{display: 'inline-block', padding: '5px'}}>
+                                <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                                  Create New Survey
+                                </button>
+                              </div>
+                              <div style={{display: 'inline-block', padding: '5px'}}>
+                                <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                                  Use Template
+                                </Link>
+                              </div>
+                            </div>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                      {
+                        this.state.isShowingModalDelete &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialogDelete}>
+                          <ModalDialog style={{width: '500px'}}
+                            onClose={this.closeDialogDelete}>
+                            <h3>Delete Survey</h3>
+                            <p>Are you sure you want to delete this survey?</p>
+                            <button style={{float: 'right'}}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+                                this.closeDialogDelete()
+                              }}>Delete
+                            </button>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
                     </div>
                   </div>
+                  <div className='form-row'>
+                    <div className='form-group col-md-6' />
+                    <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
+                      <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
+                        Show records for last:&nbsp;&nbsp;
+                      </span>
+                      <div style={{width: '200px'}}>
+                        <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                      </div>
+                      <span htmlFor='example-text-input' className='col-form-label'>
+                      &nbsp;&nbsp;days
+                      </span>
+                    </div>
+                  </div>
+                  { this.state.surveysData && this.state.surveysData.length > 0
+                  ? <div className='table-responsive'>
+                    <table className='table table-striped'>
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Description</th>
+                          <th>Created At</th>
+                          <th>Sent</th>
+                          <th>Seen</th>
+                          <th>Responded</th>
+                          <th>Actions</th>
 
-                  <div className='m-portlet__body'>
-                    <div className='row align-items-center'>
-                      <div className='col-xl-8 order-2 order-xl-1' />
-                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        </tr>
+                      </thead>
+                      <tbody>
                         {
-                          this.state.isShowingModal &&
-                          <ModalContainer style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <ModalDialog style={{width: '500px'}}
-                              onClose={this.closeDialog}>
-                              <h3>Create Survey</h3>
-                              <p>To create a new survey from scratch, click on Create New Survey. To use a template survey and modify it, click on Use Template</p>
-                              <div style={{width: '100%', textAlign: 'center'}}>
-                                <div style={{display: 'inline-block', padding: '5px'}}>
-                                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
-                                    Create New Survey
-                                  </button>
-                                </div>
-                                <div style={{display: 'inline-block', padding: '5px'}}>
-                                  <Link to='/showTemplateSurveys' className='btn btn-primary'>
-                                    Use Template
-                                  </Link>
-                                </div>
-                              </div>
-                            </ModalDialog>
-                          </ModalContainer>
-                        }
-                        {
-                          this.state.isShowingModalDelete &&
-                          <ModalContainer style={{width: '500px'}}
-                            onClose={this.closeDialogDelete}>
-                            <ModalDialog style={{width: '500px'}}
-                              onClose={this.closeDialogDelete}>
-                              <h3>Delete Survey</h3>
-                              <p>Are you sure you want to delete this survey?</p>
-                              <button style={{float: 'right'}}
-                                className='btn btn-primary btn-sm'
-                                onClick={() => {
-                                  this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
-                                  this.closeDialogDelete()
-                                }}>Delete
-                              </button>
-                            </ModalDialog>
-                          </ModalContainer>
-                        }
-                      </div>
-                    </div>
-                    <div className='form-row'>
-                      <div className='form-group col-md-6' />
-                      <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
-                        <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
-                          Show records for last:&nbsp;&nbsp;
-                        </span>
-                        <div style={{width: '200px'}}>
-                          <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
-                        </div>
-                        <span htmlFor='example-text-input' className='col-form-label'>
-                        &nbsp;&nbsp;days
-                        </span>
-                      </div>
-                    </div>
-                    { this.state.surveysData && this.state.surveysData.length > 0
-                    ? <div className='table-responsive'>
-                      <table className='table table-striped'>
-                        <thead>
+                        this.state.surveysData.map((survey, i) => (
                           <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Created At</th>
-                            <th>Sent</th>
-                            <th>Seen</th>
-                            <th>Responded</th>
-                            <th>Actions</th>
-
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {
-                          this.state.surveysData.map((survey, i) => (
-                            <tr>
-                              <td>{survey.title}</td>
-                              <td>{survey.description}</td>
-                              <td>{handleDate(survey.datetime)}</td>
-                              <td>{survey.sent}</td>
-                              <td>{survey.seen}</td>
-                              <td>{survey.responses}</td>
-                              <td>
-                                <button className='btn btn-primary btn-sm'
-                                  style={{float: 'left', margin: 2}}
-                                  onClick={() => this.gotoView(survey)}>View
-                                </button>
-                                { this.props.subscribers && this.props.subscribers.length === 0
-                                  ? <span>
-                                    <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.gotoResults(survey)}>
-                                      Report
-                                    </button>
-                                    <button className='btn btn-primary btn-sm'
-                                      style={{float: 'left', margin: 2}}
-                                      onClick={() => this.props.sendsurvey(
-                                          survey, this.msg)} disabled> Send
-                                    </button>
-                                  </span>
-                            : <span>
+                            <td>{survey.title}</td>
+                            <td>{survey.description}</td>
+                            <td>{handleDate(survey.datetime)}</td>
+                            <td>{survey.sent}</td>
+                            <td>{survey.seen}</td>
+                            <td>{survey.responses}</td>
+                            <td>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}
-                                onClick={() => this.gotoResults(survey)}>
-                              Report
-                            </button>
-
-                              <button className='btn btn-primary btn-sm'
-                                style={{float: 'left', margin: 2}}
-                                onClick={() => {
-                                  this.sendSurvey(survey)
-                                }}>
-                                Send
-                            </button>
-                            </span>
-                          } { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
-                            ? <button className='btn btn-primary btn-sm'
+                                onClick={() => this.gotoView(survey)}>View
+                              </button>
+                              { this.props.subscribers && this.props.subscribers.length === 0
+                                ? <span>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.gotoResults(survey)}>
+                                    Report
+                                  </button>
+                                  <button className='btn btn-primary btn-sm'
+                                    style={{float: 'left', margin: 2}}
+                                    onClick={() => this.props.sendsurvey(
+                                        survey, this.msg)} disabled> Send
+                                  </button>
+                                </span>
+                          : <span>
+                            <button className='btn btn-primary btn-sm'
                               style={{float: 'left', margin: 2}}
-                              onClick={() => this.showDialogDelete(survey._id)}>
-                            Delete
-                        </button>
-                        : <div>
-                          {survey.sent === 0
+                              onClick={() => this.gotoResults(survey)}>
+                            Report
+                          </button>
+
+                            <button className='btn btn-primary btn-sm'
+                              style={{float: 'left', margin: 2}}
+                              onClick={() => {
+                                this.sendSurvey(survey)
+                              }}>
+                              Send
+                          </button>
+                          </span>
+                        } { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
                           ? <button className='btn btn-primary btn-sm'
                             style={{float: 'left', margin: 2}}
                             onClick={() => this.showDialogDelete(survey._id)}>
                           Delete
                       </button>
-                      : <button className='btn btn-primary btn-sm' disabled
-                        style={{float: 'left', margin: 2}}
-                        onClick={() => this.showDialogDelete(survey._id)}>
-                      Delete
-                      </button>
-                        }
-                        </div>
+                      : <div>
+                        {survey.sent === 0
+                        ? <button className='btn btn-primary btn-sm'
+                          style={{float: 'left', margin: 2}}
+                          onClick={() => this.showDialogDelete(survey._id)}>
+                        Delete
+                    </button>
+                    : <button className='btn btn-primary btn-sm' disabled
+                      style={{float: 'left', margin: 2}}
+                      onClick={() => this.showDialogDelete(survey._id)}>
+                    Delete
+                    </button>
                       }
-
-                              </td>
-                            </tr>
-                      ))
+                      </div>
                     }
-                        </tbody>
-                      </table>
-                      <ReactPaginate
-                        previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        forcePage={this.state.pageNumber}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
-                    </div>
-                : <div className='table-responsive'>
-                  <p> No data to display </p>
-                </div>
-              }
+
+                            </td>
+                          </tr>
+                    ))
+                  }
+                      </tbody>
+                    </table>
+                    <ReactPaginate
+                      previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 10)}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={3}
+                      forcePage={this.state.pageNumber}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
                   </div>
+              : <div className='table-responsive'>
+                <p> No data to display </p>
+              </div>
+            }
                 </div>
               </div>
             </div>
@@ -459,6 +464,7 @@ function mapStateToProps (state) {
   console.log('survey state', state)
   return {
     surveys: (state.surveysInfo.surveys),
+    pages: (state.pagesInfo.pages),
     count: (state.surveysInfo.count),
     subscribers: (state.subscribersInfo.subscribers),
     successMessage: (state.surveysInfo.successMessage),

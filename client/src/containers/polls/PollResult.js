@@ -20,7 +20,8 @@ class PollResult extends React.Component {
     this.state = {
       totalSent: 0,
       totalResponses: 0,
-      show: false
+      show: false,
+      showMessage: false
     }
     this.getFile = this.getFile.bind(this)
     this.props.getpollresults(this.props.location.state._id)
@@ -65,7 +66,7 @@ class PollResult extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    this.setState({show: true})
+    this.setState({show: true, showMessage: true})
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})
     if (nextprops.responses) {
@@ -111,98 +112,102 @@ class PollResult extends React.Component {
   render () {
     console.log('PollResult props', this.props)
     return (
-      <div>
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Poll Report</h3>
-              </div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Poll Report</h3>
             </div>
           </div>
-          <div className='m-content'>
-            <div className='row'>
-              <div className='col-xl-12'>
-                <div className='m-portlet'>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                          Title: {this.props.location.state.statement}
-                        </h3>
+        </div>
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Title: {this.props.location.state.statement}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-portlet__body' style={{'display': 'flex'}}>
+                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        {this.state.totalSent}
+                        <h5>
+                          Polls Sent So Far
+                        </h5>
                       </div>
                     </div>
                   </div>
-                  <div className='m-portlet__body' style={{'display': 'flex'}}>
-                    <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
-                      <div className='m-widget26'>
-                        <div className='m-widget26__number'>
-                          {this.state.totalSent}
-                          <h5>
-                            Polls Sent So Far
-                          </h5>
+                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
+                    <div className='m-widget26'>
+                      <div className='m-widget26__number'>
+                        { this.props.responses
+                        ? <div className='count-stat'>{this.state.totalResponses}
                         </div>
-                      </div>
-                    </div>
-                    <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
-                      <div className='m-widget26'>
-                        <div className='m-widget26__number'>
-                          { this.props.responses
-                          ? <div className='count-stat'>{this.state.totalResponses}
-                          </div>
-                          : <div className='count-stat'>{this.state.totalResponses}
-                          </div>
-                          }
-                          <h5>
-                            Polls Respones
-                          </h5>
+                        : <div className='count-stat'>{this.state.totalResponses}
                         </div>
+                        }
+                        <h5>
+                          Polls Respones
+                        </h5>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className='row'>
-              <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet' style={{height: '100%'}}>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption'>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>
-                        Poll Response Chart
-                        </h3>
-                      </div>
-                    </div>
-                    <div className='m-portlet__head-tools'>
-                      {this.state.show &&
-                      <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
-                        <span>
-                          <i className='fa fa-download' />
-                          <span>
-                            Download File
-                          </span>
-                        </span>
-                      </button>
-                      }
+          </div>
+          <div className='row'>
+            <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+              <div className='m-portlet' style={{height: '100%'}}>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                      Poll Response Chart
+                      </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__body'>
+                  <div className='m-portlet__head-tools'>
+                    {this.state.show &&
+                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile} disabled={(this.state.totalResponses === 0)}>
+                      <span>
+                        <i className='fa fa-download' />
+                        <span>
+                          Download File
+                        </span>
+                      </span>
+                    </button>
+                    }
+                  </div>
+                </div>
+                {
+                  !(this.state.totalResponses === 0) ? <div className='m-portlet__body'>
                     <div className='ui-block-content'>
                       <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
                       }}>
                         <canvas id='radar-chart' width={250} height={170} />
                       </div>
                     </div>
+                  </div> : this.state.showMessage && <div className='m-portlet__body'>
+                    <div className='ui-block-content'>
+                      <center><label style={{ fontWeight: 'normal' }}>There are no responses for this Poll</label></center>
+                    </div>
                   </div>
-                  <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                    <Link
-                      to='/poll'
-                      style={{ float: 'right', margin: '20px' }}
-                      className='btn btn-secondary'>
-                      Back
-                    </Link>
-                  </div>
+                }
+                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                  <Link
+                    to='/poll'
+                    style={{ float: 'right', margin: '20px' }}
+                    className='btn btn-secondary'>
+                    Back
+                  </Link>
                 </div>
               </div>
             </div>

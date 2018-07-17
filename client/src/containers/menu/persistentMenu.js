@@ -111,6 +111,7 @@ class Menu extends React.Component {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
+      this.props.saveCurrentMenuItem(null)
     }
   }
   validatePostbackPayload (indexVal) {
