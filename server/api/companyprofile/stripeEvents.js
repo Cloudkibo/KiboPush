@@ -29,7 +29,6 @@ var knownEvents = {
   'charge.succeeded': function (req, res, next) {
     logger.serverLog(TAG, `${req.stripeEvent.type} event processed`)
     logger.serverLog(TAG, `event processed body ${JSON.stringify(req.body)}`)
-    console.log('req.body.data.object.customer', req.body.data.object.customer)
     Companyprofile.findOne({'stripe.customerId': req.body.data.object.customer}).populate('ownerId').exec((err, company) => {
       if (err) {
         return res.status(500).json({
@@ -37,7 +36,6 @@ var knownEvents = {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      console.log('company', company)
       if (company) {
         let sendgrid = require('sendgrid')(config.sendgrid.username,
           config.sendgrid.password)
