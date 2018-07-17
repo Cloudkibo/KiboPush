@@ -31,7 +31,7 @@ class PagesInfo extends React.Component {
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
                 <div className='col-lg-12 col-md-12'>
-                  <div className='m-input-icon m-input-icon--left'>
+                  <div className='m-input-icon m-input-icon--left' style={{marginBottom: '10px'}}>
                     <input type='text' placeholder='Search Pages...' className='form-control m-input m-input--solid' onChange={(event) => { this.props.search(event, 'pages') }} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>

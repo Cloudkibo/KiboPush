@@ -194,7 +194,6 @@ class Survey extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}

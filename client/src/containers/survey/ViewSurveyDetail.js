@@ -25,9 +25,9 @@ class ViewSurveyDetail extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {this.props.survey && this.props.questions &&
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div>
 
           <div className='m-subheader '>
             <div className='d-flex align-items-center' style={{marginLeft: '20px'}}>

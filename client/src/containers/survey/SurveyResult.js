@@ -94,8 +94,8 @@ class SurveyResult extends React.Component {
   render () {
     console.log('SurveyResult props', this.props)
     return (
-      <div>
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div>
           {this.props.survey &&
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
