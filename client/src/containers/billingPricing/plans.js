@@ -7,10 +7,11 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { fetchAllPlans, deletePlan, createPlan, updatePlan } from '../../redux/actions/billingPricing.actions'
+import { fetchAllPlans, deletePlan, createPlan, updatePlan, migrate, makeDefault } from '../../redux/actions/billingPricing.actions'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { Popover, PopoverBody } from 'reactstrap'
 
 class Plans extends React.Component {
   constructor (props, context) {
@@ -31,6 +32,7 @@ class Plans extends React.Component {
       {value: 'week', text: 'weekly'},
       {value: 'month', text: 'monthly'},
       {value: 'year', text: 'yearly'}],
+      planOptions: [],
       trial: 0,
       amount: 0,
       editId: '',
@@ -39,7 +41,10 @@ class Plans extends React.Component {
       editInterval: 'month',
       editAmount: 0,
       migrateTo: '',
-      migrateFrom: ''
+      migrateFrom: '',
+      disabled: true,
+      openPopover: false,
+      targetValue: ''
     }
     props.fetchAllPlans()
     this.showDialogDelete = this.showDialogDelete.bind(this)
@@ -60,18 +65,44 @@ class Plans extends React.Component {
     this.updateInterval = this.updateInterval.bind(this)
     this.updateTrial = this.updateTrial.bind(this)
     this.migrateCompanies = this.migrateCompanies.bind(this)
+    this.choosePlan = this.choosePlan.bind(this)
+    this.openPopover = this.openPopover.bind(this)
+    this.handleToggle = this.handleToggle.bind(this)
+    this.makeDefault = this.makeDefault.bind(this)
   }
-
+  makeDefault (value) {
+    var id = this.state.targetValue.split('-')
+    this.setState({openPopover: false})
+    this.props.makeDefault({plan_id: id[1], account_type: value}, this.msg)
+  }
+  openPopover (value) {
+    console.log('openPopover')
+    var val = 'buttonTarget-' + value
+    this.setState({disabled: true, targetValue: val})
+    this.setState({openPopover: !this.state.openPopover})
+  }
+  handleToggle () {
+    this.setState({openPopover: !this.state.openPopover})
+  }
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.plans && nextprops.plans.length > 0) {
+      var temp = []
+      for (var i = 0; i < nextprops.plans.length; i++) {
+        temp.push({value: nextprops.plans[i]._id, text: nextprops.plans[i].name})
+      }
+      this.setState({planOptions: temp, migrateTo: nextprops.plans[0]._id, migrateFrom: nextprops.plans[0]._id})
+    }
+  }
   goToCreate () {
     if (this.state.name === '') {
       this.msg.error('Please enter name')
     } else {
-      this.setState({isShowingModal: false})
+      this.setState({isShowingModal: false, name: '', amount: 0, interval: 'month', trial: 0})
       this.props.createPlan({name: this.state.name, amount: parseInt(this.state.amount), interval: this.state.interval, trial_period: parseInt(this.state.trial)}, this.msg)
     }
   }
   goToCancel () {
-    this.setState({name: '', amount: 0, trial: 0})
+    this.setState({name: '', amount: 0, trial: 0, isShowingModal: false})
   }
   goToUpdate () {
     if (this.state.editName === '') {
@@ -146,7 +177,25 @@ class Plans extends React.Component {
     this.setState({isShowingModalMigrate: false})
   }
   migrateCompanies (from, to) {
-
+    if (this.state.migrateFrom !== this.state.migrateTo) {
+      this.props.migrate({from: this.state.migrateFrom, to: this.state.migrateTo}, this.msg)
+    }
+  }
+  choosePlan (e, module) {
+    if (module === 'from') {
+      this.setState({migrateFrom: e.target.value})
+    } else if (module === 'to') {
+      this.setState({migrateTo: e.target.value})
+    }
+    if (module === 'to' && this.state.migrateFrom === e.target.value) {
+      console.log('in first')
+      this.setState({disabled: true})
+    } else if (module === 'from' && this.state.migrateTo === e.target.value) {
+      console.log('in first')
+      this.setState({disabled: true})
+    } else {
+      this.setState({disabled: false})
+    }
   }
   render () {
     var alertOptions = {
@@ -309,9 +358,10 @@ class Plans extends React.Component {
                 <ModalDialog style={{width: '500px'}}
                   onClose={this.closeDialogMigrate}>
                   <center><h3>Migrate Companies</h3></center>
+                  <br />
                   <div className='m-form'>
                     <label className='control-label' style={{fontWeight: 'normal'}}>Migrate Companies From:</label><br />
-                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.interval} onChange={(e) => this.updateInterval(e, 'create')}>
+                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.migrateFrom} onChange={(e) => this.choosePlan(e, 'from')}>
                       {
                         this.state.planOptions.map((plan, i) => (
                           <option key={i} value={plan.value}>{plan.text}</option>
@@ -319,9 +369,10 @@ class Plans extends React.Component {
                       }
                     </select>
                   </div>
+                  <br />
                   <div className='m-form'>
                     <label className='control-label' style={{fontWeight: 'normal'}}>Migrate Companies To:</label><br />
-                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.interval} onChange={(e) => this.updateInterval(e, 'create')}>
+                    <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.migrateTo} onChange={(e) => this.choosePlan(e, 'to')}>
                       {
                         this.state.planOptions.map((plan, i) => (
                           <option key={i} value={plan.value}>{plan.text}</option>
@@ -332,13 +383,8 @@ class Plans extends React.Component {
                   <br /><br />
                   <div style={{width: '100%', textAlign: 'right'}}>
                     <div style={{display: 'inline-block', padding: '5px'}}>
-                      <button className='btn btn-secondary' onClick={this.goToCancel}>
-                        Cancel
-                      </button>
-                    </div>
-                    <div style={{display: 'inline-block', padding: '5px'}}>
-                      <button style={{color: 'white'}} onClick={this.goToCreate} className='btn btn-primary'>
-                        Create
+                      <button style={{color: 'white'}} onClick={this.migrateCompanies} className='btn btn-primary' disabled={this.state.disabled}>
+                        Migrate
                       </button>
                     </div>
                   </div>
@@ -358,7 +404,7 @@ class Plans extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialogMigrate}>
                           <span>
                             <span>
                               Migrate Companies
@@ -445,8 +491,34 @@ class Plans extends React.Component {
                                             </center>
                                           }
                                           </div>
+                                          <div className='m-widget5__stats1' style={{verticalAlign: 'middle'}}>
+                                            {plan.unique_ID !== 'plan_B' && plan.unique_ID !== 'plan_D' && !plan.default_individual && !plan.default_team &&
+                                              <div>
+                                                <center style={{cursor: 'pointer'}} onClick={() => this.openPopover(plan._id, i)} id={'buttonTarget-' + plan._id} ref={(b) => { this.target = b }}>
+                                                  <span className='m-widget5__number'>
+                                                    <i className='fa fa-ellipsis-v' style={{fontSize: '1.5rem'}} />
+                                                  </span>
+                                                </center>
+                                                </div>
+                                              }
+                                          </div>
                                         </div>
                                       ))}
+                                      {this.state.targetValue &&
+                                      <Popover placement='bottom-end' isOpen={this.state.openPopover} target={this.state.targetValue} className='buttonPopoverPlan'>
+                                        <PopoverBody>
+                                          <div style={{color: '#6f727d'}}>
+                                            <i className='fa fa-user' />&nbsp;&nbsp;<a onClick={() => this.makeDefault('individual')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                              Make Default Individual
+                                            </a>
+                                            <br />
+                                            <i className='fa fa-users' />&nbsp;&nbsp;<a onClick={() => this.makeDefault('team')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '10px', marginBottom: '10px'}}>
+                                              Make Default Team
+                                            </a>
+                                          </div>
+                                        </PopoverBody>
+                                        </Popover>
+                                      }
                                     </div>
                                   </div>
                                 </div>
@@ -479,7 +551,9 @@ function mapDispatchToProps (dispatch) {
     fetchAllPlans: fetchAllPlans,
     deletePlan: deletePlan,
     createPlan: createPlan,
-    updatePlan: updatePlan
+    updatePlan: updatePlan,
+    migrate: migrate,
+    makeDefault: makeDefault
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Plans)

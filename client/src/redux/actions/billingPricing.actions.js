@@ -47,6 +47,34 @@ export function updatePlan (data, msg) {
   }
 }
 
+export function migrate (data, msg) {
+  console.log('data for migrateCompanies', data)
+  return (dispatch) => {
+    callApi('plans/migrateCompanies', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Comapnies migrated successfully')
+          dispatch(fetchAllPlans())
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
+export function makeDefault (data, msg) {
+  console.log('data for makeDefault', data)
+  return (dispatch) => {
+    callApi('plans/changeDefaultPlan', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Default plan changed successfully')
+          dispatch(fetchAllPlans())
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
 export function deletePlan (id, msg) {
   console.log('id for delete', id)
   return (dispatch) => {
