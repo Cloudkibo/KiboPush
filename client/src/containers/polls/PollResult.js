@@ -22,7 +22,8 @@ class PollResult extends React.Component {
     this.state = {
       totalSent: 0,
       totalResponses: 0,
-      show: false
+      show: false,
+      showMessage: false
     }
     this.getFile = this.getFile.bind(this)
     this.props.getpollresults(this.props.location.state._id)
@@ -67,7 +68,7 @@ class PollResult extends React.Component {
   }
 
   componentWillReceiveProps (nextprops) {
-    this.setState({show: true})
+    this.setState({show: true, showMessage: true})
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})
     if (nextprops.responses) {
@@ -182,7 +183,7 @@ class PollResult extends React.Component {
                       </div>
                       <div className='m-portlet__head-tools'>
                         {this.state.show &&
-                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile} disabled={(this.state.totalResponses === 0)}>
                           <span>
                             <i className='fa fa-download' />
                             <span>
@@ -193,14 +194,20 @@ class PollResult extends React.Component {
                         }
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      <div className='ui-block-content'>
-                        <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
-                        }}>
-                          <canvas id='radar-chart' width={250} height={170} />
+                    {
+                      !(this.state.totalResponses === 0) ? <div className='m-portlet__body'>
+                        <div className='ui-block-content'>
+                          <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
+                          }}>
+                            <canvas id='radar-chart' width={250} height={170} />
+                          </div>
+                        </div>
+                      </div> : this.state.showMessage && <div className='m-portlet__body'>
+                        <div className='ui-block-content'>
+                          <center><label style={{ fontWeight: 'normal' }}>There are no responses for this Poll</label></center>
                         </div>
                       </div>
-                    </div>
+                    }
                     <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                       <Link
                         to='/poll'

@@ -292,27 +292,39 @@ router.get('/updatePageNames', (req, res) => {
     let updatedPages = []
     let requests = pages.map((page) => {
       return new Promise((resolve, reject) => {
-        request(
-          {
-            'method': 'GET',
-            'json': true,
-            'uri': `https://graph.facebook.com/v3.0/${page.pageId}?access_token=${page.accessToken}`
-          }, function (err, resp) {
-          if (err) {
-            logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
-            reject(err)
+        Users.findById(page.userId, (userErr, userRes) => {
+          if (userErr) {
+            logger.serverLog(TAG, `Error in retrieving page owner ${JSON.stringify(userErr)}`)
+            reject(userErr)
           } else {
-            resolve(resp)
-            if (page.pageName !== resp.body.name) {
-              updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
-              Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
-                } else {
-                  logger.serverLog(TAG, `Updated page name. Previous page name in database: ${page.pageName}, Actual page name: ${resp.body.name}`)
-                }
-              })
+            let accessToken = page.accessToken
+            if (userRes && userRes.facebookInfo) {
+              accessToken = userRes.facebookInfo.fbToken
+              console.log(`request: https://graph.facebook.com/v3.0/${page.pageId}?access_token=${accessToken}`)
             }
+            request(
+              {
+                'method': 'GET',
+                'json': true,
+                'uri': `https://graph.facebook.com/v3.0/${page.pageId}?access_token=${accessToken}`
+              }, function (err, resp) {
+              if (err) {
+                logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
+                reject(err)
+              } else {
+                if (!resp.body.error && page.pageName !== resp.body.name && resp.body.name) {
+                  updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
+                  Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
+                    if (err) {
+                      logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
+                    } else {
+                      logger.serverLog(TAG, `Updated page name. Previous page name in database: ${page.pageName}, Actual page name: ${resp.body.name}`)
+                    }
+                  })
+                }
+                resolve(resp)
+              }
+            })
           }
         })
       })
