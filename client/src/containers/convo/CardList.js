@@ -51,22 +51,33 @@ class Card extends React.Component {
   handleCheckbox (e) {
     this.setState({checkbox: !this.state.checkbox})
     console.log('value', e.target.value)
-    if (e.target.value) {
-      this.setState({disabled: false})
+    if (this.state.elementUrl !== '') {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button,
+        default_action: {type: 'web_url', url: this.state.elementUrl}
+      })
+    } else {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button
+      })
     }
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: this.state.button,
-      default_action: {type: 'web_url', url: this.state.elementUrl}
-    })
-    if (e.target.value) {
+    if (e.target.value === true) {
       this.props.topElementStyle('LARGE')
     } else {
       this.props.topElementStyle('compact')
@@ -99,18 +110,24 @@ class Card extends React.Component {
     this.setState({
       openPopover: false
     })
-    if (this.state.checkbox) {
-      this.props.topElementStyle('LARGE')
-    } else {
-      this.props.topElementStyle('compact')
-    }
   }
   handleClick (e) {
     this.setState({disabled: true})
     this.setState({openPopover: !this.state.openPopover})
   }
   handleClose (e) {
-    this.setState({openPopover: false, elementUrl: '', checkbox: false})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button
+    })
+    this.setState({openPopover: false, elementUrl: ''})
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
@@ -141,7 +158,10 @@ class Card extends React.Component {
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
       }
-      if (cardProps.id === 1 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
+      if (cardProps.cardDetails.default_action) {
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
+      }
+      if (cardProps.id === 0 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
         this.setState({ checkbox: true })
       }
     }
@@ -305,6 +325,11 @@ class Card extends React.Component {
   }
 
   render () {
+    console.log('this.state.imgSrc', this.state.imgSrc)
+    console.log('this.state.checkbox', this.state.checkbox)
+    if (this.props.cardDetails) {
+      console.log('this.props.cardDetails', this.props.cardDetails)
+    }
     return (
       <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
@@ -333,7 +358,7 @@ class Card extends React.Component {
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> {this.state.elementUrl === '' ? 'Cancel' : 'Remove' }</button>
               <br />
               <br />
             </div>

@@ -44,13 +44,11 @@ function validateInput (body) {
           body.payload[i].title === '') return false
         if (body.payload[i].fileurl === undefined ||
           body.payload[i].fileurl === '') return false
-        if (body.payload[i].image_url === undefined ||
-          body.payload[i].image_url === '') return false
         if (body.payload[i].description === undefined ||
           body.payload[i].description === '') return false
         if (body.payload[i].buttons === undefined) return false
         if (body.payload[i].buttons.length === 0) return false
-        if (!utility.validateUrl(body.payload[i].image_url)) return false
+        if (!utility.validateUrl(body.payload[i].fileurl.url)) return false
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
             if (!utility.validateUrl(
@@ -97,14 +95,16 @@ function validateInput (body) {
         if (body.payload[i].listItems.length === 0) return false
         if (body.payload[i].topElementStyle === undefined ||
         body.payload[i].topElementStyle === '') return false
-        for (let m = 0; m < body.payload[i].buttons.length; m++) {
-          if (body.payload[i].buttons[m].type === undefined ||
-          body.payload[i].buttons[m].type === '') return false
-          if (body.payload[i].buttons[m].title === undefined ||
-          body.payload[i].buttons[m].title === '') return false
-          if (body.payload[i].buttons[m].type === 'web_url') {
-            if (!utility.validateUrl(
-              body.payload[i].buttons[m].url)) return false
+        if (body.payload[i].buttons) {
+          for (let m = 0; m < body.payload[i].buttons.length; m++) {
+            if (body.payload[i].buttons[m].type === undefined ||
+            body.payload[i].buttons[m].type === '') return false
+            if (body.payload[i].buttons[m].title === undefined ||
+            body.payload[i].buttons[m].title === '') return false
+            if (body.payload[i].buttons[m].type === 'web_url') {
+              if (!utility.validateUrl(
+                body.payload[i].buttons[m].url)) return false
+            }
           }
         }
         for (let j = 0; j < body.payload[i].listItems.length; j++) {
@@ -560,7 +560,7 @@ function prepareMessageData (subscriberId, body, fname, lname) {
           'elements': [
             {
               'title': body.title,
-              'image_url': body.image_url,
+              'image_url': body.fileurl.url,
               'subtitle': body.description,
               'buttons': body.buttons
             }

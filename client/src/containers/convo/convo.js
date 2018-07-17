@@ -258,11 +258,16 @@ class Convo extends React.Component {
             </div>
             <div className='m-content'>
               {
-                this.props.subscribers && this.props.subscribers.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Subscribers</h4>
-                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
+                  this.props.pages && this.props.pages.length === 0
+                  ? <div className='alert alert-success'>
+                    <h4 className='block'>0 Pages Connected</h4>
+                    You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{color: 'blue', cursor: 'pointer'}} to='/addPages' >Add Pages</Link>
+                  </div>
+                : this.props.subscribers && this.props.subscribers.length === 0 &&
+                  <div className='alert alert-success'>
+                    <h4 className='block'>0 Subscribers</h4>
+                      Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+                      To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
                   </div>
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
@@ -463,6 +468,7 @@ class Convo extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    pages: (state.pagesInfo.pages),
     broadcasts: (state.broadcastsInfo.broadcasts),
     count: (state.broadcastsInfo.count),
     successMessage: (state.broadcastsInfo.successMessage),
