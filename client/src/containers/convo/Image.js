@@ -96,7 +96,7 @@ class Image extends React.Component {
           {
           this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div>
+          : <div style={{position: 'relative'}}>
             <input
               ref='file'
               type='file'
@@ -104,7 +104,7 @@ class Image extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{position: 'absolute', minHeight: 150, opacity: 0, margin: -25, zIndex: 5, cursor: 'pointer'}} />
             {
               (this.state.imgSrc === '')
               ? <div className='align-center'>
