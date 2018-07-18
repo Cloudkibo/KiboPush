@@ -12,8 +12,8 @@ const controller = require('./dash.controller')
 // const auth = require('../../auth/auth.service')
 
 router.get('/', controller.platformWiseData)
-router.get('/platformwise', controller.platformWiseData)
-router.get('/pagewise', controller.pageWiseData) // pagination
-router.get('/userwise', controller.userWiseData)
+router.get('/getPlatformData', controller.platformWiseData)
+router.get('/getPageData', controller.pageWiseData) // pagination
+router.get('/getCompanyData', controller.userWiseData)
 
 module.exports = router
