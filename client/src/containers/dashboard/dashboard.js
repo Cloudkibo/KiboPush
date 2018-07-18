@@ -156,6 +156,11 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
+      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        console.log('going to push add page wizard')
+        browserHistory.push({
+          pathname: '/addPageWizard'
+        })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
@@ -168,11 +173,6 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
-      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-        console.log('going to push add page wizard')
-        browserHistory.push({
-          pathname: '/addPageWizard'
-        })
       }
       if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
