@@ -17,10 +17,6 @@ class Plans extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      teamsData: [],
-      totalLength: 0,
-      filterValue: '',
-      searchValue: '',
       isShowingModalDelete: false,
       isShowingModal: false,
       isShowingModalUpdate: false,
