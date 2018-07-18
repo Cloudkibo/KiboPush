@@ -19,4 +19,5 @@ We decided that there should be a proper design document format and everyone nee
 9. Server Side Changes
 10. Client Side Changes
 11. Socket.io Changes
-12. Tasks
+12. Test Cases
+13. Tasks
