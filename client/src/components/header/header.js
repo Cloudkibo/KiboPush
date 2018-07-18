@@ -238,28 +238,28 @@ class Header extends React.Component {
                                   </Link>
                                 </li>
                                 <li className='m-nav__item ' aria-haspopup='true'>
-                                  <a href='../../header/actions.html' className='m-nav__link '>
+                                  <Link to='/permissions' className='m-nav__link '>
                                     <i className='m-nav__link-icon fa fa-key' />
                                     <span className='m-nav__link-text'>
                                       Permissions
                                     </span>
-                                  </a>
+                                  </Link>
                                 </li>
                                 <li className='m-nav__item ' aria-haspopup='true'>
-                                  <a href='../../header/actions.html' className='m-nav__link '>
+                                  <Link to='/features' className='m-nav__link '>
                                     <i className='m-nav__link-icon fa fa-th-list' />
                                     <span className='m-nav__link-text'>
                                       Features
                                     </span>
-                                  </a>
+                                  </Link>
                                 </li>
                                 <li className='m-nav__item ' aria-haspopup='true'>
-                                  <a href='../../header/actions.html' className='m-nav__link '>
+                                  <Link to='/usage' className='m-nav__link '>
                                     <i className='m-nav__link-icon fa fa-pie-chart' />
                                     <span className='m-nav__link-text'>
                                       Usage
                                     </span>
-                                  </a>
+                                  </Link>
                                 </li>
                               </ul>
                             </div>

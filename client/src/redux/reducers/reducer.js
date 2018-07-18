@@ -27,6 +27,7 @@ import {botsInfo} from './smart_replies.reducer'
 import {sequenceInfo} from './sequence.reducer'
 import {postsInfo} from './commentCapture.reducer'
 import {billingPricingInfo} from './billingPricing.reducer'
+import {permissionsInfo} from './permissions.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -55,7 +56,8 @@ const appReducer = combineReducers({
   botsInfo,
   sequenceInfo,
   postsInfo,
-  billingPricingInfo
+  billingPricingInfo,
+  permissionsInfo
 })
 
 export default appReducer

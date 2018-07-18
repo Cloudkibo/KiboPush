@@ -108,6 +108,7 @@ import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import Plans from './containers/billingPricing/plans'
+import Permissions from './containers/permissions/permissions'
 
 import auth from './utility/auth.service'
 
@@ -246,6 +247,7 @@ const routes = (
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
     <Route path='/plans' component={Plans} onEnter={requireAuth} />
+    <Route path='/permissions' component={Permissions} onEnter={requireAuth} />
 
   </Route>
 
