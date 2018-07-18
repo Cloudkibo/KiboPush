@@ -27,7 +27,7 @@ exports.platformWiseData = function (req, res) {
 
   finalResults.then(function (results) {
     let data = {
-      connectetPages: (results[0].length === 0) ? 0 : results[0][0].count,
+      connectedPages: (results[0].length === 0) ? 0 : results[0][0].count,
       totalPages: (results[1].length === 0) ? 0 : results[1][0].count,
       totalUsers: (results[2].length === 0) ? 0 : results[2][0].count,
       totalSubscribers: (results[3].length === 0) ? 0 : results[3][0].count,
