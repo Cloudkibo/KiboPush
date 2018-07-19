@@ -395,7 +395,7 @@ class Sidebar extends Component {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
-      <div>
+      <div id='sidebarDiv'>
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>

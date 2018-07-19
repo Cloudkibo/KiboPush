@@ -6,10 +6,6 @@ import Dashboard from './dashboard/dashboard'
 //  import HeaderResponsive from '../components/header/headerResponsive'
 
 class Home extends Component {
-  componentDidMount () {
-
-  }
-
   render () {
     return (
       <Dashboard />
