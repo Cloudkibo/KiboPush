@@ -708,4 +708,4 @@ exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
 exports.getBatchData = getBatchData
-exports.uploadAttachmentToFacebook = uploadAndSend
+exports.uploadAndSend = uploadAndSend
