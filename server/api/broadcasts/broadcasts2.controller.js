@@ -264,8 +264,6 @@ exports.sendConversation = function (req, res) {
             .json({status: 'failed', description: 'Pages not found'})
           }
 
-          let uploadResponse = utility.uploadAttachmentToFacebook(pages, newPayload)
-
           pages.forEach(page => {
             if (req.body.isList === true) {
               let ListFindCriteria = {}
@@ -353,14 +351,7 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        if (uploadResponse.status === 'success') {
-                          utility.getBatchData(uploadResponse.payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                        } else {
-                          return res.status(500).json({
-                            status: 'success',
-                            description: uploadResponse.message
-                          })
-                        }
+                        utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
                       })
                     })
                   })
@@ -441,22 +432,13 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      if (uploadResponse.status === 'success') {
-                        utility.getBatchData(uploadResponse.payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                      } else {
-                        return res.status(500).json({
-                          status: 'success',
-                          description: uploadResponse.message
-                        })
-                      }
+                      utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
                     })
                   })
                 })
               })
             }
           })
-          return res.status(200)
-          .json({status: 'success', payload: {broadcast: broadcast}})
         })
       })
     })
