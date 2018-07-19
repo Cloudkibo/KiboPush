@@ -348,7 +348,7 @@ class EditTemplate extends React.Component {
     // const { disabled, stayOpen } = this.state
 
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         {
@@ -362,92 +362,88 @@ class EditTemplate extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='m-portlet m-portlet--full-height'>
-                <div className='m-portlet__body m-portlet__body--no-padding'>
-                  <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
-                    <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='4' />
-                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
-                        <div className='m-portlet__head'>
-                          <div className='m-portlet__head-caption'>
-                            <div className='m-portlet__head-title'>
-                              <h3 className='m-portlet__head-text'>
-                                Step 4: Welcome Message
-                              </h3>
-                            </div>
-                          </div>
+        <div className='m-content'>
+          <div className='m-portlet m-portlet--full-height'>
+            <div className='m-portlet__body m-portlet__body--no-padding'>
+              <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                  <Sidebar step='4' />
+                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Step 4: Welcome Message
+                          </h3>
                         </div>
-                        <div className='m-portlet__body'>
-                          <div className='form-group m-form__group row'>
-                            <label style={{fontWeight: 'normal'}}>This page will help you setup welcome message for your page. Welcome message is sent when a subscriber starts the conversation with you by tapping getting started on messenger. We have set a default message for you. Click on "See how it looks" to see how it would look on messenger. Modify it and create your desired welcome message for your messenger susbcribers. Here you can set a welcome message using text component only but you can set a weclome message using image, audio, video, file, cards, and gallery later from our settings page.</label>
-                          </div>
-                          <br />
-                          <div className='form-group m-form__group row'>
-                            <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Change Page</label>
-                            <div className='col-8 input-group'>
-                              <select
-                                className='form-control m-input'
-                                placeholder='Select a page...'
-                                onChange={this.pageChange}
-                                style={{width: 'inherit'}}>
-                                { this.props.pages.map((page, i) => (
-                                (
-                                  page.connected &&
-                                  <option
-                                    value={page._id} name={page.pageName} key={page.pageId} selected={page._id === this.state.pageValue}>{page.pageName}</option>
-                                )
-                              ))
-                              }
-                              </select>
-                            </div>
-                          </div>
-                          <br />
-                          <center>
-                            <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' style={{width: '560px'}} />
-                          </center>
-                          <div className='row'>
-                            <div className='col-lg-6 m--align-left' >
-                              {// this.state.switchState &&
-                                <div className='row'>
-                                  <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Welcome Message is currently</label>
-                                  <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
-                                    <div className='bootstrap-switch-container'>
-                                      <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
-                                    </div>
-                                  </div>
-                                  {/* this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue) */}
-                                </div>
-                              }
-                            </div>
-                            <div className='col-lg-6 m--align-right'>
-                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                              <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
-                            </div>
-                          </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='form-group m-form__group row'>
+                        <label style={{fontWeight: 'normal'}}>This page will help you setup welcome message for your page. Welcome message is sent when a subscriber starts the conversation with you by tapping getting started on messenger. We have set a default message for you. Click on "See how it looks" to see how it would look on messenger. Modify it and create your desired welcome message for your messenger susbcribers. Here you can set a welcome message using text component only but you can set a weclome message using image, audio, video, file, cards, and gallery later from our settings page.</label>
+                      </div>
+                      <br />
+                      <div className='form-group m-form__group row'>
+                        <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                        <div className='col-8 input-group'>
+                          <select
+                            className='form-control m-input'
+                            placeholder='Select a page...'
+                            onChange={this.pageChange}
+                            style={{width: 'inherit'}}>
+                            { this.props.pages.map((page, i) => (
+                            (
+                              page.connected &&
+                              <option
+                                value={page._id} name={page.pageName} key={page.pageId} selected={page._id === this.state.pageValue}>{page.pageName}</option>
+                            )
+                          ))
+                          }
+                          </select>
                         </div>
-                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                          <div className='m-form__actions'>
+                      </div>
+                      <br />
+                      <center>
+                        <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' style={{width: '560px'}} />
+                      </center>
+                      <div className='row'>
+                        <div className='col-lg-6 m--align-left' >
+                          {// this.state.switchState &&
                             <div className='row'>
-                              <div className='col-lg-6 m--align-left' >
-                                <Link to='/greetingTextWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <i className='la la-arrow-left' />
-                                    <span>Back</span>&nbsp;&nbsp;
-                                  </span>
-                                </Link>
+                              <label style={{fontWeight: 'normal', marginRight: '15px', marginTop: '8px'}}>Welcome Message is currently</label>
+                              <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                                <div className='bootstrap-switch-container'>
+                                  <input data-switch='true' type='checkbox' name='switch' id={this.state.pageValue} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
+                                </div>
                               </div>
-                              <div className='col-lg-6 m--align-right'>
-                                <Link to='/autopostingWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <span>Next</span>&nbsp;&nbsp;
-                                    <i className='la la-arrow-right' />
-                                  </span>
-                                </Link>
-                              </div>
+                              {/* this.initializeSwitch(this.state.welcomeMessage, this.state.pageValue) */}
                             </div>
+                          }
+                        </div>
+                        <div className='col-lg-6 m--align-right'>
+                          <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                          <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.sendConvo}>Save</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                      <div className='m-form__actions'>
+                        <div className='row'>
+                          <div className='col-lg-6 m--align-left' >
+                            <Link to='/greetingTextWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <i className='la la-arrow-left' />
+                                <span>Back</span>&nbsp;&nbsp;
+                              </span>
+                            </Link>
+                          </div>
+                          <div className='col-lg-6 m--align-right'>
+                            <Link to='/autopostingWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <span>Next</span>&nbsp;&nbsp;
+                                <i className='la la-arrow-right' />
+                              </span>
+                            </Link>
                           </div>
                         </div>
                       </div>
