@@ -79,7 +79,11 @@ class Media extends React.Component {
       }
       if (mediaProps.media.fileurl && mediaProps.media.fileurl.url) {
         this.setState({
-          previewUrl: mediaProps.media.fileurl.url
+          previewUrl: mediaProps.media.fileurl.url,
+          fileurl: mediaProps.media.fileurl,
+          fileName: mediaProps.media.fileName,
+          type: mediaProps.media.type,
+          size: mediaProps.media.size
         })
       }
       if (mediaProps.media.mediaType) {
