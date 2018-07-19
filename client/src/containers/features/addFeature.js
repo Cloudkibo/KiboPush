@@ -5,11 +5,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { addPermission } from '../../redux/actions/permissions.actions'
+import { addFeature } from '../../redux/actions/features.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 
-class AddPermission extends React.Component {
+class AddFeature extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -23,18 +23,10 @@ class AddPermission extends React.Component {
   }
   goToCreate () {
     if (this.state.name === '') {
-      this.props.msg.error('Please enter permission')
+      this.props.msg.error('Please enter feature')
     } else {
-      var permissionCheckboxes = this.state.permissionCheckboxes
-      var temp = this.state.name.split(' ')
-      for (var i = 1; i < temp.length; i++) {
-        temp[i] = temp[i].charAt(0).toUpperCase() + temp[i].slice(1)
-      }
-      var permission = temp.toString().replace(new RegExp(',', 'g'), '')
-      permissionCheckboxes.push({name: this.state.name, nick: permission, selected: false})
-      this.setState({permissionCheckboxes: permissionCheckboxes})
       this.props.closeDialog()
-      this.props.addPermission({name: this.state.name}, this.props.msg, this.props.openTab)
+      this.props.addFeature({name: this.state.name}, this.props.msg, this.props.openTab)
     }
   }
   render () {
@@ -48,11 +40,11 @@ class AddPermission extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <center><h3>Add Permission</h3></center>
+        <center><h3>Add Feature</h3></center>
         <div className='m-form'>
           <div id='question' className='form-group m-form__group'>
-            <label className='control-label'>Permission:</label>
-            <input className='form-control' placeholder='Enter permission here...'
+            <label className='control-label'>Feature:</label>
+            <input className='form-control' placeholder='Enter feature here...'
               value={this.state.name} onChange={(e) => this.updateName(e)} />
           </div>
         </div>
@@ -71,13 +63,13 @@ class AddPermission extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    permissions: (state.permissionsInfo.permissions)
+    features: (state.featuresInfo.features)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    addPermission: addPermission
+    addFeature: addFeature
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(AddPermission)
+export default connect(mapStateToProps, mapDispatchToProps)(AddFeature)
