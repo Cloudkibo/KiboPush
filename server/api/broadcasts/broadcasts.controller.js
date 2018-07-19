@@ -10,6 +10,7 @@ const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
 const Bots = require('./../smart_replies/Bots.model')
+const WaitingSubscriber = require('./../smart_replies/waitingSubscribers.model')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -726,6 +727,8 @@ exports.getfbMessage = function (req, res) {
                 subscribeToSequence(resp.sequenceId, event)
               } else if (resp.action === 'unsubscribe') {
                 unsubscribeFromSequence(resp.sequenceId, event)
+              } else if (resp.action === 'waitingSubscriber') {   // This is for waiting bot subscriber
+                saveToWaitingSubscribers(resp, event)
               } else {
                 sendMenuReply(event)
               }
@@ -2342,5 +2345,39 @@ function unsubscribeFromSequence (sequenceId, req) {
         })
       })
     })
+  })
+}
+
+function saveToWaitingSubscribers (payload, req) {
+  WaitingSubscriber.findOne({subscriberId: payload.subscriberId, botId: payload.botId}, (err, waitingSubscriber) => {
+    if (err) {
+      logger.serverLog(TAG, `INTERNAL SERVER ERROR ${JSON.stringify(err)}`)
+    }
+
+    if (waitingSubscriber) {
+      logger.serverLog(TAG, 'subscriber is already in waiting queue')
+    } else {
+      Pages.findOne({pageId: payload.pageId}, (err, page) => {
+        if (err) {
+          logger.serverLog(TAG, `INTERNAL SERVER ERROR ${JSON.stringify(err)}`)
+        }
+
+        let waitingSubscriberPayload = {
+          botId: payload.botId,
+          subscriberId: payload.subscriberId,
+          pageId: page._id,
+          intentId: payload.intentId,
+          Question: payload.Question
+        }
+        let waitingSubscriber = new WaitingSubscriber(waitingSubscriberPayload)
+        waitingSubscriber.save((err, result) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          logger.serverLog(TAG, result)
+        })
+      })
+    }
   })
 }
