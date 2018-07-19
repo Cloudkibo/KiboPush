@@ -6,7 +6,8 @@ const TAG = 'api/kibodash/dash.controller.js'
 const Users = require('../user/Users.model')
 const Pages = require('../pages/Pages.model')
 const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, companyWiseAggregate,
-  companyWisePageCount } = require('./pipeline')
+  companyWisePageCount, joinPageWithSubscribers, selectPageFields, broadcastPageCount, filterZeroPageCount,
+  selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId } = require('./pipeline')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
@@ -48,9 +49,70 @@ exports.platformWiseData = function (req, res) {
 }
 
 exports.pageWiseData = function (req, res) {
-  res.status(200).json({
-    status: 'success',
-    payload: { text: '' }
+  let data = Pages.aggregate([ joinPageWithSubscribers, selectPageFields ]).exec()
+  let numberOfBroadcast = Broadcasts.aggregate([ broadcastPageCount, filterZeroPageCount, countResults ]).exec()
+  let pageWiseBroadcast = Broadcasts.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
+  let numberOfPoll = Polls.aggregate([ broadcastPageCount, filterZeroPageCount, countResults ]).exec()
+  let pageWisePoll = Polls.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
+  let numberOfSurvey = Surveys.aggregate([ broadcastPageCount, filterZeroPageCount, countResults ]).exec()
+  let pageWiseSurvey = Surveys.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
+
+  let finalResults = Promise.all([ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey ])
+  // let finalResults = Promise.all([ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll ])
+
+  finalResults.then((results) => {
+    let data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey
+    // let data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll
+    [ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey ] = results
+    // [ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll ] = results
+    numberOfBroadcast = (numberOfBroadcast.length === 0) ?  0 : numberOfBroadcast[0].count
+    data = data.map((page) => {
+      page.numberOfBroadcasts = numberOfBroadcast
+      return page
+    })
+
+    data = data.map((page) => {
+      pageWiseBroadcast.forEach((item) => {
+        if (page.pageId === item._id) page.numberOfBroadcasts += item.count
+      })
+      return page
+    })
+
+    numberOfPoll = (numberOfPoll.length === 0) ? 0 : numberOfPoll[0].count
+    data = data.map((page) => {
+      page.numberOfPolls = numberOfPoll
+      return page
+    })
+
+    data = data.map((page) => {
+      pageWisePoll.forEach((item) => {
+        if (page.pageId === item._id) page.numberOfPolls += item.count
+      })
+      return page
+    })
+
+    numberOfSurvey = (numberOfSurvey.length === 0) ? 0 : numberOfSurvey[0].count
+    data = data.map((page) => {
+      page.numberOfSurveys = numberOfSurvey
+      return page
+    })
+
+    data = data.map((page) => {
+      pageWiseSurvey.forEach((item) => {
+        if (page.pageId === item._id) page.numberOfSurveys += item.count
+      })
+      return page
+    })
+
+    res.status(200).json({
+      status: 'success',
+      payload: data
+    })
+  }).catch((err) => {
+    return res.status(500).json({
+      status: 'failed',
+      error: err
+    })
   })
 }
 
