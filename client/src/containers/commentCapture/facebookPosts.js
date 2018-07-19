@@ -42,6 +42,7 @@ class FacebookPosts extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
   componentDidMount () {
+    $('#sidebarDiv').removeClass('hideSideBar')
     document.title = 'KiboPush | Comment Capture'
   }
   getPostText (payload) {

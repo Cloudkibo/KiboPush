@@ -12,6 +12,11 @@ class Sidebar extends React.Component {
       state: 'history'
     })
   }
+  componentDidMount () {
+    /* eslint-disable */
+    $('#sidebarDiv').addClass('hideSideBar')
+    /* eslint-enable */
+  }
   render () {
     return (
       <div className='col-xl-3 col-lg-12 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
