@@ -16,6 +16,8 @@ const utility = require('../../components/utility')
 const TagSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 const SurveyResponses = require('./../surveys/surveyresponse.model')
 const PollResponses = require('./../polls/pollresponse.model')
+const needle = require('needle')
+const request = require('request')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -615,7 +617,8 @@ function prepareMessageData (subscriberId, body, fname, lname) {
 /* eslint-disable */
 function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname) {
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
-  let batch = []  // to display typing on bubble :)
+  let batch = []
+  logger.serverLog(TAG, `Payload received to send: ${JSON.stringify(payload)}`)
   payload.forEach((item, index) => {
     // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
     let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, fname, lname)))
@@ -631,6 +634,80 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname) 
 }
 /* eslint-enable */
 
+function uploadAttachmentToFacebook (page, broadcastPayload) {
+  let response = {}
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+  if (!page.userId || (page.userId && !page.userId.facebookInfo)) {
+    logger.serverLog(TAG, `Facebook Info not found`)
+    response = {
+      status: 'failed',
+      message: 'Facebook Info not found'
+    }
+    return response
+  }
+  needle.get(
+    `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+    (err, resp) => {
+      if (err) {
+        logger.serverLog(TAG, `unable to get page access_token: ${JSON.stringify(err)}`)
+        response = {
+          status: 'failed',
+          message: `unable to get page access_token: ${JSON.stringify(err)}`
+        }
+        return response
+      }
+      let pageAccessToken = resp.body.access_token
+      broadcastPayload.forEach((broadcast, index) => {
+        if (['image', 'audio', 'file', 'video'].indexOf(broadcast.componentType) > -1) {
+          let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + broadcast.fileurl.name)
+          const messageData = {
+            'message': JSON.stringify({
+              'attachment': {
+                'type': broadcast.componentType,
+                'payload': {
+                  'is_reusable': true
+                }
+              }
+            }),
+            'filedata': fileReaderStream
+          }
+          request(
+            {
+              'method': 'POST',
+              'json': true,
+              'formData': messageData,
+              'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+            },
+            function (err, resp) {
+              if (err) {
+                logger.serverLog(TAG, `unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
+                response = {
+                  status: 'failed',
+                  messages: `unable to upload attachment on Facebook: ${JSON.stringify(err)}`
+                }
+                return response
+              } else {
+                logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
+                let temp = broadcast.toObject()
+                temp.fileurl.attachment = {
+                  attachment_id: resp.body.attachment_id,
+                  page_id: page._id
+                }
+                broadcast = temp
+                if (index === (broadcastPayload.length - 1)) {
+                  response = {
+                    status: 'success',
+                    payload: broadcastPayload
+                  }
+                  return response
+                }
+              }
+            })
+        }
+      })
+    })
+}
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
@@ -639,3 +716,4 @@ exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
 exports.getBatchData = getBatchData
+exports.uploadAttachmentToFacebook = uploadAttachmentToFacebook
