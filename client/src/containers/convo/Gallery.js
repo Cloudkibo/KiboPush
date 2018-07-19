@@ -44,6 +44,7 @@ class Gallery extends React.Component {
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
         card = {element: <Card id={i} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        cards[i].id = i   // This is very important. Don't change it if you don't understand it
         cardMessage.push(cards[i])
         temp.push(card)
       }
