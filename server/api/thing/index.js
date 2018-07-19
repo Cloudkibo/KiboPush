@@ -389,7 +389,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
         }
         users.forEach(user => {
-          if (user.pageId && user.pageId.pageId) {
+          if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
             needle.get(
             `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
             (err, respp) => {
