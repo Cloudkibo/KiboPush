@@ -366,11 +366,13 @@ router.get('/updatePicture', (req, res) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
-              if (err) {
-                logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
-              }
-            })
+            if (resp.body.picture) {
+              Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                }
+              })
+            }
           })
       }
     })
