@@ -17,30 +17,7 @@ class Permissions extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      permissionCheckboxes: [{name: 'API Permission', nick: 'apiPermission', selected: false},
-      {name: 'Autoposting Permission', nick: 'autopostingPermission', selected: false},
-      {name: 'Billing Permission', nick: 'billingPermission', selected: false},
-      {name: 'Broadcast Permission', nick: 'broadcastPermission', selected: false},
-      {name: 'Company Permission', nick: 'companyPermission', selected: false},
-      {name: 'Company Update Permission', nick: 'companyUpdatePermission', selected: false},
-      {name: 'Customer Matching Permission', nick: 'customerMatchingPermission', selected: false},
-      {name: 'Dashboard Permission', nick: 'dashboardPermission', selected: false},
-      {name: 'Delete Admin Permission', nick: 'deleteAdminPermission', selected: false},
-      {name: 'Delete Agent Permission', nick: 'deleteAgentPermission', selected: false},
-      {name: 'Downgrade Service', nick: 'downgradeService', selected: false},
-      {name: 'Inivitations Permission', nick: 'invitationsPermission', selected: false},
-      {name: 'Invite Admin Permission', nick: 'inviteAdminPermission', selected: false},
-      {name: 'Invite Agent Permission', nick: 'inviteAgentPermission', selected: false},
-      {name: 'Livechat Permission', nick: 'livechatPermission', selected: false},
-      {name: 'Members Permission', nick: 'membersPermission', selected: false},
-      {name: 'Menu Permission', nick: 'menuPermission', selected: false},
-      {name: 'Pages Access Permission', nick: 'pagesAccessPermission', selected: false},
-      {name: 'Pages Permission', nick: 'pagesPermission', selected: false},
-      {name: 'Polls Permission', nick: 'pollsPermission', selected: false},
-      {name: 'Subscriber Permission', nick: 'subscriberPermission', selected: false},
-      {name: 'Terminate Service', nick: 'terminateService', selected: false},
-      {name: 'Update Role Permission', nick: 'updateRolePermission', selected: false},
-      {name: 'Upgrade Service', nick: 'upgradeService', selected: false}],
+      permissionCheckboxes: [],
       selectedCheckbox: '',
       selectAllChecked: false,
       showPlusBuyer: true,
@@ -123,27 +100,29 @@ class Permissions extends React.Component {
   componentWillReceiveProps (nextprops) {
     if (nextprops.permissions) {
       console.log('permissions', nextprops.permissions)
-      var temp = []
+      var permissions = []
       var count = 0
       var i
       for (i in nextprops.permissions) {
-        for (var a = 0; a < this.state.permissionCheckboxes.length; a++) {
-          if (i === this.state.permissionCheckboxes[a].nick) {
-            temp.push({name: this.state.permissionCheckboxes[a].name, nick: this.state.permissionCheckboxes[a].nick, selected: nextprops.permissions[i]})
+        if (i !== '_id' && i !== 'role' && i !== '__v') {
+          var temp = i.split(/(?=[A-Z])/)
+          var name = ''
+          for (var j = 0; j < temp.length; j++) {
+            name = name + ' ' + temp[j].charAt(0).toUpperCase() + temp[j].slice(1)
           }
-        }
-        if (nextprops.permissions[i] === true) {
-          count = count + 1
+          if (nextprops.permissions[i] === true) {
+            count = count + 1
+          }
+          permissions.push({name: name, nick: i, selected: nextprops.permissions[i]})
         }
       }
-      if (count === this.state.permissionCheckboxes.length) {
+      console.log('nextprops.permissions.length', Object.keys(nextprops.permissions).length)
+      if (count === (Object.keys(nextprops.permissions).length - 3)) {
         this.setState({selectAllChecked: true})
       } else {
         this.setState({selectAllChecked: false})
       }
-      console.log('count', count)
-      this.setState({permissionCheckboxes: temp})
-      console.log('temp', temp)
+      this.setState({permissionCheckboxes: permissions})
     }
   }
   showDialog () {
@@ -220,7 +199,7 @@ class Permissions extends React.Component {
                 onClose={this.closeDialog}>
                 <ModalDialog style={{width: '500px'}}
                   onClose={this.closeDialog}>
-                  <AddPermission msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} />
+                  <AddPermission msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} permissionCheckboxes={this.state.permissionCheckboxes} />
                 </ModalDialog>
               </ModalContainer>
             }

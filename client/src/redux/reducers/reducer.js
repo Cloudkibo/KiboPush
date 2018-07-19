@@ -28,6 +28,7 @@ import {sequenceInfo} from './sequence.reducer'
 import {postsInfo} from './commentCapture.reducer'
 import {billingPricingInfo} from './billingPricing.reducer'
 import {permissionsInfo} from './permissions.reducer'
+import {featuresInfo} from './features.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -57,7 +58,8 @@ const appReducer = combineReducers({
   sequenceInfo,
   postsInfo,
   billingPricingInfo,
-  permissionsInfo
+  permissionsInfo,
+  featuresInfo
 })
 
 export default appReducer
