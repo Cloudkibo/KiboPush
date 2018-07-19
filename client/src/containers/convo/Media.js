@@ -170,7 +170,7 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   editButton (obj) {
@@ -188,7 +188,7 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: temp})
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
@@ -200,7 +200,7 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   setLoading () {
