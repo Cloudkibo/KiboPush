@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
+import $ from 'jquery'
 
 class Sidebar extends React.Component {
   constructor (props) {
