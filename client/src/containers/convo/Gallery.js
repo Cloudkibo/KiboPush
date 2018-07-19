@@ -67,6 +67,7 @@ class Gallery extends React.Component {
     var temp = this.state.cards
     temp.splice(this.state.pageNumber - 1, 1)
     this.setState({cards: temp})
+    this.slider.slickPrev()
   }
 
   addSlide () {
@@ -140,7 +141,9 @@ class Gallery extends React.Component {
               </span>
             </div>
             <span className='m-badge m-badge--brand m-badge--wide' onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
-            <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            {
+              this.state.cards.length > 1 && <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            }
             <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }

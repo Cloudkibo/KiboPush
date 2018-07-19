@@ -133,6 +133,7 @@ class Text extends React.Component {
     })
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
 
   render () {

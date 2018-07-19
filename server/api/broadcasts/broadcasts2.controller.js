@@ -509,6 +509,10 @@ exports.upload = function (req, res) {
             description: 'internal server error' + JSON.stringify(err)
           })
         }
+        if (!page.userId || (page.userId && !page.userId.facebookInfo)) {
+          return logger.serverLog(TAG,
+            `Facebook Info not found, err = ${JSON.stringify(err)}`)
+        }
         needle.get(
           `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
           (err, resp2) => {

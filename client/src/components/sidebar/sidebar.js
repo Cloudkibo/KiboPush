@@ -404,7 +404,7 @@ class Sidebar extends Component {
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
             data-menu-vertical='true'
-            data-menu-scrollable='true'>
+            data-menu-scrollable='false'>
             {this.props.user &&
             <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
               {this.showOperationalDashboard()}

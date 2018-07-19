@@ -1181,7 +1181,7 @@ exports.createWelcomeMessage = function (req, res) {
   Pages.update({_id: req.body._id, connected: true},
     {welcomeMessage: req.body.welcomeMessage}, (err) => {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           status: 'Failed',
           error: err,
           description: 'Failed to update record'
