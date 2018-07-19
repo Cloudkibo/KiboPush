@@ -40,6 +40,7 @@ class EditButton extends React.Component {
 
   componentDidMount () {
     if (this.props.data.button.type === 'postback') {
+      console.log('this.props.data', this.props.data)
       if (this.props.data.button.payload.action === 'subscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
       } else if (this.props.data.button.payload.action === 'unsubscribe') {
@@ -90,6 +91,7 @@ class EditButton extends React.Component {
   }
   handleDone () {
     console.log('this.state.url', this.state.url)
+    console.log('this.state.title', this.state.title)
     if (this.state.url !== '') {
       this.props.onEdit({
         id: 0,
@@ -145,6 +147,9 @@ class EditButton extends React.Component {
       this.setState({disabled: true})
     }
     this.setState({title: event.target.value})
+    console.log("The title value is " + this.state.title)
+    console.log("The event.target.value value is " + event.target.value)
+    
   }
 
   changeUrl (event) {

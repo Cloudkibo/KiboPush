@@ -191,6 +191,7 @@ class List extends React.Component {
     this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: temp, topElementStyle: this.state.topElementStyle})
   }
   editButton (obj) {
+    console.log("in List the value of title is " + obj.button.title)
     var temp = this.state.buttons.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
