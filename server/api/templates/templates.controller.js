@@ -69,7 +69,7 @@ exports.getAllPolls = function (req, res) {
     })
   } else if (req.body.first_page === 'next') {
     let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-    console.log('recordsToSkip', recordsToSkip)
+    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -100,7 +100,7 @@ exports.getAllPolls = function (req, res) {
     })
   } else if (req.body.first_page === 'previous') {
     let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    console.log('recordsToSkip', recordsToSkip)
+    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -175,7 +175,7 @@ exports.getAllSurveys = function (req, res) {
     })
   } else if (req.body.first_page === 'next') {
     let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    console.log('recordsToSkip', recordsToSkip)
+    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -206,7 +206,7 @@ exports.getAllSurveys = function (req, res) {
     })
   } else if (req.body.first_page === 'previous') {
     let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    console.log('recordsToSkip', recordsToSkip)
+    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -724,7 +724,7 @@ exports.getAllBroadcasts = function (req, res) {
       })
     } else if (req.body.first_page === 'next') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      console.log('recordsToSkip', recordsToSkip)
+      
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -756,7 +756,7 @@ exports.getAllBroadcasts = function (req, res) {
       })
     } else if (req.body.first_page === 'previous') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      console.log('recordsToSkip', recordsToSkip)
+      
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
