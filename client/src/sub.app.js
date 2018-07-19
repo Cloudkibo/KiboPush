@@ -29,7 +29,7 @@ class App extends Component {
     if (path === '/addPageWizard' || path === '/inviteUsingLinkWizard' || path === '/greetingTextWizard' ||
         path === '/welcomeMessageWizard' || path === '/autopostingWizard' || path === '/menuWizard' ||
         path === '/responseMethods' || path === '/paymentMethodsWizard' || path === '/finish' ||
-        path === '/resendVerificationEmail' || path === '/resetPassword' || path === '/forgotPassword' || path === '/connectFb') {
+        path === '/resendVerificationEmail' || path === '/connectFb') {
       return true
     }
     return false

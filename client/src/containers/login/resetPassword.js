@@ -32,11 +32,6 @@ class ResetPassword extends React.Component {
   }
   componentDidMount () {
     log(TAG, 'Login Container Mounted')
-    /* eslint-disable */
-    if ($('#sidebarDiv')) {
-      $('#sidebarDiv').addClass('hideSideBar')
-    }
-    /* eslint-enable */
   }
   onSubmit (event) {
     event.preventDefault()
