@@ -257,15 +257,16 @@ exports.sendConversation = function (req, res) {
           }
         }
 
-        Pages.find(pagesFindCriteria, (err, pages) => {
+        Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
           if (err) {
             logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
             return res.status(404)
             .json({status: 'failed', description: 'Pages not found'})
           }
 
+          let uploadResponse = utility.uploadAttachmentToFacebook(pages, newPayload)
+
           pages.forEach(page => {
-            let uploadResponse = utility.uploadAttachmentToFacebook(page, newPayload)
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
