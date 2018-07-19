@@ -56,7 +56,6 @@ class Features extends React.Component {
         }
       }
       this.setState({permissionCheckboxes: permissionCheckboxes})
-      //  this.setState({subscriptionsData: subscriptionsAll})
       return
     }
     if (e.target.value !== '') {
@@ -83,20 +82,11 @@ class Features extends React.Component {
             permissionCheckboxes[q].selected = false
           }
         }
-        // subscribers[e.target.value].selected = false
         this.setState({permissionCheckboxes: permissionCheckboxes, selectAllChecked: false})
-        // this.setState({subscribersDataAll: subscribersAll})
       }
     }
   }
   fetchPermissions (value) {
-    // if (value === 'buyer') {
-    //   this.setState({showPlusBuyer: !this.state.showPlusBuyer, showPlusAdmin: true, showPlusAgent: true, openTab: 'buyer'})
-    // } else if (value === 'admin') {
-    //   this.setState({showPlusAdmin: !this.state.showPlusAdmin, showPlusBuyer: true, showPlusAgent: true, openTab: 'admin'})
-    // } else if (value === 'agent') {
-    //   this.setState({showPlusAgent: !this.state.showPlusAgent, showPlusBuyer: true, showPlusAdmin: true, openTab: 'agent'})
-    // }
     this.setState({openTab: value})
     this.props.fetchAllFeatures(value)
   }

@@ -54,7 +54,6 @@ class Permissions extends React.Component {
         }
       }
       this.setState({permissionCheckboxes: permissionCheckboxes})
-      //  this.setState({subscriptionsData: subscriptionsAll})
       return
     }
     if (e.target.value !== '') {
@@ -81,9 +80,7 @@ class Permissions extends React.Component {
             permissionCheckboxes[q].selected = false
           }
         }
-        // subscribers[e.target.value].selected = false
         this.setState({permissionCheckboxes: permissionCheckboxes, selectAllChecked: false})
-        // this.setState({subscribersDataAll: subscribersAll})
       }
     }
   }
