@@ -241,7 +241,7 @@ class CreateBroadcastTemplate extends React.Component {
         return
       }
     }
-    var temp = this.state.message
+    var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
       if (data.id === obj.id) {
