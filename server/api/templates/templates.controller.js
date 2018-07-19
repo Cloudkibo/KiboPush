@@ -68,6 +68,8 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+    console.log('recordsToSkip', recordsToSkip)
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -81,7 +83,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -97,6 +99,8 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+    console.log('recordsToSkip', recordsToSkip)
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -110,7 +114,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -170,6 +174,8 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+    console.log('recordsToSkip', recordsToSkip)
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -183,7 +189,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -199,6 +205,8 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+    console.log('recordsToSkip', recordsToSkip)
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -212,7 +220,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -715,6 +723,8 @@ exports.getAllBroadcasts = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'next') {
+      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+      console.log('recordsToSkip', recordsToSkip)
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -729,7 +739,7 @@ exports.getAllBroadcasts = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
         .exec((err, broadcasts) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -745,6 +755,8 @@ exports.getAllBroadcasts = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'previous') {
+      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+      console.log('recordsToSkip', recordsToSkip)
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -759,7 +771,7 @@ exports.getAllBroadcasts = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
         .exec((err, broadcasts) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)

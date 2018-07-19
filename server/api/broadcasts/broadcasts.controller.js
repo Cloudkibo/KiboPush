@@ -124,6 +124,7 @@ exports.indexx = function (req, res) {
 }
 
 exports.index = function (req, res) {
+  logger.serverLog(TAG, `req.body broadcasts ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
       if (err) {
@@ -239,6 +240,8 @@ exports.index = function (req, res) {
           })
         }
       } else if (req.body.first_page === 'next') {
+        let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+        console.log('recordsToSkip', recordsToSkip)
         if (!req.body.filter) {
           let startDate = new Date()  // Current date
           startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
@@ -259,7 +262,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -319,7 +322,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -340,6 +343,8 @@ exports.index = function (req, res) {
           })
         }
       } else if (req.body.first_page === 'previous') {
+        let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+        console.log('recordsToSkip', recordsToSkip)
         if (!req.body.filter) {
           let startDate = new Date()  // Current date
           startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
@@ -360,7 +365,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -420,7 +425,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
