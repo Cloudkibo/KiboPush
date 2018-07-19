@@ -165,7 +165,7 @@ exports.getNewSessions = function (req, res) {
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
-            {$match: {status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -290,7 +290,7 @@ exports.getResolvedSessions = function (req, res) {
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
-            {$match: {status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
