@@ -65,7 +65,7 @@ exports.pageWiseData = function (req, res) {
     // let data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll
     [ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey ] = results
     // [ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll ] = results
-    numberOfBroadcast = (numberOfBroadcast.length === 0) ?  0 : numberOfBroadcast[0].count
+    numberOfBroadcast = (numberOfBroadcast.length === 0) ? 0 : numberOfBroadcast[0].count
     data = data.map((page) => {
       page.numberOfBroadcasts = numberOfBroadcast
       return page
