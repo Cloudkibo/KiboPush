@@ -11,6 +11,7 @@ const Pages = require('../pages/Pages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
+const WaitingSubscribers = require('./waitingSubscribers.model')
 const UnAnsweredQuestions = require('./unansweredQuestions.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
@@ -93,16 +94,30 @@ function getWitResponse (message, token, bot, pageId, senderId) {
             console.log(dbRes)
           }
         })
-        for (let i = 0; i < bot.payload.length; i++) {
-          if (bot.payload[i].intent_name === intent.value) {
-            sendMessenger(bot.payload[i].answer, pageId, senderId)
+        Subscribers.findOne({'senderId': senderId}, (err, subscriber) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-        }
+
+          for (let i = 0; i < bot.payload.length; i++) {
+            if (bot.payload[i].intent_name === intent.value) {
+              let postbackPayload = {
+                'action': 'waitingSubscriber',
+                'botId': bot._id,
+                'subscriberId': subscriber._id,   // FB ID
+                'pageId': pageId,
+                'intentId': intent.value,
+                'Question': temp._text
+              }
+              sendMessenger(bot.payload[i].answer, pageId, senderId, postbackPayload)
+            }
+          }
+        })
       }
     })
 }
 
-function sendMessenger (message, pageId, senderId) {
+function sendMessenger (message, pageId, senderId, postbackPayload) {
   Subscribers.findOne({senderId: senderId}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -114,7 +129,7 @@ function sendMessenger (message, pageId, senderId) {
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
     let messageData = utility.prepareSendAPIPayload(
                   senderId,
-                   {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName, subscriber.lastName, true)
+                   {'componentType': 'text', 'text': message + '  (Bot)', 'buttons': [{'type': 'postback', 'title': 'Talk to Agent', 'payload': JSON.stringify(postbackPayload)}]}, subscriber.firstName, subscriber.lastName, true)
     Pages.findOne({pageId: pageId}, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -511,6 +526,24 @@ exports.unAnsweredQueries = function (req, res) {
 
     if (queries) {
       return res.status(200).json({ status: 'success', payload: queries })
+    }
+  })
+}
+
+exports.waitSubscribers = function (req, res) {
+  logger.serverLog(TAG, `Fetching waiting subscribers ${JSON.stringify(req.body)}`)
+  WaitingSubscribers.find({botId: req.body.botId})
+  .populate('botId pageId subscriberId')
+  .exec((err, subscribers) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (subscribers) {
+      return res.status(200).json({ status: 'success', payload: subscribers })
     }
   })
 }

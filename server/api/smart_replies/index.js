@@ -55,6 +55,12 @@ router.post('/fetchUnansweredQueries',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.unAnsweredQueries)
 
+router.post('/fetchWaitingSubscribers',
+  auth.isAuthenticated(),
+  // auth.doesPlanPermitsThisAction('workflows'),
+  // auth.doesRolePermitsThisAction('workflowPermission'),
+  controller.waitSubscribers)
+
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
 
