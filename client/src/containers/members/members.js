@@ -30,6 +30,7 @@ class Members extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.members) {
+      console.log('members', nextProps.members)
       this.displayData(0, nextProps.members)
       this.setState({totalLength: nextProps.members.length})
     }
@@ -96,8 +97,8 @@ class Members extends React.Component {
   render () {
     return (
       <div>
-      <div style={{float: 'left', clear: 'both'}}
-        ref={(el) => { this.top = el }} />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
