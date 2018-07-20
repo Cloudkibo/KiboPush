@@ -347,6 +347,8 @@ exports.getAllpages = function (req, res) {
           })
         }
       } else if (req.body.first_page === 'next') {
+        let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+        
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -356,7 +358,7 @@ exports.getAllpages = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'PagesCount not found'})
             }
-            Pages.find({connected: true, companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
+            Pages.find({connected: true, companyId: companyUser.companyId, _id: {$gt: req.body.last_id}}).skip(recordsToSkip).limit(req.body.number_of_records)
             .exec((err, pages) => {
               if (err) {
                 return res.status(404).json({
@@ -451,7 +453,7 @@ exports.getAllpages = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'PagesCount not found'})
             }
-            Pages.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+            Pages.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
             .exec((err, pages) => {
               if (err) {
                 return res.status(404).json({
@@ -533,6 +535,8 @@ exports.getAllpages = function (req, res) {
           })
         }
       } else if (req.body.first_page === 'previous') {
+        let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+        
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -542,7 +546,7 @@ exports.getAllpages = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'PagesCount not found'})
             }
-            Pages.find({connected: true, companyId: companyUser.companyId, _id: {$lt: req.body.last_id}}).limit(req.body.number_of_records)
+            Pages.find({connected: true, companyId: companyUser.companyId, _id: {$lt: req.body.last_id}}).skip(recordsToSkip).limit(req.body.number_of_records)
             .exec((err, pages) => {
               if (err) {
                 return res.status(404).json({
@@ -637,7 +641,7 @@ exports.getAllpages = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'PagesCount not found'})
             }
-            Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
+            Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
             .exec((err, pages) => {
               if (err) {
                 return res.status(404).json({

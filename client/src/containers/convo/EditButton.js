@@ -16,7 +16,7 @@ class EditButton extends React.Component {
     this.state = {
       openPopover: false,
       title: this.props.data.button.title,
-      url: '',
+      url: this.props.data.button.url,
       disabled: false,
       sequenceValue: '',
       openWebsite: false,
@@ -147,9 +147,8 @@ class EditButton extends React.Component {
       this.setState({disabled: true})
     }
     this.setState({title: event.target.value})
-    console.log("The title value is " + this.state.title)
-    console.log("The event.target.value value is " + event.target.value)
-    
+    console.log('The title value is ' + this.state.title)
+    console.log('The event.target.value value is ' + event.target.value)
   }
 
   changeUrl (event) {

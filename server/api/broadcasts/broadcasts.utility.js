@@ -688,9 +688,11 @@ function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast
                 }
               })
           }
+          if (index === (broadcastPayload.length - 1)) {
+            getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
+          }
         })
       })
-    getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
     if (index === (pages.length - 1)) {
       return res.status(200).json({
         status: 'success',

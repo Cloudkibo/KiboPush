@@ -113,9 +113,9 @@ class Poll extends React.Component {
     if (data.selected === 0) {
       this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
+      this.props.loadPollsListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
     } else {
-      this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
+      this.props.loadPollsListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
