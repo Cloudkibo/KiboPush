@@ -656,6 +656,7 @@ function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast
         let pageAccessToken = resp.body.access_token
         for (let i = 0; i < broadcastPayload.length; i++) {
           logger.serverLog(TAG, `broadcast data: ${JSON.stringify(broadcastPayload[i])}`)
+          logger.serverLog(TAG, (['image', 'audio', 'file', 'video'].indexOf(broadcastPayload[i].componentType) > -1))
           if (['image', 'audio', 'file', 'video'].indexOf(broadcastPayload[i].componentType) > -1) {
             let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + broadcastPayload[i].fileurl.name)
             const messageData = {
