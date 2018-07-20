@@ -343,7 +343,6 @@ exports.index = function (req, res) {
         }
       } else if (req.body.first_page === 'previous') {
         let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-        
         if (!req.body.filter) {
           let startDate = new Date()  // Current date
           startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
