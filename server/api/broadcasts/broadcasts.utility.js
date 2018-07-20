@@ -654,13 +654,14 @@ function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast
           })
         }
         let pageAccessToken = resp.body.access_token
-        broadcastPayload.forEach((broadcast, index) => {
-          if (['image', 'audio', 'file', 'video'].indexOf(broadcast.componentType) > -1) {
-            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + broadcast.fileurl.name)
+        for (let i = 0; i < broadcastPayload.length; i++) {
+          logger.serverLog(TAG, `broadcast data: ${JSON.stringify(broadcastPayload[i])}`)
+          if (['image', 'audio', 'file', 'video'].indexOf(broadcastPayload[i].componentType) > -1) {
+            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + broadcastPayload[i].fileurl.name)
             const messageData = {
               'message': JSON.stringify({
                 'attachment': {
-                  'type': broadcast.componentType,
+                  'type': broadcastPayload[i].componentType,
                   'payload': {
                     'is_reusable': true
                   }
@@ -684,21 +685,20 @@ function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast
                   })
                 } else {
                   logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
-                  broadcast.fileurl.attachment_id = resp.body.attachment_id
+                  broadcastPayload[i].fileurl.attachment_id = resp.body.attachment_id
+                  logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(broadcastPayload[i])}`)
                 }
               })
           }
-          if (index === (broadcastPayload.length - 1)) {
-            getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
-          }
-        })
+        }
+        getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
+        if (index === (pages.length - 1)) {
+          return res.status(200).json({
+            status: 'success',
+            payload: {broadcast: broadcastPayload}
+          })
+        }
       })
-    if (index === (pages.length - 1)) {
-      return res.status(200).json({
-        status: 'success',
-        payload: {broadcast: broadcastPayload}
-      })
-    }
   })
 }
 
