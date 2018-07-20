@@ -341,7 +341,8 @@ function mapStateToProps (state) {
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     successMessage: (state.autopostingInfo.successMessageCreate),
-    errorMessage: (state.autopostingInfo.errorMessageCreate)
+    errorMessage: (state.autopostingInfo.errorMessageCreate),
+    user: (state.basicInfo.user)
   }
 }
 

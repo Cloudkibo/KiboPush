@@ -377,7 +377,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage)
+    errorMessage: (state.broadcastsInfo.errorMessage),
+    user: (state.basicInfo.user)
   }
 }
 
