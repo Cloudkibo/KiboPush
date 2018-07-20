@@ -444,7 +444,6 @@ exports.getAllPages = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      console.log('in previous')
       Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).sort({_id: -1}).limit(req.body.number_of_records)
       .exec((err, pages) => {
         if (err) {
