@@ -29,7 +29,7 @@ class Header extends React.Component {
   onNotificationClick () {
     window.focus()
     browserHistory.push({
-      pathname: '/live',
+      pathname: '/liveChat',
       state: {session_id: this.props.socketData.session_id}
     })
     this.setState({ignore: true})
@@ -124,27 +124,11 @@ class Header extends React.Component {
                           <div className='m-dropdown__body'>
                             <div className='m-dropdown__content'>
                               <ul className='m-nav m-nav--skin-light'>
-                                <li className='m-nav__section m--hide'>
-                                  <span className='m-nav__section-text'>My Pages</span>
-                                </li>
-                                <li className='m-nav__item'>
-                                  <Link to='/live' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>Messages</span>
-                                  </Link>
-                                </li>
-                                <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' taregt='_blank' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>FAQ</span>
                                   </a>
-                                </li>
-                                <li className='m-nav__item'>
-                                  <Link to='/settings'>
-                                    <i className='m-nav__link-icon flaticon-settings' />
-                                    <span className='m-nav__link-text'>&nbsp;&nbsp;&nbsp;Settings</span>
-                                  </Link>
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
