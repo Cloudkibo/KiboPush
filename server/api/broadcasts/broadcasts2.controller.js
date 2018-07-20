@@ -24,6 +24,7 @@ const utility = require('./broadcasts.utility')
 let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const needle = require('needle')
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -41,21 +42,20 @@ exports.sendConversation = function (req, res) {
     return res.status(400)
     .json({status: 'failed', description: 'Please fill all the required fields'})
   }
-
-  if (req.body.self) {
-    CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    if (req.body.self) {
       let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
       if (req.body.isSegmented) {
@@ -113,119 +113,14 @@ exports.sendConversation = function (req, res) {
           })
         })
       })
-      return res.status(200)
-      .json({status: 'success', payload: {broadcast: req.body}})
-    })
-  } else {
-    CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
+      return res.status(200).json({status: 'success', payload: {broadcast: req.body}})
+    } else {
       const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req, companyUser.companyId))
-
       broadcast.save((err, broadcast) => {
         if (err) {
           return res.status(500)
           .json({status: 'failed', description: 'Broadcasts not created'})
         }
-        let newPayload = req.body.payload
-        req.body.payload.forEach((payloadItem, pindex) => {
-          if (payloadItem.buttons) {
-            payloadItem.buttons.forEach((button, bindex) => {
-              if (!(button.type === 'postback')) {
-                let URLObject = new URL({
-                  originalURL: button.url,
-                  module: {
-                    id: broadcast._id,
-                    type: 'broadcast'
-                  }
-                })
-                URLObject.save((err, savedurl) => {
-                  if (err) logger.serverLog(TAG, err)
-                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                  newPayload[pindex].buttons[bindex].url = newURL
-                })
-              }
-            })
-          }
-          if (payloadItem.componentType === 'media' && payloadItem.buttons) {
-            payloadItem.buttons.forEach((button, bindex) => {
-              let URLObject = new URL({
-                originalURL: button.url,
-                module: {
-                  id: broadcast._id,
-                  type: 'broadcast'
-                }
-              })
-              URLObject.save((err, savedurl) => {
-                if (err) logger.serverLog(TAG, err)
-                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                newPayload[pindex].buttons[bindex].url = newURL
-              })
-            })
-          }
-          if (payloadItem.componentType === 'gallery') {
-            payloadItem.cards.forEach((card, cindex) => {
-              card.buttons.forEach((button, bindex) => {
-                let URLObject = new URL({
-                  originalURL: button.url,
-                  module: {
-                    id: broadcast._id,
-                    type: 'broadcast'
-                  }
-                })
-                URLObject.save((err, savedurl) => {
-                  if (err) logger.serverLog(TAG, err)
-                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                  newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
-                })
-              })
-            })
-          }
-          if (payloadItem.componentType === 'list') {
-            payloadItem.listItems.forEach((element, lindex) => {
-              if (element.buttons && element.buttons.length > 0) {
-                element.buttons.forEach((button, bindex) => {
-                  let URLObject = new URL({
-                    originalURL: button.url,
-                    module: {
-                      id: broadcast._id,
-                      type: 'broadcast'
-                    }
-                  })
-                  URLObject.save((err, savedurl) => {
-                    if (err) logger.serverLog(TAG, err)
-                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                    newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
-                  })
-                })
-              }
-              if (element.default_action) {
-                let URLObject = new URL({
-                  originalURL: element.default_action.url,
-                  module: {
-                    id: broadcast._id,
-                    type: 'broadcast'
-                  }
-                })
-                URLObject.save((err, savedurl) => {
-                  if (err) logger.serverLog(TAG, err)
-                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                  newPayload[pindex].listItems[lindex].default_action.url = newURL
-                })
-              }
-            })
-          }
-        })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
@@ -237,7 +132,7 @@ exports.sendConversation = function (req, res) {
             }
           }
         })
-
+        let payload = req.body.payload
         let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
 
         if (req.body.isSegmented) {
@@ -263,85 +158,249 @@ exports.sendConversation = function (req, res) {
             .json({status: 'failed', description: 'Pages not found'})
           }
 
-          pages.forEach(page => {
-            if (req.body.isList === true) {
-              let ListFindCriteria = {}
-              ListFindCriteria = _.merge(ListFindCriteria,
-                {
-                  _id: {
-                    $in: req.body.segmentationList
-                  }
+          for (let i = 0; i < pages.length; i++) {
+            if (!pages[i].userId || (pages[i].userId && !pages[i].userId.facebookInfo)) {
+              logger.serverLog(TAG, `ERROR! Facebook Info not found`)
+              return res.status(500).json({
+                status: 'failed',
+                description: `ERROR! Facebook Info not found`
+              })
+            }
+            needle.get(
+            `https://graph.facebook.com/v2.10/${pages[i].pageId}?fields=access_token&access_token=${pages[i].userId.facebookInfo.fbToken}`,
+            (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR! unable to get page access_token: ${JSON.stringify(err)}`)
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `ERROR! unable to get page access_token: ${JSON.stringify(err)}`
                 })
-              Lists.find(ListFindCriteria, (err, lists) => {
-                if (err) {
-                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                }
-                let subsFindCriteria = {pageId: page._id}
-                let listData = []
-                if (lists.length > 1) {
-                  for (let i = 0; i < lists.length; i++) {
-                    for (let j = 0; j < lists[i].content.length; j++) {
-                      if (exists(listData, lists[i].content[j]) === false) {
-                        listData.push(lists[i].content[j])
+              }
+              let pageAccessToken = resp.body.access_token
+              if (req.body.isList === true) {
+                let ListFindCriteria = {}
+                ListFindCriteria = _.merge(ListFindCriteria,
+                  {
+                    _id: {
+                      $in: req.body.segmentationList
+                    }
+                  })
+                Lists.find(ListFindCriteria, (err, lists) => {
+                  if (err) {
+                    return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                  }
+                  let subsFindCriteria = {pageId: pages[i]._id}
+                  let listData = []
+                  if (lists.length > 1) {
+                    for (let i = 0; i < lists.length; i++) {
+                      for (let j = 0; j < lists[i].content.length; j++) {
+                        if (exists(listData, lists[i].content[j]) === false) {
+                          listData.push(lists[i].content[j])
+                        }
                       }
                     }
+                    subsFindCriteria = _.merge(subsFindCriteria, {
+                      _id: {
+                        $in: listData
+                      }
+                    })
+                  } else {
+                    subsFindCriteria = _.merge(subsFindCriteria, {
+                      _id: {
+                        $in: lists[0].content
+                      }
+                    })
                   }
-                  subsFindCriteria = _.merge(subsFindCriteria, {
-                    _id: {
-                      $in: listData
+                  Subscribers.find(subsFindCriteria, (err, subscribers) => {
+                    if (err) {
+                      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                     }
+                    utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+                      taggedSubscribers.forEach(subscriber => {
+                        // update broadcast sent field
+                        let pagebroadcast = new BroadcastPage({
+                          pageId: pages[i].pageId,
+                          userId: req.user._id,
+                          subscriberId: subscriber.senderId,
+                          broadcastId: broadcast._id,
+                          seen: false,
+                          companyId: companyUser.companyId
+                        })
+                        pagebroadcast.save((err2, savedpagebroadcast) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'PageBroadcast create failed',
+                              err2
+                            })
+                          }
+                          let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+                          for (let j = 0; j < payload.length; j++) {
+                            if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
+                              let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payload[j].fileurl.name)
+                              const messageData = {
+                                'message': JSON.stringify({
+                                  'attachment': {
+                                    'type': payload[j].componentType,
+                                    'payload': {
+                                      'is_reusable': true
+                                    }
+                                  }
+                                }),
+                                'filedata': fileReaderStream
+                              }
+                              request(
+                                {
+                                  'method': 'POST',
+                                  'json': true,
+                                  'formData': messageData,
+                                  'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+                                },
+                                function (err, resp) {
+                                  if (err) {
+                                    logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
+                                    return res.status(500).json({
+                                      status: 'failed',
+                                      description: `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`
+                                    })
+                                  } else {
+                                    logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
+                                    payload[j].fileurl.attachment_id = resp.body.attachment_id
+                                    logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payload[j])}`)
+                                  }
+                                })
+                            }
+                            if (payload[j].buttons) {
+                              payload[j].buttons.forEach((button, bindex) => {
+                                if (!(button.type === 'postback')) {
+                                  let URLObject = new URL({
+                                    originalURL: button.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].buttons[bindex].url = newURL
+                                  })
+                                }
+                              })
+                            }
+                            if (payload[j].componentType === 'media' && payload[j].buttons) {
+                              payload[j].buttons.forEach((button, bindex) => {
+                                let URLObject = new URL({
+                                  originalURL: button.url,
+                                  module: {
+                                    id: broadcast._id,
+                                    type: 'broadcast'
+                                  }
+                                })
+                                URLObject.save((err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                  payload[j].buttons[bindex].url = newURL
+                                })
+                              })
+                            }
+                            if (payload[j].componentType === 'gallery') {
+                              payload[j].cards.forEach((card, cindex) => {
+                                card.buttons.forEach((button, bindex) => {
+                                  let URLObject = new URL({
+                                    originalURL: button.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].cards[cindex].buttons[bindex].url = newURL
+                                  })
+                                })
+                              })
+                            }
+                            if (payload[j].componentType === 'list') {
+                              payload[j].listItems.forEach((element, lindex) => {
+                                if (element.buttons && element.buttons.length > 0) {
+                                  element.buttons.forEach((button, bindex) => {
+                                    let URLObject = new URL({
+                                      originalURL: button.url,
+                                      module: {
+                                        id: broadcast._id,
+                                        type: 'broadcast'
+                                      }
+                                    })
+                                    URLObject.save((err, savedurl) => {
+                                      if (err) logger.serverLog(TAG, err)
+                                      let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                      payload[j].listItems[lindex].buttons[bindex].url = newURL
+                                    })
+                                  })
+                                }
+                                if (element.default_action) {
+                                  let URLObject = new URL({
+                                    originalURL: element.default_action.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].listItems[lindex].default_action.url = newURL
+                                  })
+                                }
+                              })
+                            }
+                            if (i === (payload.length - 1)) {
+                              utility.getBatchData(payload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
+                            }
+                          }
+                        })
+                      })
+                    })
                   })
-                } else {
-                  subsFindCriteria = _.merge(subsFindCriteria, {
-                    _id: {
-                      $in: lists[0].content
-                    }
-                  })
+                })
+              } else {
+                let subscriberFindCriteria = {pageId: pages[i]._id, isSubscribed: true}
+                if (req.body.isSegmented) {
+                  if (req.body.segmentationGender.length > 0) {
+                    subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                      {
+                        gender: {
+                          $in: req.body.segmentationGender
+                        }
+                      })
+                  }
+                  if (req.body.segmentationLocale.length > 0) {
+                    subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                      locale: {
+                        $in: req.body.segmentationLocale
+                      }
+                    })
+                  }
                 }
-                Subscribers.find(subsFindCriteria, (err, subscribers) => {
+
+                Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
                   if (err) {
                     return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
                   utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                    taggedSubscribers.forEach(subscriber => {
-                      // ********This code is commented by Imran. We are saving chat in database for no reason.
-
-                      // Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                      //   if (err) {
-                      //     return logger.serverLog(TAG,
-                      //       `At get session ${JSON.stringify(err)}`)
-                      //   }
-                      //   if (!session) {
-                      //     return logger.serverLog(TAG,
-                      //       `No chat session was found for broadcast`)
-                      //   }
-                      //   const chatMessage = new LiveChat({
-                      //     sender_id: page._id, // this is the page id: _id of Pageid
-                      //     recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                      //     sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                      //     recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                      //     session_id: session._id,
-                      //     company_id: req.user._id, // this is admin id till we have companies
-                      //     payload: '', // this where message content will go
-                      //     status: 'unseen' // seen or unseen
-                      //   })
-                      //   chatMessage.save((err, chatMessageSaved) => {
-                      //     if (err) {
-                      //       return logger.serverLog(TAG,
-                      //         `At get session ${JSON.stringify(err)}`)
-                      //     }
-                      //   })
-                      // })
-
+                    taggedSubscribers.forEach((subscriber, index) => {
                       // update broadcast sent field
                       let pagebroadcast = new BroadcastPage({
-                        pageId: page.pageId,
+                        pageId: pages[i].pageId,
                         userId: req.user._id,
                         subscriberId: subscriber.senderId,
                         broadcastId: broadcast._id,
                         seen: false,
                         companyId: companyUser.companyId
                       })
+
                       pagebroadcast.save((err2, savedpagebroadcast) => {
                         if (err2) {
                           logger.serverLog(TAG, {
@@ -350,108 +409,149 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                        let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+                        for (let j = 0; j < payload.length; j++) {
+                          if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
+                            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payload[j].fileurl.name)
+                            const messageData = {
+                              'message': JSON.stringify({
+                                'attachment': {
+                                  'type': payload[j].componentType,
+                                  'payload': {
+                                    'is_reusable': true
+                                  }
+                                }
+                              }),
+                              'filedata': fileReaderStream
+                            }
+                            request(
+                              {
+                                'method': 'POST',
+                                'json': true,
+                                'formData': messageData,
+                                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+                              },
+                              function (err, resp) {
+                                if (err) {
+                                  logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
+                                  return res.status(500).json({
+                                    status: 'failed',
+                                    description: `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`
+                                  })
+                                } else {
+                                  logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
+                                  payload[j].fileurl.attachment_id = resp.body.attachment_id
+                                  logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payload[j])}`)
+                                }
+                              })
+                          }
+                          if (payload[j].buttons) {
+                            payload[j].buttons.forEach((button, bindex) => {
+                              if (!(button.type === 'postback')) {
+                                let URLObject = new URL({
+                                  originalURL: button.url,
+                                  module: {
+                                    id: broadcast._id,
+                                    type: 'broadcast'
+                                  }
+                                })
+                                URLObject.save((err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                  payload[j].buttons[bindex].url = newURL
+                                })
+                              }
+                            })
+                          }
+                          if (payload[j].componentType === 'media' && payload[j].buttons) {
+                            payload[j].buttons.forEach((button, bindex) => {
+                              let URLObject = new URL({
+                                originalURL: button.url,
+                                module: {
+                                  id: broadcast._id,
+                                  type: 'broadcast'
+                                }
+                              })
+                              URLObject.save((err, savedurl) => {
+                                if (err) logger.serverLog(TAG, err)
+                                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                payload[j].buttons[bindex].url = newURL
+                              })
+                            })
+                          }
+                          if (payload[j].componentType === 'gallery') {
+                            payload[j].cards.forEach((card, cindex) => {
+                              card.buttons.forEach((button, bindex) => {
+                                let URLObject = new URL({
+                                  originalURL: button.url,
+                                  module: {
+                                    id: broadcast._id,
+                                    type: 'broadcast'
+                                  }
+                                })
+                                URLObject.save((err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                  payload[j].cards[cindex].buttons[bindex].url = newURL
+                                })
+                              })
+                            })
+                          }
+                          if (payload[j].componentType === 'list') {
+                            payload[j].listItems.forEach((element, lindex) => {
+                              if (element.buttons && element.buttons.length > 0) {
+                                element.buttons.forEach((button, bindex) => {
+                                  let URLObject = new URL({
+                                    originalURL: button.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].listItems[lindex].buttons[bindex].url = newURL
+                                  })
+                                })
+                              }
+                              if (element.default_action) {
+                                let URLObject = new URL({
+                                  originalURL: element.default_action.url,
+                                  module: {
+                                    id: broadcast._id,
+                                    type: 'broadcast'
+                                  }
+                                })
+                                URLObject.save((err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                  payload[j].listItems[lindex].default_action.url = newURL
+                                })
+                              }
+                            })
+                          }
+                          if (i === (payload.length - 1)) {
+                            utility.getBatchData(payload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
+                          }
+                        }
                       })
                     })
                   })
                 })
-              })
-            } else {
-              let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
-              if (req.body.isSegmented) {
-                if (req.body.segmentationGender.length > 0) {
-                  subscriberFindCriteria = _.merge(subscriberFindCriteria,
-                    {
-                      gender: {
-                        $in: req.body.segmentationGender
-                      }
-                    })
-                }
-                if (req.body.segmentationLocale.length > 0) {
-                  subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                    locale: {
-                      $in: req.body.segmentationLocale
-                    }
-                  })
-                }
               }
-
-              Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                if (err) {
-                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                }
-                utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                  taggedSubscribers.forEach((subscriber, index) => {
-                    // ********This code is commented by Imran. We are saving chat in database for no reason.
-
-                    // Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                    //   if (err) {
-                    //     return logger.serverLog(TAG,
-                    //       `At get session ${JSON.stringify(err)}`)
-                    //   }
-                    //   if (!session) {
-                    //     return logger.serverLog(TAG,
-                    //       `No chat session was found for broadcast`)
-                    //   }
-                    //   /* eslint-disable */
-                    //   const chatMessage = new LiveChat({
-                    //     sender_id: page._id, // this is the page id: _id of Pageid
-                    //     recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                    //     sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                    //     recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                    //     session_id: session._id,
-                    //     company_id: req.user._id, // this is admin id till we have companies
-                    //     payload: '', // this where message content will go
-                    //     status: 'unseen' // seen or unseen
-                    //   })
-                    //   /* eslint-enable */
-                    //   chatMessage.save((err, chatMessageSaved) => {
-                    //     if (err) {
-                    //       return logger.serverLog(TAG,
-                    //         `At get session ${JSON.stringify(err)}`)
-                    //     }
-                    //   })
-                    // })
-
-                    // update broadcast sent field
-                    let pagebroadcast = new BroadcastPage({
-                      pageId: page.pageId,
-                      userId: req.user._id,
-                      subscriberId: subscriber.senderId,
-                      broadcastId: broadcast._id,
-                      seen: false,
-                      companyId: companyUser.companyId
-                    })
-
-                    pagebroadcast.save((err2, savedpagebroadcast) => {
-                      if (err2) {
-                        logger.serverLog(TAG, {
-                          status: 'failed',
-                          description: 'PageBroadcast create failed',
-                          err2
-                        })
-                      }
-                    })
-                    utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                    // if (index === (subscribers.length - 1)) {
-                    //   return res.status(200).json({
-                    //     status: 'success',
-                    //     payload: {broadcast: broadcast}
-                    //   })
-                    // }
-                  })
-                })
+            })
+            if (i === (pages.length - 1)) {
+              return res.status(200).json({
+                status: 'success',
+                payload: {broadcast: broadcast}
               })
             }
-          })
-        })
-        return res.status(200).json({
-          status: 'success',
-          payload: {broadcast: broadcast}
+          }
         })
       })
-    })
-  }
+    }
+  })
 }
 
 const sendBroadcast = (batchMessages, page) => {
