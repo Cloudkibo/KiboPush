@@ -688,11 +688,13 @@ function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast
                   logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
                   broadcastPayload[i].fileurl.attachment_id = resp.body.attachment_id
                   logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(broadcastPayload[i])}`)
+                  if (i === (broadcastPayload.length - 1)) {
+                    getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
+                  }
                 }
               })
           }
         }
-        getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
         if (index === (pages.length - 1)) {
           return res.status(200).json({
             status: 'success',
