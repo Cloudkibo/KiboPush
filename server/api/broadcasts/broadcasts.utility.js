@@ -695,12 +695,12 @@ function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast
               })
           }
         }
-        if (index === (pages.length - 1)) {
-          return res.status(200).json({
-            status: 'success',
-            payload: {broadcast: broadcastPayload}
-          })
-        }
+        // if (index === (pages.length - 1)) {
+        //   return res.status(200).json({
+        //     status: 'success',
+        //     payload: {broadcast: broadcastPayload}
+        //   })
+        // }
       })
   })
 }

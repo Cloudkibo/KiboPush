@@ -381,7 +381,7 @@ exports.sendConversation = function (req, res) {
                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                 }
                 utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                  taggedSubscribers.forEach(subscriber => {
+                  taggedSubscribers.forEach((subscriber, index) => {
                     // ********This code is commented by Imran. We are saving chat in database for no reason.
 
                     // Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
@@ -433,6 +433,12 @@ exports.sendConversation = function (req, res) {
                       }
                       utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
                     })
+                    if (index === (subscribers.length - 1)) {
+                      return res.status(200).json({
+                        status: 'success',
+                        payload: {broadcast: broadcast}
+                      })
+                    }
                   })
                 })
               })
