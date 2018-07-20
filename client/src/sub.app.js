@@ -9,10 +9,13 @@ import $ from 'jquery'
 class App extends Component {
   componentDidMount () {
     this.unlisten = browserHistory.listen(location => {
-      if (!this.isWizard(location.pathname)) {
+      if (!this.isWizardOrLogin(location.pathname)) {
         /* eslint-disable */
         if ($('#sidebarDiv')) {
           $('#sidebarDiv').removeClass('hideSideBar')
+        }
+        if ($('#headerDiv')) {
+          $('#headerDiv').removeClass('hideHeader')
         }
         /* eslint-enable */
       }
@@ -22,10 +25,11 @@ class App extends Component {
     this.unlisten()
   }
 
-  isWizard (path) {
+  isWizardOrLogin (path) {
     if (path === '/addPageWizard' || path === '/inviteUsingLinkWizard' || path === '/greetingTextWizard' ||
         path === '/welcomeMessageWizard' || path === '/autopostingWizard' || path === '/menuWizard' ||
-        path === '/responseMethods' || path === '/paymentMethodsWizard' || path === '/finish') {
+        path === '/responseMethods' || path === '/paymentMethodsWizard' || path === '/finish' ||
+        path === '/resendVerificationEmail' || path === '/connectFb') {
       return true
     }
     return false

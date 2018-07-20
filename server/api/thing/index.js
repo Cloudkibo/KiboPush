@@ -366,11 +366,13 @@ router.get('/updatePicture', (req, res) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
-              if (err) {
-                logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
-              }
-            })
+            if (resp.body.picture) {
+              Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                }
+              })
+            }
           })
       }
     })
@@ -389,7 +391,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
         }
         users.forEach(user => {
-          if (user.pageId && user.pageId.pageId) {
+          if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
             needle.get(
             `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
             (err, respp) => {

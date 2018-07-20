@@ -273,3 +273,6 @@ a.broadcastTabs.active {
 .hideSideBar {
   display: none
 }
+.hideHeader {
+  display: none
+}

@@ -11,6 +11,7 @@ import EditButton from './EditButton'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../utility/utils'
+import templates from '../templates/templates';
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -274,17 +275,22 @@ class Card extends React.Component {
       }
       return elm
     })
-    this.setState({button: temp})
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: this.state.button})
+    this.setState({button: temp}, () => {
+      console.log('In edit temp the value of temp is',temp)
+      console.log('In edit button the value of button is',this.state.button)
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button})
+    })
+
+    
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })

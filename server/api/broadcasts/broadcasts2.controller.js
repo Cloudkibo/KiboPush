@@ -13,17 +13,15 @@ const URL = require('./../URLforClickedCount/URL.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 // const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
-const LiveChat = require('../livechat/livechat.model')
-const Session = require('../sessions/sessions.model')
+// const LiveChat = require('../livechat/livechat.model')
+// const Session = require('../sessions/sessions.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
-const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
-const mongoose = require('mongoose')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 
@@ -259,7 +257,7 @@ exports.sendConversation = function (req, res) {
           }
         }
 
-        Pages.find(pagesFindCriteria, (err, pages) => {
+        Pages.find(pagesFindCriteria).populate('userId').exec((err, pages) => {
           if (err) {
             logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
             return res.status(404)
@@ -307,32 +305,35 @@ exports.sendConversation = function (req, res) {
                   }
                   utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                     taggedSubscribers.forEach(subscriber => {
-                      Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At get session ${JSON.stringify(err)}`)
-                        }
-                        if (!session) {
-                          return logger.serverLog(TAG,
-                            `No chat session was found for broadcast`)
-                        }
-                        const chatMessage = new LiveChat({
-                          sender_id: page._id, // this is the page id: _id of Pageid
-                          recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                          sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                          recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                          session_id: session._id,
-                          company_id: req.user._id, // this is admin id till we have companies
-                          payload: '', // this where message content will go
-                          status: 'unseen' // seen or unseen
-                        })
-                        chatMessage.save((err, chatMessageSaved) => {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At get session ${JSON.stringify(err)}`)
-                          }
-                        })
-                      })
+                      // ********This code is commented by Imran. We are saving chat in database for no reason.
+
+                      // Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                      //   if (err) {
+                      //     return logger.serverLog(TAG,
+                      //       `At get session ${JSON.stringify(err)}`)
+                      //   }
+                      //   if (!session) {
+                      //     return logger.serverLog(TAG,
+                      //       `No chat session was found for broadcast`)
+                      //   }
+                      //   const chatMessage = new LiveChat({
+                      //     sender_id: page._id, // this is the page id: _id of Pageid
+                      //     recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                      //     sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                      //     recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                      //     session_id: session._id,
+                      //     company_id: req.user._id, // this is admin id till we have companies
+                      //     payload: '', // this where message content will go
+                      //     status: 'unseen' // seen or unseen
+                      //   })
+                      //   chatMessage.save((err, chatMessageSaved) => {
+                      //     if (err) {
+                      //       return logger.serverLog(TAG,
+                      //         `At get session ${JSON.stringify(err)}`)
+                      //     }
+                      //   })
+                      // })
+
                       // update broadcast sent field
                       let pagebroadcast = new BroadcastPage({
                         pageId: page.pageId,
@@ -350,7 +351,7 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                        utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
                       })
                     })
                   })
@@ -382,34 +383,37 @@ exports.sendConversation = function (req, res) {
                 }
                 utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                   taggedSubscribers.forEach(subscriber => {
-                    Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                      if (err) {
-                        return logger.serverLog(TAG,
-                          `At get session ${JSON.stringify(err)}`)
-                      }
-                      if (!session) {
-                        return logger.serverLog(TAG,
-                          `No chat session was found for broadcast`)
-                      }
-                      /* eslint-disable */
-                      const chatMessage = new LiveChat({
-                        sender_id: page._id, // this is the page id: _id of Pageid
-                        recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                        sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                        recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                        session_id: session._id,
-                        company_id: req.user._id, // this is admin id till we have companies
-                        payload: '', // this where message content will go
-                        status: 'unseen' // seen or unseen
-                      })
-                      /* eslint-enable */
-                      // chatMessage.save((err, chatMessageSaved) => {
-                      //   if (err) {
-                      //     return logger.serverLog(TAG,
-                      //       `At get session ${JSON.stringify(err)}`)
-                      //   }
-                      // })
-                    })
+                    // ********This code is commented by Imran. We are saving chat in database for no reason.
+
+                    // Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
+                    //   if (err) {
+                    //     return logger.serverLog(TAG,
+                    //       `At get session ${JSON.stringify(err)}`)
+                    //   }
+                    //   if (!session) {
+                    //     return logger.serverLog(TAG,
+                    //       `No chat session was found for broadcast`)
+                    //   }
+                    //   /* eslint-disable */
+                    //   const chatMessage = new LiveChat({
+                    //     sender_id: page._id, // this is the page id: _id of Pageid
+                    //     recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
+                    //     sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
+                    //     recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
+                    //     session_id: session._id,
+                    //     company_id: req.user._id, // this is admin id till we have companies
+                    //     payload: '', // this where message content will go
+                    //     status: 'unseen' // seen or unseen
+                    //   })
+                    //   /* eslint-enable */
+                    //   chatMessage.save((err, chatMessageSaved) => {
+                    //     if (err) {
+                    //       return logger.serverLog(TAG,
+                    //         `At get session ${JSON.stringify(err)}`)
+                    //     }
+                    //   })
+                    // })
+
                     // update broadcast sent field
                     let pagebroadcast = new BroadcastPage({
                       pageId: page.pageId,
@@ -428,15 +432,13 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                      utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
                     })
                   })
                 })
               })
             }
           })
-          return res.status(200)
-          .json({status: 'success', payload: {broadcast: broadcast}})
         })
       })
     })
@@ -497,68 +499,17 @@ exports.upload = function (req, res) {
       let writeData = fs.createWriteStream(dir + '/userfiles/' + req.files.file.name)
       readData.pipe(writeData)
       logger.serverLog(TAG,
-        `file uploaded on KiboPush, uploading it on Facebook: ${JSON.stringify({
+        `file uploaded on KiboPush, sending response ${JSON.stringify({
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
-      .populate('userId').exec((err, page) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'internal server error' + JSON.stringify(err)
-          })
+      return res.status(201).json({
+        status: 'success',
+        payload: {
+          id: serverPath,
+          name: req.files.file.name,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`
         }
-        needle.get(
-          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
-          (err, resp2) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: 'unable to get page access_token: ' + JSON.stringify(err)
-              })
-            }
-            let pageAccessToken = resp2.body.access_token
-            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
-            const messageData = {
-              'message': JSON.stringify({
-                'attachment': {
-                  'type': req.body.componentType,
-                  'payload': {
-                    'is_reusable': true
-                  }
-                }
-              }),
-              'filedata': fileReaderStream
-            }
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
-              },
-              function (err, resp) {
-                if (err) {
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
-                  })
-                } else {
-                  logger.serverLog(TAG,
-                    `file uploaded on Facebook, sending response now: ${JSON.stringify(resp.body)}`)
-                  return res.status(201).json({
-                    status: 'success',
-                    payload: {
-                      id: serverPath,
-                      attachment_id: resp.body.attachment_id,
-                      name: req.files.file.name,
-                      url: `${config.domain}/api/broadcasts/download/${serverPath}`
-                    }
-                  })
-                }
-              })
-          })
       })
     }
   )
