@@ -431,19 +431,23 @@ exports.sendConversation = function (req, res) {
                           err2
                         })
                       }
-                      utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
                     })
-                    if (index === (subscribers.length - 1)) {
-                      return res.status(200).json({
-                        status: 'success',
-                        payload: {broadcast: broadcast}
-                      })
-                    }
+                    utility.uploadAndSend(res, pages, newPayload, subscriber.senderId, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                    // if (index === (subscribers.length - 1)) {
+                    //   return res.status(200).json({
+                    //     status: 'success',
+                    //     payload: {broadcast: broadcast}
+                    //   })
+                    // }
                   })
                 })
               })
             }
           })
+        })
+        return res.status(200).json({
+          status: 'success',
+          payload: {broadcast: broadcast}
         })
       })
     })
