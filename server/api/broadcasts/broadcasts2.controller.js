@@ -417,7 +417,7 @@ exports.sendConversation = async(function (req, res) {
                           let updatedPayload = awaitt(updatePayload(payload, broadcast, pageAccessToken))
                           utility.getBatchData(updatedPayload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
                         } catch (error) {
-                          logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(error)}`)
+                          logger.serverLog(TAG, `ERROR! unable to update payload`)
                         }
                       })
                     })
@@ -443,6 +443,7 @@ const updatePayload = (payload, broadcast, pageAccessToken) => {
     let dir = path.resolve(__dirname, '../../../broadcastFiles/')
     for (let j = 0; j <= payload.length; j++) {
       if (j === payload.length) {
+        logger.serverLog(TAG, `Payload updated: ${JSON.stringify(payload)}`)
         resolve(payload)
       }
       if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
@@ -467,6 +468,7 @@ const updatePayload = (payload, broadcast, pageAccessToken) => {
           },
           function (err, resp) {
             if (err) {
+              logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
               reject(err)
             } else {
               logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
