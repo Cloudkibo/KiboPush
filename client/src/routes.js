@@ -110,6 +110,7 @@ import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import Plans from './containers/billingPricing/plans'
 import Permissions from './containers/permissions/permissions'
 import Features from './containers/features/features'
+import Usage from './containers/usage/usage'
 
 import auth from './utility/auth.service'
 
@@ -250,6 +251,7 @@ const routes = (
     <Route path='/plans' component={Plans} onEnter={requireAuth} />
     <Route path='/permissions' component={Permissions} onEnter={requireAuth} />
     <Route path='/features' component={Features} onEnter={requireAuth} />
+    <Route path='/usage' component={Usage} onEnter={requireAuth} />
 
   </Route>
 

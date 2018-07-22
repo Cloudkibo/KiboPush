@@ -5,7 +5,7 @@ const Plans = require('./../plans/plans.model')
 const _ = require('lodash')
 
 exports.index = function (req, res) {
-  PlanUsage.findOne({plan_id: req.params.id}, (err, usage) => {
+  PlanUsage.findOne({planId: req.params.id}, (err, usage) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -22,7 +22,7 @@ exports.index = function (req, res) {
 exports.update = function (req, res) {
   let parametersMissing = false
 
-  if (!_.has(req.body, 'plan_id')) parametersMissing = true
+  if (!_.has(req.body, 'planId')) parametersMissing = true
   if (!_.has(req.body, 'item_name')) parametersMissing = true
   if (!_.has(req.body, 'item_value')) parametersMissing = true
 
@@ -31,7 +31,7 @@ exports.update = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  PlanUsage.findOne({plan_id: req.body.plan_id}, (err, usage) => {
+  PlanUsage.findOne({planId: req.body.planId}, (err, usage) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -57,7 +57,7 @@ exports.update = function (req, res) {
 exports.create = function (req, res) {
   let parametersMissing = false
 
-  if (!_.has(req.body, 'plan_id')) parametersMissing = true
+  if (!_.has(req.body, 'planId')) parametersMissing = true
   if (!_.has(req.body, 'item_name')) parametersMissing = true
   if (!_.has(req.body, 'item_value')) parametersMissing = true
 
@@ -106,7 +106,7 @@ exports.populatePlanUsage = function (req, res) {
     plans.forEach((plan, index) => {
       if (plan.unique_ID === 'plan_A' || plan.unique_ID === 'plan_C') {
         let planUsageData = {
-          plan_id: plan._id,
+          planId: plan._id,
           broadcasts: -1,
           surveys: -1,
           polls: -1,
@@ -136,7 +136,7 @@ exports.populatePlanUsage = function (req, res) {
         })
       } else if (plan.unique_ID === 'plan_B' || plan.unique_ID === 'plan_D') {
         let planUsageData = {
-          plan_id: plan._id,
+          planId: plan._id,
           broadcasts: -1,
           surveys: -1,
           polls: -1,
