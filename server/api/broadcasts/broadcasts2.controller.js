@@ -409,17 +409,15 @@ exports.sendConversation = function (req, res) {
                             err2
                           })
                         }
-                        let pre = ''
                         let gen = uploadAndSend(payload, broadcast, pageAccessToken)
                         let next = gen.next()
                         for (let a = 0; ; a++) {
-                          if (next.done) {
-                            utility.getBatchData(pre.payload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
+                          if (next.value.message === 'success') {
+                            utility.getBatchData(next.payload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
                             break
                           } else {
-                            pre = next.value
-                            if ((typeof pre.then === 'function')) {
-                              pre.then((msg) => {
+                            if ((typeof next.value.then === 'function')) {
+                              next.value.then((msg) => {
                                 next = gen.next()
                               }).catch((err) => {
                                 logger.serverLog(TAG, `ERROR! ${JSON.stringify(err)}`)
@@ -481,7 +479,7 @@ function * uploadAndSend (payload, broadcast, pageAccessToken) {
             } else {
               logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
               payload[j].fileurl.attachment_id = resp.body.attachment_id
-              resolve({message: 'success', payload})
+              resolve({message: 'upload', payload})
               logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payload[j])}`)
             }
           }))
