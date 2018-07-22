@@ -25,10 +25,6 @@ let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const needle = require('needle')
-/* eslint-disable */
-const async = require('asyncawait/async')
-const awaitt = require('asyncawait/await')
-/* eslint-enable */
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -39,7 +35,7 @@ function exists (list, content) {
   return false
 }
 
-exports.sendConversation = async(function (req, res) {
+exports.sendConversation = function (req, res) {
   logger.serverLog(TAG, `Sending Broadcast ${JSON.stringify(req.body)}`)
   if (!utility.validateInput(req.body)) {
     logger.serverLog(TAG, 'Parameters are missing.')
@@ -413,8 +409,133 @@ exports.sendConversation = async(function (req, res) {
                             err2
                           })
                         }
-                        let updatedPayload = awaitt(updatePayload(payload, broadcast, pageAccessToken))
-                        utility.getBatchData(updatedPayload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
+                        let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+                        for (let j = 0; j <= payload.length; j++) {
+                          if (i === payload.length) {
+                            utility.getBatchData(payload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
+                          } else {
+                            if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
+                              let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payload[j].fileurl.name)
+                              const messageData = {
+                                'message': JSON.stringify({
+                                  'attachment': {
+                                    'type': payload[j].componentType,
+                                    'payload': {
+                                      'is_reusable': true
+                                    }
+                                  }
+                                }),
+                                'filedata': fileReaderStream
+                              }
+                              request(
+                                {
+                                  'method': 'POST',
+                                  'json': true,
+                                  'formData': messageData,
+                                  'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+                                },
+                                function (err, resp) {
+                                  if (err) {
+                                    logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
+                                    return res.status(500).json({
+                                      status: 'failed',
+                                      description: `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`
+                                    })
+                                  } else {
+                                    logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
+                                    payload[j].fileurl.attachment_id = resp.body.attachment_id
+                                    logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payload[j])}`)
+                                  }
+                                })
+                            }
+                            if (payload[j].buttons) {
+                              payload[j].buttons.forEach((button, bindex) => {
+                                if (!(button.type === 'postback')) {
+                                  let URLObject = new URL({
+                                    originalURL: button.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].buttons[bindex].url = newURL
+                                  })
+                                }
+                              })
+                            }
+                            if (payload[j].componentType === 'media' && payload[j].buttons) {
+                              payload[j].buttons.forEach((button, bindex) => {
+                                let URLObject = new URL({
+                                  originalURL: button.url,
+                                  module: {
+                                    id: broadcast._id,
+                                    type: 'broadcast'
+                                  }
+                                })
+                                URLObject.save((err, savedurl) => {
+                                  if (err) logger.serverLog(TAG, err)
+                                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                  payload[j].buttons[bindex].url = newURL
+                                })
+                              })
+                            }
+                            if (payload[j].componentType === 'gallery') {
+                              payload[j].cards.forEach((card, cindex) => {
+                                card.buttons.forEach((button, bindex) => {
+                                  let URLObject = new URL({
+                                    originalURL: button.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].cards[cindex].buttons[bindex].url = newURL
+                                  })
+                                })
+                              })
+                            }
+                            if (payload[j].componentType === 'list') {
+                              payload[j].listItems.forEach((element, lindex) => {
+                                if (element.buttons && element.buttons.length > 0) {
+                                  element.buttons.forEach((button, bindex) => {
+                                    let URLObject = new URL({
+                                      originalURL: button.url,
+                                      module: {
+                                        id: broadcast._id,
+                                        type: 'broadcast'
+                                      }
+                                    })
+                                    URLObject.save((err, savedurl) => {
+                                      if (err) logger.serverLog(TAG, err)
+                                      let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                      payload[j].listItems[lindex].buttons[bindex].url = newURL
+                                    })
+                                  })
+                                }
+                                if (element.default_action) {
+                                  let URLObject = new URL({
+                                    originalURL: element.default_action.url,
+                                    module: {
+                                      id: broadcast._id,
+                                      type: 'broadcast'
+                                    }
+                                  })
+                                  URLObject.save((err, savedurl) => {
+                                    if (err) logger.serverLog(TAG, err)
+                                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+                                    payload[j].listItems[lindex].default_action.url = newURL
+                                  })
+                                }
+                              })
+                            }
+                          }
+                        }
                       })
                     })
                   })
@@ -430,135 +551,6 @@ exports.sendConversation = async(function (req, res) {
           }
         })
       })
-    }
-  })
-})
-
-const updatePayload = (payload, broadcast, pageAccessToken) => {
-  return new Promise((resolve, reject) => {
-    let dir = path.resolve(__dirname, '../../../broadcastFiles/')
-    for (let j = 0; j <= payload.length; j++) {
-      if (j === payload.length) {
-        logger.serverLog(TAG, `Payload updated: ${JSON.stringify(payload)}`)
-        resolve(payload)
-      }
-      if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
-        let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payload[j].fileurl.name)
-        const messageData = {
-          'message': JSON.stringify({
-            'attachment': {
-              'type': payload[j].componentType,
-              'payload': {
-                'is_reusable': true
-              }
-            }
-          }),
-          'filedata': fileReaderStream
-        }
-        request(
-          {
-            'method': 'POST',
-            'json': true,
-            'formData': messageData,
-            'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
-          },
-          function (err, resp) {
-            if (err) {
-              logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
-              reject(err)
-            } else {
-              logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
-              payload[j].fileurl.attachment_id = resp.body.attachment_id
-              logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payload[j])}`)
-            }
-          })
-      }
-      if (payload[j].buttons) {
-        payload[j].buttons.forEach((button, bindex) => {
-          if (!(button.type === 'postback')) {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].buttons[bindex].url = newURL
-            })
-          }
-        })
-      }
-      if (payload[j].componentType === 'media' && payload[j].buttons) {
-        payload[j].buttons.forEach((button, bindex) => {
-          let URLObject = new URL({
-            originalURL: button.url,
-            module: {
-              id: broadcast._id,
-              type: 'broadcast'
-            }
-          })
-          URLObject.save((err, savedurl) => {
-            if (err) logger.serverLog(TAG, err)
-            let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-            payload[j].buttons[bindex].url = newURL
-          })
-        })
-      }
-      if (payload[j].componentType === 'gallery') {
-        payload[j].cards.forEach((card, cindex) => {
-          card.buttons.forEach((button, bindex) => {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].cards[cindex].buttons[bindex].url = newURL
-            })
-          })
-        })
-      }
-      if (payload[j].componentType === 'list') {
-        payload[j].listItems.forEach((element, lindex) => {
-          if (element.buttons && element.buttons.length > 0) {
-            element.buttons.forEach((button, bindex) => {
-              let URLObject = new URL({
-                originalURL: button.url,
-                module: {
-                  id: broadcast._id,
-                  type: 'broadcast'
-                }
-              })
-              URLObject.save((err, savedurl) => {
-                if (err) logger.serverLog(TAG, err)
-                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                payload[j].listItems[lindex].buttons[bindex].url = newURL
-              })
-            })
-          }
-          if (element.default_action) {
-            let URLObject = new URL({
-              originalURL: element.default_action.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].listItems[lindex].default_action.url = newURL
-            })
-          }
-        })
-      }
     }
   })
 }
