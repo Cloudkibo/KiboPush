@@ -413,7 +413,7 @@ exports.sendConversation = async(function (req, res) {
                             err2
                           })
                         }
-                        let updatedPayload = awaitt(updatePayload(payload, broadcast, pageAccessToken)).catch((error) => logger.serverLog(TAG, `ERROR! unable to update payload ${error}`))
+                        let updatedPayload = awaitt(updatePayload(payload, broadcast, pageAccessToken).catch((error) => logger.serverLog(TAG, `ERROR! unable to update payload ${error}`)))
                         utility.getBatchData(updatedPayload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
                       })
                     })
