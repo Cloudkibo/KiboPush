@@ -411,7 +411,7 @@ exports.sendConversation = function (req, res) {
                         }
                         let dir = path.resolve(__dirname, '../../../broadcastFiles/')
                         for (let j = 0; j <= payload.length; j++) {
-                          if (i === payload.length) {
+                          if (j === payload.length) {
                             utility.getBatchData(payload, subscriber.senderId, pages[i], sendBroadcast, subscriber.firstName, subscriber.lastName)
                           } else {
                             if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
