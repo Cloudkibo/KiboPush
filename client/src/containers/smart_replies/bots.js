@@ -33,7 +33,8 @@ class Bot extends React.Component {
       createBotDialogButton: false,
       pageNumber: 0,
       filter: false,
-      pages: []
+      pages: [],
+      showDropDown: false
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -50,6 +51,8 @@ class Bot extends React.Component {
     this.searchBot = this.searchBot.bind(this)
     this.onFilter = this.onFilter.bind(this)
     this.updateAllowedPages = this.updateAllowedPages.bind(this)
+    this.showDropdown = this.showDropdown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
   }
 
   showDialog () {
@@ -209,6 +212,32 @@ class Bot extends React.Component {
     })
     // browserHistory.push(`/pollResult/${poll._id}`)
   }
+
+  gotoWaitingReply (bot) {
+    this.props.history.push({
+      pathname: `/WaitingReplyList`,
+      state: bot
+    })
+    // browserHistory.push(`/pollResult/${poll._id}`)
+  }
+
+  gotoUnansweredQueries (bot) {
+    console.log('going to unanswered queries')
+    this.props.history.push({
+      pathname: `/UnansweredQueries`,
+      state: bot
+    })
+    // browserHistory.push(`/pollResult/${poll._id}`)
+  }
+
+  showDropdown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
+
   gotoCreate () {
     if (this.state.name === '') {
       this.setState({error: true})
@@ -446,7 +475,7 @@ class Bot extends React.Component {
                     <br />
                     { this.state.botsData && this.state.botsData.length > 0
                     ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                      <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                      <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflow: 'inherit'}}>
                         <thead className='m-datatable__head'>
                           <tr className='m-datatable__row'
                             style={{height: '53px'}}>
@@ -472,7 +501,7 @@ class Bot extends React.Component {
                             </th>
                             <th data-field='actions'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '175px'}}>Actions</span>
+                              <span style={{width: '250px'}}>Actions</span>
                             </th>
                           </tr>
                         </thead>
@@ -504,23 +533,81 @@ class Bot extends React.Component {
                               </td>
                               <td data-field='actions' className='m-datatable__cell'>
                                 {this.props.user && this.props.user.role !== 'agent'
-                                ? <span style={{width: '175px'}}>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoView(bot._id)}>
-                                    View
-                                  </button>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoEdit(bot._id)}>Edit
-                                  </button>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.showDialogDelete(bot._id)}>
-                                    Delete
-                                  </button>
+                                ? <span style={{width: '250px', overflow: 'inherit', paddingLeft: '65px'}}>
+
+                                  <div style={{paddingLeft: 0}} className='col-md-2'>
+                                    <div className='m-portlet__head-tools'>
+                                      <ul className='m-portlet__nav'>
+                                        <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                          <a className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                                            <i onClick={this.showDropdown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
+                                          </a>
+                                          {
+                                            /* This is dropdown of possible actions for a bot */
+                                            this.state.showDropDown &&
+                                            <div className='m-dropdown__wrapper'>
+                                              <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                              <div className='m-dropdown__inner'>
+                                                <div className='m-dropdown__body'>
+                                                  <div className='m-dropdown__content'>
+                                                    <ul className='m-nav'>
+                                                      <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                        <a onClick={() => this.gotoView(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                          {
+                                                            <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                              View
+                                                            </span>
+                                                          }
+                                                        </a>
+                                                      </li>
+                                                      <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                        <a onClick={() => this.gotoEdit(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                          {
+                                                            <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                              Edit
+                                                            </span>
+                                                          }
+                                                        </a>
+                                                      </li>
+                                                      <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                        <a onClick={() => this.showDialogDelete(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                          {
+                                                            <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                              Delete
+                                                            </span>
+                                                          }
+                                                        </a>
+                                                      </li>
+                                                      <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                        <a onClick={() => this.gotoWaitingReply(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                          {
+                                                            <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                              Waiting Subscribers
+                                                            </span>
+                                                          }
+                                                        </a>
+                                                      </li>
+                                                      <li className='m-nav__item' style={{ margin: '10px' }}>
+                                                        <a onClick={() => this.gotoUnansweredQueries(bot._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                          {
+                                                            <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                              Unanswered Queries
+                                                            </span>
+                                                          }
+                                                        </a>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          }
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
                                 </span>
-                                : <span style={{width: '175px'}}>
+                                : <span style={{width: '250px'}}>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.gotoView(bot)}>
@@ -529,6 +616,7 @@ class Bot extends React.Component {
                                 </span>
                               }
                               </td>
+                              <hr />
                             </tr>
                           ))
                         }
