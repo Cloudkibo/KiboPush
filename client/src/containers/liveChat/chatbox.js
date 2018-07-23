@@ -1041,12 +1041,12 @@ class ChatBox extends React.Component {
                                                   />
                                                 </div>
                                                 : att.type === 'audio'
-                                                ? <div style={{marginTop: '40px'}} key={index}>
+                                                ? <div key={index}>
                                                   <ReactPlayer
                                                     url={att.payload.url}
                                                     controls
-                                                    width='100%'
-                                                    height='auto'
+                                                    width='230px'
+                                                    height='60px'
                                                     onPlay={this.onTestURLAudio(att.payload.url)}
                                                   />
                                                 </div>
@@ -1210,8 +1210,8 @@ class ChatBox extends React.Component {
                                             <ReactPlayer
                                               url={msg.payload.fileurl.url}
                                               controls
-                                              width='100%'
-                                              height='auto'
+                                              width='230px'
+                                              height='60px'
                                               onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
                                             />
                                           </div>
