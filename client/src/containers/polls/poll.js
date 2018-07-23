@@ -35,6 +35,7 @@ class Poll extends React.Component {
       pollsData: [],
       totalLength: 0,
       isShowingModal: false,
+      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingModalDelete: false,
       deleteid: '',
       selectedDays: '0',
@@ -45,6 +46,8 @@ class Poll extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.props.clearAlertMessage()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
@@ -59,6 +62,15 @@ class Poll extends React.Component {
   closeDialog () {
     this.setState({isShowingModal: false})
   }
+
+  showZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: true})
+  }
+
+  closeZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: false})
+  }
+
   onDaysChange (e) {
     //  var defaultVal = 0
     var value = e.target.value
@@ -239,7 +251,33 @@ class Poll extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-
+        {
+          this.state.isShowingZeroSubModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeZeroSubDialog}>
+            <ModalDialog style={{width: '700px', top: '75px'}}
+              onClose={this.closeZeroSubDialog}>
+              <div className='alert alert-success'>
+                <h4 className='block'>0 Subscribers</h4>
+    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
+    below on how to get started.
+              </div>
+              <div>
+                <YouTube
+                  videoId='9kY3Fmj_tbM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                      autoplay: 0
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

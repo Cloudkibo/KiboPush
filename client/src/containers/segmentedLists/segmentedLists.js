@@ -20,6 +20,7 @@ class SegmentedList extends React.Component {
     super(props, context)
     this.state = {
       isShowingModalDelete: false,
+      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       deleteid: '',
       customerLists: [],
       totalLength: 0,
@@ -28,6 +29,8 @@ class SegmentedList extends React.Component {
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.saveCurrentList = this.saveCurrentList.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -46,6 +49,14 @@ class SegmentedList extends React.Component {
 
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
+  }
+
+  showZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: true})
+  }
+
+  closeZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: false})
   }
 
   updateListName (e) {
@@ -143,7 +154,33 @@ class SegmentedList extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-
+        {
+          this.state.isShowingZeroSubModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeZeroSubDialog}>
+            <ModalDialog style={{width: '700px', top: '75px'}}
+              onClose={this.closeZeroSubDialog}>
+              <div className='alert alert-success'>
+                <h4 className='block'>0 Subscribers</h4>
+    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
+    below on how to get started.
+              </div>
+              <div>
+                <YouTube
+                  videoId='9kY3Fmj_tbM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                      autoplay: 0
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-content'>
           { this.props.pages && this.props.pages.length === 0
           ? <div className='alert alert-success'>
