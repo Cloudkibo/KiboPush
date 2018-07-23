@@ -352,6 +352,7 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('this.props.dashboard', this.props.dashboard)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
