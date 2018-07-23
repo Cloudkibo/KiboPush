@@ -827,11 +827,6 @@ exports.enable = function (req, res) {
                                             err)}`
                                         })
                                       }
-                                      let removeDuplicates = (myArr, prop) => {
-                                        return myArr.filter((obj, pos, arr) => {
-                                          return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
-                                        })
-                                      }
                                       pages = removeDuplicates(pages, 'pageId')
 
                                       Pages.find({
@@ -923,11 +918,6 @@ exports.enable = function (req, res) {
                                     err)}`
                                 })
                               }
-                              let removeDuplicates = (myArr, prop) => {
-                                return myArr.filter((obj, pos, arr) => {
-                                  return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
-                                })
-                              }
                               pages = removeDuplicates(pages, 'pageId')
                               Users.findOne({_id: pagesbyOther[0].userId},
                               (err, userInfo) => {
@@ -1012,11 +1002,6 @@ exports.disable = function (req, res) {
                         status: 'failed',
                         description: `Internal Server Error${JSON.stringify(
                           err)}`
-                      })
-                    }
-                    let removeDuplicates = (myArr, prop) => {
-                      return myArr.filter((obj, pos, arr) => {
-                        return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
                       })
                     }
                     pages = removeDuplicates(pages, 'pageId')
@@ -1112,6 +1097,12 @@ exports.disable = function (req, res) {
           }
         })
     })
+}
+
+function removeDuplicates (myArr, prop) {
+  return myArr.filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
+  })
 }
 
 exports.otherPages = function (req, res) {
