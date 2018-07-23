@@ -100,21 +100,9 @@ exports.index = function (req, res) {
 }
 
 exports.getNewSessions = function (req, res) {
-  /*
-  body = {
-    first_page:
-    last_id:
-    number_of_records:
-    filter:
-    filter_criteria: {
-      search_value:
-      sort_value: -1 or 1
-      page_value:
-    }
-  }
-  */
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
+      logger.serverLog(TAG, `ERROR at find company user ${JSON.stringify(err)}`)
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
@@ -126,387 +114,118 @@ exports.getNewSessions = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    if (req.body.first_page) {
-      if (!req.body.filter) {
-        Sessions.find({company_id: companyUser.companyId, status: 'new'})
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find({company_id: companyUser.companyId, status: 'new'}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
-      } else {
-        let findCriteria = {
-          company_id: companyUser.companyId,
-          status: 'new',
-          page_id: req.body.page_value !== '' ? req.body.page_value : {$exists: true}
-        }
-        Sessions.find(findCriteria)
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find(findCriteria).sort({request_time: req.body.filter_criteria.sort_value}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              let fullName = sessionsData[i].subscriber_id.firstName + ' ' + sessionsData[i].subscriber_id.lastName
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
-                sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
-      }
-    } else {
-      if (!req.body.filter) {
-        Sessions.find({company_id: companyUser.companyId, status: 'new'})
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            if (sessionsData[a].subscriber_id && sessionsData[a].subscriber_id.firstName) {
-              let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-              if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-                sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-                tempSessionsData.push(sessionsData[a])
-              }
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find({company_id: companyUser.companyId, status: 'new', _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
-      } else {
-        let findCriteria = {
-          company_id: companyUser.companyId,
-          status: 'new',
-          page_id: req.body.page_value !== '' ? req.body.page_value : {$exists: true}
-        }
-        Sessions.find(findCriteria)
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).sort({request_time: req.body.filter_criteria.sort_value}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              let fullName = sessionsData[i].subscriber_id.firstName + ' ' + sessionsData[i].subscriber_id.lastName
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
-                sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {openSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {openSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
+    let findCriteria = {
+      company_id: companyUser.companyId,
+      status: 'new'
+    }
+    let sortCriteria = {
+      request_time: 1
+    }
+    if (req.body.filter && req.body.page_value !== '') {
+      findCriteria = Object.assign(findCriteria, {page_id: req.body.page_value})
+    }
+    if (req.body.filter) {
+      sortCriteria = {
+        request_time: req.body.filter_criteria.sort_value
       }
     }
+    if (!req.body.first_page) {
+      findCriteria = Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})
+    }
+    Sessions.find(findCriteria)
+    .populate('subscriber_id page_id')
+    .exec(function (err, sessionsData) {
+      if (err) {
+        logger.serverLog(TAG, `ERROR at find sessions count ${JSON.stringify(err)}`)
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      let tempSessionsData = []
+      for (var a = 0; a < sessionsData.length; a++) {
+        if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
+          sessionsData[a].subscriber_id.isSubscribed) {
+          tempSessionsData.push(sessionsData[a])
+        }
+      }
+      sessionsData = tempSessionsData
+      Sessions.find(findCriteria).sort(sortCriteria).limit(req.body.number_of_records)
+      .populate('subscriber_id page_id')
+      .exec(function (err, sessions) {
+        if (err) {
+          logger.serverLog(TAG, `ERROR at find sessions ${JSON.stringify(err)}`)
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+        }
+        let tempSessions = []
+        for (var i = 0; i < sessions.length; i++) {
+          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
+            tempSessions.push(sessions[i])
+          }
+        }
+        sessions = tempSessions
+        if (sessions.length > 0) {
+          LiveChat.aggregate([
+            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+            {$sort: { datetime: 1 }}
+          ], (err2, gotUnreadCount) => {
+            if (err2) {
+              logger.serverLog(TAG, `ERROR at livechat aggregate 1 ${JSON.stringify(err2)}`)
+              return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            logger.serverLog(TAG, `gotUnreadCount: ${JSON.stringify(gotUnreadCount)}`)
+            for (let i = 0; i < gotUnreadCount.length; i++) {
+              for (let j = 0; j < sessions.length; j++) {
+                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                  sessions[j].set('unreadCount',
+                    gotUnreadCount[i].count,
+                    {strict: false})
+                }
+              }
+            }
+            LiveChat.aggregate([
+              {$sort: { datetime: 1 }},
+              {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
+            ], (err2, gotLastMessage) => {
+              if (err2) {
+                logger.serverLog(TAG, `ERROR at livechat aggregate 2 ${JSON.stringify(err2)}`)
+                return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+              }
+              for (let a = 0; a < gotLastMessage.length; a++) {
+                for (let b = 0; b < sessions.length; b++) {
+                  if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
+                    sessions[b].set('lastPayload',
+                      gotLastMessage[a].payload,
+                      {strict: false})
+                    sessions[b].set('lastRepliedBy',
+                      gotLastMessage[a].replied_by,
+                      {strict: false})
+                    sessions[b].set('lastDateTime',
+                      gotLastMessage[a].datetime,
+                      {strict: false})
+                  }
+                }
+              }
+              logger.serverLog(TAG, `openSessions: ${JSON.stringify(sessions)}`)
+              return res.status(200).json({
+                status: 'success',
+                payload: {openSessions: sessions, count: sessionsData.length}
+              })
+            })
+          })
+        } else {
+          return res.status(200).json({
+            status: 'success',
+            payload: {openSessions: sessions, count: sessionsData.length}
+          })
+        }
+      })
+    })
   })
 }
 
 exports.getResolvedSessions = function (req, res) {
-  /*
-  body = {
-    first_page:
-    last_id:
-    number_of_records:
-    filter:
-    filter_criteria: {
-      search_value:
-      sort_value: -1 or 1
-      page_value:
-    }
-  }
-  */
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -520,372 +239,112 @@ exports.getResolvedSessions = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    if (req.body.first_page) {
-      if (!req.body.filter) {
-        Sessions.find({company_id: companyUser.companyId, status: 'resolved'})
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = ''
-            if (sessionsData[a] && sessionsData[a].subscriber_id) {
-              fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-            }
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find({company_id: companyUser.companyId, status: 'resolved'}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {closedSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {closedSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
-      } else {
-        let findCriteria = {
-          company_id: companyUser.companyId,
-          status: 'resolved',
-          page_id: req.body.page_value !== '' ? req.body.page_value : {$exists: true}
-        }
-        Sessions.find(findCriteria)
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find(findCriteria).sort({request_time: req.body.filter_criteria.sort_value}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              let fullName = sessionsData[i].subscriber_id.firstName + ' ' + sessionsData[i].subscriber_id.lastName
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
-                sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {closedSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {closedSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
-      }
-    } else {
-      if (!req.body.filter) {
-        Sessions.find({company_id: companyUser.companyId, status: 'resolved'})
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find({company_id: companyUser.companyId, status: 'resolved', _id: {$gt: req.body.last_id}}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {closedSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {closedSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
-      } else {
-        let findCriteria = {
-          company_id: companyUser.companyId,
-          status: 'resolved',
-          page_id: req.body.page_value !== '' ? req.body.page_value : {$exists: true}
-        }
-        Sessions.find(findCriteria)
-        .populate('subscriber_id page_id')
-        .exec(function (err, sessionsData) {
-          if (err) {
-            return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-          }
-          let tempSessionsData = []
-          for (var a = 0; a < sessionsData.length; a++) {
-            let fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
-            if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-              sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-              tempSessionsData.push(sessionsData[a])
-            }
-          }
-          sessionsData = tempSessionsData
-          Sessions.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).sort({request_time: req.body.filter_criteria.sort_value}).limit(req.body.number_of_records)
-          .populate('subscriber_id page_id')
-          .exec(function (err, sessions) {
-            if (err) {
-              return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-            }
-            let tempSessions = []
-            for (var i = 0; i < sessions.length; i++) {
-              let fullName = sessionsData[i].subscriber_id.firstName + ' ' + sessionsData[i].subscriber_id.lastName
-              if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
-                sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
-                tempSessions.push(sessions[i])
-              }
-            }
-            sessions = tempSessions
-            if (sessions.length > 0) {
-              LiveChat.aggregate([
-                {$match: {status: 'unseen', format: 'facebook'}},
-                {$sort: { datetime: 1 }}
-              ], (err2, gotUnreadCount) => {
-                if (err2) {
-                  return res.status(500)
-                  .json({status: 'failed', description: 'Internal Server Error'})
-                }
-                for (let i = 0; i < gotUnreadCount.length; i++) {
-                  for (let j = 0; j < sessions.length; j++) {
-                    if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
-                      sessions[j].set('unreadCount',
-                        gotUnreadCount[i].count,
-                        {strict: false})
-                    }
-                  }
-                }
-                LiveChat.aggregate([
-                  {$sort: { datetime: 1 }},
-                  {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
-                ], (err2, gotLastMessage) => {
-                  if (err2) {
-                    return res.status(500)
-                    .json({status: 'failed', description: 'Internal Server Error'})
-                  }
-                  for (let a = 0; a < gotLastMessage.length; a++) {
-                    for (let b = 0; b < sessions.length; b++) {
-                      if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
-                        sessions[b].set('lastPayload',
-                          gotLastMessage[a].payload,
-                          {strict: false})
-                        sessions[b].set('lastRepliedBy',
-                          gotLastMessage[a].replied_by,
-                          {strict: false})
-                        sessions[b].set('lastDateTime',
-                          gotLastMessage[a].datetime,
-                          {strict: false})
-                      }
-                    }
-                  }
-                  return res.status(200).json({
-                    status: 'success',
-                    payload: {closedSessions: sessions, count: sessionsData.length}
-                  })
-                })
-              })
-            } else {
-              return res.status(200).json({
-                status: 'success',
-                payload: {closedSessions: sessions, count: sessionsData.length}
-              })
-            }
-          })
-        })
+    let findCriteria = {
+      company_id: companyUser.companyId,
+      status: 'resolved'
+    }
+    let sortCriteria = {
+      request_time: 1
+    }
+    if (req.body.filter && req.body.page_value !== '') {
+      findCriteria = Object.assign(findCriteria, {page_id: req.body.page_value})
+    }
+    if (req.body.filter) {
+      sortCriteria = {
+        request_time: req.body.filter_criteria.sort_value
       }
     }
+    if (!req.body.first_page) {
+      findCriteria = Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})
+    }
+    Sessions.find(findCriteria)
+    .populate('subscriber_id page_id')
+    .exec(function (err, sessionsData) {
+      if (err) {
+        return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+      }
+      let tempSessionsData = []
+      for (var a = 0; a < sessionsData.length; a++) {
+        let fullName = ''
+        if (sessionsData[a] && sessionsData[a].subscriber_id) {
+          fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
+        }
+        if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
+          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
+          tempSessionsData.push(sessionsData[a])
+        }
+      }
+      sessionsData = tempSessionsData
+      Sessions.find(findCriteria).sort(sortCriteria).limit(req.body.number_of_records)
+      .populate('subscriber_id page_id')
+      .exec(function (err, sessions) {
+        if (err) {
+          return res.status(500)
+          .json({status: 'failed', description: 'Internal Server Error'})
+        }
+        let tempSessions = []
+        for (var i = 0; i < sessions.length; i++) {
+          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
+            tempSessions.push(sessions[i])
+          }
+        }
+        sessions = tempSessions
+        if (sessions.length > 0) {
+          LiveChat.aggregate([
+            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+            {$sort: { datetime: 1 }}
+          ], (err2, gotUnreadCount) => {
+            if (err2) {
+              return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+            }
+            for (let i = 0; i < gotUnreadCount.length; i++) {
+              for (let j = 0; j < sessions.length; j++) {
+                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                  sessions[j].set('unreadCount',
+                    gotUnreadCount[i].count,
+                    {strict: false})
+                }
+              }
+            }
+            LiveChat.aggregate([
+              {$sort: { datetime: 1 }},
+              {$group: {_id: '$session_id', payload: { $last: '$payload' }, replied_by: { $last: '$replied_by' }, datetime: { $last: '$datetime' }}}
+            ], (err2, gotLastMessage) => {
+              if (err2) {
+                return res.status(500)
+                .json({status: 'failed', description: 'Internal Server Error'})
+              }
+              for (let a = 0; a < gotLastMessage.length; a++) {
+                for (let b = 0; b < sessions.length; b++) {
+                  if (sessions[b]._id.toString() === gotLastMessage[a]._id.toString()) {
+                    sessions[b].set('lastPayload',
+                      gotLastMessage[a].payload,
+                      {strict: false})
+                    sessions[b].set('lastRepliedBy',
+                      gotLastMessage[a].replied_by,
+                      {strict: false})
+                    sessions[b].set('lastDateTime',
+                      gotLastMessage[a].datetime,
+                      {strict: false})
+                  }
+                }
+              }
+              return res.status(200).json({
+                status: 'success',
+                payload: {closedSessions: sessions, count: sessionsData.length}
+              })
+            })
+          })
+        } else {
+          return res.status(200).json({
+            status: 'success',
+            payload: {closedSessions: sessions, count: sessionsData.length}
+          })
+        }
+      })
+    })
   })
 }
 
