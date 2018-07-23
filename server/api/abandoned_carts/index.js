@@ -9,7 +9,7 @@ const express = require('express')
 const router = express.Router()
 
 const auth = require('../../auth/auth.service')
-const controller = require('./pages.controller')
+const controller = require('./abandoned_carts.controller')
 
 router.get('/',
   auth.isAuthenticated(),

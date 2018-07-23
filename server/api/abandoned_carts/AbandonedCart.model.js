@@ -1,7 +1,7 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
-const pageSchema = new Schema({
+const abandonedSchema = new Schema({
   pageId: {
     type: String
   },
@@ -36,4 +36,4 @@ const pageSchema = new Schema({
   }
 })
 
-module.exports = mongoose.model('pages', pageSchema)
+module.exports = mongoose.model('abandoned_carts', abandonedSchema)

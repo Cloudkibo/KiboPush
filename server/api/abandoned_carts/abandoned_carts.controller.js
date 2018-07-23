@@ -3,7 +3,7 @@
  */
 
 const logger = require('../../components/logger')
-const Pages = require('./Pages.model')
+const Pages = require('./AbandonedCart.model')
 const TAG = 'api/pages/pages.controller.js'
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const Users = require('./../user/Users.model')

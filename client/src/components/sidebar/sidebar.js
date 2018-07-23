@@ -41,7 +41,8 @@ class Sidebar extends Component {
       smartReplies: true,
       templates: true,
       sequenceMessaging: true,
-      waitingResponse: false
+      waitingResponse: false,
+      abandonedCarts: true,
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -67,6 +68,23 @@ class Sidebar extends Component {
       this.setState({templates: nextProps.user.advancedMode, persistentMenu: nextProps.user.advancedMode, phoneNumber: nextProps.user.advancedMode, createPhoneList: nextProps.user.advancedMode, commentCapture: nextProps.user.advancedMode, sequenceMessaging: nextProps.user.advancedMode})
     }
   }
+
+  showAbandonedCarts () {
+    if (this.props.user && this.props.user.isSuperUser && this.props.user.advancedMode) {
+      // include user persmissions
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
+            <span className='m-menu__link-text'>Abandoned Carts</span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   showOperationalDashboard () {
     if (this.props.user) {
       if (this.props.user.isSuperUser) {
@@ -413,6 +431,7 @@ class Sidebar extends Component {
               {this.showCommentCapture()}
               {this.showSurveysItem()}
               {this.showPollsItem()}
+              {this.showAbandonedCarts()}
               {this.showSmartRespliesItem()}
               {this.showLiveChatItem()}
               {this.showAutoPostingItem()}
