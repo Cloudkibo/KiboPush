@@ -129,17 +129,18 @@ class Card extends React.Component {
   addButton (obj) {
     var temp = this.state.button
     temp.push(obj)
-    this.setState({button: temp})
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: temp})
+    this.setState({button: temp}, () => {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: temp})
+    })
   }
 
   editButton (obj) {
@@ -149,17 +150,18 @@ class Card extends React.Component {
       }
       return elm
     })
-    this.setState({button: temp})
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: this.state.button})
+    this.setState({button: temp}, () => {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button})
+    })
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })

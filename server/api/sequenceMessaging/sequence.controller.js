@@ -1,12 +1,19 @@
 const Messages = require('./message.model')
 const Sequences = require('./sequence.model')
+const SequenceSubscriberMessage = require('./sequenceSubscribersMessages.model')
 const SequenceSubscribers = require('./sequenceSubscribers.model')
 const SequenceMessages = require('./message.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const SequenceMessageQueue = require('./../SequenceMessageQueue/SequenceMessageQueue.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sequenceMessaging/sequence.controller.js'
+const URL = require('./../URLforClickedCount/URL.model')
+const Pages = require('./../pages/Pages.model')
+const Subscribers = require('./../subscribers/Subscribers.model')
+const config = require('./../../config/environment')
+const BroadcastUtility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
+const request = require('request')
 
 exports.allMessages = function (req, res) {
   Messages.find({sequenceId: req.params.id},
@@ -163,7 +170,58 @@ exports.setSchedule = function (req, res) {
       }
       if (req.body.condition === 'immediately') {
         if (message.isActive === true) {
-          // console.log('send the message immediately and remove from queue')
+          SequenceMessageQueue.find({'sequenceMessageId': message._id}, (err, messagesFromQueue) => {
+            if (err) {
+              return res.status(404)
+              .json({status: 'failed', description: 'Record not found'})
+            }
+            for (let i = 0; i < messagesFromQueue.length; i++) {
+              let messageFromQueue = messagesFromQueue[i]
+              if (messageFromQueue) {
+                Subscribers.findOne({'_id': messageFromQueue.subscriberId}, (err, subscriber) => {
+                  if (err) {
+                    return res.status(404)
+                    .json({status: 'failed', description: 'Record not found'})
+                  }
+
+                  Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                    if (err) {
+                      return res.status(404)
+                      .json({status: 'failed', description: 'Record not found'})
+                    }
+                    if (message.payload.length > 0) {
+                      AppendURLCount(message, (newPayload) => {
+                        let sequenceSubMessage = new SequenceSubscriberMessage({
+                          subscriberId: messageFromQueue.subscriberId,
+                          messageId: message._id,
+                          companyId: messageFromQueue.companyId,
+                          datetime: new Date(),
+                          seen: false
+                        })
+
+                        sequenceSubMessage.save((err2, result) => {
+                          if (err2) {
+                            logger.serverLog(TAG, {
+                              status: 'failed',
+                              description: 'Sequence Message Subscriber addition create failed',
+                              err2
+                            })
+                          }
+
+                          BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                          SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
+                            if (err) {
+                              logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                            }
+                          })
+                        })
+                      })
+                    }
+                  })
+                })
+              }
+            }
+          })
         }
       } else {
         SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
@@ -222,7 +280,59 @@ exports.setStatus = function (req, res) {
       }
       // this will update the status in queue. Queue will only send active messages
       if (message.schedule.condition === 'immediately') {
-        // console.log('message will be send immediately and remove from queue')
+        SequenceMessageQueue.find({'sequenceMessageId': message._id}, (err, messagesFromQueue) => {
+          if (err) {
+            return res.status(404)
+            .json({status: 'failed', description: 'Record not found'})
+          }
+          for (let i = 0; i < messagesFromQueue.length; i++) {
+            let messageFromQueue = messagesFromQueue[i]
+            if (messageFromQueue) {
+              Subscribers.findOne({'_id': messageFromQueue.subscriberId}, (err, subscriber) => {
+                if (err) {
+                  return res.status(404)
+                  .json({status: 'failed', description: 'Record not found'})
+                }
+
+                Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                  if (err) {
+                    return res.status(404)
+                    .json({status: 'failed', description: 'Record not found'})
+                  }
+
+                  if (message.payload.length > 0) {
+                    AppendURLCount(message, (newPayload) => {
+                      let sequenceSubMessage = new SequenceSubscriberMessage({
+                        subscriberId: messageFromQueue.subscriberId,
+                        messageId: message._id,
+                        companyId: messageFromQueue.companyId,
+                        datetime: new Date(),
+                        seen: false
+                      })
+
+                      sequenceSubMessage.save((err2, result) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'Sequence Message Subscriber addition create failed',
+                            err2
+                          })
+                        }
+
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                        SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
+                          if (err) {
+                            logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                          }
+                        })
+                      })
+                    })
+                  }
+                })
+              })
+            }
+          }
+        })
       } else {
         SequenceMessageQueue.update({sequenceMessageId: req.body.messageId}, {isActive: req.body.isActive}, {multi: true}, (err, result) => {
           if (err) {
@@ -602,7 +712,44 @@ exports.subscribeToSequence = function (req, res) {
 
         messages.forEach(message => {
           if (message.schedule.condition === 'immediately') {
-            // console.log('we will use the sending script here')
+            if (message.isActive === true) {
+              Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
+                if (err) {
+                  return res.status(404)
+                  .json({status: 'failed', description: 'Record not found'})
+                }
+
+                Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                  if (err) {
+                    return res.status(404)
+                    .json({status: 'failed', description: 'Record not found'})
+                  }
+
+                  if (message.payload.length > 0) {
+                    AppendURLCount(message, (newPayload) => {
+                      let sequenceSubMessage = new SequenceSubscriberMessage({
+                        subscriberId: subscriberId,
+                        messageId: message._id,
+                        companyId: subscriber.companyId,
+                        datetime: new Date(),
+                        seen: false
+                      })
+
+                      sequenceSubMessage.save((err2, result) => {
+                        if (err2) {
+                          logger.serverLog(TAG, {
+                            status: 'failed',
+                            description: 'Sequence Message Subscriber addition create failed',
+                            err2
+                          })
+                        }
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                      })
+                    })
+                  }
+                })
+              })
+            }
           } else {
             let sequenceQueuePayload = {
               sequenceId: req.body.sequenceId,
@@ -829,4 +976,111 @@ exports.testScheduler = function (req, res) {
       res.status(201).json({status: 'success', payload: sequenceCreated})
     }
   })
+}
+
+const AppendURLCount = function (sequenceMessage, callback) {
+  if (sequenceMessage.payload.length > 0) {
+    let newPayload = sequenceMessage.payload
+    sequenceMessage.payload.forEach((payloadItem, pindex) => {
+      if (payloadItem.buttons) {
+        payloadItem.buttons.forEach((button, bindex) => {
+          if (!(button.type === 'postback')) {
+            let URLObject = new URL({
+              originalURL: button.url,
+              module: {
+                id: sequenceMessage.sequenceId,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].buttons[bindex].url = newURL
+            })
+          }
+        })
+      }
+      if (payloadItem.componentType === 'media' && payloadItem.buttons) {
+        payloadItem.buttons.forEach((button, bindex) => {
+          let URLObject = new URL({
+            originalURL: button.url,
+            module: {
+              id: sequenceMessage.sequenceId,
+              type: 'sequence'
+            }
+          })
+          URLObject.save((err, savedurl) => {
+            if (err) logger.serverLog(TAG, err)
+            let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+            newPayload[pindex].buttons[bindex].url = newURL
+          })
+        })
+      }
+      if (payloadItem.componentType === 'gallery') {
+        payloadItem.cards.forEach((card, cindex) => {
+          card.buttons.forEach((button, bindex) => {
+            let URLObject = new URL({
+              originalURL: button.url,
+              module: {
+                id: sequenceMessage.sequenceId,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
+            })
+          })
+        })
+      }
+      if (payloadItem.componentType === 'list') {
+        payloadItem.listItems.forEach((element, lindex) => {
+          if (element.buttons && element.buttons.length > 0) {
+            element.buttons.forEach((button, bindex) => {
+              let URLObject = new URL({
+                originalURL: button.url,
+                module: {
+                  id: sequenceMessage.sequenceId,
+                  type: 'sequence'
+                }
+              })
+              URLObject.save((err, savedurl) => {
+                if (err) logger.serverLog(TAG, err)
+                let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+                newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
+              })
+            })
+          }
+          if (element.default_action) {
+            let URLObject = new URL({
+              originalURL: element.default_action.url,
+              module: {
+                id: sequenceMessage.sequenceId,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].listItems[lindex].default_action.url = newURL
+            })
+          }
+        })
+      }
+    })
+    callback(newPayload)
+  }
+}
+
+const sendSequence = (batchMessages, page) => {
+  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
+    if (err) {
+      return logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
+  })
+  const form = r.form()
+  form.append('access_token', page.accessToken)
+  form.append('batch', batchMessages)
 }

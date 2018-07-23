@@ -176,192 +176,188 @@ class InviteSubscribers extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='m-portlet m-portlet--full-height'>
-                <div className='m-portlet__body m-portlet__body--no-padding'>
-                  <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
-                    <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='2' />
-                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
-                        <div className='m-portlet__head'>
-                          <div className='m-portlet__head-caption'>
-                            <div className='m-portlet__head-title'>
-                              <h3 className='m-portlet__head-text'>
-                                Step 2: Invite Subscribers
-                              </h3>
-                            </div>
-                          </div>
-                          <div className='m-portlet__head-tools'>
-                            <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist'>
-                              <li className='nav-item m-tabs__item'>
-                                <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
-                                  Become a Subscriber
-                                </a>
-                              </li>
-                              <li className='nav-item m-tabs__item'>
-                                <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
-                                  Share Your Page
-                                </a>
-                              </li>
-                              <li className='nav-item m-tabs__item'>
-                                <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setLink}>
-                                  Share Page Link
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
+        <div className='m-content'>
+          <div className='m-portlet m-portlet--full-height'>
+            <div className='m-portlet__body m-portlet__body--no-padding'>
+              <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                  <Sidebar step='2' user={this.props.user} />
+                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Step 2: Invite Subscribers
+                          </h3>
                         </div>
-                        <div className='m-portlet__body'>
-                          { this.props.pages && this.props.pages.length === 0 &&
-                            <div classNameName='alert alert-success'>
-                              <h4 classNameName='block'>0 Connected Pages</h4>
-                              You do not have any connected pages. Please click <Link to='/addPageWizard' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages.
-                            </div>
-                          }
-                          {this.state.selectedTab === 'becomeSubscriber' &&
-                            <div>
-                              <br /><br />
-                              <label style={{fontWeight: 'normal'}}>You can become a subscriber of your page by sending a message to your page on messenger.</label>
-                              <br /><br /><br /><br />
-                              <div className='form-group m-form__group row'>
-                                <label className='col-2 col-form-label'>
-                                  Change Page
-                                </label>
-                                <div className='col-10'>
-                                  <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
-                                    {
-                                      this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                                      ))
-                                    }
-                                  </select>
-                                </div>
-                              </div>
-                              <br /><br /><br /><br />
-                              <center>
-                                <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
-                                  <span>Subscribe Now</span>
-                                </a>
-                                <br /><br /><br /><br />
-                                {this.state.sendTestMessage &&
-                                  <button className='btn btn-primary' onClick={this.sendTestBroadcast}>
-                                    <span>Send Test Message</span>
-                                  </button>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist'>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setSubscriber}>
+                              Become a Subscriber
+                            </a>
+                          </li>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setPage}>
+                              Share Your Page
+                            </a>
+                          </li>
+                          <li className='nav-item m-tabs__item'>
+                            <a className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={this.setLink}>
+                              Share Page Link
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      { this.props.pages && this.props.pages.length === 0 &&
+                        <div classNameName='alert alert-success'>
+                          <h4 classNameName='block'>0 Connected Pages</h4>
+                          You do not have any connected pages. Please click <Link to='/addPageWizard' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages.
+                        </div>
+                      }
+                      {this.state.selectedTab === 'becomeSubscriber' &&
+                        <div>
+                          <br /><br />
+                          <label style={{fontWeight: 'normal'}}>You can become a subscriber of your page by sending a message to your page on messenger.</label>
+                          <br /><br /><br /><br />
+                          <div className='form-group m-form__group row'>
+                            <label className='col-2 col-form-label'>
+                              Change Page
+                            </label>
+                            <div className='col-10'>
+                              <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                                {
+                                  this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                    <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                                  ))
                                 }
-                              </center>
+                              </select>
                             </div>
-                          }
-                          {this.state.selectedTab === 'sharePage' &&
-                            <div>
-                              <br /><br />
-                              <label style={{fontWeight: 'normal'}}>Become a subscriber of your own page
-                              This will let your friends know about your Facebook page.</label>
-                              <label style={{fontWeight: 'normal'}}>Build your audience by sharing the page on your timeline.
-                              This will let your friends know about your Facebook page.</label>
-                              <br /><br /><br /><br />
-                              <div className='form-group m-form__group row'>
-                                <label className='col-2 col-form-label'>
-                                  Change Page
-                                </label>
-                                <div className='col-10'>
-                                  <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
-                                    {
-                                      this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                                      ))
-                                    }
-                                  </select>
-                                </div>
-                              </div>
-                              <br /><br /><br /><br />
-                              <center>
-                                <a className='btn btn-primary' target='_blank' href={this.getlink()}>
-                                  <i className='fa fa-facebook' style={{marginRight: '10px'}} />
-                                  <span>Share Page</span>
-                                </a>
-                              </center>
-                            </div>
-                          }
-                          { this.state.selectedTab === 'shareLink' &&
-                            <div>
-                              <br /><br />
-                              <div className='form-group m-form__group row'>
-                                <label className='col-2 col-form-label'>
-                                Change Page
-                                </label>
-                                <div className='col-10'>
-                                  <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
-                                    {
-                                      this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                        <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                                      ))
-                                    }
-                                  </select>
-                                </div>
-                              </div>
-                              <br /><br /><br />
-                              <div className='form-group m-form__group row'>
-                                <label style={{fontWeight: 'normal'}}>This is the link to your facebook page. Copy this link and share it with people to invite them to become susbcribers of your page</label>
-                                <br /><input className='form-control m-input m-input--air' value={this.state.fblink} />
-                              </div>
-                              <br /><br /><br /><br />
-                              <center>
-                                <CopyToClipboard text={this.state.fblink}
-                                  onCopy={() => {
-                                    this.setState({copied: true})
-                                    toastr.options = {
-                                      'closeButton': true,
-                                      'debug': false,
-                                      'newestOnTop': false,
-                                      'progressBar': false,
-                                      'positionClass': 'toast-bottom-right',
-                                      'preventDuplicates': false,
-                                      'showDuration': '300',
-                                      'hideDuration': '1000',
-                                      'timeOut': '5000',
-                                      'extendedTimeOut': '1000',
-                                      'showEasing': 'swing',
-                                      'hideEasing': 'linear',
-                                      'showMethod': 'fadeIn',
-                                      'hideMethod': 'fadeOut'
-                                    }
-                                    toastr.success('Link Copied Successfully', 'Copied!')
-                                  }
-                                }>
-                                  <button className='btn btn-primary'>
-                                    <i className='fa fa-copy' style={{marginRight: '10px'}} />
-                                    <span>Copy Link</span>
-                                  </button>
-                                </CopyToClipboard>
-                              </center>
-                            </div>
-                        }
+                          </div>
+                          <br /><br /><br /><br />
+                          <center>
+                            <a className='btn btn-primary' href={this.state.fblink} target='_blank' onClick={this.sendTestMessage}>
+                              <span>Subscribe Now</span>
+                            </a>
+                            <br /><br /><br /><br />
+                            {this.state.sendTestMessage &&
+                              <button className='btn btn-primary' onClick={this.sendTestBroadcast}>
+                                <span>Send Test Message</span>
+                              </button>
+                            }
+                          </center>
                         </div>
-                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                          <div className='m-form__actions'>
-                            <div className='row'>
-                              <div className='col-lg-6 m--align-left' >
-                                <button onClick={this.goBack} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <i className='la la-arrow-left' />
-                                    <span>Back</span>&nbsp;&nbsp;
-                                  </span>
-                                </button>
-                              </div>
-                              <div className='col-lg-6 m--align-right'>
-                                <Link to='/greetingTextWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <span>Next</span>&nbsp;&nbsp;
-                                    <i className='la la-arrow-right' />
-                                  </span>
-                                </Link>
-                              </div>
+                      }
+                      {this.state.selectedTab === 'sharePage' &&
+                        <div>
+                          <br /><br />
+                          <label style={{fontWeight: 'normal'}}>Become a subscriber of your own page
+                          This will let your friends know about your Facebook page.</label>
+                          <label style={{fontWeight: 'normal'}}>Build your audience by sharing the page on your timeline.
+                          This will let your friends know about your Facebook page.</label>
+                          <br /><br /><br /><br />
+                          <div className='form-group m-form__group row'>
+                            <label className='col-2 col-form-label'>
+                              Change Page
+                            </label>
+                            <div className='col-10'>
+                              <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                                {
+                                  this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                    <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                                  ))
+                                }
+                              </select>
                             </div>
+                          </div>
+                          <br /><br /><br /><br />
+                          <center>
+                            <a className='btn btn-primary' target='_blank' href={this.getlink()}>
+                              <i className='fa fa-facebook' style={{marginRight: '10px'}} />
+                              <span>Share Page</span>
+                            </a>
+                          </center>
+                        </div>
+                      }
+                      { this.state.selectedTab === 'shareLink' &&
+                        <div>
+                          <br /><br />
+                          <div className='form-group m-form__group row'>
+                            <label className='col-2 col-form-label'>
+                            Change Page
+                            </label>
+                            <div className='col-10'>
+                              <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                                {
+                                  this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                    <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                                  ))
+                                }
+                              </select>
+                            </div>
+                          </div>
+                          <br /><br /><br />
+                          <div className='form-group m-form__group row'>
+                            <label style={{fontWeight: 'normal'}}>This is the link to your facebook page. Copy this link and share it with people to invite them to become susbcribers of your page</label>
+                            <br /><input className='form-control m-input m-input--air' value={this.state.fblink} />
+                          </div>
+                          <br /><br /><br /><br />
+                          <center>
+                            <CopyToClipboard text={this.state.fblink}
+                              onCopy={() => {
+                                this.setState({copied: true})
+                                toastr.options = {
+                                  'closeButton': true,
+                                  'debug': false,
+                                  'newestOnTop': false,
+                                  'progressBar': false,
+                                  'positionClass': 'toast-bottom-right',
+                                  'preventDuplicates': false,
+                                  'showDuration': '300',
+                                  'hideDuration': '1000',
+                                  'timeOut': '5000',
+                                  'extendedTimeOut': '1000',
+                                  'showEasing': 'swing',
+                                  'hideEasing': 'linear',
+                                  'showMethod': 'fadeIn',
+                                  'hideMethod': 'fadeOut'
+                                }
+                                toastr.success('Link Copied Successfully', 'Copied!')
+                              }
+                            }>
+                              <button className='btn btn-primary'>
+                                <i className='fa fa-copy' style={{marginRight: '10px'}} />
+                                <span>Copy Link</span>
+                              </button>
+                            </CopyToClipboard>
+                          </center>
+                        </div>
+                    }
+                    </div>
+                    <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                      <div className='m-form__actions'>
+                        <div className='row'>
+                          <div className='col-lg-6 m--align-left' >
+                            <button onClick={this.goBack} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <i className='la la-arrow-left' />
+                                <span>Back</span>&nbsp;&nbsp;
+                              </span>
+                            </button>
+                          </div>
+                          <div className='col-lg-6 m--align-right'>
+                            <Link to='/greetingTextWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <span>Next</span>&nbsp;&nbsp;
+                                <i className='la la-arrow-right' />
+                              </span>
+                            </Link>
                           </div>
                         </div>
                       </div>
@@ -381,7 +377,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage)
+    errorMessage: (state.broadcastsInfo.errorMessage),
+    user: (state.basicInfo.user)
   }
 }
 

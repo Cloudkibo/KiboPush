@@ -75,92 +75,96 @@ class AutomationControls extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='m-portlet m-portlet--full-height'>
-                <div className='m-portlet__body m-portlet__body--no-padding'>
-                  <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
-                    <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                      <Sidebar step='7' isBuyer={this.props.user.role === 'buyer'} />
-                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
-                        <div className='m-portlet__head'>
-                          <div className='m-portlet__head-caption'>
-                            <div className='m-portlet__head-title'>
-                              <h3 className='m-portlet__head-text'>
-                                Step 7: Live Chat Response Methods
-                              </h3>
-                            </div>
+        <div className='m-content'>
+          <div className='m-portlet m-portlet--full-height'>
+            <div className='m-portlet__body m-portlet__body--no-padding'>
+              <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                  <Sidebar step='7' isBuyer={this.props.user.role === 'buyer'} user={this.props.user} />
+                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Step 7: Live Chat Response Methods
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='row align-items-center'>
+                        <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                          <div className='radio'>
+                            <input id='autoResponse'
+                              type='radio'
+                              value='autoResponse'
+                              name='autoResponse'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'autoResponse'} />
+                            <p>All responses are automated (only chatbot would respond to subscribers)</p>
+                          </div>
+                          <div className='radio'>
+                            <input id='humanResponse'
+                              type='radio'
+                              value='humanResponse'
+                              name='humanResponse'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'humanResponse'} />
+                            <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
+                          </div>
+                          <div className='radio'>
+                            <input id='mixResponse'
+                              type='radio'
+                              value='mixResponse'
+                              name='mixResponse'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'mixResponse'} />
+                            <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
+                          </div>
+                          <div className='radio'>
+                            <input id='disableChat'
+                              type='radio'
+                              value='disableChat'
+                              name='disableChat'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'disableChat'} />
+                            <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
                           </div>
                         </div>
-                        <div className='m-portlet__body'>
-                          <div className='row align-items-center'>
-                            <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                              <div className='radio'>
-                                <input id='autoResponse'
-                                  type='radio'
-                                  value='autoResponse'
-                                  name='autoResponse'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'autoResponse'} />
-                                <p>All responses are automated (only chatbot would respond to subscribers)</p>
-                              </div>
-                              <div className='radio'>
-                                <input id='humanResponse'
-                                  type='radio'
-                                  value='humanResponse'
-                                  name='humanResponse'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'humanResponse'} />
-                                <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
-                              </div>
-                              <div className='radio'>
-                                <input id='mixResponse'
-                                  type='radio'
-                                  value='mixResponse'
-                                  name='mixResponse'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'mixResponse'} />
-                                <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
-                              </div>
-                              <div className='radio'>
-                                <input id='disableChat'
-                                  type='radio'
-                                  value='disableChat'
-                                  name='disableChat'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'disableChat'} />
-                                <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
-                              </div>
-                            </div>
+                      </div>
+                      <div className='row'>
+                        <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
+                      </div>
+                    </div>
+                    <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                      <div className='m-form__actions'>
+                        <div className='row'>
+                          <div className='col-lg-6 m--align-left' >
+                            <Link to='/menuWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <i className='la la-arrow-left' />
+                                <span>Back</span>&nbsp;&nbsp;
+                              </span>
+                            </Link>
                           </div>
-                          <div className='row'>
-                            <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
-                          </div>
-                        </div>
-                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                          <div className='m-form__actions'>
-                            <div className='row'>
-                              <div className='col-lg-6 m--align-left' >
-                                <Link to='/menuWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <i className='la la-arrow-left' />
-                                    <span>Back</span>&nbsp;&nbsp;
-                                  </span>
-                                </Link>
-                              </div>
-                              <div className='col-lg-6 m--align-right'>
-                                <Link to='/paymentMethodsWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <span>Next</span>&nbsp;&nbsp;
-                                    <i className='la la-arrow-right' />
-                                  </span>
-                                </Link>
-                              </div>
-                            </div>
+                          <div className='col-lg-6 m--align-right'>
+                            {this.props.user && this.props.isSuper
+                            ? <Link to='/paymentMethodsWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <span>Next</span>&nbsp;&nbsp;
+                                <i className='la la-arrow-right' />
+                              </span>
+                            </Link>
+                            : <Link to='/finish' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <span>Next</span>&nbsp;&nbsp;
+                                <i className='la la-arrow-right' />
+                              </span>
+                            </Link>
+                          }
                           </div>
                         </div>
                       </div>

@@ -33,6 +33,7 @@ export function forgotSuccess () {
 }
 
 export function logIn (data, msg) {
+  console.log('data in login', data)
   let headers1 = {
     'content-type': 'application/json'
   }
@@ -43,6 +44,7 @@ export function logIn (data, msg) {
       // eslint-disable-next-line no-undef
       headers: headers1
     }).then((res) => res.json()).then((res) => res).then((res) => {
+      console.log('res in login', res)
       if (res.token) {
         auth.putCookie(res.token)
         dispatch(Success())

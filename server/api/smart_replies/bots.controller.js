@@ -11,12 +11,11 @@ const Pages = require('../pages/Pages.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
+const WaitingSubscribers = require('./waitingSubscribers.model')
+const UnAnsweredQuestions = require('./unansweredQuestions.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 let utility = require('./../broadcasts/broadcasts.utility')
-const Sessions = require('./../sessions/sessions.model')
-const _ = require('lodash')
-const mongoose = require('mongoose')
 
 function transformPayload (payload) {
   var transformed = []
@@ -53,38 +52,72 @@ function getWitResponse (message, token, bot, pageId, senderId) {
         logger.serverLog(TAG, 'Error Occured In Getting Response From WIT.AI app')
         return
       }
-      // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
-      if (Object.keys(JSON.parse(witres.body).entities).length === 0) {
+      logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
+      let temp = JSON.parse(witres.body)
+      if (Object.keys(JSON.parse(witres.body).entities).length === 0 || temp.entities.intent[0].confidence < 0.80) {
         logger.serverLog(TAG, 'No response found')
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, db_res) => {
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'missCount': 1}}).exec((err, dbRes) => {
           if (err) {
             throw err
           } else {
-            console.log(db_res)
+            // Will only run when the entities are not zero i.e. confidence is low
+            if (!(Object.keys(JSON.parse(witres.body).entities).length === 0)) {
+              console.log(dbRes)
+              let temp = JSON.parse(witres.body)
+              console.log({temp})
+              let unansweredQuestion = {
+                botId: bot._id,
+                intentId: temp.entities.intent[0].value,
+                Question: temp._text,
+                Confidence: temp.entities.intent[0].confidence
+              }
+              let obj = new UnAnsweredQuestions(unansweredQuestion)
+              obj.save((err, result) => {
+                if (err) {
+                  logger.serverLog(TAG, 'unable to insert record into Unanswered questions')
+                }
+
+                logger.serverLog(TAG, result)
+              })
+            }
           }
         })
         return {found: false, intent_name: 'Not Found'}
       }
       var intent = JSON.parse(witres.body).entities.intent[0]
-      if (intent.confidence > 0.55) {
+      if (intent.confidence > 0.80) {
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'hitCount': 1}}).exec((err, db_res) => {
+        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'hitCount': 1}}).exec((err, dbRes) => {
           if (err) {
             throw err
           } else {
-            console.log(db_res)
+            console.log(dbRes)
           }
         })
-        for (let i = 0; i < bot.payload.length; i++) {
-          if (bot.payload[i].intent_name === intent.value) {
-            sendMessenger(bot.payload[i].answer, pageId, senderId)
+        Subscribers.findOne({'senderId': senderId}, (err, subscriber) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-        }
+
+          for (let i = 0; i < bot.payload.length; i++) {
+            if (bot.payload[i].intent_name === intent.value) {
+              let postbackPayload = {
+                'action': 'waitingSubscriber',
+                'botId': bot._id,
+                'subscriberId': subscriber._id,   // FB ID
+                'pageId': pageId,
+                'intentId': intent.value,
+                'Question': temp._text
+              }
+              sendMessenger(bot.payload[i].answer, pageId, senderId, postbackPayload)
+            }
+          }
+        })
       }
     })
 }
 
-function sendMessenger (message, pageId, senderId) {
+function sendMessenger (message, pageId, senderId, postbackPayload) {
   Subscribers.findOne({senderId: senderId}, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -96,7 +129,7 @@ function sendMessenger (message, pageId, senderId) {
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
     let messageData = utility.prepareSendAPIPayload(
                   senderId,
-                   {'componentType': 'text', 'text': message + '  (This is an auto-generated message)'}, subscriber.firstName, subscriber.lastName, true)
+                   {'componentType': 'text', 'text': message + '  (Bot)', 'buttons': [{'type': 'postback', 'title': 'Talk to Agent', 'payload': JSON.stringify(postbackPayload)}]}, subscriber.firstName, subscriber.lastName, true)
     Pages.findOne({pageId: pageId}, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -226,7 +259,7 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      return res.status(200).json({status: 'success', payload: bots })
+      return res.status(200).json({ status: 'success', payload: bots })
     })
 }
 
@@ -295,6 +328,9 @@ exports.edit = function (req, res) {
   logger.serverLog(TAG,
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, (err, affected) => {
+    if (err) {
+      return logger.serverLog(TAG, 'Error Occured In editing the bot')
+    }
     console.log('affected rows %d', affected)
     Bots
     .find({
@@ -318,6 +354,9 @@ exports.status = function (req, res) {
   logger.serverLog(TAG,
               `Updating bot status ${JSON.stringify(req.body)}`)
   Bots.update({_id: req.body.botId}, {isActive: req.body.isActive}, function (err, affected) {
+    if (err) {
+      return logger.serverLog(TAG, 'Error Occured In status')
+    }
     console.log('affected rows %d', affected)
     return res.status(200).json({status: 'success'})
   })
@@ -471,4 +510,40 @@ exports.waitingReply = function (req, res) {
           })
       })
     })
+}
+
+exports.unAnsweredQueries = function (req, res) {
+  logger.serverLog(TAG, `Fetching unanswered queries ${JSON.stringify(req.body)}`)
+  UnAnsweredQuestions.find({botId: req.body.botId})
+  .populate('botId')
+  .exec((err, queries) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (queries) {
+      return res.status(200).json({ status: 'success', payload: queries })
+    }
+  })
+}
+
+exports.waitSubscribers = function (req, res) {
+  logger.serverLog(TAG, `Fetching waiting subscribers ${JSON.stringify(req.body)}`)
+  WaitingSubscribers.find({botId: req.body.botId})
+  .populate('botId pageId subscriberId')
+  .exec((err, subscribers) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (subscribers) {
+      return res.status(200).json({ status: 'success', payload: subscribers })
+    }
+  })
 }

@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -385,153 +383,149 @@ class createSurvey extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Template Survey</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Create Template Survey</h3>
               </div>
             </div>
-            <div className='m-content'>
+          </div>
+          <div className='m-content'>
 
-              <div className='row'>
-                <div
-                  className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div
-                      className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
+            <div className='row'>
+              <div
+                className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                <div className='row align-items-center'>
+                  <div className='col-xl-8 order-2 order-xl-1' />
+                  <div
+                    className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                    {
+                      this.state.isShowingModal &&
+                      <ModalContainer style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <ModalDialog style={{width: '500px'}}
                           onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Add Category</h3>
-                            <input className='form-control'
-                              placeholder='Enter category' ref='newCategory' />
-                            <br />
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.closeDialog()
-                                this.saveCategory()
-                              }}>Save
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      {
-                        this.state.isShowingModalDelete &&
-                        <ModalContainer style={{width: '500px', marginTop: '100px'}}
+                          <h3>Add Category</h3>
+                          <input className='form-control'
+                            placeholder='Enter category' ref='newCategory' />
+                          <br />
+                          <button style={{float: 'right'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.closeDialog()
+                              this.saveCategory()
+                            }}>Save
+                          </button>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    {
+                      this.state.isShowingModalDelete &&
+                      <ModalContainer style={{width: '500px', marginTop: '100px'}}
+                        onClose={this.closeDialogDelete}>
+                        <ModalDialog style={{width: '500px', marginTop: '100px'}}
                           onClose={this.closeDialogDelete}>
-                          <ModalDialog style={{width: '500px', marginTop: '100px'}}
-                            onClose={this.closeDialogDelete}>
-                            {this.props.categories.map((d) => (
-                              <div className='form-group m-form__group'>
+                          {this.props.categories.map((d) => (
+                            <div className='form-group m-form__group'>
 
-                                <div className='m-input-icon m-input-icon--left m-input-icon--right'>
-                                  <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
-                                  <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
-                                    <span>
-                                      <i className='fa fa-times' />
-                                    </span>
+                              <div className='m-input-icon m-input-icon--left m-input-icon--right'>
+                                <input type='text' className='form-control m-input m-input--pill m-input--air' value={d.name} readOnly />
+                                <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeCategory(d)}>
+                                  <span>
+                                    <i className='fa fa-times' />
                                   </span>
-                                </div>
+                                </span>
                               </div>
-                  ))}
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      <div
-                        className='m-separator m-separator--dashed d-xl-none' />
-                    </div>
+                            </div>
+                ))}
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    <div
+                      className='m-separator m-separator--dashed d-xl-none' />
                   </div>
                 </div>
-                <div
-                  className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                  <div className='m-portlet m-portlet--mobile'>
-                    <div className='m-portlet__body'>
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='titl'>
-                          <label className='control-label'><h5>Title</h5></label>
-                          <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
-                        </div>
+              </div>
+              <div
+                className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                <div className='m-portlet m-portlet--mobile'>
+                  <div className='m-portlet__body'>
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='titl'>
+                        <label className='control-label'><h5>Title</h5></label>
+                        <input className='form-control'
+                          placeholder='Enter form title here' ref='title' />
                       </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Description</h5></label>
-                          <textarea className='form-control'
-                            placeholder='Enter form description here'
-                            rows='3' ref='description' />
-                        </div>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='desc'>
+                        <label className='control-label'><h5>Description</h5></label>
+                        <textarea className='form-control'
+                          placeholder='Enter form description here'
+                          rows='3' ref='description' />
                       </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Category</h5></label>
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectcategory' style={{width: '50px'}} />
-                              <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               Add category
-                             </button>
-                            </div>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='desc'>
+                        <label className='control-label'><h5>Category</h5></label>
+                        <div className='m-form'>
+                          <div className='form-group m-form__group'>
+                            <select id='selectcategory' style={{width: '50px'}} />
+                            <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
+                             Add category
+                           </button>
                           </div>
                         </div>
                       </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <h5> Add Questions </h5>
-                        {this.createUI()}
-                      </div>
-
-                      {/*
-                     <div className='col-xl-12'>
-                     <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
-                     <div className='col-sm-6 col-md-4'>
-                     <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
-                     <option value='text'>Text</option>
-                     <option value='multichoice'>Multi Choice Question</option>
-                     </select>
-                     <br />
-                     </div>
-                     </div>
-                     */}
-
-                      <div className='col-sm-6 col-md-4'>
-                        <button id='questions' className='btn btn-primary btn-sm'
-                          onClick={this.addClick.bind(this)}> Add Questions
-                      </button>
-                      </div>
-                      <br />
-                      {this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-
-                    }
-
                     </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.createSurvey}> Create Survey
-                        </button>
-                        <Link
-                          to='/templates'
-                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                          Cancel
-                        </Link>
-                      </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <h5> Add Questions </h5>
+                      {this.createUI()}
+                    </div>
+
+                    {/*
+                   <div className='col-xl-12'>
+                   <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
+                   <div className='col-sm-6 col-md-4'>
+                   <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
+                   <option value='text'>Text</option>
+                   <option value='multichoice'>Multi Choice Question</option>
+                   </select>
+                   <br />
+                   </div>
+                   </div>
+                   */}
+
+                    <div className='col-sm-6 col-md-4'>
+                      <button id='questions' className='btn btn-primary btn-sm'
+                        onClick={this.addClick.bind(this)}> Add Questions
+                    </button>
+                    </div>
+                    <br />
+                    {this.state.alertMessage !== '' &&
+                    <center>
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+
+                  }
+
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                    <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
+                      <button className='btn btn-primary'
+                        onClick={this.createSurvey}> Create Survey
+                      </button>
+                      <Link
+                        to='/templates'
+                        className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                        Cancel
+                      </Link>
                     </div>
                   </div>
                 </div>

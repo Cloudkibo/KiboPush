@@ -1,6 +1,4 @@
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import PagesInfo from './userPages'
 import BroadcastsInfo from './userBroadcasts'
 import SurveysInfo from './userSurveys'
@@ -26,7 +24,8 @@ class UserDetails extends React.Component {
       isShowingModalAccount: false,
       isShowingModalSubscribers: false,
       isShowingModalLiveChat: false,
-      id: ''
+      id: '',
+      searchValue: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)
@@ -148,87 +147,80 @@ class UserDetails extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
-        <Header />
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{height: 'fit-content'}}>
-            {
-              this.state.isShowingModalAccount &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialogAccount}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogAccount}>
-                  <h3>Delete Account?</h3>
-                  <p>Are you sure you want to delete this entire account?</p>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      this.deleteAccount(this.state.id)
-                    }}>Delete
-                  </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.isShowingModalLiveChat &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialogLiveChat}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogLiveChat}>
-                  <h3>Delete Live Chat?</h3>
-                  <p>Are you sure you want to delete the live chat for this account?</p>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      this.deleteLiveChat(this.state.id)
-                    }}>Delete
-                  </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.isShowingModalSubscribers &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialogSubscribers}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogSubscribers}>
-                  <h3>Delete Subscribers?</h3>
-                  <p>Are you sure you want to delete all the subscribers for this account?</p>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      this.deleteSubscribers(this.state.id)
-                    }}>Delete
-                  </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            <div className='m-subheader '>
-              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' onClick={() => this.showDialogAccount(this.props.location.state._id)}>Delete Entire Account
+        {
+          this.state.isShowingModalAccount &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogAccount}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogAccount}>
+              <h3>Delete Account?</h3>
+              <p>Are you sure you want to delete this entire account?</p>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.deleteAccount(this.state.id)
+                }}>Delete
               </button>
-              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.showDialogLiveChat(this.props.location.state._id)}>Delete Live Chat
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalLiveChat &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogLiveChat}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogLiveChat}>
+              <h3>Delete Live Chat?</h3>
+              <p>Are you sure you want to delete the live chat for this account?</p>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.deleteLiveChat(this.state.id)
+                }}>Delete
               </button>
-              <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.showDialogSubscribers(this.props.location.state._id)}>Delete Subscribers
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalSubscribers &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogSubscribers}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogSubscribers}>
+              <h3>Delete Subscribers?</h3>
+              <p>Are you sure you want to delete all the subscribers for this account?</p>
+              <button style={{float: 'right'}}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.deleteSubscribers(this.state.id)
+                }}>Delete
               </button>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
-                </div>
-              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div className='m-subheader '>
+          <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' onClick={() => this.showDialogAccount(this.props.location.state._id)}>Delete Entire Account
+          </button>
+          <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.showDialogLiveChat(this.props.location.state._id)}>Delete Live Chat
+          </button>
+          <button className='btn m-btn m-btn--gradient-from-success m-btn--gradient-to-accent pull-right' style={{marginRight: '10px'}} onClick={() => this.showDialogSubscribers(this.props.location.state._id)}>Delete Subscribers
+          </button>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
             </div>
-            <div className='m-content'>
-              <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
-              <BroadcastsInfo userID={this.props.location.state._id} />
-              <SurveysInfo userID={this.props.location.state._id} />
-              <PollsInfo userID={this.props.location.state._id} />
-              <div style={{'overflow': 'auto'}}>
-                <Link to='/operationalDashboard' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
-                </Link>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div className='m-content'>
+          <PagesInfo pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
+          <BroadcastsInfo userID={this.props.location.state._id} />
+          <SurveysInfo userID={this.props.location.state._id} />
+          <PollsInfo userID={this.props.location.state._id} />
+          <div style={{'overflow': 'auto'}}>
+            <Link to='/operationalDashboard' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
+            </Link>
           </div>
         </div>
       </div>

@@ -1,7 +1,5 @@
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
-import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import Popover from 'react-simple-popover'
 import CopyLink from './copyLink'
@@ -40,9 +38,7 @@ class GrowthTools extends React.Component {
   render () {
     return (
       <div>
-        <Header />
         <HeaderResponsive />
-        <Sidebar />
         <Responsive />
         <div id='growthTools' className='container'>
           <br /><br /><br /><br /><br /><br />

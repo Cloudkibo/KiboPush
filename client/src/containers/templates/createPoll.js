@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -167,127 +165,123 @@ class createPoll extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Create Template Poll</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Create Template Poll</h3>
               </div>
             </div>
-            <div className='m-content'>
+          </div>
+          <div className='m-content'>
 
-              <div className='row'>
-                <div
-                  className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                  <div className='row align-items-center'>
-                    <div className='col-xl-8 order-2 order-xl-1' />
-                    <div
-                      className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                      {
-                        this.state.isShowingModal &&
-                        <ModalContainer style={{width: '500px'}}
+            <div className='row'>
+              <div
+                className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                <div className='row align-items-center'>
+                  <div className='col-xl-8 order-2 order-xl-1' />
+                  <div
+                    className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                    {
+                      this.state.isShowingModal &&
+                      <ModalContainer style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <ModalDialog style={{width: '500px'}}
                           onClose={this.closeDialog}>
-                          <ModalDialog style={{width: '500px'}}
-                            onClose={this.closeDialog}>
-                            <h3>Add Category</h3>
-                            <input className='form-control'
-                              placeholder='Enter category' ref='newCategory' />
-                            <br />
-                            <button style={{float: 'right'}}
-                              className='btn btn-primary btn-sm'
-                              onClick={() => {
-                                this.closeDialog()
-                                this.saveCategory()
-                              }}>Save
-                            </button>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
-                      <div
-                        className='m-separator m-separator--dashed d-xl-none' />
-                    </div>
+                          <h3>Add Category</h3>
+                          <input className='form-control'
+                            placeholder='Enter category' ref='newCategory' />
+                          <br />
+                          <button style={{float: 'right'}}
+                            className='btn btn-primary btn-sm'
+                            onClick={() => {
+                              this.closeDialog()
+                              this.saveCategory()
+                            }}>Save
+                          </button>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    <div
+                      className='m-separator m-separator--dashed d-xl-none' />
                   </div>
                 </div>
-                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                  <div className='m-portlet' style={{height: '100%'}}>
-                    <div className='m-portlet__body'>
-                      <div className='m-form'>
-                        <div className='form-group m-form__group' id='titl'>
-                          <label className='control-label'>Title</label>
-                          <input className='form-control'
-                            placeholder='Enter form title here' ref='title' />
-                        </div>
-                        <div className='form-group m-form__group' id='desc'>
-                          <label className='control-label'>Category</label>
-                          <div className='m-form'>
-                            <div className='form-group m-form__group'>
-                              <select id='selectcategory' />
-                              <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
-                               + Add category
-                             </button>
-                            </div>
+              </div>
+              <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                <div className='m-portlet' style={{height: '100%'}}>
+                  <div className='m-portlet__body'>
+                    <div className='m-form'>
+                      <div className='form-group m-form__group' id='titl'>
+                        <label className='control-label'>Title</label>
+                        <input className='form-control'
+                          placeholder='Enter form title here' ref='title' />
+                      </div>
+                      <div className='form-group m-form__group' id='desc'>
+                        <label className='control-label'>Category</label>
+                        <div className='m-form'>
+                          <div className='form-group m-form__group'>
+                            <select id='selectcategory' />
+                            <button onClick={this.showDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '15px'}}>
+                             + Add category
+                           </button>
                           </div>
                         </div>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Ask something...</label>
-                          <textarea className='form-control'
-                            placeholder='Enter Question'
-                            value={this.state.statement}
-                            onChange={(e) => this.updateStatment(e)} />
-                        </div>
-                        <div style={{top: '10px'}}>
-                          <label className='control-label'> Add 3 responses</label>
-                          <fieldset className='input-group-vertical'>
-                            <div id='responses' className='form-group m-form__group'>
-                              <label className='sr-only'>Response1</label>
-                              <input type='text' className='form-control'
-                                value={this.state.option1}
-                                onChange={(e) => this.updateOptions(e, 1)}
-                                placeholder='Response 1' maxLength='20' />
-                            </div>
-                            <div className='form-group m-form__group'>
-                              <label className='sr-only'>Response2</label>
-                              <input type='text' className='form-control'
-                                value={this.state.option2}
-                                onChange={(e) => this.updateOptions(e, 2)}
-                                placeholder='Response 2' maxLength='20' />
-                            </div>
-                            <div className='form-group m-form__group'>
-                              <label className='sr-only'>Response3</label>
-                              <input type='text' className='form-control'
-                                value={this.state.option3}
-                                onChange={(e) => this.updateOptions(e, 3)}
-                                placeholder='Response 3' maxLength='20' />
-                            </div>
-                          </fieldset>
-                        </div>
                       </div>
-                      <br />
-                      { this.state.alertMessage !== '' &&
-                        <center>
-                          <Alert type='danger' style={{marginTop: '30px'}}>{this.state.alertMessage}
-                            You have either left one or more responses empty or you
-                            have not asked anything. Please ask something and fill all
-                            three responses in order to create the poll.
-                          </Alert>
-                        </center>
-                      }
+                      <div id='question' className='form-group m-form__group'>
+                        <label className='control-label'>Ask something...</label>
+                        <textarea className='form-control'
+                          placeholder='Enter Question'
+                          value={this.state.statement}
+                          onChange={(e) => this.updateStatment(e)} />
+                      </div>
+                      <div style={{top: '10px'}}>
+                        <label className='control-label'> Add 3 responses</label>
+                        <fieldset className='input-group-vertical'>
+                          <div id='responses' className='form-group m-form__group'>
+                            <label className='sr-only'>Response1</label>
+                            <input type='text' className='form-control'
+                              value={this.state.option1}
+                              onChange={(e) => this.updateOptions(e, 1)}
+                              placeholder='Response 1' maxLength='20' />
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <label className='sr-only'>Response2</label>
+                            <input type='text' className='form-control'
+                              value={this.state.option2}
+                              onChange={(e) => this.updateOptions(e, 2)}
+                              placeholder='Response 2' maxLength='20' />
+                          </div>
+                          <div className='form-group m-form__group'>
+                            <label className='sr-only'>Response3</label>
+                            <input type='text' className='form-control'
+                              value={this.state.option3}
+                              onChange={(e) => this.updateOptions(e, 3)}
+                              placeholder='Response 3' maxLength='20' />
+                          </div>
+                        </fieldset>
+                      </div>
                     </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                        <button className='btn btn-primary'
-                          onClick={this.createPoll}> Create Poll
-                        </button>
-                        <Link
-                          to='/templates'
-                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                          Cancel
-                        </Link>
-                      </div>
+                    <br />
+                    { this.state.alertMessage !== '' &&
+                      <center>
+                        <Alert type='danger' style={{marginTop: '30px'}}>{this.state.alertMessage}
+                          You have either left one or more responses empty or you
+                          have not asked anything. Please ask something and fill all
+                          three responses in order to create the poll.
+                        </Alert>
+                      </center>
+                    }
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                    <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                      <button className='btn btn-primary'
+                        onClick={this.createPoll}> Create Poll
+                      </button>
+                      <Link
+                        to='/templates'
+                        className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                        Cancel
+                      </Link>
                     </div>
                   </div>
                 </div>

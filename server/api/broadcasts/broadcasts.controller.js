@@ -10,6 +10,7 @@ const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
 const Bots = require('./../smart_replies/Bots.model')
+const WaitingSubscriber = require('./../smart_replies/waitingSubscribers.model')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -124,6 +125,7 @@ exports.indexx = function (req, res) {
 }
 
 exports.index = function (req, res) {
+  logger.serverLog(TAG, `req.body broadcasts ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
       if (err) {
@@ -239,6 +241,7 @@ exports.index = function (req, res) {
           })
         }
       } else if (req.body.first_page === 'next') {
+        let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
         if (!req.body.filter) {
           let startDate = new Date()  // Current date
           startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
@@ -259,7 +262,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -319,7 +322,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -340,6 +343,7 @@ exports.index = function (req, res) {
           })
         }
       } else if (req.body.first_page === 'previous') {
+        let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
         if (!req.body.filter) {
           let startDate = new Date()  // Current date
           startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
@@ -360,7 +364,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -420,7 +424,7 @@ exports.index = function (req, res) {
               return res.status(404)
                 .json({ status: 'failed', description: 'BroadcastsCount not found' })
             }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
+            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
               .exec((err, broadcasts) => {
                 if (err) {
                   return res.status(404)
@@ -726,6 +730,8 @@ exports.getfbMessage = function (req, res) {
                 subscribeToSequence(resp.sequenceId, event)
               } else if (resp.action === 'unsubscribe') {
                 unsubscribeFromSequence(resp.sequenceId, event)
+              } else if (resp.action === 'waitingSubscriber') {   // This is for waiting bot subscriber
+                saveToWaitingSubscribers(resp, event)
               } else {
                 sendMenuReply(event)
               }
@@ -2342,5 +2348,39 @@ function unsubscribeFromSequence (sequenceId, req) {
         })
       })
     })
+  })
+}
+
+function saveToWaitingSubscribers (payload, req) {
+  WaitingSubscriber.findOne({subscriberId: payload.subscriberId, botId: payload.botId}, (err, waitingSubscriber) => {
+    if (err) {
+      logger.serverLog(TAG, `INTERNAL SERVER ERROR ${JSON.stringify(err)}`)
+    }
+
+    if (waitingSubscriber) {
+      logger.serverLog(TAG, 'subscriber is already in waiting queue')
+    } else {
+      Pages.findOne({pageId: payload.pageId}, (err, page) => {
+        if (err) {
+          logger.serverLog(TAG, `INTERNAL SERVER ERROR ${JSON.stringify(err)}`)
+        }
+
+        let waitingSubscriberPayload = {
+          botId: payload.botId,
+          subscriberId: payload.subscriberId,
+          pageId: page._id,
+          intentId: payload.intentId,
+          Question: payload.Question
+        }
+        let waitingSubscriber = new WaitingSubscriber(waitingSubscriberPayload)
+        waitingSubscriber.save((err, result) => {
+          if (err) {
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          logger.serverLog(TAG, result)
+        })
+      })
+    }
   })
 }

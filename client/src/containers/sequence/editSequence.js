@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -101,9 +99,7 @@ class CreateSequence extends React.Component {
       } else if (this.state.condition === 'day(s)') {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
-      var utcDate = new Date(d1).toISOString()
-      d1.setHours(d1.getHours() + 5)
-      utcDate = new Date(d1).toISOString()   // We can keep the date for queue schedule purposes == don't remvoe it
+      let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
       this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
     }
   }
@@ -177,15 +173,10 @@ class CreateSequence extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             {
               this.state.isShowingModalDelete &&
               <ModalContainer style={{width: '500px'}}
@@ -243,7 +234,7 @@ class CreateSequence extends React.Component {
                           <div>
                           <div className='m-list-timeline__time'>
                             <div className='row' style={{height: '57px', width: 'max-content', cursor: 'pointer'}} id={'buttonTarget-' + message._id} ref={(b) => { this.target = b }} onClick={() => this.handleClick(message._id, i)}>
-                              <span className='m-list-timeline__text' style={{ width: '100px', marginTop: '6px', verticalAlign: 'middle', lineHeight: `${i*33+97}px`}}>
+                              <span className='m-list-timeline__text' style={{ width: '200px', marginTop: '6px', verticalAlign: 'middle', lineHeight: `${i*33+97}px`}}>
                                 {message.schedule.condition === 'immediately'
                                 ? <u>immediately</u>
                                 : <u>After {message.schedule.days} {message.schedule.condition}</u>
@@ -331,11 +322,11 @@ class CreateSequence extends React.Component {
                                   <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
                                   <div className='row' style = {{padding: '5px', border: '1px solid #ccc', borderRadius: '10px', boxShadow: '2px 5px #ccc', width: 'max-content', marginLeft: '10px', cursor: 'pointer'}}>
                                     <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-																		<label>
-																			<input type="checkbox" defaultChecked={message.isActive} name="" onChange={(e) => this.changeStatus(e, message._id)} />
-																			<span></span>
-																		</label>
-									                 </span>
+    																<label>
+    																	<input type="checkbox" defaultChecked={message.isActive} name="" onChange={(e) => this.changeStatus(e, message._id)} />
+    																	<span></span>
+    																</label>
+    							                 </span>
                                     <span className='m-list-timeline__text m-card-profile__email m-link' style={{width: '300px', marginTop: '10px', marginLeft: '50px'}} onClick={() => this.gotoView(message)}>Send <label style={{fontWeight: '500'}}>{message.title}</label></span>
                                     <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.sent}</span>
                                     <span className='m-list-timeline__text' style={{width: '80', marginTop: '10px'}}>{message.seen}</span>
@@ -364,8 +355,6 @@ class CreateSequence extends React.Component {
         </div>
       </div>
     </div>
-</div>
-</div>
     )
   }
 }
