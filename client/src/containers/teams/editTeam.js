@@ -3,6 +3,8 @@
  */
 
 import React from 'react'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link, browserHistory } from 'react-router'
@@ -256,220 +258,225 @@ class EditTeam extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                {this.props.location.state.module === 'edit'
-                ? <h3 className='m-subheader__title'>Edit Team</h3>
-                : <h3 className='m-subheader__title'>View Team</h3>
-                }
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  {this.props.location.state.module === 'edit'
+                  ? <h3 className='m-subheader__title'>Edit Team</h3>
+                  : <h3 className='m-subheader__title'>View Team</h3>
+                  }
+                </div>
               </div>
             </div>
-          </div>
-          <div className='m-content'>
-            <div className='row'>
-              <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet' style={{height: '100%'}}>
-                  <div className='m-portlet__body'>
-                    <div className='m-form'>
-                      <div id='name' className='form-group m-form__group'>
-                        <label className='control-label'>Team Name:</label>
-                        {this.props.location.state.module === 'edit'
-                        ? <input className='form-control'
-                          placeholder='Enter name here' value={this.state.name} onChange={(e) => this.updateName(e)}
-                           />
-                         : <input className='form-control'
-                           placeholder='Enter name here' value={this.state.name} disabled
-                            />
-                       }
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__body'>
+                      <div className='m-form'>
+                        <div id='name' className='form-group m-form__group'>
+                          <label className='control-label'>Team Name:</label>
+                          {this.props.location.state.module === 'edit'
+                          ? <input className='form-control'
+                            placeholder='Enter name here' value={this.state.name} onChange={(e) => this.updateName(e)}
+                             />
+                           : <input className='form-control'
+                             placeholder='Enter name here' value={this.state.name} disabled
+                              />
+                         }
+                        </div>
+                        <div id='description' className='form-group m-form__group'>
+                          <label className='control-label'>Team Description:</label>
+                          {this.props.location.state.module === 'edit'
+                          ? <textarea className='form-control'
+                            placeholder='Enter description here' value={this.state.description} onChange={(e) => this.updateDescription(e)}
+                             />
+                           : <textarea className='form-control'
+                             placeholder='Enter description here' value={this.state.description} disabled
+                              />
+                          }
+                        </div>
                       </div>
-                      <div id='description' className='form-group m-form__group'>
-                        <label className='control-label'>Team Description:</label>
-                        {this.props.location.state.module === 'edit'
-                        ? <textarea className='form-control'
-                          placeholder='Enter description here' value={this.state.description} onChange={(e) => this.updateDescription(e)}
-                           />
-                         : <textarea className='form-control'
-                           placeholder='Enter description here' value={this.state.description} disabled
-                            />
-                        }
-                      </div>
-                    </div>
-                    <br />
-                    <div className='row'>
-                      <div className='col-lg-8 col-md-8 col-sm-8'>
-                        <label>Agents:</label>
-                        {this.state.agentIds && this.state.agentIds.length > 0 &&
-                          <div>
-                            <ul className='list-unstyled'>
-                              {
-                              this.state.agentIds.map((agent, i) => (
-                                <li className='m-nav__item'>
-                                  <span>
-                                    <img alt='pic' style={{height: '30px'}} src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                                    <span>{agent.name}</span>&nbsp;&nbsp;&nbsp;
-                                    {this.props.location.state.module === 'edit' &&
-                                    <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent)} />
-                                    }
-                                  </span>
-                                </li>
-                                ))
-                              }
-                            </ul>
-                          </div>
-                        }
-                        <br />
-                        {this.props.location.state.module === 'edit' &&
-                        <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
-                          <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
-                          Add Agents
-                          </a>
-                          {
-                              this.state.showDropDown &&
-                              <div className='m-dropdown__wrapper'>
-                                <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
-                                <div className='m-dropdown__inner'>
-                                  <div className='m-dropdown__body'>
-                                    <div className='m-dropdown__content'>
-                                      <ul className='m-nav'>
-                                        <li className='m-nav__section m-nav__section--first'>
-                                          <span className='m-nav__section-text'>
-                                            Agents
-                                          </span>
-                                        </li>
-                                        {
-                                          this.props.members.map((member, i) => (
-                                            <li className='m-nav__item'>
-                                              <a onClick={() => this.changeAgent(member.userId)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                { this.exists(member.userId.name) === true
-                                                ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                  <i className='la la-check' /> {member.userId.name}
-                                                </span>
-                                                : <span className='m-nav__link-text'>
-                                                  {member.userId.name}
-                                                </span>}
-                                              </a>
-                                            </li>
-                                          ))
-                                        }
-                                        <li className='m-nav__item'>
-                                          <a onClick={() => this.changeAgent('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                            { this.state.agentIds.length === this.props.members.length
-                                            ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                              <i className='la la-check' />All
+                      <br />
+                      <div className='row'>
+                        <div className='col-lg-8 col-md-8 col-sm-8'>
+                          <label>Agents:</label>
+                          {this.state.agentIds && this.state.agentIds.length > 0 &&
+                            <div>
+                              <ul className='list-unstyled'>
+                                {
+                                this.state.agentIds.map((agent, i) => (
+                                  <li className='m-nav__item'>
+                                    <span>
+                                      <img alt='pic' style={{height: '30px'}} src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                                      <span>{agent.name}</span>&nbsp;&nbsp;&nbsp;
+                                      {this.props.location.state.module === 'edit' &&
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent)} />
+                                      }
+                                    </span>
+                                  </li>
+                                  ))
+                                }
+                              </ul>
+                            </div>
+                          }
+                          <br />
+                          {this.props.location.state.module === 'edit' &&
+                          <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
+                            <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
+                            Add Agents
+                            </a>
+                            {
+                                this.state.showDropDown &&
+                                <div className='m-dropdown__wrapper'>
+                                  <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                                  <div className='m-dropdown__inner'>
+                                    <div className='m-dropdown__body'>
+                                      <div className='m-dropdown__content'>
+                                        <ul className='m-nav'>
+                                          <li className='m-nav__section m-nav__section--first'>
+                                            <span className='m-nav__section-text'>
+                                              Agents
                                             </span>
-                                            : <span className='m-nav__link-text'>
-                                              All
-                                            </span>}
-                                          </a>
-                                        </li>
-                                      </ul>
+                                          </li>
+                                          {
+                                            this.props.members.map((member, i) => (
+                                              <li className='m-nav__item'>
+                                                <a onClick={() => this.changeAgent(member.userId)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                  { this.exists(member.userId.name) === true
+                                                  ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                    <i className='la la-check' /> {member.userId.name}
+                                                  </span>
+                                                  : <span className='m-nav__link-text'>
+                                                    {member.userId.name}
+                                                  </span>}
+                                                </a>
+                                              </li>
+                                            ))
+                                          }
+                                          <li className='m-nav__item'>
+                                            <a onClick={() => this.changeAgent('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                              { this.state.agentIds.length === this.props.members.length
+                                              ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                <i className='la la-check' />All
+                                              </span>
+                                              : <span className='m-nav__link-text'>
+                                                All
+                                              </span>}
+                                            </a>
+                                          </li>
+                                        </ul>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            }
-                        </div>
-                      }
-                      </div>
-                      <div className='col-lg-4 col-md-4 col-sm-4'>
-                        <label>Assigned to Pages:</label>
-                        {this.state.pageIds && this.state.pageIds.length > 0 &&
-                          <div>
-                            <ul className='list-unstyled'>
-                              {
-                              this.state.pageIds.map((page, i) => (
-                                <li className='m-nav__item'>
-                                  <span>
-                                    <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
-                                    <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
-                                    {this.props.location.state.module === 'edit' &&
-                                    <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page)} />
-                                    }
-                                  </span>
-                                </li>
-                                ))
                               }
-                            </ul>
                           </div>
                         }
-                        <br />
-                        {this.props.location.state.module === 'edit' &&
-                        <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown1}>
-                          <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
-                          Add Pages
-                          </a>
-                          {
-                              this.state.showDropDown1 &&
-                              <div className='m-dropdown__wrapper'>
-                                <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
-                                <div className='m-dropdown__inner'>
-                                  <div className='m-dropdown__body'>
-                                    <div className='m-dropdown__content'>
-                                      <ul className='m-nav'>
-                                        <li className='m-nav__section m-nav__section--first'>
-                                          <span className='m-nav__section-text'>
-                                            Pages
-                                          </span>
-                                        </li>
-                                        {
-                                          this.props.pages.map((page, i) => (
-                                            <li className='m-nav__item'>
-                                              <a onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                                { this.existsPage(page.pageName) === true
-                                                ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                                  <i className='la la-check' /> {page.pageName}
-                                                </span>
-                                                : <span className='m-nav__link-text'>
-                                                  {page.pageName}
-                                                </span>}
-                                              </a>
-                                            </li>
-                                          ))
-                                        }
-                                        <li className='m-nav__item'>
-                                          <a onClick={() => this.changePage('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                            { this.state.pageIds.length === this.props.pages.length
-                                            ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                              <i className='la la-check' /> All
+                        </div>
+                        <div className='col-lg-4 col-md-4 col-sm-4'>
+                          <label>Assigned to Pages:</label>
+                          {this.state.pageIds && this.state.pageIds.length > 0 &&
+                            <div>
+                              <ul className='list-unstyled'>
+                                {
+                                this.state.pageIds.map((page, i) => (
+                                  <li className='m-nav__item'>
+                                    <span>
+                                      <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                                      <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
+                                      {this.props.location.state.module === 'edit' &&
+                                      <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page)} />
+                                      }
+                                    </span>
+                                  </li>
+                                  ))
+                                }
+                              </ul>
+                            </div>
+                          }
+                          <br />
+                          {this.props.location.state.module === 'edit' &&
+                          <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown1}>
+                            <a href='#' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
+                            Add Pages
+                            </a>
+                            {
+                                this.state.showDropDown1 &&
+                                <div className='m-dropdown__wrapper'>
+                                  <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                                  <div className='m-dropdown__inner'>
+                                    <div className='m-dropdown__body'>
+                                      <div className='m-dropdown__content'>
+                                        <ul className='m-nav'>
+                                          <li className='m-nav__section m-nav__section--first'>
+                                            <span className='m-nav__section-text'>
+                                              Pages
                                             </span>
-                                            : <span className='m-nav__link-text'>
-                                              All
-                                            </span>}
-                                          </a>
-                                        </li>
-                                      </ul>
+                                          </li>
+                                          {
+                                            this.props.pages.map((page, i) => (
+                                              <li className='m-nav__item'>
+                                                <a onClick={() => this.changePage(page)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                  { this.existsPage(page.pageName) === true
+                                                  ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                    <i className='la la-check' /> {page.pageName}
+                                                  </span>
+                                                  : <span className='m-nav__link-text'>
+                                                    {page.pageName}
+                                                  </span>}
+                                                </a>
+                                              </li>
+                                            ))
+                                          }
+                                          <li className='m-nav__item'>
+                                            <a onClick={() => this.changePage('All')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                              { this.state.pageIds.length === this.props.pages.length
+                                              ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
+                                                <i className='la la-check' /> All
+                                              </span>
+                                              : <span className='m-nav__link-text'>
+                                                All
+                                              </span>}
+                                            </a>
+                                          </li>
+                                        </ul>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            }
+                              }
+                          </div>
+                        }
+                        </div>
+                      </div>
+                      <br /><br />
+                      <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                        {this.props.location.state.module === 'edit'
+                        ? <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
+                          <button className='btn btn-primary' onClick={this.createTeam}> Save
+                          </button>
+                          <Link onClick={this.cancel}
+                            className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                            Cancel
+                          </Link>
+                        </div>
+                        : <div className='m-form__actions' style={{'float': 'left', 'marginTop': '25px', 'marginRight': '20px'}}>
+                          <Link
+                            to='/teams'
+                            className='btn btn-primary' style={{'marginLeft': '10px'}}>
+                            Back
+                          </Link>
                         </div>
                       }
                       </div>
-                    </div>
-                    <br /><br />
-                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      {this.props.location.state.module === 'edit'
-                      ? <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
-                        <button className='btn btn-primary' onClick={this.createTeam}> Save
-                        </button>
-                        <Link onClick={this.cancel}
-                          className='btn btn-secondary' style={{'marginLeft': '10px'}}>
-                          Cancel
-                        </Link>
-                      </div>
-                      : <div className='m-form__actions' style={{'float': 'left', 'marginTop': '25px', 'marginRight': '20px'}}>
-                        <Link
-                          to='/teams'
-                          className='btn btn-primary' style={{'marginLeft': '10px'}}>
-                          Back
-                        </Link>
-                      </div>
-                    }
                     </div>
                   </div>
                 </div>

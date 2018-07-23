@@ -104,23 +104,17 @@ class Text extends React.Component {
     var temp = this.state.button
     temp.push(obj)
 
-    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons}, () => {
-      this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
-    })
+    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   editButton (obj) {
-    console.log(this.state)
     var temp = this.state.button.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
       }
       return elm
     })
-    console.log(temp)
-    this.setState({button: temp}, () => {
-      console.log(this.state.button)
-      this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
-    })
+    this.setState({button: temp})
   }
   removeButton (obj) {
     // var temp = this.state.button.filter((elm, index) => {
@@ -133,7 +127,6 @@ class Text extends React.Component {
     })
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
 
   render () {

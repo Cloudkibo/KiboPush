@@ -185,55 +185,59 @@ class Finish extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
-        <div className='m-content'>
-          <div className='m-portlet m-portlet--full-height'>
-            <div className='m-portlet__body m-portlet__body--no-padding'>
-              <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
-                <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='9' user={this.props.user} />
-                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Step 9: Subscribe To Kibopush
-                          </h3>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='m-portlet__body'>
-                      <div>
-                        <br /><br />
-                        <label style={{fontWeight: 'normal'}}>Want to get the latest updates and news from KiboPush? Please send a message on our page to become a subscriber.</label>
-                        <br /><br /><br /><br />
-                        <center>
-                          <a className='btn btn-primary' href='https://web.facebook.com/messages/t/kibopush' target='_blank' onClick={this.sendTestMessage}>
-                            <span>Subscribe To KiboPush</span>
-                          </a>
-                        </center>
-                      </div>
-                    </div>
-                    <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                      <div className='m-form__actions'>
-                        <div className='row'>
-                          <div className='col-lg-6 m--align-left' >
-                            <Link to='/paymentMethodsWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                              <span>
-                                <i className='la la-arrow-left' />
-                                <span>Back</span>&nbsp;&nbsp;
-                              </span>
-                            </Link>
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
+              <div className='m-portlet m-portlet--full-height'>
+                <div className='m-portlet__body m-portlet__body--no-padding'>
+                  <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                    <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                      <Sidebar step='9' />
+                      <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                        <div className='m-portlet__head'>
+                          <div className='m-portlet__head-caption'>
+                            <div className='m-portlet__head-title'>
+                              <h3 className='m-portlet__head-text'>
+                                Step 9: Subscribe To Kibopush
+                              </h3>
+                            </div>
                           </div>
-                          <div className='col-lg-6 m--align-right'>
-                            <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
-                              <span>
-                                <span>Finish</span>&nbsp;&nbsp;
-                                <i className='la la-arrow-right' />
-                              </span>
-                            </button>
+                        </div>
+                        <div className='m-portlet__body'>
+                          <div>
+                            <br /><br />
+                            <label style={{fontWeight: 'normal'}}>Want to get the latest updates and news from KiboPush? Please send a message on our page to become a subscriber.</label>
+                            <br /><br /><br /><br />
+                            <center>
+                              <a className='btn btn-primary' href='https://web.facebook.com/messages/t/kibopush' target='_blank' onClick={this.sendTestMessage}>
+                                <span>Subscribe To KiboPush</span>
+                              </a>
+                            </center>
+                          </div>
+                        </div>
+                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                          <div className='m-form__actions'>
+                            <div className='row'>
+                              <div className='col-lg-6 m--align-left' >
+                                <Link to='/paymentMethodsWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                  <span>
+                                    <i className='la la-arrow-left' />
+                                    <span>Back</span>&nbsp;&nbsp;
+                                  </span>
+                                </Link>
+                              </div>
+                              <div className='col-lg-6 m--align-right'>
+                                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
+                                  <span>
+                                    <span>Finish</span>&nbsp;&nbsp;
+                                    <i className='la la-arrow-right' />
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -253,8 +257,7 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage),
-    user: (state.basicInfo.user)
+    errorMessage: (state.broadcastsInfo.errorMessage)
   }
 }
 

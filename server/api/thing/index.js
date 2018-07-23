@@ -292,39 +292,27 @@ router.get('/updatePageNames', (req, res) => {
     let updatedPages = []
     let requests = pages.map((page) => {
       return new Promise((resolve, reject) => {
-        Users.findById(page.userId, (userErr, userRes) => {
-          if (userErr) {
-            logger.serverLog(TAG, `Error in retrieving page owner ${JSON.stringify(userErr)}`)
-            reject(userErr)
+        request(
+          {
+            'method': 'GET',
+            'json': true,
+            'uri': `https://graph.facebook.com/v3.0/${page.pageId}?access_token=${page.accessToken}`
+          }, function (err, resp) {
+          if (err) {
+            logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
+            reject(err)
           } else {
-            let accessToken = page.accessToken
-            if (userRes && userRes.facebookInfo) {
-              accessToken = userRes.facebookInfo.fbToken
-              console.log(`request: https://graph.facebook.com/v3.0/${page.pageId}?access_token=${accessToken}`)
-            }
-            request(
-              {
-                'method': 'GET',
-                'json': true,
-                'uri': `https://graph.facebook.com/v3.0/${page.pageId}?access_token=${accessToken}`
-              }, function (err, resp) {
-              if (err) {
-                logger.serverLog(TAG, `Error in retrieving Facebook page name ${JSON.stringify(err)}`)
-                reject(err)
-              } else {
-                if (!resp.body.error && page.pageName !== resp.body.name && resp.body.name) {
-                  updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
-                  Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
-                    if (err) {
-                      logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
-                    } else {
-                      logger.serverLog(TAG, `Updated page name. Previous page name in database: ${page.pageName}, Actual page name: ${resp.body.name}`)
-                    }
-                  })
+            resolve(resp)
+            if (page.pageName !== resp.body.name) {
+              updatedPages.push({pageId: page.pageId, previousPageName: page.pageName, updatedPageName: resp.body.name})
+              Pages.update({pageId: page.pageId}, {pageName: resp.body.name}, {multi: true}, (err, updatedPage) => {
+                if (err) {
+                  logger.serverLog(TAG, `Error in updating page name ${JSON.stringify(err)}`)
+                } else {
+                  logger.serverLog(TAG, `Updated page name. Previous page name in database: ${page.pageName}, Actual page name: ${resp.body.name}`)
                 }
-                resolve(resp)
-              }
-            })
+              })
+            }
           }
         })
       })
@@ -366,13 +354,11 @@ router.get('/updatePicture', (req, res) => {
             if (err) {
               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            if (resp.body.picture) {
-              Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
-                }
-              })
-            }
+            Users.update({_id: user._id}, {'facebookInfo.profilePic': resp.body.picture.data.url}, (err, updated) => {
+              if (err) {
+                logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+              }
+            })
           })
       }
     })
@@ -391,7 +377,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
         }
         users.forEach(user => {
-          if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
+          if (user.pageId && user.pageId.pageId) {
             needle.get(
             `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
             (err, respp) => {

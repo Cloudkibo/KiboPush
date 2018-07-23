@@ -31,7 +31,7 @@ router.post('/', function (req, res, next) {
           description: 'This workspace name is not registered with us or your account does not belong to this domain'
         })
       }
-      logger.serverLog(TAG, `User in login: ${JSON.stringify(user)}`)
+
       CompanyUsers.findOne({domain_email: user.domain_email}, (err, companyuser) => {
         if (err) {
           return res.status(501)

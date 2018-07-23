@@ -274,9 +274,3 @@ a.broadcastTabs.active {
   background-color: #34bfa3;
   color: white;
 }
-.hideSideBar {
-  display: none
-}
-.hideHeader {
-  display: none
-}

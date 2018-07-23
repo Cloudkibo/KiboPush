@@ -123,7 +123,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if (event.target.value && isWebURL(this.state.url)) {
+    if (((this.state.openWebsite && isWebURL(event.target.value)) || this.state.sequenceValue !== '') && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -133,7 +133,7 @@ class Button extends React.Component {
 
   changeUrl (event) {
     console.log('event', event.target.value)
-    if (isWebURL(event.target.value) && this.state.title !== '') {
+    if (isWebURL(this.state.url) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -142,7 +142,6 @@ class Button extends React.Component {
   }
 
   render () {
-    console.log('Button state', this.state)
     return (
       <div>
         <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
@@ -153,7 +152,7 @@ class Button extends React.Component {
           <PopoverBody>
             <div>
               <h6>Button Title:</h6>
-              <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
+              <input type='text' className='form-control' onChange={this.changeTitle} placeholder='Enter button title' />
               <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
               {
                 !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe &&
@@ -180,7 +179,7 @@ class Button extends React.Component {
                 <div className='card'>
                   <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                   <div style={{padding: '10px'}} className='card-block'>
-                    <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                    <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
                   </div>
                 </div>
               }

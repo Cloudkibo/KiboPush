@@ -5,6 +5,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { loadsurveyresponses } from '../../redux/actions/surveys.actions'
 import Response from './Response'
 import json2csv from 'json2csv'
@@ -94,65 +96,69 @@ class SurveyResult extends React.Component {
   render () {
     console.log('SurveyResult props', this.props)
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div>
-          {this.props.survey &&
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>{this.props.survey.title}</h3>
-                <p><b>Description: </b>{this.props.survey.description}</p>
+      <div>
+        <Header />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            {this.props.survey &&
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>{this.props.survey.title}</h3>
+                  <p><b>Description: </b>{this.props.survey.description}</p>
+                </div>
               </div>
             </div>
-          </div>
-        }
-          <div className='m-content'>
-            <div className='row'>
-              <div
-                className='col-xl-12 col-lg-12 col-md-12 col-sm-8 col-xs-12'>
-                <div className='m-portlet m-portlet--mobile'>
-                  <div className='m-portlet__body'>
-                    <div className='col-xl-12'>
-                      {this.state.show &&
-                      <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
-                        <span>
-                          <i className='fa fa-download' />
+          }
+            <div className='m-content'>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12 col-md-12 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__body'>
+                      <div className='col-xl-12'>
+                        {this.state.show &&
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
                           <span>
-                            Download File
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>
                           </span>
-                        </span>
-                      </button>
-                    }
-                      <h4>Survey Questions</h4>
-                      <br /><br />
-                      <ul className='list-group'>
-                        {
-                        this.props.questions &&
-                        this.props.questions.map((c) => (
-                          <div className='card'>
-                            <li
-                              className='list-group-item'
-                              style={{cursor: 'pointer'}}
-                              key={c._id}
-                            >
-                              <strong>Q. {c.statement}</strong>
-                            </li>
-                            {this.props.responses &&
-                            <Response responses={this.props.responses.filter(
-                              (d) => d.questionId._id === c._id)}
-                              question={c} />
-                            }
-                          </div>
-                        ))
-                      }
-                      </ul>
-                      <br />
-                      <div className='add-options-message'>
-                        <button className='btn btn-primary btn-sm pull-right'
-                          onClick={() => this.gotoView()}>Back
                         </button>
+                      }
+                        <h4>Survey Questions</h4>
+                        <br /><br />
+                        <ul className='list-group'>
+                          {
+                          this.props.questions &&
+                          this.props.questions.map((c) => (
+                            <div className='card'>
+                              <li
+                                className='list-group-item'
+                                style={{cursor: 'pointer'}}
+                                key={c._id}
+                              >
+                                <strong>Q. {c.statement}</strong>
+                              </li>
+                              {this.props.responses &&
+                              <Response responses={this.props.responses.filter(
+                                (d) => d.questionId._id === c._id)}
+                                question={c} />
+                              }
+                            </div>
+                          ))
+                        }
+                        </ul>
+                        <br />
+                        <div className='add-options-message'>
+                          <button className='btn btn-primary btn-sm pull-right'
+                            onClick={() => this.gotoView()}>Back
+                          </button>
+                        </div>
+                        <br />
                       </div>
-                      <br />
                     </div>
                   </div>
                 </div>

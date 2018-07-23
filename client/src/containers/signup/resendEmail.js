@@ -21,11 +21,6 @@ class ResendEmail extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
-    /* eslint-disable */
-    if ($('#sidebarDiv')) {
-      $('#sidebarDiv').addClass('hideSideBar')
-    }
-    /* eslint-enable */
   }
 
   render () {

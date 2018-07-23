@@ -831,7 +831,8 @@ class ChatBox extends React.Component {
                   record={this.state.record}
                   className='sound-wave'
                   onStop={this.onStop}
-                  strokeColor='#000000' />
+                  strokeColor='#000000'
+                  mimeType='audio/wav' />
               </div>
               <br />
               {this.state.buttonState === 'start'
@@ -1041,12 +1042,12 @@ class ChatBox extends React.Component {
                                                   />
                                                 </div>
                                                 : att.type === 'audio'
-                                                ? <div key={index}>
+                                                ? <div style={{marginTop: '40px'}} key={index}>
                                                   <ReactPlayer
                                                     url={att.payload.url}
                                                     controls
-                                                    width='230px'
-                                                    height='60px'
+                                                    width='100%'
+                                                    height='auto'
                                                     onPlay={this.onTestURLAudio(att.payload.url)}
                                                   />
                                                 </div>
@@ -1210,8 +1211,8 @@ class ChatBox extends React.Component {
                                             <ReactPlayer
                                               url={msg.payload.fileurl.url}
                                               controls
-                                              width='230px'
-                                              height='60px'
+                                              width='100%'
+                                              height='auto'
                                               onPlay={this.onTestURLAudio(msg.payload.fileurl.url)}
                                             />
                                           </div>

@@ -16,7 +16,7 @@ class EditButton extends React.Component {
     this.state = {
       openPopover: false,
       title: this.props.data.button.title,
-      url: this.props.data.button.url,
+      url: '',
       disabled: false,
       sequenceValue: '',
       openWebsite: false,
@@ -40,7 +40,6 @@ class EditButton extends React.Component {
 
   componentDidMount () {
     if (this.props.data.button.type === 'postback') {
-      console.log('this.props.data', this.props.data)
       if (this.props.data.button.payload.action === 'subscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
       } else if (this.props.data.button.payload.action === 'unsubscribe') {
@@ -91,7 +90,6 @@ class EditButton extends React.Component {
   }
   handleDone () {
     console.log('this.state.url', this.state.url)
-    console.log('this.state.title', this.state.title)
     if (this.state.url !== '') {
       this.props.onEdit({
         id: 0,
@@ -147,8 +145,6 @@ class EditButton extends React.Component {
       this.setState({disabled: true})
     }
     this.setState({title: event.target.value})
-    console.log('The title value is ' + this.state.title)
-    console.log('The event.target.value value is ' + event.target.value)
   }
 
   changeUrl (event) {
@@ -170,7 +166,6 @@ class EditButton extends React.Component {
   }
 
   render () {
-    console.log('EditButton state', this.state)
     return (
       <div>
         <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center'>

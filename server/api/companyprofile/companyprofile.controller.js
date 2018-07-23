@@ -454,8 +454,7 @@ exports.members = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          var data = _.reject(members, ['userId', null])
-          res.status(200).json({status: 'success', payload: data})
+          res.status(200).json({status: 'success', payload: members})
         })
     })
 }

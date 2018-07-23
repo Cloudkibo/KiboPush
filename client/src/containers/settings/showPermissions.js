@@ -137,78 +137,75 @@ class ShowPermissions extends React.Component {
           <div className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active' id='m_widget4_tab1_content'>
-                { (this.props.permissions.length > 1)
-                 ? <div className='m-widget4'>
-                   {
-                      !this.state.memberPermissions && this.props.permissions && this.props.permissions.map((permission, index) => {
-                        if (index > 0) {
-                          return (<div className='m-widget4__item'>
-                            <div className='m-widget4__info'>
-                              <span className='m-widget4__title'>
-                                {permission.userId.name}
-                              </span>
-                              <br />
-                              <span className='m-widget4__sub'>
-                                {permission.userId.role}
-                              </span>
-                            </div>
-                            <div className='m-widget4__ext'>
-                              <a onClick={() => { this.showMemberPermission(index) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                              View and Update
-                              </a>
-                            </div>
-                          </div>)
-                        }
-                      })
-                    }
-                   {
-                      this.state.memberPermissions && Object.keys(this.state.currentPermissions).map((key, index) => {
-                        if (index > 0) {
-                          return (<div className='m-widget4__item'>
-                            <div className='m-widget4__info'>
-                              <span className='m-widget4__title'>
-                                { key }
-                              </span>
-                              <br />
-                            </div>
-                            <div className='m-widget4__ext'>
-                              <div className='dropdown'>
-                                <button className='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                                  {this.state.currentPermissions[key] ? 'Permitted' : 'Not Permitted'}
-                                </button>
-                                <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                                  <a className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
-                                    Permitted
-                                  </a>
-                                  <a className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
-                                    Not Permitted
-                                  </a>
-                                </div>
+                <div className='m-widget4'>
+                  {
+                    !this.state.memberPermissions && this.props.permissions && this.props.permissions.map((permission, index) => {
+                      if (index > 0) {
+                        return (<div className='m-widget4__item'>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__title'>
+                              {permission.userId.name}
+                            </span>
+                            <br />
+                            <span className='m-widget4__sub'>
+                              {permission.userId.role}
+                            </span>
+                          </div>
+                          <div className='m-widget4__ext'>
+                            <a onClick={() => { this.showMemberPermission(index) }} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                            View and Update
+                            </a>
+                          </div>
+                        </div>)
+                      }
+                    })
+                  }
+                  {
+                    this.state.memberPermissions && Object.keys(this.state.currentPermissions).map((key, index) => {
+                      if (index > 0) {
+                        return (<div className='m-widget4__item'>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__title'>
+                              { key }
+                            </span>
+                            <br />
+                          </div>
+                          <div className='m-widget4__ext'>
+                            <div className='dropdown'>
+                              <button className='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                                {this.state.currentPermissions[key] ? 'Permitted' : 'Not Permitted'}
+                              </button>
+                              <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                                <a className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
+                                  Permitted
+                                </a>
+                                <a className='dropdown-item' onClick={() => { this.onChangeHandel(key) }}>
+                                  Not Permitted
+                                </a>
                               </div>
                             </div>
-                          </div>)
-                        }
-                      })
-                    }
-                   {
-                      this.state.memberPermissions &&
-                      <div className='m-widget4__item'>
-                        <div className='m-widget4__info'>
-                          <span className='m-widget4__title' />
-                          <br />
-                          <br />
-                        </div>
-
-                        <div className='m-widget4__ext'>
-                          <a className='m-btn m-btn--pill m-btn--hover-brand btn btn-lg btn-primary' onClick={() => { this.sendToServer() }}>
-                            Update
-                          </a>
-                        </div>
-                      </div>
+                          </div>
+                        </div>)
+                      }
+                    })
                   }
-                 </div>
-                  : <center><label style={{ fontWeight: 'normal' }}>Please add members to change their permissions</label></center>
-                }
+                  {
+                    this.state.memberPermissions &&
+                    <div className='m-widget4__item'>
+                      <div className='m-widget4__info'>
+                        <span className='m-widget4__title' />
+                        <br />
+                        <br />
+                      </div>
+
+                      <div className='m-widget4__ext'>
+                        <a className='m-btn m-btn--pill m-btn--hover-brand btn btn-lg btn-primary' onClick={() => { this.sendToServer() }}>
+                          Update
+                        </a>
+                      </div>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           </div>
