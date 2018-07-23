@@ -13,7 +13,7 @@ const controller = require('./dash.controller')
 
 router.get('/', controller.platformWiseData)
 router.post('/getPlatformData', controller.platformWiseData)
-router.post('/getPageData', controller.pageWiseData) 
-router.get('/getCompanyData', controller.userWiseData)
+router.post('/getPageData', controller.pageWiseData)
+router.post('/getCompanyData', controller.companyWiseData)
 
 module.exports = router

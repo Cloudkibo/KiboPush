@@ -485,6 +485,7 @@ exports.getAllPages = function (req, res) {
             }
             let pagesPayload = []
             for (let i = 0; i < pages.length; i++) {
+              console.log('pages--' + JSON.stringify(pages))
               pagesPayload.push({
                 _id: pages[i]._id,
                 pageId: pages[i].pageId,
@@ -507,7 +508,7 @@ exports.getAllPages = function (req, res) {
             }
             res.status(200).json({
               status: 'success',
-              payload: {pages: pagesPayload, count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
+              payload: {pages: pagesPayload.reverse(), count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
             })
           })
         })

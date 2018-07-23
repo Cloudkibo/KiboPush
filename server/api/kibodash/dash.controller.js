@@ -5,9 +5,9 @@ const logger = require('../../components/logger')
 const TAG = 'api/kibodash/dash.controller.js'
 const Users = require('../user/Users.model')
 const Pages = require('../pages/Pages.model')
-const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, companyWiseAggregate,
-  companyWisePageCount, joinPageWithSubscribers, selectPageFields, broadcastPageCount, filterZeroPageCount,
-  selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId } = require('./pipeline')
+const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, filterCompanyWiseAggregate,
+  groupCompanyWiseAggregates, companyWisePageCount, joinPageWithSubscribers, selectPageFields, broadcastPageCount, filterZeroPageCount,
+  selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId, filterCompanySubscribers } = require('./pipeline')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
@@ -116,11 +116,13 @@ exports.pageWiseData = function (req, res) {
   })
 }
 
-exports.userWiseData = function (req, res) {
-  let companySubscribers = CompanyUsers.aggregate([joinCompanyWithSubscribers, selectCompanyFields]).exec()
-  let numberOfBroadcasts = Broadcasts.aggregate([companyWiseAggregate]).exec()
-  let numberOfPolls = Polls.aggregate([companyWiseAggregate]).exec()
-  let numberOfSurveys = Surveys.aggregate([companyWiseAggregate]).exec()
+exports.companyWiseData = function (req, res) {
+  console.log('req--' + JSON.stringify(req.body))
+  var startDate = req.body.startDate
+  let companySubscribers = CompanyUsers.aggregate([joinCompanyWithSubscribers, filterCompanySubscribers, selectCompanyFields]).exec()
+  let numberOfBroadcasts = Broadcasts.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
+  let numberOfPolls = Polls.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
+  let numberOfSurveys = Surveys.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
   let companyPagesCount = Pages.aggregate([companyWisePageCount]).exec()
   let companyConnectedPagesCount = Pages.aggregate([filterConnectedPages, companyWisePageCount]).exec()
   let finalResults = Promise.all([companySubscribers, numberOfBroadcasts, numberOfPolls, numberOfSurveys,
@@ -213,3 +215,4 @@ function setConnectedPagesCount (results, data) {
     }
   }
 }
+

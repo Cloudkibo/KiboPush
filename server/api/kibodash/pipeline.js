@@ -16,7 +16,7 @@ exports.selectPageFields = {
     pageId: true,
     pageUserName: true,
     likes: true,
-    numberOfSubscribers: { $size: { '$ifNull': [ '$pageSubscribers', [] ] } },
+    numberOfSubscribers: { $size: { '$ifNull': ['$pageSubscribers', []] } },
     numberOfBroadcasts: {
       $literal: 0
     },
@@ -31,7 +31,7 @@ exports.selectPageFields = {
 
 exports.broadcastPageCount = {
   $project: {
-    pageCount: { $size: { '$ifNull': [ '$segmentationPageIds', [] ] } }
+    pageCount: { $size: { '$ifNull': ['$segmentationPageIds', []] } }
   }
 }
 
@@ -44,7 +44,7 @@ exports.filterZeroPageCount = {
 exports.selectPageIdAndPageCount = {
   $project: {
     segmentationPageIds: true,
-    pageCount: { $size: { '$ifNull': [ '$segmentationPageIds', [] ] } }
+    pageCount: { $size: { '$ifNull': ['$segmentationPageIds', []] } }
   }
 }
 
@@ -75,6 +75,19 @@ exports.joinCompanyWithSubscribers = {
     as: 'companysubscribers'
   }
 }
+exports.filterCompanySubscribers = {
+  $project: {
+    companyId: true,
+    userId: true,
+    companysubscribers: {
+      $filter: {
+        input: '$companysubscribers',
+        as: 'companysubscriber',
+        cond: { $gte: ['$$companysubscriber.datetime', new Date('2018-07-17T00:00:00.000+05:00')] }
+      }
+    }
+  }
+}
 
 exports.selectCompanyFields = {
   $project: {
@@ -100,10 +113,14 @@ exports.selectCompanyFields = {
   }
 }
 
-exports.companyWiseAggregate = {
+exports.filterCompanyWiseAggregate = {
+  $match: {
+    datetime: { '$gte': new Date('2018-07-17T00:00:00.0Z') }
+  }
+}
+exports.groupCompanyWiseAggregates = {
   $group: {
     _id: '$companyId',
     totalCount: { $sum: 1 }
   }
-
 }
