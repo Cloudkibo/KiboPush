@@ -58,6 +58,7 @@ module.exports = function (app) {
   app.use('/api/permissions', require('./api/permissions'))
   app.use('/api/webhooks', require('./api/webhooks'))
   app.use('/api/kibodash', require('./api/kibodash'))
+  app.use('/api/abandonedCarts', require('./api/abandoned_carts'))
 
   app.use('/auth', require('./auth'))
 
