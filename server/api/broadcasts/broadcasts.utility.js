@@ -633,75 +633,6 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname) 
 }
 /* eslint-enable */
 
-function uploadAndSend (res, pages, broadcastPayload, recipientId, sendBroadcast, fname, lname) {
-  let dir = path.resolve(__dirname, '../../../broadcastFiles/')
-  pages.forEach((page, index) => {
-    if (!page.userId || (page.userId && !page.userId.facebookInfo)) {
-      logger.serverLog(TAG, `ERROR! Facebook Info not found`)
-      return res.status(500).json({
-        status: 'failed',
-        description: `ERROR! Facebook Info not found`
-      })
-    }
-    needle.get(
-      `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
-      (err, resp) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR! unable to get page access_token: ${JSON.stringify(err)}`)
-          return res.status(500).json({
-            status: 'failed',
-            description: `ERROR! unable to get page access_token: ${JSON.stringify(err)}`
-          })
-        }
-        let pageAccessToken = resp.body.access_token
-        broadcastPayload.forEach((broadcast, index) => {
-          if (['image', 'audio', 'file', 'video'].indexOf(broadcast.componentType) > -1) {
-            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + broadcast.fileurl.name)
-            const messageData = {
-              'message': JSON.stringify({
-                'attachment': {
-                  'type': broadcast.componentType,
-                  'payload': {
-                    'is_reusable': true
-                  }
-                }
-              }),
-              'filedata': fileReaderStream
-            }
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
-              },
-              function (err, resp) {
-                if (err) {
-                  logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`
-                  })
-                } else {
-                  logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
-                  broadcast.fileurl.attachment_id = resp.body.attachment_id
-                }
-              })
-          }
-          if (index === (broadcastPayload.length - 1)) {
-            getBatchData(broadcastPayload, recipientId, page, sendBroadcast, fname, lname)
-          }
-        })
-      })
-    if (index === (pages.length - 1)) {
-      return res.status(200).json({
-        status: 'success',
-        payload: {broadcast: broadcastPayload}
-      })
-    }
-  })
-}
-
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
@@ -710,4 +641,3 @@ exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
 exports.getBatchData = getBatchData
-exports.uploadAndSend = uploadAndSend

@@ -52,8 +52,9 @@ class Gallery extends React.Component {
   }
 
   addSlide () {
+    let timeStamp = new Date().getTime()
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} button_id={props.id} handleCard={this.handleCard} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={timeStamp} button_id={props.id} handleCard={this.handleCard} />, key: timeStamp}]})
     this.slider.slickNext()
   }
 

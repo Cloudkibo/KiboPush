@@ -118,39 +118,38 @@ class EditTemplate extends React.Component {
     var temp = []
     var message = []
     for (var i = 0; i < payload.length; i++) {
-      payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={false} />)})
+        temp.push({content: (<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState={false} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'image') {
-        temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
+        temp.push({content: (<Image id={payload[i].id} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'audio') {
-        temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
+        temp.push({content: (<Audio id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'video') {
-        temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
+        temp.push({content: (<Video id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'file') {
-        temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
+        temp.push({content: (<File id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
+        temp.push({content: (<Card id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'gallery') {
-        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        temp.push({content: (<Gallery id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -367,7 +366,7 @@ class EditTemplate extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='4' />
+                  <Sidebar step='4' user={this.props.user} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
