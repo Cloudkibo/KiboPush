@@ -29,6 +29,7 @@ import {postsInfo} from './commentCapture.reducer'
 import {billingPricingInfo} from './billingPricing.reducer'
 import {permissionsInfo} from './permissions.reducer'
 import {featuresInfo} from './features.reducer'
+import {usageInfo} from './usage.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -59,7 +60,8 @@ const appReducer = combineReducers({
   postsInfo,
   billingPricingInfo,
   permissionsInfo,
-  featuresInfo
+  featuresInfo,
+  usageInfo
 })
 
 export default appReducer

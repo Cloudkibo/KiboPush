@@ -257,3 +257,6 @@ export const FETCH_ALL_PERMISSIONS = 'FETCH_ALL_PERMISSIONS'
 
 //  constants for Features
 export const FETCH_ALL_FEATURES = 'FETCH_ALL_FEATURES'
+
+//  constants for Usage
+export const FETCH_ALL_USAGE = 'FETCH_ALL_USAGE'
