@@ -20,7 +20,8 @@ class Header extends React.Component {
       ignore: true,
       planInfo: '',
       seenNotifications: [],
-      unseenNotifications: []
+      unseenNotifications: [],
+      showDropDown: false
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -28,8 +29,12 @@ class Header extends React.Component {
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.timeSince = this.timeSince.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
   }
-
+  showDropDown () {
+    console.log('showDropDown')
+    this.setState({showDropDown: true})
+  }
   changeStatus (e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
   }
@@ -67,7 +72,7 @@ class Header extends React.Component {
       //   reviewsWritten_int: 14
       // })
       // console.log('FS identify Executed')
-      var plan = nextProps.user.currentPlan
+      var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
     }
     if (nextProps.notifications) {
@@ -205,6 +210,117 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
+              {this.props.user && this.props.user.isSuperUser &&
+                <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark '>
+                  <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
+                    <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{height: '100%', display: 'table-cell', verticalAlign: 'middle', padding: '0 20px'}}>
+                      <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <span className='m-topbar__userpic'>
+                          <i className='m-nav__link-icon flaticon-settings' />&nbsp;&nbsp;
+                          <span className='m-nav__link-text'>
+                            Settings
+                          </span>&nbsp;&nbsp;
+                          <i className='m-nav__hor-arrow la la-angle-down' style={{fontSize: '0.9rem'}} />
+                        </span>
+                      </a>
+                      <div className='m-dropdown__wrapper' style={{width: '230px', left: '0'}}>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--left' />
+                        <div className='m-dropdown__inner'>
+                          <div className='m-dropdown__body'>
+                            <div className='m-dropdown__content'>
+                              <ul className='m-nav m-nav--skin-light'>
+                                <li className='m-nav__item'>
+                                  <Link to='/plans' className='m-nav__link '>
+                                    <i className='m-nav__link-icon fa fa-cc-stripe' />
+                                    <span className='m-nav__link-text'>
+                                      Plans
+                                    </span>
+                                  </Link>
+                                </li>
+                                <li className='m-nav__item ' aria-haspopup='true'>
+                                  <Link to='/permissions' className='m-nav__link '>
+                                    <i className='m-nav__link-icon fa fa-key' />
+                                    <span className='m-nav__link-text'>
+                                      Permissions
+                                    </span>
+                                  </Link>
+                                </li>
+                                <li className='m-nav__item ' aria-haspopup='true'>
+                                  <Link to='/features' className='m-nav__link '>
+                                    <i className='m-nav__link-icon fa fa-th-list' />
+                                    <span className='m-nav__link-text'>
+                                      Features
+                                    </span>
+                                  </Link>
+                                </li>
+                                <li className='m-nav__item ' aria-haspopup='true'>
+                                  <Link to='/usage' className='m-nav__link '>
+                                    <i className='m-nav__link-icon fa fa-pie-chart' />
+                                    <span className='m-nav__link-text'>
+                                      Usage
+                                    </span>
+                                  </Link>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    {/*
+                    <li className='m-menu__item m-menu__item--submenu m-menu__item--rel m-menu__item--open-dropdown' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
+                      <a onClick={this.showDropDown} className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-settings' />
+                        <span className='m-menu__link-text'>
+                          Settings
+                        </span>
+                        <i className='m-menu__hor-arrow la la-angle-down' />
+                        <i className='m-menu__ver-arrow la la-angle-right' />
+                      </a>
+                      {this.state.showDropDown &&
+                      <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
+                        <span className='m-menu__arrow m-menu__arrow--adjust' style={{left: '73px'}} />
+                        <ul className='m-menu__subnav'>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <Link to='/plans' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-cc-stripe' />
+                              <span className='m-menu__link-text'>
+                                Plans
+                              </span>
+                            </Link>
+                          </li>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <a href='../../header/actions.html' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-key' />
+                              <span className='m-menu__link-text'>
+                                Permissions
+                              </span>
+                            </a>
+                          </li>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <a href='../../header/actions.html' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-th-list' />
+                              <span className='m-menu__link-text'>
+                                Features
+                              </span>
+                            </a>
+                          </li>
+                          <li className='m-menu__item ' aria-haspopup='true'>
+                            <a href='../../header/actions.html' className='m-menu__link '>
+                              <i className='m-menu__link-icon fa fa-pie-chart' />
+                              <span className='m-menu__link-text'>
+                                Usage
+                              </span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    }
+                    </li>
+                    */ }
+                  </ul>
+                </div>
+              }
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   {this.props.user &&

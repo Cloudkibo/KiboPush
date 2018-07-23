@@ -38,13 +38,12 @@ router.post('/', function (req, res, next) {
           .json({status: 'failed', description: 'Internal Server Error'})
         }
 
-        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(501)
             .json({status: 'failed', description: 'Internal Server Error'})
           }
-          logger.serverLog(TAG, `company in login: ${JSON.stringify(company)}`)
-          if (['plan_C', 'plan_D'].indexOf(company.stripe.plan) < 0) {
+          if (['plan_C', 'plan_D'].indexOf(company.planId.unique_ID) < 0) {
             return res.status(401)
             .json({
               status: 'failed',
@@ -139,12 +138,12 @@ router.post('/', function (req, res, next) {
           .json({status: 'failed', description: 'Internal Server Error'})
         }
 
-        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(501)
             .json({status: 'failed', description: 'Internal Server Error'})
           }
-          if (['plan_A', 'plan_B'].indexOf(company.stripe.plan) < 0) {
+          if (['plan_A', 'plan_B'].indexOf(company.planId.unique_ID) < 0) {
             return res.status(401).json({
               status: 'failed',
               description: 'Given account information does not match any individual account in our records'

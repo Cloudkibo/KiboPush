@@ -9,7 +9,7 @@ const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
 const Users = require('../api/user/Users.model')
 const CompanyProfile = require('../api/companyprofile/companyprofile.model')
-const Plans = require('../api/permissions_plan/permissions_plan.model')
+const PlanFeatures = require('../api/permissions_plan/permissions_plan.model')
 const Permissions = require('../api/permissions/permissions.model')
 const ApiSettings = require('../api/api_settings/api_settings.model')
 const validateJwt = expressJwt({secret: config.secrets.session})
@@ -84,7 +84,7 @@ function isAuthenticated () {
           return res.status(500)
             .json({status: 'failed', description: 'Internal Server Error'})
         }
-        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
@@ -94,7 +94,7 @@ function isAuthenticated () {
               .json({status: 'failed', description: 'Company Not Found. Contact support for more information.'})
           }
 
-          req.user.plan = company.stripe.plan
+          req.user.plan = company.planId
           req.user.last4 = company.stripe.last4
           next()
         })
@@ -142,7 +142,7 @@ function hasRequiredPlan (planRequired) {
     planRequired.length)) throw new Error('Required plan must be of type array')
 
   return compose().use(function meetsRequirements (req, res, next) {
-    if (planRequired.indexOf(req.user.plan) > -1) {
+    if (planRequired.indexOf(req.user.plan.unique_ID) > -1) {
       next()
     } else {
       res.send(403)
@@ -154,7 +154,7 @@ function doesPlanPermitsThisAction (action) {
   if (!action) throw new Error('Action needs to be set')
 
   return compose().use(function meetsRequirements (req, res, next) {
-    Plans.findOne({}, (err, plan) => {
+    PlanFeatures.findOne({plan_id: req.user.plan._id}, (err, plan) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
@@ -166,7 +166,7 @@ function doesPlanPermitsThisAction (action) {
             description: 'Fatal Error. Plan not set. Please contact support.'
           })
       }
-      if (req.user && req.user.plan && plan[req.user.plan][action]) {
+      if (req.user && req.user.plan && plan[action]) {
         next()
       } else {
         res.status(403)
