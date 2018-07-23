@@ -6,10 +6,7 @@ import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
-import { browserHistory, Link } from 'react-router'
-import Notification from 'react-web-notification'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -17,40 +14,8 @@ class Header extends React.Component {
     this.state = {
       ignore: true
     }
-    this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
-    this.onNotificationClick = this.onNotificationClick.bind(this)
   }
 
-  handleNotificationOnShow () {
-    this.setState({ignore: true})
-    this.props.resetSocket()
-  }
-
-  onNotificationClick () {
-    window.focus()
-    browserHistory.push({
-      pathname: '/live',
-      state: {session_id: this.props.socketData.session_id}
-    })
-    this.setState({ignore: true})
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.socketSession !== '' && this.state.ignore) {
-      this.setState({ignore: false})
-    }
-
-    if (nextProps.user) {
-      // FS.identify(nextProps.user.email, {
-      //   displayName: nextProps.user.name,
-      //   email: nextProps.user.email,
-      //   // TODO: Add your own custom user variables here, details at
-      //   // http://help.fullstory.com/develop-js/setuservars.
-      //   reviewsWritten_int: 14
-      // })
-      console.log('FS identify Executed')
-    }
-  }
   componentWillMount () {
     this.props.getuserdetails()
   }
@@ -63,20 +28,6 @@ class Header extends React.Component {
           data-minimized='true'
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
           data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
-
-        <Notification
-          ignore={this.state.ignore}
-          disableActiveWindow
-          title={'New Message'}
-          onShow={this.handleNotificationOnShow}
-          onClick={this.onNotificationClick}
-          options={{
-            body: 'You got a new message from ' + this.props.socketData.name + ' : ' + this.props.socketData.text,
-            lang: 'en',
-            dir: 'ltr',
-            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
-          }}
-      />
 
         <div className='m-container m-container--fluid m-container--full-height'>
           <div className='m-stack m-stack--ver m-stack--desktop'>
@@ -124,27 +75,11 @@ class Header extends React.Component {
                           <div className='m-dropdown__body'>
                             <div className='m-dropdown__content'>
                               <ul className='m-nav m-nav--skin-light'>
-                                <li className='m-nav__section m--hide'>
-                                  <span className='m-nav__section-text'>My Pages</span>
-                                </li>
-                                <li className='m-nav__item'>
-                                  <Link to='/live' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>Messages</span>
-                                  </Link>
-                                </li>
-                                <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' taregt='_blank' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>FAQ</span>
                                   </a>
-                                </li>
-                                <li className='m-nav__item'>
-                                  <Link to='/settings'>
-                                    <i className='m-nav__link-icon flaticon-settings' />
-                                    <span className='m-nav__link-text'>&nbsp;&nbsp;&nbsp;Settings</span>
-                                  </Link>
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
@@ -176,16 +111,13 @@ class Header extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
-    socketData: (state.liveChat.socketData),
-    socketSession: (state.liveChat.socketSession),
     subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
-    resetSocket: resetSocket
+    getuserdetails: getuserdetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

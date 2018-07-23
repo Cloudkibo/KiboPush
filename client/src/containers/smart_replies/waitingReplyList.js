@@ -4,10 +4,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
-import { UncontrolledTooltip } from 'reactstrap'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
-import { loadWaitingReplyList } from '../../redux/actions/smart_replies.actions'
+import { loadWaitingSubscribers } from '../../redux/actions/smart_replies.actions'
+import { allLocales } from '../../redux/actions/subscribers.actions'
 
 class WaitingReplyList extends React.Component {
   constructor (props, context) {
@@ -16,6 +16,7 @@ class WaitingReplyList extends React.Component {
       waitingList: [],
       totalLength: 0,
       tagOptions: [],
+      locales: [],
       filterByGender: '',
       filterByLocale: '',
       filterByPage: '',
@@ -32,17 +33,17 @@ class WaitingReplyList extends React.Component {
     this.handleFilterByGender = this.handleFilterByGender.bind(this)
     this.handleFilterByLocale = this.handleFilterByLocale.bind(this)
     this.handleFilterByPage = this.handleFilterByPage.bind(this)
-    this.handleFilterByTag = this.handleFilterByTag.bind(this)
     this.stackGenderFilter = this.stackGenderFilter.bind(this)
     this.stackPageFilter = this.stackPageFilter.bind(this)
     this.stackLocaleFilter = this.stackLocaleFilter.bind(this)
-    props.loadWaitingReplyList()
+    props.loadWaitingSubscribers(this.props.location.state)
     props.loadMyPagesList()
-    props.loadTags()
+    props.allLocales()
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.waitingReplyList) {
+      console.log('waiting reply list ' + JSON.stringify(nextProps.waitingReplyList))
       this.displayData(0, nextProps.waitingReplyList)
       this.setState({ totalLength: nextProps.waitingReplyList.length })
     } else {
@@ -57,6 +58,9 @@ class WaitingReplyList extends React.Component {
       this.setState({
         tagOptions: tagOptions
       })
+    }
+    if (nextProps.locales) {
+      this.setState({ locales: nextProps.locales })
     }
   }
 
@@ -90,11 +94,13 @@ class WaitingReplyList extends React.Component {
     if (this.state.filterByGender !== '') {
       var filtered = []
       for (var i = 0; i < filteredData.length; i++) {
-        if (filteredData[i].gender === this.state.filterByGender) {
+        if (filteredData[i].subscriberId.gender === this.state.filterByGender) {
           filtered.push(filteredData[i])
         }
       }
       filteredData = filtered
+    } else {
+      console.log('inside gender filter else')
     }
     return filteredData
   }
@@ -103,7 +109,7 @@ class WaitingReplyList extends React.Component {
     if (this.state.filterByLocale !== '') {
       var filtered = []
       for (var i = 0; i < filteredData.length; i++) {
-        if (filteredData[i].locale === this.state.filterByLocale) {
+        if (filteredData[i].subscriberId.locale === this.state.filterByLocale) {
           filtered.push(filteredData[i])
         }
       }
@@ -116,7 +122,7 @@ class WaitingReplyList extends React.Component {
     if (this.state.filterByPage !== '') {
       var filtered = []
       for (var i = 0; i < filteredData.length; i++) {
-        if (filteredData[i].pageId && (filteredData[i].pageId.pageId === this.state.filterByPage)) {
+        if (filteredData[i].subscriberId.pageId && (filteredData[i].pageId.pageId === this.state.filterByPage)) {
           filtered.push(filteredData[i])
         }
       }
@@ -125,61 +131,18 @@ class WaitingReplyList extends React.Component {
     return filteredData
   }
 
-  stackTagFilter (filteredData) {
-    if (this.state.filterByTag !== '') {
-      var filtered = []
-      for (var i = 0; i < filteredData.length; i++) {
-        if (filteredData[i].tags) {
-          for (var j = 0; j < filteredData[i].tags.length; j++) {
-            if (filteredData[i].tags[j] === this.state.filterByTag) {
-              filtered.push(filteredData[i])
-              break
-            }
-          }
-        }
-      }
-      filteredData = filtered
-    }
-    return filteredData
-  }
-
-  handleFilterByTag (e) {
-    this.setState({filterByTag: e.target.value})
-    this.setState({searchValue: ''})
-    var filteredData = this.props.waitingReplyList
-    filteredData = this.stackGenderFilter(filteredData)
-    filteredData = this.stackLocaleFilter(filteredData)
-    filteredData = this.stackPageFilter(filteredData)
-    var filtered = []
-    console.log('e.target.value', e.target.value)
-    if (e.target.value !== '') {
-      for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].tags) {
-          for (var i = 0; i < filteredData[k].tags.length; i++) {
-            if (filteredData[k].tags[i] === e.target.value) {
-              filtered.push(filteredData[k])
-              break
-            }
-          }
-        }
-      }
-      filteredData = filtered
-    }
-    this.setState({filteredData: filteredData})
-    this.displayData(0, filteredData)
-    this.setState({ totalLength: filteredData.length })
-  }
   handleFilterByPage (e) {
     this.setState({filterByPage: e.target.value})
     this.setState({searchValue: ''})
     var filteredData = this.props.waitingReplyList
     filteredData = this.stackGenderFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
+        console.log(e.target.value)
+        console.log(filteredData[k].subscriberId.pageId)
+        if (filteredData[k].subscriberId.pageId && (filteredData[k].pageId.pageId === e.target.value)) {
           filtered.push(filteredData[k])
         }
       }
@@ -195,11 +158,10 @@ class WaitingReplyList extends React.Component {
     var filteredData = this.props.waitingReplyList
     filteredData = this.stackPageFilter(filteredData)
     filteredData = this.stackLocaleFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
+        if (filteredData[k].subscriberId.gender && (filteredData[k].subscriberId.gender === e.target.value)) {
           filtered.push(filteredData[k])
         }
       }
@@ -216,11 +178,10 @@ class WaitingReplyList extends React.Component {
     var filteredData = this.props.waitingReplyList
     filteredData = this.stackPageFilter(filteredData)
     filteredData = this.stackGenderFilter(filteredData)
-    filteredData = this.stackTagFilter(filteredData)
     var filtered = []
     if (e.target.value !== '') {
       for (var k = 0; k < filteredData.length; k++) {
-        if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
+        if (filteredData[k].subscriberId.locale && (filteredData[k].subscriberId.locale === e.target.value)) {
           filtered.push(filteredData[k])
         }
       }
@@ -296,7 +257,7 @@ class WaitingReplyList extends React.Component {
                                     <option key='ALL' value=''>ALL</option>
                                     {
                                       this.props.pages.map((page, i) => (
-                                        <option key={i} value={page._id}>{page.pageName}</option>
+                                        <option key={i} value={page.pageId}>{page.pageName}</option>
                                       ))
                                     }
                                   </select>
@@ -319,32 +280,6 @@ class WaitingReplyList extends React.Component {
                                     }
                                   </select>
                                 </div>
-                              </div>
-                            </div>
-                            <div className='col-md-6' style={{marginTop: '20px'}}>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='' style={{marginTop: '10px'}}>
-                                  <label style={{width: '60px'}}>Tags:</label>
-                                </div>
-                                <div className='m-form__control'>
-                                  <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
-                                    <option key='' value='' disabled>Filter by Tags...</option>
-                                    <option key='ALL' value=''>ALL</option>
-                                    {
-                                      this.state.tagOptions.map((tag, i) => (
-                                        <option key={i} value={tag.value}>{tag.label}</option>
-                                      ))
-                                    }
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                            <div className='col-md-6' style={{marginTop: '20px'}}>
-                              <div className='m-input-icon m-input-icon--left'>
-                                <input type='text' className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                                <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                  <span><i className='la la-search' /></span>
-                                </span>
                               </div>
                             </div>
                           </div>
@@ -391,10 +326,6 @@ class WaitingReplyList extends React.Component {
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                   <span style={{width: '100px', overflow: 'inherit'}}>Locale</span>
                                 </th>
-                                <th data-field='Tag'
-                                  className='m-datatable__cell--center m-datatable__cell'>
-                                  <span style={{width: '50px', overflow: 'inherit'}}>Tags</span>
-                                </th>
                                 <th data-field='redirect'
                                   className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                   <span style={{width: '150px', overflow: 'inherit'}}> Click to Respond</span>
@@ -413,7 +344,7 @@ class WaitingReplyList extends React.Component {
                                   <span
                                     style={{width: '100px', overflow: 'inherit'}}>
                                     <img alt='pic'
-                                      src={(subscriber.profilePic) ? subscriber.profilePic : ''}
+                                      src={subscriber.subscriberId.profilePic ? subscriber.subscriberId.profilePic : ''}
                                       className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                                   />
                                   </span>
@@ -422,7 +353,7 @@ class WaitingReplyList extends React.Component {
                                 <td data-field='Name'
                                   className='m-datatable__cell'>
                                   <span
-                                    style={{width: '100px', overflow: 'inherit'}}>{subscriber.firstName} {subscriber.lastName}</span>
+                                    style={{width: '100px', overflow: 'inherit'}}>{subscriber.subscriberId.firstName} {subscriber.subscriberId.lastName}</span>
                                 </td>
 
                                 <td data-field='Page'
@@ -436,43 +367,27 @@ class WaitingReplyList extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '100px', overflow: 'inherit'}}>
-                                    {subscriber.phoneNumber}
+                                    {subscriber.subscriberId.phoneNumber ? subscriber.subscriberId.phoneNumber : '-'}
                                   </span>
                                 </td>
                                 <td data-field='source'
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '100px', overflow: 'inherit'}}>
-                                    {subscriber.subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
+                                    {subscriber.subscriberId.source === 'customer_matching' ? 'PhoneNumber' : subscriber.subscriberId.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
                                   </span>
                                 </td>
                                 <td data-field='Gender' className='m-datatable__cell'>
                                   <span style={{width: '50px'}}>
                                     {
-                                      subscriber.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />)
+                                      subscriber.subscriberId.gender === 'male' ? (<i className='la la-male' style={{color: subscriber.subscriberId.isSubscribed ? '#716aca' : '#818a91'}} />) : (<i className='la la-female' style={{color: subscriber.subscriberId.isSubscribed ? '#716aca' : '#818a91'}} />)
                                     }
                                   </span>
                                 </td>
-                                <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
-                                <td data-field='Tag' id={'tag-' + i} className='m-datatable__cell'>
-                                  <span style={{width: '50px', color: 'white', overflow: 'inherit'}}>
-                                    {
-                                      subscriber.tags && subscriber.tags.length > 0 ? (<i className='la la-tags' style={{color: subscriber.isSubscribed ? '#716aca' : '#818a91'}} />) : ('No Tags Assigned')
-                                    }
-                                  </span>
-                                  {subscriber.tags && subscriber.tags.length > 0 &&
-                                    <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} placement='left' target={'tag-' + i}>
-                                        {
-                                            subscriber.tags.map((tag, i) => (
-                                              <span key={i} style={{display: 'block'}}>{tag}</span>
-                                            ))
-                                        }
-                                      </UncontrolledTooltip>
-                                  }
-                                </td>
+                                <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit', color: 'white'}}className='m-badge m-badge--brand'>{subscriber.subscriberId.locale}</span></td>
                                 <td data-field='redirect' className='m-datatable__cell'><span style={{overflow: 'inherit'}}>
                                   <button className='btn btn-primary btn-sm'
-                                    style={{margin: 2}} onClick={() => this.openChat(subscriber)}>
+                                    style={{margin: 2}} onClick={() => this.openChat(subscriber.subscriberId)}>
                                     Start Conversation
                                 </button></span></td>
                               </tr>
@@ -501,7 +416,7 @@ class WaitingReplyList extends React.Component {
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit'>
                     <div className='m-form__actions m-form__actions' style={{padding: '30px'}}>
-                      <Link to='/' className='btn btn-primary'>
+                      <Link to='/bots' className='btn btn-primary'>
                         Back
                       </Link>
                     </div>
@@ -519,6 +434,7 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     tags: (state.tagsInfo.tags),
+    locales: (state.subscribersInfo.locales),
     count: (state.subscribersInfo.count),
     waitingReplyList: (state.botsInfo.waitingReplyList)
   }
@@ -527,7 +443,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
     loadTags: loadTags,
-    loadWaitingReplyList: loadWaitingReplyList
+    allLocales: allLocales,
+    loadWaitingSubscribers: loadWaitingSubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WaitingReplyList)

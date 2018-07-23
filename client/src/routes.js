@@ -107,6 +107,7 @@ import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
+import UnansweredQueries from './containers/smart_replies/unansweredQueries'
 
 import auth from './utility/auth.service'
 
@@ -243,6 +244,7 @@ const routes = (
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
+    <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
   </Route>
 
