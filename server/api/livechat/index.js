@@ -7,31 +7,31 @@ const auth = require('../../auth/auth.service')
 
 router.post('/',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.create)
 
 router.post('/updateUrl',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.update)
 
 router.post('/getUrlMeta',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.geturlmeta)
 
 router.post('/search',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.search)
 
 router.post('/:session_id',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
 

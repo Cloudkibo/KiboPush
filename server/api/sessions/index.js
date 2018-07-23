@@ -10,55 +10,55 @@ const auth = require('../../auth/auth.service')
 
 router.get('/',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.index)
 
 router.post('/getOpenSessions',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.getNewSessions)
 
 router.post('/getClosedSessions',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.getResolvedSessions)
 
 router.get('/markread/:id',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.markread)
 
 router.get('/:id',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('live_chat'),
+  auth.doesPlanPermitsThisAction('livechat'),
   auth.doesRolePermitsThisAction('livechatPermission'),
   controller.show)
 
 router.post('/changeStatus',
     auth.isAuthenticated(),
-    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesPlanPermitsThisAction('livechat'),
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.changeStatus)
 
 router.post('/assignAgent',
     auth.isAuthenticated(),
-    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesPlanPermitsThisAction('livechat'),
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.assignAgent)
 
 router.post('/assignTeam',
     auth.isAuthenticated(),
-    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesPlanPermitsThisAction('livechat'),
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.assignTeam)
 
 router.post('/unSubscribe',
     auth.isAuthenticated(),
-    auth.doesPlanPermitsThisAction('live_chat'),
+    auth.doesPlanPermitsThisAction('livechat'),
     auth.doesRolePermitsThisAction('livechatPermission'),
     controller.unSubscribe)
 module.exports = router
