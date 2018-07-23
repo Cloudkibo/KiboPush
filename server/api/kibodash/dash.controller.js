@@ -117,11 +117,15 @@ exports.pageWiseData = function (req, res) {
 }
 
 exports.companyWiseData = function (req, res) {
-  // var startDate = req.body.startDate
-  let companySubscribers = CompanyUsers.aggregate([joinCompanyWithSubscribers, filterCompanySubscribers, selectCompanyFields]).exec()
-  let numberOfBroadcasts = Broadcasts.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
-  let numberOfPolls = Polls.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
-  let numberOfSurveys = Surveys.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
+  let startDate = req.body.startDate
+  let dateFilterSubscribers = filterCompanySubscribers
+  dateFilterSubscribers['$project']['companysubscribers']['$filter']['cond'] = {$gte: ['$$companysubscriber.datetime', new Date(startDate)]}
+  let dateFilterAggregates = filterCompanyWiseAggregate
+  dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
+  let companySubscribers = CompanyUsers.aggregate([joinCompanyWithSubscribers, dateFilterSubscribers, selectCompanyFields]).exec()
+  let numberOfBroadcasts = Broadcasts.aggregate([dateFilterAggregates, groupCompanyWiseAggregates]).exec()
+  let numberOfPolls = Polls.aggregate([dateFilterAggregates, groupCompanyWiseAggregates]).exec()
+  let numberOfSurveys = Surveys.aggregate([dateFilterAggregates, groupCompanyWiseAggregates]).exec()
   let companyPagesCount = Pages.aggregate([companyWisePageCount]).exec()
   let companyConnectedPagesCount = Pages.aggregate([filterConnectedPages, companyWisePageCount]).exec()
   let finalResults = Promise.all([companySubscribers, numberOfBroadcasts, numberOfPolls, numberOfSurveys,

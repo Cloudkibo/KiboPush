@@ -82,8 +82,7 @@ exports.filterCompanySubscribers = {
     companysubscribers: {
       $filter: {
         input: '$companysubscribers',
-        as: 'companysubscriber',
-        cond: { $gte: ['$$companysubscriber.datetime', new Date('2018-07-17T00:00:00.000+05:00')] }
+        as: 'companysubscriber'
       }
     }
   }
@@ -115,7 +114,6 @@ exports.selectCompanyFields = {
 
 exports.filterCompanyWiseAggregate = {
   $match: {
-    datetime: { '$gte': new Date('2018-07-17T00:00:00.0Z') }
   }
 }
 exports.groupCompanyWiseAggregates = {
