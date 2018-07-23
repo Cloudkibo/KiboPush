@@ -172,6 +172,10 @@ a.broadcastTabs.active {
   left: -110px !important;
   height: auto !important
 }
+.popover.show.buttonPopoverPlan {
+  width: 200px !important;
+  height: auto !important
+}
 .popover.show.buttonPopoverList {
   height: auto !important
 }

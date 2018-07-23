@@ -143,12 +143,12 @@ class Dashboard extends React.Component {
     }
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
+      if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
+      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
         if (nextprops.pages && nextprops.pages.length === 0) {
           console.log('going to push')
           browserHistory.push({
@@ -365,8 +365,8 @@ class Dashboard extends React.Component {
         <div className='m-content'>
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
-            this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
-              (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
+            this.props.user && (((this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
+              (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')))
             ? null
             : <div>
               {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&

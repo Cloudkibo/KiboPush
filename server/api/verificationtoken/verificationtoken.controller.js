@@ -38,7 +38,7 @@ exports.verify = function (req, res) {
             .json({status: 'failed', description: 'Internal Server Error'})
           }
 
-          CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+          CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
             if (err) {
               return res.status(501)
               .json({status: 'failed', description: 'Internal Server Error'})
@@ -55,7 +55,7 @@ exports.verify = function (req, res) {
               bcc: 'accounts@cloudibo.com'
             })
 
-            if (company.stripe.plan === 'plan_C' || company.stripe.plan === 'plan_D') {
+            if (company.planId.unique_ID === 'plan_C' || company.planId.unique_ID === 'plan_D') {
               if (user.role === 'buyer') {
                 emailConfirm.setHtml('<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
                   '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +

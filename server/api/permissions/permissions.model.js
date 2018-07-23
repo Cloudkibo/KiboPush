@@ -3,8 +3,7 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
-var PermissionsSchema = new Schema({
-
+var UserPermissionsSchema = new Schema({
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   userId: { type: Schema.ObjectId, ref: 'users' },
   billingPermission: { type: Boolean, default: true },
@@ -32,7 +31,6 @@ var PermissionsSchema = new Schema({
   subscriberPermission: { type: Boolean, default: true },
   surveyPermission: { type: Boolean, default: true },
   apiPermission: { type: Boolean, default: true }
-
 })
 
-module.exports = mongoose.model('permissions', PermissionsSchema)
+module.exports = mongoose.model('permissions', UserPermissionsSchema)
