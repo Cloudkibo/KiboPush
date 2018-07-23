@@ -346,7 +346,15 @@ exports.stats = function (req, res) {
           payload.pages = pagesCount
           Pages.find({companyId: companyUser.companyId},
             (err, allPages) => {
-              payload.totalPages = allPages.length
+              let removeDuplicates = (myArr, prop) => {
+                return myArr.filter((obj, pos, arr) => {
+                  return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
+                })
+              }
+              let allPagesWithoutDuplicates = removeDuplicates(allPages, 'pageId')
+              console.log(allPagesWithoutDuplicates)
+              payload.totalPages = allPagesWithoutDuplicates.length
+
               if (err) {
                 return res.status(500)
                   .json({status: 'failed', description: JSON.stringify(err)})
