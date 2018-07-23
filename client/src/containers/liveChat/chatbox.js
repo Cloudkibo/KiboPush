@@ -31,7 +31,7 @@ import {
   showDate,
   validURL
 } from './utilities'
-import { ReactMic } from 'react-mic'
+import { ReactMicPlus } from 'react-mic-plus'
 import Halogen from 'halogen'
 import Slider from 'react-slick'
 import RightArrow from '../convo/RightArrow'
@@ -825,13 +825,14 @@ class ChatBox extends React.Component {
                 </div> */}
               <h3>Voice Recording</h3>
               <div>
-                <ReactMic style={{width: '450px'}}
+                <ReactMicPlus style={{width: '450px'}}
                   height='100'
                   width='450'
                   record={this.state.record}
                   className='sound-wave'
                   onStop={this.onStop}
-                  strokeColor='#000' />
+                  strokeColor='#000'
+                  duration={10} />
               </div>
               <br />
               {this.state.buttonState === 'start'
@@ -963,11 +964,12 @@ class ChatBox extends React.Component {
           onHide={this.closeRecorder}
         >
           <div>
-            <ReactMic
+            <ReactMicPlus
               record={this.state.record}
               className='sound-wave'
               onStop={this.onStop}
-              strokeColor='#000000' />
+              strokeColor='#000000'
+              duration={10} />
             <button onClick={this.startRecording}>Start</button>
             <button onClick={this.stopRecording}>Stop</button>
           </div>
