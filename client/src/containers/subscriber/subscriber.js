@@ -6,7 +6,7 @@ import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { loadAllSubscribersListNew, allLocales, subscribe, unSubscribe } from '../../redux/actions/subscribers.actions'
 import { assignTags, unassignTags, loadTags, createTag } from '../../redux/actions/tags.actions'
 import { bindActionCreators } from 'redux'
@@ -59,7 +59,8 @@ class Subscriber extends React.Component {
       status_value: '',
       saveEnableIndividual: false,
       saveEnableSeq: false,
-      saveEnableSeqInd: false
+      saveEnableSeqInd: false,
+      isShowingModalPro: false
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -117,8 +118,23 @@ class Subscriber extends React.Component {
     this.addSeqInd = this.addSeqInd.bind(this)
     this.handleSequenceInd = this.handleSequenceInd.bind(this)
     this.handleSeqResponse = this.handleSeqResponse.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
   }
 
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
+  }
   getDate (datetime) {
     let d = new Date(datetime)
     let dayofweek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()]
@@ -896,6 +912,24 @@ class Subscriber extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          {
+            this.state.isShowingModalPro &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeProDialog}>
+                <h3>Upgrade to Pro</h3>
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
+                    </button>
+                  </div>
+                </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -1355,7 +1389,8 @@ class Subscriber extends React.Component {
                         </div>
                       }
                         <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                          <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                          {this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                          ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
                             <span>
                               <i className='fa fa-download' />
                               <span>
@@ -1363,6 +1398,18 @@ class Subscriber extends React.Component {
                               </span>
                             </span>
                           </button>
+                          : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                            <span>
+                              <i className='fa fa-download' />
+                              <span>
+                                Export Records in CSV File
+                              </span>&nbsp;&nbsp;
+                              <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                <span style={{color: '#f4516c'}}>PRO</span>
+                              </span>
+                            </span>
+                          </button>
+                        }
                         </div>
                       </div>
                     </div>
@@ -1593,7 +1640,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     tags: (state.tagsInfo.tags),
     sequences: (state.sequenceInfo.sequences),
-    subscriberSequences: (state.sequenceInfo.subscriberSequences)
+    subscriberSequences: (state.sequenceInfo.subscriberSequences),
+    user: (state.basicInfo.user)
   }
 }
 

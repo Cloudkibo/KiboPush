@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { getuserdetails, getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { fetchSessions, fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Sidebar extends Component {
   constructor (props, context) {
@@ -47,6 +48,22 @@ class Sidebar extends Component {
     this.closeUserGuide = this.closeUserGuide.bind(this)
     this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
     this.showBroadcastTemplates = this.showBroadcastTemplates.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -91,16 +108,34 @@ class Sidebar extends Component {
     if (this.props.user && this.props.user.isSuperUser && this.props.user.advancedMode) {
       // include user persmissions
       if (this.state.commentCapture) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
-              <span className='m-menu__link-text'>Comment Capture</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
+        if (this.props.user.currentPlan.unique_ID === 'plan_D' || this.props.user.currentPlan.unique_ID === 'plan_B') {
+          return (
+            <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+              <Link onClick={this.showDialog} className='m-menu__link m-menu__toggle'>
+                <i className='m-menu__link-icon fa fa-commenting-o' title='Comment Capture' />
+                <span className='m-menu__link-title'>
+                  <span className='m-menu__link-wrap'>
+                    <span className='m-menu__link-text'>Comment Capture</span>
+                    <span className='m-menu__link-badge'>
+                      <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                        <span style={{color: '#34bfa3'}}>PRO</span>
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          )
+        } else {
+          return (
+            <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+              <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
+                <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
+                <span className='m-menu__link-text'>Comment Capture</span>
+              </Link>
+            </li>
+          )
+        }
       }
     }
   }
@@ -157,8 +192,26 @@ class Sidebar extends Component {
   }
 
   showBroadcastTemplates () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.templates && this.props.user.advancedMode) {
-      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
+    if (this.props.user && this.state.templates && this.props.user.advancedMode) {
+      if (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        return (
+          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+            <Link onClick={this.showDialog} className='m-menu__link m-menu__toggle' disabled>
+              <i className='m-menu__link-icon flaticon-file-1' title='Templates' />
+              <span className='m-menu__link-title'>
+                <span className='m-menu__link-wrap'>
+                  <span className='m-menu__link-text'>Templates</span>
+                  <span className='m-menu__link-badge'>
+                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                      <span style={{color: '#34bfa3'}}>PRO</span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </Link>
+          </li>
+        )
+      } else if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/templates' className='m-menu__link m-menu__toggle'>
@@ -404,6 +457,24 @@ class Sidebar extends Component {
           <i className='la la-close' />
         </button>
         <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + '%'}}>
+          {
+            this.state.isShowingModal &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeDialog}>
+                <h3>Upgrade to Pro</h3>
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
+                    </button>
+                  </div>
+                </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'

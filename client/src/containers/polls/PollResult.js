@@ -5,7 +5,8 @@
 import React from 'react'
 import Sidebar from '../../components/sidebar/sidebar'
 import Header from '../../components/header/header'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import fileDownload from 'js-file-download'
 import { connect } from 'react-redux'
 import {
@@ -22,10 +23,27 @@ class PollResult extends React.Component {
     this.state = {
       totalSent: 0,
       totalResponses: 0,
-      show: false
+      show: false,
+      isShowingModalPro: false
     }
     this.getFile = this.getFile.bind(this)
     this.props.getpollresults(this.props.location.state._id)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
   getFile () {
     let usersPayload = []
@@ -118,6 +136,24 @@ class PollResult extends React.Component {
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
+          {
+            this.state.isShowingModalPro &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeProDialog}>
+                <h3>Upgrade to Pro</h3>
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
+                    </button>
+                  </div>
+                </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -181,12 +217,24 @@ class PollResult extends React.Component {
                         </div>
                       </div>
                       <div className='m-portlet__head-tools'>
-                        {this.state.show &&
-                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                        {this.state.show && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C')
+                        ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
                           <span>
                             <i className='fa fa-download' />
                             <span>
                               Download File
+                            </span>
+                          </span>
+                        </button>
+                        : this.state.show &&
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>&nbsp;&nbsp;
+                            <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#f4516c'}}>PRO</span>
                             </span>
                           </span>
                         </button>
@@ -225,7 +273,8 @@ function mapStateToProps (state) {
     polls: (state.pollsInfo.polls),
     responses: (state.pollsInfo.responses),
     responsesfull: (state.pollsInfo.responsesfull),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 

@@ -26,6 +26,8 @@ import Reports from '../operationalDashboard/reports'
 import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')
@@ -47,7 +49,8 @@ class Dashboard extends React.Component {
       chartData: [],
       selectedDays: 10,
       topPages: [],
-      loading: true
+      loading: true,
+      isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -56,8 +59,23 @@ class Dashboard extends React.Component {
     this.exportDashboardInformation = this.exportDashboardInformation.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
     this.formatDate = this.formatDate.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
   }
 
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
+  }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
@@ -354,6 +372,24 @@ class Dashboard extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -406,7 +442,8 @@ class Dashboard extends React.Component {
             </div>
             <div className='row'>
               <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                {this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                   <span>
                     <i className='fa fa-download' />
                     <span>
@@ -414,6 +451,18 @@ class Dashboard extends React.Component {
                     </span>
                   </span>
                 </button>
+                : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                  <span>
+                    <i className='fa fa-download' />
+                    <span>
+                      Export Records in CSV File
+                    </span>&nbsp;&nbsp;
+                    <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                      <span style={{color: '#f4516c'}}>PRO</span>
+                    </span>
+                  </span>
+                </button>
+              }
               </div>
             </div>
           </div>

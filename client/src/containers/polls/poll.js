@@ -37,6 +37,7 @@ class Poll extends React.Component {
       pollsData: [],
       totalLength: 0,
       isShowingModal: false,
+      isShowingModalPro: false,
       isShowingModalDelete: false,
       deleteid: '',
       selectedDays: '0',
@@ -47,11 +48,14 @@ class Poll extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
     this.props.clearAlertMessage()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.sendPoll = this.sendPoll.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
     this.props.getAllPollResults()
   }
   showDialog () {
@@ -60,6 +64,19 @@ class Poll extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
   onDaysChange (e) {
     //  var defaultVal = 0
@@ -242,6 +259,24 @@ class Poll extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -316,9 +351,17 @@ class Poll extends React.Component {
                                     </button>
                                   </div>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/showTemplatePolls' className='btn btn-primary'>
+                                    {this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                                    ? <Link to='/showTemplatePolls' className='btn btn-primary'>
                                       Use Template
                                     </Link>
+                                    : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                      Use Template&nbsp;&nbsp;&nbsp;
+                                      <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                        <span style={{color: '#34bfa3'}}>PRO</span>
+                                      </span>
+                                    </button>
+                                  }
                                   </div>
                                 </div>
                               </ModalDialog>
