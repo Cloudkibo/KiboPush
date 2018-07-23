@@ -42,7 +42,7 @@ class Sidebar extends Component {
       templates: true,
       sequenceMessaging: true,
       waitingResponse: false,
-      abandonedCarts: true,
+      abandonedCarts: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -70,11 +70,11 @@ class Sidebar extends Component {
   }
 
   showAbandonedCarts () {
-    if (this.props.user && this.props.user.isSuperUser && this.props.user.advancedMode) {
+    if (this.props.user && this.props.user.advancedMode) {
       // include user persmissions
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
+          <Link to='/abandonedCarts' className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
             <span className='m-menu__link-text'>Abandoned Carts</span>
           </Link>

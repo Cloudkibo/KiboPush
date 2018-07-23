@@ -3,51 +3,36 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+// import AbandonedList from './abandonedList'
+import InstallApp from './installApp'
 
 class AbandonedCarts extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-  }
-
   componentWillReceiveProps (nextProps) {
   }
 
-  gotoList () {
-      browserHistory.push({
-        pathname: `/createBot`
-      })
-  }
-
-  gotoInstall(){
-  }
-
+  /* return <AbandonedList /> */
   render () {
-   return
+    return <InstallApp />
   }
 }
 
 function mapStateToProps (state) {
   console.log('state', state)
   return {
-    pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user),
-    bots: (state.botsInfo.bots),
-    count: (state.botsInfo.count),
-    analytics: (state.botsInfo.analytics)
+    // pages: (state.pagesInfo.pages),
+    // user: (state.basicInfo.user),
+    // bots: (state.botsInfo.bots),
+    // count: (state.botsInfo.count),
+    // analytics: (state.botsInfo.analytics)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadBotsList: loadBotsList,
-      loadMyPagesList: loadMyPagesList,
-      createBot: createBot,
-      deleteBot: deleteBot,
-      loadAnalytics: loadAnalytics
+
     },
     dispatch)
 }

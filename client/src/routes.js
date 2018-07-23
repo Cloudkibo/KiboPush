@@ -108,6 +108,7 @@ import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import UnansweredQueries from './containers/smart_replies/unansweredQueries'
+import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 
 import auth from './utility/auth.service'
 
@@ -246,6 +247,7 @@ const routes = (
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
+    <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
   </Route>
 
 )
