@@ -2359,6 +2359,7 @@ function saveToWaitingSubscribers (payload, req) {
 
     if (waitingSubscriber) {
       logger.serverLog(TAG, 'subscriber is already in waiting queue')
+      sendWaitingSubResponse('Agent will reply you soon', payload.pageId, payload.subscriberId)
     } else {
       Pages.findOne({pageId: payload.pageId}, (err, page) => {
         if (err) {
@@ -2379,8 +2380,52 @@ function saveToWaitingSubscribers (payload, req) {
           }
 
           logger.serverLog(TAG, result)
+          sendWaitingSubResponse('Agent will contact you soon', payload.pageId, payload.subscriberId)
         })
       })
     }
+  })
+}
+
+function sendWaitingSubResponse (message, pageId, subscriberId) {
+  Subscribers.findOne({_id: subscriberId}, (err, subscriber) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      return
+    }
+    if (subscriber === null) {
+      return
+    }
+    logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
+    let messageData = utility.prepareSendAPIPayload(
+                  subscriber.senderId,
+                   {'componentType': 'text', 'text': message + '  (Bot)'}, subscriber.firstName, subscriber.lastName, true)
+    Pages.findOne({pageId: pageId}, (err, page) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      request(
+        {
+          'method': 'POST',
+          'json': true,
+          'formData': messageData,
+          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
+        },
+              (err, res) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    `At send message live chat ${JSON.stringify(err)}`)
+                } else {
+                  if (res.statusCode !== 200) {
+                    logger.serverLog(TAG,
+                      `At send message live chat response ${JSON.stringify(
+                        res.body.error)}`)
+                  } else {
+                    logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+                  }
+                }
+              })
+    })
   })
 }
