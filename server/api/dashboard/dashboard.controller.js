@@ -366,7 +366,7 @@ exports.stats = function (req, res) {
                       }
                     }
                     if (increment) {
-                      userPagesCount = userPagesCount++
+                      userPagesCount += 1
                     }
                   }
                   payload.totalPages = userPagesCount
