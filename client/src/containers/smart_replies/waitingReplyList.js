@@ -6,7 +6,7 @@ import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
-import { loadWaitingSubscribers } from '../../redux/actions/smart_replies.actions'
+import { loadWaitingSubscribers, removeWaitingSubscribers } from '../../redux/actions/smart_replies.actions'
 import { allLocales } from '../../redux/actions/subscribers.actions'
 
 class WaitingReplyList extends React.Component {
@@ -64,7 +64,8 @@ class WaitingReplyList extends React.Component {
     }
   }
 
-  openChat (subscriber) {
+  openChat (subscriber, id) {
+    this.props.removeWaitingSubscribers(id)
     this.props.history.push({
       pathname: `/liveChat`,
       state: {subscriberToRespond: subscriber}
@@ -334,7 +335,7 @@ class WaitingReplyList extends React.Component {
                             </thead>
 
                             <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                              {
+                              { // Subscriber is one indexed object of waiting reply queue
                             this.state.waitingList.map((subscriber, i) => (
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
@@ -387,7 +388,7 @@ class WaitingReplyList extends React.Component {
                                 <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit', color: 'white'}}className='m-badge m-badge--brand'>{subscriber.subscriberId.locale}</span></td>
                                 <td data-field='redirect' className='m-datatable__cell'><span style={{overflow: 'inherit'}}>
                                   <button className='btn btn-primary btn-sm'
-                                    style={{margin: 2}} onClick={() => this.openChat(subscriber.subscriberId)}>
+                                    style={{margin: 2}} onClick={() => this.openChat(subscriber.subscriberId, subscriber._id)}>
                                     Start Conversation
                                 </button></span></td>
                               </tr>
@@ -444,7 +445,8 @@ function mapDispatchToProps (dispatch) {
     loadMyPagesList: loadMyPagesList,
     loadTags: loadTags,
     allLocales: allLocales,
-    loadWaitingSubscribers: loadWaitingSubscribers
+    loadWaitingSubscribers: loadWaitingSubscribers,
+    removeWaitingSubscribers: removeWaitingSubscribers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WaitingReplyList)
