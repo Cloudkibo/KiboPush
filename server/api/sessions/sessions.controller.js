@@ -165,7 +165,7 @@ exports.getNewSessions = function (req, res) {
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
-            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -175,7 +175,7 @@ exports.getNewSessions = function (req, res) {
             }
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
-                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                if (sessions[j]._id.toString() === gotUnreadCount[i].session_id.toString()) {
                   sessions[j].set('unreadCount',
                     gotUnreadCount[i].count,
                     {strict: false})
@@ -290,7 +290,7 @@ exports.getResolvedSessions = function (req, res) {
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
-            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -299,7 +299,7 @@ exports.getResolvedSessions = function (req, res) {
             }
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
-                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                if (sessions[j]._id.toString() === gotUnreadCount[i].session_id.toString()) {
                   sessions[j].set('unreadCount',
                     gotUnreadCount[i].count,
                     {strict: false})
@@ -365,7 +365,7 @@ exports.show = function (req, res) {
           session.set('chats', JSON.parse(JSON.stringify(chats)),
             {strict: false})
           LiveChat.aggregate([
-            {$match: {status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -373,7 +373,7 @@ exports.show = function (req, res) {
               .json({status: 'failed', description: 'Internal Server Error'})
             }
             for (let i = 0; i < gotUnreadCount.length; i++) {
-              if (session._id.toString() === gotUnreadCount[i]._id.toString()) {
+              if (session._id.toString() === gotUnreadCount[i].session_id.toString()) {
                 session.set('unreadCount',
                   gotUnreadCount[i].count,
                   {strict: false})
