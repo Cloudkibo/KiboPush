@@ -189,23 +189,34 @@ exports.changeDefaultPlan = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  let updateCriteria = {}
+  let criteria1 = {}
+  let criteria2 = {}
   if (req.body.account_type === 'individual') {
-    updateCriteria = {default_individual: true}
+    criteria1 = {default_individual: true}
+    criteria2 = {default_individual: false}
   } else if (req.body.account_type === 'team') {
-    updateCriteria = {default_team: true}
+    criteria1 = {default_team: true}
+    criteria2 = {default_team: false}
   }
 
-  Plans.update({_id: req.body.plan_id}, updateCriteria, (err, updated) => {
+  Plans.update(criteria1, criteria2, (err, updated) => { // remove previous default
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({
-      status: 'success',
-      description: 'Default plan changed successfully!'
+    Plans.update({_id: req.body.plan_id}, criteria1, (err, updated) => { // create new default
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({
+        status: 'success',
+        description: 'Default plan changed successfully!'
+      })
     })
   })
 }
