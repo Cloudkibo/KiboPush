@@ -117,8 +117,7 @@ exports.pageWiseData = function (req, res) {
 }
 
 exports.companyWiseData = function (req, res) {
-  console.log('req--' + JSON.stringify(req.body))
-  var startDate = req.body.startDate
+  // var startDate = req.body.startDate
   let companySubscribers = CompanyUsers.aggregate([joinCompanyWithSubscribers, filterCompanySubscribers, selectCompanyFields]).exec()
   let numberOfBroadcasts = Broadcasts.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
   let numberOfPolls = Polls.aggregate([filterCompanyWiseAggregate, groupCompanyWiseAggregates]).exec()
