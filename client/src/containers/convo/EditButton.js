@@ -170,6 +170,7 @@ class EditButton extends React.Component {
   }
 
   render () {
+    console.log('EditButton state', this.state)
     return (
       <div>
         <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center'>
