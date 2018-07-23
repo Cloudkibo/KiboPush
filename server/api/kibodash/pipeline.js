@@ -112,7 +112,11 @@ exports.selectCompanyFields = {
   }
 }
 
-exports.filterCompanyWiseAggregate = {
+exports.filterDate = {
+  $match: {
+  }
+}
+exports.filterUserDate = {
   $match: {
   }
 }
