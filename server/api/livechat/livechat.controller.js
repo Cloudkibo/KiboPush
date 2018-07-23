@@ -191,7 +191,6 @@ exports.create = function (req, res) {
             }
 
             session.last_activity_time = Date.now()
-            session.agent_activity_time = Date.now()
             session.save((err) => {
               if (err) {
                 return logger.serverLog(TAG, `Error at saving session ${JSON.stringify(err)}`)

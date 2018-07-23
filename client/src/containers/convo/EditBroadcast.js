@@ -3,7 +3,9 @@
  */
 
 import React from 'react'
+import Sidebar from '../../components/sidebar/sidebar'
 import Responsive from '../../components/sidebar/responsive'
+import Header from '../../components/header/header'
 import HeaderResponsive from '../../components/header/headerResponsive'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
@@ -41,7 +43,9 @@ class EditBroadcast extends React.Component {
   render () {
     return (
       <div>
+        <Header />
         <HeaderResponsive />
+        <Sidebar />
         <Responsive />
 
         <div className='container'>

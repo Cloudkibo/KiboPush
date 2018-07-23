@@ -31,10 +31,6 @@ export function botsInfo (state = {}, action) {
       return Object.assign({}, state, {
         waitingReplyList: action.data
       })
-    case ActionTypes.SHOW_UNANSWERED_QUERIES:
-      return Object.assign({}, state, {
-        unansweredQueriesList: action.data
-      })
     default:
       return state
   }

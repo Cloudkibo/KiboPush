@@ -173,8 +173,6 @@ exports.allSurveys = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'next') {
-      let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-      
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
@@ -194,7 +192,7 @@ exports.allSurveys = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+        Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, surveys) => {
           if (err) {
             return res.status(500).json({
@@ -221,8 +219,6 @@ exports.allSurveys = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'previous') {
-      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
@@ -242,7 +238,7 @@ exports.allSurveys = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+        Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
         .exec((err, surveys) => {
           if (err) {
             return res.status(500).json({

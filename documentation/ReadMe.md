@@ -47,7 +47,6 @@ We need to set the following variables: (Just copy paste and then change the val
     STRIPE_PUB_KEY=<STRIPE PUBLISHABLE KEY>
     NODE_PATH =<NODE INSTALLATION PATH>
     CRON_SCRIPT_PATH =<PATH TO SCHEDULER SCRIPT>
-    CRON_SEQ_SCRIPT_PATH =<PATH TO SEQ_SCHEDULER SCRIPT>
 
     instructions for NODE_PATH and CRON_SCRIPT_PATH are given below in CRON_JOB guide
 

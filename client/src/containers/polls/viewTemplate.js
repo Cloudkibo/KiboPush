@@ -1,4 +1,6 @@
 import React from 'react'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { loadPollDetails } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -49,48 +51,54 @@ class viewPoll extends React.Component {
 
   render () {
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div className='m-content'>
-          <div className='row'>
-            <div className='col-xl-12'>
-              {this.props.pollDetails &&
-              <div className='m-portlet'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
-                      <h3 className='m-subheader__title' style={{marginTop: '15px'}}>{this.props.pollDetails.title}</h3>
-                      <p><b>Category: </b>{this.props.pollDetails.category.join(',')}</p>
+      <div>
+        <Header />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-xl-12'>
+                  {this.props.pollDetails &&
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
+                          <h3 className='m-subheader__title' style={{marginTop: '15px'}}>{this.props.pollDetails.title}</h3>
+                          <p><b>Category: </b>{this.props.pollDetails.category.join(',')}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className='m-portlet__body'>
-                  <div className='col-xl-12'>
-                    <p><strong>Statement: </strong>{this.props.pollDetails.statement}</p>
-                    {this.props.pollDetails.options.map((d) => (
-                      <div className='m-section__content'>
-                        <div data-code-preview='true' data-code-html='true' data-code-js='false'>
-                          <div className='m-demo__preview'>
-                            <div className='m-list-timeline' style={{marginTop: '10px', marginLeft: '30px'}}>
-                              <div className='m-list-timeline__items'>
-                                <div className='m-list-timeline__item'>
-                                  <span className='m-list-timeline__badge m-list-timeline__badge--success' />
-                                  <span className='m-list-timeline__text'>
-                                    {d}
-                                  </span>
+                    <div className='m-portlet__body'>
+                      <div className='col-xl-12'>
+                        <p><strong>Statement: </strong>{this.props.pollDetails.statement}</p>
+                        {this.props.pollDetails.options.map((d) => (
+                          <div className='m-section__content'>
+                            <div data-code-preview='true' data-code-html='true' data-code-js='false'>
+                              <div className='m-demo__preview'>
+                                <div className='m-list-timeline' style={{marginTop: '10px', marginLeft: '30px'}}>
+                                  <div className='m-list-timeline__items'>
+                                    <div className='m-list-timeline__item'>
+                                      <span className='m-list-timeline__badge m-list-timeline__badge--success' />
+                                      <span className='m-list-timeline__text'>
+                                        {d}
+                                      </span>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                  }
+                  <div style={{'overflow': 'auto'}}>
+                    <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
+                    </button>
                   </div>
                 </div>
-              </div>
-              }
-              <div style={{'overflow': 'auto'}}>
-                <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
-                </button>
               </div>
             </div>
           </div>

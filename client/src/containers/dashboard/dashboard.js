@@ -156,11 +156,6 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
-      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-        console.log('going to push add page wizard')
-        browserHistory.push({
-          pathname: '/addPageWizard'
-        })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
@@ -173,6 +168,11 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
+      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        console.log('going to push add page wizard')
+        browserHistory.push({
+          pathname: '/addPageWizard'
+        })
       }
       if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
@@ -352,7 +352,6 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.props.dashboard', this.props.dashboard)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>

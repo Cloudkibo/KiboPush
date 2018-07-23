@@ -346,7 +346,6 @@ exports.stats = function (req, res) {
           payload.pages = pagesCount
           Pages.find({companyId: companyUser.companyId},
             (err, allPages) => {
-              payload.totalPages = allPages.length
               if (err) {
                 return res.status(500)
                   .json({status: 'failed', description: JSON.stringify(err)})
@@ -357,20 +356,20 @@ exports.stats = function (req, res) {
                     return res.status(500)
                       .json({status: 'failed', description: JSON.stringify(err)})
                   }
-                  // let userPagesCount = userPages.length
-                  // for (let a = 0; a < allPages.length; a++) {
-                  //   let increment = true
-                  //   for (let b = 0; b < userPages.length; b++) {
-                  //     if (allPages[0].pageId === userPages[b].pageId) {
-                  //       increment = false
-                  //       break
-                  //     }
-                  //   }
-                  //   if (increment) {
-                  //     userPagesCount += 1
-                  //   }
-                  // }
-                  // payload.totalPages = userPagesCount
+                  let userPagesCount = userPages.length
+                  for (let a = 0; a < allPages.length; a++) {
+                    let increment = true
+                    for (let b = 0; b < userPages.length; b++) {
+                      if (allPages[0].pageId === userPages[b].pageId) {
+                        increment = false
+                        break
+                      }
+                    }
+                    if (increment) {
+                      userPagesCount = userPagesCount++
+                    }
+                  }
+                  payload.totalPages = userPagesCount
 
                   Subscribers.count(
                     {companyId: companyUser.companyId, isEnabledByPage: true, isSubscribed: true},
