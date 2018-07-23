@@ -5,9 +5,9 @@ const logger = require('../../components/logger')
 const TAG = 'api/kibodash/dash.controller.js'
 const Users = require('../user/Users.model')
 const Pages = require('../pages/Pages.model')
-const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, filterCompanyWiseAggregate,
+const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, filterDate,
   groupCompanyWiseAggregates, companyWisePageCount, joinPageWithSubscribers, selectPageFields, broadcastPageCount, filterZeroPageCount,
-  selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId, filterCompanySubscribers } = require('./pipeline')
+  selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId, filterCompanySubscribers, filterUserDate } = require('./pipeline')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
@@ -16,13 +16,19 @@ const CompanyUsers = require('../companyuser/companyuser.model')
 const mongoose = require('mongoose')
 
 exports.platformWiseData = function (req, res) {
+  let startDate = req.body.startDate
+  let dateFilterAggregates = filterDate
+  dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
+
+  let userDateFilter = filterUserDate
+  userDateFilter['$match']['createdAt'] = { $gte: new Date(startDate) }
   let connectetPages = Pages.aggregate([filterConnectedPages, countResults]).exec()
   let totalPages = Pages.aggregate([countResults]).exec()
-  let totalUsers = Users.aggregate([countResults]).exec()
-  let totalSubscribers = Subscribers.aggregate([countResults]).exec()
-  let totalBroadcasts = Broadcasts.aggregate([countResults]).exec()
-  let totalPolls = Polls.aggregate([countResults]).exec()
-  let totalSurveys = Surveys.aggregate([countResults]).exec()
+  let totalUsers = Users.aggregate([userDateFilter, countResults]).exec()
+  let totalSubscribers = Subscribers.aggregate([dateFilterAggregates, countResults]).exec()
+  let totalBroadcasts = Broadcasts.aggregate([dateFilterAggregates, countResults]).exec()
+  let totalPolls = Polls.aggregate([dateFilterAggregates, countResults]).exec()
+  let totalSurveys = Surveys.aggregate([dateFilterAggregates, countResults]).exec()
 
   let finalResults = Promise.all([connectetPages, totalPages, totalUsers, totalSubscribers, totalBroadcasts, totalPolls, totalSurveys])
   logger.serverLog(TAG, `user not found for page ${JSON.stringify(finalResults)}`)
@@ -120,7 +126,7 @@ exports.companyWiseData = function (req, res) {
   let startDate = req.body.startDate
   let dateFilterSubscribers = filterCompanySubscribers
   dateFilterSubscribers['$project']['companysubscribers']['$filter']['cond'] = {$gte: ['$$companysubscriber.datetime', new Date(startDate)]}
-  let dateFilterAggregates = filterCompanyWiseAggregate
+  let dateFilterAggregates = filterDate
   dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
   let companySubscribers = CompanyUsers.aggregate([joinCompanyWithSubscribers, dateFilterSubscribers, selectCompanyFields]).exec()
   let numberOfBroadcasts = Broadcasts.aggregate([dateFilterAggregates, groupCompanyWiseAggregates]).exec()
@@ -218,4 +224,3 @@ function setConnectedPagesCount (results, data) {
     }
   }
 }
-
