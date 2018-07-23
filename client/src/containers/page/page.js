@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
@@ -22,6 +22,7 @@ class Page extends React.Component {
     super(props)
     this.state = {
       isShowingModal: false,
+      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       page: {},
       pagesData: [],
       totalLength: 0,
@@ -32,7 +33,9 @@ class Page extends React.Component {
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
+    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPages = this.searchPages.bind(this)
@@ -128,8 +131,16 @@ class Page extends React.Component {
     })
   }
 
+  showZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: true})
+  }
+
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  closeZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: false})
   }
 
   inviteSubscribers (page) {
@@ -182,6 +193,33 @@ class Page extends React.Component {
                     width: '640',
                     playerVars: { // https://developers.google.com/youtube/player_parameters
                       autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingZeroSubModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeZeroSubDialog}>
+            <ModalDialog style={{width: '700px', top: '75px'}}
+              onClose={this.closeZeroSubDialog}>
+              <div className='alert alert-success'>
+                <h4 className='block'>0 Subscribers</h4>
+    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
+    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
+    below on how to get started.
+              </div>
+              <div>
+                <YouTube
+                  videoId='9kY3Fmj_tbM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                      autoplay: 0
                     }
                   }}
                 />
