@@ -507,7 +507,7 @@ exports.getAllPages = function (req, res) {
             }
             res.status(200).json({
               status: 'success',
-              payload: {pages: pagesPayload, count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
+              payload: {pages: pagesPayload.reverse(), count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
             })
           })
         })
