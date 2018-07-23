@@ -475,8 +475,17 @@ class Plans extends React.Component {
                                             </center>
                                           </div>
                                           <div className='m-widget5__stats1'>
-                                            {plan.unique_ID !== 'plan_B' && plan.unique_ID !== 'plan_D' && !plan.default_individual && !plan.default_team &&
-                                            <center style={{cursor: 'pointer'}} onClick={() => this.onDelete(plan.companyCount, plan.unique_ID)}>
+                                            {plan.unique_ID !== 'plan_B' && plan.unique_ID !== 'plan_D' && !plan.default_individual && !plan.default_team
+                                            ? <center style={{cursor: 'pointer'}} onClick={() => this.onDelete(plan.companyCount, plan.unique_ID)}>
+                                              <span className='m-widget5__number'>
+                                                <i className='fa fa-trash' style={{fontSize: '1.5rem'}} />
+                                              </span>
+                                              <br />
+                                              <span className='m-widget5__sales'>
+                                                Delete
+                                              </span>
+                                            </center>
+                                            : <center style={{cursor: 'not-allowed'}}>
                                               <span className='m-widget5__number'>
                                                 <i className='fa fa-trash' style={{fontSize: '1.5rem'}} />
                                               </span>
@@ -488,14 +497,21 @@ class Plans extends React.Component {
                                           }
                                           </div>
                                           <div className='m-widget5__stats1' style={{verticalAlign: 'middle'}}>
-                                            {plan.unique_ID !== 'plan_B' && plan.unique_ID !== 'plan_D' && !plan.default_individual && !plan.default_team &&
-                                              <div>
+                                            {plan.unique_ID !== 'plan_B' && plan.unique_ID !== 'plan_D' && !plan.default_individual && !plan.default_team
+                                              ? <div>
                                                 <center style={{cursor: 'pointer'}} onClick={() => this.openPopover(plan._id, i)} id={'buttonTarget-' + plan._id} ref={(b) => { this.target = b }}>
                                                   <span className='m-widget5__number'>
                                                     <i className='fa fa-ellipsis-v' style={{fontSize: '1.5rem'}} />
                                                   </span>
                                                 </center>
-                                                </div>
+                                              </div>
+                                              : <div>
+                                                <center style={{cursor: 'not-allowed'}} id={'buttonTarget-' + plan._id} ref={(b) => { this.target = b }}>
+                                                  <span className='m-widget5__number'>
+                                                    <i className='fa fa-ellipsis-v' style={{fontSize: '1.5rem'}} />
+                                                  </span>
+                                                </center>
+                                              </div>
                                               }
                                           </div>
                                         </div>
@@ -505,11 +521,11 @@ class Plans extends React.Component {
                                         <PopoverBody>
                                           <div style={{color: '#6f727d'}}>
                                             <i className='fa fa-user' />&nbsp;&nbsp;<a onClick={() => this.makeDefault('individual')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
-                                              Make Default Individual
+                                              Make Default Premium (Individual)
                                             </a>
                                             <br />
                                             <i className='fa fa-users' />&nbsp;&nbsp;<a onClick={() => this.makeDefault('team')} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '10px', marginBottom: '10px'}}>
-                                              Make Default Team
+                                              Make Default Premiuim (Team)
                                             </a>
                                           </div>
                                         </PopoverBody>

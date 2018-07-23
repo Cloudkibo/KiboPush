@@ -34,7 +34,8 @@ class Convo extends React.Component {
       selectedDays: '0',
       searchValue: '',
       filter: false,
-      pageNumber: 0
+      pageNumber: 0,
+      isShowingModalPro: false
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     props.loadSubscribersList()
@@ -47,6 +48,22 @@ class Convo extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
   onDaysChange (e) {
     // this.setState({
@@ -245,6 +262,24 @@ class Convo extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <Sidebar />
@@ -328,9 +363,17 @@ class Convo extends React.Component {
                                     </Link>
                                   </div>
                                   <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <Link to='/showTemplateBroadcasts' className='btn btn-primary'>
+                                    {this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                                    ? <Link to='/showTemplateBroadcasts' className='btn btn-primary'>
                                       Use Template
                                     </Link>
+                                    : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                      Use Template&nbsp;&nbsp;&nbsp;
+                                      <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                        <span style={{color: '#34bfa3'}}>PRO</span>
+                                      </span>
+                                    </button>
+                                  }
                                   </div>
                                 </div>
                               </ModalDialog>
@@ -467,7 +510,8 @@ function mapStateToProps (state) {
     count: (state.broadcastsInfo.count),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    user: (state.basicInfo.user)
   }
 }
 
