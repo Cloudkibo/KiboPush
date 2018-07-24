@@ -646,7 +646,7 @@ function uploadOnFacebook (payloadItem, pageAccessToken) {
     }),
     'filedata': fileReaderStream
   }
-  return new Promise((resolve, reject) => request(
+  request(
     {
       'method': 'POST',
       'json': true,
@@ -656,14 +656,14 @@ function uploadOnFacebook (payloadItem, pageAccessToken) {
     function (err, resp) {
       if (err) {
         logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
-        reject(err)
+        return ({status: 'failed', data: err})
       } else {
         logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
         payloadItem.fileurl.attachment_id = resp.body.attachment_id
         logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payloadItem)}`)
-        resolve(payloadItem)
+        return ({status: 'success', data: payloadItem})
       }
-    }))
+    })
 }
 
 exports.prepareSendAPIPayload = prepareSendAPIPayload
