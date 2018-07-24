@@ -361,9 +361,9 @@ exports.sendConversation = function (req, res) {
                   })
                 }
                 let interval = setInterval(() => {
-                  if (payload !== undefined) {
+                  if (payload) {
                     clearInterval(interval)
-                    sendToSubscribers(subsFindCriteria, req, page, broadcast, companyUser, payload)
+                    sendToSubscribers(subsFindCriteria, req, res, page, broadcast, companyUser, payload)
                   }
                 }, 3000)
               })
@@ -387,9 +387,9 @@ exports.sendConversation = function (req, res) {
                 }
               }
               let interval = setInterval(() => {
-                if (payload !== undefined) {
+                if (payload) {
                   clearInterval(interval)
-                  sendToSubscribers(subscriberFindCriteria, req, page, broadcast, companyUser, payload)
+                  sendToSubscribers(subscriberFindCriteria, req, res, page, broadcast, companyUser, payload)
                 }
               }, 3000)
             }
