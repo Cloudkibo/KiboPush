@@ -196,7 +196,7 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState
         ? <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
