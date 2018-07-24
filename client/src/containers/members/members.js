@@ -12,6 +12,7 @@ import {
 } from '../../redux/actions/members.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Members extends React.Component {
   constructor (props, context) {
@@ -22,10 +23,14 @@ class Members extends React.Component {
       membersDataAll: [],
       totalLength: 0,
       filterByName: '',
-      filterByEmail: ''
+      filterByEmail: '',
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -35,7 +40,14 @@ class Members extends React.Component {
       this.setState({totalLength: nextProps.members.length})
     }
   }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
 
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
+  }
   displayData (n, members) {
     let offset = n * 4
     let data = []
@@ -107,6 +119,24 @@ class Members extends React.Component {
               </div>
             </div>
           </div>
+          {
+            this.state.isShowingModalDelete &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialogDelete}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeDialogDelete}>
+                <h3>Delete Member</h3>
+                <p>Are you sure you want to delete this member?</p>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.removeMember(this.state.deleteid)
+                    this.closeDialogDelete()
+                  }}>Delete
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='m-content'>
             <div
               className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
@@ -239,8 +269,7 @@ class Members extends React.Component {
                                             float: 'left',
                                             margin: 2
                                           }}
-                                          onClick={() => this.removeMember(
-                                            member)}>Delete
+                                          onClick={() => this.showDialogDelete(member)}>Delete
                                         </button>
                                       }
                                       {
@@ -250,8 +279,7 @@ class Members extends React.Component {
                                             float: 'left',
                                             margin: 2
                                           }}
-                                          onClick={() => this.removeMember(
-                                                  member)}>Delete
+                                          onClick={() => this.showDialogDelete(member)}>Delete
                                         </button>
                                       }
                                     </span>
