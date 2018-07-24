@@ -87,10 +87,7 @@ class Button extends React.Component {
       this.props.onAdd({
         type: 'web_url',
         url: this.state.url, // User defined link,
-        title: this.state.title, // User defined label
-        openWebsite: this.state.openWebsite,
-        openSubscribe: this.state.openSubscribe,
-        openUnsubscribe: this.state.openUnsubscribe
+        title: this.state.title // User defined label
       })
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
@@ -101,10 +98,7 @@ class Button extends React.Component {
             sequenceId: this.state.sequenceValue,
             action: 'subscribe'
           }),
-          sequenceValue: this.state.sequenceValue,
-          openWebsite: this.state.openWebsite,
-          openSubscribe: this.state.openSubscribe,
-          openUnsubscribe: this.state.openUnsubscribe
+          sequenceValue: this.state.sequenceValue
         })
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         this.props.onAdd({
@@ -114,10 +108,7 @@ class Button extends React.Component {
             sequenceId: this.state.sequenceValue,
             action: 'unsubscribe'
           }),
-          sequenceValue: this.state.sequenceValue,
-          openWebsite: this.state.openWebsite,
-          openSubscribe: this.state.openSubscribe,
-          openUnsubscribe: this.state.openUnsubscribe
+          sequenceValue: this.state.sequenceValue
         })
       }
     }
