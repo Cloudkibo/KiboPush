@@ -44,6 +44,7 @@ const Webhooks = require(
 // const SequenceSubscriberMessages = require(
 //  './../sequenceMessaging/sequenceSubscribersMessages.model')
 const { sendBroadcast } = require('./broadcasts2.controller')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 const utility = require('./broadcasts.utility')
 const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
@@ -630,6 +631,12 @@ exports.getfbMessage = function (req, res) {
                                   if (err2) {
                                     logger.serverLog(TAG, err2)
                                   }
+                                  CompanyUsage.update({companyId: page.companyId},
+                                    { $inc: { subscribers: 1 } }, (err, updated) => {
+                                      if (err) {
+                                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                      }
+                                    })
                                   Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
                                     if (err) logger.serverLog(TAG, err)
                                     if (webhook && webhook.isEnabled) {
@@ -1318,6 +1325,12 @@ function handleMessageFromSomeOtherApp (event) {
                   if (err2) {
                     logger.serverLog(TAG, err2)
                   }
+                  CompanyUsage.update({companyId: page.companyId},
+                    { $inc: { subscribers: 1 } }, (err, updated) => {
+                      if (err) {
+                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                      }
+                    })
                   if (!(event.postback &&
                     event.postback.title === 'Get Started')) {
                     createSession(page, subscriberCreated, event)
@@ -1369,6 +1382,12 @@ function createSession (page, subscriber, event) {
               newSession.save((err, sessionSaved) => {
                 if (err) logger.serverLog(TAG, err)
                 logger.serverLog(TAG, 'new session created')
+                CompanyUsage.update({companyId: page.companyId},
+                  { $inc: { sessions: 1 } }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                  })
                 saveLiveChat(page, subscriber, sessionSaved, event)
               })
             } else {
@@ -1461,6 +1480,12 @@ function saveChatInDb (page, session, chatPayload, subscriber, event) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
+    CompanyUsage.update({companyId: page.companyId},
+      { $inc: { chat_messages: 1 } }, (err, updated) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+      })
     require('./../../config/socketio').sendMessageToClient({
       room_id: page.companyId,
       body: {
@@ -1937,6 +1962,12 @@ function sendautomatedmsg (req, page) {
                           return logger.serverLog(TAG,
                             `At save chat${JSON.stringify(err)}`)
                         }
+                        CompanyUsage.update({companyId: page.companyId},
+                          { $inc: { chat_messages: 1 } }, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         session.last_activity_time = Date.now()
                         session.save((err) => {
                           if (err) logger.serverLog(TAG, err)

@@ -7,6 +7,7 @@ const SurveyQuestions = require('./surveyQuestion.model')
 const Category = require('./category.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const mongoose = require('mongoose')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 const TAG = 'api/templates/templates.controller.js'
 
@@ -257,59 +258,103 @@ exports.allSurveys = function (req, res) {
 }
 
 exports.createPoll = function (req, res) {
-  let pollPayload = {
-    title: req.body.title,
-    statement: req.body.statement,
-    options: req.body.options,
-    category: req.body.category
-  }
-  const poll = new TemplatePolls(pollPayload)
-
-  // save model to MongoDB
-  poll.save((err, pollCreated) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to insert record'
-      })
-    } else {
-      res.status(201).json({status: 'success', payload: pollCreated})
-    }
-  })
-}
-
-exports.createSurvey = function (req, res) {
-  let surveyPayload = {
-    title: req.body.survey.title,
-    description: req.body.survey.description,
-    category: req.body.survey.category
-  }
-  const survey = new TemplateSurveys(surveyPayload)
-
-  TemplateSurveys.create(survey, (err, survey) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    // after survey is created, create survey questions
-    for (let question in req.body.questions) {
-      let options = []
-      options = req.body.questions[question].options
-      const surveyQuestion = new SurveyQuestions({
-        statement: req.body.questions[question].statement, // question statement
-        options, // array of question options
-        surveyId: survey._id
-      })
-
-      surveyQuestion.save((err2, question1) => {
-        if (err2) {
-          return res.status(404).json({ status: 'failed', description: 'Survey Question not created' })
-        }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    return res.status(201).json({status: 'success', payload: survey})
+    let pollPayload = {
+      title: req.body.title,
+      statement: req.body.statement,
+      options: req.body.options,
+      category: req.body.category
+    }
+    const poll = new TemplatePolls(pollPayload)
+
+    // save model to MongoDB
+    poll.save((err, pollCreated) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to insert record'
+        })
+      } else {
+        if (!req.user.isSuperUser) {
+          CompanyUsage.update({companyId: companyUser.companyId},
+            { $inc: { polls_templates: 1 } }, (err, updated) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+            })
+        }
+        res.status(201).json({status: 'success', payload: pollCreated})
+      }
+    })
+  })
+}
+
+exports.createSurvey = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let surveyPayload = {
+      title: req.body.survey.title,
+      description: req.body.survey.description,
+      category: req.body.survey.category
+    }
+    const survey = new TemplateSurveys(surveyPayload)
+
+    TemplateSurveys.create(survey, (err, survey) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      if (!req.user.isSuperUser) {
+        CompanyUsage.update({companyId: companyUser.companyId},
+          { $inc: { survey_templates: 1 } }, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+          })
+      }
+      // after survey is created, create survey questions
+      for (let question in req.body.questions) {
+        let options = []
+        options = req.body.questions[question].options
+        const surveyQuestion = new SurveyQuestions({
+          statement: req.body.questions[question].statement, // question statement
+          options, // array of question options
+          surveyId: survey._id
+        })
+
+        surveyQuestion.save((err2, question1) => {
+          if (err2) {
+            return res.status(404).json({ status: 'failed', description: 'Survey Question not created' })
+          }
+        })
+      }
+      return res.status(201).json({status: 'success', payload: survey})
+    })
   })
 }
 
@@ -621,6 +666,14 @@ exports.createBroadcast = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
+        if (!req.user.isSuperUser) {
+          CompanyUsage.update({companyId: companyUser.companyId},
+            { $inc: { broadcast_templates: 1 } }, (err, updated) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+            })
+        }
         res.status(201).json({status: 'success', payload: broadcastCreated})
       }
     })

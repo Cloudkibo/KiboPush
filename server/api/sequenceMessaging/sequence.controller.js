@@ -7,6 +7,7 @@ const SequenceMessageQueue = require('./../SequenceMessageQueue/SequenceMessageQ
 const logger = require('../../components/logger')
 const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const _ = require('lodash')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.allMessages = function (req, res) {
   Messages.find({sequenceId: req.params.id},
@@ -51,6 +52,12 @@ exports.createMessage = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
+        CompanyUsage.update({companyId: companyUser.companyId},
+          { $inc: { messages_per_sequence: 1 } }, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+          })
         SequenceSubscribers.find({sequenceId: req.body.sequenceId}, (err, sequences) => {
           if (err) {
             return logger.serverLog(TAG, 'subscriber find error create message')
@@ -292,6 +299,12 @@ exports.createSequence = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
+        CompanyUsage.update({companyId: companyUser.companyId},
+          { $inc: { broadcast_sequences: 1 } }, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+          })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {

@@ -16,6 +16,7 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 let request = require('request')
 const _ = require('lodash')
 const Lists = require('../lists/lists.model')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.upload = function (req, res) {
   var today = new Date()
@@ -110,6 +111,12 @@ exports.upload = function (req, res) {
                         err2
                       })
                     }
+                    CompanyUsage.update({companyId: companyUser.companyId},
+                      { $inc: { phone_invitation: 1 } }, (err, updated) => {
+                        if (err) {
+                          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                        }
+                      })
                   })
                 } else {
                   let filename = []
@@ -353,6 +360,12 @@ exports.sendMessage = function (req, res) {
                   err2
                 })
               }
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { phone_invitation: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
             })
           } else {
             let filename = []
@@ -541,6 +554,12 @@ exports.sendNumbers = function (req, res) {
                   err2
                 })
               }
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { phone_invitation: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
             })
           } else {
             let filename = []

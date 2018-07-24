@@ -15,6 +15,7 @@ const mongoose = require('mongoose')
 const Lists = require('../lists/lists.model')
 const Users = require('./../user/Users.model')
 const Webhooks = require('./../webhooks/webhooks.model')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 const webhookUtility = require('./../webhooks/webhooks.utility')
 
 let _ = require('lodash')
@@ -729,6 +730,12 @@ exports.send = function (req, res) {
                             utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
                               for (let j = 0; j < subscribers.length; j++) {
+                                CompanyUsage.update({companyId: companyUser.companyId},
+                                  { $inc: { surveys: 1 } }, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
                                 const messageData = {
                                   attachment: {
                                     type: 'template',
@@ -850,6 +857,13 @@ exports.send = function (req, res) {
                           utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                             subscribers = repliedSubscribers
                             for (let j = 0; j < subscribers.length; j++) {
+                              CompanyUsage.update({companyId: companyUser.companyId},
+                                { $inc: { surveys: 1 } }, (err, updated) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                  }
+                                  console.log('updated', updated)
+                                })
                               const messageData = {
                                 attachment: {
                                   type: 'template',
@@ -1233,6 +1247,12 @@ exports.sendSurvey = function (req, res) {
                               utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                                 subscribers = repliedSubscribers
                                 for (let j = 0; j < subscribers.length; j++) {
+                                  CompanyUsage.update({companyId: companyUser.companyId},
+                                    { $inc: { surveys: 1 } }, (err, updated) => {
+                                      if (err) {
+                                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                      }
+                                    })
                                   const messageData = {
                                     attachment: {
                                       type: 'template',
@@ -1356,6 +1376,12 @@ exports.sendSurvey = function (req, res) {
                             utility.applySurveyFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
                               for (let j = 0; j < subscribers.length; j++) {
+                                CompanyUsage.update({companyId: companyUser.companyId},
+                                  { $inc: { surveys: 1 } }, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
                                 const messageData = {
                                   attachment: {
                                     type: 'template',
