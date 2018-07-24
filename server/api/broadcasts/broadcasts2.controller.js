@@ -361,7 +361,7 @@ exports.sendConversation = function (req, res) {
                   })
                 }
                 let interval = setInterval(() => {
-                  if (payload) {
+                  if (payload !== undefined) {
                     clearInterval(interval)
                     sendToSubscribers(subsFindCriteria, req, page, broadcast, companyUser, payload)
                   }
@@ -387,7 +387,7 @@ exports.sendConversation = function (req, res) {
                 }
               }
               let interval = setInterval(() => {
-                if (payload) {
+                if (payload !== undefined) {
                   clearInterval(interval)
                   sendToSubscribers(subscriberFindCriteria, req, page, broadcast, companyUser, payload)
                 }
