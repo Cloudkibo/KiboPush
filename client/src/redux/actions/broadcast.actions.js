@@ -211,7 +211,7 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
             // dispatch(sendBroadcastSuccess())
           } else {
             if (res.description) {
-              msg.error(`Failed to send conversation. ${res.description}`)
+              msg.error(`${res.description}`)
             } else {
               msg.error('Failed to send conversation')
             }

@@ -256,7 +256,7 @@ exports.sendConversation = function (req, res) {
     .json({status: 'failed', description: 'Please fill all the required fields'})
   }
   // restrict to one page
-  if (req.body.segmentationPageIds.length > 1) {
+  if (req.body.segmentationPageIds.length !== 1) {
     return res.status(400)
     .json({status: 'failed', description: 'Please select only one page'})
   }
