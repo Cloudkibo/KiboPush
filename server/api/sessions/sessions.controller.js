@@ -165,7 +165,7 @@ exports.getNewSessions = function (req, res) {
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
-            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -176,7 +176,8 @@ exports.getNewSessions = function (req, res) {
             logger.serverLog(TAG, `gotUnreadCount: ${JSON.stringify(gotUnreadCount)}`)
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
-                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                if (sessions[j]._id.toString() === gotUnreadCount[i].session_id.toString()) {
+                  console.log('inside if unread')
                   sessions[j].set('unreadCount',
                     gotUnreadCount[i].count,
                     {strict: false})
