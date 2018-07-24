@@ -3,12 +3,9 @@ let Schema = mongoose.Schema
 
 const storeSchema = new Schema({
   userId: {
-    type: String
+    type: String  // Schema.ObjectId, ref: 'users'
   },
   pageId: {
-    type: String
-  },
-  shopId: {
     type: String
   },
   shopUrl: {

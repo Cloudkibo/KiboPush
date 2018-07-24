@@ -15,4 +15,7 @@ router.get('/',
   auth.isAuthenticated(),
   controller.index) // this id will be userid
 
+router.post('/saveStoreInfo',
+  controller.saveStoreInfo) // this id will be userid
+
 module.exports = router
