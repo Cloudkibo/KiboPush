@@ -48,12 +48,17 @@ const updatePayload = (self, payload, pageAccessToken, broadcast) => {
   for (let j = 0; j < payload.length; j++) {
     if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
       let uploadResponse = utility.uploadOnFacebook(payload[j], pageAccessToken)
-      uploadResponse.then((payloadItem) => {
-        payload[j] = payloadItem
-        shouldReturn = operation(j, payload.length - 1)
-      }).catch((err) => {
-        logger.serverLog(TAG, `ERROR! failed to upload attchment on Facebook: ${JSON.stringify(err)}`)
-      })
+      let interval = setInterval(() => {
+        if (uploadResponse) {
+          clearInterval(interval)
+          if (uploadResponse.status === 'success') {
+            payload[j] = uploadResponse.data
+          } else {
+            logger.serverLog(TAG, `ERROR! failed to upload attchment on Facebook: ${JSON.stringify(uploadResponse.data)}`)
+          }
+        }
+      }, 3000)
+      shouldReturn = operation(j, payload.length - 1)
     } else if (!self) {
       if (payload[j].buttons) {
         payload[j].buttons.forEach((button, bindex) => {
@@ -320,7 +325,7 @@ exports.sendConversation = function (req, res) {
                 }
               }
             })
-            let payload = updatePayload(req.body.self, payloadData, pageAccessToken)
+            let payload = updatePayload(req.body.self, payloadData, pageAccessToken, broadcast)
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
