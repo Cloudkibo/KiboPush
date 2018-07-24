@@ -61,9 +61,9 @@ class PageSubscribers extends React.Component {
       if (data.selected === 0) {
         this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
       } else if (this.state.pageNumber < data.selected) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
       } else {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
       }
     }
     this.setState({pageNumber: data.selected})

@@ -87,7 +87,10 @@ class Button extends React.Component {
       this.props.onAdd({
         type: 'web_url',
         url: this.state.url, // User defined link,
-        title: this.state.title // User defined label
+        title: this.state.title, // User defined label
+        openWebsite: this.state.openWebsite,
+        openSubscribe: this.state.openSubscribe,
+        openUnsubscribe: this.state.openUnsubscribe
       })
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
@@ -97,7 +100,11 @@ class Button extends React.Component {
           payload: JSON.stringify({
             sequenceId: this.state.sequenceValue,
             action: 'subscribe'
-          })
+          }),
+          sequenceValue: this.state.sequenceValue,
+          openWebsite: this.state.openWebsite,
+          openSubscribe: this.state.openSubscribe,
+          openUnsubscribe: this.state.openUnsubscribe
         })
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         this.props.onAdd({
@@ -106,11 +113,18 @@ class Button extends React.Component {
           payload: JSON.stringify({
             sequenceId: this.state.sequenceValue,
             action: 'unsubscribe'
-          })
+          }),
+          sequenceValue: this.state.sequenceValue,
+          openWebsite: this.state.openWebsite,
+          openSubscribe: this.state.openSubscribe,
+          openUnsubscribe: this.state.openUnsubscribe
         })
       }
     }
 
+    // this.setState({
+    //   openPopover: false
+    // })
     this.setState({
       openPopover: false,
       title: '',
@@ -123,7 +137,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if (event.target.value && isWebURL(this.state.url)) {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})

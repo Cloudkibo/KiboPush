@@ -348,7 +348,7 @@ exports.getAllpages = function (req, res) {
         }
       } else if (req.body.first_page === 'next') {
         let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-        
+
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -536,7 +536,7 @@ exports.getAllpages = function (req, res) {
         }
       } else if (req.body.first_page === 'previous') {
         let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-        
+
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -818,7 +818,6 @@ exports.enable = function (req, res) {
                                       })
                                     }
                                     Pages.find({
-                                      userId: req.user._id,
                                       companyId: companyUser.companyId
                                     }, (err2, pages) => {
                                       if (err2) {
@@ -828,6 +827,8 @@ exports.enable = function (req, res) {
                                             err)}`
                                         })
                                       }
+                                      pages = removeDuplicates(pages, 'pageId')
+
                                       Pages.find({
                                         companyId: companyUser.companyId,
                                         connected: true
@@ -908,7 +909,7 @@ exports.enable = function (req, res) {
                         } else {
                           // page is already connected by someone else
                           Pages.find(
-                            {userId: req.user._id, companyId: companyUser.companyId},
+                            {companyId: companyUser.companyId},
                             (err2, pages) => {
                               if (err2) {
                                 return res.status(500).json({
@@ -917,6 +918,7 @@ exports.enable = function (req, res) {
                                     err)}`
                                 })
                               }
+                              pages = removeDuplicates(pages, 'pageId')
                               Users.findOne({_id: pagesbyOther[0].userId},
                               (err, userInfo) => {
                                 if (err) {
@@ -993,7 +995,7 @@ exports.disable = function (req, res) {
                   }
                 })
                 Pages.find(
-                  {userId: req.user._id, companyId: companyUser.companyId},
+                  {companyId: companyUser.companyId},
                   (err2, pages) => {
                     if (err2) {
                       return res.status(500).json({
@@ -1002,6 +1004,7 @@ exports.disable = function (req, res) {
                           err)}`
                       })
                     }
+                    pages = removeDuplicates(pages, 'pageId')
                     const options = {
                       url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
                       qs: {access_token: req.body.accessToken},
@@ -1094,6 +1097,12 @@ exports.disable = function (req, res) {
           }
         })
     })
+}
+
+function removeDuplicates (myArr, prop) {
+  return myArr.filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
+  })
 }
 
 exports.otherPages = function (req, res) {

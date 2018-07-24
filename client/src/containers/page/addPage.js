@@ -68,13 +68,7 @@ class AddPage extends React.Component {
     this.setState({showAlert: false, alertmsg: ''})
   }
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
+    console.log('addPage props', this.props)
     return (
       <div>
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
