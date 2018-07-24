@@ -248,7 +248,7 @@ class Targeting extends React.Component {
       data: pageOptions,
       placeholder: this.props.component === 'broadcast' ? 'Select Pages - Default: All Pages' : 'Default: All Pages',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
     // this.setState({pageValue: pageOptions[0].id})
