@@ -9,6 +9,7 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Users = require('./../user/Users.model')
 const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
@@ -804,6 +805,12 @@ exports.enable = function (req, res) {
                                   description: 'Failed to update record'
                                 })
                               } else {
+                                CompanyUsage.update({companyId: companyUser.companyId},
+                                  { $inc: { facebook_pages: 1 } }, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
                                 Subscribers.update({pageId: req.body._id},
                                   {isEnabledByPage: true}, {multi: true},
                                   function (err) {

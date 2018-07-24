@@ -11,6 +11,7 @@ const Surveys = require('./../surveys/surveys.model')
 const PollResponses = require('./../polls/pollresponse.model')
 const SurveyResponses = require('./../surveys/surveyresponse.model')
 const mongoose = require('mongoose')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 let _ = require('lodash')
 exports.allLists = function (req, res) {
@@ -282,6 +283,12 @@ exports.createList = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
+        CompanyUsage.update({companyId: companyUser.companyId},
+          { $inc: { segmentation_lists: 1 } }, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+          })
         return res.status(201).json({status: 'success', payload: listCreated})
       })
     })

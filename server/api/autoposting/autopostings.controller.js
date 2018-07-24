@@ -14,6 +14,7 @@ const urllib = require('url')
 const crypto = require('crypto')
 const config = require('../../config/environment/index')
 const _ = require('lodash')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -149,6 +150,12 @@ exports.create = function (req, res) {
                           description: 'Failed to insert record'
                         })
                       } else {
+                        CompanyUsage.update({companyId: companyUser.companyId},
+                          { $inc: { twitter_autoposting: 1 } }, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         TwitterUtility.restart()
                         res.status(201)
                         .json({status: 'success', payload: createdRecord})
@@ -222,6 +229,12 @@ exports.create = function (req, res) {
                           description: 'Failed to insert record'
                         })
                       } else {
+                        CompanyUsage.update({companyId: companyUser.companyId},
+                          { $inc: { facebook_autoposting: 1 } }, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         res.status(201)
                         .json({status: 'success', payload: createdRecord})
                         require('./../../config/socketio').sendMessageToClient({
@@ -316,6 +329,12 @@ exports.create = function (req, res) {
                         description: 'Failed to insert record'
                       })
                     } else {
+                      CompanyUsage.update({companyId: companyUser.companyId},
+                        { $inc: { wordpress_autoposting: 1 } }, (err, updated) => {
+                          if (err) {
+                            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                          }
+                        })
                       res.status(201)
                       .json({status: 'success', payload: createdRecord})
                       require('./../../config/socketio').sendMessageToClient({

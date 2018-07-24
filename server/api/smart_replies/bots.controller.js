@@ -17,6 +17,7 @@ let utility = require('./../broadcasts/broadcasts.utility')
 const Sessions = require('./../sessions/sessions.model')
 const _ = require('lodash')
 const mongoose = require('mongoose')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 function transformPayload (payload) {
   var transformed = []
@@ -226,12 +227,25 @@ exports.index = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      return res.status(200).json({status: 'success', payload: bots })
+      return res.status(200).json({ status: 'success', payload: bots })
     })
 }
 
 exports.create = function (req, res) {
   logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
   var uniquebotName = req.body.botName + req.user._id + Date.now()
   request(
     {
@@ -283,12 +297,19 @@ exports.create = function (req, res) {
                   description: 'Failed to insert record'
                 })
               } else {
+                CompanyUsage.update({companyId: companyUser.companyId},
+                  { $inc: { bots: 1 } }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                  })
                 return res.status(200).json({status: 'success', payload: newbot})
               }
             })
           }
         }
       })
+    })
 }
 
 exports.edit = function (req, res) {

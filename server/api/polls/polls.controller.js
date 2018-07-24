@@ -16,6 +16,7 @@ const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
 const Webhooks = require('./../webhooks/webhooks.model')
 const TAG = 'api/polls/polls.controller.js'
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -684,6 +685,12 @@ exports.send = function (req, res) {
                     utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                       subscribers = taggedSubscribers
                       for (let j = 0; j < subscribers.length; j++) {
+                        CompanyUsage.update({companyId: companyUser.companyId},
+                          { $inc: { polls: 1 } }, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         const data = {
                           messaging_type: 'UPDATE',
                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
@@ -795,6 +802,12 @@ exports.send = function (req, res) {
                       utility.applyPollFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                         subscribers = repliedSubscribers
                         for (let j = 0; j < subscribers.length; j++) {
+                          CompanyUsage.update({companyId: companyUser.companyId},
+                            { $inc: { polls: 1 } }, (err, updated) => {
+                              if (err) {
+                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                              }
+                            })
                           const data = {
                             messaging_type: 'UPDATE',
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
@@ -1183,6 +1196,12 @@ exports.sendPoll = function (req, res) {
                       utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                         subscribers = taggedSubscribers
                         for (let j = 0; j < subscribers.length; j++) {
+                          CompanyUsage.update({companyId: companyUser.companyId},
+                            { $inc: { polls: 1 } }, (err, updated) => {
+                              if (err) {
+                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                              }
+                            })
                           const data = {
                             messaging_type: 'UPDATE',
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
@@ -1295,6 +1314,12 @@ exports.sendPoll = function (req, res) {
                         utility.applyPollFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                           subscribers = repliedSubscribers
                           for (let j = 0; j < subscribers.length; j++) {
+                            CompanyUsage.update({companyId: companyUser.companyId},
+                              { $inc: { polls: 1 } }, (err, updated) => {
+                                if (err) {
+                                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                }
+                              })
                             const data = {
                               messaging_type: 'UPDATE',
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id

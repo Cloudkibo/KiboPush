@@ -10,6 +10,7 @@ const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const _ = require('lodash')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
@@ -74,6 +75,12 @@ exports.create = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
+        CompanyUsage.update({companyId: companyUser.companyId},
+          { $inc: { labels: 1 } }, (err, updated) => {
+            if (err) {
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+          })
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
