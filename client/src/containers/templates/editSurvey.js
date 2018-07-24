@@ -410,7 +410,7 @@ class createSurvey extends React.Component {
 
           <div className='row'>
             <div
-              className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+              className='m-form m-form--label-align-right'>
               <div className='row align-items-center'>
                 <div className='col-xl-8 order-2 order-xl-1' />
                 <div

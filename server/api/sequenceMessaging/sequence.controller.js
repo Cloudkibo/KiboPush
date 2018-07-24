@@ -207,7 +207,15 @@ exports.setSchedule = function (req, res) {
                               err2
                             })
                           }
-
+                          logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(req.body.messageId)}`)
+                          SequenceMessages.update(
+                            {_id: req.body.messageId},
+                            {$inc: {sent: 1}},
+                            {multi: true}, (err, updated) => {
+                              if (err) {
+                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                              }
+                            })
                           BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                           SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                             if (err) {
@@ -302,6 +310,7 @@ exports.setStatus = function (req, res) {
 
                   if (message.payload.length > 0) {
                     AppendURLCount(message, (newPayload) => {
+                      logger.serverLog(TAG, `New Payload ${JSON.stringify(newPayload)}`)
                       let sequenceSubMessage = new SequenceSubscriberMessage({
                         subscriberId: messageFromQueue.subscriberId,
                         messageId: message._id,
@@ -318,7 +327,15 @@ exports.setStatus = function (req, res) {
                             err2
                           })
                         }
-
+                        logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(req.body.messageId)}`)
+                        SequenceMessages.update(
+                          {_id: req.body.messageId},
+                          {$inc: {sent: 1}},
+                          {multi: true}, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                         SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                           if (err) {
@@ -743,6 +760,15 @@ exports.subscribeToSequence = function (req, res) {
                             err2
                           })
                         }
+                        logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                        SequenceMessages.update(
+                          {_id: message._id},
+                          {$inc: {sent: 1}},
+                          {multi: true}, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                       })
                     })
@@ -979,6 +1005,7 @@ exports.testScheduler = function (req, res) {
 }
 
 const AppendURLCount = function (sequenceMessage, callback) {
+  logger.serverLog(TAG, `Append URL count${JSON.stringify(sequenceMessage)}`)
   if (sequenceMessage.payload.length > 0) {
     let newPayload = sequenceMessage.payload
     sequenceMessage.payload.forEach((payloadItem, pindex) => {
@@ -988,7 +1015,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
             let URLObject = new URL({
               originalURL: button.url,
               module: {
-                id: sequenceMessage.sequenceId,
+                id: sequenceMessage._id,
                 type: 'sequence'
               }
             })
@@ -1005,7 +1032,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
           let URLObject = new URL({
             originalURL: button.url,
             module: {
-              id: sequenceMessage.sequenceId,
+              id: sequenceMessage._id,
               type: 'sequence'
             }
           })
@@ -1022,7 +1049,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
             let URLObject = new URL({
               originalURL: button.url,
               module: {
-                id: sequenceMessage.sequenceId,
+                id: sequenceMessage._id,
                 type: 'sequence'
               }
             })
@@ -1041,7 +1068,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
               let URLObject = new URL({
                 originalURL: button.url,
                 module: {
-                  id: sequenceMessage.sequenceId,
+                  id: sequenceMessage._id,
                   type: 'sequence'
                 }
               })
@@ -1056,7 +1083,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
             let URLObject = new URL({
               originalURL: element.default_action.url,
               module: {
-                id: sequenceMessage.sequenceId,
+                id: sequenceMessage._id,
                 type: 'sequence'
               }
             })
