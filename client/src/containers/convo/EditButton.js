@@ -13,15 +13,16 @@ import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 class EditButton extends React.Component {
   constructor (props, context) {
     super(props, context)
+    console.log('this.props', this.props)
     this.state = {
       openPopover: false,
       title: this.props.data.button.title,
       url: this.props.data.button.url,
       disabled: false,
-      sequenceValue: '',
-      openWebsite: false,
-      openSubscribe: false,
-      openUnsubscribe: false
+      sequenceValue: this.props.data.button.sequenceValue,
+      openWebsite: this.props.data.button.openWebsite,
+      openSubscribe: this.props.data.button.openSubscribe,
+      openUnsubscribe: this.props.data.button.openUnsubscribe
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -90,11 +91,10 @@ class EditButton extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
   }
   handleDone () {
-    console.log('this.state.url', this.state.url)
-    console.log('this.state.title', this.state.title)
+    console.log('this.state', this.state)
     if (this.state.url !== '') {
       this.props.onEdit({
-        id: 0,
+        id: this.props.index,
         button: {
           type: 'web_url',
           url: this.state.url, // User defined link,
@@ -130,18 +130,21 @@ class EditButton extends React.Component {
       }
     }
     this.setState({
-      openPopover: false,
-      title: '',
-      url: '',
-      sequenceValue: '',
-      openWebsite: false,
-      openSubscribe: false,
-      openUnsubscribe: false
+      openPopover: false
     })
+    // this.setState({
+    //   openPopover: false,
+    //   title: '',
+    //   url: '',
+    //   sequenceValue: '',
+    //   openWebsite: false,
+    //   openSubscribe: false,
+    //   openUnsubscribe: false
+    // })
   }
 
   changeTitle (event) {
-    if (isWebURL(this.state.url) && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -166,10 +169,19 @@ class EditButton extends React.Component {
       url: this.state.url, // User defined link,
       title: this.state.title // User defined label
     })
-    this.setState({openPopover: false})
+    this.setState({
+      openPopover: false,
+      title: '',
+      url: '',
+      sequenceValue: '',
+      openWebsite: false,
+      openSubscribe: false,
+      openUnsubscribe: false
+    })
   }
 
   render () {
+    console.log('EditButton state', this.state)
     return (
       <div>
         <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center'>
