@@ -95,6 +95,7 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
+    this.setState({pageValue: [options[0].id]})
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
@@ -268,16 +269,17 @@ class Targeting extends React.Component {
       data: pageOptions,
       placeholder: this.props.component === 'broadcast' ? 'Select Pages - Default: All Pages' : 'Default: All Pages',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
-    // this.setState({pageValue: pageOptions[0].id})
+    //  this.setState({pageValue: pageOptions[0].id})
 
     /* eslint-disable */
     $('#selectPage').on('change', function (e) {
       /* eslint-enable */
       // var selectedIndex = e.target.selectedIndex
       // if (selectedIndex !== '-1') {
+      console.log('e.target', e.target)
       var selectedIndex = e.target.selectedIndex
       if (selectedIndex !== '-1') {
         var selectedOptions = e.target.selectedOptions
@@ -466,6 +468,7 @@ class Targeting extends React.Component {
   }
 
   render () {
+    console.log('pageValue', this.state.pageValue)
     return (
       <div className='row'>
         {
