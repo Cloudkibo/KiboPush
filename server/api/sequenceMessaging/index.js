@@ -66,4 +66,12 @@ router.post('/unsubscribeToSequence',
 router.post('/testScheduler',
   controller.testScheduler)
 
+router.post('/updateTrigger',
+  auth.isAuthenticated(),
+  controller.updateTrigger)
+
+router.post('/updateSegmentation',
+  auth.isAuthenticated(),
+  controller.updateSegmentation)
+
 module.exports = router

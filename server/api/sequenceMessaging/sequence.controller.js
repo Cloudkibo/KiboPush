@@ -985,6 +985,84 @@ exports.deleteMessage = function (req, res) {
   })
 }
 
+exports.updateTrigger = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'trigger')) parametersMissing = true
+  if (!_.has(req.body, 'type')) parametersMissing = true
+
+  // Checking the type to update the trigger
+  if (req.body.type === 'sequence') {
+    if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  } else if (req.body.type === 'message') {
+    if (!_.has(req.body, 'messageId')) parametersMissing = true
+  }
+
+  // If parameter missing return
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  // Logic to update trigger for sequence
+  if (req.body.type === 'sequence') {
+    Sequences.updateOne({_id: req.body.sequenceId}, {trigger: req.body.trigger}, (err, result) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to update record'
+        })
+      } else {
+        res.status(200).json({status: 'success', payload: result})
+      }
+    })
+  } else if (req.body.type === 'message') {   // Logic to update the trigger if the type is message
+    SequenceMessages.updateOne({_id: req.body.messageId}, {trigger: req.body.trigger}, (err, result) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to update record'
+        })
+      } else {
+        res.status(200).json({status: 'success', payload: result})
+      }
+    })
+  }
+}
+
+exports.updateSegmentation = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  if (!_.has(req.body, 'segmentation')) parametersMissing = true
+
+  // check if all the indexes of segmentation have required properties
+  for (let i = 0, length = req.body.segmentation.length; i < length; i++) {
+    if (!(req.body.segmentation[i].condition)) parametersMissing = true
+    if (!(req.body.segmentation[i].criteria)) parametersMissing = true
+    if (!(req.body.segmentation[i].value)) parametersMissing = true
+  }
+
+  if (!_.has(req.body, 'messageId')) parametersMissing = true
+
+  // If parameter missing return
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  Sequences.updateOne({_id: req.body.sequenceId}, {segmentation: req.body.segmentation}, (err, result) => {
+    if (err) {
+      res.status(500).json({
+        status: 'Failed',
+        description: 'Failed to update record'
+      })
+    } else {
+      res.status(200).json({status: 'success', payload: result})
+    }
+  })
+}
+
 exports.testScheduler = function (req, res) {
   let sequencePayload = {
     name: req.body.name
