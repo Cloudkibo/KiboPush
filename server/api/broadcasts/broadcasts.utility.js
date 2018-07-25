@@ -635,10 +635,14 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
 function uploadOnFacebook (payloadItem, pageAccessToken) {
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
   let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payloadItem.fileurl.name)
+  let type = payloadItem.componentType
+  if (payloadItem.componentType === 'media') {
+    type = payloadItem.mediaType
+  }
   const messageData = {
     'message': JSON.stringify({
       'attachment': {
-        'type': payloadItem.componentType,
+        'type': type,
         'payload': {
           'is_reusable': true
         }
