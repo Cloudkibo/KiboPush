@@ -38,7 +38,6 @@ module.exports = exports = function stripeCustomer (schema, options) {
 
   schema.methods.setCard = function (stripeToken, cb) {
     var company = this
-    console.log('company', company)
     var cardHandler = function (err, customer) {
       if (err) return cb(err)
 
@@ -49,8 +48,6 @@ module.exports = exports = function stripeCustomer (schema, options) {
       var card = customer.cards ? customer.cards.data[0] : customer.sources.data[0]
 
       company.stripe.last4 = card.last4
-      company.stripe.stripeToken = card.last4
-      console.log('stripeToken', stripeToken)
       company.save(function (err) {
         if (err) return cb(err)
         return cb(null)
