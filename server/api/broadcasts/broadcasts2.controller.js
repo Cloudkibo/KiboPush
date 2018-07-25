@@ -46,7 +46,7 @@ const operation = (index, length) => {
 const updatePayload = (self, payload, pageAccessToken, broadcast) => {
   let shouldReturn = false
   for (let j = 0; j < payload.length; j++) {
-    if (['image', 'audio', 'file', 'video'].indexOf(payload[j].componentType) > -1) {
+    if (['image', 'audio', 'file', 'video', 'media'].indexOf(payload[j].componentType) > -1) {
       let uploadResponse = utility.uploadOnFacebook(payload[j], pageAccessToken)
       let interval = setInterval(() => {
         if (uploadResponse) {
