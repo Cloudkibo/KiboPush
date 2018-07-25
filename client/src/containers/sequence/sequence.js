@@ -303,62 +303,50 @@ class Sequence extends React.Component {
                             </span>
                           </div>
                           <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-
                         </div>
                         {
                           this.state.sequencesData && this.state.sequencesData.length > 0
-                          ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                            <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                              <thead className='m-datatable__head'>
-                                <tr className='m-datatable__row'
-                                  style={{height: '53px'}}>
-                                  <th data-field='name'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px'}}>Name</span>
-                                  </th>
-                                  <th data-field='pages'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px'}}>Subscribers</span>
-                                  </th>
-                                  <th data-field='created_by'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px'}}>Messages</span>
-                                  </th>
-                                  <th data-field='datetime'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '100px'}}>Status</span>
-                                  </th>
-                                  <th data-field='actions'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '175px'}}>Actions</span>
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                {
-                                  this.state.sequencesData.map((sequence, i) => (
-                                    <tr key={i} data-row={i}
-                                      className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
-                                      style={{height: '55px'}}>
-                                      <td data-field='name' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.sequence.name}</span></td>
-                                      <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.subscribers.length}</span></td>
-                                      <td data-field='created_by' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.messages.length}</span></td>
-                                      <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{this.getSequenceStatus(sequence.messages)}</span></td>
-                                      <td data-field='actions' className='m-datatable__cell'>
-                                        <span style={{width: '175px'}}>
-                                          <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.goToEdit(sequence.sequence)}>
-                                              Edit
-                                            </button>
-                                          <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence.sequence._id)}>
-                                              Delete
-                                            </button>
-                                        </span>
-                                      </td>
-                                    </tr>
-                                  ))
-                                }
-                              </tbody>
-                            </table>
+                          ? <div>{
+                            this.state.sequencesData.map((sequence, i) => (
+                              <div key={i} className='sequence-box'>
+                                <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
+
+                                <span>
+                                  <span className='sequence-name'>
+                                    {sequence.sequence.name}
+                                  </span>
+                                  <br />
+                                  <span>
+                                    <span>Trigger</span>:
+                                      <span className='sequence-trigger' style={{marginLeft: '10px'}}>
+                                        When subscriber subscribes to this sequence.
+                                      </span>
+                                    <a href='#editTrigger'>
+                                        -- Edit
+                                      </a>
+                                  </span>
+                                </span>
+
+                                <span className='sequence-text centered-text' style={{marginLeft: '10%'}}>
+                                  <span className='sequence-number'>{sequence.subscribers.length}</span>
+                                  <br />
+                                  <span>Subscribers</span>
+                                </span>
+
+                                <span className='sequence-text centered-text' style={{marginLeft: '5%'}}>
+                                  <span className='sequence-number'>{sequence.messages.length}</span>
+                                  <br />
+                                  <span>Messages</span>
+                                </span>
+
+                                <span className='sequence-text centered-text' style={{marginLeft: '10%', cursor: 'pointer'}} onClick={() => this.goToEdit(sequence.sequence)}>
+                                  <i className='fa fa-edit' style={{fontSize: '24px'}} />
+                                  <br />
+                                  <span>Edit</span>
+                                </span>
+                              </div>
+                            ))
+                          }
                             <div className='pagination'>
                               <ReactPaginate
                                 previousLabel={'previous'}
