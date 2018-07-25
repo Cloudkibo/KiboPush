@@ -40,10 +40,7 @@ const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
 const Webhooks = require(
   './../webhooks/webhooks.model')
-// const SequenceMessages = require(
-//  './../sequenceMessaging/message.model')
-// const SequenceSubscriberMessages = require(
-//  './../sequenceMessaging/sequenceSubscribersMessages.model')
+const SequenceSubscriberMessages = require('./../sequenceMessaging/sequenceSubscribersMessages.model')
 const { sendBroadcast } = require('./broadcasts2.controller')
 const utility = require('./broadcasts.utility')
 const compUtility = require('../../components/utility')
@@ -1527,6 +1524,7 @@ function addAdminAsSubscriber (payload) {
 }
 
 function updateseenstatus (req) {
+  logger.serverLog(TAG, `Seen Count Update ${JSON.stringify(req)}`)
   BroadcastPage.update(
     { pageId: req.recipient.id, subscriberId: req.sender.id, seen: false },
     { seen: true },
@@ -1614,36 +1612,45 @@ function updateseenstatus (req) {
         })
     })
   // updating seen count for sequence messages
-  // SequenceSubscriberMessages.distinct('messageId',
-  //   {subscriberId: req.sender.id, seen: false},
-  //   (err, sequenceMessagesIds) => {
-  //     if (err) {
-  //       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-  //     }
-  //     SequenceSubscriberMessages.update(
-  //       {
-  //         subscriberId: req.sender.id,
-  //         seen: false,
-  //         datetime: {$lte: new Date(req.read.watermark)}
-  //       },
-  //       {seen: true},
-  //       {multi: true}, (err, updated) => {
-  //         if (err) {
-  //           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-  //         }
-  //
-  //         sequenceMessagesIds.forEach(sequenceMessagesId => {
-  //           SequenceMessages.update(
-  //             {_id: sequenceMessagesId},
-  //             {$inc: {seen: 1}},
-  //             {multi: true}, (err, updated) => {
-  //               if (err) {
-  //                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-  //               }
-  //             })
-  //         })
-  //       })
-  //   })
+  Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    if (subscriber) {
+      SequenceSubscriberMessages.distinct('messageId',
+       {subscriberId: subscriber._id, seen: false},
+        (err, sequenceMessagesIds) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          logger.serverLog('MessageIds', `ERROR ${JSON.stringify(sequenceMessagesIds)}`)
+          logger.serverLog('DateTime', `ERROR ${JSON.stringify(new Date(req.read.watermark))}`)
+          SequenceSubscriberMessages.update(
+            {
+              subscriberId: subscriber._id,
+              seen: false,
+              datetime: {$lte: new Date(req.read.watermark)}
+            },
+           {seen: true},
+           {multi: true}, (err, updated) => {
+             if (err) {
+               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+             }
+
+             sequenceMessagesIds.forEach(sequenceMessagesId => {
+               SequenceMessages.update(
+                 {_id: sequenceMessagesId},
+                 {$inc: {seen: 1}},
+                 {multi: true}, (err, updated) => {
+                   if (err) {
+                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                   }
+                 })
+             })
+           })
+        })
+    }
+  })
 }
 
 function sendMenuReply (req) {

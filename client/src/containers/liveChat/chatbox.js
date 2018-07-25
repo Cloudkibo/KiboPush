@@ -831,7 +831,8 @@ class ChatBox extends React.Component {
                   record={this.state.record}
                   className='sound-wave'
                   onStop={this.onStop}
-                  strokeColor='#000000' />
+                  strokeColor='#000000'
+                  mimeType='audio.wav' />
               </div>
               <br />
               {this.state.buttonState === 'start'
@@ -967,7 +968,8 @@ class ChatBox extends React.Component {
               record={this.state.record}
               className='sound-wave'
               onStop={this.onStop}
-              strokeColor='#000000' />
+              strokeColor='#000000'
+              mimeType='audio.wav' />
             <button onClick={this.startRecording}>Start</button>
             <button onClick={this.stopRecording}>Stop</button>
           </div>

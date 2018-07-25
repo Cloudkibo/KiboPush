@@ -159,7 +159,14 @@ SequenceMessagesQueue.find({}, (err, data) => {
                           err2
                         })
                       }
-
+                      SequenceMessage.update(
+                        {_id: sequenceMessage._id},
+                        {$inc: {sent: 1}},
+                        {multi: true}, (err, updated) => {
+                          if (err) {
+                            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                          }
+                        })
                       BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
                       SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
                         if (err) {

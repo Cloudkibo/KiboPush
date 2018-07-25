@@ -422,7 +422,7 @@ class CreateMessage extends React.Component {
                             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                               <div className='row' >
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: temp.length, text: '', button: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
                                     <div className='align-center'>
                                       <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
