@@ -1623,8 +1623,8 @@ function updateseenstatus (req) {
           if (err) {
             return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-          logger.serverLog('MessageIds', `ERROR ${JSON.stringify(sequenceMessagesIds)}`)
-          logger.serverLog('DateTime', `ERROR ${JSON.stringify(new Date(req.read.watermark))}`)
+          logger.serverLog('MessageIds', `${JSON.stringify(sequenceMessagesIds)}`)
+          logger.serverLog('DateTime', `${JSON.stringify(new Date(req.read.watermark))}`)
           SequenceSubscriberMessages.update(
             {
               subscriberId: subscriber._id,
