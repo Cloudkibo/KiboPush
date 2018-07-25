@@ -7,6 +7,7 @@ const messageSchema = new Schema({
   sequenceId: {type: Schema.ObjectId, ref: 'sequences'},
   title: String,
   payload: Schema.Types.Mixed,
+  trigger: { type: Schema.Types.Mixed, default: {event: 'none', value: null} },
   isActive: { type: Boolean, default: false },
   sent: {type: Number, default: 0},
   seen: {type: Number, default: 0},
