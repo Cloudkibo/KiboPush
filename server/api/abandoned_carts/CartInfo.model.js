@@ -11,12 +11,6 @@ const cartSchema = new Schema({
   storeId: {
     type: String
   },
-  userId: {
-    type: String
-  },
-  pageId: {
-    type: String
-  },
   linePrice: {
     type: Number
   },

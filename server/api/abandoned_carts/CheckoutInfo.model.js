@@ -14,12 +14,6 @@ const checkoutSchema = new Schema({
   storeId: {
     type: String
   },
-  userId: {
-    type: String
-  },
-  pageId: {
-    type: String
-  },
   totalPrice: {
     type: Number
   },
