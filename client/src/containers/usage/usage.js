@@ -22,7 +22,8 @@ class Usage extends React.Component {
       isShowingModalUpdate: false,
       selectedPlan: '',
       name: '',
-      limitValue: ''
+      limitValue: '',
+      serverName: ''
     }
     props.fetchAllPlans()
     this.showData = this.showData.bind(this)
@@ -44,7 +45,7 @@ class Usage extends React.Component {
         sendName = temp[j].charAt(0).toUpperCase() + temp[j].slice(1)
       }
     }
-    this.setState({isShowingModalUpdate: true, name: sendName, limitValue: value})
+    this.setState({isShowingModalUpdate: true, name: sendName, limitValue: value, serverName: name})
   }
 
   closeDialogUpdate () {
@@ -177,7 +178,7 @@ class Usage extends React.Component {
                 onClose={this.closeDialogUpdate}>
                 <ModalDialog style={{width: '500px'}}
                   onClose={this.closeDialogUpdate}>
-                  <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
+                  <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} serverName={this.state.serverName} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
                 </ModalDialog>
               </ModalContainer>
             }
