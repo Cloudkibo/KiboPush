@@ -2,6 +2,63 @@
   margin-top: 35px;
 }
 
+.sequence-box {
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow:0px 0px 5px 2px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.sequence-link {
+  color: #5867dd;
+  cursor: pointer;
+}
+
+.sequence-text {
+  display: inline-table
+}
+
+.sequence-number {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.sequence-name {
+  font-weight: bold;
+  font-size: large;
+}
+
+.sequence-trigger {
+  max-width: 250px;
+  display: inline-table;
+}
+
+.centered-text {
+  text-align: center
+}
+
+.sequence-close-icon
+{
+  cursor: pointer;
+  position: absolute;
+  display:block;
+  box-sizing:border-box;
+  width:25px;
+  height:25px;
+  border-width:3px;
+  border-style: solid;
+  border-color:black;
+  border-radius:100%;
+  background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, white 46%,  white 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, white 46%,  white 56%,transparent 56%, transparent 100%);
+  background-color:black;
+  box-shadow:0px 0px 5px 2px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  left: 98.5%;
+  bottom: 93%;
+}
+
 span.select2.select2-container.select2-container--default {
   width: 200px !important
 }
