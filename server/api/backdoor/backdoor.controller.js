@@ -279,7 +279,6 @@ exports.getAllPages = function (req, res) {
     userId: mongoose.Types.ObjectId(req.params.userid),
     pageName: req.body.search_value !== '' ? {$regex: search} : {$exists: true}
   }
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     Pages.aggregate([
       { $match: findCriteria },
@@ -359,6 +358,7 @@ exports.getAllPages = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Pages.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -437,6 +437,7 @@ exports.getAllPages = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Pages.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -537,7 +538,6 @@ exports.getAllSubscribers = function (req, res) {
     gender: req.body.filter_criteria.gender_value !== '' ? req.body.filter_criteria.gender_value : {$exists: true},
     locale: req.body.filter_criteria.locale_value !== '' ? req.body.filter_criteria.locale_value : {$exists: true}
   }
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     Subscribers.aggregate([
       { $match: findCriteria },
@@ -562,6 +562,7 @@ exports.getAllSubscribers = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Subscribers.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -585,6 +586,7 @@ exports.getAllSubscribers = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Subscribers.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -655,7 +657,6 @@ exports.allUserBroadcasts = function (req, res) {
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
   let findCriteria = {}
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.filter_criteria.type_value === 'miscellaneous') {
     findCriteria = {
       userId: mongoose.Types.ObjectId(req.params.userid),
@@ -693,6 +694,7 @@ exports.allUserBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Broadcasts.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -716,6 +718,7 @@ exports.allUserBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Broadcasts.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -780,7 +783,6 @@ exports.allUserPolls = function (req, res) {
         (new Date().getTime()))
     } : {$exists: true}
   }
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     Polls.aggregate([
       { $match: findCriteria },
@@ -805,6 +807,7 @@ exports.allUserPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Polls.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -828,6 +831,7 @@ exports.allUserPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Polls.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -876,7 +880,6 @@ exports.allUserSurveys = function (req, res) {
         (new Date().getTime()))
     } : {$exists: true}
   }
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     Surveys.aggregate([
       { $match: findCriteria },
@@ -901,6 +904,7 @@ exports.allUserSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Surveys.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -924,6 +928,7 @@ exports.allUserSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Surveys.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -1752,7 +1757,6 @@ exports.getAllBroadcasts = function (req, res) {
     }
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -1882,6 +1886,7 @@ exports.getAllBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2010,6 +2015,7 @@ exports.getAllBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2153,7 +2159,6 @@ exports.getAllSurveys = function (req, res) {
     }
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -2309,6 +2314,7 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2463,6 +2469,7 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2632,7 +2639,6 @@ exports.getAllPolls = function (req, res) {
     }
   */
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-  let recordsToSkip = Math.abs((req.body.requested_page - req.body.current_page) - 1) * req.body.number_of_records
   if (req.body.first_page === 'first') {
     let findCriteria = {
       statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -2789,6 +2795,7 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let findCriteria = {
       statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2944,6 +2951,7 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     let findCriteria = {
       statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
