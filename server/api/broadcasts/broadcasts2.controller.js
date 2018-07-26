@@ -48,24 +48,6 @@ const updatePayload = (self, payload, pageAccessToken, broadcast) => {
   logger.serverLog(TAG, `Update Payload: ${JSON.stringify(payload)}`)
   for (let j = 0; j < payload.length; j++) {
     if (['image', 'audio', 'file', 'video', 'media'].indexOf(payload[j].componentType) > -1) {
-      if (payload[j].buttons) {
-        payload[j].buttons.forEach((button, bindex) => {
-          if (!(button.type === 'postback')) {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].buttons[bindex].url = newURL
-            })
-          }
-        })
-      }
       let uploadResponse = utility.uploadOnFacebook(payload[j], pageAccessToken)
       let interval = setInterval(() => {
         if (uploadResponse) {
