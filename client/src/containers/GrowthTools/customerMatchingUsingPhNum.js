@@ -460,6 +460,7 @@ class CustomerMatching extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
+    this.selectPage()
   }
 
   render () {
