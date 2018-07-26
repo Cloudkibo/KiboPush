@@ -981,6 +981,12 @@ exports.disable = function (req, res) {
               description: 'Failed to update record'
             })
           } else {
+            CompanyUsage.update({companyId: companyUser.companyId},
+              { $inc: { facebook_pages: -1 } }, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+              })
             // remove subscribers of the page
             Subscribers.update({pageId: req.body._id}, {isEnabledByPage: false},
               {multi: true}, (err) => {
