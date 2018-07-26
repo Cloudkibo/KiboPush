@@ -305,19 +305,19 @@ class CreateSequence extends React.Component {
                                   </span>
 
                                   <span style={{position: 'relative', bottom: '60px', left: '40%'}}>
-                                    <span className='sequence-text centered-text' style={{marginLeft: '10%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%'}}>
                                       <span className='sequence-number'>{message.sent}</span>
                                       <br />
                                       <span>Sent</span>
                                     </span>
 
-                                    <span className='sequence-text centered-text' style={{marginLeft: '5%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
                                       <span className='sequence-number'>{message.seen}</span>
                                       <br />
                                       <span>Seen</span>
                                     </span>
 
-                                    <span className='sequence-text centered-text' style={{marginLeft: '5%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
                                       <span className='sequence-number'>{message.clicks}</span>
                                       <br />
                                       <span>Clicked</span>

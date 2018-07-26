@@ -327,19 +327,19 @@ class Sequence extends React.Component {
                                   </span>
                                 </span>
 
-                                <span className='sequence-text centered-text' style={{marginLeft: '15%'}}>
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '15%'}}>
                                   <span className='sequence-number'>{sequence.subscribers.length}</span>
                                   <br />
                                   <span>Subscribers</span>
                                 </span>
 
-                                <span className='sequence-text centered-text' style={{marginLeft: '5%'}}>
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
                                   <span className='sequence-number'>{sequence.messages.length}</span>
                                   <br />
                                   <span>Messages</span>
                                 </span>
 
-                                <span className='sequence-text centered-text' style={{marginLeft: '10%', cursor: 'pointer'}} onClick={() => this.goToEdit(sequence.sequence)}>
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%', cursor: 'pointer'}} onClick={() => this.goToEdit(sequence.sequence)}>
                                   <i className='fa fa-edit' style={{fontSize: '24px'}} />
                                   <br />
                                   <span>Edit</span>
