@@ -321,13 +321,13 @@ class Sequence extends React.Component {
                                       <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                         When subscriber subscribes to this sequence.
                                       </span>
-                                    <a href='#editTrigger'>
+                                    <span className='sequence-link'>
                                         -- Edit
-                                      </a>
+                                    </span>
                                   </span>
                                 </span>
 
-                                <span className='sequence-text centered-text' style={{marginLeft: '10%'}}>
+                                <span className='sequence-text centered-text' style={{marginLeft: '15%'}}>
                                   <span className='sequence-number'>{sequence.subscribers.length}</span>
                                   <br />
                                   <span>Subscribers</span>
