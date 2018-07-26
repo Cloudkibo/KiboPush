@@ -11,6 +11,8 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Pages = require('./../pages/Pages.model')
 const Users = require('./../user/Users.model')
 const Polls = require('./../polls/Polls.model')
+const Sequences = require('./../sequenceMessaging/sequence.model')
+const SequenceMessages = require('./../sequenceMessaging/message.model')
 const Surveys = require('./../surveys/surveys.model')
 const Broadcasts = require('./../broadcasts/broadcasts.model')
 const PagePolls = require('./../page_poll/page_poll.model')
@@ -254,6 +256,36 @@ router.get('/updateAutomatedOptions', (req, res) => {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     } else {
       res.status(200).json({status: 'success', payload: profiles})
+    }
+  })
+})
+
+router.get('/updateTriggerSequenceSchema', (req, res) => {
+  Sequences.update({}, {$set: {trigger: {event: 'subscribe_to_sequence', value: null}}}, {multi: true}, (err, result) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    } else {
+      res.status(200).json({status: 'success', payload: result})
+    }
+  })
+})
+
+router.get('/updateSegmentationSequenceSchema', (req, res) => {
+  Sequences.update({}, {$set: {segmentation: []}}, {multi: true}, (err, result) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    } else {
+      res.status(200).json({status: 'success', payload: result})
+    }
+  })
+})
+
+router.get('/updateTriggerSequenceMessageSchema', (req, res) => {
+  SequenceMessages.update({}, {$set: {trigger: {event: 'none', value: null}}}, {multi: true}, (err, result) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    } else {
+      res.status(200).json({status: 'success', payload: result})
     }
   })
 })
