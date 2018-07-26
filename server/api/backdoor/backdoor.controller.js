@@ -445,7 +445,7 @@ exports.getAllPages = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).sort({_id: -1}).skip(recordsToSkip).limit(req.body.number_of_records)
+      Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, pages) => {
         if (err) {
           return res.status(404).json({
@@ -508,7 +508,7 @@ exports.getAllPages = function (req, res) {
             }
             res.status(200).json({
               status: 'success',
-              payload: {pages: pagesPayload.reverse(), count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
+              payload: {pages: pagesPayload, count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
             })
           })
         })
