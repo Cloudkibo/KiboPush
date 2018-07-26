@@ -8,7 +8,8 @@ const Category = require('./category.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const mongoose = require('mongoose')
 const CompanyUsage = require('./../featureUsage/companyUsage.model')
-
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const TAG = 'api/templates/templates.controller.js'
 
 exports.allPolls = function (req, res) {
@@ -271,33 +272,63 @@ exports.createPoll = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let pollPayload = {
-      title: req.body.title,
-      statement: req.body.statement,
-      options: req.body.options,
-      category: req.body.category
-    }
-    const poll = new TemplatePolls(pollPayload)
-
-    // save model to MongoDB
-    poll.save((err, pollCreated) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
-        res.status(500).json({
-          status: 'Failed',
-          description: 'Failed to insert record'
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
-      } else {
-        if (!req.user.isSuperUser) {
-          CompanyUsage.update({companyId: companyUser.companyId},
-            { $inc: { polls_templates: 1 } }, (err, updated) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
-            })
-        }
-        res.status(201).json({status: 'success', payload: pollCreated})
       }
-    })
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyUser.companyId}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.polls_templates !== -1 && companyUsage.polls_templates >= planUsage.polls_templates) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your templates limit has reached. Please upgrade your plan to premium in order to create more templates`
+            })
+          }
+          let pollPayload = {
+            title: req.body.title,
+            statement: req.body.statement,
+            options: req.body.options,
+            category: req.body.category
+          }
+          const poll = new TemplatePolls(pollPayload)
+
+          // save model to MongoDB
+          poll.save((err, pollCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record'
+              })
+            } else {
+              if (!req.user.isSuperUser) {
+                CompanyUsage.update({companyId: companyUser.companyId},
+                  { $inc: { polls_templates: 1 } }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                  })
+              }
+              res.status(201).json({status: 'success', payload: pollCreated})
+            }
+          })
+        })
+      })
+      })
   })
 }
 
@@ -315,45 +346,75 @@ exports.createSurvey = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let surveyPayload = {
-      title: req.body.survey.title,
-      description: req.body.survey.description,
-      category: req.body.survey.category
-    }
-    const survey = new TemplateSurveys(surveyPayload)
-
-    TemplateSurveys.create(survey, (err, survey) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      if (!req.user.isSuperUser) {
-        CompanyUsage.update({companyId: companyUser.companyId},
-          { $inc: { survey_templates: 1 } }, (err, updated) => {
-            if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-            }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
           })
-      }
-      // after survey is created, create survey questions
-      for (let question in req.body.questions) {
-        let options = []
-        options = req.body.questions[question].options
-        const surveyQuestion = new SurveyQuestions({
-          statement: req.body.questions[question].statement, // question statement
-          options, // array of question options
-          surveyId: survey._id
-        })
-
-        surveyQuestion.save((err2, question1) => {
-          if (err2) {
-            return res.status(404).json({ status: 'failed', description: 'Survey Question not created' })
+        }
+        CompanyUsage.findOne({companyId: companyUser.companyId}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
           }
+          if (planUsage.survey_templates !== -1 && companyUsage.survey_templates >= planUsage.survey_templates) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your templates limit has reached. Please upgrade your plan to premium in order to create more templates`
+            })
+          }
+          let surveyPayload = {
+            title: req.body.survey.title,
+            description: req.body.survey.description,
+            category: req.body.survey.category
+          }
+          const survey = new TemplateSurveys(surveyPayload)
+
+          TemplateSurveys.create(survey, (err, survey) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (!req.user.isSuperUser) {
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { survey_templates: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
+            }
+            // after survey is created, create survey questions
+            for (let question in req.body.questions) {
+              let options = []
+              options = req.body.questions[question].options
+              const surveyQuestion = new SurveyQuestions({
+                statement: req.body.questions[question].statement, // question statement
+                options, // array of question options
+                surveyId: survey._id
+              })
+
+              surveyQuestion.save((err2, question1) => {
+                if (err2) {
+                  return res.status(404).json({ status: 'failed', description: 'Survey Question not created' })
+                }
+              })
+            }
+            return res.status(201).json({status: 'success', payload: survey})
+          })
         })
-      }
-      return res.status(201).json({status: 'success', payload: survey})
+      })
     })
   })
 }
@@ -646,36 +707,66 @@ exports.createBroadcast = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let broadcastPayload = {
-      title: req.body.title,
-      category: req.body.category,
-      payload: req.body.payload,
-      userId: req.user._id,
-      companyId: companyUser.companyId
-    }
-    if (req.user.isSuperUser) {
-      broadcastPayload.createdBySuperUser = true
-    }
-    const broadcast = new TemplateBroadcasts(broadcastPayload)
-
-    // save model to MongoDB
-    broadcast.save((err, broadcastCreated) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
-        res.status(500).json({
-          status: 'Failed',
-          description: 'Failed to insert record'
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
-      } else {
-        if (!req.user.isSuperUser) {
-          CompanyUsage.update({companyId: companyUser.companyId},
-            { $inc: { broadcast_templates: 1 } }, (err, updated) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
-            })
-        }
-        res.status(201).json({status: 'success', payload: broadcastCreated})
       }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyUser.companyId}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.broadcast_templates !== -1 && companyUsage.broadcast_templates >= planUsage.broadcast_templates) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your templates limit has reached. Please upgrade your plan to premium in order to create more templates`
+            })
+          }
+          let broadcastPayload = {
+            title: req.body.title,
+            category: req.body.category,
+            payload: req.body.payload,
+            userId: req.user._id,
+            companyId: companyUser.companyId
+          }
+          if (req.user.isSuperUser) {
+            broadcastPayload.createdBySuperUser = true
+          }
+          const broadcast = new TemplateBroadcasts(broadcastPayload)
+
+          // save model to MongoDB
+          broadcast.save((err, broadcastCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record'
+              })
+            } else {
+              if (!req.user.isSuperUser) {
+                CompanyUsage.update({companyId: companyUser.companyId},
+                  { $inc: { broadcast_templates: 1 } }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                  })
+              }
+              res.status(201).json({status: 'success', payload: broadcastCreated})
+            }
+          })
+        })
+      })
     })
   })
 }

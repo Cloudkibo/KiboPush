@@ -135,6 +135,13 @@ class AddSurvey extends React.Component {
 
       })
     }
+    if (nextProps.warning) {
+      this.msg.error(nextProps.warning)
+    } else if (nextProps.surveyCreated) {
+      this.props.history.push({
+        pathname: '/surveys'
+      })
+    }
   }
   updateDescription (e) {
     this.setState({description: e.target.value, alertType: '', alertMessage: ''})
@@ -596,9 +603,10 @@ class AddSurvey extends React.Component {
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <button className='btn btn-primary' onClick={() => {
                                       this.createSurvey()
-                                      this.props.history.push({
-                                        pathname: '/surveys'
-                                      })
+                                      this.closeDialog()
+                                      // this.props.history.push({
+                                      //   pathname: '/surveys'
+                                      // })
                                     }}>
                                       Save
                                     </button>
@@ -706,6 +714,8 @@ class AddSurvey extends React.Component {
 function mapStateToProps (state) {
   return {
     surveys: (state.surveysInfo.surveys),
+    surveyCreated: (state.surveysInfo.surveyCreated),
+    warning: (state.surveysInfo.warning),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers),

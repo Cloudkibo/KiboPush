@@ -53,7 +53,15 @@ class CreatePoll extends React.Component {
     this.checkValidation = this.checkValidation.bind(this)
     this.showError = this.showError.bind(this)
   }
-
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.warning) {
+      this.msg.error(nextProps.warning)
+    } else if (nextProps.pollCreated) {
+      this.props.history.push({
+        pathname: '/poll'
+      })
+    }
+  }
   componentDidMount () {
     document.title = 'KiboPush | Create Poll'
   }
@@ -283,9 +291,7 @@ class CreatePoll extends React.Component {
                                   <div style={{display: 'inline-block', padding: '5px'}}>
                                     <button className='btn btn-primary' onClick={() => {
                                       this.createPoll()
-                                      this.props.history.push({
-                                        pathname: '/poll'
-                                      })
+                                      this.closeDialog()
                                     }}>
                                       Save
                                     </button>
@@ -391,6 +397,7 @@ function mapStateToProps (state) {
   console.log('CreatePoll state', state)
   return {
     pollCreated: (state.pollsInfo.pollCreated),
+    warning: (state.pollsInfo.warning),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers),
