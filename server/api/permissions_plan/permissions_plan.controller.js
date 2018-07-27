@@ -1,5 +1,6 @@
 const Features = require('./permissions_plan.model')
 const Plans = require('./../plans/plans.model')
+const utility = require('./../plans/billing.utility')
 const _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -34,7 +35,7 @@ exports.update = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    features = req.body.features
+    features = utility.prepareUpdatePayload(features, req.body.features, 'plan_id')
     features.save((err2) => {
       if (err2) {
         return res.status(500)
@@ -62,7 +63,7 @@ exports.create = function (req, res) {
   let query = {}
   query[feature] = false
 
-  Features.update({}, {$set: query}, {multi: true}, (err, updated) => {
+  Features.aggregate([{$addFields: query}, {$out: 'permissions_plan'}], (err, updated) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
