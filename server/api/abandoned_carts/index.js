@@ -19,29 +19,10 @@ router.get('/',
 router.post('/saveStoreInfo', validate({body: validationSchema.storeInfoSchema}),
   controller.saveStoreInfo)
 
-router.post('/saveCartInfo',
+router.post('/saveCartInfo', validate({body: validationSchema.cartInfoSchema}),
   controller.saveCartInfo)
 
-router.post('/saveCheckoutInfo',
+router.post('/saveCheckoutInfo', validate({body: validationSchema.checkoutInfoSchema}),
   controller.saveCheckoutInfo)
 
 module.exports = router
-
-
-// {
-//     "shopifyCartId": "124sda2fsavad",
-//     "cartToken": "124sda2fsavad",
-//     "storeId": "124sda2fsavad",
-//     "linePrice": "290",
-//     "productIds": ["124sda2fsavad", "124sda2fsavaddasdsaAUYe22a", "1E2vsaED24sda2fsavaddasdsaA"]
-//  }
-
-// {
-//     "shopifyCheckoutId": "124sda2fsavaddasdsaAUYe22a",
-//     "checkoutToken": "124sda2fsavaddasdsaAUYe22a",
-//     "cartToken": "124sda2fsavaddasdsaAUYe22a",
-//     "storeId": "124sda2fsavaddasdsaAUYe22a",
-//     "totalPrice":  "290",
-//     "abandonedCheckoutUrl": "www.checkout.myshopify.com",
-//     "productIds": ["124sda2fsavad", "124sda2fsavaddasdsaAUYe22a", "1E2vsaED24sda2fsavaddasdsaA"]
-//   }
