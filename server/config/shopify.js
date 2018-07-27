@@ -1,9 +1,11 @@
 // const shopifyExpress = require('@shopify/shopify-express')
 // const session = require('express-session')
 const config = require('./environment/index')
-// const cookie = require('cookie')
+const cookie = require('cookie')
 const nonce = require('nonce')()
-
+const querystring = require('querystring')
+const crypto = require('crypto')
+const request = require('request-promise')
 // https://help.shopify.com/en/api/tutorials/building-node-app
 
 module.exports = function (app) {
@@ -52,17 +54,54 @@ module.exports = function (app) {
     }
 
     if (shop && hmac && code) {
-      res.status(200).json({shop: shop, hmac: hmac, code: code})
+    // DONE: Validate request is from Shopify
+      const map = Object.assign({}, req.query)
+      delete map['signature']
+      delete map['hmac']
+      const message = querystring.stringify(map)
+      const providedHmac = Buffer.from(hmac, 'utf-8')
+      const generatedHash = Buffer.from(
+      crypto
+        .createHmac('sha256', config.app_secret)
+        .update(message)
+        .digest('hex'),
+        'utf-8'
+      )
+      let hashEquals = false
 
-    // TODO
-    // Validate request is from Shopify
-    // Exchange temporary code for a permanent access token
+      try {
+        hashEquals = crypto.timingSafeEqual(generatedHash, providedHmac)
+      } catch (e) {
+        hashEquals = false
+      };
+
+      if (!hashEquals) {
+        return res.status(400).send('HMAC validation failed')
+      }
+
+    // DONE: Exchange temporary code for a permanent access token
+      const accessTokenRequestUrl = 'https://' + shop + '/admin/oauth/access_token'
+      const accessTokenPayload = {
+        client_id: config.app_key,
+        client_secret: config.app_secret,
+        code
+      }
+
+      request.post(accessTokenRequestUrl, { json: accessTokenPayload })
+    .then((accessTokenResponse) => {
+      const accessToken = accessTokenResponse.access_token
+
+      res.status(200).send("Got an access token, let's do something with it", accessToken)
+      // TODO
       // Use access token to make API call to 'shop' endpoint
+    })
+    .catch((error) => {
+      res.status(error.statusCode).send(error.error.error_description)
+    })
     } else {
       res.status(400).send('Required parameters missing')
     }
   })
-
   // mounts '/auth' and '/api' off of '/shopify'
   // app.use('/shopify', routes)
 }
