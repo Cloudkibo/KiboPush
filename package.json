@@ -87,6 +87,7 @@
     "morgan": "^1.8.2",
     "needle": "^1.6.0",
     "node-phonenumber": "^1.0.0",
+    "nonce": "^1.0.4",
     "open-graph": "^0.2.3",
     "papaparse": "^4.4.0",
     "passport": "~0.2.0",
