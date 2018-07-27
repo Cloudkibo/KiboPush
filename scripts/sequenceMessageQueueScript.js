@@ -165,70 +165,130 @@ SequenceMessagesQueue.find({}, (err, data) => {
                         })
 
                         // Below work is to check segmentation
-                        let tempSegmentCondition = sequence.segmentationCondition
-                        let tempFlag = 0
-                        let tempSegment = sequence.segmentation
-                        // Attaching true whenever a condition is satisfied
-                        tempSegment.forEach((elem) => {
-                          if (elem.condition === 'first_name') {
-                            if (elem.criteria === 'is') {
-                              if (elem.value === subscriber.firstName) elem.flag = true
-                            } else if (elem.criteria === 'contains') {
-                              if (subscriber.firstName.includes(elem.value)) elem.flag = true
-                            } else if (elem.criteria === 'begins_with') {
-                              if (subscriber.firstName.startsWith(elem.value)) elem.flag = true
+                        if (sequence.segmentation.length > 0) {
+                          let tempSegmentCondition = sequence.segmentationCondition
+                          let tempFlag = 0
+                          let tempSegment = sequence.segmentation
+                          // Attaching true whenever a condition is satisfied
+                          tempSegment.forEach((elem) => {
+                            if (elem.condition === 'first_name') {
+                              if (elem.criteria === 'is') {
+                                if (elem.value === subscriber.firstName) elem.flag = true
+                              } else if (elem.criteria === 'contains') {
+                                if (subscriber.firstName.includes(elem.value)) elem.flag = true
+                              } else if (elem.criteria === 'begins_with') {
+                                if (subscriber.firstName.startsWith(elem.value)) elem.flag = true
+                              }
+                            } else if (elem.condition === 'last_name') {
+                              if (elem.criteria === 'is') {
+                                if (elem.value === subscriber.lastName) elem.flag = true
+                              } else if (elem.criteria === 'contains') {
+                                if (subscriber.lastName.includes(elem.value)) elem.flag = true
+                              } else if (elem.criteria === 'begins_with') {
+                                if (subscriber.startsWith(elem.value)) elem.flag = true
+                              }
+                            } else if (elem.condition === 'page') {
+                              // Converting to string because sent id can either be string or ObjectID. better to convert
+                              if (page._id.toString() === elem.value.toString()) elem.flag = true
+                            } else if (elem.condition === 'gender') {
+                              if (subscriber.gender === elem.value) elem.flag = true
+                            } else if (elem.condition === 'locale') {
+                              if (subscriber.locale === elem.value) elem.flag = true
+                            } else if (elem.condition === 'tag') {
+                              // Search all tags of company if the condition tag is found
+                              tags.forEach((tag) => {
+                                if (tag._id.toString() === elem.value.toString()) elem.flag = true
+                              })
+                            } else if (elem.condition === 'subscription_date') {
+                              // Checking if the date of subscription is matched with the condition
+                              if (elem.criteria === 'on') {
+                                if (seqSub.datetime.getDate() === elem.value.getDate()) elem.flag = true
+                              } else if (elem.criteria === 'before') {
+                                if (seqSub.datetime.getDate() < elem.value.getDate()) elem.flag = true
+                              } else if (elem.criteria === 'after') {
+                                if (seqSub.datetime.getDate() > elem.value.getDate()) elem.flag = true
+                              }
                             }
-                          } else if (elem.condition === 'last_name') {
-                            if (elem.criteria === 'is') {
-                              if (elem.value === subscriber.lastName) elem.flag = true
-                            } else if (elem.criteria === 'contains') {
-                              if (subscriber.lastName.includes(elem.value)) elem.flag = true
-                            } else if (elem.criteria === 'begins_with') {
-                              if (subscriber.startsWith(elem.value)) elem.flag = true
-                            }
-                          } else if (elem.condition === 'page') {
-                            // Converting to string because sent id can either be string or ObjectID. better to convert
-                            if (page._id.toString() === elem.value.toString()) elem.flag = true
-                          } else if (elem.condition === 'gender') {
-                            if (subscriber.gender === elem.value) elem.flag = true
-                          } else if (elem.condition === 'locale') {
-                            if (subscriber.locale === elem.value) elem.flag = true
-                          } else if (elem.condition === 'tag') {
-                            // Search all tags of company if the condition tag is found
-                            tags.forEach((tag) => {
-                              if (tag._id.toString() === elem.value.toString()) elem.flag = true
-                            })
-                          } else if (elem.condition === 'subscription_date') {
-                            // Checking if the date of subscription is matched with the condition
-                            if (elem.criteria === 'on') {
-                              if (seqSub.datetime.getDate() === elem.value.getDate()) elem.flag = true
-                            } else if (elem.criteria === 'before') {
-                              if (seqSub.datetime.getDate() < elem.value.getDate()) elem.flag = true
-                            } else if (elem.criteria === 'after') {
-                              if (seqSub.datetime.getDate() > elem.value.getDate()) elem.flag = true
-                            }
-                          }
-                        })
+                          })
 
-                        // Logic to check if all the conditions matched or some of them matched
-                        for (let i = 0, length = tempSegment.length; i < length; i++) {
-                          if (tempSegment[i].flag === true) {
-                            tempFlag++
+                          // Logic to check if all the conditions matched or some of them matched
+                          for (let i = 0, length = tempSegment.length; i < length; i++) {
+                            if (tempSegment[i].flag === true) {
+                              tempFlag++
+                            }
                           }
-                        }
-                        // Send message if all of the conditions matched
-                        if (tempSegmentCondition === 'and') {
-                          if (tempFlag === tempSegment.length) {
-                            logger.serverLog(TAG, 'all conditions satisfied')
-                            sequenceSubMessage.save((err2, result) => {
-                              if (err2) {
-                                logger.serverLog(TAG, {
-                                  status: 'failed',
-                                  description: 'Sequence Message Subscriber addition create failed',
-                                  err2
+                          // Send message if all of the conditions matched
+                          if (tempSegmentCondition === 'and') {
+                            if (tempFlag === tempSegment.length) {
+                              logger.serverLog(TAG, 'all conditions satisfied')
+                              sequenceSubMessage.save((err2, result) => {
+                                if (err2) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Sequence Message Subscriber addition create failed',
+                                    err2
+                                  })
+                                }
+                                SequenceMessage.update(
+                                  {_id: sequenceMessage._id},
+                                  {$inc: {sent: 1}},
+                                  {multi: true}, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                                SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                                  }
                                 })
-                              }
-                              SequenceMessage.update(
+                              })
+                            } else {
+                              logger.serverLog(TAG, 'All segmentation conditions are not satisfied')
+                            }
+                          } else if (tempSegmentCondition === 'or') {
+                            // Send messages if any one of the condition matched.
+                            if (tempFlag > 0) {
+                              logger.serverLog(TAG, 'at least one condition satisfied')
+                              sequenceSubMessage.save((err2, result) => {
+                                if (err2) {
+                                  logger.serverLog(TAG, {
+                                    status: 'failed',
+                                    description: 'Sequence Message Subscriber addition create failed',
+                                    err2
+                                  })
+                                }
+                                SequenceMessage.update(
+                                  {_id: sequenceMessage._id},
+                                  {$inc: {sent: 1}},
+                                  {multi: true}, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                                SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
+                                  }
+                                })
+                              })
+                            } else {
+                              logger.serverLog(TAG, 'Not even one condition is satisfied')
+                            }
+                          }
+                        } else {  // No segmentation
+                          logger.serverLog(TAG, 'at least one condition satisfied')
+                          sequenceSubMessage.save((err2, result) => {
+                            if (err2) {
+                              logger.serverLog(TAG, {
+                                status: 'failed',
+                                description: 'Sequence Message Subscriber addition create failed',
+                                err2
+                              })
+                            }
+                            SequenceMessage.update(
                                 {_id: sequenceMessage._id},
                                 {$inc: {sent: 1}},
                                 {multi: true}, (err, updated) => {
@@ -236,46 +296,13 @@ SequenceMessagesQueue.find({}, (err, data) => {
                                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                   }
                                 })
-                              BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                              SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
-                                if (err) {
-                                  logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
-                                }
-                              })
-                            })
-                          } else {
-                            logger.serverLog(TAG, 'All segmentation conditions are not satisfied')
-                          }
-                        } else if (tempSegmentCondition === 'or') {
-                          // Send messages if any one of the condition matched.
-                          if (tempFlag > 0) {
-                            logger.serverLog(TAG, 'at least one condition satisfied')
-                            sequenceSubMessage.save((err2, result) => {
-                              if (err2) {
-                                logger.serverLog(TAG, {
-                                  status: 'failed',
-                                  description: 'Sequence Message Subscriber addition create failed',
-                                  err2
-                                })
+                            BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                            SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
+                              if (err) {
+                                logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
                               }
-                              SequenceMessage.update(
-                                {_id: sequenceMessage._id},
-                                {$inc: {sent: 1}},
-                                {multi: true}, (err, updated) => {
-                                  if (err) {
-                                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                  }
-                                })
-                              BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                              SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
-                                if (err) {
-                                  logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
-                                }
-                              })
                             })
-                          } else {
-                            logger.serverLog(TAG, 'Not even one condition is satisfied')
-                          }
+                          })
                         }
                         // mongoose.disconnect((err) => {
                         //   if (err) throw err
