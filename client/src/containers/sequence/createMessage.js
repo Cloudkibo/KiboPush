@@ -380,7 +380,7 @@ class CreateMessage extends React.Component {
     } else {
       browserHistory.push({
         pathname: `/editSequence`,
-        state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.title}
+        state: {module: 'view', _id: this.props.location.state.id, name: this.state.convoTitle}
       })
     }
   }
