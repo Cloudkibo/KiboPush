@@ -63,7 +63,7 @@ const all = {
 
   shopify: {
     app_key: '98fdce87050f053f7f9c89ee5f7a9064',
-    app_host: 'https://kibopush-dayem.ngrok.io/',
+    app_host: 'https://kibopush-dayem.ngrok.io',
     app_secret: '716777a88dc4a2d16819d8aabe82ab11'
   },
 

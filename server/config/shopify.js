@@ -62,7 +62,7 @@ module.exports = function (app) {
       const providedHmac = Buffer.from(hmac, 'utf-8')
       const generatedHash = Buffer.from(
       crypto
-        .createHmac('sha256', config.app_secret)
+        .createHmac('sha256', config.shopify.app_secret)
         .update(message)
         .digest('hex'),
         'utf-8'
@@ -82,8 +82,8 @@ module.exports = function (app) {
     // DONE: Exchange temporary code for a permanent access token
       const accessTokenRequestUrl = 'https://' + shop + '/admin/oauth/access_token'
       const accessTokenPayload = {
-        client_id: config.app_key,
-        client_secret: config.app_secret,
+        client_id: config.shopify.app_key,
+        client_secret: config.shopify.app_secret,
         code
       }
 
@@ -91,12 +91,12 @@ module.exports = function (app) {
     .then((accessTokenResponse) => {
       const accessToken = accessTokenResponse.access_token
 
-      res.status(200).send("Got an access token, let's do something with it", accessToken)
+      res.status(200).json({message: "Got an access token, let's do something with it", accessToken: accessToken})
       // TODO
       // Use access token to make API call to 'shop' endpoint
     })
     .catch((error) => {
-      res.status(error.statusCode).send(error.error.error_description)
+      res.status(error.statusCode >= 100 && error.statusCode < 600 ? error.statusCode : 500).send(error.error_description)
     })
     } else {
       res.status(400).send('Required parameters missing')
