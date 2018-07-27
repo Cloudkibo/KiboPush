@@ -7,15 +7,16 @@
 const express = require('express')
 
 const router = express.Router()
-
+const validationSchema = require('./validationSchema')
 const auth = require('../../auth/auth.service')
 const controller = require('./abandoned_carts.controller')
+const validate = require('express-jsonschema').validate
 
 router.get('/',
   auth.isAuthenticated(),
   controller.index) // this id will be userid
 
-router.post('/saveStoreInfo',
+router.post('/saveStoreInfo', validate({body: validationSchema.storeInfoSchema}),
   controller.saveStoreInfo)
 
 router.post('/saveCartInfo',
@@ -26,12 +27,6 @@ router.post('/saveCheckoutInfo',
 
 module.exports = router
 
-// {
-//     "userId": "124sda2fsavad",
-//     "pageId": "124sda2fsavad",
-//     "shopUrl": "cloudkibo.myshopify.com",
-//     "shopToken": "124sda2fsavad"
-//  }
 
 // {
 //     "shopifyCartId": "124sda2fsavad",

@@ -4,6 +4,8 @@ const config = require('./environment/index')
 // const cookie = require('cookie')
 const nonce = require('nonce')()
 
+// https://help.shopify.com/en/api/tutorials/building-node-app
+
 module.exports = function (app) {
   // session is necessary for api proxy and auth verification
   // app.use(session({secret: config.shopify.app_secret}))
