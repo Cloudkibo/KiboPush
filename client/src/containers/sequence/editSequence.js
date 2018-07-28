@@ -7,7 +7,7 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation } from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
@@ -33,7 +33,10 @@ class CreateSequence extends React.Component {
         'subscribed': true
       }],
       segmentation: [],
-      segmentationCondition: 'any'
+      segmentationCondition: 'any',
+      selectedSequenceId: '',
+      selectedMessageId: '',
+      validSegmentation: false
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
@@ -63,10 +66,27 @@ class CreateSequence extends React.Component {
     this.onSubscribedCriteriaChange = this.onSubscribedCriteriaChange.bind(this)
     this.onNameCriteriaChange = this.onNameCriteriaChange.bind(this)
     this.onConditionChange = this.onConditionChange.bind(this)
+    this.validateSegmentation = this.validateSegmentation.bind(this)
   }
 
   saveSegmentation () {
-    
+    this.props.updateSegmentation({
+      messageId: this.state.selectedMessageId,
+      sequenceId: this.state.selectedSequenceId,
+      segmentationCondition: this.state.segmentationCondition,
+      segmentation: this.state.segmentation
+    })
+  }
+
+  validateSegmentation() {
+    console.log('validating')
+    if (this.state.segmentation.length === 0) {
+      return false
+    }
+    let invalidSegment = this.state.segmentation.find((segment) => {
+      return (!segment.value)
+    })
+    return !invalidSegment
   }
 
   onConditionChange (condition) {
@@ -115,7 +135,7 @@ class CreateSequence extends React.Component {
     } else {
       segmentation.push({
         'condition': 'subscription_date',
-        'value': new Date().toJSON().slice(0, 10).replace(/-/g, '-'),
+        'value': '',
         'criteria': criteria,
         'id': id
       })
@@ -128,7 +148,7 @@ class CreateSequence extends React.Component {
     let segmentation = this.state.segmentation
     let segmentationIndex = segmentation.findIndex((o) => o.id === id)
     if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].value = event.target.value
+      segmentation[segmentationIndex].value = value
     } else {
       segmentation.push({
         'condition': 'first_name',
@@ -190,7 +210,9 @@ class CreateSequence extends React.Component {
   removeSegmentationOption (index, option) {
     let segmentationOptions = this.state.segmentationOptions
     segmentationOptions[index][option] = false
-    this.setState({segmentationOptions: segmentationOptions})
+    let segmentation = this.state.segmentation
+    segmentation.splice(index, 1)
+    this.setState({segmentationOptions: segmentationOptions, segmentation: segmentation})
   }
 
   gotoView (message) {
@@ -274,8 +296,8 @@ class CreateSequence extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
 
-  showDialogSegmentation () {
-    this.setState({isShowingModalSegmentation: true})
+  showDialogSegmentation (message) {
+    this.setState({isShowingModalSegmentation: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
   }
 
   closeDialogSegmentation () {
@@ -403,6 +425,7 @@ class CreateSequence extends React.Component {
                           <option>is</option>
                           </select>
                           <select className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} onChange={(e) => this.onPageSegmentationChange(e.target.value, 'page'+i)} >
+                          <option disabled selected value> -- Select a Page -- </option>
                           {
                               this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                                 <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
@@ -424,7 +447,7 @@ class CreateSequence extends React.Component {
                           <option>before</option>
                           <option>after</option>
                           </select>
-                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px'}} type='date' onChange={(e) => this.onPageSegmentationChange(e.target.value, 'subscribed'+i)}></input>
+                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px'}} type='date' onChange={(e) => this.onSubscribedSegmentationChange(e.target.value, 'subscribed'+i)}></input>
                         </div> : null
                         }
                       </div>
@@ -438,8 +461,8 @@ class CreateSequence extends React.Component {
                     <span style={{bottom: '3px', position: 'relative', fontWeight: 'bold', marginLeft: '5px'}} >Add</span>
                   </div>
 
-                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}}> Save </button>
-                          <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={() => this.closeDialogSegmentation()} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateSegmentation()}> Save </button>
+                    <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
@@ -548,7 +571,7 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           None
                                         </span>
-                                      <span onClick={() => this.showDialogSegmentation()} className='sequence-link'> -- Edit</span>
+                                      <span onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
                                     </span>
                                   </span>
 
@@ -621,6 +644,7 @@ function mapDispatchToProps (dispatch) {
     createMessage: createMessage,
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
+    updateSegmentation: updateSegmentation
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
