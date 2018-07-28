@@ -11,6 +11,7 @@ import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setS
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class CreateSequence extends React.Component {
   constructor (props, context) {
@@ -24,13 +25,24 @@ class CreateSequence extends React.Component {
       targetValue: '',
       selectedDays: '0',
       condition: 'immediately',
-      sequenceId: ''
+      sequenceId: '',
+      isShowingModalSegmentation: false,
+      segmentationOptions: [{
+        'name': true,
+        'page': true,
+        'subscribed': true
+      }],
+      segmentation: [],
+      segmentationCondition: 'any'
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
     }
+    props.loadMyPagesList()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.showDialogSegmentation = this.showDialogSegmentation.bind(this)
+    this.closeDialogSegmentation = this.closeDialogSegmentation.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -41,6 +53,144 @@ class CreateSequence extends React.Component {
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.gotoView = this.gotoView.bind(this)
+    this.addSegmentationOption = this.addSegmentationOption.bind(this)
+    this.removeSegmentationOption = this.removeSegmentationOption.bind(this)
+    this.saveSegmentation = this.saveSegmentation.bind(this)
+    this.onNameSegmentationChange = this.onNameSegmentationChange.bind(this)
+    this.onPageSegmentationChange = this.onPageSegmentationChange.bind(this)
+    this.onSubscribedSegmentationChange = this.onSubscribedSegmentationChange.bind(this)
+    this.onNameConditionChange = this.onNameConditionChange.bind(this)
+    this.onSubscribedCriteriaChange = this.onSubscribedCriteriaChange.bind(this)
+    this.onNameCriteriaChange = this.onNameCriteriaChange.bind(this)
+    this.onConditionChange = this.onConditionChange.bind(this)
+  }
+
+  saveSegmentation () {
+    
+  }
+
+  onConditionChange (condition) {
+    this.setState({segmentationCondition: condition})
+  } 
+
+  onNameCriteriaChange (criteria, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].criteria = criteria
+    } else {
+      segmentation.push({
+        'condition': 'first_name',
+        'value': '',
+        'criteria': criteria,
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onNameConditionChange (condition, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].condition = condition
+    } else {
+      segmentation.push({
+        'condition': condition,
+        'value': '',
+        'criteria': 'is',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onSubscribedCriteriaChange (criteria, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].criteria = criteria
+    } else {
+      segmentation.push({
+        'condition': 'subscription_date',
+        'value': new Date().toJSON().slice(0, 10).replace(/-/g, '-'),
+        'criteria': criteria,
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onNameSegmentationChange (value, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].value = event.target.value
+    } else {
+      segmentation.push({
+        'condition': 'first_name',
+        'value': value,
+        'criteria': 'is',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onPageSegmentationChange (value, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].value = value
+    } else {
+      segmentation.push({
+        'condition': 'page',
+        'value': value,
+        'criteria': 'is',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onSubscribedSegmentationChange (value, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].value = value
+    } else {
+      segmentation.push({
+        'condition': 'subscription_date',
+        'value': value,
+        'criteria': 'on',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  addSegmentationOption () {
+    let segmentationOptions = this.state.segmentationOptions
+    segmentationOptions.push(
+      {
+        'name': true,
+        'page': true,
+        'subscribed': true
+      }
+    )
+    this.setState({segmentationOptions: segmentationOptions})
+  }
+
+  removeSegmentationOption (index, option) {
+    let segmentationOptions = this.state.segmentationOptions
+    segmentationOptions[index][option] = false
+    this.setState({segmentationOptions: segmentationOptions})
   }
 
   gotoView (message) {
@@ -124,6 +274,14 @@ class CreateSequence extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
 
+  showDialogSegmentation () {
+    this.setState({isShowingModalSegmentation: true})
+  }
+
+  closeDialogSegmentation () {
+    this.setState({isShowingModalSegmentation: false})
+  }
+
   componentDidMount () {
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.module === 'edit') {
@@ -192,6 +350,96 @@ class CreateSequence extends React.Component {
                       this.closeDialogDelete()
                     }}>Delete
                   </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
+
+            {
+              this.state.isShowingModalSegmentation &&
+              <ModalContainer style={{width: '500px', paddingLeft: '33px', paddingRight: '33px'}}
+                onClose={this.closeDialogSegmentation}>
+                <ModalDialog style={{width: '500px',  paddingLeft: '33px', paddingRight: '33px'}}
+                  onClose={this.closeDialogSegmentation}>
+                  <h3  style={{marginBottom: '20px'}}>Segment Subscribers</h3>
+                  <div style={{marginBottom: '20px'}}>Subscribers match  
+                        <select onChange={(e) => this.onConditionChange(e.target.value)} style={{marginLeft: '10px', marginRight: '10px'}}>
+                          <option value='any'>any</option>
+                          <option value='all'>all</option>
+                      </select>
+                      of the following conditions
+                  </div>
+                  {
+                    this.state.segmentationOptions.map((option, i) => {
+                      return (
+                      <div key = {i}>    
+                        {
+                          option.name ? 
+                        <div style={{marginBottom: '10px'}}>
+                          <i onClick={() => this.removeSegmentationOption(i, 'name')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
+                          <select onChange={(e) => this.onNameConditionChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
+                            <option value='first_name'>First Name</option>
+                            <option value='last_name'>Last Name</option>
+                        </select>
+                        <select onChange={(e) => this.onNameCriteriaChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px'}}>
+                          <option value='is'>is</option>
+                          <option value='contains'>contains</option>
+                          <option value='begins_with'>begins with</option>
+                          </select>
+                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} type='text' onChange={(e) => this.onNameSegmentationChange(e.target.value, 'name'+i)}></input>
+                        </div> : null
+                        }
+
+
+                        {
+                          option.page ? 
+                        <div style={{marginBottom: '10px'}}>
+                          <i onClick={() => this.removeSegmentationOption(i, 'page')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
+                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
+                            <option>
+                              Page
+                            </option>
+                        </select>
+                        <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
+                          <option>is</option>
+                          </select>
+                          <select className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} onChange={(e) => this.onPageSegmentationChange(e.target.value, 'page'+i)} >
+                          {
+                              this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                              ))
+                          }
+                          </select>
+                        </div> : null
+                        }
+
+                        {
+                          option.subscribed ?            
+                        <div style={{marginBottom: '10px'}}>
+                          <i onClick={() => this.removeSegmentationOption(i, 'subscribed')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
+                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
+                            <option>Subscribed</option>
+                        </select>
+                        <select onChange={(e) => this.onSubscribedCriteriaChange(e.target.value, 'subscribed'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
+                          <option>on</option>
+                          <option>before</option>
+                          <option>after</option>
+                          </select>
+                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px'}} type='date' onChange={(e) => this.onPageSegmentationChange(e.target.value, 'subscribed'+i)}></input>
+                        </div> : null
+                        }
+                      </div>
+                      )
+                      
+                    })
+                  }
+
+                  <div onClick={() => this.addSegmentationOption()} className="sequence-link">
+                    <i className="fa fa-plus-circle" style={{fontSize:'24px'}}></i> 
+                    <span style={{bottom: '3px', position: 'relative', fontWeight: 'bold', marginLeft: '5px'}} >Add</span>
+                  </div>
+
+                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}}> Save </button>
+                          <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={() => this.closeDialogSegmentation()} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
@@ -300,12 +548,12 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           None
                                         </span>
-                                      <span className='sequence-link'> -- Edit</span>
+                                      <span onClick={() => this.showDialogSegmentation()} className='sequence-link'> -- Edit</span>
                                     </span>
                                   </span>
 
                                   <span style={{position: 'relative', bottom: '60px', left: '40%'}}>
-                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '19%'}}>
                                       <span className='sequence-number'>{message.sent}</span>
                                       <br />
                                       <span>Sent</span>
@@ -317,7 +565,7 @@ class CreateSequence extends React.Component {
                                       <span>Seen</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '4%'}}>
                                       <span className='sequence-number'>{message.clicks}</span>
                                       <br />
                                       <span>Clicked</span>
@@ -358,7 +606,8 @@ function mapStateToProps (state) {
   return {
     sequences: (state.sequenceInfo.sequences),
     createdSequence: (state.sequenceInfo.createdSequence),
-    messages: (state.sequenceInfo.messages)
+    messages: (state.sequenceInfo.messages),
+    pages: (state.pagesInfo.pages),
   }
 }
 
@@ -370,7 +619,8 @@ function mapDispatchToProps (dispatch) {
     deleteMessage: deleteMessage,
     setSchedule: setSchedule,
     createMessage: createMessage,
-    setStatus: setStatus
+    setStatus: setStatus,
+    loadMyPagesList: loadMyPagesList,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
