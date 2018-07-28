@@ -4,12 +4,41 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { installShopifyApp } from '../../redux/actions/abandonedCarts.actions'
 
 class InstallApp extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      pageUrl: '',
+      selectedPage: ''
+    }
+  }
+
+  componenWillReceiveProps (nextProps) {
+    if (nextProps.pages && this.state.selectedPage === '' && nextProps.pages.length > 0) {
+      this.setState({selectedPage: nextProps.pages[0].pageId})
+    }
+  }
+
+  componentDidMount () {
+    if (this.props.pages && this.state.selectedPage === '' && this.props.pages.length > 0) {
+      this.setState({selectedPage: this.props.pages[0].pageId})
+    }
+  }
+
+  install (event) {
+
+  }
+
+  selectPage (event) {
+    this.setState({selectedPage: event.target.value})
+  }
+
   render () {
+    console.log('Selected Page', this.state.selectedPage)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
@@ -20,16 +49,20 @@ class InstallApp extends React.Component {
                 <h1> KiboPush </h1>
                 <h1> Install Shopify App </h1>
                 <br />
-                <input autoFocus className='form-control m-input' type='text' placeholder='Shop Url e.g. mystore.myshopify.com' ref='domain' required style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }} />
+                <input autoFocus className='form-control m-input' type='text' placeholder='Shop Url e.g. mystore.myshopify.com' ref='domain' required
+                  style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                  value={this.state.pageUrl} onChange={(event) => { this.setState({pageUrl: event.target.value}) }} />
                 <br />
-                <select style={{height: '45px', width: 80 + '%'}}>
-                  <option>Page 1</option>
-                  <option>Page 2</option>
-                  <option>Page 3</option>
+                <select style={{height: '45px', width: 80 + '%'}} onChange={this.selectPage.bind(this)}>
+                  { (this.props.pages)
+                    ? this.props.pages.map((page) => {
+                      return <option value={page.pageId} key={page._id}> {page.pageName} </option>
+                    }) : <option>No Pages Found</option>
+                  }
                 </select>
                 <br />
                 <br />
-                <button type='button' className='btn  btn-success btn-lg' style={{marginTop: 25 + 'px'}}>Install</button>
+                <button type='button' className='btn  btn-success btn-lg' style={{marginTop: 25 + 'px'}} onClick={this.install.bind(this)}>Install</button>
               </div>
             </div>
           </div>
@@ -53,11 +86,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadBotsList: loadBotsList,
       loadMyPagesList: loadMyPagesList,
-      createBot: createBot,
-      deleteBot: deleteBot,
-      loadAnalytics: loadAnalytics
+      installShopifyApp: installShopifyApp
     },
     dispatch)
 }

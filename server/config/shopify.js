@@ -26,8 +26,8 @@ module.exports = function (app) {
   //   }
   // })
 
-  app.get('/shopify', (req, res) => {
-    const shop = req.query.shop
+  app.post('/api/shopify', (req, res) => {
+    const shop = req.body.shop
     const scopes = 'write_orders, write_products'
     if (shop) {
       const state = nonce()
@@ -45,7 +45,7 @@ module.exports = function (app) {
     }
   })
 
-  app.get('/shopify/callback', (req, res) => {
+  app.get('api/shopify/callback', (req, res) => {
     const { shop, hmac, code, state } = req.query
     const stateCookie = cookie.parse(req.headers.cookie).state
 
