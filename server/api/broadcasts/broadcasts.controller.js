@@ -9,6 +9,7 @@ const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQue
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
+const sequenceController = require('./../sequenceMessaging/sequence.controller')
 const Bots = require('./../smart_replies/Bots.model')
 const WaitingSubscriber = require('./../smart_replies/waitingSubscribers.model')
 const logger = require('../../components/logger')
@@ -531,6 +532,17 @@ exports.getfbMessage = function (req, res) {
       req.body.entry[0].messaging[0].message.quick_reply.payload)
     if (resp.poll_id) {
       savepoll(req.body.entry[0].messaging[0], resp)
+      Subscribers.findOne({ senderId: req.body.entry[0].messaging[0].sender.id }, (err, subscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Error occurred in finding subscriber ${JSON.stringify(
+              err)}`)
+        }
+        if (subscriber) {
+          logger.serverLog(TAG, `Subscriber Responeds to Poll ${JSON.stringify(subscriber)} ${resp.poll_id}`)
+          sequenceController.setSequenceTrigger(subscriber.companyId, subscriber._id, {event: 'responds_to_poll', value: resp.poll_id})
+        }
+      })
     }
   }
 
@@ -662,6 +674,8 @@ exports.getfbMessage = function (req, res) {
                                     createSession(page, subscriberCreated,
                                       event)
                                   }
+                                  logger.serverLog(TAG, `Subscriber Joins Sequence Trigger ${JSON.stringify(subscriberCreated)}`)
+                                  sequenceController.setSequenceTrigger(subscriberCreated.companyId, subscriberCreated._id, {event: 'subscriber_joins', value: null})
                                   require('./../../config/socketio')
                                     .sendMessageToClient({
                                       room_id: page.companyId,
@@ -693,7 +707,6 @@ exports.getfbMessage = function (req, res) {
                                   isEnabledByPage: true
                                 }, (err, subscriber) => {
                                   if (err) return logger.serverLog(TAG, err)
-                                  logger.serverLog(TAG, subscriber)
                                 })
                               }
                               if (!(event.postback &&
@@ -721,6 +734,17 @@ exports.getfbMessage = function (req, res) {
                 // savepoll(event)
               } else if (resp.survey_id) {
                 savesurvey(event)
+                Subscribers.findOne({ senderId: req.body.entry[0].messaging[0].sender.id }, (err, subscriber) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Error occurred in finding subscriber ${JSON.stringify(
+                        err)}`)
+                  }
+                  if (subscriber) {
+                    logger.serverLog(TAG, `Subscriber Responeds to Survey ${JSON.stringify(subscriber)} ${resp.survey_id}`)
+                    sequenceController.setSequenceTrigger(subscriber.companyId, subscriber._id, {event: 'responds_to_survey', value: resp.poll_id})
+                  }
+                })
               } else if (resp.unsubscribe) {
                 handleUnsubscribe(resp, event)
               } else if (resp.action === 'subscribe') {

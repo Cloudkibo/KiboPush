@@ -45,6 +45,7 @@ const operation = (index, length) => {
 
 const updatePayload = (self, payload, pageAccessToken, broadcast) => {
   let shouldReturn = false
+  logger.serverLog(TAG, `Update Payload: ${JSON.stringify(payload)}`)
   for (let j = 0; j < payload.length; j++) {
     if (['image', 'audio', 'file', 'video', 'media'].indexOf(payload[j].componentType) > -1) {
       let uploadResponse = utility.uploadOnFacebook(payload[j], pageAccessToken)
