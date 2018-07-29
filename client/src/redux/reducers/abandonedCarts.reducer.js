@@ -1,14 +1,16 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  isAppInstalled: false,
+  storeList: [],
+  isLoading: true
 }
 
-export function abandonedInfo (state = [], action) {
+export function abandonedInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.LOAD_PAGES_LIST:
+    case ActionTypes.UPDATE_STORE_LIST:
       return Object.assign({}, state, {
-        pages: action.data
+        storeList: action.data,
+        isLoading: false
       })
     default:
       return state

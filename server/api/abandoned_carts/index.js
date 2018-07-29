@@ -12,17 +12,23 @@ const auth = require('../../auth/auth.service')
 const controller = require('./abandoned_carts.controller')
 const validate = require('express-jsonschema').validate
 
-router.get('/',
+router.get('/getStores',
   auth.isAuthenticated(),
   controller.index) // this id will be userid
 
-router.post('/saveStoreInfo', validate({body: validationSchema.storeInfoSchema}),
+router.post('/saveStoreInfo',
+  auth.isAuthenticated(),
+  validate({body: validationSchema.storeInfoSchema}),
   controller.saveStoreInfo)
 
-router.post('/saveCartInfo', validate({body: validationSchema.cartInfoSchema}),
+router.post('/saveCartInfo', 
+  auth.isAuthenticated(),
+  validate({body: validationSchema.cartInfoSchema}),
   controller.saveCartInfo)
 
-router.post('/saveCheckoutInfo', validate({body: validationSchema.checkoutInfoSchema}),
+router.post('/saveCheckoutInfo', 
+  auth.isAuthenticated(),
+  validate({body: validationSchema.checkoutInfoSchema}),
   controller.saveCheckoutInfo)
 
 module.exports = router

@@ -6,7 +6,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { installShopifyApp } from '../../redux/actions/abandonedCarts.actions'
 import AlertContainer from 'react-alert'
 import auth from './../../utility/auth.service'
 class InstallApp extends React.Component {
@@ -30,13 +29,7 @@ class InstallApp extends React.Component {
     }
   }
 
-  install (event) {
-    if (this.state.pageUrl === '' || this.state.selectedPage === '') {
-      return this.msg.error('Please enter a valid url and select a page')
-    }
-    console.log('Calling install shopify app')
-    this.props.installShopifyApp(this.state.pageUrl, this.state.selectedPage)
-  }
+
 
   selectPage (event) {
     this.setState({selectedPage: event.target.value})
@@ -101,7 +94,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       loadMyPagesList: loadMyPagesList,
-      installShopifyApp: installShopifyApp
     },
     dispatch)
 }
