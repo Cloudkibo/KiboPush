@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import AbandonedList from './abandonedList'
 import InstallApp from './installApp'
+import AbandonedList from './abandonedList'
 
 class AbandonedCarts extends React.Component {
   componentWillReceiveProps (nextProps) {
@@ -14,7 +15,7 @@ class AbandonedCarts extends React.Component {
 
   /* return <AbandonedList /> */
   render () {
-    return <InstallApp />
+    return <AbandonedList />
   }
 }
 
