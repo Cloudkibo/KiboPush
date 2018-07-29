@@ -72,7 +72,8 @@ export function createTag (tag, handleResponse, msg) {
           dispatch(loadTags())
           msg.success('New Tag Created')
         } else {
-          msg.error('Error in Creating Tag')
+          dispatch(loadTags())
+          msg.error(res.description)
         }
         handleResponse()
       })

@@ -63,7 +63,7 @@ exports.create = function (req, res) {
   let query = {}
   query[feature] = false
 
-  Features.aggregate([{$addFields: query}, {$out: 'permissions_plan'}], (err, updated) => {
+  Features.aggregate([{$addFields: query}, {$out: 'permissions_plans'}], (err, updated) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',

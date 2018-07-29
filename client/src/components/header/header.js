@@ -148,6 +148,11 @@ class Header extends React.Component {
         pathname: `/settings`,
         state: {module: 'webhook'}
       })
+    } else if (type === 'limit') {
+      browserHistory.push({
+        pathname: `/settings`,
+        state: {module: 'pro'}
+      })
     } else {
       browserHistory.push({
         pathname: `/liveChat`,

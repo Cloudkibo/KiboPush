@@ -328,7 +328,7 @@ exports.createPoll = function (req, res) {
           })
         })
       })
-      })
+    })
   })
 }
 

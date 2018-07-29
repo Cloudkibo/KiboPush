@@ -366,7 +366,7 @@ class Sidebar extends Component {
     }
   }
   showCreatePhoneList () {
-    if (this.state.createPhoneList && this.props.user && this.props.user.advancedMode && this.props.user.plan.customer_matching) {
+    //if (this.state.createPhoneList && this.props.user && this.props.user.advancedMode && this.props.user.plan.customer_matching) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/segmentedLists' className='m-menu__link m-menu__toggle'>
@@ -375,9 +375,9 @@ class Sidebar extends Component {
           </Link>
         </li>
       )
-    } else {
-      return (null)
-    }
+    // } else {
+    //   return (null)
+    // }
   }
   showWelcomeMessageItem () {
     if (this.props.user) {

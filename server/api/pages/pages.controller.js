@@ -10,7 +10,8 @@ const Users = require('./../user/Users.model')
 const needle = require('needle')
 const Subscribers = require('../subscribers/Subscribers.model')
 const CompanyUsage = require('./../featureUsage/companyUsage.model')
-
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
@@ -724,232 +725,262 @@ exports.getAllpages = function (req, res) {
 }
 
 exports.enable = function (req, res) {
-  Pages.findOne({_id: req.body._id}, (err, userPage) => {
+  CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
     if (err) {
-      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    if (userPage && userPage.userId) {
-      Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
+    PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        var currentUser
-        if (req.user.facebookInfo) {
-          currentUser = req.user
-        } else {
-          currentUser = connectedUser
+        if (planUsage.facebook_pages !== -1 && companyUsage.facebook_pages >= planUsage.facebook_pages) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Your pages limit has reached. Please upgrade your plan to premium in order to connect more pages.`
+          })
         }
-        if (currentUser.facebookInfo) {
-          needle.get(
-            `https://graph.facebook.com/v2.10/${req.body.pageId}?fields=is_published&access_token=${currentUser.facebookInfo.fbToken}`,
-            (err, resp) => {
+        Pages.findOne({_id: req.body._id}, (err, userPage) => {
+          if (err) {
+            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (userPage && userPage.userId) {
+            Users.findOne({_id: userPage.userId}, (err, connectedUser) => {
               if (err) {
-                logger.serverLog(TAG,
-                  `Page access token from graph api error ${JSON.stringify(
-                    err)}`)
-              }
-              if (resp.body.is_published === false) {
-                return res.status(404).json({
+                return res.status(500).json({
                   status: 'failed',
-                  description: 'not published'
+                  description: `Internal Server Error ${JSON.stringify(err)}`
                 })
+              }
+              var currentUser
+              if (req.user.facebookInfo) {
+                currentUser = req.user
               } else {
-                // check if page is already connected by some other user
-                // short term solution for issue Subscribers list is not updating (multi user issue) #307
-                CompanyUsers.findOne({domain_email: req.user.domain_email},
-                  (err, companyUser) => {
+                currentUser = connectedUser
+              }
+              if (currentUser.facebookInfo) {
+                needle.get(
+                  `https://graph.facebook.com/v2.10/${req.body.pageId}?fields=is_published&access_token=${currentUser.facebookInfo.fbToken}`,
+                  (err, resp) => {
                     if (err) {
-                      return res.status(500).json({
-                        status: 'failed',
-                        description: `Internal Server Error ${JSON.stringify(err)}`
-                      })
+                      logger.serverLog(TAG,
+                        `Page access token from graph api error ${JSON.stringify(
+                          err)}`)
                     }
-                    if (!companyUser) {
+                    if (resp.body.is_published === false) {
                       return res.status(404).json({
                         status: 'failed',
-                        description: 'The user account does not belong to any company. Please contact support'
+                        description: 'not published'
                       })
-                    }
-                    Pages.find(
-                      {pageId: req.body.pageId, connected: true},
-                      (err, pagesbyOther) => {
-                        if (err) {
-                          res.status(500).json({
-                            status: 'Failed',
-                            description: 'Failed to update record'
-                          })
-                        }
-                        if (pagesbyOther.length === 0) {
-                          Pages.update({_id: req.body._id},
-                            {
-                              connected: true,
-                              isWelcomeMessageEnabled: true,
-                              welcomeMessage: [
-                                {
-                                  id: 0,
-                                  componentType: 'text',
-                                  text: 'Hi {{user_full_name}}! Thanks for getting in touch with us on Messenger. Please send us any questions you may have'
-                                }]
-                            }, {multi: true}, (err) => {
+                    } else {
+                      // check if page is already connected by some other user
+                      // short term solution for issue Subscribers list is not updating (multi user issue) #307
+                      CompanyUsers.findOne({domain_email: req.user.domain_email},
+                        (err, companyUser) => {
+                          if (err) {
+                            return res.status(500).json({
+                              status: 'failed',
+                              description: `Internal Server Error ${JSON.stringify(err)}`
+                            })
+                          }
+                          if (!companyUser) {
+                            return res.status(404).json({
+                              status: 'failed',
+                              description: 'The user account does not belong to any company. Please contact support'
+                            })
+                          }
+                          Pages.find(
+                            {pageId: req.body.pageId, connected: true},
+                            (err, pagesbyOther) => {
                               if (err) {
                                 res.status(500).json({
                                   status: 'Failed',
-                                  error: err,
                                   description: 'Failed to update record'
                                 })
-                              } else {
-                                CompanyUsage.update({companyId: companyUser.companyId},
-                                  { $inc: { facebook_pages: 1 } }, (err, updated) => {
-                                    if (err) {
-                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                    }
-                                  })
-                                Subscribers.update({pageId: req.body._id},
-                                  {isEnabledByPage: true}, {multi: true},
-                                  function (err) {
+                              }
+                              if (pagesbyOther.length === 0) {
+                                Pages.update({_id: req.body._id},
+                                  {
+                                    connected: true,
+                                    isWelcomeMessageEnabled: true,
+                                    welcomeMessage: [
+                                      {
+                                        id: 0,
+                                        componentType: 'text',
+                                        text: 'Hi {{user_full_name}}! Thanks for getting in touch with us on Messenger. Please send us any questions you may have'
+                                      }]
+                                  }, {multi: true}, (err) => {
                                     if (err) {
                                       res.status(500).json({
                                         status: 'Failed',
+                                        error: err,
                                         description: 'Failed to update record'
                                       })
+                                    } else {
+                                      CompanyUsage.update({companyId: companyUser.companyId},
+                                        { $inc: { facebook_pages: 1 } }, (err, updated) => {
+                                          if (err) {
+                                            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                          }
+                                        })
+                                      Subscribers.update({pageId: req.body._id},
+                                        {isEnabledByPage: true}, {multi: true},
+                                        function (err) {
+                                          if (err) {
+                                            res.status(500).json({
+                                              status: 'Failed',
+                                              description: 'Failed to update record'
+                                            })
+                                          }
+                                          Pages.find({
+                                            userId: req.user._id,
+                                            companyId: companyUser.companyId
+                                          }, (err2, pages) => {
+                                            if (err2) {
+                                              return res.status(500).json({
+                                                status: 'failed',
+                                                description: `Internal Server Error${JSON.stringify(
+                                                  err)}`
+                                              })
+                                            }
+                                            Pages.find({
+                                              companyId: companyUser.companyId,
+                                              connected: true
+                                            }, (err, connectedPages) => {
+                                              if (err) {
+                                                return res.status(500)
+                                                  .json({status: 'failed', description: err})
+                                              }
+                                              for (let a = 0; a <
+                                              connectedPages.length; a++) {
+                                                for (let b = 0; b < pages.length; b++) {
+                                                  if (connectedPages[a].pageId ===
+                                                    pages[b].pageId) {
+                                                    pages[b].connected = true
+                                                  }
+                                                }
+                                              }
+                                              const options = {
+                                                url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
+                                                qs: {access_token: req.body.accessToken},
+                                                method: 'POST'
+                                              }
+                                              var valueForMenu = {
+                                                'get_started': {
+                                                  'payload': '<GET_STARTED_PAYLOAD>'
+                                                },
+                                                'greeting': [
+                                                  {
+                                                    'locale': 'default',
+                                                    'text': 'Hi {{user_full_name}}! Please tap on getting started to start the conversation.'
+                                                  }]
+                                              }
+                                              const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
+
+                                              needle.request('post', requesturl, valueForMenu,
+                                                {json: true}, function (err, resp) {
+                                                  if (!err) {
+                                                  }
+                                                  if (err) {
+                                                    logger.serverLog(TAG,
+                                                      `Internal Server Error ${JSON.stringify(
+                                                        err)}`)
+                                                  }
+                                                })
+                                              needle.post(options.url, options,
+                                                (error, response) => {
+                                                  if (error) {
+                                                    return res.status(500).json(
+                                                      {
+                                                        status: 'failed',
+                                                        description: JSON.stringify(error)
+                                                      })
+                                                  }
+                                                  require('./../../config/socketio')
+                                                    .sendMessageToClient({
+                                                      room_id: companyUser.companyId,
+                                                      body: {
+                                                        action: 'page_connect',
+                                                        payload: {
+                                                          page_id: req.body.pageId,
+                                                          user_id: req.user._id,
+                                                          user_name: req.user.name,
+                                                          company_id: companyUser.companyId
+                                                        }
+                                                      }
+                                                    })
+                                                  res.status(200)
+                                                    .json({
+                                                      status: 'success',
+                                                      payload: {pages: pages}
+                                                    })
+                                                })
+                                            })
+                                          })
+                                        })
                                     }
-                                    Pages.find({
-                                      userId: req.user._id,
-                                      companyId: companyUser.companyId
-                                    }, (err2, pages) => {
-                                      if (err2) {
+                                  })
+                              } else {
+                                // page is already connected by someone else
+                                Pages.find(
+                                  {userId: req.user._id, companyId: companyUser.companyId},
+                                  (err2, pages) => {
+                                    if (err2) {
+                                      return res.status(500).json({
+                                        status: 'failed',
+                                        description: `Internal Server Error${JSON.stringify(
+                                          err)}`
+                                      })
+                                    }
+                                    Users.findOne({_id: pagesbyOther[0].userId},
+                                    (err, userInfo) => {
+                                      if (err) {
                                         return res.status(500).json({
                                           status: 'failed',
                                           description: `Internal Server Error${JSON.stringify(
                                             err)}`
                                         })
                                       }
-                                      Pages.find({
-                                        companyId: companyUser.companyId,
-                                        connected: true
-                                      }, (err, connectedPages) => {
-                                        if (err) {
-                                          return res.status(500)
-                                            .json({status: 'failed', description: err})
+                                      let msg = 'Page is already connected'
+                                      if (userInfo && userInfo.facebookInfo) {
+                                        msg = `Page is already connected by ${userInfo.facebookInfo.name}. In order to manage this page please ask ${userInfo.facebookInfo.name} to create a team account and invite you.`
+                                      }
+                                      res.status(200).json({
+                                        status: 'success',
+                                        payload: {
+                                          pages: pages,
+                                          msg: msg
                                         }
-                                        for (let a = 0; a <
-                                        connectedPages.length; a++) {
-                                          for (let b = 0; b < pages.length; b++) {
-                                            if (connectedPages[a].pageId ===
-                                              pages[b].pageId) {
-                                              pages[b].connected = true
-                                            }
-                                          }
-                                        }
-                                        const options = {
-                                          url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
-                                          qs: {access_token: req.body.accessToken},
-                                          method: 'POST'
-                                        }
-                                        var valueForMenu = {
-                                          'get_started': {
-                                            'payload': '<GET_STARTED_PAYLOAD>'
-                                          },
-                                          'greeting': [
-                                            {
-                                              'locale': 'default',
-                                              'text': 'Hi {{user_full_name}}! Please tap on getting started to start the conversation.'
-                                            }]
-                                        }
-                                        const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${req.body.accessToken}`
-
-                                        needle.request('post', requesturl, valueForMenu,
-                                          {json: true}, function (err, resp) {
-                                            if (!err) {
-                                            }
-                                            if (err) {
-                                              logger.serverLog(TAG,
-                                                `Internal Server Error ${JSON.stringify(
-                                                  err)}`)
-                                            }
-                                          })
-                                        needle.post(options.url, options,
-                                          (error, response) => {
-                                            if (error) {
-                                              return res.status(500).json(
-                                                {
-                                                  status: 'failed',
-                                                  description: JSON.stringify(error)
-                                                })
-                                            }
-                                            require('./../../config/socketio')
-                                              .sendMessageToClient({
-                                                room_id: companyUser.companyId,
-                                                body: {
-                                                  action: 'page_connect',
-                                                  payload: {
-                                                    page_id: req.body.pageId,
-                                                    user_id: req.user._id,
-                                                    user_name: req.user.name,
-                                                    company_id: companyUser.companyId
-                                                  }
-                                                }
-                                              })
-                                            res.status(200)
-                                              .json({
-                                                status: 'success',
-                                                payload: {pages: pages}
-                                              })
-                                          })
                                       })
                                     })
                                   })
                               }
                             })
-                        } else {
-                          // page is already connected by someone else
-                          Pages.find(
-                            {userId: req.user._id, companyId: companyUser.companyId},
-                            (err2, pages) => {
-                              if (err2) {
-                                return res.status(500).json({
-                                  status: 'failed',
-                                  description: `Internal Server Error${JSON.stringify(
-                                    err)}`
-                                })
-                              }
-                              Users.findOne({_id: pagesbyOther[0].userId},
-                              (err, userInfo) => {
-                                if (err) {
-                                  return res.status(500).json({
-                                    status: 'failed',
-                                    description: `Internal Server Error${JSON.stringify(
-                                      err)}`
-                                  })
-                                }
-                                let msg = 'Page is already connected'
-                                if (userInfo && userInfo.facebookInfo) {
-                                  msg = `Page is already connected by ${userInfo.facebookInfo.name}. In order to manage this page please ask ${userInfo.facebookInfo.name} to create a team account and invite you.`
-                                }
-                                res.status(200).json({
-                                  status: 'success',
-                                  payload: {
-                                    pages: pages,
-                                    msg: msg
-                                  }
-                                })
-                              })
-                            })
-                        }
-                      })
+                        })
+                    }
                   })
               }
             })
-        }
+          }
+        })
       })
-    }
+    })
   })
 }
 

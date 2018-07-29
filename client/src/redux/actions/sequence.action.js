@@ -31,25 +31,29 @@ export function showCreatedSequence (data) {
   }
 }
 
-export function createSequence (data) {
+export function createSequence (data, msg) {
   return (dispatch) => {
     callApi('sequenceMessaging/createSequence', 'post', data)
       .then(res => {
         console.log('response from createBot', res)
         if (res.status === 'success') {
           dispatch(showCreatedSequence(res.payload))
+        } else {
+          msg.error(res.description)
         }
       })
   }
 }
 
-export function createMessage (data) {
+export function createMessage (data, msg) {
   console.log('data createMessage', data)
   return (dispatch) => {
     callApi('sequenceMessaging/createMessage', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(fetchAllMessages(data.sequenceId))
+        } else {
+          msg.error(res.description)
         }
       })
   }

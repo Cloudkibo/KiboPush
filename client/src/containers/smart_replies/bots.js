@@ -171,6 +171,11 @@ class Bot extends React.Component {
       // this.state.pageSelected = nextProps.pages[0]._id
       this.updateAllowedPages(nextProps.pages, nextProps.bots)
     }
+    if (nextProps.createdBot) {
+      browserHistory.push({
+        pathname: `/createBot`
+      })
+    }
   }
 
   updateAllowedPages (pages, bots) {
@@ -217,13 +222,10 @@ class Bot extends React.Component {
     } else {
       var botName = this.state.name.trim()
       botName = botName.replace(/\s+/g, '-')
-      this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
-      browserHistory.push({
-        pathname: `/createBot`
-      })
+      this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive}, this.msg)
+      this.closeDialog()
     }
   }
-
   render () {
     var alertOptions = {
       offset: 75,
@@ -577,7 +579,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     bots: (state.botsInfo.bots),
     count: (state.botsInfo.count),
-    analytics: (state.botsInfo.analytics)
+    analytics: (state.botsInfo.analytics),
+    createdBot: (state.botsInfo.createdBot)
   }
 }
 

@@ -112,7 +112,7 @@ class CreateSequence extends React.Component {
     var d1 = new Date()
     d1.setDate(d1.getDate() + 1)
     var utcDate = new Date(d1).toISOString()
-    this.props.createMessage({sequenceId: this.state.sequenceId, schedule: {condition: 'day(s)', days: '1', date: utcDate}, title: 'New Message', payload: []})
+    this.props.createMessage({sequenceId: this.state.sequenceId, schedule: {condition: 'day(s)', days: '1', date: utcDate}, title: 'New Message', payload: []}, this.msg)
   }
 
   scrollToTop () {

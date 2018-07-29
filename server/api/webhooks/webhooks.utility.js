@@ -56,4 +56,18 @@ function saveNotification (webhook) {
     }
   })
 }
+function limitReachedNotification (module, company) {
+  const notification = new Notifications({
+    message: `Your ${module} limit has reached. Please upgrade your plan to premium in order to increase your ${module} quota`,
+    category: {type: 'limit', id: company.ownerId},
+    agentId: company.ownerId,
+    companyId: company._id
+  })
+
+  notification.save((err, savedNotification) => {
+    if (err) {
+    }
+  })
+}
 exports.saveNotification = saveNotification
+exports.limitReachedNotification = limitReachedNotification

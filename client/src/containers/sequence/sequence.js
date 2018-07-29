@@ -63,11 +63,8 @@ class Sequence extends React.Component {
     if (this.state.name === '') {
       this.setState({error: true})
     } else {
-      this.props.createSequence({name: this.state.name})
-      browserHistory.push({
-        pathname: `/editSequence`,
-        state: {name: this.state.name, module: 'create'}
-      })
+      this.props.createSequence({name: this.state.name}, this.msg)
+      this.closeDialog()
     }
   }
   showDialogDelete (id) {
@@ -125,6 +122,12 @@ class Sequence extends React.Component {
     if (nextProps.sequences) {
       this.displayData(0, nextProps.sequences)
       this.setState({ totalLength: nextProps.sequences.length })
+    }
+    if (nextProps.createdSequence) {
+      browserHistory.push({
+        pathname: `/editSequence`,
+        state: {name: this.state.name, module: 'create'}
+      })
     }
   }
 
@@ -402,7 +405,8 @@ class Sequence extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    createdSequence: (state.sequenceInfo.createdSequence)
   }
 }
 
