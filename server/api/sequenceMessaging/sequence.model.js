@@ -6,8 +6,6 @@ const sequenceSchema = new Schema({
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   userId: { type: Schema.ObjectId, ref: 'users' },
   trigger: {type: Schema.Types.Mixed, default: {event: 'subscribe_to_sequence', value: null}},
-  segmentation: { type: Schema.Types.Mixed, default: [] },
-  segmentationCondition: {type: Schema.Types.String, default: 'or'},    // 'and' or 'or'
   datetime: { type: Date, default: Date.now }
 })
 

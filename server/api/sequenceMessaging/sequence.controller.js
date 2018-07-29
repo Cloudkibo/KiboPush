@@ -1044,6 +1044,7 @@ exports.updateSegmentation = function (req, res) {
   }
 
   if (!_.has(req.body, 'messageId')) parametersMissing = true
+  if (!_.has(req.body, 'segmentationCondition')) parametersMissing = true
 
   // If parameter missing return
   if (parametersMissing) {
@@ -1051,16 +1052,17 @@ exports.updateSegmentation = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  Sequences.updateOne({_id: req.body.sequenceId}, {segmentation: req.body.segmentation}, (err, result) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to update record'
+  SequenceMessages.updateOne({_id: req.body.messageId}, {segmentation: req.body.segmentation, segmentationCondition: req.body.segmentationCondition},
+      (err, result) => {
+        if (err) {
+          res.status(500).json({
+            status: 'Failed',
+            description: 'Failed to update record'
+          })
+        } else {
+          res.status(200).json({status: 'success', payload: result})
+        }
       })
-    } else {
-      res.status(200).json({status: 'success', payload: result})
-    }
-  })
 }
 
 exports.testScheduler = function (req, res) {
