@@ -13,6 +13,9 @@ const storeSchema = new Schema({
   },
   shopToken: {
     type: String
+  },
+  isActive: {
+    type: Boolean
   }
 })
 

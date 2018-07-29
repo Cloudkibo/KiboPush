@@ -11,6 +11,8 @@ const CheckoutInfo = require('./CheckoutInfo.model')
 // const needle = require('needle')
 // const Subscribers = require('../subscribers/Subscribers.model')
 
+const _ = require('lodash')
+
 exports.index = function (req, res) {
   return res.status(200).json({status: 'success', payload: {}})
 }
@@ -61,5 +63,25 @@ exports.saveCheckoutInfo = function (req, res) {
       return res.status(500).json({ status: 'failed', error: err })
     }
     return res.status(200).json({status: 'success'})
+  })
+}
+
+exports.updateStatusStore = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'shopId')) parametersMissing = true
+  if (!_.has(req.body, 'isActive')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'Failed', description: 'Parameters are missing'})
+  }
+
+  StoreInfo.updateOne({_id: req.body.shopId}, {isActive: req.body.isActive}, (err, result) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', error: err })
+    }
+
+    return res.status(200).json({status: 'success', payload: result})
   })
 }

@@ -24,6 +24,9 @@ router.post('/saveCartInfo',
 router.post('/saveCheckoutInfo',
   controller.saveCheckoutInfo)
 
+router.post('/updateStatusStore',
+  controller.updateStatusStore)
+
 module.exports = router
 
 // {
