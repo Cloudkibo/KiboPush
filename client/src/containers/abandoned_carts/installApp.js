@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { installShopifyApp } from '../../redux/actions/abandonedCarts.actions'
-
+import AlertContainer from 'react-alert'
+import auth from './../../utility/auth.service'
 class InstallApp extends React.Component {
   constructor () {
     super()
@@ -30,7 +31,11 @@ class InstallApp extends React.Component {
   }
 
   install (event) {
-
+    if (this.state.pageUrl === '' || this.state.selectedPage === '') {
+      return this.msg.error('Please enter a valid url and select a page')
+    }
+    console.log('Calling install shopify app')
+    this.props.installShopifyApp(this.state.pageUrl, this.state.selectedPage)
   }
 
   selectPage (event) {
@@ -39,21 +44,29 @@ class InstallApp extends React.Component {
 
   render () {
     console.log('Selected Page', this.state.selectedPage)
+    const alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-content'>
-
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className='row'>
             <div className='col-xl-12'>
               <div style={{margin: 150 + 'px', textAlign: 'center'}}>
                 <h1> KiboPush </h1>
                 <h1> Install Shopify App </h1>
                 <br />
+                <form method='post' action={ '/api/shopify?access_token=' + auth.getToken() }>
                 <input autoFocus className='form-control m-input' type='text' placeholder='Shop Url e.g. mystore.myshopify.com' ref='domain' required
                   style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                  value={this.state.pageUrl} onChange={(event) => { this.setState({pageUrl: event.target.value}) }} />
+                  value={this.state.pageUrl} name="shop" onChange={(event) => { this.setState({pageUrl: event.target.value}) }} />
                 <br />
-                <select style={{height: '45px', width: 80 + '%'}} onChange={this.selectPage.bind(this)}>
+                <select style={{height: '45px', width: 80 + '%'}} onChange={this.selectPage.bind(this)} name="pageId">
                   { (this.props.pages)
                     ? this.props.pages.map((page) => {
                       return <option value={page.pageId} key={page._id}> {page.pageName} </option>
@@ -62,7 +75,8 @@ class InstallApp extends React.Component {
                 </select>
                 <br />
                 <br />
-                <button type='button' className='btn  btn-success btn-lg' style={{marginTop: 25 + 'px'}} onClick={this.install.bind(this)}>Install</button>
+                <button type='submit' className='btn  btn-success btn-lg' style={{marginTop: 25 + 'px'}}>Install</button>
+                </ form>
               </div>
             </div>
           </div>

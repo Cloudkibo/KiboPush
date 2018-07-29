@@ -3,7 +3,8 @@ let Schema = mongoose.Schema
 
 const storeSchema = new Schema({
   userId: {
-    type: String  // Schema.ObjectId, ref: 'users'
+    type: Schema.ObjectId,
+    ref: 'users'  // Schema.ObjectId, ref: 'users'
   },
   pageId: {
     type: String

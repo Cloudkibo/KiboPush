@@ -14,8 +14,8 @@ export function updatePagesList (data) {
 export function installShopifyApp (url, pageId) {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
-    callApi(`/shopify`, 'post', {shop: url, pageId: pageId}).then(res => {
-      console.log('res.payload', res)
+    callApi(`shopify`, 'post', {shop: url, pageId: pageId}).then(res => {
+      // console.log('res.payload', res)
       dispatch({type: 'SAMPLE'})
     })
   }
