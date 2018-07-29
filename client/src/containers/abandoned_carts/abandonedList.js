@@ -5,10 +5,11 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
+import { loadBotsList, createBot, deleteBot, loadAnalytics, updateCartStatus } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import AlertContainer from 'react-alert'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
@@ -68,16 +69,25 @@ class AbandonedList extends React.Component {
     console.log('Need to handle the page click logic here')
   }
 
-  handleStatusChange (shopID, statusValue) {
+  handleStatusChange (shopId, statusValue) {
     // TODO
     // It will receive the shopID which it will send to API endpoint to update the value
     this.setState({isActive: statusValue})
     console.log('set the status: ' + statusValue)
+    this.props.updateCartStatus({shopId: shopId, isActive: statusValue}, this.msg)
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -150,10 +160,10 @@ class AbandonedList extends React.Component {
                                   }
                                 </button>
                                 <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                                  <a className='dropdown-item' onClick={() => { this.handleStatusChange('asad', true) }}>
+                                  <a className='dropdown-item' onClick={() => { this.handleStatusChange('5b5dbb52a8c5bcde181e9205', true) }}>
                                     Active
                                     </a>
-                                  <a className='dropdown-item' onClick={() => { this.handleStatusChange('asad', false) }}>
+                                  <a className='dropdown-item' onClick={() => { this.handleStatusChange('5b5dbb52a8c5bcde181e9205', false) }}>
                                     Not Active
                                     </a>
                                 </div>
@@ -205,7 +215,8 @@ function mapDispatchToProps (dispatch) {
       loadMyPagesList: loadMyPagesList,
       createBot: createBot,
       deleteBot: deleteBot,
-      loadAnalytics: loadAnalytics
+      loadAnalytics: loadAnalytics,
+      updateCartStatus: updateCartStatus
     },
     dispatch)
 }
