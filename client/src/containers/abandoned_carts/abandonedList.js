@@ -3,64 +3,19 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
-import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { getAbandonedCarts } from '../../redux/actions/abandonedCarts.actions'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
-    props.loadBotsList()
-    props.loadAnalytics()
-    props.loadMyPagesList()
     super(props, context)
-    this.state = {
-      botsData: [],
-      totalLength: 0,
-      isShowingModal: false,
-      isShowingModalDelete: false,
-      deleteid: '',
-      name: '',
-      pageSelected: '',
-      isActive: true,
-      error: false,
-      filterValue: '',
-      searchValue: '',
-      createBotDialogButton: false,
-      pageNumber: 0,
-      filter: false,
-      pages: [],
-      showDropDown: false
-    }
-    this.gotoCreate = this.gotoCreate.bind(this)
+    this.props.getAbandonedCarts()
     this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextprops in bots.js', nextProps)
-    if (nextProps.bots && nextProps.bots.length > 0) {
-      this.setState({ totalLength: nextProps.bots.length })
-    } else {
-      this.setState({botsData: [], totalLength: 0})
-    }
-    if (nextProps.pages && nextProps.pages.length > 0 && nextProps.bots) {
-      // this.state.pageSelected = nextProps.pages[0]._id
-    }
-  }
-
-  gotoCreate () {
-    if (this.state.name === '') {
-      this.setState({error: true})
-    } else {
-      var botName = this.state.name.trim()
-      botName = botName.replace(/\s+/g, '-')
-      this.props.createBot({botName: botName, pageId: this.state.pageSelected, isActive: this.state.isActive})
-      browserHistory.push({
-        pathname: `/createBot`
-      })
-    }
   }
 
   handlePageClick () {
@@ -112,7 +67,11 @@ class AbandonedList extends React.Component {
                           </th>
                           <th data-field='page'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '125px'}}>Page Name</span>
+                            <span style={{width: '125px'}}>Created At</span>
+                          </th>
+                          <th data-field='page'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '125px'}}>Scheduled At</span>
                           </th>
                           <th data-field='value'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -125,13 +84,19 @@ class AbandonedList extends React.Component {
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                        <tr className='m-datatable__row m-datatable__row--even'
-                          style={{height: '55px'}}>
-                          <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>Dayem Siddiqui</span></td>
-                          <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>KiboPush</span></td>
-                          <td data-field='value' className='m-datatable__cell'><span style={{width: '125px'}}>$230</span></td>
-                          <td data-field='status' className='m-datatable__cell'><span style={{width: '125px'}}>Sent</span></td>
-                        </tr>
+                        {
+                        (this.props.abandonedList) && this.props.abandonedList.map((item) => {
+                          return <tr className='m-datatable__row m-datatable__row--even' key={item._id}
+                            style={{height: '55px'}}>
+                            <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>Dayem Siddiqui</span></td>
+                            <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{new Date(item.created_at).toString()}</span></td>
+                            <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{new Date(item.scheduled_at).toString()}</span></td>
+                            <td data-field='value' className='m-datatable__cell'><span style={{width: '125px'}}>{item.totalPrice}</span></td>
+                            <td data-field='status' className='m-datatable__cell'><span style={{width: '125px'}}>{item.status}</span></td>
+                          </tr>
+                        })
+                      }
+
                       </tbody>
                     </table>
                     <div className='pagination'>
@@ -139,7 +104,7 @@ class AbandonedList extends React.Component {
                         nextLabel={'next'}
                         breakLabel={<a>...</a>}
                         breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
+                        pageCount={Math.ceil((this.props.abandonedList) ? this.props.abandonedList.length / 10 : 1)}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={3}
                         onPageChange={this.handlePageClick}
@@ -161,22 +126,14 @@ class AbandonedList extends React.Component {
 function mapStateToProps (state) {
   console.log('state', state)
   return {
-    pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user),
-    bots: (state.botsInfo.bots),
-    count: (state.botsInfo.count),
-    analytics: (state.botsInfo.analytics)
+    abandonedList: (state.abandonedInfo.abandonedList)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadBotsList: loadBotsList,
-      loadMyPagesList: loadMyPagesList,
-      createBot: createBot,
-      deleteBot: deleteBot,
-      loadAnalytics: loadAnalytics
+      getAbandonedCarts: getAbandonedCarts
     },
     dispatch)
 }

@@ -5,23 +5,39 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import AbandonedList from './abandonedList'
+import AbandonedList from './abandonedList'
+import { getShopifyStores } from '../../redux/actions/abandonedCarts.actions'
 import InstallApp from './installApp'
+import ReactLoading from 'react-loading'
 
 class AbandonedCarts extends React.Component {
+  constructor (props) {
+    super(props)
+    this.props.getShopifyStores()
+  }
   componentWillReceiveProps (nextProps) {
   }
 
-  /* return <AbandonedList /> */
   render () {
-    return <InstallApp />
+    if (this.props.isLoading) {
+      return  <div style={{paddingLeft: 500 + 'px', paddingTop: 150 + 'px'}}>
+                <ReactLoading type={'bars'} color={'#000000'} height={350} width={150} />
+                <h1 style={{ marginTop: -150 + 'px' }}> Loading </h1>
+              </div>
+    }
+    if (this.props.storeList && this.props.storeList.length > 0) {
+      return <AbandonedList />
+    } else {
+      return <InstallApp />
+    }
   }
 }
 
 function mapStateToProps (state) {
   console.log('state', state)
   return {
-    // pages: (state.pagesInfo.pages),
+    storeList: (state.abandonedInfo.storeList),
+    isLoading: (state.abandonedInfo.isLoading)
     // user: (state.basicInfo.user),
     // bots: (state.botsInfo.bots),
     // count: (state.botsInfo.count),
@@ -32,7 +48,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-
+      getShopifyStores: getShopifyStores
     },
     dispatch)
 }

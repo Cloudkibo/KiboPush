@@ -12,7 +12,13 @@ const CheckoutInfo = require('./CheckoutInfo.model')
 // const Subscribers = require('../subscribers/Subscribers.model')
 
 exports.index = function (req, res) {
-  return res.status(200).json({status: 'success', payload: {}})
+  StoreInfo.find({userId: req.user._id}).exec()
+  .then((result) => {
+    return res.status(200).json({status: 'success', payload: result})
+  })
+  .catch((err) => {
+    return res.status(500).json({status: 'failed', error: err})
+  })
 }
 
 exports.saveStoreInfo = function (req, res) {
@@ -61,5 +67,15 @@ exports.saveCheckoutInfo = function (req, res) {
       return res.status(500).json({ status: 'failed', error: err })
     }
     return res.status(200).json({status: 'success'})
+  })
+}
+
+exports.abandonedCheckouts = function (req, res) {
+  CheckoutInfo.find({userId: req.user._id}).exec()
+  .then((result) => {
+    return res.status(200).json({status: 'success', payload: result})
+  })
+  .catch((err) => {
+    return res.status(500).json({status: 'failed', error: err})
   })
 }

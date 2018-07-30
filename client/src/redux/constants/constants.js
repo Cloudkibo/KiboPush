@@ -249,3 +249,7 @@ export const SHOW_SUBSCRIBER_SEQUENCE = 'SHOW_SUBSCRIBER_SEQUENCE'
 // constants for Comment Capture
 export const SHOW_FACEBOOK_POSTS = 'SHOW_FACEBOOK_POSTS'
 export const CURRENT_POST = 'CURRENT_POST'
+
+//constants for Shopify Abandoned Carts
+export const UPDATE_STORE_LIST = 'UPDATE_STORE_LIST'
+export const UPDATE_ABANDONED_LIST = 'UPDATE_ABANDONED_LIST'
