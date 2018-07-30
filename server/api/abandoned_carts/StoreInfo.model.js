@@ -16,7 +16,8 @@ const storeSchema = new Schema({
     type: String
   },
   isActive: {
-    type: Boolean
+    type: Boolean,
+    default: true
   }
 })
 

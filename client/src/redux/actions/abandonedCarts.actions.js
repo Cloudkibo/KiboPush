@@ -35,3 +35,16 @@ export function getAbandonedCarts () {
     })
   }
 }
+
+export function updateStoreStatus (data, msg) {
+  return (dispatch) => {
+    callApi('abandonedCarts/updateStatusStore', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          // Add logic to display success Message
+          console.log('updated successfully: ' + JSON.stringify(res))
+          msg.info('Status updated successfully')
+        }
+      })
+  }
+}

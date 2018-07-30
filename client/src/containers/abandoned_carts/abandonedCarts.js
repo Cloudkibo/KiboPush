@@ -5,7 +5,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import AbandonedList from './abandonedList'
 import { getShopifyStores } from '../../redux/actions/abandonedCarts.actions'
 import InstallApp from './installApp'
 import AbandonedList from './abandonedList'
@@ -21,10 +20,10 @@ class AbandonedCarts extends React.Component {
 
   render () {
     if (this.props.isLoading) {
-      return  <div style={{paddingLeft: 500 + 'px', paddingTop: 150 + 'px'}}>
-                <ReactLoading type={'bars'} color={'#000000'} height={350} width={150} />
-                <h1 style={{ marginTop: -150 + 'px' }}> Loading </h1>
-              </div>
+      return <div style={{ paddingLeft: 500 + 'px', paddingTop: 150 + 'px' }}>
+        <ReactLoading type={'bars'} color={'#000000'} height={350} width={150} />
+        <h1 style={{ marginTop: -150 + 'px' }}> Loading </h1>
+      </div>
     }
     if (this.props.storeList && this.props.storeList.length > 0) {
       return <AbandonedList />
