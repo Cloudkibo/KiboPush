@@ -36,6 +36,23 @@ router.post('/saveCheckoutInfo',
   controller.saveCheckoutInfo)
 
 router.post('/updateStatusStore',
+  auth.isAuthenticated(),
   controller.updateStatusStore)
+
+router.post('/deleteAllCartInfo',
+  auth.isAuthenticated(),
+  controller.deleteAllCartInfo)
+
+router.post('/deleteOneCartInfo',
+  auth.isAuthenticated(),
+  controller.deleteOneCartInfo)
+
+router.post('/deleteCheckoutInfo',
+  auth.isAuthenticated(),
+  controller.deleteCheckoutInfo)
+
+router.get('/deleteAllInfo',
+  auth.isAuthenticated(),
+  controller.deleteAllInfo)
 
 module.exports = router
