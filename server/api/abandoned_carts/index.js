@@ -16,17 +16,21 @@ router.get('/getStores',
   auth.isAuthenticated(),
   controller.index) // this id will be userid
 
+router.get('/abandonedCheckouts',
+  auth.isAuthenticated(),
+  controller.abandonedCheckouts) // this id will be userid
+
 router.post('/saveStoreInfo',
   auth.isAuthenticated(),
   validate({body: validationSchema.storeInfoSchema}),
   controller.saveStoreInfo)
 
-router.post('/saveCartInfo', 
+router.post('/saveCartInfo',
   auth.isAuthenticated(),
   validate({body: validationSchema.cartInfoSchema}),
   controller.saveCartInfo)
 
-router.post('/saveCheckoutInfo', 
+router.post('/saveCheckoutInfo',
   auth.isAuthenticated(),
   validate({body: validationSchema.checkoutInfoSchema}),
   controller.saveCheckoutInfo)

@@ -12,7 +12,12 @@ const checkoutSchema = new Schema({
     type: String
   },
   storeId: {
-    type: String
+    type: Schema.ObjectId,
+    ref: 'storeInfo'  // Schema.ObjectId, ref: 'storeId'
+  },
+  userId: {
+    type: Schema.ObjectId,
+    ref: 'users'  // Schema.ObjectId, ref: 'users'
   },
   totalPrice: {
     type: Number
@@ -20,8 +25,19 @@ const checkoutSchema = new Schema({
   abandonedCheckoutUrl: {
     type: String
   },
+  status: {
+    type: String
+  },
   productIds: {
     type: [String]
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
+  scheduled_at: {
+    type: Date,
+    default: () => Date.now() + 24 * 60 * 60 * 1000
   }
 })
 

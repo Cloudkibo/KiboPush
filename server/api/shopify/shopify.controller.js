@@ -10,10 +10,40 @@ const querystring = require('querystring')
 const crypto = require('crypto')
 const request = require('request-promise')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
+const Shopify = require('shopify-api-node')
 // const TAG = 'api/pages/pages.controller.js'
 // const Users = require('./../user/Users.model')
 // const needle = require('needle')
 // const Subscribers = require('../subscribers/Subscribers.model')
+
+function registerWebhooks (shop, token) {
+  const shopify = new Shopify({
+    shopName: shop,
+    accessToken: token
+  })
+
+  shopify.webhook.create({
+    topic: 'checkouts/create',
+    address: `${config.shopify.app_host}/api/shopify/checkout-create`,
+    format: 'json'
+  }).then((response) => {
+    console.log('Checkout webhook created')
+  }).catch((err) => {
+    console.log('Error Creating Checkout Webhook')
+    throw err
+  })
+
+  shopify.webhook.create({
+    topic: 'orders/create',
+    address: `${config.shopify.app_host}/api/shopify/order-create`,
+    format: 'json'
+  }).then((response) => {
+    console.log('Order webhook created')
+  }).catch((err) => {
+    console.log('Error Creating Order Webhook')
+    throw err
+  })
+}
 
 exports.index = function (req, res) {
   console.log('User in body', req.user)
@@ -42,7 +72,7 @@ exports.callback = function (req, res) {
   const stateCookie = cookie.parse(req.headers.cookie).state
   const userId = JSON.parse(cookie.parse(req.headers.cookie).userId)
   const pageId = cookie.parse(req.headers.cookie).pageId
-  console.log("UserId of the user", userId)
+  console.log('UserId of the user', userId)
   if (state !== stateCookie) {
     return res.status(403).send('Request origin cannot be verified')
   }
@@ -84,6 +114,7 @@ exports.callback = function (req, res) {
     request.post(accessTokenRequestUrl, { json: accessTokenPayload })
   .then((accessTokenResponse) => {
     const accessToken = accessTokenResponse.access_token
+    registerWebhooks(shop, accessToken)
     const store = new StoreInfo({
       userId: userId,
       pageId: pageId,

@@ -69,3 +69,13 @@ exports.saveCheckoutInfo = function (req, res) {
     return res.status(200).json({status: 'success'})
   })
 }
+
+exports.abandonedCheckouts = function (req, res) {
+  CheckoutInfo.find({userId: req.user._id}).exec()
+  .then((result) => {
+    return res.status(200).json({status: 'success', payload: result})
+  })
+  .catch((err) => {
+    return res.status(500).json({status: 'failed', error: err})
+  })
+}

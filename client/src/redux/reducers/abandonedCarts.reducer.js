@@ -2,7 +2,8 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   storeList: [],
-  isLoading: true
+  isLoading: true,
+  abandonedList: []
 }
 
 export function abandonedInfo (state = initialState, action) {
@@ -11,6 +12,10 @@ export function abandonedInfo (state = initialState, action) {
       return Object.assign({}, state, {
         storeList: action.data,
         isLoading: false
+      })
+    case ActionTypes.UPDATE_ABANDONED_LIST:
+      return Object.assign({}, state, {
+        abandonedList: action.data,
       })
     default:
       return state
