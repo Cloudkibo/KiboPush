@@ -454,27 +454,26 @@ router.get('/updateSubcribersPicture', (req, res) => {
           logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
         }
-        users.forEach(user => {
-          if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
-            if (pages.indexOf(user.pageId.pageId) !== -1) {
-              pages.push(user.pageId.pageId)
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].pageId && users[i].pageId.pageId && profile.userId && profile.userId.facebookInfo) {
+            if (pages.indexOf(users[i].pageId.pageId) === -1) {
               needle.get(
-              `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
+              `https://graph.facebook.com/v2.10/${users[i].pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
               (err, respp) => {
                 if (err) {
                   logger.serverLog(TAG,
                   `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                 }
                 logger.serverLog(TAG, `resp in page token ${JSON.stringify(respp.body)}`)
-                tokens.push({id: user.pageId.pageId, key: respp.body.access_token})
+                tokens.push({id: users[i].pageId.pageId, key: respp.body.access_token})
                 needle.get(
-                  `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${respp.body.access_token}`,
+                  `https://graph.facebook.com/v2.10/${users[i].senderId}?access_token=${respp.body.access_token}`,
                   (err, resp) => {
                     if (err) {
                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                     }
                     logger.serverLog(TAG, `resp ${JSON.stringify(resp.body)}`)
-                    Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                    Subscribers.update({_id: users[i]._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                       if (err) {
                         logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
                       }
@@ -483,17 +482,17 @@ router.get('/updateSubcribersPicture', (req, res) => {
               })
             } else {
               let arr = tokens.find(() => {
-                return tokens.id === user.pageId.pageId
+                return tokens.id === users[i].pageId.pageId
               }).key
               logger.serverLog(TAG, `arr in else ${JSON.stringify(arr)}`)
               needle.get(
-                `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${arr}`,
+                `https://graph.facebook.com/v2.10/${users[i].senderId}?access_token=${arr}`,
                 (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
                   logger.serverLog(TAG, `resp ${JSON.stringify(resp.body)}`)
-                  Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                  Subscribers.update({_id: users[i]._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                     if (err) {
                       logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
                     }
@@ -501,7 +500,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
                 })
             }
           }
-        })
+        }
       })
     })
   })
