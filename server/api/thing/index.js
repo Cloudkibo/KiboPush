@@ -16,6 +16,7 @@ const SequenceMessages = require('./../sequenceMessaging/message.model')
 const Surveys = require('./../surveys/surveys.model')
 const Broadcasts = require('./../broadcasts/broadcasts.model')
 const PagePolls = require('./../page_poll/page_poll.model')
+const Bots = require('./../smart_replies/Bots.model')
 const PageSurveys = require('./../page_survey/page_survey.model')
 const PageBroadcasts = require('./../page_broadcast/page_broadcast.model')
 const mongoose = require('mongoose')
@@ -312,6 +313,35 @@ router.get('/updateSubcribersSource', (req, res) => {
       }
     })
     res.status(200).json({status: 'success', payload: []})
+  })
+})
+
+router.get('/updateBotCompanyId', (req, res) => {
+  Bots.find({}, (err, bots) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    if (bots) {
+      for (let i = 0, length = bots.length; i < length; i++) {
+        Pages.findOne({_id: bots[i].pageId}, (err, page) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          if (page) {
+            Bots.update({_id: bots[i]._id}, {$set: {companyId: page.companyId}}, (err, result) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+
+              if (result) {
+                res.status(200).json({status: 'success', payload: result})
+              }
+            })
+          }
+        })
+      }
+    }
   })
 })
 
