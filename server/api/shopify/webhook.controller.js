@@ -43,6 +43,13 @@ exports.handleCheckout = function (req, res) {
 }
 
 exports.handleOrder = function (req, res) {
-  logger.serverLog(TAG, `Order webhook called ${JSON.stringify(req.body)}`)
-  return res.status(200).json({status: 'success'})
+  logger.serverLog(TAG, `Order webhook called ${JSON.stringify(req.body.checkout_id)}`)
+  CheckoutInfo.remove({shopifyCheckoutId: req.body.checkout_id}).exec()
+  .then((result) => {
+    return res.status(200).json({status: 'success'})
+  })
+  .catch((err) => {
+    logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+    return res.status(500).json({ status: 'failed', error: err })
+  })
 }
