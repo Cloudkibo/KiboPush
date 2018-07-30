@@ -587,7 +587,7 @@ exports.getfbMessage = function (req, res) {
                     needle.get(options.url, options, (error, response) => {
                       logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
                       const subsriber = response.body
-                      if (!error) {
+                      if (!error && !response.error) {
                         if (event.sender && event.recipient && event.postback &&
                           event.postback.payload &&
                           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
@@ -703,7 +703,9 @@ exports.getfbMessage = function (req, res) {
                             }
                           })
                       } else {
-                        logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                        if (error) {
+                          logger.serverLog(TAG, `ERROR in fetching subscriber info ${JSON.stringify(error)}`)
+                        }
                       }
                     })
                   })

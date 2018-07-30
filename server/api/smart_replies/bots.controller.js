@@ -265,18 +265,34 @@ function trainBot (payload, token) {
 }
 
 exports.index = function (req, res) {
-  Bots
-    .find({
-      userId: req.user._id
-    }).populate('pageId').exec((err, bots) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Bots.find({companyId: companyUser.companyId})
+    .populate('pageId')
+    .exec((err, bots) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
+
       return res.status(200).json({ status: 'success', payload: bots })
     })
+  })
 }
 
 exports.create = function (req, res) {
@@ -316,6 +332,7 @@ exports.create = function (req, res) {
               pageId: req.body.pageId, // TODO ENUMS
               userId: req.user._id,
               botName: req.body.botName,
+              companyId: req.body.companyId,  // Must be send from client
               witAppId: witres.body.app_id,
               witToken: witres.body.access_token,
               witAppName: uniquebotName,
@@ -347,7 +364,7 @@ exports.edit = function (req, res) {
     if (err) {
       return logger.serverLog(TAG, 'Error Occured In editing the bot')
     }
-    console.log('affected rows %d', affected)
+    logger.serverLog(TAG, 'affected rows %d: ' + JSON.stringify(affected))
     Bots
     .find({
       _id: req.body.botId

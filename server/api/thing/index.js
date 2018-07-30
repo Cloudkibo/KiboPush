@@ -16,6 +16,7 @@ const SequenceMessages = require('./../sequenceMessaging/message.model')
 const Surveys = require('./../surveys/surveys.model')
 const Broadcasts = require('./../broadcasts/broadcasts.model')
 const PagePolls = require('./../page_poll/page_poll.model')
+const Bots = require('./../smart_replies/Bots.model')
 const PageSurveys = require('./../page_survey/page_survey.model')
 const PageBroadcasts = require('./../page_broadcast/page_broadcast.model')
 const mongoose = require('mongoose')
@@ -315,6 +316,35 @@ router.get('/updateSubcribersSource', (req, res) => {
   })
 })
 
+router.get('/updateBotCompanyId', (req, res) => {
+  Bots.find({}, (err, bots) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    if (bots) {
+      for (let i = 0, length = bots.length; i < length; i++) {
+        Pages.findOne({_id: bots[i].pageId}, (err, page) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+
+          if (page) {
+            Bots.update({_id: bots[i]._id}, {$set: {companyId: page.companyId}}, (err, result) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+
+              if (result) {
+                res.status(200).json({status: 'success', payload: result})
+              }
+            })
+          }
+        })
+      }
+    }
+  })
+})
+
 router.get('/updatePageNames', (req, res) => {
   Pages.find({}, (err, pages) => {
     if (err) {
@@ -412,6 +442,8 @@ router.get('/updatePicture', (req, res) => {
   res.status(200).json({status: 'success', payload: []})
 })
 router.get('/updateSubcribersPicture', (req, res) => {
+  let pages = []
+  let tokens = []
   CompanyUsers.find({}).populate('userId').exec((err, profiles) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -424,26 +456,50 @@ router.get('/updateSubcribersPicture', (req, res) => {
         }
         users.forEach(user => {
           if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
-            needle.get(
-            `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
-            (err, respp) => {
-              if (err) {
-                logger.serverLog(TAG,
-                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
-              }
+            if (pages.indexOf(user.pageId.pageId) !== -1) {
+              pages.push(user.pageId.pageId)
               needle.get(
-                `https://graph.facebook.com/v2.10/${user.senderId}?fields=picture&access_token=${respp.body.access_token}`,
+              `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
+              (err, respp) => {
+                if (err) {
+                  logger.serverLog(TAG,
+                  `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                }
+                logger.serverLog(TAG, `resp in page token ${JSON.stringify(respp.body)}`)
+                tokens.push({id: user.pageId.pageId, key: respp.body.access_token})
+                needle.get(
+                  `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${respp.body.access_token}`,
+                  (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                    logger.serverLog(TAG, `resp ${JSON.stringify(resp.body)}`)
+                    Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                      if (err) {
+                        logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                      }
+                    })
+                  })
+              })
+            } else {
+              let arr = tokens.find(() => {
+                return tokens.id === user.pageId.pageId
+              }).key
+              logger.serverLog(TAG, `arr in else ${JSON.stringify(arr)}`)
+              needle.get(
+                `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${arr}`,
                 (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
-                  Subscribers.update({_id: user._id}, {profilePic: resp.body.picture.data.url}, (err, updated) => {
+                  logger.serverLog(TAG, `resp ${JSON.stringify(resp.body)}`)
+                  Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                     if (err) {
                       logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
                     }
                   })
                 })
-            })
+            }
           }
         })
       })
