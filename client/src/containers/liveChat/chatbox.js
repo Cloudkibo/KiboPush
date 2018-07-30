@@ -423,7 +423,7 @@ class ChatBox extends React.Component {
       company_id: session.company_id, // this is admin id till we have companies
       payload: payload, // this where message content will go
       url_meta: this.state.urlmeta,
-      datetime: new Date(),
+      datetime: new Date().toString(),
       status: 'unseen', // seen or unseen
       replied_by: {
         type: 'agent',
