@@ -538,11 +538,13 @@ router.get('/updateSubcribersInfo', (req, res) => {
                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                     }
                     logger.serverLog(TAG, `resp in subscriber ${JSON.stringify(resp.body)}`)
-                    Subscribers.update({_id: subscriber._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
-                      if (err) {
-                        logger.serverLog(TAG, `Error in updating subscriber: ${JSON.stringify(err)}`)
-                      }
-                    })
+                    if (resp.body.first_name) {
+                      Subscribers.update({_id: subscriber._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                        if (err) {
+                          logger.serverLog(TAG, `Error in updating subscriber: ${JSON.stringify(err)}`)
+                        }
+                      })
+                    }
                   })
               })
             })
