@@ -7,6 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { addButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
@@ -84,32 +85,29 @@ class Button extends React.Component {
 
   handleDone () {
     if (this.state.url !== '') {
-      this.props.onAdd({
+      let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
         title: this.state.title // User defined label
-      })
+      }
+      this.props.addButton(data, this.props.onAdd)
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        this.props.onAdd({
-          type: 'postback',
+        let data = {
+          type: 'web_url',
           title: this.state.title, // User defined label
-          payload: JSON.stringify({
-            sequenceId: this.state.sequenceValue,
-            action: 'subscribe'
-          }),
-          sequenceValue: this.state.sequenceValue
-        })
+          sequenceId: this.state.sequenceValue,
+          action: 'subscribe'
+        }
+        this.props.addButton(data, this.props.onAdd)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        this.props.onAdd({
-          type: 'postback',
+        let data = {
+          type: 'web_url',
           title: this.state.title, // User defined label
-          payload: JSON.stringify({
-            sequenceId: this.state.sequenceValue,
-            action: 'unsubscribe'
-          }),
-          sequenceValue: this.state.sequenceValue
-        })
+          sequenceId: this.state.sequenceValue,
+          action: 'unsubscribe'
+        }
+        this.props.addButton(data, this.props.onAdd)
       }
     }
 
@@ -243,7 +241,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAllSequence: fetchAllSequence
+    fetchAllSequence: fetchAllSequence,
+    addButton: addButton
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Button)
