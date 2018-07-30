@@ -467,6 +467,12 @@ router.get('/updateSubcribersPicture', (req, res) => {
                   if (err) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
+                  logger.serverLog(TAG, `resp.body.firstName ${resp.body.first_name}`)
+                  logger.serverLog(TAG, `resp.body.last_name ${resp.body.last_name}`)
+                  logger.serverLog(TAG, `resp.body.profile_pic' ${resp.body.profile_pic}`)
+                  logger.serverLog(TAG, `resp.body.locale ${resp.body.locale}`)
+                  logger.serverLog(TAG, `resp.body.timezone ${resp.body.timezone}`)
+                  logger.serverLog(TAG, `resp.body.gender ${resp.body.gender}`)
                   Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                     if (err) {
                       logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
