@@ -3,6 +3,9 @@ import Text from '../convo/Text'
 import Image from '../convo/Image'
 import Audio from '../convo/Audio'
 import Video from '../convo/Video'
+import File from '../convo/File'
+import List from '../convo/List'
+import Media from '../convo/Media'
 export function transformData (data) {
   data = JSON.parse(JSON.stringify(data))
   data.map((item) => {
@@ -146,4 +149,24 @@ export function onVideoClick (timeStamp, refObj) {
   refObj.handleFile({id: timeStamp, componentType: 'video', fileurl: ''})
 }
 
-
+export function onFileClick (timeStamp, refObj) {
+  console.log('in File component')
+  let temp = refObj.state.list
+  refObj.msg.info('New File Component Added')
+  refObj.setState({list: [...temp, {content: (<File id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleFile({id: timeStamp, componentType: 'file', fileurl: ''})
+}
+export function onListClick (timeStamp, refObj) {
+  console.log('in List Component')
+  let temp = refObj.state.list
+  refObj.msg.info('New List Component Added')
+  refObj.setState({list: [...temp, {content: (<List id={timeStamp} key={timeStamp} handleList={refObj.handleList} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'})
+}
+export function onMediaClick (timeStamp, refObj) {
+  console.log('in Media component')
+  let temp = refObj.state.list
+  refObj.msg.info('New Media Component Added')
+  refObj.setState({list: [...temp, {content: (<Media id={timeStamp} key={timeStamp} handleMedia={refObj.handleMedia} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []})
+}

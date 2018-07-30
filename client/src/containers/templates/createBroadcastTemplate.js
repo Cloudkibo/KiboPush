@@ -21,7 +21,7 @@ import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
-import {onClickText, onImageClick, onAudioClick, onVideoClick} from '../menu/utility'
+import {onClickText, onImageClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick} from '../menu/utility'
 
 class CreateBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -482,7 +482,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                             </div>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
                                 <div className='align-center'>
                                   <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                                   <h6>File</h6>
@@ -490,7 +490,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                             </div>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={timeStamp} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />)}]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
                                 <div className='align-center'>
                                   <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
                                   <h6>List</h6>
@@ -500,7 +500,7 @@ class CreateBroadcastTemplate extends React.Component {
                           </div>
                           <div className='row'>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, {content: (<Media id={timeStamp} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
                                 <div className='align-center'>
                                   <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                   <h6>Media</h6>
