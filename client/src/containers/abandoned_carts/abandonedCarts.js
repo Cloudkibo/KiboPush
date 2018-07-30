@@ -26,7 +26,7 @@ class AbandonedCarts extends React.Component {
       </div>
     }
     if (this.props.storeList && this.props.storeList.length > 0) {
-      return <AbandonedList />
+      return <AbandonedList storeList={this.props.storeList} />
     } else {
       return <InstallApp />
     }

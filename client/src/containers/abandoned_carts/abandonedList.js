@@ -14,23 +14,28 @@ class AbandonedList extends React.Component {
     super(props, context)
     this.props.getAbandonedCarts()
     this.state = {
-      showDropDown: false
+      showDropDown: false,
+      isActive: null,
+      store: null
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
-    this.showDropDown = this.showDropDown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
   }
 
   handlePageClick () {
     console.log('Need to handle the page click logic here')
   }
 
+  componentWillReceiveProps (nextProps) {
+    this.setState({isActive: nextProps.storeList[0].isActive, store: nextProps.storeList[0]})
+  }
+
   handleStatusChange () {
     // I am putting 0 because dayem said only one store will be existing for right now
-    let shopId = this.props.storeList[0]._id
-    let statusValue = this.props.storeList[0].isActive
-    this.props.updateStoreStatus({shopId: shopId, isActive: statusValue}, this.msg)
+    this.setState({isActive: !this.state.isActive})
+    let shopId = this.state.store._id
+    let statusValue = this.state.isActive
+    this.props.updateStoreStatus({shopId: shopId, isActive: !statusValue}, this.msg)
   }
 
   render () {
@@ -80,7 +85,7 @@ class AbandonedList extends React.Component {
                           <i className='la la-info' />
                           <span>
                             {
-                              this.props.storeList[0].isActive ? 'Active' : 'Not Active'
+                              this.state.isActive ? 'Active' : 'Not Active'
                             }
                           </span>
                         </span>
@@ -158,8 +163,7 @@ class AbandonedList extends React.Component {
 function mapStateToProps (state) {
   console.log('state', state)
   return {
-    abandonedList: (state.abandonedInfo.abandonedList),
-    storeList: (state.abandonedInfo.storeList)
+    abandonedList: (state.abandonedInfo.abandonedList)
   }
 }
 
