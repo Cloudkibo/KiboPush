@@ -334,10 +334,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                             <div>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                              {
-                                this.state.greetingMessage.length > 0 &&
-                                <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                              }
+                              <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
                             </div>
                           </div>
                         </div>
