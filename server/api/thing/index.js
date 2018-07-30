@@ -270,8 +270,8 @@ router.get('/updateTriggerSequenceSchema', (req, res) => {
   })
 })
 
-router.get('/updateSegmentationSequenceSchema', (req, res) => {
-  Sequences.update({}, {$set: {segmentation: []}}, {multi: true}, (err, result) => {
+router.get('/updateSegmentationMessageSchema', (req, res) => {
+  SequenceMessages.update({}, {$set: {segmentation: [], segmentationCondition: 'or'}}, {multi: true}, (err, result) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     } else {

@@ -165,10 +165,10 @@ SequenceMessagesQueue.find({}, (err, data) => {
                         })
 
                         // Below work is to check segmentation
-                        if (sequence.segmentation.length > 0) {
-                          let tempSegmentCondition = sequence.segmentationCondition
+                        if (sequenceMessage.segmentation.length > 0) {
+                          let tempSegmentCondition = sequenceMessage.segmentationCondition
                           let tempFlag = 0
-                          let tempSegment = sequence.segmentation
+                          let tempSegment = sequenceMessage.segmentation
                           // Attaching true whenever a condition is satisfied
                           tempSegment.forEach((elem) => {
                             if (elem.condition === 'first_name') {
