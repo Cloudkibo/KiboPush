@@ -432,12 +432,12 @@ router.get('/updateSubcribersPicture', (req, res) => {
                 `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
               needle.get(
-                `https://graph.facebook.com/v2.10/${user.senderId}?fields=picture&access_token=${respp.body.access_token}`,
+                `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${respp.body.access_token}`,
                 (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
-                  Subscribers.update({_id: user._id}, {profilePic: resp.body.picture.data.url}, (err, updated) => {
+                  Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                     if (err) {
                       logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
                     }
