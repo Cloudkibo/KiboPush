@@ -461,6 +461,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
                 logger.serverLog(TAG,
                 `Page accesstoken from graph api Error${JSON.stringify(err)}`)
               }
+              logger.serverLog(TAG, `resp in page token ${respp.body}`)
               needle.get(
                 `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${respp.body.access_token}`,
                 (err, resp) => {
