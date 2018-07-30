@@ -35,4 +35,7 @@ router.post('/saveCheckoutInfo',
   validate({body: validationSchema.checkoutInfoSchema}),
   controller.saveCheckoutInfo)
 
+router.post('/updateStatusStore',
+  controller.updateStatusStore)
+
 module.exports = router
