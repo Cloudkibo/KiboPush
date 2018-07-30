@@ -1,3 +1,8 @@
+import React from 'react'
+import Text from '../convo/Text'
+import Image from '../convo/Image'
+import Audio from '../convo/Audio'
+import Video from '../convo/Video'
 export function transformData (data) {
   data = JSON.parse(JSON.stringify(data))
   data.map((item) => {
@@ -109,3 +114,36 @@ export function removeMenuPayload () {
   JSONstringify(payload)
   return payload
 }
+
+export function onClickText (timeStamp, refObj) {
+  console.log('in custom onClickTextComponnet')
+  let temp = refObj.state.list
+  refObj.msg.info('New Text Component Added')
+  refObj.setState({ list: [...temp, { content: (<Text id={timeStamp} key={timeStamp} handleText={refObj.handleText} onRemove={refObj.removeComponent} removeState />) }] })
+  refObj.handleText({ id: timeStamp, text: '', button: [] })
+}
+
+export function onImageClick (timeStamp, refObj) {
+  console.log('in custome onImageClick Component')
+  let temp = refObj.state.list
+  refObj.msg.info('New Image Component Added')
+  refObj.setState({list: [...temp, {content: (<Image id={timeStamp} key={timeStamp} handleImage={refObj.handleImage} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''})
+}
+
+export function onAudioClick (timeStamp, refObj) {
+  console.log('in Audio Click Function')
+  let temp = refObj.state.list
+  refObj.msg.info('New Audio Component Added')
+  refObj.setState({list: [...temp, {content: (<Audio id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''})
+}
+export function onVideoClick (timeStamp, refObj) {
+  console.log('in Video Click Function')
+  let temp = refObj.state.list
+  refObj.msg.info('New Video Component Added')
+  refObj.setState({list: [...temp, {content: (<Video id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleFile({id: timeStamp, componentType: 'video', fileurl: ''})
+}
+
+
