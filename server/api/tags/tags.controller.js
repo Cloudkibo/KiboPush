@@ -11,6 +11,8 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Subscribers = require('./../subscribers/Subscribers.model')
 const _ = require('lodash')
 const CompanyUsage = require('./../featureUsage/companyUsage.model')
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
@@ -48,52 +50,81 @@ exports.create = function (req, res) {
     return res.status(400)
       .json({status: 'failed', description: 'Parameters are missing'})
   }
-
-  CompanyUsers.findOne({domain_email: req.user.domain_email},
-    (err, companyUser) => {
+  CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      let tagPayload = new Tags({
-        tag: req.body.tag,
-        userId: req.user._id,
-        companyId: companyUser.companyId
-      })
-      tagPayload.save((err, newTag) => {
+      CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        CompanyUsage.update({companyId: companyUser.companyId},
-          { $inc: { labels: 1 } }, (err, updated) => {
-            if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-            }
+        if (planUsage.labels !== -1 && companyUsage.labels >= planUsage.labels) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Your tags limit has reached. Please upgrade your plan to premium in order to create more tags.`
           })
-        require('./../../config/socketio').sendMessageToClient({
-          room_id: companyUser.companyId,
-          body: {
-            action: 'new_tag',
-            payload: {
-              tag_id: newTag._id,
-              tag_name: newTag.tag
+        }
+        CompanyUsers.findOne({domain_email: req.user.domain_email},
+          (err, companyUser) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
             }
-          }
-        })
-        res.status(201).json({status: 'success', payload: newTag})
+            if (!companyUser) {
+              return res.status(404).json({
+                status: 'failed',
+                description: 'The user account does not belong to any company. Please contact support'
+              })
+            }
+            let tagPayload = new Tags({
+              tag: req.body.tag,
+              userId: req.user._id,
+              companyId: companyUser.companyId
+            })
+            tagPayload.save((err, newTag) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { labels: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: companyUser.companyId,
+                body: {
+                  action: 'new_tag',
+                  payload: {
+                    tag_id: newTag._id,
+                    tag_name: newTag.tag
+                  }
+                }
+              })
+              res.status(201).json({status: 'success', payload: newTag})
+            })
+          })
       })
     })
+  })
 }
 
 exports.rename = function (req, res) {

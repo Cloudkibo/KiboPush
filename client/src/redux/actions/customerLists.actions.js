@@ -134,7 +134,7 @@ export function createSubList (list, msg, handleCreateSubList) {
           msg.success('List created successfully')
         } else {
           if (res.status === 'failed' && res.description) {
-            msg.error(`Unable to save list. ${res.description}`)
+            msg.error(res.description)
           } else {
             msg.error('Unable to save list')
           }

@@ -24,7 +24,12 @@ export function showCategories (data) {
     data
   }
 }
-
+export function showWarning (data, msg) {
+  return {
+    type: ActionTypes.TEMPLATES_WARNING,
+    data
+  }
+}
 export function showSurveys (data) {
   data = data.reverse()
   return {
@@ -105,11 +110,6 @@ export function saveBroadcastInformation (broadcast) {
 }
 
 export function addConvoTemplate (data, msg) {
-  if (data.status === 'success') {
-    msg.success('Broadcast created successfully')
-  } else {
-    msg.error('Broadcast creation failed.')
-  }
   return {
     type: ActionTypes.ADD_TEMPLATE_BROADCAST,
     data
@@ -123,6 +123,8 @@ export function createsurvey (survey) {
         console.log('response from create survey', res)
         if (res.status === 'success') {
           dispatch(addSurvey(res))
+        } else {
+          dispatch(showWarning(res.description))
         }
       })
   }
@@ -131,7 +133,13 @@ export function createsurvey (survey) {
 export function createpoll (poll) {
   return (dispatch) => {
     callApi('templates/createPoll', 'post', poll)
-      .then(res => dispatch(addPoll(res)))
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(addPoll(res))
+        } else {
+          dispatch(showWarning(res.description))
+        }
+      })
   }
 }
 
@@ -315,7 +323,15 @@ export function loadBroadcastsListNew (data) {
 export function createBroadcast (broadcast, msg) {
   return (dispatch) => {
     callApi('templates/createBroadcast', 'post', broadcast)
-      .then(res => dispatch(addConvoTemplate(res, msg)))
+      .then(res => {
+        console.log('response for createBroadcast', res)
+        if (res.status === 'success') {
+          msg.success('Broadcast created successfully')
+          dispatch(addConvoTemplate(res, msg))
+        } else {
+          msg.error(res.description)
+        }
+      })
   }
 }
 

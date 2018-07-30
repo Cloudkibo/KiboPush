@@ -18,7 +18,8 @@ const Sessions = require('./../sessions/sessions.model')
 const _ = require('lodash')
 const mongoose = require('mongoose')
 const CompanyUsage = require('./../featureUsage/companyUsage.model')
-
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 function transformPayload (payload) {
   var transformed = []
   for (var i = 0; i < payload.length; i++) {
@@ -246,70 +247,100 @@ exports.create = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-  var uniquebotName = req.body.botName + req.user._id + Date.now()
-  request(
-    {
-      'method': 'POST',
-      'uri': 'https://api.wit.ai/apps?v=20170307',
-      headers: {
-        'Authorization': 'Bearer ' + WIT_AI_TOKEN,
-        'Content-Type': 'application/json'
-      },
-      body: {
-        'name': uniquebotName,
-        'lang': 'en',
-        'private': 'false'
-      },
-      json: true
-    },
-      (err, witres) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
         if (err) {
-          return logger.serverLog(TAG,
-            'Error Occured In Creating WIT.AI app')
-          // return res.status(500).json({status: 'failed', payload: {error: err}})
-        } else {
-          if (witres.statusCode !== 200) {
-            logger.serverLog(TAG,
-              `Error occurred in creating Wit ai app ${JSON.stringify(
-                witres.body.errors)}`)
-            return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
-          } else {
-            logger.serverLog(TAG,
-              'Wit.ai app created successfully', witres.body)
-
-            const bot = new Bots({
-              pageId: req.body.pageId, // TODO ENUMS
-              userId: req.user._id,
-              botName: req.body.botName,
-              witAppId: witres.body.app_id,
-              witToken: witres.body.access_token,
-              witAppName: uniquebotName,
-              isActive: req.body.isActive,
-              hitCount: 0,
-              missCount: 0
-            })
-
-            bot.save((err, newbot) => {
-              if (err) {
-                res.status(500).json({
-                  status: 'Failed',
-                  error: err,
-                  description: 'Failed to insert record'
-                })
-              } else {
-                CompanyUsage.update({companyId: companyUser.companyId},
-                  { $inc: { bots: 1 } }, (err, updated) => {
-                    if (err) {
-                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                    }
-                  })
-                return res.status(200).json({status: 'success', payload: newbot})
-              }
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-        }
+          if (planUsage.bots !== -1 && companyUsage.bots >= planUsage.bots) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your bots limit has reached. Please upgrade your plan to premium in order to create more bots.`
+            })
+          }
+          var uniquebotName = req.body.botName + req.user._id + Date.now()
+          request(
+            {
+              'method': 'POST',
+              'uri': 'https://api.wit.ai/apps?v=20170307',
+              headers: {
+                'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+                'Content-Type': 'application/json'
+              },
+              body: {
+                'name': uniquebotName,
+                'lang': 'en',
+                'private': 'false'
+              },
+              json: true
+            },
+              (err, witres) => {
+                if (err) {
+                  return logger.serverLog(TAG,
+                    'Error Occured In Creating WIT.AI app')
+                  // return res.status(500).json({status: 'failed', payload: {error: err}})
+                } else {
+                  if (witres.statusCode !== 200) {
+                    logger.serverLog(TAG,
+                      `Error occurred in creating Wit ai app ${JSON.stringify(
+                        witres.body.errors)}`)
+                    return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
+                  } else {
+                    logger.serverLog(TAG,
+                      'Wit.ai app created successfully', witres.body)
+
+                    const bot = new Bots({
+                      pageId: req.body.pageId, // TODO ENUMS
+                      userId: req.user._id,
+                      botName: req.body.botName,
+                      witAppId: witres.body.app_id,
+                      witToken: witres.body.access_token,
+                      witAppName: uniquebotName,
+                      isActive: req.body.isActive,
+                      hitCount: 0,
+                      missCount: 0
+                    })
+
+                    bot.save((err, newbot) => {
+                      if (err) {
+                        res.status(500).json({
+                          status: 'Failed',
+                          error: err,
+                          description: 'Failed to insert record'
+                        })
+                      } else {
+                        CompanyUsage.update({companyId: companyUser.companyId},
+                          { $inc: { bots: 1 } }, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
+                        return res.status(200).json({status: 'success', payload: newbot})
+                      }
+                    })
+                  }
+                }
+              })
+        })
       })
     })
+  })
 }
 
 exports.edit = function (req, res) {

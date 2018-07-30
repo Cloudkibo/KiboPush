@@ -130,7 +130,7 @@ class Features extends React.Component {
       data[this.state.permissionCheckboxes[i].nick] = this.state.permissionCheckboxes[i].selected
     }
     data['plan_id'] = this.state.openTab
-    console.log('data', data)
+    console.log('data for features', data)
     this.props.updateFeatures(this.state.openTab, {features: data}, this.msg)
   }
   showPermissions () {

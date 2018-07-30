@@ -24,7 +24,12 @@ export function showSurveys (data) {
     data: appendSentSeenResponsesData(data)
   }
 }
-
+export function showWarning (data) {
+  return {
+    type: ActionTypes.SURVEYS_WARNING,
+    data: data
+  }
+}
 export function showSurveysNew (data) {
   return {
     type: ActionTypes.LOAD_SURVEYS_LIST_NEW,
@@ -100,7 +105,7 @@ export function sendsurvey (survey, msg) {
           msg.success('Survey sent successfully')
           dispatch(sendSurveySuccess())
         } else {
-          msg.error('Survey not send')
+          msg.error(res.description)
           dispatch(sendSurveyFailure())
         }
       })
@@ -114,7 +119,7 @@ export function sendSurveyDirectly (survey, msg) {
         if (res.status === 'success') {
           msg.success('Survey sent successfully')
         } else {
-          msg.error('Survey not sent!')
+          dispatch(showWarning(res.description))
         }
       })
   }
@@ -136,7 +141,11 @@ export function createsurvey (survey) {
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
       .then(res => {
-        dispatch(addSurvey(res.payload))
+        if (res.status === 'success') {
+          dispatch(addSurvey(res.payload))
+        } else {
+          dispatch(showWarning(res.description))
+        }
       })
   }
 }
