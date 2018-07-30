@@ -531,7 +531,7 @@ class CreateMessage extends React.Component {
             </div>
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
               <div style={{padding: '25px'}} className='row' />
-              <StickyDiv offsetTop={70} zIndex={1}>
+              <StickyDiv zIndex={1}>
                 <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                   <div style={{padding: '5px'}}>
                     <h3>Message</h3>
