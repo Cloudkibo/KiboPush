@@ -457,6 +457,7 @@ router.get('/updateSubcribersPicture', (req, res) => {
         users.forEach(user => {
           if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
             if (pages.indexOf(user.pageId.pageId) === -1) {
+              pages.push(user.pageId.pageId)
               needle.get(
               `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
               (err, respp) => {
