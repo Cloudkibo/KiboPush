@@ -35,7 +35,7 @@ import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/a
 import { Link } from 'react-router'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
-import { onClickText, onImageClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick } from '../menu/utility'
+import { onClickText, onImageClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick, onCardClick, onGalleryClick } from '../menu/utility'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class EditTemplate extends React.Component {
@@ -683,7 +683,7 @@ class EditTemplate extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={timeStamp} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
                                     <div className='align-center'>
                                       <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
@@ -691,7 +691,7 @@ class EditTemplate extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={timeStamp} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
                                     <div className='align-center'>
                                       <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                       <h6>Gallery</h6>
