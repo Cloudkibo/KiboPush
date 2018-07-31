@@ -200,6 +200,30 @@ export function uploadRequest (data) {
   }
 }
 
+export function addButton (data, handleFunction) {
+  return (dispatch) => {
+    callApi(`broadcasts/addButton`, 'post', data).then(res => {
+      if (res.status === 'success') {
+        handleFunction(res.payload)
+      } else {
+        console.log(res.description)
+      }
+    })
+  }
+}
+
+export function editButton (data, handleFunction) {
+  return (dispatch) => {
+    callApi(`broadcasts/editButton`, 'post', data).then(res => {
+      if (res.status === 'success') {
+        handleFunction(res.payload)
+      } else {
+        console.log(res.description)
+      }
+    })
+  }
+}
+
 export function sendBroadcast (data, msg, handleSendBroadcast) {
   return (dispatch) => {
     callApi('broadcasts/sendConversation', 'post', data)
