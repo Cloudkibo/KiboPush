@@ -81,7 +81,8 @@ class ChatBox extends React.Component {
       disabledValue: false,
       record: false,
       buttonState: 'start',
-      recording: false
+      recording: false,
+      newMessage: false
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -226,7 +227,7 @@ class ChatBox extends React.Component {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     } else {
       this.scrollToTop()
-      setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1]._id, {delay: 300, containerId: 'chat-container'}), 3000)
+      setTimeout(scroller.scrollTo(this.props.userChat[this.props.userChat.length - 1].datetime, {delay: 300, containerId: 'chat-container'}), 3000)
       this.props.disableScroll()
     }
   }
@@ -276,7 +277,7 @@ class ChatBox extends React.Component {
   onStop (recordedBlob) {
     this.closeDialogRecording()
     console.log('recordedBlob is: ', recordedBlob)
-    var file = new File([recordedBlob.blob], 'audio.mp3', {type: 'audio/mp3', lastModified: Date.now()})
+    var file = new File([recordedBlob.blob.slice(0)], 'audio.mp3', {type: 'audio/mp3', lastModified: Date.now()})
     console.log('files', file)
     if (file) {
       this.resetFileComponent()
@@ -422,7 +423,7 @@ class ChatBox extends React.Component {
       company_id: session.company_id, // this is admin id till we have companies
       payload: payload, // this where message content will go
       url_meta: this.state.urlmeta,
-      datetime: new Date(),
+      datetime: new Date().toString(),
       status: 'unseen', // seen or unseen
       replied_by: {
         type: 'agent',
@@ -503,6 +504,7 @@ class ChatBox extends React.Component {
           data.format = 'convos'
           this.props.userChat.push(data)
         }
+        this.setState({newMessage: true})
       }
     }
   }
@@ -621,6 +623,10 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
+    if (this.state.newMessage) {
+      this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      this.setState({newMsg: false})
+    }
     this.updateScrollTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {
       this.props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -1006,7 +1012,7 @@ class ChatBox extends React.Component {
                             this.props.userChat.map((msg, index) => (
                               msg.format === 'facebook'
                               ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg._id}>
+                                <Element name={msg.datetime}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
@@ -1167,7 +1173,7 @@ class ChatBox extends React.Component {
                                 </Element>
                               </div>
                               : <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
-                                <Element name={msg._id}>
+                                <Element name={msg.datetime}>
                                   {
                                     index === 0
                                     ? <div className='m-messenger__datetime'>
