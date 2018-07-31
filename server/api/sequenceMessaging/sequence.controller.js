@@ -729,6 +729,7 @@ exports.subscribeToSequence = function (req, res) {
 
         messages.forEach(message => {
           if (message.schedule.condition === 'immediately') {
+            message.isActive = true
             if (message.isActive === true) {
               Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                 if (err) {
@@ -863,12 +864,21 @@ exports.unsubscribeToSequence = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-
         SequenceMessageQueue.remove({sequenceId: req.body.sequenceId, subscriberId: subscriberId}, (err, result) => {
           if (err) {
             return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-
+          Subscribers.findOne({ _id: subscriberId }, (err, subscriber) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Error occurred in finding subscriber ${JSON.stringify(
+                  err)}`)
+            }
+            if (subscriber) {
+              logger.serverLog(TAG, `Unsubscribes ${JSON.stringify(subscriber)}`)
+              setSequenceTrigger(subscriber.companyId, subscriber._id, {event: 'unsubscribes_from_other_sequence', value: req.body.sequenceId})
+            }
+          })
           if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
             require('./../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
@@ -1190,7 +1200,7 @@ const sendSequence = (batchMessages, page) => {
   form.append('batch', batchMessages)
 }
 
-exports.setSequenceTrigger = function setSequenceTrigger (companyId, subscriberId, trigger) {
+const setSequenceTrigger = function (companyId, subscriberId, trigger) {
   Sequences.find({companyId: companyId},
   (err, sequences) => {
     if (err) {
@@ -1227,7 +1237,6 @@ exports.setSequenceTrigger = function setSequenceTrigger (companyId, subscriberI
                                 datetime: new Date(),
                                 seen: false
                               })
-
                               sequenceSubMessage.save((err2, result) => {
                                 if (err2) {
                                   return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -1299,3 +1308,4 @@ exports.setSequenceTrigger = function setSequenceTrigger (companyId, subscriberI
     }
   })
 }
+exports.setSequenceTrigger = setSequenceTrigger

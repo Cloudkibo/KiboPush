@@ -1678,116 +1678,118 @@ function updateseenstatus (req) {
                      SequenceSubscribers.find({subscriberId: subscriber._id}, (err, seqsubs) => {
                        if (err) {
                          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                       } else if (seqsubs) {
+                       }
+
+                       if (seqsubs) {
                          // Iterating for each sequence
                          seqsubs.forEach((seqSub) => {
                            // finding messages of all sequences one by one
                            SequenceMessages.find({sequenceId: seqSub.seqeunceId}, (err, sequenceMessages) => {
                              if (err) {
                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                             } else {
-                              // Inserting message ids against a specific subscriber and sequence
-                               for (let i = 0, length = sequenceMessages.length; i < length; i++) {
-                                 smIds[i] = sequenceMessages[i]._id
+                             }
+                             // Inserting message ids against a specific subscriber and sequence
+                             for (let i = 0, length = sequenceMessages.length; i < length; i++) {
+                               smIds[i] = sequenceMessages[i]._id
+                             }
+                             // Finding all seen messages of that sequence
+                             SequenceSubscriberMessages.find({subscriberId: subscriber._id, seen: true, messageId: {$in: smIds}}, (err, seqsubmessages) => {
+                               if (err) {
+                                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                }
-                              // Finding all seen messages of that sequence
-                               SequenceSubscriberMessages.find({subscriberId: subscriber._id, seen: true, messageId: {$in: smIds}}, (err, seqsubmessages) => {
-                                 if (err) {
-                                   logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                 } else if (sequenceMessages.length === seqsubmessages.length) {
-                                  // It means that all of the messages of sequence have been seen
-                                  // Now we need to see if this sequence is added in trigger of any other sequences
-                                   Sequences.find({'trigger.event': 'seen_all_sequence_messages', 'trigger.value': seqSub.seqeunceId}, (err, sequencesToBeSubscribed) => {
-                                     if (err) {
-                                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                     } else {
-                                       // Iterating over sequences which subscriber needs to be subscribed
-                                       sequencesToBeSubscribed.forEach((seqTosub) => {
-                                       // Find messages of sequences and add to sequence Queue
-                                         SequenceMessages.find({sequenceId: seqTosub._id}, (err, msgs) => {
-                                           if (err) {
-                                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                           } else {
-                                        // Check and send immediately messages, add remaining to sequence queue
-                                             msgs.forEach(message => {
-                                               if (message.schedule.condition === 'immediately') {
-                                                 if (message.isActive === true) {
-                                                   Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
-                                                     if (err) {
-                                                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                                     } else {
-                                                       if (message.payload.length > 0) {
-                                                         AppendURLCount(message, (newPayload) => {
-                                                           let sequenceSubMessage = new SequenceSubscriberMessages({
-                                                             subscriberId: subscriber._id,
-                                                             messageId: message._id,
-                                                             companyId: subscriber.companyId,
-                                                             datetime: new Date(),
-                                                             seen: false
-                                                           })
-                                                           sequenceSubMessage.save((err2, result) => {
-                                                             if (err2) {
-                                                               logger.serverLog(TAG, {
-                                                                 status: 'failed',
-                                                                 description: 'Sequence Message Subscriber addition create failed',
-                                                                 err2
-                                                               })
-                                                             }
-                                                             logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
-                                                             SequenceMessages.update(
-                                                               {_id: message._id},
-                                                               {$inc: {sent: 1}},
-                                                               {multi: true}, (err, updated) => {
-                                                                 if (err) {
-                                                                   logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                                                 }
-                                                               })
-                                                             utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
-                                                           })
-                                                         })
-                                                       }
-                                                     }
-                                                   })
-                                                 }
-                                               } else {
-                                                    // Scheduled time will start now, instead of message creation time
-                                                 let d1 = new Date()
-                                                 if (message.schedule.condition === 'hours') {
-                                                   d1.setHours(d1.getHours() + Number(message.schedule.days))
-                                                 } else if (message.schedule.condition === 'minutes') {
-                                                   d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-                                                 } else if (message.schedule.condition === 'day(s)') {
-                                                   d1.setDate(d1.getDate() + Number(message.schedule.days))
-                                                 }
-                                                 let utcDate = new Date(d1)
-                                                 let sequenceQueuePayload = {
-                                                   sequenceId: req.body.sequenceId,
-                                                   subscriberId: subscriber._id,
-                                                   companyId: subscriber.companyId,
-                                                   sequenceMessageId: message._id,
-                                                   queueScheduledTime: utcDate,
-                                                   isActive: message.isActive
-                                                 }
+                               // Checking if all the message of sequence have been seen
+                               if (sequenceMessages.length === seqsubmessages.length) {
+                                 // It means that all of the messages of sequence have been seen
+                                 // Now we need to see if this sequence is added in trigger of any other sequences
+                                 Sequences.find({'trigger.event': 'seen_all_sequence_messages', 'trigger.value': seqSub.seqeunceId}, (err, sequencesToBeSubscribed) => {
+                                   if (err) {
+                                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                   }
+                                   // Iterating over sequences which subscriber needs to be subscribed
+                                   sequencesToBeSubscribed.forEach((seqTosub) => {
+                                     // Find messages of sequences and add to sequence Queue
+                                     SequenceMessages.find({sequenceId: seqTosub._id}, (err, msgs) => {
+                                       if (err) {
+                                         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                       }
+                                       // Check and send immediately messages, add remaining to sequence queue
+                                       msgs.forEach(message => {
+                                         if (message.schedule.condition === 'immediately') {
+                                           if (message.isActive === true) {
+                                             Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                                               if (err) {
+                                                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                               }
 
-                                                 const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
-                                                 sequenceMessageForQueue.save((err, messageQueueCreated) => {
-                                                   if (err) {
-                                                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                                   }
-                                                 }) //  save ends here
-                                               }  // else ends here
-                                             })  // Messages Foreach ends here
-                                           } // else of error
-                                         }) // Sequence Messages find ends here
-                                       }) // SequenceToSubscribed For Each ends here
-                                     }  // else of error
-                                   })   // Sequences containing the trigger value
-                                 }
-                               })  // seqsubmessages find ends here
-                             } // else of error
+                                               if (message.payload.length > 0) {
+                                                 AppendURLCount(message, (newPayload) => {
+                                                   let sequenceSubMessage = new SequenceSubscriberMessages({
+                                                     subscriberId: subscriber._id,
+                                                     messageId: message._id,
+                                                     companyId: subscriber.companyId,
+                                                     datetime: new Date(),
+                                                     seen: false
+                                                   })
+
+                                                   sequenceSubMessage.save((err2, result) => {
+                                                     if (err2) {
+                                                       logger.serverLog(TAG, {
+                                                         status: 'failed',
+                                                         description: 'Sequence Message Subscriber addition create failed',
+                                                         err2
+                                                       })
+                                                     }
+                                                     logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                                                     SequenceMessages.update(
+                                                       {_id: message._id},
+                                                       {$inc: {sent: 1}},
+                                                       {multi: true}, (err, updated) => {
+                                                         if (err) {
+                                                           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                                         }
+                                                       })
+                                                     utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                                                   })
+                                                 })
+                                               }
+                                             })
+                                           }
+                                         } else {
+                                           // Scheduled time will start now, instead of message creation time
+                                           let d1 = new Date()
+                                           if (message.schedule.condition === 'hours') {
+                                             d1.setHours(d1.getHours() + Number(message.schedule.days))
+                                           } else if (message.schedule.condition === 'minutes') {
+                                             d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+                                           } else if (message.schedule.condition === 'day(s)') {
+                                             d1.setDate(d1.getDate() + Number(message.schedule.days))
+                                           }
+                                           let utcDate = new Date(d1)
+                                           let sequenceQueuePayload = {
+                                             sequenceId: req.body.sequenceId,
+                                             subscriberId: subscriber._id,
+                                             companyId: subscriber.companyId,
+                                             sequenceMessageId: message._id,
+                                             queueScheduledTime: utcDate,
+                                             isActive: message.isActive
+                                           }
+
+                                           const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+                                           sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                                             if (err) {
+                                               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                             }
+                                           }) //  save ends here
+                                         }  // else ends here
+                                       })  // Messages Foreach ends here
+                                     }) // Sequence Messages find ends here
+                                   }) // SequenceToSubscribed For Each ends here
+                                 })   // Sequences containing the trigger value
+                               }
+                             })  // seqsubmessages find ends here
                            })   // sequence messages find ends here
                          })   // seqsubs Foreach ends here
-                       } // else of error
+                       }
                      })   // Sequence Subscriber find ends here
                    }
                  })  // Sequence Message Update ends here
@@ -1796,114 +1798,6 @@ function updateseenstatus (req) {
         })
     }
   })
-}
-
-const AppendURLCount = function (sequenceMessage, callback) {
-  logger.serverLog(TAG, `Append URL count${JSON.stringify(sequenceMessage)}`)
-  if (sequenceMessage.payload.length > 0) {
-    let newPayload = sequenceMessage.payload
-    sequenceMessage.payload.forEach((payloadItem, pindex) => {
-      if (payloadItem.buttons) {
-        payloadItem.buttons.forEach((button, bindex) => {
-          if (!(button.type === 'postback')) {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: sequenceMessage._id,
-                type: 'sequence'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-              newPayload[pindex].buttons[bindex].url = newURL
-            })
-          }
-        })
-      }
-      if (payloadItem.componentType === 'media' && payloadItem.buttons) {
-        payloadItem.buttons.forEach((button, bindex) => {
-          let URLObject = new URL({
-            originalURL: button.url,
-            module: {
-              id: sequenceMessage._id,
-              type: 'sequence'
-            }
-          })
-          URLObject.save((err, savedurl) => {
-            if (err) logger.serverLog(TAG, err)
-            let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-            newPayload[pindex].buttons[bindex].url = newURL
-          })
-        })
-      }
-      if (payloadItem.componentType === 'gallery') {
-        payloadItem.cards.forEach((card, cindex) => {
-          card.buttons.forEach((button, bindex) => {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: sequenceMessage._id,
-                type: 'sequence'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-              newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
-            })
-          })
-        })
-      }
-      if (payloadItem.componentType === 'list') {
-        payloadItem.listItems.forEach((element, lindex) => {
-          if (element.buttons && element.buttons.length > 0) {
-            element.buttons.forEach((button, bindex) => {
-              let URLObject = new URL({
-                originalURL: button.url,
-                module: {
-                  id: sequenceMessage._id,
-                  type: 'sequence'
-                }
-              })
-              URLObject.save((err, savedurl) => {
-                if (err) logger.serverLog(TAG, err)
-                let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-                newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
-              })
-            })
-          }
-          if (element.default_action) {
-            let URLObject = new URL({
-              originalURL: element.default_action.url,
-              module: {
-                id: sequenceMessage._id,
-                type: 'sequence'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-              newPayload[pindex].listItems[lindex].default_action.url = newURL
-            })
-          }
-        })
-      }
-    })
-    callback(newPayload)
-  }
-}
-
-const sendSequence = (batchMessages, page) => {
-  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
-    if (err) {
-      return logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
-    }
-    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
-  })
-  const form = r.form()
-  form.append('access_token', page.accessToken)
-  form.append('batch', batchMessages)
 }
 
 function sendMenuReply (req) {
@@ -2688,4 +2582,111 @@ function sendWaitingSubResponse (message, pageId, subscriberId) {
               })
     })
   })
+}
+const AppendURLCount = function (sequenceMessage, callback) {
+  logger.serverLog(TAG, `Append URL count${JSON.stringify(sequenceMessage)}`)
+  if (sequenceMessage.payload.length > 0) {
+    let newPayload = sequenceMessage.payload
+    sequenceMessage.payload.forEach((payloadItem, pindex) => {
+      if (payloadItem.buttons) {
+        payloadItem.buttons.forEach((button, bindex) => {
+          if (!(button.type === 'postback')) {
+            let URLObject = new URL({
+              originalURL: button.url,
+              module: {
+                id: sequenceMessage._id,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].buttons[bindex].url = newURL
+            })
+          }
+        })
+      }
+      if (payloadItem.componentType === 'media' && payloadItem.buttons) {
+        payloadItem.buttons.forEach((button, bindex) => {
+          let URLObject = new URL({
+            originalURL: button.url,
+            module: {
+              id: sequenceMessage._id,
+              type: 'sequence'
+            }
+          })
+          URLObject.save((err, savedurl) => {
+            if (err) logger.serverLog(TAG, err)
+            let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+            newPayload[pindex].buttons[bindex].url = newURL
+          })
+        })
+      }
+      if (payloadItem.componentType === 'gallery') {
+        payloadItem.cards.forEach((card, cindex) => {
+          card.buttons.forEach((button, bindex) => {
+            let URLObject = new URL({
+              originalURL: button.url,
+              module: {
+                id: sequenceMessage._id,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
+            })
+          })
+        })
+      }
+      if (payloadItem.componentType === 'list') {
+        payloadItem.listItems.forEach((element, lindex) => {
+          if (element.buttons && element.buttons.length > 0) {
+            element.buttons.forEach((button, bindex) => {
+              let URLObject = new URL({
+                originalURL: button.url,
+                module: {
+                  id: sequenceMessage._id,
+                  type: 'sequence'
+                }
+              })
+              URLObject.save((err, savedurl) => {
+                if (err) logger.serverLog(TAG, err)
+                let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+                newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
+              })
+            })
+          }
+          if (element.default_action) {
+            let URLObject = new URL({
+              originalURL: element.default_action.url,
+              module: {
+                id: sequenceMessage._id,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].listItems[lindex].default_action.url = newURL
+            })
+          }
+        })
+      }
+    })
+    callback(newPayload)
+  }
+}
+
+const sendSequence = (batchMessages, page) => {
+  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
+    if (err) {
+      return logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
+  })
+  const form = r.form()
+  form.append('access_token', page.accessToken)
+  form.append('batch', batchMessages)
 }
