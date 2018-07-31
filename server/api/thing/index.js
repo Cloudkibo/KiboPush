@@ -362,7 +362,6 @@ router.get('/updatePageNames', (req, res) => {
             let accessToken = page.accessToken
             if (userRes && userRes.facebookInfo) {
               accessToken = userRes.facebookInfo.fbToken
-              console.log(`request: https://graph.facebook.com/v3.0/${page.pageId}?access_token=${accessToken}`)
             }
             request(
               {
@@ -454,58 +453,106 @@ router.get('/updateSubcribersPicture', (req, res) => {
           logger.serverLog(TAG, `Error in retrieving users: ${JSON.stringify(err)}`)
           res.status(500).json({status: 'failed', description: `Error in retrieving users: ${JSON.stringify(err)}`})
         }
-        users.forEach(user => {
-          if (user.pageId && user.pageId.pageId && profile.userId && profile.userId.facebookInfo) {
-            if (pages.indexOf(user.pageId.pageId) !== -1) {
-              pages.push(user.pageId.pageId)
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].pageId && users[i].pageId.pageId && profile.userId && profile.userId.facebookInfo) {
+            if (pages.indexOf(users[i].pageId.pageId) === -1) {
+              pages.push(users[i].pageId.pageId)
               needle.get(
-              `https://graph.facebook.com/v2.10/${user.pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
+              `https://graph.facebook.com/v2.10/${users[i].pageId.pageId}?fields=access_token&access_token=${profile.userId.facebookInfo.fbToken}`,
               (err, respp) => {
                 if (err) {
                   logger.serverLog(TAG,
                   `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                 }
                 logger.serverLog(TAG, `resp in page token ${JSON.stringify(respp.body)}`)
-                tokens.push({id: user.pageId.pageId, key: respp.body.access_token})
+                tokens.push({id: users[i].pageId.pageId, key: respp.body.access_token})
                 needle.get(
-                  `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${respp.body.access_token}`,
+                  `https://graph.facebook.com/v2.10/${users[i].senderId}?access_token=${respp.body.access_token}`,
                   (err, resp) => {
                     if (err) {
                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                     }
                     logger.serverLog(TAG, `resp ${JSON.stringify(resp.body)}`)
-                    Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                    Subscribers.update({_id: users[i]._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                       if (err) {
-                        logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                        logger.serverLog(TAG, `Error in updating subscriber: ${JSON.stringify(err)}`)
                       }
                     })
                   })
               })
             } else {
               let arr = tokens.find(() => {
-                return tokens.id === user.pageId.pageId
+                return tokens.id === users[i].pageId.pageId
               }).key
               logger.serverLog(TAG, `arr in else ${JSON.stringify(arr)}`)
               needle.get(
-                `https://graph.facebook.com/v2.10/${user.senderId}?access_token=${arr}`,
+                `https://graph.facebook.com/v2.10/${users[i].senderId}?access_token=${arr}`,
                 (err, resp) => {
                   if (err) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
                   logger.serverLog(TAG, `resp ${JSON.stringify(resp.body)}`)
-                  Subscribers.update({_id: user._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                  Subscribers.update({_id: users[i]._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
                     if (err) {
-                      logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+                      logger.serverLog(TAG, `Error in updating subscriber: ${JSON.stringify(err)}`)
                     }
                   })
                 })
             }
           }
-        })
+        }
       })
     })
   })
   res.status(200).json({status: 'success', payload: []})
 })
-
+router.get('/updateSubcribersInfo', (req, res) => {
+  Subscribers.distinct('pageId').exec((err, pageIds) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR at distinct subscribers ${JSON.stringify(err)}`)
+    }
+    pageIds.forEach((pageId) => {
+      Pages.findOne({_id: pageId}).populate('userId').exec((err, page) => {
+        if (err) {
+          logger.serverLog(TAG, `Error in retrieving page user: ${JSON.stringify(err)}`)
+        }
+        if (page && page.userId && page.userId.facebookInfo) {
+          needle.get(
+          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+          (err, respp) => {
+            if (err) {
+              logger.serverLog(TAG,
+              `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG, `resp in page access ${JSON.stringify(respp.body)}`)
+            let accessToken = respp.body.access_token
+            Subscribers.find({pageId: pageId}).exec((err, subscribers) => {
+              if (err) {
+                logger.serverLog(TAG, `Error in retrieving page subscribers: ${JSON.stringify(err)}`)
+              }
+              subscribers.forEach((subscriber) => {
+                needle.get(
+                  `https://graph.facebook.com/v2.10/${subscriber.senderId}?access_token=${accessToken}`,
+                  (err, resp) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                    logger.serverLog(TAG, `resp in subscriber ${JSON.stringify(resp.body)}`)
+                    if (resp.body.first_name) {
+                      Subscribers.update({_id: subscriber._id}, {firstName: resp.body.first_name, lastName: resp.body.last_name, profilePic: resp.body.profile_pic, locale: resp.body.locale, timezone: resp.body.timezone, gender: resp.body.gender}, (err, updated) => {
+                        if (err) {
+                          logger.serverLog(TAG, `Error in updating subscriber: ${JSON.stringify(err)}`)
+                        }
+                      })
+                    }
+                  })
+              })
+            })
+          })
+        }
+      })
+    })
+    res.status(200).json({status: 'success', description: 'subscribers updated successfully'})
+  })
+})
 module.exports = router

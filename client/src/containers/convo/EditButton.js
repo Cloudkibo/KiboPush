@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import Popover from 'react-simple-popover'
+import { editButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
@@ -93,54 +93,37 @@ class EditButton extends React.Component {
   handleDone () {
     console.log('this.state', this.state)
     if (this.state.url !== '') {
-      this.props.onEdit({
+      let data = {
         id: this.props.index,
-        button: {
-          type: 'web_url',
-          url: this.state.url, // User defined link,
-          title: this.state.title // User defined label
-        }
-      })
+        type: 'web_url',
+        url: this.state.url, // User defined link,
+        title: this.state.title // User defined label
+      }
+      this.props.editButton(data, this.props.onEdit)
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        this.props.onEdit({
-          id: this.props.data.id,
-          button: {
-            type: 'postback',
-            title: this.state.title, // User defined label
-            payload: JSON.stringify({
-              sequenceId: this.state.sequenceValue,
-              action: 'subscribe'
-            })
-          }
-        })
+        let data = {
+          id: this.props.index,
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'subscribe'
+        }
+        this.props.editButton(data, this.props.onEdit)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        this.props.onAdd({
-          id: this.props.data.id,
-          button: {
-            type: 'postback',
-            title: this.state.title, // User defined label
-            payload: JSON.stringify({
-              sequenceId: this.state.sequenceValue,
-              action: 'unsubscribe'
-            })
-          }
-
-        })
+        let data = {
+          id: this.props.index,
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'unsubscribe'
+        }
+        this.props.editButton(data, this.props.onEdit)
       }
     }
     this.setState({
       openPopover: false
     })
-    // this.setState({
-    //   openPopover: false,
-    //   title: '',
-    //   url: '',
-    //   sequenceValue: '',
-    //   openWebsite: false,
-    //   openSubscribe: false,
-    //   openUnsubscribe: false
-    // })
   }
 
   changeTitle (event) {
@@ -276,6 +259,8 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators({
+    editButton
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditButton)

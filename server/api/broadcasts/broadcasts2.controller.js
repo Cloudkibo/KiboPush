@@ -8,6 +8,7 @@ const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
 const URL = require('./../URLforClickedCount/URL.model')
+const mongoose = require('mongoose')
 // const PollResponse = require('../polls/pollresponse.model')
 // const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
@@ -499,6 +500,139 @@ exports.delete = function (req, res) {
         .json({status: 'success', payload: 'File deleted successfully'})
     }
   })
+}
+
+exports.addButton = function (req, res) {
+  if (!_.has(req.body, 'type')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Type is missing.'
+    })
+  }
+  if (!_.has(req.body, 'title')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Title is missing.'
+    })
+  }
+  if (req.body.type === 'web_url' && !(_.has(req.body, 'url'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Url is required for type web_url.'
+    })
+  }
+  if (req.body.type === 'postback' && !(_.has(req.body, 'sequenceId')) && !(_.has(req.body, 'action'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'SequenceId & action are required for type postback'
+    })
+  }
+  let buttonPayload = {
+    title: req.body.title,
+    type: req.body.type
+  }
+  if (req.body.type === 'web_url') {
+    // TODO save module id when sending broadcast
+    let URLObject = new URL({
+      originalURL: req.body.url,
+      module: {
+        type: 'broadcast'
+      }
+    })
+    URLObject.save((err, savedurl) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Failed to save url object ${err}`
+        })
+      }
+      let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+      buttonPayload.url = newURL
+      return res.status(200).json({
+        status: 'success',
+        payload: buttonPayload
+      })
+    })
+  } else {
+    buttonPayload.payload = JSON.stringify({
+      sequenceId: req.body.sequenceId,
+      action: req.body.action
+    })
+    buttonPayload.sequenceValue = req.body.sequenceId
+    return res.status(200).json({
+      status: 'success',
+      payload: buttonPayload
+    })
+  }
+}
+
+exports.editButton = function (req, res) {
+  if (!_.has(req.body, 'type')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Type is missing.'
+    })
+  }
+  if (!_.has(req.body, 'title')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Title is missing.'
+    })
+  }
+  if (req.body.type === 'web_url' && !(_.has(req.body, 'newUrl'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Url is required for type web_url.'
+    })
+  }
+  if (req.body.type === 'postback' && !(_.has(req.body, 'sequenceId')) && !(_.has(req.body, 'action'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'SequenceId & action are required for type postback'
+    })
+  }
+  let buttonPayload = {
+    title: req.body.title,
+    type: req.body.type
+  }
+  if (req.body.type === 'web_url') {
+    // TODO save module id when sending broadcast
+    let temp = req.body.oldUrl.split('/')
+    let id = temp[temp.length - 1]
+    URL.findOne({_id: mongoose.Types.objectId(id)}, (err, url) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Failed to find url object ${err}`
+        })
+      }
+      url.originalURL = req.body.newUrl
+      url.save((err, savedurl) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Failed to save url object ${err}`
+          })
+        }
+        let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+        buttonPayload.url = newURL
+        return res.status(200).json({
+          status: 'success',
+          payload: { id: req.body.id, button: buttonPayload }
+        })
+      })
+    })
+  } else {
+    buttonPayload.payload = JSON.stringify({
+      sequenceId: req.body.sequenceId,
+      action: req.body.action
+    })
+    buttonPayload.sequenceValue = req.body.sequenceId
+    return res.status(200).json({
+      status: 'success',
+      payload: { id: req.body.id, button: buttonPayload }
+    })
+  }
 }
 
 exports.sendBroadcast = sendBroadcast
