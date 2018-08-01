@@ -8,7 +8,7 @@ const PagePolls = require('../page_poll/page_poll.model')
 const PageSurveys = require('../page_survey/page_survey.model')
 const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, filterDate,
   groupCompanyWiseAggregates, companyWisePageCount, joinPageWithSubscribers, selectPageFields,
-  filterCompanySubscribers, filterUserDate, pageWiseAggregate } = require('./pipeline')
+  filterCompanySubscribers, filterUserDate, pageWiseAggregate, filterPageSubscribers } = require('./pipeline')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
@@ -57,16 +57,18 @@ exports.platformWiseData = function (req, res) {
 }
 
 exports.pageWiseData = function (req, res) {
-  let data = Pages.aggregate([ joinPageWithSubscribers, selectPageFields ]).exec()
-  let numberOfBroadcast = PageBroadcasts.aggregate([ pageWiseAggregate ]).exec()
-  // let pageWiseBroadcast = Broadcasts.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
-  let numberOfPoll = PagePolls.aggregate([ pageWiseAggregate ]).exec()
-  // let pageWisePoll = Polls.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
-  let numberOfSurvey = PageSurveys.aggregate([ pageWiseAggregate ]).exec()
-  // let pageWiseSurvey = Surveys.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
-
+  console.log('in page wise')
+  let startDate = req.body.startDate
+  console.log('startDate' + startDate)
+  let dateFilterSubscribers = filterPageSubscribers
+  dateFilterSubscribers['$project']['pageSubscribers']['$filter']['cond'] = {$gte: ['$$pageSubscriber.datetime', new Date(startDate)]}
+  let dateFilterAggregates = filterDate
+  dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
+  let data = Pages.aggregate([ joinPageWithSubscribers, dateFilterSubscribers, selectPageFields ]).exec()
+  let numberOfBroadcast = PageBroadcasts.aggregate([ dateFilterAggregates, pageWiseAggregate ]).exec()
+  let numberOfPoll = PagePolls.aggregate([ dateFilterAggregates, pageWiseAggregate ]).exec()
+  let numberOfSurvey = PageSurveys.aggregate([ dateFilterAggregates, pageWiseAggregate ]).exec()
   let finalResults = Promise.all([ data, numberOfBroadcast, numberOfPoll, numberOfSurvey ])
-  // let finalResults = Promise.all([ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll ])
 
   finalResults.then((results) => {
     data = results[0]
@@ -77,7 +79,6 @@ exports.pageWiseData = function (req, res) {
     data = data.map((page) => {
       broadcastAggregates.forEach((broadcast) => {
         if (page.pageId.toString() === broadcast._id) {
-          console.log('in if')
           page.numberOfBroadcasts = broadcast.totalCount
         }
       })
@@ -87,7 +88,6 @@ exports.pageWiseData = function (req, res) {
     data = data.map((page) => {
       pollsAggregate.forEach((poll) => {
         if (page.pageId.toString() === poll._id) {
-          console.log('in if')
           page.numberOfPolls = poll.totalCount
         }
       })
@@ -97,7 +97,6 @@ exports.pageWiseData = function (req, res) {
     data = data.map((page) => {
       surveysAggregate.forEach((survey) => {
         if (page.pageId.toString() === survey._id) {
-          console.log('in if')
           page.numberOfSurveys = survey.totalCount
         }
       })
