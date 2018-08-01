@@ -122,7 +122,7 @@ class Gallery extends React.Component {
       speed: 500,
       slidesToShow: 1,
       slidesToScroll: 1,
-      nextArrow: <RightArrow />,
+      nextArrow: <RightArrow addSlide={this.addSlide} />,
       prevArrow: <LeftArrow />,
       afterChange: this.handleChange
     }
