@@ -23,13 +23,24 @@ function registerWebhooks (shop, token) {
   })
 
   shopify.webhook.create({
+    topic: 'carts/create',
+    address: `${config.shopify.app_host}/api/shopify/cart-create`,
+    format: 'json'
+  }).then((response) => {
+    console.log('Carts webhook created')
+  }).catch((err) => {
+    console.log('Error Creating Carts Webhook', err)
+    throw err
+  })
+
+  shopify.webhook.create({
     topic: 'checkouts/create',
     address: `${config.shopify.app_host}/api/shopify/checkout-create`,
     format: 'json'
   }).then((response) => {
     console.log('Checkout webhook created')
   }).catch((err) => {
-    console.log('Error Creating Checkout Webhook')
+    console.log('Error Creating Checkout Webhook', err)
     throw err
   })
 
@@ -40,15 +51,45 @@ function registerWebhooks (shop, token) {
   }).then((response) => {
     console.log('Order webhook created')
   }).catch((err) => {
-    console.log('Error Creating Order Webhook')
+    console.log('Error Creating Order Webhook', err)
     throw err
   })
+
+  shopify.webhook.create({
+    topic: 'app/uninstalled',
+    address: `${config.shopify.app_host}/api/shopify/app-uninstall`,
+    format: 'json'
+  }).then((response) => {
+    console.log('App Uninstall webhook created')
+  }).catch((err) => {
+    console.log('Error Creating App Uninstall Webhook', err)
+    throw err
+  })
+
+  shopify.webhook.create({
+    topic: 'themes/publish',
+    address: `${config.shopify.app_host}/api/shopify/theme-publish`,
+    format: 'json'
+  }).then((response) => {
+    console.log('Theme Publish webhook created')
+  }).catch((err) => {
+    console.log('Error Creating Theme Publish Webhook', err)
+    throw err
+  })
+}
+
+const registerScript = function (shopDomain, accessToken, params) {
+  const shopify = new Shopify({ shopName: shopDomain, accessToken: accessToken })
+  shopify.scriptTag.create(params).then(
+    response => console.log('Script posted and created', response),
+    err => console.log(`Error creating script. ${JSON.stringify(err.response.body)}`)
+  )
 }
 
 exports.index = function (req, res) {
   console.log('User in body', req.user)
   const shop = req.body.shop
-  const scopes = 'write_orders, write_products'
+  const scopes = 'write_orders, write_products, read_themes, write_themes, read_script_tags, write_script_tags'
   if (shop) {
     const state = nonce()
     const redirectUri = config.shopify.app_host + '/api/shopify/callback'
@@ -115,6 +156,10 @@ exports.callback = function (req, res) {
   .then((accessTokenResponse) => {
     const accessToken = accessTokenResponse.access_token
     registerWebhooks(shop, accessToken)
+    registerScript(shop, accessToken, {
+      event: 'onload',
+      src: 'https://rawgit.com/dayemsiddiqui/63f45b25ff476a17fc575f3acccd14f6/raw/620f03c5ffee29c7f0d62b3f365b12163c0ea9f8/kiboshop.js'
+    })
     const store = new StoreInfo({
       userId: userId,
       pageId: pageId,

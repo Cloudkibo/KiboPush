@@ -21,7 +21,16 @@ router.get('/callback',
 router.post('/checkout-create',
   webhook.handleCheckout) // this id will be userid
 
+router.post('/cart-create',
+  webhook.handleCart) // this id will be userid
+
 router.post('/order-create',
   webhook.handleOrder) // this id will be userid
+
+router.post('/app-uninstall',
+  webhook.handleAppUninstall) // this id will be userid
+
+router.post('/theme-publish',
+  webhook.handleThemePublish) // this id will be userid
 
 module.exports = router

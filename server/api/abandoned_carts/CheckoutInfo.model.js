@@ -28,6 +28,9 @@ const checkoutSchema = new Schema({
   status: {
     type: String
   },
+  subscriberId: {
+    type: String
+  },
   productIds: {
     type: [String]
   },

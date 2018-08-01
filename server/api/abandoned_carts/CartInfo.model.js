@@ -11,11 +11,29 @@ const cartSchema = new Schema({
   storeId: {
     type: String
   },
+  userId: {
+    type: Schema.ObjectId,
+    ref: 'users'  // Schema.ObjectId, ref: 'users'
+  },
   linePrice: {
     type: Number
   },
+  status: {
+    type: String
+  },
+  subscriberId: {
+    type: String
+  },
   productIds: {
     type: [String]
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  },
+  scheduled_at: {
+    type: Date,
+    default: () => Date.now() + 24 * 60 * 60 * 1000
   }
 })
 

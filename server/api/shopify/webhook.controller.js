@@ -6,6 +6,7 @@ const logger = require('../../components/logger')
 const config = require('./../../config/environment/index')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
+const CartInfo = require('./../abandoned_carts/CartInfo.model')
 const TAG = 'api/pages/pages.controller.js'
 
 exports.handleCheckout = function (req, res) {
@@ -26,7 +27,8 @@ exports.handleCheckout = function (req, res) {
       totalPrice: req.body.total_price,
       abandonedCheckoutUrl: req.body.abandoned_checkout_url,
       productIds: productIds,
-      status: 'pending'
+      status: 'pending',
+      subscriberId: ''
     })
     checkout.save((err) => {
       if (err) {
@@ -42,6 +44,39 @@ exports.handleCheckout = function (req, res) {
   })
 }
 
+exports.handleCart = function (req, res) {
+  const productIds = req.body.line_items.map((item) => {
+    return item.product_id
+  })
+  const shopUrl = req.header('X-Shopify-Shop-Domain')
+  StoreInfo.find({shopUrl: shopUrl}).exec()
+  .then((results) => {
+    const shopId = results[0]._id
+    const userId = results[0].userId
+    const cart = new CartInfo({
+      shopifyCartId: req.body.id,
+      cartToken: req.body.token,
+      storeId: shopId,
+      userId: userId,
+      linePrice: 0,
+      productIds: productIds,
+      status: 'pending',
+      subscriberId: ''
+    })
+    cart.save((err) => {
+      if (err) {
+        logger.serverLog(TAG, `Error saving cart ${JSON.stringify(err)}`)
+        return res.status(500).json({ status: 'failed', error: err })
+      }
+      return res.status(200).json({status: 'success'})
+    })
+  })
+  .catch((err) => {
+    logger.serverLog(TAG, `Error in cart webhook ${JSON.stringify(err)}`)
+    return res.status(500).json({ status: 'failed', error: err })
+  })
+}
+
 exports.handleOrder = function (req, res) {
   logger.serverLog(TAG, `Order webhook called ${JSON.stringify(req.body.checkout_id)}`)
   CheckoutInfo.remove({shopifyCheckoutId: req.body.checkout_id}).exec()
@@ -52,4 +87,34 @@ exports.handleOrder = function (req, res) {
     logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
     return res.status(500).json({ status: 'failed', error: err })
   })
+}
+
+exports.handleAppUninstall = function (req, res) {
+  const shopUrl = req.header('X-Shopify-Shop-Domain')
+  StoreInfo.find({shopUrl: shopUrl}).exec()
+  .then((results) => {
+    const shopId = results[0]._id
+
+    CartInfo.remove({storeId: shopId}).exec()
+    .then((result) => {
+      logger.serverLog(TAG, 'Successfully Deleted CartInfo')
+    })
+
+    CheckoutInfo.remove({storeId: shopId}).exec()
+    .then((result) => {
+      logger.serverLog(TAG, 'Successfully Deleted CheckoutInfo')
+    })
+
+    StoreInfo.remove({shopUrl: shopUrl}).exec()
+    .then((result) => {
+      return res.status(200).json({status: 'success'})
+    })
+  }).catch((err) => {
+    return res.status(500).json({status: 'failed', error: err})
+  })
+}
+
+exports.handleThemePublish = function (req, res) {
+  logger.serverLog(TAG, 'A theme was switched')
+  return res.status(200).json({status: 'success'})
 }
