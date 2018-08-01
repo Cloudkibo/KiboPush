@@ -33,4 +33,7 @@ router.post('/app-uninstall',
 router.post('/theme-publish',
   webhook.handleThemePublish) // this id will be userid
 
+router.get('/serveScript',
+  webhook.serveScript) // this id will be userid
+
 module.exports = router

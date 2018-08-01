@@ -1,13 +1,3 @@
-// const shopifyExpress = require('@shopify/shopify-express')
-// const session = require('express-session')
-// const config = require('./environment/index')
-// const cookie = require('cookie')
-// const nonce = require('nonce')()
-// const querystring = require('querystring')
-// const crypto = require('crypto')
-// const request = require('request-promise')
-// const auth = require('./../auth/auth.service')
-// https://help.shopify.com/en/api/tutorials/building-node-app
 
 module.exports = function (app) {
   // session is necessary for api proxy and auth verification

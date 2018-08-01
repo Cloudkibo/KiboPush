@@ -8,6 +8,7 @@ const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
 const TAG = 'api/pages/pages.controller.js'
+const mainScript = require('./mainScript')
 
 exports.handleCheckout = function (req, res) {
   const productIds = req.body.line_items.map((item) => {
@@ -117,4 +118,18 @@ exports.handleAppUninstall = function (req, res) {
 exports.handleThemePublish = function (req, res) {
   logger.serverLog(TAG, 'A theme was switched')
   return res.status(200).json({status: 'success'})
+}
+
+exports.serveScript = function (req, res) {
+  const shopUrl = req.query.shop
+  StoreInfo.find({shopUrl: shopUrl}).exec()
+   .then((results) => {
+     const pageId = results[0].pageId
+     // logger.serverLog(TAG, `Found the shop using url ${pageId}`)
+     res.send(mainScript.renderJS(pageId, '159385484629940'))
+   }).catch((err) => {
+     logger.serverLog(TAG, `Error in finding the shop using Url ${JSON.stringify(err)}`)
+     return res.status(500).json({status: 'failed', error: err})
+   })
+  
 }

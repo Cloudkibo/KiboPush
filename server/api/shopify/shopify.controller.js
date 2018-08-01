@@ -87,7 +87,6 @@ const registerScript = function (shopDomain, accessToken, params) {
 }
 
 exports.index = function (req, res) {
-  console.log('User in body', req.user)
   const shop = req.body.shop
   const scopes = 'write_orders, write_products, read_themes, write_themes, read_script_tags, write_script_tags'
   if (shop) {
@@ -158,7 +157,7 @@ exports.callback = function (req, res) {
     registerWebhooks(shop, accessToken)
     registerScript(shop, accessToken, {
       event: 'onload',
-      src: 'https://rawgit.com/dayemsiddiqui/63f45b25ff476a17fc575f3acccd14f6/raw/620f03c5ffee29c7f0d62b3f365b12163c0ea9f8/kiboshop.js'
+      src: config.shopify.app_host + '/api/shopify/serveScript'
     })
     const store = new StoreInfo({
       userId: userId,
