@@ -32,7 +32,7 @@ exports.platformWiseData = function (req, res) {
   let totalSurveys = Surveys.aggregate([dateFilterAggregates, countResults]).exec()
 
   let finalResults = Promise.all([connectetPages, totalPages, totalUsers, totalSubscribers, totalBroadcasts, totalPolls, totalSurveys])
-  logger.serverLog(TAG, `user not found for page ${JSON.stringify(finalResults)}`)
+  //logger.serverLog(TAG, `user not found for page ${JSON.stringify(finalResults)}`)
   finalResults.then(function (results) {
     let data = {
       connectedPages: (results[0].length === 0) ? 0 : results[0][0].count,
@@ -48,6 +48,7 @@ exports.platformWiseData = function (req, res) {
       payload: data
     })
   }).catch((err) => {
+    console.log('in error')
     res.status(500).json({
       status: 'failed',
       error: err
@@ -150,6 +151,7 @@ exports.companyWiseData = function (req, res) {
           setSurveysCount(results, data)
           setTotalPagesCount(results, data)
           setConnectedPagesCount(results, data)
+          console.log('data' + JSON.stringify(data))
 
           res.status(200).json({
             status: 'success',
