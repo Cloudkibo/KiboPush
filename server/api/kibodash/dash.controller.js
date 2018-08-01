@@ -57,9 +57,7 @@ exports.platformWiseData = function (req, res) {
 }
 
 exports.pageWiseData = function (req, res) {
-  console.log('in page wise')
   let startDate = req.body.startDate
-  console.log('startDate' + startDate)
   let dateFilterSubscribers = filterPageSubscribers
   dateFilterSubscribers['$project']['pageSubscribers']['$filter']['cond'] = {$gte: ['$$pageSubscriber.datetime', new Date(startDate)]}
   let dateFilterAggregates = filterDate
@@ -150,7 +148,6 @@ exports.companyWiseData = function (req, res) {
           setSurveysCount(results, data)
           setTotalPagesCount(results, data)
           setConnectedPagesCount(results, data)
-          console.log('data' + JSON.stringify(data))
 
           res.status(200).json({
             status: 'success',
