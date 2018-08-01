@@ -1,13 +1,14 @@
-/**
- * Created by sojharo on 25/09/2017.
- */
+
 const logger = require('../../components/logger')
 const TAG = 'api/kibodash/dash.controller.js'
 const Users = require('../user/Users.model')
 const Pages = require('../pages/Pages.model')
+const PageBroadcasts = require('../page_broadcast/page_broadcast.model')
+const PagePolls = require('../page_poll/page_poll.model')
+const PageSurveys = require('../page_survey/page_survey.model')
 const { filterConnectedPages, countResults, joinCompanyWithSubscribers, selectCompanyFields, filterDate,
-  groupCompanyWiseAggregates, companyWisePageCount, joinPageWithSubscribers, selectPageFields, broadcastPageCount, filterZeroPageCount,
-  selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId, filterCompanySubscribers, filterUserDate } = require('./pipeline')
+  groupCompanyWiseAggregates, companyWisePageCount, joinPageWithSubscribers, selectPageFields,
+  filterCompanySubscribers, filterUserDate, pageWiseAggregate } = require('./pipeline')
 const Subscribers = require('../subscribers/Subscribers.model')
 const Broadcasts = require('../broadcasts/broadcasts.model')
 const Polls = require('../polls/Polls.model')
@@ -16,7 +17,7 @@ const CompanyUsers = require('../companyuser/companyuser.model')
 const mongoose = require('mongoose')
 
 exports.platformWiseData = function (req, res) {
-  let startDate = req.body.startDate
+  let startDate = req.body.start_date
   let dateFilterAggregates = filterDate
   dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
 
@@ -56,56 +57,48 @@ exports.platformWiseData = function (req, res) {
 
 exports.pageWiseData = function (req, res) {
   let data = Pages.aggregate([ joinPageWithSubscribers, selectPageFields ]).exec()
-  let numberOfBroadcast = Broadcasts.aggregate([ broadcastPageCount, filterZeroPageCount, countResults ]).exec()
-  let pageWiseBroadcast = Broadcasts.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
-  let numberOfPoll = Polls.aggregate([ broadcastPageCount, filterZeroPageCount, countResults ]).exec()
-  let pageWisePoll = Polls.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
-  let numberOfSurvey = Surveys.aggregate([ broadcastPageCount, filterZeroPageCount, countResults ]).exec()
-  let pageWiseSurvey = Surveys.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
+  let numberOfBroadcast = PageBroadcasts.aggregate([ pageWiseAggregate ]).exec()
+  // let pageWiseBroadcast = Broadcasts.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
+  let numberOfPoll = PagePolls.aggregate([ pageWiseAggregate ]).exec()
+  // let pageWisePoll = Polls.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
+  let numberOfSurvey = PageSurveys.aggregate([ pageWiseAggregate ]).exec()
+  // let pageWiseSurvey = Surveys.aggregate([ selectPageIdAndPageCount, getPageCountGreaterThanZero, expandPageIdArray, countByPageId ]).exec()
 
-  let finalResults = Promise.all([ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey ])
+  let finalResults = Promise.all([ data, numberOfBroadcast, numberOfPoll, numberOfSurvey ])
   // let finalResults = Promise.all([ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll ])
 
   finalResults.then((results) => {
-    let data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey
-    // let data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll
-    [ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll, pageWisePoll, numberOfSurvey, pageWiseSurvey ] = results
-    // [ data, numberOfBroadcast, pageWiseBroadcast, numberOfPoll ] = results
-    numberOfBroadcast = (numberOfBroadcast.length === 0) ? 0 : numberOfBroadcast[0].count
+    data = results[0]
+    let broadcastAggregates = results[1]
+    let pollsAggregate = results[2]
+    let surveysAggregate = results[3]
+    // set Broadcasts count
     data = data.map((page) => {
-      page.numberOfBroadcasts = numberOfBroadcast
-      return page
-    })
-
-    data = data.map((page) => {
-      pageWiseBroadcast.forEach((item) => {
-        if (page.pageId === item._id) page.numberOfBroadcasts += item.count
+      broadcastAggregates.forEach((broadcast) => {
+        if (page.pageId.toString() === broadcast._id) {
+          console.log('in if')
+          page.numberOfBroadcasts = broadcast.totalCount
+        }
       })
       return page
     })
-
-    numberOfPoll = (numberOfPoll.length === 0) ? 0 : numberOfPoll[0].count
+    // set Polls counts
     data = data.map((page) => {
-      page.numberOfPolls = numberOfPoll
-      return page
-    })
-
-    data = data.map((page) => {
-      pageWisePoll.forEach((item) => {
-        if (page.pageId === item._id) page.numberOfPolls += item.count
+      pollsAggregate.forEach((poll) => {
+        if (page.pageId.toString() === poll._id) {
+          console.log('in if')
+          page.numberOfPolls = poll.totalCount
+        }
       })
       return page
     })
-
-    numberOfSurvey = (numberOfSurvey.length === 0) ? 0 : numberOfSurvey[0].count
+    // set Survey count
     data = data.map((page) => {
-      page.numberOfSurveys = numberOfSurvey
-      return page
-    })
-
-    data = data.map((page) => {
-      pageWiseSurvey.forEach((item) => {
-        if (page.pageId === item._id) page.numberOfSurveys += item.count
+      surveysAggregate.forEach((survey) => {
+        if (page.pageId.toString() === survey._id) {
+          console.log('in if')
+          page.numberOfSurveys = survey.totalCount
+        }
       })
       return page
     })
@@ -148,7 +141,9 @@ exports.companyWiseData = function (req, res) {
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`})
         }
-        data[i].userName = user.name
+        if (user != null) {
+          data[i].userName = user.name
+        }
         if (i === (data.length - 1)) {
           setBroadcastsCount(results, data)
           setPollsCount(results, data)

@@ -29,36 +29,6 @@ exports.selectPageFields = {
   }
 }
 
-exports.broadcastPageCount = {
-  $project: {
-    pageCount: { $size: { '$ifNull': ['$segmentationPageIds', []] } }
-  }
-}
-
-exports.filterZeroPageCount = {
-  $match: {
-    pageCount: 0
-  }
-}
-
-exports.selectPageIdAndPageCount = {
-  $project: {
-    segmentationPageIds: true,
-    pageCount: { $size: { '$ifNull': ['$segmentationPageIds', []] } }
-  }
-}
-
-exports.getPageCountGreaterThanZero = {
-  $match: {
-    pageCount: {
-      $gt: 0
-    }
-  }
-}
-exports.expandPageIdArray = { $unwind: '$segmentationPageIds' }
-
-exports.countByPageId = { $group: { _id: '$segmentationPageIds', count: { $sum: 1 } } }
-
 exports.companyWisePageCount = {
   $group: {
     _id: '$companyId',
@@ -123,6 +93,13 @@ exports.filterUserDate = {
 exports.groupCompanyWiseAggregates = {
   $group: {
     _id: '$companyId',
+    totalCount: { $sum: 1 }
+  }
+}
+
+exports.pageWiseAggregate = {
+  $group: {
+    _id: '$pageId',
     totalCount: { $sum: 1 }
   }
 }
