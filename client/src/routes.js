@@ -141,11 +141,11 @@ const routes = (
     <IndexRoute component={LoginSignup} onEnter={redirectAuthUsers} />
     <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
+    <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
-    <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Convo} onEnter={requireAuth} />
     <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />
