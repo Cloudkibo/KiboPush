@@ -333,8 +333,7 @@ router.get('/updateBotCompanyId', (req, res) => {
               if (err) {
                 return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
               }
-
-              if (result) {
+              if (i === (bots.length - 1)) {
                 res.status(200).json({status: 'success', payload: result})
               }
             })
