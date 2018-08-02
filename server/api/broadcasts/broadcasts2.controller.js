@@ -9,13 +9,8 @@ const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
 const URL = require('./../URLforClickedCount/URL.model')
 const mongoose = require('mongoose')
-// const PollResponse = require('../polls/pollresponse.model')
-// const SurveyResponse = require('../surveys/surveyresponse.model')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
-// const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
-// const LiveChat = require('../livechat/livechat.model')
-// const Session = require('../sessions/sessions.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
 const path = require('path')
@@ -56,91 +51,31 @@ const updatePayload = (self, payload, pageAccessToken, broadcast) => {
           if (uploadResponse.status === 'success') {
             payload[j] = uploadResponse.data
           } else {
-            logger.serverLog(TAG, `ERROR! failed to upload attchment on Facebook: ${JSON.stringify(uploadResponse.data)}`)
+            logger.serverLog(TAG, `ERROR! failed to upload attachment on Facebook: ${JSON.stringify(uploadResponse.data)}`)
           }
         }
-      }, 3000)
+      }, 1000)
       shouldReturn = operation(j, payload.length - 1)
-    } else if (!self) {
-      if (payload[j].buttons) {
-        payload[j].buttons.forEach((button, bindex) => {
-          if (!(button.type === 'postback')) {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].buttons[bindex].url = newURL
-            })
-          }
-          if (bindex === (payload[j].buttons.length - 1)) {
-            shouldReturn = operation(j, payload.length - 1)
-          }
-        })
-      } else if (payload[j].componentType === 'gallery') {
-        payload[j].cards.forEach((card, cindex) => {
-          card.buttons.forEach((button, bindex) => {
-            let URLObject = new URL({
-              originalURL: button.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].cards[cindex].buttons[bindex].url = newURL
-            })
+    } else if (!self && payload[j].componentType === 'list') {
+      payload[j].listItems.forEach((element, lindex) => {
+        if (element.default_action) {
+          let URLObject = new URL({
+            originalURL: element.default_action.url,
+            module: {
+              id: broadcast._id,
+              type: 'broadcast'
+            }
           })
-          if (cindex === (payload[j].cards.length - 1)) {
-            shouldReturn = operation(j, payload.length - 1)
-          }
-        })
-      } else if (payload[j].componentType === 'list') {
-        payload[j].listItems.forEach((element, lindex) => {
-          if (element.buttons && element.buttons.length > 0) {
-            element.buttons.forEach((button, bindex) => {
-              let URLObject = new URL({
-                originalURL: button.url,
-                module: {
-                  id: broadcast._id,
-                  type: 'broadcast'
-                }
-              })
-              URLObject.save((err, savedurl) => {
-                if (err) logger.serverLog(TAG, err)
-                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                payload[j].listItems[lindex].buttons[bindex].url = newURL
-              })
-            })
-          }
-          if (element.default_action) {
-            let URLObject = new URL({
-              originalURL: element.default_action.url,
-              module: {
-                id: broadcast._id,
-                type: 'broadcast'
-              }
-            })
-            URLObject.save((err, savedurl) => {
-              if (err) logger.serverLog(TAG, err)
-              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-              payload[j].listItems[lindex].default_action.url = newURL
-            })
-          }
-          if (lindex === (payload[j].listItems.length - 1)) {
-            shouldReturn = operation(j, payload.length - 1)
-          }
-        })
-      } else {
-        shouldReturn = operation(j, payload.length - 1)
-      }
+          URLObject.save((err, savedurl) => {
+            if (err) logger.serverLog(TAG, err)
+            let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+            payload[j].listItems[lindex].default_action.url = newURL
+          })
+        }
+        if (lindex === (payload[j].listItems.length - 1)) {
+          shouldReturn = operation(j, payload.length - 1)
+        }
+      })
     } else {
       shouldReturn = operation(j, payload.length - 1)
     }
@@ -328,6 +263,7 @@ exports.sendConversation = function (req, res) {
               }
             })
             let payload = updatePayload(req.body.self, payloadData, pageAccessToken, broadcast)
+            utility.addModuleIdIfNecessary(payloadData, broadcast._id) // add module id in buttons for click count
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
