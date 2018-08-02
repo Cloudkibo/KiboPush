@@ -120,6 +120,7 @@ class InviteMembers extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('inviteMembers props', this.props)
     return (
 
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -213,7 +214,7 @@ class InviteMembers extends React.Component {
                         Invite
                       </button>
                       <span>&nbsp;&nbsp;</span>
-                      <Link to='members'>
+                      <Link to={this.props.location.state.prevPath} >
                         <button className='btn btn-secondary'>
                           Cancel
                         </button>
