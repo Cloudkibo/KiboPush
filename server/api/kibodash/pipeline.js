@@ -9,6 +9,20 @@ exports.joinPageWithSubscribers = {
     as: 'pageSubscribers'
   }
 }
+
+exports.filterPageSubscribers = {
+  $project: {
+    _id: true,
+    pageName: true,
+    pageId: true,
+    pageSubscribers: {
+      $filter: {
+        input: '$pageSubscribers',
+        as: 'pageSubscriber'
+      }
+    }
+  }
+}
 exports.selectPageFields = {
   $project: {
     _id: true,
