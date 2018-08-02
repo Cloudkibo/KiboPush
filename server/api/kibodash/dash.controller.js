@@ -48,7 +48,6 @@ exports.platformWiseData = function (req, res) {
       payload: data
     })
   }).catch((err) => {
-    console.log('in error')
     res.status(500).json({
       status: 'failed',
       error: err
@@ -59,8 +58,10 @@ exports.platformWiseData = function (req, res) {
 exports.pageWiseData = function (req, res) {
   let startDate = req.body.startDate
   let dateFilterSubscribers = filterPageSubscribers
+  // add the date filter(as from reqeust) in the aggregate pipeline query for subscribers page wise
   dateFilterSubscribers['$project']['pageSubscribers']['$filter']['cond'] = {$gte: ['$$pageSubscriber.datetime', new Date(startDate)]}
   let dateFilterAggregates = filterDate
+  // add date filter for broadcasts, polls, surveys count-page wise
   dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
   let data = Pages.aggregate([ joinPageWithSubscribers, dateFilterSubscribers, selectPageFields ]).exec()
   let numberOfBroadcast = PageBroadcasts.aggregate([ dateFilterAggregates, pageWiseAggregate ]).exec()
