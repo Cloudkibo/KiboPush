@@ -371,6 +371,7 @@ class CreateConvo extends React.Component {
       if (data.id === obj.id) {
         temp[i].listItems = obj.listItems
         temp[i].topElementStyle = obj.topElementStyle
+        temp[i].buttons = obj.buttons
         isPresent = true
       }
     })

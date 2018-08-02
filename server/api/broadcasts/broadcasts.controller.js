@@ -123,7 +123,6 @@ exports.indexx = function (req, res) {
 }
 
 exports.index = function (req, res) {
-  logger.serverLog(TAG, `req.body broadcasts ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
       if (err) {
@@ -138,311 +137,80 @@ exports.index = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      if (req.body.first_page === 'first') {
-        if (!req.body.filter) {
-          let startDate = new Date()  // Current date
-          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-          startDate.setHours(0)   // Set the hour, minute and second components to 0
-          startDate.setMinutes(0)
-          startDate.setSeconds(0)
-          let findCriteria = {
-            companyId: companyUser.companyId,
-            'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: startDate
-            } : { $exists: true }
-          }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: findCriteria }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        } else {
-          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-          let findCriteria = {}
-          if (req.body.filter_criteria.type_value === 'miscellaneous') {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.1': { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          } else {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: findCriteria }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'BroadcastPage not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
+      let search = ''
+      let findCriteria = {}
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
+      let finalCriteria = {}
+      let recordsToSkip = 0
+      if (!req.body.filter) {
+        findCriteria = {
+          companyId: companyUser.companyId,
+          'datetime': req.body.filter_criteria.days !== '0' ? {
+            $gte: startDate
+          } : { $exists: true }
         }
-      } else if (req.body.first_page === 'next') {
-        let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-        if (!req.body.filter) {
-          let startDate = new Date()  // Current date
-          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-          startDate.setHours(0)   // Set the hour, minute and second components to 0
-          startDate.setMinutes(0)
-          startDate.setSeconds(0)
-          let findCriteria = {
+      } else {
+        search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+        if (req.body.filter_criteria.type_value === 'miscellaneous') {
+          findCriteria = {
             companyId: companyUser.companyId,
+            'payload.1': { $exists: true },
+            title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
             'datetime': req.body.filter_criteria.days !== '0' ? {
               $gte: startDate
             } : { $exists: true }
           }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
         } else {
-          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-          let findCriteria = {}
-          if (req.body.filter_criteria.type_value === 'miscellaneous') {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.1': { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          } else {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          }
-
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        }
-      } else if (req.body.first_page === 'previous') {
-        let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-        if (!req.body.filter) {
-          let startDate = new Date()  // Current date
-          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-          startDate.setHours(0)   // Set the hour, minute and second components to 0
-          startDate.setMinutes(0)
-          startDate.setSeconds(0)
-          let findCriteria = {
+          findCriteria = {
             companyId: companyUser.companyId,
+            $and: [{'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true }}, {'payload.1': { $exists: false }}],
+            title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
             'datetime': req.body.filter_criteria.days !== '0' ? {
               $gte: startDate
             } : { $exists: true }
           }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        } else {
-          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-          let findCriteria = {}
-          if (req.body.filter_criteria.type_value === 'miscellaneous') {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.1': { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          } else {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          }
-
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
         }
       }
+      if (req.body.first_page === 'first') {
+        finalCriteria = {$match: findCriteria}
+      } else if (req.body.first_page === 'next') {
+        finalCriteria = { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }
+        recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+      } else if (req.body.first_page === 'previous') {
+        finalCriteria = { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }
+        recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+      }
+      Broadcasts.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({ status: 'failed', description: 'BroadcastsCount not found' })
+        }
+        Broadcasts.aggregate([finalCriteria, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
+            .exec((err, broadcasts) => {
+              if (err) {
+                return res.status(404)
+                  .json({ status: 'failed', description: 'Broadcasts not found' })
+              }
+              BroadcastPage.find({ companyId: companyUser.companyId },
+                (err, broadcastpages) => {
+                  if (err) {
+                    return res.status(404)
+                      .json({ status: 'failed', description: 'Broadcasts not found' })
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: { broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                  })
+                })
+            })
+      })
     })
 }
 
@@ -633,87 +401,91 @@ exports.getfbMessage = function (req, res) {
                         } else if (subscriberSource === 'chat_plugin') {
                           payload.source = 'chat_plugin'
                         }
-                        Subscribers.findOne({ senderId: sender },
-                          (err, subscriber) => {
+                        Pages.findOne({ _id: page._id, connected: true },
+                          (err, pageFound) => {
                             if (err) logger.serverLog(TAG, err)
-                            if (subscriber === null) {
-                              // subsriber not found, create subscriber
-                              Subscribers.create(payload,
-                                (err2, subscriberCreated) => {
-                                  if (err2) {
-                                    logger.serverLog(TAG, err2)
-                                  }
-                                  Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                    if (err) logger.serverLog(TAG, err)
-                                    if (webhook && webhook.isEnabled) {
-                                      needle.get(webhook.webhook_url, (err, r) => {
-                                        if (err) {
-                                          logger.serverLog(TAG, err)
-                                        } else if (r.statusCode === 200) {
-                                          if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                            var data = {
-                                              subscription_type: 'NEW_SUBSCRIBER',
-                                              payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
-                                            }
-                                            needle.post(webhook.webhook_url, data,
-                                              (error, response) => {
-                                                if (error) logger.serverLog(TAG, err)
-                                              })
+                            Subscribers.findOne({ senderId: sender, companyId: pageFound.companyId },
+                              (err, subscriber) => {
+                                if (err) logger.serverLog(TAG, err)
+                                else if (subscriber === null) {
+                                  // subsriber not found, create subscriber
+                                  Subscribers.create(payload,
+                                    (err2, subscriberCreated) => {
+                                      if (err2) {
+                                        logger.serverLog(TAG, err2)
+                                      } else {
+                                        Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
+                                          if (err) logger.serverLog(TAG, err)
+                                          else if (webhook && webhook.isEnabled) {
+                                            needle.get(webhook.webhook_url, (err, r) => {
+                                              if (err) {
+                                                logger.serverLog(TAG, err)
+                                              } else if (r.statusCode === 200) {
+                                                if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                                  var data = {
+                                                    subscription_type: 'NEW_SUBSCRIBER',
+                                                    payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                                  }
+                                                  needle.post(webhook.webhook_url, data,
+                                                    (error, response) => {
+                                                      if (error) logger.serverLog(TAG, err)
+                                                    })
+                                                }
+                                              } else {
+                                                webhookUtility.saveNotification(webhook)
+                                              }
+                                            })
                                           }
-                                        } else {
-                                          webhookUtility.saveNotification(webhook)
-                                        }
-                                      })
-                                    }
-                                  })
+                                        })
+                                      }
+                                      if (subscriberSource === 'customer_matching') {
+                                        updateList(phoneNumber, sender, page)
+                                      }
+                                      if (!(event.postback &&
+                                        event.postback.title === 'Get Started')) {
+                                        createSession(page, subscriberCreated,
+                                          event)
+                                      }
+                                      require('./../../config/socketio')
+                                        .sendMessageToClient({
+                                          room_id: page.companyId,
+                                          body: {
+                                            action: 'dashboard_updated',
+                                            payload: {
+                                              subscriber_id: subscriberCreated._id,
+                                              company_id: page.companyId
+                                            }
+                                          }
+                                        })
+                                    })
+                                } else {
                                   if (subscriberSource === 'customer_matching') {
-                                    updateList(phoneNumber, sender, page)
+                                    // Subscribers.update({senderId: sender}, {
+                                    //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
+                                    //   source: 'customer_matching',
+                                    //   isSubscribed: true,
+                                    //   isEnabledByPage: true
+                                    // }, (err, subscriber) => {
+                                    //   if (err) return logger.serverLog(TAG, err)
+                                    //   logger.serverLog(TAG, subscriber)
+                                    // })
+                                  } else if (!subscriber.isSubscribed) {
+                                    // subscribing the subscriber again in case he
+                                    // or she unsubscribed and removed chat
+                                    Subscribers.update({ senderId: sender }, {
+                                      isSubscribed: true,
+                                      isEnabledByPage: true
+                                    }, (err, subscriber) => {
+                                      if (err) return logger.serverLog(TAG, err)
+                                      logger.serverLog(TAG, subscriber)
+                                    })
                                   }
                                   if (!(event.postback &&
                                     event.postback.title === 'Get Started')) {
-                                    createSession(page, subscriberCreated,
-                                      event)
+                                    createSession(page, subscriber, event)
                                   }
-                                  logger.serverLog(TAG, `Subscriber Joins Sequence Trigger ${JSON.stringify(subscriberCreated)}`)
-                                  sequenceController.setSequenceTrigger(subscriberCreated.companyId, subscriberCreated._id, {event: 'subscriber_joins', value: null})
-                                  require('./../../config/socketio')
-                                    .sendMessageToClient({
-                                      room_id: page.companyId,
-                                      body: {
-                                        action: 'dashboard_updated',
-                                        payload: {
-                                          subscriber_id: subscriberCreated._id,
-                                          company_id: page.companyId
-                                        }
-                                      }
-                                    })
-                                })
-                            } else {
-                              if (subscriberSource === 'customer_matching') {
-                                // Subscribers.update({senderId: sender}, {
-                                //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                //   source: 'customer_matching',
-                                //   isSubscribed: true,
-                                //   isEnabledByPage: true
-                                // }, (err, subscriber) => {
-                                //   if (err) return logger.serverLog(TAG, err)
-                                //   logger.serverLog(TAG, subscriber)
-                                // })
-                              } else if (!subscriber.isSubscribed) {
-                                // subscribing the subscriber again in case he
-                                // or she unsubscribed and removed chat
-                                Subscribers.update({ senderId: sender }, {
-                                  isSubscribed: true,
-                                  isEnabledByPage: true
-                                }, (err, subscriber) => {
-                                  if (err) return logger.serverLog(TAG, err)
-                                })
-                              }
-                              if (!(event.postback &&
-                                event.postback.title === 'Get Started')) {
-                                createSession(page, subscriber, event)
-                              }
-                            }
+                                }
+                              })
                           })
                       } else {
                         if (error) {
@@ -1918,7 +1690,8 @@ function sendMenuReply (req) {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
-      utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+       // sending last parameter because to incorporate the changed getBatchData method
+      utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, 'menu')
     })
   })
 }

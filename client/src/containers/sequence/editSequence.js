@@ -78,7 +78,7 @@ class CreateSequence extends React.Component {
     })
   }
 
-  validateSegmentation() {
+  validateSegmentation () {
     console.log('validating')
     if (this.state.segmentation.length === 0) {
       return false
@@ -91,7 +91,7 @@ class CreateSequence extends React.Component {
 
   onConditionChange (condition) {
     this.setState({segmentationCondition: condition})
-  } 
+  }
 
   onNameCriteriaChange (criteria, id) {
     let segmentation = this.state.segmentation
@@ -569,7 +569,7 @@ class CreateSequence extends React.Component {
                                     <span style={{display: 'inlineblock'}}>
                                       <span>Segment</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
-                                          None
+                                          {message.segmentation ? 'Present' : 'None'}
                                         </span>
                                       <span onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
                                     </span>
