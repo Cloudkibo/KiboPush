@@ -7,12 +7,17 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { getAbandonedCarts } from '../../redux/actions/abandonedCarts.actions'
+import { getAbandonedCarts, updateStoreStatus } from '../../redux/actions/abandonedCarts.actions'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.props.getAbandonedCarts()
+    this.state = {
+      showDropDown: false,
+      isActive: null,
+      store: null
+    }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
   }
@@ -21,12 +26,16 @@ class AbandonedList extends React.Component {
     console.log('Need to handle the page click logic here')
   }
 
-  handleStatusChange (shopId, statusValue) {
-    // TODO
-    // It will receive the shopID which it will send to API endpoint to update the value
-    this.setState({isActive: statusValue})
-    console.log('set the status: ' + statusValue)
-    this.props.updateCartStatus({shopId: shopId, isActive: statusValue}, this.msg)
+  componentWillReceiveProps (nextProps) {
+    this.setState({isActive: nextProps.storeList[0].isActive, store: nextProps.storeList[0]})
+  }
+
+  handleStatusChange () {
+    // I am putting 0 because dayem said only one store will be existing for right now
+    this.setState({isActive: !this.state.isActive})
+    let shopId = this.state.store._id
+    let statusValue = this.state.isActive
+    this.props.updateStoreStatus({shopId: shopId, isActive: !statusValue}, this.msg)
   }
 
   render () {
@@ -68,6 +77,20 @@ class AbandonedList extends React.Component {
                         Abandoned Carts
                         </h3>
                     </div>
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    {
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.handleStatusChange}>
+                        <span>
+                          <i className='la la-info' />
+                          <span>
+                            {
+                              this.state.isActive ? 'Active' : 'Not Active'
+                            }
+                          </span>
+                        </span>
+                      </button>
+                    }
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -147,7 +170,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      getAbandonedCarts: getAbandonedCarts
+      getAbandonedCarts: getAbandonedCarts,
+      updateStoreStatus: updateStoreStatus
     },
     dispatch)
 }

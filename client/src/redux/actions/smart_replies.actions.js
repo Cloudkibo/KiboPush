@@ -218,19 +218,3 @@ export function loadUnansweredQuestions (id) {
       })
   }
 }
-
-// TODO
-// We will move this action to abandoned cart action once dayem make the code consistent
-export function updateCartStatus (data, msg) {
-  return (dispatch) => {
-    callApi('abandonedCarts/updateStatusStore', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          // dispatch(loadBotsList())
-          // Add logic to display success Message
-          console.log('updated successfully: ' + JSON.stringify(res))
-          msg.info('Status updated successfully')
-        }
-      })
-  }
-}

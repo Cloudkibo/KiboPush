@@ -20,7 +20,8 @@ const storeSchema = new Schema({
     ref: 'companyprofile'
   },
   isActive: {
-    type: Boolean
+    type: Boolean,
+    default: true
   }
 })
 

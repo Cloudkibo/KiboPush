@@ -113,6 +113,138 @@ exports.updateStatusStore = function (req, res) {
   })
 }
 
+exports.deleteAllCartInfo = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'storeId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'Failed', description: 'Parameters are missing'})
+  }
+
+  CartInfo.remove({storeId: req.body.storeId}, (err, result) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', error: err })
+    }
+
+    if (result) {
+      return res.status(200).json({status: 'success', payload: result})
+    } else {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The Cart Info deletion failed'
+      })
+    }
+  })
+}
+
+exports.deleteOneCartInfo = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'storeId')) parametersMissing = true
+  if (!_.has(req.body, 'cartInfoId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'Failed', description: 'Parameters are missing'})
+  }
+
+  CartInfo.remove({storeId: req.body.storeId, _id: req.body.cartInfoId}, (err, result) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', error: err })
+    }
+
+    if (result) {
+      return res.status(200).json({status: 'success', payload: result})
+    } else {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The Cart Info deletion failed'
+      })
+    }
+  })
+}
+
+exports.deleteCheckoutInfo = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'checkoutInfoId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'Failed', description: 'Parameters are missing'})
+  }
+
+  CheckoutInfo.remove({_id: req.body.checkoutInfoId}, (err, result) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', error: err })
+    }
+
+    if (result) {
+      return res.status(200).json({status: 'success', payload: result})
+    } else {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The Checkout Info delete failed'
+      })
+    }
+  })
+}
+
+exports.deleteAllInfo = function (req, res) {
+  CompanyUser.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', error: err })
+    }
+
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    StoreInfo.find({companyId: companyUser.companyId}, (err, stores) => {
+      if (err) {
+        return res.status(500).json({ status: 'Failed', error: err })
+      }
+      let store
+      // I am using for loop because it is fastest loop. Moreover, the use 'let' makes it secure and not unpredictable
+      for (let i = 0, length = stores.length; i < length; i++) {
+        store = stores[i]
+        if (store) {
+          CheckoutInfo.remove({storeId: store._id}, (err, result1) => {
+            if (err) {
+              return res.status(500).json({ status: 'Failed', error: err })
+            }
+            CartInfo.remove({storeId: store._id}, (err, result2) => {
+              if (err) {
+                return res.status(500).json({ status: 'Failed', error: err })
+              }
+
+              StoreInfo.remove({_id: store._id}, (err, result3) => {
+                if (err) {
+                  return res.status(500).json({ status: 'Failed', error: err })
+                }
+
+                if (result1 && result2 && result3) {
+                  return res.status(200).json({status: 'success', payload: 'All information has been deleted'})
+                } else {
+                  return res.status(404).json({
+                    status: 'failed',
+                    description: 'The All delete Info failed'
+                  })
+                }
+              }) // Store remove
+            }) // CartInfo remove
+          }) // CheckoutInfo remove
+        }
+      }
+    })
+  }) // Company User find One
+}
+
 exports.abandonedCheckouts = function (req, res) {
   CheckoutInfo.find({userId: req.user._id}).exec()
   .then((result) => {

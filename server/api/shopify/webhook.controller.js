@@ -3,7 +3,6 @@
  */
 
 const logger = require('../../components/logger')
-const config = require('./../../config/environment/index')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
