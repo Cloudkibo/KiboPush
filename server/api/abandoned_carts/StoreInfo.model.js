@@ -15,6 +15,10 @@ const storeSchema = new Schema({
   shopToken: {
     type: String
   },
+  companyId: {
+    type: Schema.ObjectId,
+    ref: 'companyprofile'
+  },
   isActive: {
     type: Boolean,
     default: true
