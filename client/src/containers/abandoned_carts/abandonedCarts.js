@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import { getShopifyStores } from '../../redux/actions/abandonedCarts.actions'
 import InstallApp from './installApp'
 import ReactLoading from 'react-loading'
+import AbandonedList from './abandonedList'
 
 class AbandonedCarts extends React.Component {
   constructor (props) {
