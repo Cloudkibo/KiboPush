@@ -240,9 +240,15 @@ const sendBroadcast = (batchMessages, page, res) => {
         description: `Failed to send broadcast ${JSON.stringify(err)}`
       })
     }
-    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
-    return res.status(200)
-    .json({status: 'success', description: 'Conversation sent successfully!'})
+    // Following change is to incorporate persistant menu
+
+    if (res === 'menu') {
+      // we don't need to send res for persistant menu
+    } else {
+      logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
+      return res.status(200)
+      .json({status: 'success', description: 'Conversation sent successfully!'})
+    }
   })
   const form = r.form()
   form.append('access_token', page.accessToken)
