@@ -4,7 +4,6 @@
 
 const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
-const AutoPostingMessages = require('../autoposting_messages/autoposting_messages.model')
 const TAG = 'api/autoposting/migrations.controller.js'
 const TwitterUtility = require('../../config/integrations/twitter')
 const CompanyUsers = require('./../companyuser/companyuser.model')
