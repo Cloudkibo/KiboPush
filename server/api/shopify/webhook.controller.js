@@ -8,6 +8,7 @@ const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
 const TAG = 'api/pages/pages.controller.js'
 const mainScript = require('./mainScript')
+const config = require('./../../config/environment/index')
 
 exports.handleCheckout = function (req, res) {
   const productIds = req.body.line_items.map((item) => {
@@ -129,7 +130,7 @@ exports.serveScript = function (req, res) {
    .then((results) => {
      const pageId = results[0].pageId
      // logger.serverLog(TAG, `Found the shop using url ${pageId}`)
-     res.send(mainScript.renderJS(pageId, '159385484629940'))
+     res.send(mainScript.renderJS(pageId, config.facebook.clientID))
    }).catch((err) => {
      logger.serverLog(TAG, `Error in finding the shop using Url ${JSON.stringify(err)}`)
      return res.status(500).json({status: 'failed', error: err})
