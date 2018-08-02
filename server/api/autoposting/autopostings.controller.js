@@ -76,7 +76,7 @@ exports.create = function (req, res) {
             description: 'Internal Server Error'
           })
         }
-        if (gotCount > 0 && !companyUser.enableMoreAutoPostingIntegration) {
+        if (gotCount >= 2) {
           res.status(403).json({
             status: 'Failed',
             description: 'Cannot add more integrations. Please contact support or remove existing ones'
