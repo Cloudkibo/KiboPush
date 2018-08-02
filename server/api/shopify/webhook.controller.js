@@ -19,12 +19,14 @@ exports.handleCheckout = function (req, res) {
   .then((results) => {
     const shopId = results[0]._id
     const userId = results[0].userId
+    const companyId = results[0].companyId
     const checkout = new CheckoutInfo({
       shopifyCheckoutId: req.body.id,
       checkoutToken: req.body.token,
       cartToken: req.body.cart_token,
       storeId: shopId,
       userId: userId,
+      companyId: companyId,
       totalPrice: req.body.total_price,
       abandonedCheckoutUrl: req.body.abandoned_checkout_url,
       productIds: productIds,
@@ -54,11 +56,13 @@ exports.handleCart = function (req, res) {
   .then((results) => {
     const shopId = results[0]._id
     const userId = results[0].userId
+    const companyId = results[0].companyId
     const cart = new CartInfo({
       shopifyCartId: req.body.id,
       cartToken: req.body.token,
       storeId: shopId,
       userId: userId,
+      companyId: companyId,
       linePrice: 0,
       productIds: productIds,
       status: 'pending',

@@ -19,6 +19,10 @@ const checkoutSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'users'  // Schema.ObjectId, ref: 'users'
   },
+  companyId: {
+    type: Schema.ObjectId,
+    ref: 'companyprofile'
+  },
   totalPrice: {
     type: Number
   },
