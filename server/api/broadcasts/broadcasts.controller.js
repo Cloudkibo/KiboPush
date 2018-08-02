@@ -627,36 +627,37 @@ exports.getfbMessage = function (req, res) {
                             Subscribers.findOne({ senderId: sender, companyId: pageFound.companyId },
                               (err, subscriber) => {
                                 if (err) logger.serverLog(TAG, err)
-                                if (subscriber === null) {
+                                else if (subscriber === null) {
                                   // subsriber not found, create subscriber
                                   Subscribers.create(payload,
                                     (err2, subscriberCreated) => {
                                       if (err2) {
                                         logger.serverLog(TAG, err2)
-                                      }
-                                      Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                        if (err) logger.serverLog(TAG, err)
-                                        if (webhook && webhook.isEnabled) {
-                                          needle.get(webhook.webhook_url, (err, r) => {
-                                            if (err) {
-                                              logger.serverLog(TAG, err)
-                                            } else if (r.statusCode === 200) {
-                                              if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                                var data = {
-                                                  subscription_type: 'NEW_SUBSCRIBER',
-                                                  payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                      } else {
+                                        Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
+                                          if (err) logger.serverLog(TAG, err)
+                                          else if (webhook && webhook.isEnabled) {
+                                            needle.get(webhook.webhook_url, (err, r) => {
+                                              if (err) {
+                                                logger.serverLog(TAG, err)
+                                              } else if (r.statusCode === 200) {
+                                                if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                                  var data = {
+                                                    subscription_type: 'NEW_SUBSCRIBER',
+                                                    payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                                  }
+                                                  needle.post(webhook.webhook_url, data,
+                                                    (error, response) => {
+                                                      if (error) logger.serverLog(TAG, err)
+                                                    })
                                                 }
-                                                needle.post(webhook.webhook_url, data,
-                                                  (error, response) => {
-                                                    if (error) logger.serverLog(TAG, err)
-                                                  })
+                                              } else {
+                                                webhookUtility.saveNotification(webhook)
                                               }
-                                            } else {
-                                              webhookUtility.saveNotification(webhook)
-                                            }
-                                          })
-                                        }
-                                      })
+                                            })
+                                          }
+                                        })
+                                      }
                                       if (subscriberSource === 'customer_matching') {
                                         updateList(phoneNumber, sender, page)
                                       }
