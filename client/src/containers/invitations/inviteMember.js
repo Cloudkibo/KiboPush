@@ -213,7 +213,7 @@ class InviteMembers extends React.Component {
                         Invite
                       </button>
                       <span>&nbsp;&nbsp;</span>
-                      <Link to='members'>
+                      <Link to={this.props.location.state.prevPath} >
                         <button className='btn btn-secondary'>
                           Cancel
                         </button>

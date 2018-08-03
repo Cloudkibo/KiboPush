@@ -159,7 +159,7 @@ class Members extends React.Component {
                 </div>
                 {this.props.user.permissions.invitationsPermission &&
                 <div className='m-portlet__head-tools'>
-                  <Link to='newInvitation'>
+                  <Link to={{pathname: '/newInvitation', state: { prevPath: this.props.location.pathname }}}>
                     <button
                       className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
