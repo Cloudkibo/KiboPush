@@ -86,19 +86,17 @@ const updatePayload = (self, payload, pageAccessToken, broadcast) => {
 }
 
 const sendTestBroadcast = (companyUser, page, payload, req, res) => {
-  payload.forEach((payloadItem, index) => {
-    PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id})
-    .populate('userId').exec((err, subscriptionUser) => {
-      if (err) {
-        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-        return res.status(404)
-        .json({status: 'failed', description: 'Pages subscription id not found'})
-      }
-      let temp = subscriptionUser.userId.facebookInfo.name.split(' ')
-      let fname = temp[0]
-      let lname = temp[1] ? temp[1] : ''
-      utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res)
-    })
+  PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id})
+  .populate('userId').exec((err, subscriptionUser) => {
+    if (err) {
+      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+      return res.status(404)
+      .json({status: 'failed', description: 'Pages subscription id not found'})
+    }
+    let temp = subscriptionUser.userId.facebookInfo.name.split(' ')
+    let fname = temp[0]
+    let lname = temp[1] ? temp[1] : ''
+    utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res)
   })
 }
 
