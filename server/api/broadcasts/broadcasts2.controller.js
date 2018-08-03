@@ -94,38 +94,10 @@ const sendTestBroadcast = (companyUser, page, payload, req, res) => {
         return res.status(404)
         .json({status: 'failed', description: 'Pages subscription id not found'})
       }
-      let messageData = utility.prepareSendAPIPayload(
-        subscriptionUser.subscriberId,
-        payloadItem, subscriptionUser.userId.name, '', false)
-
-      logger.serverLog(TAG,
-        `Payload for Messenger Send API for test: ${JSON.stringify(
-          messageData)}`)
-
-      request(
-        {
-          'method': 'POST',
-          'json': true,
-          'formData': messageData,
-          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-          page.accessToken
-        },
-        function (err, res) {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At send test message broadcast ${JSON.stringify(err)}`)
-          } else {
-            logger.serverLog(TAG,
-              `At send test message broadcast response ${JSON.stringify(
-                res)}`)
-            if (index === (payload.length - 1)) {
-              return res.status(200).json({
-                status: 'success',
-                description: 'Conversation sent successfully!'
-              })
-            }
-          }
-        })
+      let temp = subscriptionUser.userId.facebookInfo.name.split(' ')
+      let fname = temp[0]
+      let lname = temp[1] ? temp[1] : ''
+      utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res)
     })
   })
 }
