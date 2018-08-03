@@ -21,7 +21,7 @@ class CreateSequence extends React.Component {
       deleteid: '',
       error: false,
       openPopover: false,
-      ShowTrigger:false,
+      ShowTrigger: false,
       disabled: true,
       targetValue: '',
       selectedDays: '0',
@@ -37,15 +37,17 @@ class CreateSequence extends React.Component {
       segmentationCondition: 'any',
       selectedSequenceId: '',
       selectedMessageId: '',
-      validSegmentation: false
+      validSegmentation: false,
+      selectedMessage: '',
+      selectedEvent: ''
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
     }
     props.loadMyPagesList()
     this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.ShowDialogTrigger=this.ShowDialogTrigger.bind(this)
-    this.CloseDialogTrigger=this.CloseDialogTrigger.bind(this)
+    this.ShowDialogTrigger = this.ShowDialogTrigger.bind(this)
+    this.CloseDialogTrigger = this.CloseDialogTrigger.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogSegmentation = this.showDialogSegmentation.bind(this)
     this.closeDialogSegmentation = this.closeDialogSegmentation.bind(this)
@@ -81,7 +83,7 @@ class CreateSequence extends React.Component {
     })
   }
 
-  validateSegmentation() {
+  validateSegmentation () {
     console.log('validating')
     if (this.state.segmentation.length === 0) {
       return false
@@ -95,7 +97,12 @@ class CreateSequence extends React.Component {
   onConditionChange (condition) {
     this.setState({segmentationCondition: condition})
   } 
-
+  onSelectedMessage (Message) {
+    console.log(Message) 
+  }
+  onSelectedOption (menu) {
+    console.log(menu) 
+  }
   onNameCriteriaChange (criteria, id) {
     let segmentation = this.state.segmentation
     let segmentationIndex = segmentation.findIndex((o) => o.id === id)
@@ -307,13 +314,14 @@ class CreateSequence extends React.Component {
     this.setState({isShowingModalSegmentation: false})
   }
 
-  ShowDialogTrigger (message){
+  ShowDialogTrigger (message) {
+    console.log('the message id is', message._id)
     this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
-}
+  }
 
-  CloseDialogTrigger (message){
+  CloseDialogTrigger (message) {
     this.setState({ShowTrigger: false})
-}
+  }
 
   componentDidMount () {
     this.scrollToTop()
@@ -477,96 +485,49 @@ class CreateSequence extends React.Component {
                 </ModalDialog>
               </ModalContainer>
             }
-
+            
             {
               this.state.ShowTrigger &&
               <ModalContainer style={{width: '500px', paddingLeft: '33px', paddingRight: '33px'}}
-                onClose={this.closeDialogSegmentation}>
+                onClose={this.CloseDialogTrigger}>
                 <ModalDialog style={{width: '500px',  paddingLeft: '33px', paddingRight: '33px'}}
-                  onClose={this.closeDialogSegmentation}>
+                  onClose={this.CloseDialogTrigger}>
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
-                  <div style={{marginBottom: '20px'}}>  This message will be triggerred when:
+                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
 
-                    <h2> Subscriber</h2>
-                        <select onChange={(e) => this.onConditionChange(e.target.value)} style={{marginLeft: '10px', marginRight: '10px'}}>
-                          <option value='any'>any</option>
-                          <option value='all'>all</option>
+                         subscriber 
+                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                         <option value='sees'>sees</option>
+                          <option value='clicks'>clicks</option>
+                          <option value='receive'>receive</option>
                       </select>
-                      of the following conditions
-                  </div>
-                  {
-                    this.state.segmentationOptions.map((option, i) => {
-                      return (
-                      <div key = {i}>    
-                        {
-                          option.name ? 
-                        <div style={{marginBottom: '10px'}}>
-                          <i onClick={() => this.removeSegmentationOption(i, 'name')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
-                          <select onChange={(e) => this.onNameConditionChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
-                            <option value='first_name'>First Name</option>
-                            <option value='last_name'>Last Name</option>
-                        </select>
-                        <select onChange={(e) => this.onNameCriteriaChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px'}}>
-                          <option value='is'>is</option>
-                          <option value='contains'>contains</option>
-                          <option value='begins_with'>begins with</option>
-                          </select>
-                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} type='text' onChange={(e) => this.onNameSegmentationChange(e.target.value, 'name'+i)}></input>
-                        </div> : null
-                        }
 
-
-                        {
-                          option.page ? 
-                        <div style={{marginBottom: '10px'}}>
-                          <i onClick={() => this.removeSegmentationOption(i, 'page')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
-                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
-                            <option>
-                              Page
-                            </option>
-                        </select>
-                        <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
-                          <option>is</option>
-                          </select>
-                          <select className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} onChange={(e) => this.onPageSegmentationChange(e.target.value, 'page'+i)} >
-                          <option disabled selected value> -- Select a Page -- </option>
-                          {
-                              this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                              ))
-                          }
-                          </select>
-                        </div> : null
-                        }
-
-                        {
-                          option.subscribed ?            
-                        <div style={{marginBottom: '10px'}}>
-                          <i onClick={() => this.removeSegmentationOption(i, 'subscribed')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
-                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
-                            <option>Subscribed</option>
-                        </select>
-                        <select onChange={(e) => this.onSubscribedCriteriaChange(e.target.value, 'subscribed'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
-                          <option>on</option>
-                          <option>before</option>
-                          <option>after</option>
-                          </select>
-                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px'}} type='date' onChange={(e) => this.onSubscribedSegmentationChange(e.target.value, 'subscribed'+i)}></input>
-                        </div> : null
-                        }
-                      </div>
-                      )
                       
-                    })
-                  }
+                            
+                            
+                          
+                        <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
+                        
+                        {
 
-                  <div onClick={() => this.addSegmentationOption()} className="sequence-link">
-                    <i className="fa fa-plus-circle" style={{fontSize:'24px'}}></i> 
-                    <span style={{bottom: '3px', position: 'relative', fontWeight: 'bold', marginLeft: '5px'}} >Add</span>
+                          this.props.messages.map((message, i) => {
+
+                          if (this.state.selectedMessageId != message._id) {
+                            return <option value={message._id}>{message.title}</option> 
+                          }
+                           
+                          
+                        })}
+                       
+                      </select>
+                      
                   </div>
+                  
+
+                  
 
                     <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateSegmentation()}> Save </button>
-                    <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
