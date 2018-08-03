@@ -84,13 +84,26 @@ exports.handleCart = function (req, res) {
 
 exports.handleOrder = function (req, res) {
   logger.serverLog(TAG, `Order webhook called ${JSON.stringify(req.body.checkout_id)}`)
-  CheckoutInfo.remove({shopifyCheckoutId: req.body.checkout_id}).exec()
-  .then((result) => {
-    return res.status(200).json({status: 'success'})
-  })
-  .catch((err) => {
-    logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
+  CheckoutInfo.findOne({shopifyCheckoutId: req.body.checkout_id}, (err, result) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
+
+    if (result.status === 'pending') {
+      result.isPurchased = true
+    } else if (result.status === 'sent') {
+      result.isPurchased = true
+      result.isExtraSales = true    // It denotes that the product was bought after we sent abandond cart in messngr
+    }
+    // Saving the updated info
+    result.save((err) => {
+      if (err) {
+        logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+        return res.status(500).json({ status: 'failed', error: err })
+      }
+      return res.status(200).json({status: 'success'})
+    })
   })
 }
 

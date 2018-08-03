@@ -45,6 +45,14 @@ const checkoutSchema = new Schema({
   scheduled_at: {
     type: Date,
     default: () => Date.now() + 24 * 60 * 60 * 1000
+  },
+  isPurchased: {
+    type: Boolean,
+    default: false
+  },
+  isExtraSales: {
+    type: Boolean,
+    default: false
   }
 })
 
