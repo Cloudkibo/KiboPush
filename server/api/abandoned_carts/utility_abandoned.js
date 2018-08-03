@@ -36,12 +36,12 @@ function fetchProductDetails (productIds, store, callBack) {
 function sendToFacebook (cart, store, details) {
   Subscriber.findOne({_id: cart.subscriberId}, (err, subscriber) => {
     if (err) {
-      logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+      return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
     }
 
     Pages.findOne({pageId: store.pageId}, (err, page) => {
       if (err) {
-        logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
+        return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
       }
       let obj
       let gallery = []
@@ -93,6 +93,8 @@ const send = (batchMessages, page) => {
 }
 
 // Unit test function
+// This function is just to test above two methods. We will evantually delete the following method when we
+// complete the feature.
 const fetchUnitFunction = (req, res) => {
   CartInfo.findOne({}, (err, cart) => {
     if (err) {
