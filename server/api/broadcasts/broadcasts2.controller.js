@@ -547,4 +547,17 @@ exports.editButton = function (req, res) {
   }
 }
 
+exports.deleteButton = function (req, res) {
+  URL.deleteOne({_id: req.params.id}, (err, deleted) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    return res.status(200).json({
+      status: 'success',
+      description: 'Url deleted successfully!'
+    })
+  })
+}
+
 exports.sendBroadcast = sendBroadcast
