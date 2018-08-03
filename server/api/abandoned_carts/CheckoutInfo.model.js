@@ -32,7 +32,7 @@ const checkoutSchema = new Schema({
   status: {
     type: String
   },
-  subscriberId: {
+  userRef: {
     type: String
   },
   productIds: {

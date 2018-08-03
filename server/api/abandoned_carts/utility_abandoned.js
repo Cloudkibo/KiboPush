@@ -75,7 +75,7 @@ function sendToFacebook (cart, store, details) {
         }
         payload.push(obj)
       }
-      utility.getBatchData(payload, subscriber.senderId, page, send, subscriber.firstName, subscriber.lastName)
+      utility.getBatchData(payload, subscriber.userRef, page, send, 'f_name', 'l_name')
     }) // Pages findOne ends here
   }) // Subscriber findOne ends here
 }

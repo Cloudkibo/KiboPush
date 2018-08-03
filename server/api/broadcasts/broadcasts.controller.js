@@ -3,6 +3,8 @@
  */
 //
 const Sequences = require('../sequenceMessaging/sequence.model')
+const CheckoutInfo = require('../abandoned_carts/CheckoutInfo.model')
+const StoreInfo = require('../abandoned_carts/StoreInfo.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const SequenceMessages = require('../sequenceMessaging/message.model')
 const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
@@ -1581,6 +1583,24 @@ function updateseenstatus (req) {
         }
       })
     })
+  // updating seen for CheckoutInfo
+  // truthiness of req.prior_message means that this seen is for abandoned cart
+  if (req.prior_message) {
+    StoreInfo.findOne({pageId: req.recipient.id}, (err, store) => {
+      if (err) {
+        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+
+      CheckoutInfo.update(
+        { userRef: req.prior_message.identifier, storeId: store._id },
+        { status: 'seen' },
+        { multi: true }, (err, result) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+        })
+    })
+  }
   // updating seen count for autoposting
   AutopostingSubscriberMessages.distinct('autoposting_messages_id',
     { subscriberId: req.sender.id, pageId: req.recipient.id, seen: false },
