@@ -667,7 +667,7 @@ function addModuleIdIfNecessary (payload, broadcastId) {
     if (payload[i].buttons && payload[i].buttons.length > 0) {
       payload[i].buttons.forEach((button) => {
         if (button.url) {
-          let temp = button.url.split['/']
+          let temp = button.url.split('/')
           let urlId = temp[temp.length - 1]
           URL.findOne({_id: urlId}, (err, URLObject) => {
             if (err) {
@@ -686,7 +686,7 @@ function addModuleIdIfNecessary (payload, broadcastId) {
       payload[i].cards.forEach((card) => {
         card.buttons.forEach((button) => {
           if (button.url) {
-            let temp = button.url.split['/']
+            let temp = button.url.split('/')
             let urlId = temp[temp.length - 1]
             URL.findOne({_id: urlId}, (err, URLObject) => {
               if (err) {
@@ -707,7 +707,7 @@ function addModuleIdIfNecessary (payload, broadcastId) {
         if (element.buttons && element.buttons.length > 0) {
           element.buttons.forEach((button, bindex) => {
             if (button.url) {
-              let temp = button.url.split['/']
+              let temp = button.url.split('/')
               let urlId = temp[temp.length - 1]
               URL.findOne({_id: urlId}, (err, URLObject) => {
                 if (err) {

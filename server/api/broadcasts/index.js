@@ -70,4 +70,10 @@ router.post('/editButton',
   auth.doesRolePermitsThisAction('broadcastPermission'),
   controller2.editButton)
 
+router.post('/deleteButton',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller2.deleteButton)
+
 module.exports = router
