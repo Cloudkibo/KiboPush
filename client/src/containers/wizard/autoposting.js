@@ -39,6 +39,7 @@ class Autoposting extends React.Component {
     this.viewGuide = this.viewGuide.bind(this)
     this.closeGuide = this.closeGuide.bind(this)
   }
+
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }

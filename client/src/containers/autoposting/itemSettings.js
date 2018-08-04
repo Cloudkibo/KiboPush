@@ -54,6 +54,7 @@ class ItemSettings extends React.Component {
   }
 
   componentDidMount () {
+    console.log(this.props.location)
     this.props.loadTags()
     let options = []
     for (let i = 0; i < this.props.pages.length; i++) {

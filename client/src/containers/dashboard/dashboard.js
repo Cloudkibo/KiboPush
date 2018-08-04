@@ -333,6 +333,16 @@ class Dashboard extends React.Component {
     return dataChart
   }
   componentDidMount () {
+    console.log('location', this.props.location)
+    if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
+      console.log('in loadScript')
+      let addScript = document.createElement('script')
+      addScript.setAttribute('src', 'assets/vendors/base/vendors.bundle.js')
+      document.body.appendChild(addScript)
+      let addScript1 = document.createElement('script')
+      addScript1.setAttribute('src', 'assets/demo/default/base/scripts.bundle.js')
+      document.body.appendChild(addScript1)
+    }
     document.title = 'KiboPush | Dashboard'
     var compProp = this.props
     registerAction({

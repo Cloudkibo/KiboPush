@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { logIn } from '../../redux/actions/login.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -66,9 +66,9 @@ class Login extends React.Component {
     }
     if (nextprops.successMessage) {
       this.setState({success: true, error: false})
-      this.props.history.push({
-        pathname: '/dashboard'
-
+      browserHistory.push({
+        pathname: '/dashboard',
+        state: {loadScript: true}
       })
     }
   }

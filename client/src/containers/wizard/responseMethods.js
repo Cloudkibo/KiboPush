@@ -20,6 +20,7 @@ class AutomationControls extends React.Component {
     this.saveResponseMethod = this.saveResponseMethod.bind(this)
     this.updateResponseMethod = this.updateResponseMethod.bind(this)
   }
+
   componentDidMount () {
     this.updateResponseMethod(this.props.responseMethod)
   }
