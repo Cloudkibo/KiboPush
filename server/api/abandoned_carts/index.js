@@ -55,4 +55,8 @@ router.get('/deleteAllInfo',
   auth.isAuthenticated(),
   controller.deleteAllInfo)
 
+router.post('/sendCheckout',
+  auth.isAuthenticated(),
+  controller.sendCheckout)
+
 module.exports = router

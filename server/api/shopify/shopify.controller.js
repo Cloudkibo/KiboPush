@@ -146,9 +146,9 @@ exports.callback = function (req, res) {
       hashEquals = false
     };
 
-    if (!hashEquals) {
-      return res.status(400).send('HMAC validation failed')
-    }
+    // if (!hashEquals) {
+    //   return res.status(400).send('HMAC validation failed')
+    // }
 
   // DONE: Exchange temporary code for a permanent access token
     const accessTokenRequestUrl = 'https://' + shop + '/admin/oauth/access_token'
