@@ -92,7 +92,6 @@ const send = (batchMessages, page) => {
   form.append('batch', batchMessages)
 }
 
-// Endpoint to send the checkout right away
 const sendCheckout = (id, cb) => {
   CheckoutInfo.findOne({_id: id}, (err, checkout) => {
     if (err) {
