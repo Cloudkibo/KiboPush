@@ -165,7 +165,7 @@ class Bot extends React.Component {
     console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       this.displayData(0, nextProps.bots)
-      this.updateAllowedPages(nextProps.pages, nextProps.bots)
+      //  this.updateAllowedPages(nextProps.pages, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
       var responded = 0
       var total = 0
