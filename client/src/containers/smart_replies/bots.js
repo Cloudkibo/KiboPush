@@ -15,7 +15,6 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 class Bot extends React.Component {
   constructor (props, context) {
     props.loadBotsList()
-    props.loadAnalytics()
     props.loadMyPagesList()
     super(props, context)
     this.state = {
@@ -34,7 +33,10 @@ class Bot extends React.Component {
       pageNumber: 0,
       filter: false,
       pages: [],
-      showDropDown: false
+      showDropDown: false,
+      responded: 0,
+      total: 0,
+      notResponded: 0
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -165,6 +167,15 @@ class Bot extends React.Component {
       this.displayData(0, nextProps.bots)
       this.updateAllowedPages(nextProps.pages, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
+      var responded = 0
+      var total = 0
+      var notResponded = 0
+      for (let i = 0; i < nextProps.bots.length; i++) {
+        responded = responded + nextProps.bots[i].hitCount
+        total = total + nextProps.bots[i].hitCount + nextProps.bots[i].missCount
+        notResponded = notResponded + nextProps.bots[i].missCount
+      }
+      this.setState({responded: responded, total: total, notResponded: notResponded})
     } else {
       this.setState({botsData: [], totalLength: 0})
     }
@@ -296,7 +307,6 @@ class Bot extends React.Component {
                 Bots might take 30mins to 1 hour to train. Please test the bot after 1 hour to see if it is working
               </div>
             </div>
-            {this.props.analytics &&
             <div className='row'>
               <div className='col-xl-12'>
                 <div className='row m-row--full-height'>
@@ -304,7 +314,7 @@ class Bot extends React.Component {
                     <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
                       <div className='m-portlet__body'>
                         <div className='m-widget26'>
-                          <div className='m-widget26__number'>{this.props.analytics.totalQueries}
+                          <div className='m-widget26__number'>{this.state.total}
                             <small>
                               Total Queries
                             </small>
@@ -317,7 +327,7 @@ class Bot extends React.Component {
                     <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
                       <div className='m-portlet__body'>
                         <div className='m-widget26'>
-                          <div className='m-widget26__number'>{this.props.analytics.responded}
+                          <div className='m-widget26__number'>{this.state.responded}
                             <small>
                               Responded
                             </small>
@@ -330,7 +340,7 @@ class Bot extends React.Component {
                     <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
                       <div className='m-portlet__body'>
                         <div className='m-widget26'>
-                          <div className='m-widget26__number'>{this.props.analytics.notResponded}
+                          <div className='m-widget26__number'>{this.state.notResponded}
                             <small>
                               Not Responded
                             </small>
@@ -342,7 +352,6 @@ class Bot extends React.Component {
                 </div>
               </div>
             </div>
-          }
             <div className='row'>
               <div className='col-xl-12'>
                 <div className='m-portlet'>
