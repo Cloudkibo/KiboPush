@@ -36,6 +36,7 @@ class InviteSubscribers extends React.Component {
     this.generateAlert = this.generateAlert.bind(this)
     this.goBack = this.goBack.bind(this)
   }
+
   goBack () {
     browserHistory.push({
       pathname: '/addPageWizard',

@@ -57,6 +57,7 @@ class GreetingMessage extends React.Component {
     this.selectPage = this.selectPage.bind(this)
     props.loadMyPagesList()
   }
+
   showPreviewDialog () {
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
