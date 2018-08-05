@@ -1,10 +1,10 @@
-const CartInfo = require('./CartInfo.model')
+const CheckoutInfo = require('./CheckoutInfo.model')
 const StoreInfo = require('./StoreInfo.model')
 const Pages = require('../pages/Pages.model')
 const utility = require('../broadcasts/broadcasts.utility')
 const Subscriber = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
-const TAG = 'api/abandoned_carts/utility_abandoned.js'
+const TAG = 'api/abandoned_checkouts/utility_abandoned.js'
 const Shopify = require('shopify-api-node')
 const request = require('request')
 
@@ -33,8 +33,8 @@ function fetchProductDetails (productIds, store, callBack) {
   }
 }
 
-function sendToFacebook (cart, store, details) {
-  Subscriber.findOne({_id: cart.subscriberId}, (err, subscriber) => {
+function sendToFacebook (checkout, store, details) {
+  Subscriber.findOne({_id: checkout.subscriberId}, (err, subscriber) => {
     if (err) {
       return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
     }
@@ -54,8 +54,8 @@ function sendToFacebook (cart, store, details) {
           },
           componentType: 'card',
           title: details[0].title,
-          buttons: [{'type': 'web_url', 'url': store.shopUrl, 'title': 'Visit Our Shop'}],
-          description: details[0].body_html + '. Vendor: ' + details[0].vendor
+          buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Product'}],
+          description: 'You forgot to checkout this product' + '. Vendor: ' + details[0].vendor
         }
         payload.push(obj)
       } else {
@@ -63,8 +63,8 @@ function sendToFacebook (cart, store, details) {
         details.forEach((item) => {
           let temp = {
             title: item.title,
-            buttons: [{'type': 'web_url', 'url': store.shopUrl, 'title': 'Visit Our Shop'}],
-            subtitle: item.body_html + '. Vendor: ' + item.vendor,
+            buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Our Shop'}],
+            subtitle: 'You forgot to checkout this product' + '. Vendor: ' + item.vendor,
             image_url: item.image.src
           }
           gallery.push(temp)
@@ -75,7 +75,7 @@ function sendToFacebook (cart, store, details) {
         }
         payload.push(obj)
       }
-      utility.getBatchData(payload, subscriber.senderId, page, send, subscriber.firstName, subscriber.lastName)
+      utility.getBatchData(payload, subscriber.senderId, page, send, 'f_name', 'l_name')
     }) // Pages findOne ends here
   }) // Subscriber findOne ends here
 }
@@ -92,34 +92,41 @@ const send = (batchMessages, page) => {
   form.append('batch', batchMessages)
 }
 
-// Unit test function
-// This function is just to test above two methods. We will evantually delete the following method when we
-// complete the feature.
-const fetchUnitFunction = (req, res) => {
-  CartInfo.findOne({}, (err, cart) => {
+const sendCheckout = (id, cb) => {
+  CheckoutInfo.findOne({_id: id}, (err, checkout) => {
     if (err) {
-      throw err
+      cb(err, null)
     }
 
-    if (cart) {
-      StoreInfo.findOne({_id: cart.storeId}, (err, store) => {
+    if (checkout) {
+      StoreInfo.findOne({_id: checkout.storeId}, (err, store) => {
         if (err) {
-          throw err
+          cb(err, null)
         }
 
-        fetchProductDetails(cart.productIds, store, (err, details) => {
+        fetchProductDetails(checkout.productIds, store, (err, details) => {
           if (err) {
-            throw err
+            cb(err, null)
           }
 
           logger.serverLog(TAG, 'Product Details: ' + details)
-          sendToFacebook(cart, store, details)
-        })
-      })
+          sendToFacebook(checkout, store, details)
+          checkout.status = 'sent'
+          checkout.save((err) => {
+            if (err) {
+              cb(err, null)
+            }
+
+            cb(null, {status: 'Success', payload: 'Checkout Sent'})
+          })  // Checkout Info Save
+        })  // Fetch Product Details Callback
+      }) // StoreInfo Find One
+    } else {
+      cb(null, {status: 'Not Found', payload: 'Checkout not found'})
     }
   })
 }
 
-exports.fetchUnitFunction = fetchUnitFunction
+exports.sendCheckout = sendCheckout
 exports.fetchProductDetails = fetchProductDetails
 exports.sendToFacebook = sendToFacebook
