@@ -70,7 +70,7 @@ router.post('/editButton',
   auth.doesRolePermitsThisAction('broadcastPermission'),
   controller2.editButton)
 
-router.post('/deleteButton',
+router.delete('/deleteButton/:id',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('broadcasts'),
   auth.doesRolePermitsThisAction('broadcastPermission'),

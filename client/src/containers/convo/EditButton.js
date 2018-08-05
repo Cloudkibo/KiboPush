@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { editButton } from '../../redux/actions/broadcast.actions'
+import { editButton, deleteButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
@@ -96,7 +96,8 @@ class EditButton extends React.Component {
       let data = {
         id: this.props.index,
         type: 'web_url',
-        url: this.state.url, // User defined link,
+        oldUrl: this.props.data.button.newUrl,
+        newUrl: this.state.url, // User defined link,
         title: this.state.title // User defined label
       }
       this.props.editButton(data, this.props.onEdit)
@@ -161,6 +162,9 @@ class EditButton extends React.Component {
       openSubscribe: false,
       openUnsubscribe: false
     })
+    let temp = this.props.data.button.newUrl.split('/')
+    let id = temp[temp.length - 1]
+    this.props.deleteButton(id)
   }
 
   render () {
@@ -260,7 +264,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    editButton
+    editButton,
+    deleteButton
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditButton)

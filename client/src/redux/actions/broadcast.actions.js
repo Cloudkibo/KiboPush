@@ -1,6 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+import { removeButtonOldurl } from './actions.utility'
 export const API_URL = '/api'
 
 export function deleteFiles (data) {
@@ -224,7 +225,16 @@ export function editButton (data, handleFunction) {
   }
 }
 
-export function sendBroadcast (data, msg, handleSendBroadcast) {
+export function deleteButton (id) {
+  return (dispatch) => {
+    callApi(`broadcasts/deleteButton/${id}`, 'delete').then(res => {
+      console.log(res.description)
+    })
+  }
+}
+
+export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
+  let data = removeButtonOldurl(broadcastData)
   return (dispatch) => {
     callApi('broadcasts/sendConversation', 'post', data)
       .then(res => {

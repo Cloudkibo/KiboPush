@@ -322,20 +322,27 @@ class LiveChat extends React.Component {
         }
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-content'>
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+            <div className='row'>
+              <div className='col'>
+                <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                  <div className='m-alert__icon'>
+                    <i className='flaticon-technology m--font-accent' />
+                  </div>
+                  <div className='m-alert__text'>
+                    Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank'>Click Here. </a>
+                    Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
+                  </div>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank'>Click Here. </a>
-                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
-              </div>
-              <br />
-              <div className='m-alert__icon'>
-                <i className='flaticon-exclamation m--font-brand' />
-              </div>
-              <div className='m-alert__text'>
-                To view Facebook guidelines regarding types of messages <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Click here.</Link>
+              <div className='col'>
+                <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                  <div className='m-alert__icon'>
+                    <i className='flaticon-exclamation m--font-brand' />
+                  </div>
+                  <div className='m-alert__text'>
+                    To view Facebook guidelines regarding types of messages <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Click here.</Link>
+                  </div>
+                </div>
               </div>
             </div>
             {
