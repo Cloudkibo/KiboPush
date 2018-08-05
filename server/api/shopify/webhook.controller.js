@@ -8,6 +8,7 @@ const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
 const TAG = 'api/shopify/webhook.controller.js'
 const mainScript = require('./mainScript')
+const config = require('./../../config/environment/index')
 
 exports.handleCheckout = function (req, res) {
   const productIds = req.body.line_items.map((item) => {
@@ -89,13 +90,26 @@ exports.handleCart = function (req, res) {
 
 exports.handleOrder = function (req, res) {
   logger.serverLog(TAG, `Order webhook called ${JSON.stringify(req.body.checkout_id)}`)
-  CheckoutInfo.remove({shopifyCheckoutId: req.body.checkout_id}).exec()
-  .then((result) => {
-    return res.status(200).json({status: 'success'})
-  })
-  .catch((err) => {
-    logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
+  CheckoutInfo.findOne({shopifyCheckoutId: req.body.checkout_id}, (err, result) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
+
+    if (result.status === 'pending') {
+      result.isPurchased = true
+    } else if (result.status === 'sent') {
+      result.isPurchased = true
+      result.isExtraSales = true    // It denotes that the product was bought after we sent abandond cart in messngr
+    }
+    // Saving the updated info
+    result.save((err) => {
+      if (err) {
+        logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+        return res.status(500).json({ status: 'failed', error: err })
+      }
+      return res.status(200).json({status: 'success'})
+    })
   })
 }
 
@@ -135,7 +149,7 @@ exports.serveScript = function (req, res) {
    .then((results) => {
      const pageId = results[0].pageId
      // logger.serverLog(TAG, `Found the shop using url ${pageId}`)
-     res.send(mainScript.renderJS(pageId, '159385484629940'))
+     res.send(mainScript.renderJS(pageId, config.facebook.clientID))
    }).catch((err) => {
      logger.serverLog(TAG, `Error in finding the shop using Url ${JSON.stringify(err)}`)
      return res.status(500).json({status: 'failed', error: err})

@@ -25,7 +25,7 @@ function registerWebhooks (shop, token) {
 
   shopify.webhook.create({
     topic: 'carts/create',
-    address: `${config.shopify.app_host}/api/shopify/cart-create`,
+    address: `${config.domain}/api/shopify/cart-create`,
     format: 'json'
   }).then((response) => {
     logger.serverLog(TAG, 'Carts webhook created')
@@ -36,7 +36,7 @@ function registerWebhooks (shop, token) {
 
   shopify.webhook.create({
     topic: 'checkouts/create',
-    address: `${config.shopify.app_host}/api/shopify/checkout-create`,
+    address: `${config.domain}/api/shopify/checkout-create`,
     format: 'json'
   }).then((response) => {
     logger.serverLog(TAG, 'Checkout webhook created')
@@ -47,7 +47,7 @@ function registerWebhooks (shop, token) {
 
   shopify.webhook.create({
     topic: 'orders/create',
-    address: `${config.shopify.app_host}/api/shopify/order-create`,
+    address: `${config.domain}/api/shopify/order-create`,
     format: 'json'
   }).then((response) => {
     logger.serverLog(TAG, 'Order webhook created')
@@ -58,7 +58,7 @@ function registerWebhooks (shop, token) {
 
   shopify.webhook.create({
     topic: 'app/uninstalled',
-    address: `${config.shopify.app_host}/api/shopify/app-uninstall`,
+    address: `${config.domain}/api/shopify/app-uninstall`,
     format: 'json'
   }).then((response) => {
     logger.serverLog(TAG, 'App Uninstall webhook created')
@@ -69,7 +69,7 @@ function registerWebhooks (shop, token) {
 
   shopify.webhook.create({
     topic: 'themes/publish',
-    address: `${config.shopify.app_host}/api/shopify/theme-publish`,
+    address: `${config.domain}/api/shopify/theme-publish`,
     format: 'json'
   }).then((response) => {
     logger.serverLog(TAG, 'Theme Publish webhook created')
@@ -92,7 +92,7 @@ exports.index = function (req, res) {
   const scopes = 'write_orders, write_products, read_themes, write_themes, read_script_tags, write_script_tags'
   if (shop) {
     const state = nonce()
-    const redirectUri = config.shopify.app_host + '/api/shopify/callback'
+    const redirectUri = config.domain + '/api/shopify/callback'
     const installUrl = 'https://' + shop +
         '/admin/oauth/authorize?client_id=' + config.shopify.app_key +
         '&scope=' + scopes +
@@ -164,7 +164,7 @@ exports.callback = function (req, res) {
     registerWebhooks(shop, accessToken)
     registerScript(shop, accessToken, {
       event: 'onload',
-      src: config.shopify.app_host + '/api/shopify/serveScript'
+      src: config.domain + '/api/shopify/serveScript'
     })
     const store = new StoreInfo({
       userId: userId,

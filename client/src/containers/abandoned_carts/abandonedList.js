@@ -7,27 +7,22 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import { getAbandonedCarts, updateStoreStatus } from '../../redux/actions/abandonedCarts.actions'
+import { getAbandonedCarts, updateStoreStatus, sendAbandonedCartNow } from '../../redux/actions/abandonedCarts.actions'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.props.getAbandonedCarts()
     this.state = {
-      showDropDown: false,
-      isActive: null,
-      store: null
+      showDropDown: false
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
+    this.onClickSendNow = this.onClickSendNow.bind(this)
   }
 
   handlePageClick () {
     console.log('Need to handle the page click logic here')
-  }
-
-  componentWillReceiveProps (nextProps) {
-    this.setState({isActive: nextProps.storeList[0].isActive, store: nextProps.storeList[0]})
   }
 
   handleStatusChange () {
@@ -36,6 +31,10 @@ class AbandonedList extends React.Component {
     let shopId = this.state.store._id
     let statusValue = this.state.isActive
     this.props.updateStoreStatus({shopId: shopId, isActive: !statusValue}, this.msg)
+  }
+
+  onClickSendNow (id) {
+    this.props.sendAbandonedCartNow({id: id}, this.msg)
   }
 
   render () {
@@ -80,12 +79,13 @@ class AbandonedList extends React.Component {
                   </div>
                   <div className='m-portlet__head-tools'>
                     {
+                      this.props.storeList[0] &&
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.handleStatusChange}>
                         <span>
                           <i className='la la-info' />
                           <span>
                             {
-                              this.state.isActive ? 'Active' : 'Not Active'
+                              this.props.storeList[0].isActive ? 'Active' : 'Not Active'
                             }
                           </span>
                         </span>
@@ -119,6 +119,10 @@ class AbandonedList extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{ width: '125px' }}>Status</span>
                           </th>
+                          <th data-field='actions'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '250px'}}>Actions</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
@@ -131,6 +135,20 @@ class AbandonedList extends React.Component {
                             <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{new Date(item.scheduled_at).toString()}</span></td>
                             <td data-field='value' className='m-datatable__cell'><span style={{width: '125px'}}>{item.totalPrice}</span></td>
                             <td data-field='status' className='m-datatable__cell'><span style={{width: '125px'}}>{item.status}</span></td>
+                            <td data-field='status' className='m-datatable__cell'><span style={{width: '250px'}}>
+                              {
+                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => { this.onClickSendNow(item._id) }}>
+                                  <span>
+                                    <i className='la la-info' />
+                                    <span>
+                                      {
+                                        'Send Now'
+                                      }
+                                    </span>
+                                  </span>
+                                </button>
+                              }
+                            </span></td>
                           </tr>
                         })
                       }
@@ -163,7 +181,8 @@ class AbandonedList extends React.Component {
 function mapStateToProps (state) {
   console.log('state', state)
   return {
-    abandonedList: (state.abandonedInfo.abandonedList)
+    abandonedList: (state.abandonedInfo.abandonedList),
+    store: (state.abandonedInfo.storeList)
   }
 }
 
@@ -171,7 +190,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       getAbandonedCarts: getAbandonedCarts,
-      updateStoreStatus: updateStoreStatus
+      updateStoreStatus: updateStoreStatus,
+      sendAbandonedCartNow: sendAbandonedCartNow
     },
     dispatch)
 }
