@@ -6,7 +6,7 @@ const logger = require('../../components/logger')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
-const TAG = 'api/pages/pages.controller.js'
+const TAG = 'api/shopify/webhook.controller.js'
 const mainScript = require('./mainScript')
 
 exports.handleCheckout = function (req, res) {
@@ -19,26 +19,32 @@ exports.handleCheckout = function (req, res) {
     const shopId = results[0]._id
     const userId = results[0].userId
     const companyId = results[0].companyId
-    const checkout = new CheckoutInfo({
-      shopifyCheckoutId: req.body.id,
-      checkoutToken: req.body.token,
-      cartToken: req.body.cart_token,
-      storeId: shopId,
-      userId: userId,
-      companyId: companyId,
-      totalPrice: req.body.total_price,
-      abandonedCheckoutUrl: req.body.abandoned_checkout_url,
-      productIds: productIds,
-      status: 'pending',
-      subscriberId: ''
-    })
-    checkout.save((err) => {
-      if (err) {
-        logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
-        return res.status(500).json({ status: 'failed', error: err })
-      }
-      return res.status(200).json({status: 'success'})
-    })
+    CartInfo.findOne({cartToken: req.body.cart_token}).exec()
+     .then((cart) => {
+       const checkout = new CheckoutInfo({
+         shopifyCheckoutId: req.body.id,
+         checkoutToken: req.body.token,
+         cartToken: req.body.cart_token,
+         storeId: shopId,
+         userId: userId,
+         companyId: companyId,
+         totalPrice: req.body.total_price,
+         abandonedCheckoutUrl: req.body.abandoned_checkout_url,
+         productIds: productIds,
+         status: 'pending',
+         userRef: cart.userRef
+       })
+       checkout.save((err) => {
+         if (err) {
+           logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
+           return res.status(500).json({ status: 'failed', error: err })
+         }
+         return res.status(200).json({status: 'success'})
+       })
+     }).catch((err) => {
+       logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
+       return res.status(500).json({ status: 'failed', error: err })
+     })
   })
   .catch((err) => {
     logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
@@ -134,5 +140,21 @@ exports.serveScript = function (req, res) {
      logger.serverLog(TAG, `Error in finding the shop using Url ${JSON.stringify(err)}`)
      return res.status(500).json({status: 'failed', error: err})
    })
-  
+}
+
+exports.handleNewSubscriber = function (payload) {
+  // TODO: ADD Validation Check for payload
+  // Get Page ID
+  const pageId = payload.recipient.id
+  // Get USER REF (Note USER REF is also the cart TOKEN)
+  const userRef = payload.optin.user_ref.split('-')[0]
+
+  CartInfo.update({cartToken: userRef}, {userRef: userRef}).exec()
+  .then((result) => {
+    logger.serverLog(TAG, `Successfully Updated UserRef ${JSON.stringify(result)}`)
+  }).catch((err) => {
+    logger.serverLog(TAG, `Failed in updating the UserRef ${JSON.stringify(err)}`)
+  })
+
+  logger.serverLog(TAG, `Page Id: ${JSON.stringify(pageId)} and UserRef ${JSON.stringify(userRef)}`)
 }
