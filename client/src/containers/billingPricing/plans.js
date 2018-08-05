@@ -175,6 +175,7 @@ class Plans extends React.Component {
   migrateCompanies (from, to) {
     if (this.state.migrateFrom !== this.state.migrateTo) {
       this.props.migrate({from: this.state.migrateFrom, to: this.state.migrateTo}, this.msg)
+      this.setState({isShowingModalMigrate: false})
     }
   }
   choosePlan (e, module) {
