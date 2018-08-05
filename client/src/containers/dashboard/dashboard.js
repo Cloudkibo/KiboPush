@@ -136,14 +136,13 @@ class Dashboard extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps dashboard', nextprops)
-    if (nextprops.user && nextprops.user.emailVerified === false) {
-      browserHistory.push({
-        pathname: '/resendVerificationEmail'
-      })
-    }
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
+      if (nextprops.user.emailVerified === false) {
+        browserHistory.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
@@ -156,7 +155,7 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
-      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+      } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
           pathname: '/addPageWizard'
@@ -174,7 +173,7 @@ class Dashboard extends React.Component {
           // state: {showMsg: true}
         // })
       }
-      if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
+      if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
       }
       if (nextprops.sentseendata) {
