@@ -45,6 +45,7 @@ exports.sendConversation = function (req, res) {
   }
 
   if (req.body.self) {
+    console.log('in self')
     CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
       if (err) {
         return res.status(500).json({
@@ -119,6 +120,7 @@ exports.sendConversation = function (req, res) {
       .json({status: 'success', payload: {broadcast: req.body}})
     })
   } else {
+    console.log('in self else')
     CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
       if (err) {
         return res.status(500).json({

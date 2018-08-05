@@ -186,6 +186,7 @@ class List extends React.Component {
     var temp = this.state.buttons
     temp.push(obj)
     this.setState({buttons: temp})
+    console.log('temp', temp)
     this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: temp, topElementStyle: this.state.topElementStyle})
   }
   editButton (obj) {
