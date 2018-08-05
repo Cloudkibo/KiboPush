@@ -5,6 +5,7 @@
 const Users = require('./Users.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 const VerificationToken = require(
   './../verificationtoken/verificationtoken.model')
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
@@ -371,6 +372,37 @@ exports.create = function (req, res) {
                     })
                   }
 
+                  // Populate company usage
+                  let companyUsageData = {
+                    companyId: companySaved._id,
+                    broadcasts: 0,
+                    surveys: 0,
+                    polls: 0,
+                    broadcast_templates: 0,
+                    survey_templates: 0,
+                    polls_templates: 0,
+                    sessions: 0,
+                    chat_messages: 0,
+                    facebook_pages: 0,
+                    bots: 0,
+                    subscribers: 0,
+                    labels: 0,
+                    phone_invitation: 0,
+                    facebook_autoposting: 0,
+                    twitter_autoposting: 0,
+                    wordpress_autoposting: 0,
+                    broadcast_sequences: 0,
+                    messages_per_sequence: 0,
+                    segmentation_lists: 0
+                  }
+                  let companyUsage = new CompanyUsage(companyUsageData)
+                  companyUsage.save((err) => {
+                    if (err) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'Failed to insert record'})
+                    }
+                  })
+
                   // Create customer on stripe
                   companySaved.createCustomer(req.body.email, req.body.name, function (err) {
                     if (err) {
@@ -588,6 +620,37 @@ exports.create = function (req, res) {
                   description: 'profile save error: ' + JSON.stringify(err)
                 })
               }
+
+              // Populate company usage
+              let companyUsageData = {
+                companyId: companySaved._id,
+                broadcasts: 0,
+                surveys: 0,
+                polls: 0,
+                broadcast_templates: 0,
+                survey_templates: 0,
+                polls_templates: 0,
+                sessions: 0,
+                chat_messages: 0,
+                facebook_pages: 0,
+                bots: 0,
+                subscribers: 0,
+                labels: 0,
+                phone_invitation: 0,
+                facebook_autoposting: 0,
+                twitter_autoposting: 0,
+                wordpress_autoposting: 0,
+                broadcast_sequences: 0,
+                messages_per_sequence: 0,
+                segmentation_lists: 0
+              }
+              let companyUsage = new CompanyUsage(companyUsageData)
+              companyUsage.save((err) => {
+                if (err) {
+                  return res.status(500)
+                    .json({status: 'failed', description: 'Failed to insert record'})
+                }
+              })
 
               // Create customer on stripe
               companySaved.createCustomer(req.body.email, req.body.name, function (err) {
