@@ -459,7 +459,8 @@ exports.addButton = function (req, res) {
         })
       }
       let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-      buttonPayload.url = newURL
+      buttonPayload.newUrl = newURL
+      buttonPayload.url = req.body.url
       return res.status(200).json({
         status: 'success',
         payload: buttonPayload
@@ -511,7 +512,7 @@ exports.editButton = function (req, res) {
     // TODO save module id when sending broadcast
     let temp = req.body.oldUrl.split('/')
     let id = temp[temp.length - 1]
-    URL.findOne({_id: mongoose.Types.objectId(id)}, (err, url) => {
+    URL.findOne({_id: mongoose.Types.ObjectId(id)}, (err, url) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
@@ -527,7 +528,8 @@ exports.editButton = function (req, res) {
           })
         }
         let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-        buttonPayload.url = newURL
+        buttonPayload.newUrl = newURL
+        buttonPayload.url = req.body.oldUrl
         return res.status(200).json({
           status: 'success',
           payload: { id: req.body.id, button: buttonPayload }
@@ -548,7 +550,7 @@ exports.editButton = function (req, res) {
 }
 
 exports.deleteButton = function (req, res) {
-  URL.deleteOne({_id: req.params.id}, (err, deleted) => {
+  URL.deleteOne({_id: mongoose.Types.ObjectId(req.params.id)}, (err, deleted) => {
     if (err) {
       return res.status(500)
         .json({status: 'failed', description: 'Internal Server Error'})

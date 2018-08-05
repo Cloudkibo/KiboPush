@@ -58,6 +58,7 @@ class ChatBox extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.previousScrollHeight = undefined
+    this.newMessage = false
     this.state = {
       attachment: [],
       attachmentType: '',
@@ -81,8 +82,7 @@ class ChatBox extends React.Component {
       disabledValue: false,
       record: false,
       buttonState: 'start',
-      recording: false,
-      newMessage: false
+      recording: false
     }
     props.fetchUserChats(this.props.currentSession._id, {page: 'first', number: 25})
     props.markRead(this.props.currentSession._id, this.props.sessions)
@@ -504,7 +504,7 @@ class ChatBox extends React.Component {
           data.format = 'convos'
           this.props.userChat.push(data)
         }
-        this.setState({newMessage: true})
+        this.newMessage = true
       }
     }
   }
@@ -623,9 +623,9 @@ class ChatBox extends React.Component {
   }
 
   componentDidUpdate (nextProps) {
-    if (this.state.newMessage) {
+    if (this.newMessage) {
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
-      this.setState({newMsg: false})
+      this.newMessage = false
     }
     this.updateScrollTop()
     if (nextProps.userChat && nextProps.userChat.length > 0 && nextProps.userChat[0].session_id === this.props.currentSession._id) {

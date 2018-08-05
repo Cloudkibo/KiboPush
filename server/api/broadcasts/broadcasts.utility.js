@@ -12,6 +12,7 @@ const SurveyResponses = require('./../surveys/surveyresponse.model')
 const PollResponses = require('./../polls/pollresponse.model')
 const URL = require('./../URLforClickedCount/URL.model')
 const request = require('request')
+const mongoose = require('mongoose')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -669,15 +670,19 @@ function addModuleIdIfNecessary (payload, broadcastId) {
         if (button.url) {
           let temp = button.url.split('/')
           let urlId = temp[temp.length - 1]
-          URL.findOne({_id: urlId}, (err, URLObject) => {
+          URL.findOne({_id: mongoose.Types.ObjectId(urlId)}, (err, URLObject) => {
             if (err) {
               logger.serverLog(TAG, `Line# 676: update module id failed for url: ${JSON.stringify(err)}`)
             }
-            URLObject.module.id = broadcastId
+            let module = URLObject.module
+            module.id = broadcastId
+            URLObject.module = module
+            console.log(URLObject)
             URLObject.save((err2, savedurl) => {
               if (err) {
                 logger.serverLog(TAG, `Line# 681: save url failed.: ${JSON.stringify(err)}`)
               }
+              console.log(savedurl)
             })
           })
         }

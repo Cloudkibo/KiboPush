@@ -348,7 +348,20 @@ exports.getResolvedSessions = function (req, res) {
 
 // get fb session
 exports.show = function (req, res) {
-  Sessions.findOne({_id: req.params.id})
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Sessions.findOne({_id: req.params.id})
     .populate('subscriber_id page_id')
     .exec(function (err, session) {
       if (err) {
@@ -414,6 +427,7 @@ exports.show = function (req, res) {
         })
       }
     })
+  })
 }
 
 // get fb session
