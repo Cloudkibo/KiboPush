@@ -24,60 +24,72 @@ function fetchProductDetails (productIds, store, callBack) {
     .then((resProduct) => {
       arr.push(resProduct)
       if (i === (length - 1)) {
-        callBack(null, arr)
+        return callBack(null, arr)
       }
     })
     .catch((err) => {
-      callBack(err, null)
+      return callBack(err, null)
     })
   }
 }
 
 function sendToFacebook (checkout, store, details) {
-  Subscriber.findOne({_id: checkout.subscriberId}, (err, subscriber) => {
+  Pages.findOne({pageId: store.pageId}, (err, page) => {
     if (err) {
       return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
     }
-
-    Pages.findOne({pageId: store.pageId}, (err, page) => {
-      if (err) {
-        return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-      }
-      let obj
-      let gallery = []
-      let payload = []
-      if (details.length <= 1) {
+    let obj
+    let gallery = []
+    let payload = {}
+    if (details.length <= 1) {
         // Send one card
-        obj = {
-          fileurl: {
-            url: details[0].image.src
-          },
-          componentType: 'card',
-          title: details[0].title,
-          buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Product'}],
-          description: 'You forgot to checkout this product' + '. Vendor: ' + details[0].vendor
-        }
-        payload.push(obj)
-      } else {
-        // Send Gallary
-        details.forEach((item) => {
-          let temp = {
-            title: item.title,
-            buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Our Shop'}],
-            subtitle: 'You forgot to checkout this product' + '. Vendor: ' + item.vendor,
-            image_url: item.image.src
-          }
-          gallery.push(temp)
-        })
-        obj = {
-          componentType: 'gallery',
-          cards: gallery
-        }
-        payload.push(obj)
+      obj = {
+        fileurl: {
+          url: details[0].image.src
+        },
+        componentType: 'card',
+        title: details[0].title,
+        buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Product'}],
+        description: 'You forgot to checkout this product' + '. Vendor: ' + details[0].vendor
       }
-      utility.getBatchData(payload, subscriber.senderId, page, send, 'f_name', 'l_name')
-    }) // Pages findOne ends here
-  }) // Subscriber findOne ends here
+      payload = obj
+    } else {
+        // Send Gallary
+      details.forEach((item) => {
+        let temp = {
+          title: item.title,
+          buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Our Shop'}],
+          subtitle: 'You forgot to checkout this product' + '. Vendor: ' + item.vendor,
+          image_url: item.image.src
+        }
+        gallery.push(temp)
+      })
+      obj = {
+        componentType: 'gallery',
+        cards: gallery
+      }
+      payload = obj
+    }
+    let options = {
+      uri: 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken,
+      method: 'POST',
+      json: {
+        'recipient': {
+          'user_ref': checkout.userRef
+        },
+        'message': utility.prepareMessageData(page, checkout.userRef, payload, 'f_name', 'l_name')
+      }
+    }
+    logger.serverLog(TAG, `Sending the following info ${JSON.stringify(options)}`)
+    request(options, function (error, response, body) {
+       return logger.serverLog(TAG, `Sent the abandoned cart successfully ${JSON.stringify(response)} ${JSON.stringify(body)} ${JSON.stringify(error)}`)
+      if (!error && response.statusCode == 200) {
+        return logger.serverLog(TAG, `Sent the abandoned cart successfully`)
+      } else {
+        return logger.serverLog(TAG, `Batch send error ${JSON.stringify(response)}`)
+      }
+    })
+  }) // Pages findOne ends here
 }
 
 const send = (batchMessages, page) => {
@@ -95,18 +107,18 @@ const send = (batchMessages, page) => {
 const sendCheckout = (id, cb) => {
   CheckoutInfo.findOne({_id: id}, (err, checkout) => {
     if (err) {
-      cb(err, null)
+      return cb(err, null)
     }
 
     if (checkout) {
       StoreInfo.findOne({_id: checkout.storeId}, (err, store) => {
         if (err) {
-          cb(err, null)
+          return cb(err, null)
         }
 
         fetchProductDetails(checkout.productIds, store, (err, details) => {
           if (err) {
-            cb(err, null)
+            return cb(err, null)
           }
 
           logger.serverLog(TAG, 'Product Details: ' + details)
@@ -114,15 +126,15 @@ const sendCheckout = (id, cb) => {
           checkout.status = 'sent'
           checkout.save((err) => {
             if (err) {
-              cb(err, null)
+              return cb(err, null)
             }
 
-            cb(null, {status: 'Success', payload: 'Checkout Sent'})
+            return cb(null, {status: 'Success', payload: 'Checkout Sent'})
           })  // Checkout Info Save
         })  // Fetch Product Details Callback
       }) // StoreInfo Find One
     } else {
-      cb(null, {status: 'Not Found', payload: 'Checkout not found'})
+      return cb(null, {status: 'Not Found', payload: 'Checkout not found'})
     }
   })
 }

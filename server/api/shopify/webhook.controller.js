@@ -15,11 +15,11 @@ exports.handleCheckout = function (req, res) {
     return item.product_id
   })
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
-    const shopId = results[0]._id
-    const userId = results[0].userId
-    const companyId = results[0].companyId
+    const shopId = results._id
+    const userId = results.userId
+    const companyId = results.companyId
     CartInfo.findOne({cartToken: req.body.cart_token}).exec()
      .then((cart) => {
        const checkout = new CheckoutInfo({
@@ -58,11 +58,11 @@ exports.handleCart = function (req, res) {
     return item.product_id
   })
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
-    const shopId = results[0]._id
-    const userId = results[0].userId
-    const companyId = results[0].companyId
+    const shopId = results._id
+    const userId = results.userId
+    const companyId = results.companyId
     const cart = new CartInfo({
       shopifyCartId: req.body.id,
       cartToken: req.body.token,
@@ -115,9 +115,9 @@ exports.handleOrder = function (req, res) {
 
 exports.handleAppUninstall = function (req, res) {
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
-    const shopId = results[0]._id
+    const shopId = results._id
 
     CartInfo.remove({storeId: shopId}).exec()
     .then((result) => {
@@ -145,9 +145,9 @@ exports.handleThemePublish = function (req, res) {
 
 exports.serveScript = function (req, res) {
   const shopUrl = req.query.shop
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
    .then((results) => {
-     const pageId = results[0].pageId
+     const pageId = results.pageId
      // logger.serverLog(TAG, `Found the shop using url ${pageId}`)
      res.send(mainScript.renderJS(pageId, config.facebook.clientID))
    }).catch((err) => {
@@ -161,9 +161,11 @@ exports.handleNewSubscriber = function (payload) {
   // Get Page ID
   const pageId = payload.recipient.id
   // Get USER REF (Note USER REF is also the cart TOKEN)
-  const userRef = payload.optin.user_ref.split('-')[0]
+  const userRef = payload.optin.user_ref
 
-  CartInfo.update({cartToken: userRef}, {userRef: userRef}).exec()
+  const cartToken = payload.optin.user_ref.split('-')[0]
+
+  CartInfo.update({cartToken: cartToken}, {userRef: userRef}).exec()
   .then((result) => {
     logger.serverLog(TAG, `Successfully Updated UserRef ${JSON.stringify(result)}`)
   }).catch((err) => {
