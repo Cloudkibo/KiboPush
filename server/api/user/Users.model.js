@@ -38,7 +38,7 @@ const UserSchema = new Schema({
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
   permissionsRevoked: {type: Boolean, default: false},
-  skipConnect: {type: Boolean, default: false},
+  skippedFacebookConnect: {type: Boolean, default: false},
   deleteInformation: Schema.Types.Mixed
 })
 

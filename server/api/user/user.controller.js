@@ -158,7 +158,7 @@ exports.fbAppId = function (req, res) {
   res.status(200).json({status: 'success', payload: config.facebook.clientID})
 }
 exports.updateSkipConnect = function (req, res) {
-  Users.update({_id: req.user._id}, {skipConnect: true}, (err, user) => {
+  Users.update({_id: req.user._id}, {skippedFacebookConnect: true}, (err, user) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',

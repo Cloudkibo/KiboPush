@@ -555,7 +555,7 @@ router.get('/updateSubcribersInfo', (req, res) => {
   })
 })
 router.get('/updateSkip', (req, res) => {
-  Users.update({}, {skipConnect: false}, {multi: true}, (err, updated) => {
+  Users.update({}, {skippedFacebookConnect: false}, {multi: true}, (err, updated) => {
     if (err) {
       logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
     }
