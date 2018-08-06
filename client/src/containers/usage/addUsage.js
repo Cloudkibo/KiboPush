@@ -26,6 +26,7 @@ class AddUsage extends React.Component {
     this.setState({name: e.target.value})
   }
   updateValue (e) {
+    console.log('e.target.value', e.target.value)
     this.setState({limitValue: parseInt(e.target.value)})
   }
   goToCreate () {
@@ -40,7 +41,8 @@ class AddUsage extends React.Component {
     }
   }
   goToUpdate () {
-    if (this.state.limitValue === '') {
+    console.log('this.state.limitValue', this.state.limitValue)
+    if (this.state.limitValue === '' || isNaN(this.state.limitValue)) {
       this.props.msg.error('Please enter value')
     } else {
       this.setState({limitValue: '', name: ''})
