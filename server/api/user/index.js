@@ -13,6 +13,7 @@ const controller = require('./user.controller')
 
 router.get('/', auth.isAuthenticated(), controller.index)
 router.post('/updateChecks', auth.isAuthenticated(), controller.updateChecks)
+router.get('/updateSkipConnect', auth.isAuthenticated(), controller.updateSkipConnect)
 router.post('/signup', controller.create)
 router.post('/joinCompany', controller.joinCompany)
 router.post('/updateMode', controller.updateMode)

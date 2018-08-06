@@ -192,6 +192,8 @@ class CreateBroadcastTemplate extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -380,7 +382,7 @@ class CreateBroadcastTemplate extends React.Component {
 
   // onClickText (timeStamp){
   //   console.log('in on click text' + timeStamp)
-    
+
   //   let temp = this.state.list
   //   console.log('temp' +  JSON.stringify(temp))
   //   this.msg.info('New Text Component Added')

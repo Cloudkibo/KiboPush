@@ -157,7 +157,17 @@ exports.index = function (req, res) {
 exports.fbAppId = function (req, res) {
   res.status(200).json({status: 'success', payload: config.facebook.clientID})
 }
-
+exports.updateSkipConnect = function (req, res) {
+  Users.update({_id: req.user._id}, {skipConnect: true}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    return res.status(200).json({status: 'success', payload: user})
+  })
+}
 exports.updateChecks = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
