@@ -142,12 +142,12 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
+      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo && !nextprops.user.skippedFacebookConnect) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
+      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
         if (nextprops.pages && nextprops.pages.length === 0) {
           console.log('going to push')
           browserHistory.push({

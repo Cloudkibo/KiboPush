@@ -554,4 +554,12 @@ router.get('/updateSubcribersInfo', (req, res) => {
     res.status(200).json({status: 'success', description: 'subscribers updated successfully'})
   })
 })
+router.get('/updateSkip', (req, res) => {
+  Users.update({}, {skippedFacebookConnect: false}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating user (EULA): ${JSON.stringify(err)}`)
+    }
+  })
+  res.status(200).json({status: 'success', description: 'users updated successfully'})
+})
 module.exports = router

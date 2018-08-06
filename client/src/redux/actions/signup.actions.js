@@ -61,3 +61,11 @@ export function resendEmail () {
       })
   }
 }
+
+export function skip () {
+  return (dispatch) => {
+    callApi('users/updateSkipConnect')
+      .then(res => {
+      })
+  }
+}

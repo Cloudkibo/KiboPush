@@ -173,6 +173,8 @@ class EditTemplate extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
