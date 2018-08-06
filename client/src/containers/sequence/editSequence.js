@@ -39,7 +39,12 @@ class CreateSequence extends React.Component {
       selectedMessageId: '',
       validSegmentation: false,
       selectedMessage: '',
-      selectedEvent: ''
+      selectedEvent: '',
+      displayAction: false,
+      selectedMessageClickId: '',
+      selectedButton: '',
+      buttonList: []
+
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
@@ -97,11 +102,47 @@ class CreateSequence extends React.Component {
   onConditionChange (condition) {
     this.setState({segmentationCondition: condition})
   } 
+
+  onSelectedDropDownButton (buttonTitle) {
+    console.log('Button title name is ', buttonTitle)
+    this.setState({selectedButton: buttonTitle})  
+  }
   onSelectedMessage (Message) {
-    console.log(Message) 
+    console.log('Selected Message id is:', Message) 
+    this.setState({selectedMessageClickId: Message})
+    let buttonList = [] 
+    this.props.messages.map((message, i) => {
+      if (message._id == Message) {
+        message.payload.map((payload, j) => {
+          if (payload.buttons) {
+            payload.buttons.map((button, k) => {
+         // console.log("The button title is ",button.title)
+              buttonList.push(button)
+              //console.log('The button is  ', button)
+
+      //return <option value={button.title}>{button.title}</option> 
+       //   console.log("The button title is ",button.title)
+       
+   }) }
+             //console.log("The data is ",payload)
+      }) 
+      //console.log("Messages ",message)
+    }
+  } 
+    
+  )
+    console.log('The buttonList is  ', buttonList) 
+    this.setState({buttonList: buttonList})
   }
   onSelectedOption (menu) {
-    console.log(menu) 
+    if (menu == 'clicks') {
+      this.setState({displayAction: true}) 
+      console.log('Display action set true')
+    }
+    else {
+      this.setState({displayAction: false})
+      console.log('Display action set false')
+    }
   }
   onNameCriteriaChange (criteria, id) {
     let segmentation = this.state.segmentation
@@ -321,6 +362,8 @@ class CreateSequence extends React.Component {
 
   CloseDialogTrigger (message) {
     this.setState({ShowTrigger: false})
+    this.setState({displayAction: false})
+    this.setState({buttonList: []})   
   }
 
   componentDidMount () {
@@ -488,28 +531,48 @@ class CreateSequence extends React.Component {
             
             {
               this.state.ShowTrigger &&
-              <ModalContainer style={{width: '500px', paddingLeft: '33px', paddingRight: '33px'}}
+              <ModalContainer style={{width: '600px', paddingLeft: '33px', paddingRight: '33px'}}
                 onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '500px',  paddingLeft: '33px', paddingRight: '33px'}}
+                <ModalDialog style={{width: '600px',  paddingLeft: '33px', paddingRight: '33px'}}
                   onClose={this.CloseDialogTrigger}>
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
 
                          subscriber 
                         <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                        <option disabled selected value>Select Event </option>
                          <option value='sees'>sees</option>
                           <option value='clicks'>clicks</option>
                           <option value='receive'>receive</option>
                       </select>
 
-                      
-                            
+                       {
+                          
+                        //  this.props.messages.map((message, i) => {
+                         //   if(message._id == this.state.selectedMessageClickId ) {
+                           // message.payload.map((payload, j) => {
+                           //   if(payload.buttons) {
+                           //   payload.buttons.map((button, k) => {
+                                
+                                //console.log("The button title is ",button.title)
+                               
+                        // }) }
+                                   //console.log("The data is ",payload)
+                          //  }) 
+                            //console.log("Messages ",message)
+                       //   }
+                      //  } 
+                          
+                      //  )
+                     }
+                        
+                          
                             
                           
                         <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                        
+                        <option disabled selected value>Select Message </option>
                         {
-
+                          
                           this.props.messages.map((message, i) => {
 
                           if (this.state.selectedMessageId != message._id) {
@@ -519,10 +582,30 @@ class CreateSequence extends React.Component {
                           
                         })}
                        
-                      </select>
+                       </select>
+
+                      
+                       { 
+                         this.state.displayAction && 
+                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                       
+                       {
+                          
+                          this.state.buttonList.map((button, i) => {
+
+                         
+                            return <option value={button.title}>{button.title}</option> 
+                          
+                           
+                          
+                        })}
+                      </select> 
+                        
+                       
+                       }
                       
                   </div>
-                  
+                       
 
                   
 
