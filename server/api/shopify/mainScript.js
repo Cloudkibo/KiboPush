@@ -7,6 +7,7 @@ exports.renderJS =  (pageId, appId) => {
 	      xfbml            : true,
 	      version          : 'v3.1'
 	    });
+		
 
 	    FB.Event.subscribe('messenger_checkbox', function(e) {
 	      console.log("messenger_checkbox event");
@@ -15,7 +16,9 @@ exports.renderJS =  (pageId, appId) => {
 	      if (e.event == 'rendered') {
 	        console.log("Plugin was rendered");
 	      } else if (e.event == 'checkbox') {
-	        var checkboxState = e.state;
+	    	var checkboxState = e.state;
+	    	let subscribeButton = document.getElementById("kiboSubscribeButton")
+	    	subscribeButton.dataset.checkState = e.state
 	        console.log("Checkbox state: " + checkboxState);
 	      } else if (e.event == 'not_you') {
 	        console.log("User clicked 'not you'");
@@ -25,14 +28,45 @@ exports.renderJS =  (pageId, appId) => {
 	      
 	    });
 	  };
+	  
+	  function setCookie(cname, cvalue, exdays) {
+	      var d = new Date();
+	      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	      var expires = "expires="+ d.toUTCString();
+	      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	  }
+
+	  function getCookie(cname) {
+	      var name = cname + "=";
+	      var decodedCookie = decodeURIComponent(document.cookie);
+	      var ca = decodedCookie.split(';');
+	      for(var i = 0; i <ca.length; i++) {
+	          var c = ca[i];
+	          while (c.charAt(0) == ' ') {
+	              c = c.substring(1);
+	          }
+	          if (c.indexOf(name) == 0) {
+	              return c.substring(name.length, c.length);
+	          }
+	      }
+	      return "";
+	  }
+
 	  function confirmOptIn(userRef) {
-	  	console.log("Confirm Opt In clicked", userRef.value)
+	  	let subscribeButton = document.getElementById("kiboSubscribeButton")
+	  	console.log("Confirm Opt In clicked and checked state", userRef.value, subscribeButton.dataset.checkState, getCookie('kibopushCartValue'))
+	  	if(subscribeButton.dataset.checkState === 'unchecked'){
+	  		return
+	  	}
 	    FB.AppEvents.logEvent('MessengerCheckboxUserConfirmation', null, {
 	      'app_id': ${appId},
 	      'page_id':  ${pageId},
 	      'ref': 'SHOPIFY',
 	      'user_ref': userRef.value
 	    });
+		let kiboBox = document.getElementById("kiboBox")
+		kiboBox.innerHTML = '<p style="padding: 10px; margin: 10px;"> Thank you for subscribing! </p>'
+		setCookie('kibopushCartValue', userRef.value.split('-')[0])
 	  }
 
 	  const uniqueString = Math.floor(new Date().valueOf() * Math.random())
@@ -47,6 +81,7 @@ exports.renderJS =  (pageId, appId) => {
 		 }(d, s, id));		
 
 	  	let element = document.createElement('div')
+	  	element.id = 'kiboBox'
 	  	const pageId = ${pageId}
 	  	let text = document.createTextNode('Hello From KiboPush: ' + pageId)
 	  	let messengerComponent = document.createElement('div')
@@ -59,7 +94,7 @@ exports.renderJS =  (pageId, appId) => {
 	  	messengerComponent.setAttribute('ref', 'SHOPIFY');
 	  	messengerComponent.setAttribute('center_align', true);
 	  	messengerComponent.setAttribute('allow_login', true);
-	  	element.innerHTML = '<button onclick="confirmOptIn(this)" value=' + userRef + '  style="display:block; margin-left: 30px; margin-bottom:15px; color: white; background: skyblue; border: 0; padding: 5px;">Subscribe to get discount offers</button>'
+	  	element.innerHTML = '<button onclick="confirmOptIn(this)" value=' + userRef + ' id="kiboSubscribeButton"  style="display:block; margin-left: 30px; margin-bottom:15px; color: white; background: skyblue; border: 0; padding: 5px;">Subscribe to get discount offers</button>'
 	  	element.prepend(messengerComponent)
 	  	element.style['background'] = '#EEEEEE'
 	  	element.style['text-align'] = 'center'
@@ -92,6 +127,10 @@ exports.renderJS =  (pageId, appId) => {
 		      dataType: 'json',
 		      success: function (cart) {
 					  console.log('Hurray I got the cart object', cart)
+					  if(getCookie('kibopushCartValue') == cart.token){
+					  	console.log("Customer has already subscribed")
+					  	return 
+					  }
 					  renderElement(cart.token + '-' + uniqueString, d, s, id)
 		      }
 			})
