@@ -140,7 +140,7 @@ class Bot extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value && this.state.searchValue === '') {
+    if (e.target.value && e.target.value !== 'all' && this.state.searchValue === '') {
       // this.setState({filter: true})
       // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
       for (let i = 0; i < this.props.bots.length; i++) {
@@ -148,7 +148,7 @@ class Bot extends React.Component {
           filtered.push(this.props.bots[i])
         }
       }
-    } else if (e.target.value !== '' && this.state.searchValue !== '') {
+    } else if (e.target.value !== '' && e.target.value !== 'all' && this.state.searchValue !== '') {
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId._id === e.target.value) {
           filtered.push(this.props.bots[i])
@@ -477,7 +477,7 @@ class Bot extends React.Component {
                               <option key={i} value={page._id}>{page.pageName}</option>
                             ))
                           }
-                          <option value=''>All</option>
+                          <option value='all'>All</option>
                         </select>
                       </div>
                     </div>

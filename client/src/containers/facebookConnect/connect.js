@@ -22,7 +22,13 @@ class Connect extends React.Component {
   componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
-
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.successSkip) {
+      browserHistory.push({
+        pathname: '/dashboard'
+      })
+    }
+  }
   componentDidMount () {
     /* eslint-disable */
     if ($('#sidebarDiv')) {
@@ -35,9 +41,6 @@ class Connect extends React.Component {
   }
   skip () {
     this.props.skip()
-    browserHistory.push({
-      pathname: '/dashboard'
-    })
   }
   render () {
     return (
@@ -72,7 +75,7 @@ class Connect extends React.Component {
                   this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <button onClick={this.skip} className='m-link m-link--focus m-login__account-link'>Skip</button>
+                    <a onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
                   </div>
                 }
               </div>
@@ -106,6 +109,7 @@ class Connect extends React.Component {
 }
 function mapStateToProps (state) {
   return {
+    successSkip: (state.signupInfo.successSkip)
   }
 }
 

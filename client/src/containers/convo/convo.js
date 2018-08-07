@@ -204,7 +204,7 @@ class Convo extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
       // for (let i = 0; i < this.props.broadcasts.length; i++) {
@@ -391,7 +391,7 @@ class Convo extends React.Component {
                         <option value='list'>list</option>
                         <option value='media'>media</option>
                         <option value='miscellaneous'>miscellaneous</option>
-                        <option value=''>all</option>
+                        <option value='all'>all</option>
                       </select>
                     </div>
                     <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>

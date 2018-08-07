@@ -9,7 +9,12 @@ export function Success () {
     successMessage: 'success'
   }
 }
-
+export function skipSuccess () {
+  return {
+    type: ActionTypes.SKIP_SUCCESS,
+    successSkip: 'success'
+  }
+}
 export function Failure (message) {
   return {
     type: ActionTypes.SIGNUP_FAILURE,
@@ -66,6 +71,9 @@ export function skip () {
   return (dispatch) => {
     callApi('users/updateSkipConnect')
       .then(res => {
+        if (res.status === 'success') {
+          dispatch(skipSuccess())
+        }
       })
   }
 }
