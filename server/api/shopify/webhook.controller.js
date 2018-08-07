@@ -6,6 +6,7 @@ const logger = require('../../components/logger')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
+const StoreAnalytics = require('./../abandoned_carts/StoreAnalytics.model')
 const TAG = 'api/pages/pages.controller.js'
 const mainScript = require('./mainScript')
 const config = require('./../../config/environment/index')
@@ -33,13 +34,20 @@ exports.handleCheckout = function (req, res) {
       status: 'pending',
       subscriberId: ''
     })
-    checkout.save((err) => {
+    // We need to update the analytics against this store
+    StoreAnalytics.findOneAndUpdate({storeId: shopId}, {$inc: {totalAbandonedCarts: 1}}, (err, result1) => {
       if (err) {
-        logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
+        logger.serverLog(TAG, `Error Finding Store Analytics ${JSON.stringify(err)}`)
         return res.status(500).json({ status: 'failed', error: err })
       }
-      return res.status(200).json({status: 'success'})
-    })
+      checkout.save((err) => {
+        if (err) {
+          logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
+          return res.status(500).json({ status: 'failed', error: err })
+        }
+        return res.status(200).json({status: 'success'})
+      }) // Checkout Save
+    })  // Store Analytics FindOne
   })
   .catch((err) => {
     logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
@@ -95,6 +103,15 @@ exports.handleOrder = function (req, res) {
     } else if (result.status === 'sent') {
       result.isPurchased = true
       result.isExtraSales = true    // It denotes that the product was bought after we sent abandond cart in messngr
+      // We need to update the total purchases in Analytics
+      StoreAnalytics.findOneAndUpdate({storeId: result.storeId},
+        {$inc: {totalPurchasedCarts: 1, totalExtraSales: req.body.total_price}},
+        (err) => {
+          if (err) {
+            logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+            return res.status(500).json({ status: 'failed', error: err })
+          }
+        })
     }
     // Saving the updated info
     result.save((err) => {
@@ -121,6 +138,11 @@ exports.handleAppUninstall = function (req, res) {
     CheckoutInfo.remove({storeId: shopId}).exec()
     .then((result) => {
       logger.serverLog(TAG, 'Successfully Deleted CheckoutInfo')
+    })
+
+    StoreAnalytics.remove({storeId: shopId}).exec()
+    .then((result) => {
+      logger.serverLog(TAG, 'Successfully Deleted StoreAnalytics')
     })
 
     StoreInfo.remove({shopUrl: shopUrl}).exec()

@@ -285,6 +285,7 @@ exports.sendAnalytics = function (req, res) {
       }
 
       if (analytics) {
+        logger.serverLog(TAG, 'Going to send Analytics')
         return res.status(200).json({status: 'success', payload: analytics})
       } else {
         return res.status(404)
