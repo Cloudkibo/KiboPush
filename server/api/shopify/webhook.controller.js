@@ -43,13 +43,23 @@ exports.handleCheckout = function (req, res) {
          return res.status(200).json({status: 'success'})
        })
      }).catch((err) => {
-       logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
-       return res.status(500).json({ status: 'failed', error: err })
+       if (Object.keys(err).length === 0) {
+         logger.serverLog(TAG, `Cannot find cartInfo`)
+         return res.status(200).json({ status: 'failed', error: 'Cannot find cartInfo' })
+       } else {
+         logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
+         return res.status(500).json({ status: 'failed', error: err })
+       }
      })
   })
   .catch((err) => {
-    logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
+    if (Object.keys(err).length === 0) {
+      logger.serverLog(TAG, `Cannot find storeInfo`)
+      return res.status(200).json({ status: 'failed', error: 'Cannot find cartInfo' })
+    } else {
+      logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
   })
 }
 
@@ -83,8 +93,13 @@ exports.handleCart = function (req, res) {
     })
   })
   .catch((err) => {
-    logger.serverLog(TAG, `Error in cart webhook ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
+    if (Object.keys(err).length === 0) {
+      logger.serverLog(TAG, `Cannot find storeInfo`)
+      return res.status(200).json({ status: 'failed', error: 'Cannot find storeInfo' })
+    } else {
+      logger.serverLog(TAG, `Error in cart webhook ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
   })
 }
 
@@ -134,7 +149,13 @@ exports.handleAppUninstall = function (req, res) {
       return res.status(200).json({status: 'success'})
     })
   }).catch((err) => {
-    return res.status(500).json({status: 'failed', error: err})
+    if (Object.keys(err).length === 0) {
+      logger.serverLog(TAG, `Cannot find storeInfo`)
+      return res.status(200).json({ status: 'failed', error: 'Cannot find storeInfo' })
+    } else {
+      logger.serverLog(TAG, `Error in app uninstall webhook ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
   })
 }
 

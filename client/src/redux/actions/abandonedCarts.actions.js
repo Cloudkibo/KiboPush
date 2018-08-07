@@ -46,8 +46,10 @@ export function getAbandonedCarts () {
 export function getAnalytics () {
   return (dispatch) => {
     callApi('abandonedCarts/sendAnalytics').then(res => {
-      console.log('Abandoned Analytics', res.payload)
-      dispatch(updateAnalytics(res.payload))
+      if(res.status === "success"){
+        console.log('Abandoned Analytics', res.payload)
+        dispatch(updateAnalytics(res.payload))
+      }
     })
   }
 }

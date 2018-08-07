@@ -33,13 +33,15 @@ class Analytics extends React.Component {
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
                         <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='la la-shopping-cart  m--font-light' />
-                      </a>
+                          <i className='la la-shopping-cart  m--font-light' />
+                        </a>
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                        {25}
-                      </span>
+                          {
+                        (this.props.analytics && this.props.analytics.totalAbandonedCarts) ? this.props.analytics.totalAbandonedCarts : 0
+                        }
+                        </span>
                         <br />
                         <span className='m-widget21__sub'>
                           Abandoned Carts
@@ -51,13 +53,15 @@ class Analytics extends React.Component {
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
                         <a className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='fa flaticon-cart m--font-light' />
-                      </a>
+                          <i className='fa flaticon-cart m--font-light' />
+                        </a>
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                        {450}
-                      </span>
+                          {
+                             (this.props.analytics && this.props.analytics.totalPurchasedCarts) ? this.props.analytics.totalPurchasedCarts : 0
+                          }
+                        </span>
                         <br />
                         <span className='m-widget21__sub'>
                           Purchased Carts
@@ -69,13 +73,15 @@ class Analytics extends React.Component {
                     <div className='m-widget21__item'>
                       <span className='m-widget21__icon'>
                         <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                        <i className='la la-money  m--font-light' />
-                      </a>
+                          <i className='la la-money  m--font-light' />
+                        </a>
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                         $800
-                       </span>
+                          {
+                            (this.props.analytics && this.props.analytics.totalExtraSales) ? '$' + this.props.analytics.totalExtraSales : '$0'
+                         }
+                        </span>
                         <br />
                         <span className='m-widget21__sub'>
                           Extra Sales
@@ -91,11 +97,15 @@ class Analytics extends React.Component {
                       {25}
                     </span>
                     <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
-                    Followers converted into Subscribers
+                    Conversion Rate
                   </span>
                     <div className='m--space-10' />
                     <div className='progress m-progress--sm' style={{height: '6px'}}>
-                      <div className='progress-bar bg-success' role='progressbar' style={{width: 100}} aria-valuenow={25} aria-valuemin='0' aria-valuemax='100' />
+                    {
+                      (this.props.analytics) ?
+                      <div className='progress-bar bg-success' role='progressbar' style={{width: 100}} aria-valuenow={this.props.analytics.totalPurchasedCarts} aria-valuemin='0' aria-valuemax={this.props.analytics.totalAbandonedCarts} /> :
+                      <div className='progress-bar bg-success' role='progressbar' style={{width: 100}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
+                    }
                     </div>
                   </div>
                 </div>
@@ -116,7 +126,7 @@ class Analytics extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-danger'>
+          <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
             <div className='m-portlet__body'>
               <div className='m-widget26'>
                 <div className='m-widget26__number'>
