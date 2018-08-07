@@ -156,8 +156,11 @@ exports.handleAppUninstall = function (req, res) {
       return res.status(200).json({status: 'success'})
     })
   }).catch((err) => {
-    logger.serverLog(TAG, 'App Uninstall In Catch')
-    return res.status(200).json({status: 'failed', error: err})
+    if (err) {
+      return res.status(200).json({status: 'failed', error: err})
+    } else {
+      return res.status(500).json({status: 'failed', error: err})
+    }
   })
 }
 
