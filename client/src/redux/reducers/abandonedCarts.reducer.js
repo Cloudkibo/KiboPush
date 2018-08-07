@@ -16,6 +16,7 @@ export function abandonedInfo (state = initialState, action) {
     case ActionTypes.UPDATE_ABANDONED_LIST:
       return Object.assign({}, state, {
         abandonedList: action.data,
+        isLoading: false
       })
     default:
       return state
