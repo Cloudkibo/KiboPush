@@ -17,42 +17,58 @@ exports.handleCheckout = function (req, res) {
     return item.product_id
   })
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}, (err, results) => {
+  StoreInfo.findOne({shopUrl: shopUrl}, (err, results) => {
     if (err) {
       logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
       return res.status(500).json({ status: 'failed', error: err })
     }
-    const shopId = results[0]._id
-    const userId = results[0].userId
-    const companyId = results[0].companyId
-    const checkout = new CheckoutInfo({
-      shopifyCheckoutId: req.body.id,
-      checkoutToken: req.body.token,
-      cartToken: req.body.cart_token,
-      storeId: shopId,
-      userId: userId,
-      companyId: companyId,
-      totalPrice: req.body.total_price,
-      abandonedCheckoutUrl: req.body.abandoned_checkout_url,
-      productIds: productIds,
-      status: 'pending',
-      subscriberId: ''
-    })
-    // We need to update the analytics against this store
-    StoreAnalytics.findOneAndUpdate({storeId: shopId}, {$inc: {totalAbandonedCarts: 1}}, (err, result1) => {
+    const shopId = results._id
+    const userId = results.userId
+    const companyId = results.companyId
+    CartInfo.findOne({cartToken: req.body.cart_token}, (err, cart) => {
       if (err) {
-        logger.serverLog(TAG, `Error Finding Store Analytics ${JSON.stringify(err)}`)
+        logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
         return res.status(500).json({ status: 'failed', error: err })
       }
-      checkout.save((err) => {
-        if (err) {
-          logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
-          return res.status(500).json({ status: 'failed', error: err })
+      if (cart) {
+        if (cart.userRef) {
+          const checkout = new CheckoutInfo({
+            shopifyCheckoutId: req.body.id,
+            checkoutToken: req.body.token,
+            cartToken: req.body.cart_token,
+            storeId: shopId,
+            userId: userId,
+            companyId: companyId,
+            totalPrice: req.body.total_price,
+            abandonedCheckoutUrl: req.body.abandoned_checkout_url,
+            productIds: productIds,
+            status: 'pending',
+            subscriberId: ''
+          })
+          // We need to update the analytics against this store
+          StoreAnalytics.findOneAndUpdate({storeId: shopId}, {$inc: {totalAbandonedCarts: 1}}, (err, result1) => {
+            if (err) {
+              logger.serverLog(TAG, `Error Finding Store Analytics ${JSON.stringify(err)}`)
+              return res.status(500).json({ status: 'failed', error: err })
+            }
+            checkout.save((err) => {
+              if (err) {
+                logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
+                return res.status(500).json({ status: 'failed', error: err })
+              }
+              return res.status(200).json({status: 'success'})
+            }) // Checkout Save
+          })  // Store Analytics FindOne
+        } else {
+          logger.serverLog(TAG, 'UserRef Not Found to save checkout')
+          return res.status(200).json({status: 'success', payload: 'cart not found'})
         }
-        return res.status(200).json({status: 'success'})
-      }) // Checkout Save
-    })  // Store Analytics FindOne
-  })
+      } else {
+        logger.serverLog(TAG, 'Cart Not Found to save checkout')
+        return res.status(200).json({status: 'success', payload: 'cart not found'})
+      }
+    })  // Cart Info find ends here
+  })  // Store info find ends here
 }
 
 exports.handleCart = function (req, res) {
