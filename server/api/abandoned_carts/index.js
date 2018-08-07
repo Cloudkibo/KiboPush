@@ -59,7 +59,7 @@ router.post('/sendCheckout',
   auth.isAuthenticated(),
   controller.sendCheckout)
 
-router.post('/sendAnalytics',
+router.get('/sendAnalytics',
   auth.isAuthenticated(),
   controller.sendAnalytics)
 

@@ -270,19 +270,37 @@ exports.sendCheckout = function (req, res) {
 }
 
 exports.sendAnalytics = function (req, res) {
-    // Fetching from Store Analytics
-  StoreAnalytics.find({storeId: req.body.storeId}, (err, analytics) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
-      return res.status(500).json({status: 'failed', error: err})
+      return res.status(500).json({ status: 'failed', error: err })
     }
 
-    if (analytics) {
-      logger.serverLog(TAG, 'Going to send Analytics')
-      return res.status(200).json({status: 'success', payload: analytics})
-    } else {
-      return res.status(404)
-        .json({status: 'failed', description: 'No analytics found against this store'})
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
     }
+
+    // Fetching from Store Analytics
+    StoreInfo.findOne({companyId: companyUser.companyId}, (err, store) => {
+      if (err) {
+        return res.status(500).json({status: 'failed', error: err})
+      }
+
+      if (store) {
+        StoreAnalytics.find({storeId: store._id}, (err, analytics) => {
+          if (err) {
+            return res.status(500).json({status: 'failed', error: err})
+          }
+          logger.serverLog(TAG, 'Going to send Analytics')
+          return res.status(200).json({status: 'success', payload: analytics})
+        })
+      } else {
+        return res.status(404)
+          .json({status: 'failed', description: 'No analytics found against this store'})
+      }
+    })
   })
 }
 
