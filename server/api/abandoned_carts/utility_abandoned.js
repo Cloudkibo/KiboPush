@@ -1,10 +1,11 @@
-const CartInfo = require('./CartInfo.model')
+const CheckoutInfo = require('./CheckoutInfo.model')
 const StoreInfo = require('./StoreInfo.model')
+const StoreAnalytics = require('./StoreAnalytics.model')
 const Pages = require('../pages/Pages.model')
 const utility = require('../broadcasts/broadcasts.utility')
 const Subscriber = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
-const TAG = 'api/abandoned_carts/utility_abandoned.js'
+const TAG = 'api/abandoned_checkouts/utility_abandoned.js'
 const Shopify = require('shopify-api-node')
 const request = require('request')
 
@@ -24,60 +25,72 @@ function fetchProductDetails (productIds, store, callBack) {
     .then((resProduct) => {
       arr.push(resProduct)
       if (i === (length - 1)) {
-        callBack(null, arr)
+        return callBack(null, arr)
       }
     })
     .catch((err) => {
-      callBack(err, null)
+      return callBack(err, null)
     })
   }
 }
 
-function sendToFacebook (cart, store, details) {
-  Subscriber.findOne({_id: cart.subscriberId}, (err, subscriber) => {
+function sendToFacebook (checkout, store, details) {
+  Pages.findOne({pageId: store.pageId}, (err, page) => {
     if (err) {
       return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
     }
-
-    Pages.findOne({pageId: store.pageId}, (err, page) => {
-      if (err) {
-        return logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-      }
-      let obj
-      let gallery = []
-      let payload = []
-      if (details.length <= 1) {
+    let obj
+    let gallery = []
+    let payload = {}
+    if (details.length <= 1) {
         // Send one card
-        obj = {
-          fileurl: {
-            url: details[0].image.src
-          },
-          componentType: 'card',
-          title: details[0].title,
-          buttons: [{'type': 'web_url', 'url': store.shopUrl, 'title': 'Visit Our Shop'}],
-          description: details[0].body_html + '. Vendor: ' + details[0].vendor
-        }
-        payload.push(obj)
-      } else {
-        // Send Gallary
-        details.forEach((item) => {
-          let temp = {
-            title: item.title,
-            buttons: [{'type': 'web_url', 'url': store.shopUrl, 'title': 'Visit Our Shop'}],
-            subtitle: item.body_html + '. Vendor: ' + item.vendor,
-            image_url: item.image.src
-          }
-          gallery.push(temp)
-        })
-        obj = {
-          componentType: 'gallery',
-          cards: gallery
-        }
-        payload.push(obj)
+      obj = {
+        fileurl: {
+          url: details[0].image.src
+        },
+        componentType: 'card',
+        title: details[0].title,
+        buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Product'}],
+        description: 'You forgot to checkout this product' + '. Vendor: ' + details[0].vendor
       }
-      utility.getBatchData(payload, subscriber.senderId, page, send, subscriber.firstName, subscriber.lastName)
-    }) // Pages findOne ends here
-  }) // Subscriber findOne ends here
+      payload = obj
+    } else {
+        // Send Gallary
+      details.forEach((item) => {
+        let temp = {
+          title: item.title,
+          buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Our Shop'}],
+          subtitle: 'You forgot to checkout this product' + '. Vendor: ' + item.vendor,
+          image_url: item.image.src
+        }
+        gallery.push(temp)
+      })
+      obj = {
+        componentType: 'gallery',
+        cards: gallery
+      }
+      payload = obj
+    }
+    let options = {
+      uri: 'https://graph.facebook.com/v2.6/me/messages?access_token=' + page.accessToken,
+      method: 'POST',
+      json: {
+        'recipient': {
+          'user_ref': checkout.userRef
+        },
+        'message': utility.prepareMessageData(page, checkout.userRef, payload, 'f_name', 'l_name')
+      }
+    }
+    logger.serverLog(TAG, `Sending the following info ${JSON.stringify(options)}`)
+    request(options, function (error, response, body) {
+       return logger.serverLog(TAG, `Sent the abandoned cart successfully ${JSON.stringify(response)} ${JSON.stringify(body)} ${JSON.stringify(error)}`)
+      if (!error && response.statusCode == 200) {
+        return logger.serverLog(TAG, `Sent the abandoned cart successfully`)
+      } else {
+        return logger.serverLog(TAG, `Batch send error ${JSON.stringify(response)}`)
+      }
+    })
+  }) // Pages findOne ends here
 }
 
 const send = (batchMessages, page) => {
@@ -92,34 +105,46 @@ const send = (batchMessages, page) => {
   form.append('batch', batchMessages)
 }
 
-// Unit test function
-// This function is just to test above two methods. We will evantually delete the following method when we
-// complete the feature.
-const fetchUnitFunction = (req, res) => {
-  CartInfo.findOne({}, (err, cart) => {
+const sendCheckout = (id, cb) => {
+  CheckoutInfo.findOne({_id: id}, (err, checkout) => {
     if (err) {
-      throw err
+      return cb(err, null)
     }
 
-    if (cart) {
-      StoreInfo.findOne({_id: cart.storeId}, (err, store) => {
+    if (checkout) {
+      StoreInfo.findOne({_id: checkout.storeId}, (err, store) => {
         if (err) {
-          throw err
+          return cb(err, null)
         }
 
-        fetchProductDetails(cart.productIds, store, (err, details) => {
+        fetchProductDetails(checkout.productIds, store, (err, details) => {
           if (err) {
-            throw err
+            return cb(err, null)
           }
 
           logger.serverLog(TAG, 'Product Details: ' + details)
-          sendToFacebook(cart, store, details)
-        })
-      })
+          sendToFacebook(checkout, store, details)
+          checkout.status = 'sent'
+          StoreAnalytics.findOneAndUpdate({storeId: store._id}, {$inc: {totalPushSent: 1}}, (err) => {
+            if (err) {
+              return cb(err, null)
+            }
+          })
+          checkout.save((err) => {
+            if (err) {
+              return cb(err, null)
+            }
+
+            return cb(null, {status: 'Success', payload: 'Checkout Sent'})
+          })  // Checkout Info Save
+        })  // Fetch Product Details Callback
+      }) // StoreInfo Find One
+    } else {
+      return cb(null, {status: 'Not Found', payload: 'Checkout not found'})
     }
   })
 }
 
-exports.fetchUnitFunction = fetchUnitFunction
+exports.sendCheckout = sendCheckout
 exports.fetchProductDetails = fetchProductDetails
 exports.sendToFacebook = sendToFacebook

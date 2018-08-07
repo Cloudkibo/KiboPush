@@ -6,7 +6,9 @@ const logger = require('../../components/logger')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
-const TAG = 'api/pages/pages.controller.js'
+const StoreAnalytics = require('./../abandoned_carts/StoreAnalytics.model')
+
+const TAG = 'api/shopify/webhook.controller.js'
 const mainScript = require('./mainScript')
 const config = require('./../../config/environment/index')
 
@@ -15,7 +17,7 @@ exports.handleCheckout = function (req, res) {
     return item.product_id
   })
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
     const shopId = results[0]._id
     const userId = results[0].userId
@@ -33,13 +35,21 @@ exports.handleCheckout = function (req, res) {
       status: 'pending',
       subscriberId: ''
     })
-    checkout.save((err) => {
+    // We need to update the analytics against this store
+    StoreAnalytics.findOneAndUpdate({storeId: shopId}, {$inc: {totalAbandonedCarts: 1}}, (err, result1) => {
       if (err) {
-        logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
+        logger.serverLog(TAG, `Error Finding Store Analytics ${JSON.stringify(err)}`)
         return res.status(500).json({ status: 'failed', error: err })
       }
-      return res.status(200).json({status: 'success'})
-    })
+      checkout.save((err) => {
+        if (err) {
+          logger.serverLog(TAG, `Error saving checkout ${JSON.stringify(err)}`)
+          return res.status(500).json({ status: 'failed', error: err })
+        }
+        return res.status(200).json({status: 'success'})
+      }) // Checkout Save
+    })  // Store Analytics FindOne
+
   })
   .catch((err) => {
     logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
@@ -52,11 +62,11 @@ exports.handleCart = function (req, res) {
     return item.product_id
   })
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
-    const shopId = results[0]._id
-    const userId = results[0].userId
-    const companyId = results[0].companyId
+    const shopId = results._id
+    const userId = results.userId
+    const companyId = results.companyId
     const cart = new CartInfo({
       shopifyCartId: req.body.id,
       cartToken: req.body.token,
@@ -84,21 +94,48 @@ exports.handleCart = function (req, res) {
 
 exports.handleOrder = function (req, res) {
   logger.serverLog(TAG, `Order webhook called ${JSON.stringify(req.body.checkout_id)}`)
-  CheckoutInfo.remove({shopifyCheckoutId: req.body.checkout_id}).exec()
-  .then((result) => {
-    return res.status(200).json({status: 'success'})
-  })
-  .catch((err) => {
-    logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
+  CheckoutInfo.findOne({shopifyCheckoutId: req.body.checkout_id}, (err, result) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
+
+    if (result) {
+      if (result.status === 'pending') {
+        result.isPurchased = true
+      } else if (result.status === 'sent') {
+        result.isPurchased = true
+        result.isExtraSales = true    // It denotes that the product was bought after we sent abandond cart in messngr
+        // We need to update the total purchases in Analytics
+        StoreAnalytics.findOneAndUpdate({storeId: result.storeId},
+          {$inc: {totalPurchasedCarts: 1, totalExtraSales: req.body.total_price}},
+          (err) => {
+            if (err) {
+              logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+              return res.status(500).json({ status: 'failed', error: err })
+            }
+          })
+      }
+      // Saving the updated info
+      result.save((err) => {
+        if (err) {
+          logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+          return res.status(500).json({ status: 'failed', error: err })
+        }
+        return res.status(200).json({status: 'success'})
+      })
+    } else {
+      return res.status(404).json({status: 'failed'})
+    }
   })
 }
 
 exports.handleAppUninstall = function (req, res) {
+  logger.serverLog(TAG, 'In App Uninstall')
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
-    const shopId = results[0]._id
+    const shopId = results._id
 
     CartInfo.remove({storeId: shopId}).exec()
     .then((result) => {
@@ -110,12 +147,22 @@ exports.handleAppUninstall = function (req, res) {
       logger.serverLog(TAG, 'Successfully Deleted CheckoutInfo')
     })
 
+    StoreAnalytics.remove({storeId: shopId}).exec()
+    .then((result) => {
+      logger.serverLog(TAG, 'Successfully Deleted StoreAnalytics')
+    })
+
     StoreInfo.remove({shopUrl: shopUrl}).exec()
     .then((result) => {
+      logger.serverLog(TAG, 'App Uninstall Success')
       return res.status(200).json({status: 'success'})
     })
   }).catch((err) => {
-    return res.status(500).json({status: 'failed', error: err})
+    if (err) {
+      return res.status(200).json({status: 'success', error: err})
+    } else {
+      return res.status(500).json({status: 'failed', error: err})
+    }
   })
 }
 
@@ -126,14 +173,32 @@ exports.handleThemePublish = function (req, res) {
 
 exports.serveScript = function (req, res) {
   const shopUrl = req.query.shop
-  StoreInfo.find({shopUrl: shopUrl}).exec()
+  StoreInfo.findOne({shopUrl: shopUrl}).exec()
    .then((results) => {
-     const pageId = results[0].pageId
+     const pageId = results.pageId
      // logger.serverLog(TAG, `Found the shop using url ${pageId}`)
      res.send(mainScript.renderJS(pageId, config.facebook.clientID))
    }).catch((err) => {
      logger.serverLog(TAG, `Error in finding the shop using Url ${JSON.stringify(err)}`)
      return res.status(500).json({status: 'failed', error: err})
    })
-  
+}
+
+exports.handleNewSubscriber = function (payload) {
+  // TODO: ADD Validation Check for payload
+  // Get Page ID
+  const pageId = payload.recipient.id
+  // Get USER REF (Note USER REF is also the cart TOKEN)
+  const userRef = payload.optin.user_ref
+
+  const cartToken = payload.optin.user_ref.split('-')[0]
+
+  CartInfo.update({cartToken: cartToken}, {userRef: userRef}).exec()
+  .then((result) => {
+    logger.serverLog(TAG, `Successfully Updated UserRef ${JSON.stringify(result)}`)
+  }).catch((err) => {
+    logger.serverLog(TAG, `Failed in updating the UserRef ${JSON.stringify(err)}`)
+  })
+
+  logger.serverLog(TAG, `Page Id: ${JSON.stringify(pageId)} and UserRef ${JSON.stringify(userRef)}`)
 }

@@ -3,6 +3,8 @@
  */
 //
 const Sequences = require('../sequenceMessaging/sequence.model')
+const CheckoutInfo = require('../abandoned_carts/CheckoutInfo.model')
+const StoreInfo = require('../abandoned_carts/StoreInfo.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const SequenceMessages = require('../sequenceMessaging/message.model')
 const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
@@ -55,6 +57,8 @@ const needle = require('needle')
 const request = require('request')
 const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
+const shopifyWebhook = require('./../shopify/webhook.controller')
+
 var array = []
 
 exports.indexx = function (req, res) {
@@ -541,8 +545,16 @@ exports.getfbMessage = function (req, res) {
     let payload = req.body.entry[0]
     if (payload.messaging) {
       if (payload.messaging[0].optin) {
-        addAdminAsSubscriber(payload)
-        return
+        if (payload.messaging[0].optin.ref && payload.messaging[0].optin.ref === 'SHOPIFY') {
+          // TODO CALL OUR SHOPIFY FUNCTION
+          logger.serverLog(TAG, `User Ref from SHOPIFY ${payload.messaging[0].optin.user_ref}`)
+          shopifyWebhook.handleNewSubscriber(payload.messaging[0])
+          return
+        } else {
+          logger.serverLog(TAG, `User Ref from SHOPIFY ${req.body}`)
+          addAdminAsSubscriber(payload)
+          return
+        }
       }
       const messagingEvents = payload.messaging
 
@@ -1581,6 +1593,24 @@ function updateseenstatus (req) {
         }
       })
     })
+  // updating seen for CheckoutInfo
+  // truthiness of req.prior_message means that this seen is for abandoned cart
+  if (req.prior_message) {
+    StoreInfo.findOne({pageId: req.recipient.id}, (err, store) => {
+      if (err) {
+        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+
+      CheckoutInfo.update(
+        { userRef: req.prior_message.identifier, storeId: store._id },
+        { status: 'seen' },
+        { multi: true }, (err, result) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+        })
+    })
+  }
   // updating seen count for autoposting
   AutopostingSubscriberMessages.distinct('autoposting_messages_id',
     { subscriberId: req.sender.id, pageId: req.recipient.id, seen: false },
