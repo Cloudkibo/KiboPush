@@ -43,13 +43,25 @@ export function createSequence (data) {
   }
 }
 
-export function updateSegmentation(data) {
+export function updateSegmentation (data) {
   console.log('updateSegmentation data', data)
   return (dispatch) => {
     callApi('sequenceMessaging/updateSegmentation', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           fetchAllMessages(data.segmentationId)
+        }
+      })
+  }
+}
+
+export function updateTrigger (data) {
+  console.log('updateTrigger data', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/updateTrigger', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('data send successfully')
         }
       })
   }
