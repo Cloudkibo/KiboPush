@@ -135,12 +135,12 @@ const sendCheckout = (id, cb) => {
               return cb(err, null)
             }
 
-            return cb(null, {status: 'success', payload: 'Checkout Sent'})
+            return cb(null, {status: 'Success', payload: 'Checkout Sent'})
           })  // Checkout Info Save
         })  // Fetch Product Details Callback
       }) // StoreInfo Find One
     } else {
-      return cb(null, {status: 'failed', payload: 'Checkout not found'})
+      return cb(null, {status: 'Not Found', payload: 'Checkout not found'})
     }
   })
 }

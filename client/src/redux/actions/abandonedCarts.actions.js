@@ -69,12 +69,14 @@ export function sendAbandonedCartNow (data, msg) {
   return (dispatch) => {
     callApi('abandonedCarts/sendCheckout', 'post', data)
       .then(res => {
-        if (res.status === 'success') {
+        if (res.status === 'Success') {
           // Add logic to display success Message
           console.log('updated successfully: ' + JSON.stringify(res))
           msg.success('Abandoned Cart Sent Successfully')
-        } else if (res.status === 'failed') {
+        } else if (res.status === 'Failed') {
           msg.error('Abandoned Cart Sent Failed')
+        } else if (res.status === 'Not Found') {
+          msg.info('Abandoned Cart Not Found')
         }
       })
   }
