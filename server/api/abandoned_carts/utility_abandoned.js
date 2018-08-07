@@ -1,6 +1,5 @@
 const CheckoutInfo = require('./CheckoutInfo.model')
 const StoreInfo = require('./StoreInfo.model')
-const StoreAnalytics = require('./StoreAnalytics.model')
 const Pages = require('../pages/Pages.model')
 const utility = require('../broadcasts/broadcasts.utility')
 const Subscriber = require('../subscribers/Subscribers.model')
@@ -125,11 +124,6 @@ const sendCheckout = (id, cb) => {
           logger.serverLog(TAG, 'Product Details: ' + details)
           sendToFacebook(checkout, store, details)
           checkout.status = 'sent'
-          StoreAnalytics.findOneAndUpdate({storeId: store._id}, {$inc: {totalPushSent: 1}}, (err) => {
-            if (err) {
-              return cb(err, null)
-            }
-          })
           checkout.save((err) => {
             if (err) {
               return cb(err, null)

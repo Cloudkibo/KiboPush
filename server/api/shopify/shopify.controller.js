@@ -10,7 +10,6 @@ const querystring = require('querystring')
 const crypto = require('crypto')
 const request = require('request-promise')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
-const StoreAnalytics = require('./../abandoned_carts/StoreAnalytics.model')
 const Shopify = require('shopify-api-node')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/shopify/shopify.controller.js'
@@ -147,9 +146,9 @@ exports.callback = function (req, res) {
       hashEquals = false
     };
 
-    // if (!hashEquals) {
-    //   return res.status(400).send('HMAC validation failed')
-    // }
+    if (!hashEquals) {
+      return res.status(400).send('HMAC validation failed')
+    }
 
   // DONE: Exchange temporary code for a permanent access token
     const accessTokenRequestUrl = 'https://' + shop + '/admin/oauth/access_token'
@@ -174,21 +173,12 @@ exports.callback = function (req, res) {
       shopToken: accessToken,
       companyId: companyId
     })
-    store.save((err, savedStore) => {
+    store.save((err) => {
       if (err) {
         return res.status(500).json({ status: 'failed', error: err })
       }
-      // store analytics initialization
-      const storeAnalytics = new StoreAnalytics({
-        storeId: savedStore._id
-      })
-      storeAnalytics.save((err) => {
-        if (err) {
-          return res.status(500).json({ status: 'failed', error: err })
-        }
-        return res.redirect('/')
-      }) // store analytics save
-    })  // store Save
+      return res.redirect('/')
+    })
   })
   .catch((error) => {
     res.status(error.statusCode >= 100 && error.statusCode < 600 ? error.statusCode : 500).send(error.error_description)
