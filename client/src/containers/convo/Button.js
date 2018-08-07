@@ -148,8 +148,8 @@ class Button extends React.Component {
     console.log('Button state', this.state)
     return (
       <div>
-        <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-          <h6 onClick={this.handleClick}> + Add Button </h6>
+        <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center' onClick={this.handleClick}>
+          <h6> + Add Button </h6>
         </div>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'buttonTarget-' + this.props.button_id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Add Button</strong></PopoverHeader>
