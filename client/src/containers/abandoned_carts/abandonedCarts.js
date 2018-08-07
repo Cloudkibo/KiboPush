@@ -15,8 +15,6 @@ class AbandonedCarts extends React.Component {
     super(props)
     this.props.getShopifyStores()
   }
-  componentWillReceiveProps (nextProps) {
-  }
 
   render () {
     if (this.props.isLoading) {
@@ -25,7 +23,7 @@ class AbandonedCarts extends React.Component {
         <h1 style={{ marginTop: -150 + 'px' }}> Loading </h1>
       </div>
     }
-    if (this.props.storeList && this.props.storeList.length > 0) {
+    else if (this.props.storeList && this.props.storeList.length > 0) {
       return <AbandonedList storeList={this.props.storeList} />
     } else {
       return <InstallApp />

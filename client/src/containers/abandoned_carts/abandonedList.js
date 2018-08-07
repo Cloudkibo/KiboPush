@@ -8,6 +8,7 @@ import AlertContainer from 'react-alert'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { getAbandonedCarts, updateStoreStatus, sendAbandonedCartNow } from '../../redux/actions/abandonedCarts.actions'
+import Analytics from './analytics'
 
 class AbandonedList extends React.Component {
   constructor (props, context) {
@@ -65,6 +66,7 @@ class AbandonedList extends React.Component {
                 Or check out this <a>video tutorial</a>
             </div>
           </div>
+            <Analytics />
 
           <div className='row'>
             <div className='col-xl-12'>
