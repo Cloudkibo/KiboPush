@@ -254,12 +254,12 @@ exports.sendCheckout = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'Failed', description: 'Parameters are missing'})
+      .json({status: 'failed', description: 'Parameters are missing'})
   } else {
     utility.sendCheckout(req.body.id, (err, result) => {
       if (err) {
-        return res.status(500).json({status: 'Failed', description: err})
-      } else if (result.status === 'Not Found') {
+        return res.status(500).json({status: 'failed', description: err})
+      } else if (result.status === 'failed') {
         return res.status(404)
           .json(result)
       } else {
@@ -270,29 +270,20 @@ exports.sendCheckout = function (req, res) {
 }
 
 exports.sendAnalytics = function (req, res) {
-  let parametersMissing = false
-
-  if (!_.has(req.body, 'storeId')) parametersMissing = true
-
-  if (parametersMissing) {
-    return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
-  } else {
     // Fetching from Store Analytics
-    StoreAnalytics.findOne({storeId: req.body.storeId}, (err, analytics) => {
-      if (err) {
-        return res.status(500).json({status: 'failed', error: err})
-      }
+  StoreAnalytics.find({storeId: req.body.storeId}, (err, analytics) => {
+    if (err) {
+      return res.status(500).json({status: 'failed', error: err})
+    }
 
-      if (analytics) {
-        logger.serverLog(TAG, 'Going to send Analytics')
-        return res.status(200).json({status: 'success', payload: analytics})
-      } else {
-        return res.status(404)
-          .json({status: 'failed', description: 'No analytics found against this store'})
-      }
-    })
-  }
+    if (analytics) {
+      logger.serverLog(TAG, 'Going to send Analytics')
+      return res.status(200).json({status: 'success', payload: analytics})
+    } else {
+      return res.status(404)
+        .json({status: 'failed', description: 'No analytics found against this store'})
+    }
+  })
 }
 
 exports.abandonedCheckouts = function (req, res) {
