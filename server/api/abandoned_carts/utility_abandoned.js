@@ -83,7 +83,7 @@ function sendToFacebook (checkout, store, details) {
     }
     logger.serverLog(TAG, `Sending the following info ${JSON.stringify(options)}`)
     request(options, function (error, response, body) {
-       return logger.serverLog(TAG, `Sent the abandoned cart successfully ${JSON.stringify(response)} ${JSON.stringify(body)} ${JSON.stringify(error)}`)
+      logger.serverLog(TAG, `Sent the abandoned cart successfully ${JSON.stringify(response)} ${JSON.stringify(body)} ${JSON.stringify(error)}`)
       if (!error && response.statusCode == 200) {
         return logger.serverLog(TAG, `Sent the abandoned cart successfully`)
       } else {

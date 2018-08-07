@@ -17,8 +17,11 @@ exports.handleCheckout = function (req, res) {
     return item.product_id
   })
   const shopUrl = req.header('X-Shopify-Shop-Domain')
-  StoreInfo.findOne({shopUrl: shopUrl}).exec()
-  .then((results) => {
+  StoreInfo.find({shopUrl: shopUrl}, (err, results) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
     const shopId = results[0]._id
     const userId = results[0].userId
     const companyId = results[0].companyId
@@ -49,11 +52,6 @@ exports.handleCheckout = function (req, res) {
         return res.status(200).json({status: 'success'})
       }) // Checkout Save
     })  // Store Analytics FindOne
-
-  })
-  .catch((err) => {
-    logger.serverLog(TAG, `Error in checkout webhook ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
   })
 }
 

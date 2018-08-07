@@ -289,7 +289,7 @@ exports.sendAnalytics = function (req, res) {
       }
 
       if (store) {
-        StoreAnalytics.find({storeId: store._id}, (err, analytics) => {
+        StoreAnalytics.findOne({storeId: store._id}, (err, analytics) => {
           if (err) {
             return res.status(500).json({status: 'failed', error: err})
           }
