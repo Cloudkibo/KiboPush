@@ -7,7 +7,7 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation, updateTrigger } from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
@@ -43,7 +43,8 @@ class CreateSequence extends React.Component {
       displayAction: false,
       selectedMessageClickId: '',
       selectedButton: '',
-      buttonList: []
+      buttonList: [],
+      eventNameSelected: ''
 
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
@@ -77,6 +78,8 @@ class CreateSequence extends React.Component {
     this.onNameCriteriaChange = this.onNameCriteriaChange.bind(this)
     this.onConditionChange = this.onConditionChange.bind(this)
     this.validateSegmentation = this.validateSegmentation.bind(this)
+    this.validateTrigger = this.validateTrigger.bind(this)
+    this.saveTriggerMessage = this.saveTriggerMessage.bind(this)
   }
 
   saveSegmentation () {
@@ -86,6 +89,18 @@ class CreateSequence extends React.Component {
       segmentationCondition: this.state.segmentationCondition,
       segmentation: this.state.segmentation
     })
+  }
+  saveTriggerMessage () {
+    this.props.updateTrigger({
+      trigger: [{
+        value: this.state.selectedMessageClickId,
+        buttonTitle: this.state.selectedButton,
+        event: this.state.eventNameSelected     
+      }],
+      type: 'message',
+      messageId: this.state.selectedMessageId
+    })
+    this.setState({ShowTrigger: false})
   }
 
   validateSegmentation () {
@@ -98,32 +113,41 @@ class CreateSequence extends React.Component {
     })
     return !invalidSegment
   }
-
+  validateTrigger () {
+    console.log('validating TRIGGER')
+    if (this.state.displayAction ==true) {
+      if (this.state.selectedButton =='') {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      if (this.state.selectedMessageClickId =='') {
+        return false
+      }
+      return true
+    }
+  }
   onConditionChange (condition) {
     this.setState({segmentationCondition: condition})
-  } 
+  }
 
   onSelectedDropDownButton (buttonTitle) {
     console.log('Button title name is ', buttonTitle)
-    this.setState({selectedButton: buttonTitle})  
+    this.setState({selectedButton: buttonTitle})
   }
   onSelectedMessage (Message) {
-    console.log('Selected Message id is:', Message) 
+    console.log('Selected Message id is:', Message)
     this.setState({selectedMessageClickId: Message})
-    let buttonList = [] 
+    let buttonList = []
     this.props.messages.map((message, i) => {
       if (message._id == Message) {
         message.payload.map((payload, j) => {
           if (payload.buttons) {
             payload.buttons.map((button, k) => {
-         // console.log("The button title is ",button.title)
               buttonList.push(button)
-              //console.log('The button is  ', button)
-
-      //return <option value={button.title}>{button.title}</option> 
-       //   console.log("The button title is ",button.title)
-       
-   }) }
+              
+   })}
              //console.log("The data is ",payload)
       }) 
       //console.log("Messages ",message)
@@ -135,12 +159,14 @@ class CreateSequence extends React.Component {
     this.setState({buttonList: buttonList})
   }
   onSelectedOption (menu) {
+    this.setState({eventNameSelected:menu})
     if (menu == 'clicks') {
       this.setState({displayAction: true}) 
       console.log('Display action set true')
     }
     else {
       this.setState({displayAction: false})
+      this.setState({selectedButton: ''})
       console.log('Display action set false')
     }
   }
@@ -363,7 +389,10 @@ class CreateSequence extends React.Component {
   CloseDialogTrigger (message) {
     this.setState({ShowTrigger: false})
     this.setState({displayAction: false})
-    this.setState({buttonList: []})   
+    this.setState({buttonList: []}) 
+    this.setState({selectedButton: ''})
+    this.setState({selectedMessageClickId: ''})
+    
   }
 
   componentDidMount () {
@@ -588,7 +617,7 @@ class CreateSequence extends React.Component {
                        { 
                          this.state.displayAction && 
                       <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                       
+                        <option disabled selected value>Select Button </option>
                        {
                           
                           this.state.buttonList.map((button, i) => {
@@ -609,7 +638,7 @@ class CreateSequence extends React.Component {
 
                   
 
-                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateSegmentation()}> Save </button>
+                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
                     <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
@@ -796,7 +825,9 @@ function mapDispatchToProps (dispatch) {
     createMessage: createMessage,
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
-    updateSegmentation: updateSegmentation
+    updateSegmentation: updateSegmentation,
+    updateTrigger: updateTrigger
+
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
