@@ -107,7 +107,7 @@ class templatePolls extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     //  var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadPollsListNew({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     } else {
@@ -215,7 +215,7 @@ class templatePolls extends React.Component {
                     </div>
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
                       <option value='' disabled>Filter by Category...</option>
-                      <option value=''>All</option>
+                      <option value='all'>All</option>
                       {
                         this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>

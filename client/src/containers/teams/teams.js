@@ -107,13 +107,13 @@ class Teams extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value !== '' && this.state.searchValue === '') {
+    if (e.target.value !== '' && e.target.value !== 'all' && this.state.searchValue === '') {
       for (let i = 0; i < this.props.teams.length; i++) {
         if (this.props.teams[i].teamPagesIds.indexOf(e.target.value) !== -1) {
           filtered.push(this.props.teams[i])
         }
       }
-    } else if (e.target.value !== '' && this.state.searchValue !== '') {
+    } else if (e.target.value !== '' && e.target.value !== 'all' && this.state.searchValue !== '') {
       for (let i = 0; i < this.props.teams.length; i++) {
         if (this.props.teams[i].name && this.props.teams[i].name.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.teams[i].teamPagesIds.indexOf(e.target.value) !== -1) {
           filtered.push(this.props.teams[i])
@@ -262,7 +262,7 @@ class Teams extends React.Component {
                                   <option key={i} value={page._id}>{page.pageName}</option>
                                 ))
                               }
-                              <option value=''>All</option>
+                              <option value='all'>All</option>
                             </select>
                           </div>
                         </div>

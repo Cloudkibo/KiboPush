@@ -736,7 +736,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     //  var filtered = []
     console.log('e.target.value', e.target.value)
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: e.target.value, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
@@ -766,7 +766,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackTagFilter(filteredData)
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: e.target.value, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
@@ -792,7 +792,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackTagFilter(filteredData)
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
@@ -818,7 +818,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackTagFilter(filteredData)
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: e.target.value, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
@@ -843,7 +843,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackTagFilter(filteredData)
     // filteredData = this.stackLocaleFilter(filteredData)
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true, statusValue: e.target.value})
       if (e.target.value === 'subscribed') {
         this.setState({status_value: true})
@@ -969,7 +969,7 @@ class Subscriber extends React.Component {
                                   <div className='m-form__control'>
                                     <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
                                       <option key='' value='' disabled>Filter by Gender...</option>
-                                      <option key='ALL' value=''>All</option>
+                                      <option key='ALL' value='all'>All</option>
                                       <option key='male' value='male'>Male</option>
                                       <option key='female' value='female'>Female</option>
                                       <option key='other' value='other'>Other</option>
@@ -986,7 +986,7 @@ class Subscriber extends React.Component {
                                   <div className='m-form__control'>
                                     <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
                                       <option key='' value='' disabled>Filter by Page...</option>
-                                      <option key='ALL' value=''>ALL</option>
+                                      <option key='ALL' value='all'>ALL</option>
                                       {
                                         this.props.pages && this.props.pages.map((page, i) => (
                                           <option key={i} value={page._id}>{page.pageName}</option>
@@ -1008,7 +1008,7 @@ class Subscriber extends React.Component {
                                     <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
                                   */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
                                     <option key='' value='' disabled>Filter by Locale...</option>
-                                    <option key='ALL' value=''>ALL</option>
+                                    <option key='ALL' value='all'>ALL</option>
                                     {
                                       this.props.locales && this.props.locales.map((locale, i) => (
                                         <option key={i} value={locale}>{locale}</option>
@@ -1026,7 +1026,7 @@ class Subscriber extends React.Component {
                                   <div className='m-form__control'>
                                     <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
                                       <option key='' value='' disabled>Filter by Tags...</option>
-                                      <option key='ALL' value=''>ALL</option>
+                                      <option key='ALL' value='all'>ALL</option>
                                       {
                                         this.state.options.map((tag, i) => (
                                           <option key={i} value={tag.value}>{tag.label}</option>
@@ -1044,7 +1044,7 @@ class Subscriber extends React.Component {
                                   <div className='m-form__control'>
                                     <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
                                       <option key='' value='' disabled>Filter by Status...</option>
-                                      <option key='ALL' value=''>ALL</option>
+                                      <option key='ALL' value='all'>ALL</option>
                                       <option key='subscribed' value='subscribed'>Subscribed</option>
                                       <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
                                     </select>
