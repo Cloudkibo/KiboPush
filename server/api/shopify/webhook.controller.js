@@ -193,31 +193,12 @@ exports.handleNewSubscriber = function (payload) {
 
   const cartToken = payload.optin.user_ref.split('-')[0]
 
-  CartInfo.findOne({cartToken: cartToken}, (err, cart) => {
-    if (err) {
-      logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-    }
-
-    if (cart) {
-      StoreAnalytics.findOneAndUpdate({storeId: cart.storeId},
-        {$inc: {totalSubscribers: 1}},
-        (err) => {
-          if (err) {
-            logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-          }
-        })  // Store Analytics save and update
-
-      cart.userRef = userRef
-      cart.save((err) => {
-        if (err) {
-          logger.serverLog(TAG, `Failed in Updating UserRef `)
-        }
-
-        logger.serverLog(TAG, `Successfully Updated UserRef `)
-      })
-    } else {
-      logger.serverLog(TAG, ` Cart not found ${JSON.stringify(err)}`)
-    }
+  CartInfo.update({cartToken: cartToken}, {userRef: userRef}).exec()
+  .then((result) => {
+    logger.serverLog(TAG, `Successfully Updated UserRef ${JSON.stringify(result)}`)
+  }).catch((err) => {
+    logger.serverLog(TAG, `Failed in updating the UserRef ${JSON.stringify(err)}`)
   })
+
   logger.serverLog(TAG, `Page Id: ${JSON.stringify(pageId)} and UserRef ${JSON.stringify(userRef)}`)
 }

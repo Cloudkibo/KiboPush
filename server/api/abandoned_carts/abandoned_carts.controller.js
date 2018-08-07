@@ -254,12 +254,12 @@ exports.sendCheckout = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({status: 'Failed', description: 'Parameters are missing'})
   } else {
     utility.sendCheckout(req.body.id, (err, result) => {
       if (err) {
-        return res.status(500).json({status: 'failed', description: err})
-      } else if (result.status === 'failed') {
+        return res.status(500).json({status: 'Failed', description: err})
+      } else if (result.status === 'Not Found') {
         return res.status(404)
           .json(result)
       } else {
@@ -270,38 +270,29 @@ exports.sendCheckout = function (req, res) {
 }
 
 exports.sendAnalytics = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-    if (err) {
-      return res.status(500).json({ status: 'failed', error: err })
-    }
+  let parametersMissing = false
 
-    if (!companyUser) {
-      return res.status(404).json({
-        status: 'failed',
-        description: 'The user account does not belong to any company. Please contact support'
-      })
-    }
+  if (!_.has(req.body, 'storeId')) parametersMissing = true
 
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  } else {
     // Fetching from Store Analytics
-    StoreInfo.findOne({companyId: companyUser.companyId}, (err, store) => {
+    StoreAnalytics.findOne({storeId: req.body.storeId}, (err, analytics) => {
       if (err) {
         return res.status(500).json({status: 'failed', error: err})
       }
 
-      if (store) {
-        StoreAnalytics.find({storeId: store._id}, (err, analytics) => {
-          if (err) {
-            return res.status(500).json({status: 'failed', error: err})
-          }
-          logger.serverLog(TAG, 'Going to send Analytics')
-          return res.status(200).json({status: 'success', payload: analytics})
-        })
+      if (analytics) {
+        logger.serverLog(TAG, 'Going to send Analytics')
+        return res.status(200).json({status: 'success', payload: analytics})
       } else {
         return res.status(404)
           .json({status: 'failed', description: 'No analytics found against this store'})
       }
     })
-  })
+  }
 }
 
 exports.abandonedCheckouts = function (req, res) {
