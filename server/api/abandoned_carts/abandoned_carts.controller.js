@@ -6,6 +6,7 @@ const logger = require('../../components/logger')
 const StoreInfo = require('./StoreInfo.model')
 const CartInfo = require('./CartInfo.model')
 const CheckoutInfo = require('./CheckoutInfo.model')
+const StoreAnalytics = require('./StoreAnalytics.model')
 const utility = require('./utility_abandoned')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/abandonedCarts/abandoned_carts.controller.js'
@@ -263,6 +264,32 @@ exports.sendCheckout = function (req, res) {
           .json(result)
       } else {
         return res.status(200).json(result)
+      }
+    })
+  }
+}
+
+exports.sendAnalytics = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'storeId')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  } else {
+    // Fetching from Store Analytics
+    StoreAnalytics.findOne({storeId: req.body.storeId}, (err, analytics) => {
+      if (err) {
+        return res.status(500).json({status: 'failed', error: err})
+      }
+
+      if (analytics) {
+        logger.serverLog(TAG, 'Going to send Analytics')
+        return res.status(200).json({status: 'success', payload: analytics})
+      } else {
+        return res.status(404)
+          .json({status: 'failed', description: 'No analytics found against this store'})
       }
     })
   }
