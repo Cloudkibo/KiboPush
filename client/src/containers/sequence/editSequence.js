@@ -114,14 +114,14 @@ class CreateSequence extends React.Component {
   }
   validateTrigger () {
     console.log('validating TRIGGER')
-    if (this.state.displayAction ==true) {
-      if (this.state.selectedButton =='') {
+    if (this.state.displayAction === true) {
+      if (this.state.selectedButton === '') {
         return false
       } else {
         return true
       }
     } else {
-      if (this.state.selectedMessageClickId =='') {
+      if (this.state.selectedMessageClickId === '') {
         return false
       }
       return true
@@ -140,11 +140,11 @@ class CreateSequence extends React.Component {
     this.setState({selectedMessageClickId: Message})
     let buttonList = []
     this.props.messages.map((message, i) => {
-      if (message._id == Message) {
+      if (message._id === Message) {
         message.payload.map((payload, j) => {
           if (payload.buttons) {
             payload.buttons.map((button, k) => {
-              buttonList.push(button)  
+              buttonList.push(button) 
             })
           }
         })
@@ -155,7 +155,7 @@ class CreateSequence extends React.Component {
   }
   onSelectedOption (menu) {
     this.setState({eventNameSelected: menu})
-    if (menu == 'clicks') {
+    if (menu === 'clicks') {
       this.setState({displayAction: true})
       console.log('Display action set true')
     } else {
