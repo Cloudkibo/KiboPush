@@ -43,7 +43,7 @@ export function createSequence (data) {
   }
 }
 
-export function updateSegmentation(data) {
+export function updateSegmentation (data) {
   console.log('updateSegmentation data', data)
   return (dispatch) => {
     callApi('sequenceMessaging/updateSegmentation', 'post', data)

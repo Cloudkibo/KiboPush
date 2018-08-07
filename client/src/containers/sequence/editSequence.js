@@ -93,10 +93,9 @@ class CreateSequence extends React.Component {
   saveTriggerMessage () {
     this.props.updateTrigger({
       trigger: [{
+        event: this.state.eventNameSelected,
         value: this.state.selectedMessageClickId,
-        buttonTitle: this.state.selectedButton,
-        event: this.state.eventNameSelected     
-      }],
+        buttonTitle: this.state.selectedButton }],
       type: 'message',
       messageId: this.state.selectedMessageId
     })
@@ -145,26 +144,21 @@ class CreateSequence extends React.Component {
         message.payload.map((payload, j) => {
           if (payload.buttons) {
             payload.buttons.map((button, k) => {
-              buttonList.push(button)
-              
-   })}
-             //console.log("The data is ",payload)
-      }) 
-      //console.log("Messages ",message)
-    }
-  } 
-    
-  )
-    console.log('The buttonList is  ', buttonList) 
+              buttonList.push(button)  
+            })
+          }
+        })
+      }
+    })
+    console.log('The buttonList is  ', buttonList)
     this.setState({buttonList: buttonList})
   }
   onSelectedOption (menu) {
-    this.setState({eventNameSelected:menu})
+    this.setState({eventNameSelected: menu})
     if (menu == 'clicks') {
-      this.setState({displayAction: true}) 
+      this.setState({displayAction: true})
       console.log('Display action set true')
-    }
-    else {
+    } else {
       this.setState({displayAction: false})
       this.setState({selectedButton: ''})
       console.log('Display action set false')
@@ -389,10 +383,9 @@ class CreateSequence extends React.Component {
   CloseDialogTrigger (message) {
     this.setState({ShowTrigger: false})
     this.setState({displayAction: false})
-    this.setState({buttonList: []}) 
+    this.setState({buttonList: []})
     this.setState({selectedButton: ''})
     this.setState({selectedMessageClickId: ''})
-    
   }
 
   componentDidMount () {
@@ -573,31 +566,7 @@ class CreateSequence extends React.Component {
                          <option value='sees'>sees</option>
                           <option value='clicks'>clicks</option>
                           <option value='receive'>receive</option>
-                      </select>
-
-                       {
-                          
-                        //  this.props.messages.map((message, i) => {
-                         //   if(message._id == this.state.selectedMessageClickId ) {
-                           // message.payload.map((payload, j) => {
-                           //   if(payload.buttons) {
-                           //   payload.buttons.map((button, k) => {
-                                
-                                //console.log("The button title is ",button.title)
-                               
-                        // }) }
-                                   //console.log("The data is ",payload)
-                          //  }) 
-                            //console.log("Messages ",message)
-                       //   }
-                      //  } 
-                          
-                      //  )
-                     }
-                        
-                          
-                            
-                          
+                      </select>   
                         <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
                         <option disabled selected value>Select Message </option>
                         {
