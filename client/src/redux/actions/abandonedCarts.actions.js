@@ -18,6 +18,13 @@ export function updateAbandonedList (data) {
   }
 }
 
+export function updateAnalytics (data) {
+  return {
+    type: ActionTypes.UPDATE_ABANDONED_LIST,
+    data
+  }
+}
+
 export function getShopifyStores () {
   return (dispatch) => {
     callApi('abandonedCarts/getStores').then(res => {
@@ -32,6 +39,15 @@ export function getAbandonedCarts () {
     callApi('abandonedCarts/abandonedCheckouts').then(res => {
       console.log('Abandoned Checkouts', res.payload)
       dispatch(updateAbandonedList(res.payload))
+    })
+  }
+}
+
+export function getAnalytics () {
+  return (dispatch) => {
+    callApi('abandonedCarts/sendAnalytics').then(res => {
+      console.log('Abandoned Analytics', res.payload)
+      dispatch(updateAnalytics(res.payload))
     })
   }
 }
