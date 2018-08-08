@@ -1,15 +1,20 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import {getuserdetails} from './basicinfo.actions'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
-
 export function Success () {
   return {
     type: ActionTypes.SIGNUP_SUCCESS,
     successMessage: 'success'
   }
 }
-
+export function skipSuccess () {
+  return {
+    type: ActionTypes.SKIP_SUCCESS,
+    successSkip: 'success'
+  }
+}
 export function Failure (message) {
   return {
     type: ActionTypes.SIGNUP_FAILURE,
@@ -57,6 +62,18 @@ export function resendEmail () {
           dispatch(resendSuccess(res.description))
         } else {
           dispatch(resendFailure())
+        }
+      })
+  }
+}
+
+export function skip () {
+  return (dispatch) => {
+    callApi('users/updateSkipConnect')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getuserdetails())
+          dispatch(skipSuccess())
         }
       })
   }

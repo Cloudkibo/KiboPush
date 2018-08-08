@@ -104,17 +104,23 @@ class Text extends React.Component {
     var temp = this.state.button
     temp.push(obj)
 
-    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
+    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons}, () => {
+      this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
+    })
   }
   editButton (obj) {
+    console.log(this.state)
     var temp = this.state.button.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
       }
       return elm
     })
-    this.setState({button: temp})
+    console.log(temp)
+    this.setState({button: temp}, () => {
+      console.log(this.state.button)
+      this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
+    })
   }
   removeButton (obj) {
     // var temp = this.state.button.filter((elm, index) => {
@@ -127,6 +133,7 @@ class Text extends React.Component {
     })
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
 
   render () {
@@ -189,7 +196,7 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState
         ? <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>

@@ -5,8 +5,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { loadAutopostingList, clearAlertMessages, deleteautoposting } from '../../redux/actions/autoposting.actions'
@@ -121,7 +119,6 @@ class Autoposting extends React.Component {
   render () {
     return (
       <div>
-        <Header />
         {
         this.state.showWordPressGuide &&
         <ModalContainer style={{width: '500px', top: '80px'}}
@@ -219,131 +216,126 @@ class Autoposting extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Auto Posting</h3>
-                </div>
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Auto Posting</h3>
               </div>
             </div>
-            <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/auto-posting/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-                </div>
+          </div>
+          <div className='m-content'>
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-technology m--font-accent' />
               </div>
-              <div
-                className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
-                role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-exclamation m--font-brand' />
-                </div>
-                <div className='m-alert__text'>
-                  Connect several feeds and information sources to send
-                  updates to your subscribers
-                </div>
+              <div className='m-alert__text'>
+                Need help in understanding Auto Posting? Here is the <a href='http://kibopush.com/auto-posting/' target='_blank'>documentation</a>.
+                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
               </div>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Connected Feeds
-                      </h3>
-                    </div>
+            </div>
+            <div
+              className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+              role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation m--font-brand' />
+              </div>
+              <div className='m-alert__text'>
+                Connect several feeds and information sources to send
+                updates to your subscribers
+              </div>
+            </div>
+            <div className='m-portlet m-portlet--mobile'>
+              <div className='m-portlet__head'>
+                <div className='m-portlet__head-caption'>
+                  <div className='m-portlet__head-title'>
+                    <h3 className='m-portlet__head-text'>
+                      Connected Feeds
+                    </h3>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    <Link onClick={this.showDialog}>
-                      <button
-                        className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                </div>
+                <div className='m-portlet__head-tools'>
+                  <Link onClick={this.showDialog}>
+                    <button
+                      className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      <span>
+                        <i className='la la-plus' />
                         <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Add Feed
-                          </span>
+                          Add Feed
                         </span>
-                      </button>
-                    </Link>
-                  </div>
+                      </span>
+                    </button>
+                  </Link>
                 </div>
-                <div className='m-portlet__body'>
-                  <div className='col-12'>
-                    <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive autoposts after 30 mins of ending the conversation.</p>
-                  </div>
-                  <div
-                    className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                    <div className='row align-items-center'>
-                      <div className='col-xl-8 order-2 order-xl-1' />
-                      <div
-                        className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                        {
-                          this.state.isShowingModal &&
-                          <ModalContainer style={{width: '500px'}}
+              </div>
+              <div className='m-portlet__body'>
+                <div className='col-12'>
+                  <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive autoposts after 30 mins of ending the conversation.</p>
+                </div>
+                <div
+                  className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div
+                      className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      {
+                        this.state.isShowingModal &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialog}>
+                          <ModalDialog style={{width: '500px'}}
                             onClose={this.closeDialog}>
-                            <ModalDialog style={{width: '500px'}}
-                              onClose={this.closeDialog}>
-                              <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} />
-                            </ModalDialog>
-                          </ModalContainer>
-                        }
-                        {
-                          this.state.isShowingModalDelete &&
-                          <ModalContainer style={{width: '500px'}}
+                            <AddChannel onClose={this.closeDialog} openGuidelines={this.viewGuide} />
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                      {
+                        this.state.isShowingModalDelete &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialogDelete}>
+                          <ModalDialog style={{width: '500px'}}
                             onClose={this.closeDialogDelete}>
-                            <ModalDialog style={{width: '500px'}}
-                              onClose={this.closeDialogDelete}>
-                              <h3>Delete Integration</h3>
-                              <p>Are you sure you want to delete this integration?</p>
-                              <button style={{float: 'right'}}
-                                className='btn btn-primary btn-sm'
-                                onClick={() => {
-                                  this.props.deleteautoposting(this.state.deleteid)
-                                  this.closeDialogDelete()
-                                }}>Delete
-                              </button>
-                            </ModalDialog>
-                          </ModalContainer>
-                        }
-                        <div
-                          className='m-separator m-separator--dashed d-xl-none' />
-                      </div>
+                            <h3>Delete Integration</h3>
+                            <p>Are you sure you want to delete this integration?</p>
+                            <button style={{float: 'right'}}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.props.deleteautoposting(this.state.deleteid)
+                                this.closeDialogDelete()
+                              }}>Delete
+                            </button>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                      <div
+                        className='m-separator m-separator--dashed d-xl-none' />
                     </div>
                   </div>
-                  {
-                    this.state.alertMessage !== '' &&
-                    <div>
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-                      <br />
-                    </div>
-                  }
-                  {
-                    this.props.autopostingData && this.props.autopostingData.length > 0
-                      ? this.props.autopostingData.map((item, i) => (
-                        <div className='m-widget5'>
-                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
-                        </div>
-                    ))
-                      : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
-                  }
                 </div>
+                {
+                  this.state.alertMessage !== '' &&
+                  <div>
+                    <center>
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+                    <br />
+                  </div>
+                }
+                {
+                  this.props.autopostingData && this.props.autopostingData.length > 0
+                    ? this.props.autopostingData.map((item, i) => (
+                      <div className='m-widget5'>
+                        <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
+                      </div>
+                  ))
+                    : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
+                }
               </div>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }

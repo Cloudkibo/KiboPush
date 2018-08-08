@@ -16,11 +16,23 @@ class ResendEmail extends React.Component {
     props.getuserdetails()
     this.resend = this.resend.bind(this)
   }
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
   resend () {
     this.props.resendEmail()
   }
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
+    /* eslint-disable */
+    if ($('#sidebarDiv')) {
+      $('#sidebarDiv').addClass('hideSideBar')
+    }
+    /* eslint-enable */
   }
 
   render () {

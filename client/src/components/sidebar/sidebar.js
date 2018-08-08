@@ -52,11 +52,7 @@ class Sidebar extends Component {
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
   }
-  componentDidMount () {
-    if (!this.state.ignore) {
-      this.setState({ignore: true})
-    }
-  }
+
   openUserGuide () {
     this.setState({isShowingModal: true})
   }
@@ -399,70 +395,82 @@ class Sidebar extends Component {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
     return (
-      <div>
+      <div id='sidebarDiv'>
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>
-        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + '%'}}>
+        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
           <div
             id='m_ver_menu'
-            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
-            data-menu-vertical='true'
-            data-menu-scrollable='false' data-menu-dropdown-timeout='500'>
-            {this.props.user &&
-            <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-              {this.showOperationalDashboard()}
-              {this.showDashboard()}
-              {this.showBroadcastsItem()}
-              {this.showCommentCapture()}
-              {this.showSurveysItem()}
-              {this.showPollsItem()}
-              {this.showSmartRespliesItem()}
-              {this.showLiveChatItem()}
-              {this.showAutoPostingItem()}
-              {this.showPersistentMenuItem()}
-              {this.showPagesItem()}
-              {this.showSubscribersItem()}
-              {this.showSequenceMessaging()}
-              {this.showCreatePhoneList()}
-              {this.showInviteMembersItem()}
-              {this.showMembersItem()}
-              {this.showTeams()}
-              {this.showBroadcastTemplates()}
-              {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-list-3' title='Invite using phone number' />
-                    <span className='m-menu__link-text'>Invite using phone number</span>
-                  </Link>
-                </li>
+            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide'
+            data-menu-vertical='1'
+            data-menu-scrollable='1'>
+            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{maxHeight: 'none'}}>
+              <div id='mCSB_2_container' className='mCSB_container' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
+                {this.props.user &&
+                <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+                  {this.showOperationalDashboard()}
+                  {this.showDashboard()}
+                  {this.showBroadcastsItem()}
+                  {this.showCommentCapture()}
+                  {this.showSurveysItem()}
+                  {this.showPollsItem()}
+                  {this.showSmartRespliesItem()}
+                  {this.showLiveChatItem()}
+                  {this.showAutoPostingItem()}
+                  {this.showPersistentMenuItem()}
+                  {this.showPagesItem()}
+                  {this.showSubscribersItem()}
+                  {this.showSequenceMessaging()}
+                  {this.showCreatePhoneList()}
+                  {this.showInviteMembersItem()}
+                  {this.showMembersItem()}
+                  {this.showTeams()}
+                  {this.showBroadcastTemplates()}
+                  {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
+                    <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                      <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-list-3' title='Invite using phone number' />
+                        <span className='m-menu__link-text'>Invite using phone number</span>
+                      </Link>
+                    </li>
+                  }
+                  {this.state.settings &&
+                    <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                      <Link to='/settings' className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
+                        <span className='m-menu__link-text'>Settings</span>
+                      </Link>
+                    </li>
+                  }
+                  {this.state.userGuide &&
+                    <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                      <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-info' title='User Guide' />
+                        <span className='m-menu__link-text'>User Guide</span>
+                      </a>
+                    </li>
+                  }
+                  {this.state.waitingResponse &&
+                    <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                      <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-cogwheel' title='Waiting Response' />
+                        <span className='m-menu__link-text'>Waiting Response</span>
+                      </Link>
+                    </li>
+                 }
+                </ul>
               }
-              {this.state.settings &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <Link to='/settings' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
-                    <span className='m-menu__link-text'>Settings</span>
-                  </Link>
-                </li>
-              }
-              {this.state.userGuide &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-info' title='User Guide' />
-                    <span className='m-menu__link-text'>User Guide</span>
-                  </a>
-                </li>
-              }
-              {this.state.waitingResponse &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-cogwheel' title='Waiting Response' />
-                    <span className='m-menu__link-text'>Waiting Response</span>
-                  </Link>
-                </li>
-             }
-            </ul>
-          }
+              </div>
+            </div>
+            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
+              <div className='mCSB_draggerContainer'>
+                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px'}}>
+                  <div className='mCSB_dragger_bar' style={{lineHeight: '50px'}} />
+                </div>
+                <div className='mCSB_draggerRail' />
+              </div>
+            </div>
           </div>
 
         </div>

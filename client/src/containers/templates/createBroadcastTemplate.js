@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, deleteCategory } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
@@ -16,12 +14,14 @@ import File from '../convo/File'
 import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
+import Media from '../convo/Media'
 import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
+import {onClickText, onImageClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick, onCardClick, onGalleryClick} from '../menu/utility'
 
 class CreateBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -42,6 +42,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.handleImage = this.handleImage.bind(this)
     this.handleList = this.handleList.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleMedia = this.handleMedia.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.newConvo = this.newConvo.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -62,21 +63,23 @@ class CreateBroadcastTemplate extends React.Component {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {
         if (this.props.template.payload[i].componentType === 'text') {
-          temp.push({content: (<Text id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState />)})
+          temp.push({content: (<Text id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} txt={this.props.template.payload[i].text} handleText={this.handleText} onRemove={this.removeComponent} removeState />)})
         } else if (this.props.template.payload[i].componentType === 'image') {
-          temp.push({content: (<Image id={temp.length} key={temp.length} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Image id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} image={this.props.template.payload[i].image_url} handleImage={this.handleImage} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'card') {
-          temp.push({content: (<Card id={temp.length} key={temp.length} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)})
+          temp.push({content: (<Card id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} buttons={this.props.template.payload[i].buttons} img={this.props.template.payload[i].image_url} title={this.props.template.payload[i].title} subtitle={this.props.template.payload[i].description} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)})
         } else if (this.props.template.payload[i].componentType === 'gallery') {
-          temp.push({content: (<Gallery id={temp.length} key={temp.length} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Gallery id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} cards={this.props.template.payload[i].cards} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'audio') {
-          temp.push({content: (<Audio id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Audio id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'video') {
-          temp.push({content: (<Video id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<Video id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'file') {
-          temp.push({content: (<File id={temp.length} key={temp.length} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
+          temp.push({content: (<File id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} file={this.props.template.payload[i]} handleFile={this.handleFile} onRemove={this.removeComponent} />)})
         } else if (this.props.template.payload[i].componentType === 'list') {
-          temp.push({content: (<List id={temp.length} key={temp.length} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+          temp.push({content: (<List id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} list={this.props.template.payload[i]} cards={this.props.template.payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+        } else if (this.props.template.payload[i].componentType === 'media') {
+          temp.push({content: (<Media id={this.props.template.payload[i].id} key={this.props.template.payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={this.props.template.payload[i]} />)})
         }
       }
       var options = this.state.categoryValue
@@ -181,6 +184,7 @@ class CreateBroadcastTemplate extends React.Component {
   }
 
   handleText (obj) {
+    console.log('handleText')
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
@@ -188,6 +192,8 @@ class CreateBroadcastTemplate extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -224,7 +230,39 @@ class CreateBroadcastTemplate extends React.Component {
     }
     this.setState({broadcast: temp})
   }
-
+  handleMedia (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      if (obj.error === 'file size error') {
+        this.msg.error('File size cannot exceed 25MB')
+        return
+      }
+      if (obj.error === 'invalid file') {
+        this.msg.error('File is not valid')
+        return
+      }
+    }
+    var temp = this.state.broadcast
+    var isPresent = false
+    temp.map((data, i) => {
+      if (data.id === obj.id) {
+        temp[i].fileName = obj.fileName
+        temp[i].mediaType = obj.mediaType
+        temp[i].fileurl = obj.fileurl
+        temp[i].size = obj.size
+        temp[i].type = obj.type
+        temp[i].buttons = obj.buttons
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
   handleGallery (obj) {
     var temp = this.state.broadcast
     var isPresent = false
@@ -342,6 +380,16 @@ class CreateBroadcastTemplate extends React.Component {
     }
   }
 
+  // onClickText (timeStamp){
+  //   console.log('in on click text' + timeStamp)
+
+  //   let temp = this.state.list
+  //   console.log('temp' +  JSON.stringify(temp))
+  //   this.msg.info('New Text Component Added')
+  //   this.setState({ list: [...temp, { content: (<Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} />) }] })
+  //   this.handleText({id: timeStamp, text: '', button: []})
+  // }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -350,208 +398,212 @@ class CreateBroadcastTemplate extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-
+    let timeStamp = new Date().getTime()
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-exclamation m--font-brand' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding how to create template broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                  <div className='m-portlet m-portlet--mobile'>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            {this.props.template
-                            ? 'Edit Broadcast Template'
-                            : 'Create Broadcast Template'
-                            }
-                          </h3>
-                        </div>
-                      </div>
+        <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding how to create template broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank'>documentation</a>.
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        {this.props.template
+                        ? 'Edit Broadcast Template'
+                        : 'Create Broadcast Template'
+                        }
+                      </h3>
                     </div>
-                    <div className='m-portlet__body'>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='row'>
+                    <div className='col-12'>
                       <div className='row'>
-                        <div className='col-12'>
+                        <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                          <div className='row' >
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }} >
+                                <div className='align-center'>
+                                  <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                  <h6>Text</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onImageClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                  <h6>Image</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                  <h6>Card</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this)}}>
+                                <div className='align-center'>
+                                  <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                  <h6>Gallery</h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <div className='row'>
-                            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                              <div className='row' >
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: temp.length, text: '', button: []}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                                      <h6>Text</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}); this.handleImage({id: temp.length, componentType: 'image', image_url: '', fileurl: ''}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                                      <h6>Image</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: temp.length, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                                      <h6>Card</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: temp.length, componentType: 'gallery', cards: []}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                                      <h6>Gallery</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className='row'>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'audio', fileurl: ''}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                                      <h6>Audio</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'video', fileurl: ''}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                                      <h6>Video</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'file', fileurl: ''}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                                      <h6>File</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}); this.handleList({id: temp.length, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
-                                    <div className='align-center'>
-                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
-                                      <h6>List</h6>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className='row'>
-                                <div className='col-md-12' style={{paddingTop: '20px'}}>
-                                  <label>Category</label>
-                                </div>
-                                <div className='col-md-10'>
-                                  <select id='selectCategory' />
-                                </div>
-                                <div className='col-md-2'>
-                                  <button onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
-                                    Add category
-                                  </button>
-                                </div>
-                              </div>
-                              <div className='row'>
-                                <div className='col-12' style={{paddingTop: '50px'}}>
-                                  <button onClick={this.showResetAlertDialog} style={{marginRight: '10px'}} className='btn btn-primary'>Reset</button>
-                                  {
-                                    this.props.template
-                                    ? <button style={{marginRight: '10px'}} id='send' onClick={this.editBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Update </button>
-                                    : <button style={{marginRight: '10px'}} id='send' onClick={this.createBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Create </button>
-                                  }
-                                  <Link to='/templates' className='btn btn-secondary'>Back</Link>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onAudioClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                  <h6>Audio</h6>
                                 </div>
                               </div>
                             </div>
-                            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                              <StickyDiv offsetTop={70} zIndex={1}>
-                                <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                                  <div style={{padding: '5px'}}>
-                                    <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
-                                  </div>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onVideoClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                  <h6>Video</h6>
                                 </div>
-                              </StickyDiv>
-                              {
-                                this.state.isShowingModalResetAlert &&
-                                <ModalContainer style={{width: '500px'}}
-                                  onClose={this.closeResetAlertDialog}>
-                                  <ModalDialog style={{width: '500px'}}
-                                    onClose={this.closeResetAlertDialog}>
-                                    <p>Are you sure you want to reset the message ?</p>
-                                    <button style={{float: 'right', marginLeft: '10px'}}
-                                      className='btn btn-primary btn-sm'
-                                      onClick={() => {
-                                        this.newConvo()
-                                        this.closeResetAlertDialog()
-                                      }}>Yes
-                                    </button>
-                                    <button style={{float: 'right'}}
-                                      className='btn btn-primary btn-sm'
-                                      onClick={() => {
-                                        this.closeResetAlertDialog()
-                                      }}>Cancel
-                                    </button>
-                                  </ModalDialog>
-                                </ModalContainer>
-                              }
-                              {
-                                this.state.isShowingModal &&
-                                <ModalContainer style={{width: '500px'}}
-                                  onClose={this.closeDialog}>
-                                  <ModalDialog style={{width: '500px'}}
-                                    onClose={this.closeDialog}>
-                                    <h3>Rename:</h3>
-                                    <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
-                                    <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
-                                  </ModalDialog>
-                                </ModalContainer>
-                              }
-
-                              {
-                                this.state.showAddCategoryDialog &&
-                                <ModalContainer style={{width: '500px'}}
-                                  onClose={this.closeAddCategoryDialog}>
-                                  <ModalDialog style={{width: '500px'}}
-                                    onClose={this.closeAddCategoryDialog}>
-                                    <h3>Add Category</h3>
-                                    <input className='form-control'
-                                      placeholder='Enter category' ref='newCategory' />
-                                    <br />
-                                    <button style={{float: 'right'}}
-                                      className='btn btn-primary btn-sm'
-                                      onClick={() => {
-                                        this.closeAddCategoryDialog()
-                                        this.saveCategory()
-                                      }}>Save
-                                    </button>
-                                  </ModalDialog>
-                                </ModalContainer>
-                              }
-
-                              <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                                {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-
-                                <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
-
                               </div>
                             </div>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                  <h6>File</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                  <h6>List</h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='row'>
+                            <div className='col-3'>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
+                                <div className='align-center'>
+                                  <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                  <h6>Media</h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='row'>
+                            <div className='col-md-12' style={{paddingTop: '20px'}}>
+                              <label>Category</label>
+                            </div>
+                            <div className='col-md-10'>
+                              <select id='selectCategory' />
+                            </div>
+                            <div className='col-md-2'>
+                              <button onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
+                                Add category
+                              </button>
+                            </div>
+                          </div>
+                          <div className='row'>
+                            <div className='col-12' style={{paddingTop: '50px'}}>
+                              <button onClick={this.showResetAlertDialog} style={{marginRight: '10px'}} className='btn btn-primary'>Reset</button>
+                              {
+                                this.props.template
+                                ? <button style={{marginRight: '10px'}} id='send' onClick={this.editBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Update </button>
+                                : <button style={{marginRight: '10px'}} id='send' onClick={this.createBroadcastTemplate} className='btn btn-primary' disabled={(this.state.broadcast.length === 0)}> Create </button>
+                              }
+                              <Link to='/templates' className='btn btn-secondary'>Back</Link>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+                          <StickyDiv offsetTop={70} zIndex={1}>
+                            <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                              <div style={{padding: '5px'}}>
+                                <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                              </div>
+                            </div>
+                          </StickyDiv>
+                          {
+                            this.state.isShowingModalResetAlert &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeResetAlertDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeResetAlertDialog}>
+                                <p>Are you sure you want to reset the message ?</p>
+                                <button style={{float: 'right', marginLeft: '10px'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.newConvo()
+                                    this.closeResetAlertDialog()
+                                  }}>Yes
+                                </button>
+                                <button style={{float: 'right'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.closeResetAlertDialog()
+                                  }}>Cancel
+                                </button>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+                          {
+                            this.state.isShowingModal &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeDialog}>
+                                <h3>Rename:</h3>
+                                <input style={{maxWidth: '300px', float: 'left', margin: 2}} ref={(c) => { this.titleConvo = c }} placeholder={this.state.convoTitle} type='text' className='form-control' />
+                                <button style={{float: 'left', margin: 2}} onClick={this.renameTitle} className='btn btn-primary btn-sm' type='button'>Save</button>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+
+                          {
+                            this.state.showAddCategoryDialog &&
+                            <ModalContainer style={{width: '500px'}}
+                              onClose={this.closeAddCategoryDialog}>
+                              <ModalDialog style={{width: '500px'}}
+                                onClose={this.closeAddCategoryDialog}>
+                                <h3>Add Category</h3>
+                                <input className='form-control'
+                                  placeholder='Enter category' ref='newCategory' />
+                                <br />
+                                <button style={{float: 'right'}}
+                                  className='btn btn-primary btn-sm'
+                                  onClick={() => {
+                                    this.closeAddCategoryDialog()
+                                    this.saveCategory()
+                                  }}>Save
+                                </button>
+                              </ModalDialog>
+                            </ModalContainer>
+                          }
+
+                          <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                            {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+
+                            <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+
                           </div>
                         </div>
                       </div>

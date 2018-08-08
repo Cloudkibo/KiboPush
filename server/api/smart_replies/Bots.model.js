@@ -4,6 +4,7 @@ let Schema = mongoose.Schema
 const botSchema = new Schema({
   pageId: {type: String, ref: 'pages'}, // TODO ENUMS
   userId: {type: Schema.ObjectId, ref: 'users'},
+  companyId: {type: Schema.ObjectId, ref: 'companyprofiles'},
   botName: String,
   witAppId: String,
   witToken: String,

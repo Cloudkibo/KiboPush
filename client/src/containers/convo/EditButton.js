@@ -6,22 +6,23 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import Popover from 'react-simple-popover'
+import { editButton, deleteButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
 class EditButton extends React.Component {
   constructor (props, context) {
     super(props, context)
+    console.log('this.props', this.props)
     this.state = {
       openPopover: false,
       title: this.props.data.button.title,
-      url: '',
+      url: this.props.data.button.url,
       disabled: false,
-      sequenceValue: '',
-      openWebsite: false,
-      openSubscribe: false,
-      openUnsubscribe: false
+      sequenceValue: this.props.data.button.sequenceValue,
+      openWebsite: this.props.data.button.openWebsite,
+      openSubscribe: this.props.data.button.openSubscribe,
+      openUnsubscribe: this.props.data.button.openUnsubscribe
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -40,6 +41,7 @@ class EditButton extends React.Component {
 
   componentDidMount () {
     if (this.props.data.button.type === 'postback') {
+      console.log('this.props.data', this.props.data)
       if (this.props.data.button.payload.action === 'subscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
       } else if (this.props.data.button.payload.action === 'unsubscribe') {
@@ -89,62 +91,51 @@ class EditButton extends React.Component {
     this.setState({openPopover: !this.state.openPopover})
   }
   handleDone () {
-    console.log('this.state.url', this.state.url)
+    console.log('this.state', this.state)
     if (this.state.url !== '') {
-      this.props.onEdit({
-        id: 0,
-        button: {
-          type: 'web_url',
-          url: this.state.url, // User defined link,
-          title: this.state.title // User defined label
-        }
-      })
+      let data = {
+        id: this.props.index,
+        type: 'web_url',
+        oldUrl: this.props.data.button.newUrl,
+        newUrl: this.state.url, // User defined link,
+        title: this.state.title // User defined label
+      }
+      this.props.editButton(data, this.props.onEdit)
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        this.props.onEdit({
-          id: this.props.data.id,
-          button: {
-            type: 'postback',
-            title: this.state.title, // User defined label
-            payload: JSON.stringify({
-              sequenceId: this.state.sequenceValue,
-              action: 'subscribe'
-            })
-          }
-        })
+        let data = {
+          id: this.props.index,
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'subscribe'
+        }
+        this.props.editButton(data, this.props.onEdit)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        this.props.onAdd({
-          id: this.props.data.id,
-          button: {
-            type: 'postback',
-            title: this.state.title, // User defined label
-            payload: JSON.stringify({
-              sequenceId: this.state.sequenceValue,
-              action: 'unsubscribe'
-            })
-          }
-
-        })
+        let data = {
+          id: this.props.index,
+          type: 'postback',
+          title: this.state.title, // User defined label
+          sequenceId: this.state.sequenceValue,
+          action: 'unsubscribe'
+        }
+        this.props.editButton(data, this.props.onEdit)
       }
     }
     this.setState({
-      openPopover: false,
-      title: '',
-      url: '',
-      sequenceValue: '',
-      openWebsite: false,
-      openSubscribe: false,
-      openUnsubscribe: false
+      openPopover: false
     })
   }
 
   changeTitle (event) {
-    if (isWebURL(this.state.url) && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
     }
     this.setState({title: event.target.value})
+    console.log('The title value is ' + this.state.title)
+    console.log('The event.target.value value is ' + event.target.value)
   }
 
   changeUrl (event) {
@@ -162,14 +153,26 @@ class EditButton extends React.Component {
       url: this.state.url, // User defined link,
       title: this.state.title // User defined label
     })
-    this.setState({openPopover: false})
+    this.setState({
+      openPopover: false,
+      title: '',
+      url: '',
+      sequenceValue: '',
+      openWebsite: false,
+      openSubscribe: false,
+      openUnsubscribe: false
+    })
+    let temp = this.props.data.button.newUrl.split('/')
+    let id = temp[temp.length - 1]
+    this.props.deleteButton(id)
   }
 
   render () {
+    console.log('EditButton state', this.state)
     return (
       <div>
-        <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center'>
-          <button onClick={this.handleClick} className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.button.title}</button>
+        <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center' onClick={this.handleClick}>
+          <button className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.button.title}</button>
         </div>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'editButtonTarget-' + this.props.button_id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Button</strong></PopoverHeader>
@@ -260,6 +263,9 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators({
+    editButton,
+    deleteButton
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditButton)

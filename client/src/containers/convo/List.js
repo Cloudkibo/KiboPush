@@ -85,11 +85,12 @@ class List extends React.Component {
   }
 
   addSlide () {
+    let timeStamp = new Date().getTime()
     if (this.state.cards.length >= 10) {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} />, key: timeStamp}]})
     this.slider.slickNext()
   }
 
@@ -131,8 +132,9 @@ class List extends React.Component {
   }
 
   addElement () {
+    let timeStamp = new Date().getTime()
     var temp = this.state.cards
-    temp.push({element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.state.topElementStyle} />, key: temp.length + 1})
+    temp.push({element: <Card id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} removeElement={this.removeElement} topElementStyle={this.topElementStyle} topStyle={this.state.topElementStyle} />, key: timeStamp})
     this.setState({cards: temp, pageNumber: temp.length})
     console.log('temp in addElement', temp)
   }
@@ -191,6 +193,7 @@ class List extends React.Component {
     this.props.handleList({id: this.props.id, componentType: 'list', listItems: JSON.parse(JSON.stringify(this.state.broadcast)), buttons: temp, topElementStyle: this.state.topElementStyle})
   }
   editButton (obj) {
+    console.log('in List the value of title is ' + obj.button.title)
     var temp = this.state.buttons.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button

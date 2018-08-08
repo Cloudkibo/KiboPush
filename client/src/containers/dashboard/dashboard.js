@@ -136,19 +136,18 @@ class Dashboard extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps dashboard', nextprops)
-    if (nextprops.user && nextprops.user.emailVerified === false) {
-      browserHistory.push({
-        pathname: '/resendVerificationEmail'
-      })
-    }
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
+      if (nextprops.user.emailVerified === false) {
+        browserHistory.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo && !nextprops.user.skippedFacebookConnect) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
+      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
         if (nextprops.pages && nextprops.pages.length === 0) {
           console.log('going to push')
           browserHistory.push({
@@ -156,7 +155,7 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
-      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+      } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
           pathname: '/addPageWizard'
@@ -174,7 +173,7 @@ class Dashboard extends React.Component {
           // state: {showMsg: true}
         // })
       }
-      if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
+      if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
       }
       if (nextprops.sentseendata) {
@@ -333,6 +332,16 @@ class Dashboard extends React.Component {
     return dataChart
   }
   componentDidMount () {
+    console.log('location', this.props.location)
+    if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
+      console.log('in loadScript')
+      let addScript = document.createElement('script')
+      addScript.setAttribute('src', 'assets/vendors/base/vendors.bundle.js')
+      document.body.appendChild(addScript)
+      let addScript1 = document.createElement('script')
+      addScript1.setAttribute('src', 'assets/demo/default/base/scripts.bundle.js')
+      document.body.appendChild(addScript1)
+    }
     document.title = 'KiboPush | Dashboard'
     var compProp = this.props
     registerAction({
@@ -352,6 +361,7 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('this.props.dashboard', this.props.dashboard)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>

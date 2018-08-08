@@ -44,6 +44,7 @@ class Gallery extends React.Component {
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
         card = {element: <Card id={i} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        cards[i].id = i   // This is very important. Don't change it if you don't understand it
         cardMessage.push(cards[i])
         temp.push(card)
       }
@@ -66,14 +67,16 @@ class Gallery extends React.Component {
     var temp = this.state.cards
     temp.splice(this.state.pageNumber - 1, 1)
     this.setState({cards: temp})
+    this.slider.slickPrev()
   }
 
   addSlide () {
+    let timeStamp = new Date().getTime()
     if (this.state.cards.length >= 10) {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} />, key: timeStamp}]})
     this.slider.slickNext()
   }
 
@@ -119,7 +122,7 @@ class Gallery extends React.Component {
       speed: 500,
       slidesToShow: 1,
       slidesToScroll: 1,
-      nextArrow: <RightArrow />,
+      nextArrow: <RightArrow addSlide={this.addSlide} />,
       prevArrow: <LeftArrow />,
       afterChange: this.handleChange
     }
@@ -139,7 +142,9 @@ class Gallery extends React.Component {
               </span>
             </div>
             <span className='m-badge m-badge--brand m-badge--wide' onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
-            <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            {
+              this.state.cards.length > 1 && <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            }
             <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }

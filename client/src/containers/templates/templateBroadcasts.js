@@ -71,9 +71,9 @@ class TemplateBroadcasts extends React.Component {
     if (data.selected === 0) {
       this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+      this.props.loadBroadcastsListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
     } else {
-      this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 5, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+      this.props.loadBroadcastsListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 5, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.broadcastsDataAll)
@@ -123,7 +123,7 @@ class TemplateBroadcasts extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadBroadcastsListNew({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     } else {
@@ -233,7 +233,7 @@ class TemplateBroadcasts extends React.Component {
                     </div>
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
                       <option value='' disabled>Filter by Category...</option>
-                      <option value=''>All</option>
+                      <option value='all'>All</option>
                       {
                         this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>

@@ -58,4 +58,22 @@ router.post('/deleteFiles',
   auth.doesRolePermitsThisAction('broadcastPermission'),
   controller2.deleteFiles)
 
+router.post('/addButton',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller2.addButton)
+
+router.post('/editButton',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller2.editButton)
+
+router.delete('/deleteButton/:id',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('broadcasts'),
+  auth.doesRolePermitsThisAction('broadcastPermission'),
+  controller2.deleteButton)
+
 module.exports = router

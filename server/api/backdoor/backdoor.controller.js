@@ -358,6 +358,7 @@ exports.getAllPages = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Pages.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -366,7 +367,7 @@ exports.getAllPages = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Pages.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      Pages.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, pages) => {
         if (err) {
           return res.status(404).json({
@@ -436,6 +437,7 @@ exports.getAllPages = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Pages.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -444,7 +446,7 @@ exports.getAllPages = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
+      Pages.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).sort({_id: -1}).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, pages) => {
         if (err) {
           return res.status(404).json({
@@ -507,7 +509,7 @@ exports.getAllPages = function (req, res) {
             }
             res.status(200).json({
               status: 'success',
-              payload: {pages: pagesPayload, count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
+              payload: {pages: pagesPayload.reverse(), count: pagesPayload.length > 0 ? pagesCount[0].count : ''}
             })
           })
         })
@@ -560,6 +562,7 @@ exports.getAllSubscribers = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Subscribers.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -568,7 +571,7 @@ exports.getAllSubscribers = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Subscribers.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
+      Subscribers.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, subscribers) => {
         if (err) {
           return res.status(404).json({
@@ -583,6 +586,7 @@ exports.getAllSubscribers = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Subscribers.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -591,7 +595,7 @@ exports.getAllSubscribers = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Subscribers.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
+      Subscribers.find(Object.assign(findCriteria, {_id: {$lt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, subscribers) => {
         if (err) {
           return res.status(404).json({
@@ -690,6 +694,7 @@ exports.allUserBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Broadcasts.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -698,7 +703,7 @@ exports.allUserBroadcasts = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, broadcasts) => {
         if (err) {
           return res.status(404).json({
@@ -713,6 +718,7 @@ exports.allUserBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Broadcasts.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -721,7 +727,7 @@ exports.allUserBroadcasts = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, broadcasts) => {
         if (err) {
           return res.status(404).json({
@@ -801,6 +807,7 @@ exports.allUserPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Polls.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -809,7 +816,7 @@ exports.allUserPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           return res.status(404).json({
@@ -824,6 +831,7 @@ exports.allUserPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Polls.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -832,7 +840,7 @@ exports.allUserPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           return res.status(404).json({
@@ -896,6 +904,7 @@ exports.allUserSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     Surveys.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -904,7 +913,7 @@ exports.allUserSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           return res.status(404).json({
@@ -919,6 +928,7 @@ exports.allUserSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     Surveys.aggregate([
       { $match: findCriteria },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -927,7 +937,7 @@ exports.allUserSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           return res.status(404).json({
@@ -1876,6 +1886,7 @@ exports.getAllBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -1893,7 +1904,7 @@ exports.getAllBroadcasts = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records).exec((err, broadcasts) => {
+      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records).exec((err, broadcasts) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2004,6 +2015,7 @@ exports.getAllBroadcasts = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2021,7 +2033,7 @@ exports.getAllBroadcasts = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records).exec((err, broadcasts) => {
+      Broadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records).exec((err, broadcasts) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2302,6 +2314,7 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2319,7 +2332,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records).exec((err, surveys) => {
+      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records).exec((err, surveys) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2456,6 +2469,7 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2473,7 +2487,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records).exec((err, surveys) => {
+      Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records).exec((err, surveys) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2781,6 +2795,7 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let findCriteria = {
       statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2798,7 +2813,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records).exec((err, polls) => {
+      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records).exec((err, polls) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',
@@ -2936,6 +2951,7 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
+    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
     let findCriteria = {
       statement: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -2953,7 +2969,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
-      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records).exec((err, polls) => {
+      Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records).exec((err, polls) => {
         if (err) {
           return res.status(404).json({
             status: 'failed',

@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
+import { allLocales } from '../../redux/actions/subscribers.actions'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -17,12 +18,7 @@ class Targeting extends React.Component {
         ]
       },
       Locale: {
-        options: [{id: 'en_US', text: 'en_US'},
-          {id: 'af_ZA', text: 'af_ZA'},
-          {id: 'ar_AR', text: 'ar_AR'},
-          {id: 'az_AZ', text: 'az_AZ'},
-          {id: 'pa_IN', text: 'pa_IN'}
-        ]
+        options: []
       },
       page: {
         options: []
@@ -55,6 +51,7 @@ class Targeting extends React.Component {
     this.showDropDownPoll = this.showDropDownPoll.bind(this)
     props.loadTags()
     props.loadCustomerLists()
+    props.allLocales()
   }
 
   componentDidMount () {
@@ -78,11 +75,12 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
+    this.setState({pageValue: [options[0].id]})
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
+    //  this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     this.initializePollSelect(pollOptions)
     this.initializeSurveySelect(surveyOptions)
@@ -249,9 +247,9 @@ class Targeting extends React.Component {
     $('#selectPage').select2({
       /* eslint-enable */
       data: pageOptions,
-      placeholder: this.props.component === 'broadcast' ? 'Select Pages - Default: All Pages' : 'Default: All Pages',
+      placeholder: this.props.component === 'broadcast' ? 'Select page' : 'Default: All Pages',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
     // this.setState({pageValue: pageOptions[0].id})
@@ -445,6 +443,14 @@ class Targeting extends React.Component {
     }
     if (this.props.tags) {
       this.initializeTagSelect(this.props.tags)
+    }
+    if (nextProps.locales && nextProps.locales.length) {
+      let options = []
+      for (var a = 0; a < nextProps.locales.length; a++) {
+        options.push({id: nextProps.locales[a], text: nextProps.locales[a]})
+      }
+      this.setState({Locale: {options: options}})
+      this.initializeLocaleSelect(options)
     }
   }
 
@@ -645,7 +651,8 @@ function mapStateToProps (state) {
     customerLists: (state.listsInfo.customerLists),
     tags: (state.tagsInfo.tags),
     polls: (state.pollsInfo.polls),
-    surveys: (state.surveysInfo.surveys)
+    surveys: (state.surveysInfo.surveys),
+    locales: (state.subscribersInfo.locales)
   }
 }
 
@@ -653,7 +660,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getAllPollResults: getAllPollResults,
     loadCustomerLists: loadCustomerLists,
-    loadTags: loadTags
+    loadTags: loadTags,
+    allLocales: allLocales
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Targeting)

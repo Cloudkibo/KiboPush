@@ -7,6 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { addButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 
@@ -84,33 +85,35 @@ class Button extends React.Component {
 
   handleDone () {
     if (this.state.url !== '') {
-      this.props.onAdd({
+      let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
         title: this.state.title // User defined label
-      })
+      }
+      this.props.addButton(data, this.props.onAdd)
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
-        this.props.onAdd({
-          type: 'postback',
+        let data = {
+          type: 'web_url',
           title: this.state.title, // User defined label
-          payload: JSON.stringify({
-            sequenceId: this.state.sequenceValue,
-            action: 'subscribe'
-          })
-        })
+          sequenceId: this.state.sequenceValue,
+          action: 'subscribe'
+        }
+        this.props.addButton(data, this.props.onAdd)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
-        this.props.onAdd({
-          type: 'postback',
+        let data = {
+          type: 'web_url',
           title: this.state.title, // User defined label
-          payload: JSON.stringify({
-            sequenceId: this.state.sequenceValue,
-            action: 'unsubscribe'
-          })
-        })
+          sequenceId: this.state.sequenceValue,
+          action: 'unsubscribe'
+        }
+        this.props.addButton(data, this.props.onAdd)
       }
     }
 
+    // this.setState({
+    //   openPopover: false
+    // })
     this.setState({
       openPopover: false,
       title: '',
@@ -123,7 +126,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if (((this.state.openWebsite && isWebURL(event.target.value)) || this.state.sequenceValue !== '') && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -133,7 +136,7 @@ class Button extends React.Component {
 
   changeUrl (event) {
     console.log('event', event.target.value)
-    if (isWebURL(this.state.url) && this.state.title !== '') {
+    if (isWebURL(event.target.value) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -142,17 +145,18 @@ class Button extends React.Component {
   }
 
   render () {
+    console.log('Button state', this.state)
     return (
       <div>
-        <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-          <h6 onClick={this.handleClick}> + Add Button </h6>
+        <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center' onClick={this.handleClick}>
+          <h6> + Add Button </h6>
         </div>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'buttonTarget-' + this.props.button_id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Add Button</strong></PopoverHeader>
           <PopoverBody>
             <div>
               <h6>Button Title:</h6>
-              <input type='text' className='form-control' onChange={this.changeTitle} placeholder='Enter button title' />
+              <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
               <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
               {
                 !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe &&
@@ -179,7 +183,7 @@ class Button extends React.Component {
                 <div className='card'>
                   <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                   <div style={{padding: '10px'}} className='card-block'>
-                    <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                    <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
                   </div>
                 </div>
               }
@@ -237,7 +241,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAllSequence: fetchAllSequence
+    fetchAllSequence: fetchAllSequence,
+    addButton: addButton
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Button)

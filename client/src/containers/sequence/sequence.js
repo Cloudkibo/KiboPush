@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -210,184 +208,167 @@ class Sequence extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            {
-              this.state.isShowingModalDelete &&
-              <ModalContainer style={{width: '500px'}}
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          {
+            this.state.isShowingModalDelete &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialogDelete}>
+              <ModalDialog style={{width: '500px'}}
                 onClose={this.closeDialogDelete}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogDelete}>
-                  <h3>Delete Sequence</h3>
-                  <p>Are you sure you want to delete this Sequence?</p>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      this.props.deleteSequence(this.state.deleteid, this.msg)
-                      this.closeDialogDelete()
-                    }}>Delete
-                  </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.isShowingModal &&
-              <ModalContainer style={{width: '500px'}}
+                <h3>Delete Sequence</h3>
+                <p>Are you sure you want to delete this Sequence?</p>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.props.deleteSequence(this.state.deleteid, this.msg)
+                    this.closeDialogDelete()
+                  }}>Delete
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
+          {
+            this.state.isShowingModal &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <ModalDialog style={{width: '500px'}}
                 onClose={this.closeDialog}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialog}>
-                  <h3>Create Sequence</h3>
-                  <div id='question' className='form-group m-form__group'>
-                    <label className='control-label'>Sequence Name:</label>
-                    {this.state.error &&
-                      <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
-                      }
-                    <input className='form-control' placeholder='Enter sequence name here'
-                      value={this.state.name} onChange={(e) => this.updateName(e)} />
-                  </div>
-                  <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => this.gotoCreate()}>Create
-                  </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Sequence Messaging</h3>
+                <h3>Create Sequence</h3>
+                <div id='question' className='form-group m-form__group'>
+                  <label className='control-label'>Sequence Name:</label>
+                  {this.state.error &&
+                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
+                    }
+                  <input className='form-control' placeholder='Enter sequence name here'
+                    value={this.state.name} onChange={(e) => this.updateName(e)} />
                 </div>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => this.gotoCreate()}>Create
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Sequence Messaging</h3>
               </div>
             </div>
-            <div className='m-content'>
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Sequence Messaging? Here is the <a href='#' target='_blank'>documentation</a>.
-                </div>
+          </div>
+          <div className='m-content'>
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-technology m--font-accent' />
               </div>
-              <div className='row'>
-                <div className='col-xl-12'>
-                  <div className='m-portlet'>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            All Sequences
-                          </h3>
-                        </div>
+              <div className='m-alert__text'>
+                Need help in understanding Sequence Messaging? Here is the <a href='#' target='_blank'>documentation</a>.
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-xl-12'>
+                <div className='m-portlet'>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                          All Sequences
+                        </h3>
                       </div>
-                      <div className='m-portlet__head-tools'>
-                        <Link onClick={this.showDialog}>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    </div>
+                    <div className='m-portlet__head-tools'>
+                      <Link onClick={this.showDialog}>
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          <span>
+                            <i className='la la-plus' />
                             <span>
-                              <i className='la la-plus' />
-                              <span>
-                                  Create New Sequence
-                                </span>
-                            </span>
-                          </button>
-                        </Link>
-                      </div>
-                    </div>
-                    <div className='m-portlet__body'>
-                      {
-                        this.props.sequences && this.props.sequences.length > 0
-                        ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                          <div className='form-group m-form__group row align-items-center'>
-                            <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                              <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
-                              <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                <span><i className='la la-search' /></span>
+                                Create New Sequence
                               </span>
-                            </div>
-                            <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-
-                          </div>
-                          {
-                            this.state.sequencesData && this.state.sequencesData.length > 0
-                            ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                              <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                                <thead className='m-datatable__head'>
-                                  <tr className='m-datatable__row'
-                                    style={{height: '53px'}}>
-                                    <th data-field='name'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '100px'}}>Name</span>
-                                    </th>
-                                    <th data-field='pages'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '100px'}}>Subscribers</span>
-                                    </th>
-                                    <th data-field='created_by'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '100px'}}>Messages</span>
-                                    </th>
-                                    <th data-field='datetime'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '100px'}}>Status</span>
-                                    </th>
-                                    <th data-field='actions'
-                                      className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                      <span style={{width: '175px'}}>Actions</span>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                  {
-                                    this.state.sequencesData.map((sequence, i) => (
-                                      <tr key={i} data-row={i}
-                                        className={((i % 2) === 0) ? 'm-datatable__row' : 'm-datatable__row m-datatable__row--even'}
-                                        style={{height: '55px'}}>
-                                        <td data-field='name' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.sequence.name}</span></td>
-                                        <td data-field='pages' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.subscribers.length}</span></td>
-                                        <td data-field='created_by' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{sequence.messages.length}</span></td>
-                                        <td data-field='datetime' className='m-datatable__cell'><span style={{width: '100px', overflow: 'inherit'}}>{this.getSequenceStatus(sequence.messages)}</span></td>
-                                        <td data-field='actions' className='m-datatable__cell'>
-                                          <span style={{width: '175px'}}>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.goToEdit(sequence.sequence)}>
-                                                Edit
-                                              </button>
-                                            <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.showDialogDelete(sequence.sequence._id)}>
-                                                Delete
-                                              </button>
-                                          </span>
-                                        </td>
-                                      </tr>
-                                    ))
-                                  }
-                                </tbody>
-                              </table>
-                              <div className='pagination'>
-                                <ReactPaginate
-                                  previousLabel={'previous'}
-                                  nextLabel={'next'}
-                                  breakLabel={<a>...</a>}
-                                  breakClassName={'break-me'}
-                                  pageCount={Math.ceil(this.state.totalLength / 5)}
-                                  marginPagesDisplayed={2}
-                                  pageRangeDisplayed={3}
-                                  onPageChange={this.handlePageClick}
-                                  containerClassName={'pagination'}
-                                  subContainerClassName={'pages pagination'}
-                                  activeClassName={'active'} />
-                              </div>
-                            </div>
-                            : <p>No data to display</p>
-                          }
-                        </div>
-                        : <span>
-                          <p> No data to display </p>
-                        </span>
-                      }
+                          </span>
+                        </button>
+                      </Link>
                     </div>
+                  </div>
+                  <div className='m-portlet__body'>
+                    {
+                      this.props.sequences && this.props.sequences.length > 0
+                      ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                        <div className='form-group m-form__group row align-items-center'>
+                          <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                            <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
+                            <span className='m-input-icon__icon m-input-icon__icon--left'>
+                              <span><i className='la la-search' /></span>
+                            </span>
+                          </div>
+                          <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                        </div>
+                        {
+                          this.state.sequencesData && this.state.sequencesData.length > 0
+                          ? <div>{
+                            this.state.sequencesData.map((sequence, i) => (
+                              <div key={i} className='sequence-box'>
+                                <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
+
+                                <span>
+                                  <span className='sequence-name'>
+                                    {sequence.sequence.name}
+                                  </span>
+                                  <br />
+                                  <span>
+                                    <span>Trigger</span>:
+                                      <span className='sequence-trigger' style={{marginLeft: '10px'}}>
+                                        When subscriber subscribes to this sequence.
+                                      </span>
+                                    <span className='sequence-link'>
+                                        -- Edit
+                                    </span>
+                                  </span>
+                                </span>
+
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '20%'}}>
+                                  <span className='sequence-number'>{sequence.subscribers.length}</span>
+                                  <br />
+                                  <span>Subscribers</span>
+                                </span>
+
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
+                                  <span className='sequence-number'>{sequence.messages.length}</span>
+                                  <br />
+                                  <span>Messages</span>
+                                </span>
+
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%', cursor: 'pointer'}} onClick={() => this.goToEdit(sequence.sequence)}>
+                                  <i className='fa fa-edit' style={{fontSize: '24px'}} />
+                                  <br />
+                                  <span>Edit</span>
+                                </span>
+                              </div>
+                            ))
+                          }
+                            <div className='pagination'>
+                              <ReactPaginate
+                                previousLabel={'previous'}
+                                nextLabel={'next'}
+                                breakLabel={<a>...</a>}
+                                breakClassName={'break-me'}
+                                pageCount={Math.ceil(this.state.totalLength / 5)}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={3}
+                                onPageChange={this.handlePageClick}
+                                containerClassName={'pagination'}
+                                subContainerClassName={'pages pagination'}
+                                activeClassName={'active'} />
+                            </div>
+                          </div>
+                          : <p>No data to display</p>
+                        }
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
                   </div>
                 </div>
               </div>

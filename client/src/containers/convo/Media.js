@@ -79,7 +79,11 @@ class Media extends React.Component {
       }
       if (mediaProps.media.fileurl && mediaProps.media.fileurl.url) {
         this.setState({
-          previewUrl: mediaProps.media.fileurl.url
+          previewUrl: mediaProps.media.fileurl.url,
+          fileurl: mediaProps.media.fileurl,
+          fileName: mediaProps.media.fileName,
+          type: mediaProps.media.type,
+          size: mediaProps.media.size
         })
       }
       if (mediaProps.media.mediaType) {
@@ -166,7 +170,7 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   editButton (obj) {
@@ -184,7 +188,7 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: temp})
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
@@ -196,7 +200,7 @@ class Media extends React.Component {
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   setLoading () {
