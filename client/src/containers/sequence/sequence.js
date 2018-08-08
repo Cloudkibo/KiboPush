@@ -26,7 +26,10 @@ class Sequence extends React.Component {
       name: '',
       error: false,
       pageNumber: 0,
-      filter: false
+      filter: false,
+      isShowModalTrigger: false,
+      isSelected : false
+
     }
     props.fetchAllSequence()
     this.displayData = this.displayData.bind(this)
@@ -42,10 +45,13 @@ class Sequence extends React.Component {
     this.updateName = this.updateName.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.getSequenceStatus = this.getSequenceStatus.bind(this)
+    this.showDialogTrigger = this.showDialogTrigger.bind(this)
+    this.closeDialogTrigger = this.closeDialogTrigger.bind(this)
+    this.handleClickSequenceTrigger = this.handleClickSequenceTrigger.bind(this)
   }
 
   scrollToTop () {
-    this.top.scrollIntoView({behavior: 'instant'})
+    this.top.scrollIntoView({ behavior: 'instant' })
   }
   getSequenceStatus (messages) {
     var active = 'InActive'
@@ -59,30 +65,30 @@ class Sequence extends React.Component {
   }
   gotoCreate () {
     if (this.state.name === '') {
-      this.setState({error: true})
+      this.setState({ error: true })
     } else {
-      this.props.createSequence({name: this.state.name})
+      this.props.createSequence({ name: this.state.name })
       browserHistory.push({
         pathname: `/editSequence`,
-        state: {name: this.state.name, module: 'create'}
+        state: { name: this.state.name, module: 'create' }
       })
     }
   }
   showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
-    this.setState({deleteid: id})
+    this.setState({ isShowingModalDelete: true })
+    this.setState({ deleteid: id })
   }
 
   closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
+    this.setState({ isShowingModalDelete: false })
   }
 
   showDialog () {
-    this.setState({isShowingModal: true})
+    this.setState({ isShowingModal: true })
   }
 
   closeDialog () {
-    this.setState({isShowingModal: false})
+    this.setState({ isShowingModal: false })
   }
 
   componentDidMount () {
@@ -90,7 +96,7 @@ class Sequence extends React.Component {
     document.title = 'KiboPush | Sequence Messaging'
   }
   updateName (e) {
-    this.setState({name: e.target.value, error: false})
+    this.setState({ name: e.target.value, error: false })
   }
   displayData (n, sequences) {
     let offset = n * 5
@@ -106,7 +112,7 @@ class Sequence extends React.Component {
       data[index] = sequences[i]
       index++
     }
-    this.setState({sequencesData: data})
+    this.setState({ sequencesData: data })
   }
 
   handlePageClick (data) {
@@ -119,6 +125,17 @@ class Sequence extends React.Component {
     this.displayData(data.selected, this.props.sequences)
   }
 
+  showDialogTrigger (sequence) {
+    this.setState({ isShowModalTrigger: true, selectedSequenceId: sequence._id })
+  }
+
+  closeDialogTrigger () {
+    this.setState({ isShowModalTrigger: false })
+  }
+
+  handleClickSequenceTrigger () {
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.sequences) {
       this.displayData(0, nextProps.sequences)
@@ -127,7 +144,7 @@ class Sequence extends React.Component {
   }
 
   searchSequence (event) {
-    this.setState({searchValue: event.target.value})
+    this.setState({ searchValue: event.target.value })
     var filtered = []
     if (event.target.value !== '') {
       // this.setState({filter: true})
@@ -137,16 +154,16 @@ class Sequence extends React.Component {
           filtered.push(this.props.sequences[i])
         }
       }
-    // } else if (event.target.value !== '' && this.state.filterValue !== '') {
-    //   for (let i = 0; i < this.props.sequences.length; i++) {
-    //     if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
-    //       filtered.push(this.props.sequences[i])
-    //     }
-    //   }
-    // } else {
-    //   // this.setState({filter: false})
-    //   // this.props.fetchAllSequenceNew()
-    // }
+      // } else if (event.target.value !== '' && this.state.filterValue !== '') {
+      //   for (let i = 0; i < this.props.sequences.length; i++) {
+      //     if (this.props.sequences[i].sequence && this.props.sequences[i].sequence.name && this.props.sequences[i].sequence.name.toLowerCase().includes(event.target.value.toLowerCase()) && this.props.sequences[i].teamPagesIds.indexOf(this.state.filterValue) !== -1) {
+      //       filtered.push(this.props.sequences[i])
+      //     }
+      //   }
+      // } else {
+      //   // this.setState({filter: false})
+      //   // this.props.fetchAllSequenceNew()
+      // }
       this.displayData(0, filtered)
       this.setState({ totalLength: filtered.length })
     } else {
@@ -156,7 +173,7 @@ class Sequence extends React.Component {
   }
 
   onFilter (e) {
-    this.setState({filterValue: e.target.value})
+    this.setState({ filterValue: e.target.value })
     var filtered = []
     if (e.target.value !== '' && this.state.searchValue === '') {
       for (let i = 0; i < this.props.teams.length; i++) {
@@ -193,7 +210,7 @@ class Sequence extends React.Component {
     // console.log('pages', pages)
     browserHistory.push({
       pathname: `/editSequence`,
-      state: {module: 'edit', name: sequence.name, _id: sequence._id}
+      state: { module: 'edit', name: sequence.name, _id: sequence._id }
     })
   }
 
@@ -208,18 +225,18 @@ class Sequence extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{float: 'left', clear: 'both'}}
+        <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           {
             this.state.isShowingModalDelete &&
-            <ModalContainer style={{width: '500px'}}
+            <ModalContainer style={{ width: '500px' }}
               onClose={this.closeDialogDelete}>
-              <ModalDialog style={{width: '500px'}}
+              <ModalDialog style={{ width: '500px' }}
                 onClose={this.closeDialogDelete}>
                 <h3>Delete Sequence</h3>
                 <p>Are you sure you want to delete this Sequence?</p>
-                <button style={{float: 'right'}}
+                <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.props.deleteSequence(this.state.deleteid, this.msg)
@@ -231,26 +248,69 @@ class Sequence extends React.Component {
           }
           {
             this.state.isShowingModal &&
-            <ModalContainer style={{width: '500px'}}
+            <ModalContainer style={{ width: '500px' }}
               onClose={this.closeDialog}>
-              <ModalDialog style={{width: '500px'}}
+              <ModalDialog style={{ width: '500px' }}
                 onClose={this.closeDialog}>
                 <h3>Create Sequence</h3>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label'>Sequence Name:</label>
                   {this.state.error &&
-                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter a name</bold></div>
-                    }
+                    <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a name</bold></div>
+                  }
                   <input className='form-control' placeholder='Enter sequence name here'
                     value={this.state.name} onChange={(e) => this.updateName(e)} />
                 </div>
-                <button style={{float: 'right'}}
+                <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => this.gotoCreate()}>Create
                 </button>
               </ModalDialog>
             </ModalContainer>
           }
+          {
+            this.state.isShowModalTrigger &&
+            <ModalContainer style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px' }}
+              onClose={this.closeDialogTrigger}>
+              <ModalDialog style={{ width: '700px', paddingLeft: '33px', paddingRight: '33px' }}
+                onClose={this.closeDialogTrigger}>
+                <h3 style={{ marginBottom: '20px' }}>Update Sequence Trigger</h3>
+                <div className='row'>
+                  <div className='col-sm-4 col-md-4 col-lg-4'>
+                    <div id='1' className='sequence-trigger-box' onClick={() => {this.handleClickSequenceTrigger()}}>
+                      <p> When subscriber subscribes to sequence </p>
+                    </div>
+                  </div>
+                  <div className='col-sm-4 col-md-4 col-lg-4' onClick={this.handleClickSequenceTrigger}>
+                    <div id='2' className='sequence-trigger-box'>
+                      <p> When subscriber joins</p>
+                    </div>
+                  </div>
+                  <div className='col-sm-4 col-md-4 col-lg-4'>
+                    <div id='3' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
+                      <p> When subscriber has seen all the messages of specific sequence </p>
+                    </div>
+                  </div>
+
+                </div>
+                <div className='row'>
+                  <div id='4' className='col-sm-4 col-md-4 col-lg-4'>
+                    <div className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
+                      <p> When subscriber unsubscribes from specific sequence </p>
+                    </div>
+                  </div>
+                  <div className='col-sm-4 col-md-4 col-lg-4'>
+                    <div id='5' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
+                      <p> When subscriber responds to specific poll </p>
+                    </div>
+                  </div>
+                </div>
+                <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} > Save </button>
+                <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
+
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -284,7 +344,7 @@ class Sequence extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                                Create New Sequence
+                              Create New Sequence
                               </span>
                           </span>
                         </button>
@@ -294,80 +354,80 @@ class Sequence extends React.Component {
                   <div className='m-portlet__body'>
                     {
                       this.props.sequences && this.props.sequences.length > 0
-                      ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                        <div className='form-group m-form__group row align-items-center'>
-                          <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
-                            <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
-                            <span className='m-input-icon__icon m-input-icon__icon--left'>
-                              <span><i className='la la-search' /></span>
-                            </span>
-                          </div>
-                          <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
-                        </div>
-                        {
-                          this.state.sequencesData && this.state.sequencesData.length > 0
-                          ? <div>{
-                            this.state.sequencesData.map((sequence, i) => (
-                              <div key={i} className='sequence-box'>
-                                <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
-
-                                <span>
-                                  <span className='sequence-name'>
-                                    {sequence.sequence.name}
-                                  </span>
-                                  <br />
-                                  <span>
-                                    <span>Trigger</span>:
-                                      <span className='sequence-trigger' style={{marginLeft: '10px'}}>
-                                        When subscriber subscribes to this sequence.
-                                      </span>
-                                    <span className='sequence-link'>
-                                        -- Edit
-                                    </span>
-                                  </span>
-                                </span>
-
-                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '15%'}}>
-                                  <span className='sequence-number'>{sequence.subscribers.length}</span>
-                                  <br />
-                                  <span>Subscribers</span>
-                                </span>
-
-                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
-                                  <span className='sequence-number'>{sequence.messages.length}</span>
-                                  <br />
-                                  <span>Messages</span>
-                                </span>
-
-                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%', cursor: 'pointer'}} onClick={() => this.goToEdit(sequence.sequence)}>
-                                  <i className='fa fa-edit' style={{fontSize: '24px'}} />
-                                  <br />
-                                  <span>Edit</span>
-                                </span>
-                              </div>
-                            ))
-                          }
-                            <div className='pagination'>
-                              <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={<a>...</a>}
-                                breakClassName={'break-me'}
-                                pageCount={Math.ceil(this.state.totalLength / 5)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={3}
-                                onPageChange={this.handlePageClick}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'} />
+                        ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                          <div className='form-group m-form__group row align-items-center'>
+                            <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{ marginLeft: '15px' }}>
+                              <input type='text' placeholder='Search sequence by name ...' className='form-control m-input m-input--solid' onChange={this.searchSequence} />
+                              <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                <span><i className='la la-search' /></span>
+                              </span>
                             </div>
+                            <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
                           </div>
-                          : <p>No data to display</p>
-                        }
-                      </div>
-                      : <span>
-                        <p> No data to display </p>
-                      </span>
+                          {
+                            this.state.sequencesData && this.state.sequencesData.length > 0
+                              ? <div>{
+                                this.state.sequencesData.map((sequence, i) => (
+                                  <div key={i} className='sequence-box'>
+                                    <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
+
+                                    <span>
+                                      <span className='sequence-name'>
+                                        {sequence.sequence.name}
+                                      </span>
+                                      <br />
+                                      <span>
+                                        <span>Trigger</span>:
+                                      <span className='sequence-trigger' style={{ marginLeft: '10px' }}>
+                                          When subscriber subscribes to this sequence.
+                                      </span>
+                                        <span className='sequence-link' onClick={() => this.showDialogTrigger(sequence)}>
+                                          -- Edit
+                                    </span>
+                                      </span>
+                                    </span>
+
+                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '15%' }}>
+                                      <span className='sequence-number'>{sequence.subscribers.length}</span>
+                                      <br />
+                                      <span>Subscribers</span>
+                                    </span>
+
+                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '5%' }}>
+                                      <span className='sequence-number'>{sequence.messages.length}</span>
+                                      <br />
+                                      <span>Messages</span>
+                                    </span>
+
+                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '10%', cursor: 'pointer' }} onClick={() => this.goToEdit(sequence.sequence)}>
+                                      <i className='fa fa-edit' style={{ fontSize: '24px' }} />
+                                      <br />
+                                      <span>Edit</span>
+                                    </span>
+                                  </div>
+                                ))
+                              }
+                                <div className='pagination'>
+                                  <ReactPaginate
+                                    previousLabel={'previous'}
+                                    nextLabel={'next'}
+                                    breakLabel={<a>...</a>}
+                                    breakClassName={'break-me'}
+                                    pageCount={Math.ceil(this.state.totalLength / 5)}
+                                    marginPagesDisplayed={2}
+                                    pageRangeDisplayed={3}
+                                    onPageChange={this.handlePageClick}
+                                    containerClassName={'pagination'}
+                                    subContainerClassName={'pages pagination'}
+                                    activeClassName={'active'} />
+                                </div>
+                              </div>
+                              : <p>No data to display</p>
+                          }
+                        </div>
+                        : <span>
+                          <p> No data to display </p>
+                        </span>
                     }
                   </div>
                 </div>
