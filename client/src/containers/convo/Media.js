@@ -41,7 +41,8 @@ class Media extends React.Component {
       showPreview: false,
       file: '',
       previewUrl: '',
-      mediaType: ''
+      mediaType: '',
+      styling: {minHeight: 30, maxWidth: 400}
     }
   }
   onTestURLVideo (url) {
@@ -316,9 +317,7 @@ class Media extends React.Component {
           return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         { this.state.button.length < 3 &&
-        <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-        </div>
+          <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
       </div>
     )

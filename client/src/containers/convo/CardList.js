@@ -424,9 +424,7 @@ class Card extends React.Component {
         <div className='row'>
           <div className='col-md-6'>
             {(!this.state.button || !this.state.button.length > 0) &&
-            <div className='ui-block hoverborder' style={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
-              <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-            </div>
+              <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
             }
             {(this.state.button) ? this.state.button.map((obj, index) => {
               return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
