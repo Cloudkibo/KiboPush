@@ -71,9 +71,10 @@ export function skip () {
   return (dispatch) => {
     callApi('users/updateSkipConnect')
       .then(res => {
+        console.log('res', res)
         if (res.status === 'success') {
-          dispatch(getuserdetails())
           dispatch(skipSuccess())
+          dispatch(getuserdetails())
         }
       })
   }

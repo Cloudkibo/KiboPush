@@ -83,7 +83,10 @@ export function setSocketStatus (data) {
 
 export function getuserdetails () {
   return (dispatch) => {
-    callApi('users').then(res => dispatch(showuserdetails(res.payload)))
+    callApi('users').then(res => {
+      console.log('response from getuserdetails', res)
+      dispatch(showuserdetails(res.payload))
+    })
   }
 }
 
