@@ -609,7 +609,7 @@ function prepareMessageData (page, subscriberId, body, fname, lname) {
 }
 
 /* eslint-disable */
-function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, res) {
+function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, res, subscriberNumber, subscribersLength) {
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
   let batch = []
   logger.serverLog(TAG, `Payload received to send: ${JSON.stringify(payload)}`)
@@ -622,7 +622,7 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
       batch.push({ "method": "POST", "name": `message${index + 1}`, "depends_on": `message${index}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
     }
     if (index === (payload.length - 1)) {
-      sendBroadcast(JSON.stringify(batch), page, res)
+      sendBroadcast(JSON.stringify(batch), page, res, subscriberNumber, subscribersLength)
     }
   })
 }

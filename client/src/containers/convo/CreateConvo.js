@@ -436,7 +436,7 @@ class CreateConvo extends React.Component {
         //  this.setState({tabActive: 'broadcast'})
         console.log('Sending Broadcast', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
-        // this.setState({broadcast: [], list: []})
+        this.msg.info('Sending broadcast.... You will be notified when it is sent.')
       }
     }
   }

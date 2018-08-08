@@ -129,14 +129,14 @@ const sendToSubscribers = (subscriberFindCriteria, req, res, page, broadcast, co
               err2
             })
           }
-          utility.getBatchData(payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, res)
+          utility.getBatchData(payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, res, index, taggedSubscribers.length)
         })
       })
     })
   })
 }
 
-const sendBroadcast = (batchMessages, page, res) => {
+const sendBroadcast = (batchMessages, page, res, subscriberNumber, subscribersLength) => {
   const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
     if (err) {
       logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
@@ -151,8 +151,10 @@ const sendBroadcast = (batchMessages, page, res) => {
       // we don't need to send res for persistant menu
     } else {
       logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
-      return res.status(200)
-      .json({status: 'success', description: 'Conversation sent successfully!'})
+      if (subscriberNumber === (subscribersLength - 1)) {
+        return res.status(200)
+        .json({status: 'success', description: 'Conversation sent successfully!'})
+      }
     }
   })
   const form = r.form()
