@@ -8,6 +8,7 @@ const CartInfo = require('./CartInfo.model')
 const CheckoutInfo = require('./CheckoutInfo.model')
 const utility = require('./utility_abandoned')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const StoreAnalytics = require('./StoreAnalytics.model')
 const TAG = 'api/abandonedCarts/abandoned_carts.controller.js'
 // const Users = require('./../user/Users.model')
 // const needle = require('needle')
@@ -257,12 +258,13 @@ exports.sendCheckout = function (req, res) {
   } else {
     utility.sendCheckout(req.body.id, (err, result) => {
       if (err) {
+        logger.serverLog(TAG, `Error received from send checkout ${JSON.stringify(err)}`)
         return res.status(500).json({status: 'Failed', description: err})
       } else if (result.status === 'Not Found') {
         return res.status(404)
           .json(result)
       } else {
-        return res.status(200).json(result)
+        return res.status(200).json({status: 'success', payload: {id: req.body.id}})
       }
     })
   }
@@ -275,6 +277,7 @@ exports.sendAnalytics = function (req, res) {
     }
 
     if (!companyUser) {
+      logger.serverLog(TAG, 'Cannot find companyUser')
       return res.status(404).json({
         status: 'failed',
         description: 'The user account does not belong to any company. Please contact support'
@@ -296,6 +299,7 @@ exports.sendAnalytics = function (req, res) {
           return res.status(200).json({status: 'success', payload: analytics})
         })
       } else {
+        logger.serverLog(TAG, 'No analytics found against this store')
         return res.status(404)
           .json({status: 'failed', description: 'No analytics found against this store'})
       }
@@ -304,11 +308,23 @@ exports.sendAnalytics = function (req, res) {
 }
 
 exports.abandonedCheckouts = function (req, res) {
-  CheckoutInfo.find({userId: req.user._id}).exec()
-  .then((result) => {
-    return res.status(200).json({status: 'success', payload: result})
-  })
-  .catch((err) => {
-    return res.status(500).json({status: 'failed', error: err})
-  })
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({ status: 'Failed', error: err })
+    }
+
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    CheckoutInfo.find({companyId: companyUser.companyId, isPurchased: false}).exec()
+    .then((result) => {
+      return res.status(200).json({status: 'success', payload: result})
+    })
+    .catch((err) => {
+      return res.status(500).json({status: 'failed', error: err})
+    })
+  })  
 }

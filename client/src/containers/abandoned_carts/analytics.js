@@ -94,17 +94,19 @@ class Analytics extends React.Component {
                 <div className='m-widget15'>
                   <div className='m-widget15__item'>
                     <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                      {25}
+                      {
+                             (this.props.analytics && this.props.analytics.totalPurchasedCarts) ? Math.round((this.props.analytics.totalPurchasedCarts / this.props.analytics.totalAbandonedCarts * 100)) + '%' : 0 + '%'
+                      }
                     </span>
                     <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                     Conversion Rate
                   </span>
                     <div className='m--space-10' />
                     <div className='progress m-progress--sm' style={{height: '6px'}}>
-                    {
-                      (this.props.analytics) ?
-                      <div className='progress-bar bg-success' role='progressbar' style={{width: 100}} aria-valuenow={this.props.analytics.totalPurchasedCarts} aria-valuemin='0' aria-valuemax={this.props.analytics.totalAbandonedCarts} /> :
-                      <div className='progress-bar bg-success' role='progressbar' style={{width: 100}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
+                      {
+                      (this.props.analytics)
+                      ? <div className='progress-bar bg-success' role='progressbar' style={{width: ((this.props.analytics.totalPurchasedCarts / this.props.analytics.totalAbandonedCarts) * 100) + '%'}} aria-valuenow={((this.props.analytics.totalPurchasedCarts / this.props.analytics.totalAbandonedCarts) * 100)} aria-valuemin='0' aria-valuemax='100' />
+                      : <div className='progress-bar bg-success' role='progressbar' style={{width: 0 + '%'}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
                     }
                     </div>
                   </div>
@@ -118,8 +120,10 @@ class Analytics extends React.Component {
             <div className='m-portlet__body'>
               <div className='m-widget26'>
                 <div className='m-widget26__number'>
-              0
-              <small>
+                  {
+                 (this.props.analytics && this.props.analytics.totalSubscribers) ? this.props.analytics.totalSubscribers : 0
+                  }
+                  <small>
                 Shopify Subscribers
               </small>
                 </div>
@@ -130,8 +134,10 @@ class Analytics extends React.Component {
             <div className='m-portlet__body'>
               <div className='m-widget26'>
                 <div className='m-widget26__number'>
-              0
-              <small>
+                  {
+                  (this.props.analytics && this.props.analytics.totalPushSent) ? this.props.analytics.totalPushSent : 0
+                 }
+                  <small>
                 Push Sent
               </small>
                 </div>

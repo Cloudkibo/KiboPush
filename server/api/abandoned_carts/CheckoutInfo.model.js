@@ -53,6 +53,10 @@ const checkoutSchema = new Schema({
   isExtraSales: {
     type: Boolean,
     default: false
+  },
+  sentCount: {
+    type: Number,
+    default: 0
   }
 })
 
