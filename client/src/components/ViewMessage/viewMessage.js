@@ -86,6 +86,9 @@ class ViewMessage extends React.Component {
                                         url={b.fileurl.url}
                                         controls
                                         onPlay={this.onTestURLAudio(b.fileurl.url)}
+                                        width='100%'
+                                        height='auto'
+                                        style={{width: '100%', height: 'auto'}}
                                       />
                                     </div>
                                     : b.componentType === 'image'
