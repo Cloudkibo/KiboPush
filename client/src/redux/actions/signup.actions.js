@@ -1,6 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
-import {getuserdetails} from './basicinfo.actions'
+import {showuserdetails} from './basicinfo.actions'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 export function Success () {
@@ -73,8 +73,13 @@ export function skip () {
       .then(res => {
         console.log('res', res)
         if (res.status === 'success') {
-          dispatch(skipSuccess())
-          dispatch(getuserdetails())
+          callApi('users')
+            .then(res1 => {
+              if (res1.status === 'success') {
+                dispatch(showuserdetails())
+                dispatch(skipSuccess(res.payload))
+              }
+            })
         }
       })
   }
