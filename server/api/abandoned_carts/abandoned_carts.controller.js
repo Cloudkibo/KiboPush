@@ -6,7 +6,6 @@ const logger = require('../../components/logger')
 const StoreInfo = require('./StoreInfo.model')
 const CartInfo = require('./CartInfo.model')
 const CheckoutInfo = require('./CheckoutInfo.model')
-const StoreAnalytics = require('./StoreAnalytics.model')
 const utility = require('./utility_abandoned')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const TAG = 'api/abandonedCarts/abandoned_carts.controller.js'
@@ -254,12 +253,12 @@ exports.sendCheckout = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({status: 'Failed', description: 'Parameters are missing'})
   } else {
     utility.sendCheckout(req.body.id, (err, result) => {
       if (err) {
-        return res.status(500).json({status: 'failed', description: err})
-      } else if (result.status === 'failed') {
+        return res.status(500).json({status: 'Failed', description: err})
+      } else if (result.status === 'Not Found') {
         return res.status(404)
           .json(result)
       } else {

@@ -253,3 +253,4 @@ export const CURRENT_POST = 'CURRENT_POST'
 //constants for Shopify Abandoned Carts
 export const UPDATE_STORE_LIST = 'UPDATE_STORE_LIST'
 export const UPDATE_ABANDONED_LIST = 'UPDATE_ABANDONED_LIST'
+export const UPDATE_ANALYTICS = 'UPDATE_ANALYTICS'

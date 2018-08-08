@@ -6,8 +6,6 @@ const logger = require('../../components/logger')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const CheckoutInfo = require('./../abandoned_carts/CheckoutInfo.model')
 const CartInfo = require('./../abandoned_carts/CartInfo.model')
-const StoreAnalytics = require('./../abandoned_carts/StoreAnalytics.model')
-
 const TAG = 'api/shopify/webhook.controller.js'
 const mainScript = require('./mainScript')
 const config = require('./../../config/environment/index')
@@ -43,7 +41,7 @@ exports.handleCheckout = function (req, res) {
             abandonedCheckoutUrl: req.body.abandoned_checkout_url,
             productIds: productIds,
             status: 'pending',
-            subscriberId: ''
+            userRef: cart.userRef
           })
           // We need to update the analytics against this store
           StoreAnalytics.findOneAndUpdate({storeId: shopId}, {$inc: {totalAbandonedCarts: 1}}, (err, result1) => {
@@ -101,8 +99,13 @@ exports.handleCart = function (req, res) {
     })
   })
   .catch((err) => {
-    logger.serverLog(TAG, `Error in cart webhook ${JSON.stringify(err)}`)
-    return res.status(500).json({ status: 'failed', error: err })
+    if (Object.keys(err).length === 0) {
+      logger.serverLog(TAG, `Cannot find storeInfo`)
+      return res.status(200).json({ status: 'failed', error: 'Cannot find storeInfo' })
+    } else {
+      logger.serverLog(TAG, `Error in cart webhook ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
+    }
   })
 }
 
@@ -114,38 +117,24 @@ exports.handleOrder = function (req, res) {
       return res.status(500).json({ status: 'failed', error: err })
     }
 
-    if (result) {
-      if (result.status === 'pending') {
-        result.isPurchased = true
-      } else if (result.status === 'sent') {
-        result.isPurchased = true
-        result.isExtraSales = true    // It denotes that the product was bought after we sent abandond cart in messngr
-        // We need to update the total purchases in Analytics
-        StoreAnalytics.findOneAndUpdate({storeId: result.storeId},
-          {$inc: {totalPurchasedCarts: 1, totalExtraSales: req.body.total_price}},
-          (err) => {
-            if (err) {
-              logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-              return res.status(500).json({ status: 'failed', error: err })
-            }
-          })
-      }
-      // Saving the updated info
-      result.save((err) => {
-        if (err) {
-          logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-          return res.status(500).json({ status: 'failed', error: err })
-        }
-        return res.status(200).json({status: 'success'})
-      })
-    } else {
-      return res.status(404).json({status: 'failed'})
+    if (result.status === 'pending') {
+      result.isPurchased = true
+    } else if (result.status === 'sent') {
+      result.isPurchased = true
+      result.isExtraSales = true    // It denotes that the product was bought after we sent abandond cart in messngr
     }
+    // Saving the updated info
+    result.save((err) => {
+      if (err) {
+        logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
+        return res.status(500).json({ status: 'failed', error: err })
+      }
+      return res.status(200).json({status: 'success'})
+    })
   })
 }
 
 exports.handleAppUninstall = function (req, res) {
-  logger.serverLog(TAG, 'In App Uninstall')
   const shopUrl = req.header('X-Shopify-Shop-Domain')
   StoreInfo.findOne({shopUrl: shopUrl}).exec()
   .then((results) => {
@@ -161,21 +150,17 @@ exports.handleAppUninstall = function (req, res) {
       logger.serverLog(TAG, 'Successfully Deleted CheckoutInfo')
     })
 
-    StoreAnalytics.remove({storeId: shopId}).exec()
-    .then((result) => {
-      logger.serverLog(TAG, 'Successfully Deleted StoreAnalytics')
-    })
-
     StoreInfo.remove({shopUrl: shopUrl}).exec()
     .then((result) => {
-      logger.serverLog(TAG, 'App Uninstall Success')
       return res.status(200).json({status: 'success'})
     })
   }).catch((err) => {
-    if (err) {
-      return res.status(200).json({status: 'success', error: err})
+    if (Object.keys(err).length === 0) {
+      logger.serverLog(TAG, `Cannot find storeInfo`)
+      return res.status(200).json({ status: 'failed', error: 'Cannot find storeInfo' })
     } else {
-      return res.status(500).json({status: 'failed', error: err})
+      logger.serverLog(TAG, `Error in app uninstall webhook ${JSON.stringify(err)}`)
+      return res.status(500).json({ status: 'failed', error: err })
     }
   })
 }
@@ -207,31 +192,12 @@ exports.handleNewSubscriber = function (payload) {
 
   const cartToken = payload.optin.user_ref.split('-')[0]
 
-  CartInfo.findOne({cartToken: cartToken}, (err, cart) => {
-    if (err) {
-      logger.serverLog(TAG, `Internal Server Error ${JSON.stringify(err)}`)
-    }
-
-    if (cart) {
-      StoreAnalytics.findOneAndUpdate({storeId: cart.storeId},
-        {$inc: {totalSubscribers: 1}},
-        (err) => {
-          if (err) {
-            logger.serverLog(TAG, `Error in deleting checkout ${JSON.stringify(err)}`)
-          }
-        })  // Store Analytics save and update
-
-      cart.userRef = userRef
-      cart.save((err) => {
-        if (err) {
-          logger.serverLog(TAG, `Failed in Updating UserRef `)
-        }
-
-        logger.serverLog(TAG, `Successfully Updated UserRef `)
-      })
-    } else {
-      logger.serverLog(TAG, ` Cart not found ${JSON.stringify(err)}`)
-    }
+  CartInfo.update({cartToken: cartToken}, {userRef: userRef}).exec()
+  .then((result) => {
+    logger.serverLog(TAG, `Successfully Updated UserRef ${JSON.stringify(result)}`)
+  }).catch((err) => {
+    logger.serverLog(TAG, `Failed in updating the UserRef ${JSON.stringify(err)}`)
   })
+
   logger.serverLog(TAG, `Page Id: ${JSON.stringify(pageId)} and UserRef ${JSON.stringify(userRef)}`)
 }
