@@ -30,7 +30,8 @@ class List extends React.Component {
       showPlus: false,
       pageNumber: 2,
       buttons: [],
-      topElementStyle: 'compact'
+      topElementStyle: 'compact',
+      styling: {minHeight: 30, maxWidth: 400}
     }
   }
 
@@ -231,9 +232,9 @@ class List extends React.Component {
             ))
           }
           { this.state.cards.length < 4 &&
-          <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
+          <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}} onClick={this.addElement}>
             <div id={'buttonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} style={{paddingTop: '5px'}} className='align-center'>
-              <h6 onClick={this.addElement}> + Add Element </h6>
+              <h6> + Add Element </h6>
             </div>
             </div>
           }
@@ -241,10 +242,7 @@ class List extends React.Component {
             ? this.state.buttons.map((obj, index) => {
               return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
             })
-          : <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-            <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-          </div>
-
+          : <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       </div>
