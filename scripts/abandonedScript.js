@@ -26,7 +26,7 @@ CheckoutInfo.find({ isPurchased: false }, (err, data) => {
     logger.serverLog(TAG, `Checkout Fetched ${JSON.stringify(data)}`)
     for (let i = 0; i < data.length; i++) {
       utility.sendCheckout(data[i]._id, (err) => {
-        if(err) {
+        if (err) {
           logger.serverLog(TAG, `Error in sending checkout ${JSON.stringify(err)}`)
         }
       })
