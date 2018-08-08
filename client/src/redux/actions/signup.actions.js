@@ -76,8 +76,8 @@ export function skip () {
           callApi('users')
             .then(res1 => {
               if (res1.status === 'success') {
-                dispatch(showuserdetails())
-                dispatch(skipSuccess(res.payload))
+                dispatch(showuserdetails(res1.payload))
+                dispatch(skipSuccess())
               }
             })
         }

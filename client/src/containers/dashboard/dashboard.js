@@ -142,7 +142,7 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo && !nextprops.user.skippedFacebookConnect) {
+      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }

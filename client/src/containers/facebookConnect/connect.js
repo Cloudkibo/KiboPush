@@ -24,7 +24,7 @@ class Connect extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
-    if (nextProps.successSkip) {
+    if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
       browserHistory.push({
         pathname: '/dashboard'
       })
@@ -110,7 +110,8 @@ class Connect extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    successSkip: (state.signupInfo.successSkip)
+    successSkip: (state.signupInfo.successSkip),
+    user: (state.basicInfo.user)
   }
 }
 
