@@ -86,7 +86,9 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.setLoading(true)
+      if (this.props.setLoading) {
+        this.props.setLoading(true)
+      }
       this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
@@ -182,7 +184,9 @@ class Card extends React.Component {
 
   setLoading () {
     this.setState({loading: false})
-    this.props.setLoading(false)
+    if (this.props.setLoading) {
+      this.props.setLoading(false)
+    }
   }
   updateImageUrl (data) {
     this.setState({ fileurl: data.fileurl,
