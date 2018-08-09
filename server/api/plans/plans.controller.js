@@ -234,17 +234,53 @@ exports.migrateCompanies = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  CompanyProfile.update({planId: req.body.from}, {planId: req.body.to}, {multi: true}, (err, updated) => {
+  CompanyProfile.update({planId: req.body.from.id}, {planId: req.body.to.id}, {multi: true}, (err, updated) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    res.status(200).json({
-      status: 'success',
-      description: 'Companies have been migrated successfully!'
-    })
+    logger.serverLog(TAG, 'Companies migrated on KiboPush. Going to migrate them from stripe.')
+    // migrate subscriptions from stripe
+    stripe.subscriptions.list(
+      { plan: req.body.from.unique_id },
+      (err, subscriptions) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: err
+          })
+        }
+        logger.serverLog(TAG, `Subscriptions found ${subscriptions}`)
+        subscriptions.data.forEach((customer, index) => {
+          stripe.subscriptions.update(
+            customer.id,
+            {
+              cancel_at_period_end: false,
+              items: [{
+                id: customer.items.data[0].id,
+                plan: req.body.to.unique_id
+              }]
+            },
+            (err2, subscription) => {
+              if (err2) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: err2
+                })
+              }
+              if (index === (subscriptions.data.length - 1)) {
+                return res.status(200).json({
+                  status: 'success',
+                  description: 'Migrated successfuly!'
+                })
+              }
+            }
+          )
+        })
+      }
+    )
   })
 }
 

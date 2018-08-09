@@ -174,7 +174,12 @@ class Plans extends React.Component {
   }
   migrateCompanies (from, to) {
     if (this.state.migrateFrom !== this.state.migrateTo) {
-      this.props.migrate({from: this.state.migrateFrom, to: this.state.migrateTo}, this.msg)
+      let from = this.props.plans.filter(plan => plan._id === this.state.migrateFrom)
+      let to = this.props.plans.filter(plan => plan._id === this.state.migrateTo)
+      this.props.migrate({
+        from: { id: this.state.migrateFrom, unique_id: from[0].unique_ID },
+        to: { id: this.state.migrateTo, unique_id: to[0].unique_ID }
+      }, this.msg)
       this.setState({isShowingModalMigrate: false})
     }
   }
