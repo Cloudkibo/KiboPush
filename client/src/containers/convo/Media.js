@@ -252,11 +252,13 @@ class Media extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {!this.state.loading &&
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
+      }
         <div style={{minHeight: 170, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           {
           this.state.loading

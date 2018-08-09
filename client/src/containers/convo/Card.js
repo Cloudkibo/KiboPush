@@ -86,6 +86,7 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
+      this.props.setLoading(true)
       this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
@@ -181,6 +182,7 @@ class Card extends React.Component {
 
   setLoading () {
     this.setState({loading: false})
+    this.props.setLoading(false)
   }
   updateImageUrl (data) {
     this.setState({ fileurl: data.fileurl,
@@ -212,7 +214,7 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        { this.props.singleCard &&
+        { this.props.singleCard && !this.state.loading &&
           <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />

@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
+import AlertContainer from 'react-alert'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -267,6 +268,9 @@ class ItemSettings extends React.Component {
   }
 
   editAutoposting () {
+    if (this.accountTitleValue.value === '') {
+      return this.msg.error('Please add Account Title')
+    }
     var isSegmented = false
     var isActive = false
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
@@ -299,8 +303,16 @@ class ItemSettings extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
