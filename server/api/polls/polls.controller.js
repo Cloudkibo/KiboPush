@@ -17,134 +17,7 @@ const mongoose = require('mongoose')
 const Webhooks = require('./../webhooks/webhooks.model')
 const TAG = 'api/polls/polls.controller.js'
 
-exports.index = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-    if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: `Internal Server Error ${JSON.stringify(err)}`
-      })
-    }
-    if (!companyUser) {
-      return res.status(404).json({
-        status: 'failed',
-        description: 'The user account does not belong to any company. Please contact support'
-      })
-    }
-    if (req.params.days === '0') {
-      Polls.find({companyId: companyUser.companyId}, (err, polls) => {
-        if (err) {
-          logger.serverLog(TAG, `Error: ${err}`)
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error${JSON.stringify(err)}`
-          })
-        }
-        PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
-          if (err) {
-            return res.status(404)
-            .json({status: 'failed', description: 'Polls not found'})
-          }
-          PollResponse.aggregate([{
-            $group: {
-              _id: {pollId: '$pollId'},
-              count: {$sum: 1}
-            }}
-          ], (err2, responsesCount1) => {
-            if (err2) {
-              return res.status(404)
-              .json({status: 'failed', description: 'Polls not found'})
-            }
-            let responsesCount = []
-            for (let i = 0; i < polls.length; i++) {
-              responsesCount.push({
-                _id: polls[i]._id,
-                count: 0
-              })
-            }
-            for (let i = 0; i < polls.length; i++) {
-              for (let j = 0; j < responsesCount1.length; j++) {
-                if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
-                  responsesCount[i].count = responsesCount1[j].count
-                }
-              }
-            }
-            res.status(200).json({
-              status: 'success',
-              payload: {polls, pollpages, responsesCount}
-            })
-          })
-        })
-      })
-    } else {
-      Polls.aggregate([
-        {
-          $match: { companyId: companyUser.companyId,
-            'datetime': {
-              $gte: new Date(
-                (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
-              $lt: new Date(
-                (new Date().getTime()))
-            }
-          }
-        }
-      ], (err, polls) => {
-        if (err) {
-          logger.serverLog(TAG, `Error: ${err}`)
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error${JSON.stringify(err)}`
-          })
-        }
-        PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
-          if (err) {
-            return res.status(404)
-            .json({status: 'failed', description: 'Polls not found'})
-          }
-          PollResponse.aggregate([{
-            $group: {
-              _id: {pollId: '$pollId'},
-              count: {$sum: 1}
-            }}
-          ], (err2, responsesCount1) => {
-            if (err2) {
-              return res.status(404)
-              .json({status: 'failed', description: 'Polls not found'})
-            }
-            let responsesCount = []
-            for (let i = 0; i < polls.length; i++) {
-              responsesCount.push({
-                _id: polls[i]._id,
-                count: 0
-              })
-            }
-            for (let i = 0; i < polls.length; i++) {
-              for (let j = 0; j < responsesCount1.length; j++) {
-                if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
-                  responsesCount[i].count = responsesCount1[j].count
-                }
-              }
-            }
-            res.status(200).json({
-              status: 'success',
-              payload: {polls, pollpages, responsesCount}
-            })
-          })
-        })
-      })
-    }
-  })
-}
-
 exports.allPolls = function (req, res) {
-  /*
-  body = {
-    first_page:
-    last_id:
-    number_of_records:
-    days:
-}
-  */
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -226,7 +99,6 @@ exports.allPolls = function (req, res) {
       })
     } else if (req.body.first_page === 'next') {
       let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-      
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
@@ -294,7 +166,6 @@ exports.allPolls = function (req, res) {
       })
     } else if (req.body.first_page === 'previous') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
