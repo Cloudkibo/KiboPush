@@ -641,25 +641,25 @@ function sendCommentReply (body) {
             }
           }
         }
-      }
-      if (send) {
-        needle.get(
-          `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
-          (err, resp) => {
-            if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-            }
-            let messageData = { message: post.reply }
-            needle.post(
-              `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
-              messageData, (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG, err)
-                }
-                logger.serverLog(TAG,
-                  `response from comment on facebook ${JSON.stringify(resp.body)}`)
-              })
-          })
+        if (send) {
+          needle.get(
+            `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
+            (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+              let messageData = { message: post.reply }
+              needle.post(
+                `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
+                messageData, (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG, err)
+                  }
+                  logger.serverLog(TAG,
+                    `response from comment on facebook ${JSON.stringify(resp.body)}`)
+                })
+            })
+        }
       }
     })
   })
