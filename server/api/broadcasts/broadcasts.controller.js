@@ -568,6 +568,8 @@ function sendCommentReply (body) {
       if (err) {
       }
       logger.serverLog(TAG,
+        `updated value ${JSON.stringify(updated)}`)
+      logger.serverLog(TAG,
         `response from comment on facebook ${JSON.stringify(post)}`)
       if (post && post.pageId) {
         if (body.entry[0].changes[0].value.message) {
@@ -575,6 +577,8 @@ function sendCommentReply (body) {
             send = false
             for (let i = 0; i < post.includedKeywords.length; i++) {
               if (body.entry[0].changes[0].value.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+                logger.serverLog(TAG,
+                  `inside if send value ${JSON.stringify(send)}`)
                 send = true
                 break
               }
@@ -590,6 +594,8 @@ function sendCommentReply (body) {
             }
           }
         }
+        logger.serverLog(TAG,
+          `send value ${JSON.stringify(send)}`)
         if (send) {
           needle.get(
             `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
@@ -605,7 +611,7 @@ function sendCommentReply (body) {
                     logger.serverLog(TAG, err)
                   }
                   logger.serverLog(TAG,
-                    `response from comment on facebook ${JSON.stringify(resp.body)}`)
+                    `response from comment on facebook 2 ${JSON.stringify(resp.body)}`)
                 })
             })
         }
