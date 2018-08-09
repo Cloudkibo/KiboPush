@@ -108,7 +108,12 @@ exports.index = function (req, res) {
         }
       }
       if (req.body.first_page === 'first') {
-        finalCriteria = {$match: findCriteria}
+        finalCriteria = [
+          { $match: findCriteria },
+          { $sort: { datetime: -1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       } else if (req.body.first_page === 'next') {
         recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
         finalCriteria = [
