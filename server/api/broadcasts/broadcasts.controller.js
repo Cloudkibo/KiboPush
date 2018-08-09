@@ -609,7 +609,7 @@ function updateList (phoneNumber, sender, page) {
 }
 
 function sendCommentReply (body) {
-  let index = 1
+  let send = true
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
   }).populate('pageId userId').exec((err, post) => {
@@ -621,6 +621,28 @@ function sendCommentReply (body) {
       logger.serverLog(TAG,
         `response from comment on facebook ${JSON.stringify(post)}`)
       if (post && post.pageId) {
+        if (body.entry[0].changes[0].value.post_id.message) {
+          if (post.includedKeywords && post.includedKeywords.length > 0) {
+            send = false
+            for (let i = 0; i < post.includedKeywords.length; i++) {
+              if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+                send = true
+                break
+              }
+            }
+          }
+          if (post.excludedKeywords && post.excludedKeywords.length > 0) {
+            send = true
+            for (let i = 0; i < post.includedKeywords.length; i++) {
+              if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.excludedKeywords[i].toLowerCase())) {
+                send = false
+                break
+              }
+            }
+          }
+        }
+      }
+      if (send) {
         needle.get(
           `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
           (err, resp) => {
@@ -636,18 +658,6 @@ function sendCommentReply (body) {
                 }
                 logger.serverLog(TAG,
                   `response from comment on facebook ${JSON.stringify(resp.body)}`)
-                if (body.entry[0].changes[0].value.post_id.message) {
-                  if (post.includedKeywords && post.includedKeywords.length > 0) {
-                    for (let i = 0; i < post.includedKeywords.length; i++) {
-                      if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
-                        index = 2
-                        break
-                      }
-                    }
-                  }
-                }
-                logger.serverLog(TAG,
-                  `value of index ${JSON.stringify(index)}`)
               })
           })
       }
