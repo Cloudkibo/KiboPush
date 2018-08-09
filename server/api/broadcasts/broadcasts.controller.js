@@ -558,13 +558,13 @@ function updateList (phoneNumber, sender, page) {
 
 function sendCommentReply (body) {
   let send = true
-  let postId = body.entry[0].changes[0].value.post_id.split('_')
+  let postId = body.entry[0].changes[0].value.post_id
   FacebookPosts.findOne({
-    post_id: postId[postId.length - 1]
+    post_id: postId
   }).populate('pageId userId').exec((err, post) => {
     if (err) {
     }
-    FacebookPosts.update({ post_id: postId[postId.length - 1] }, { $inc: { count: 1 } }, (err, updated) => {
+    FacebookPosts.update({ post_id: postId }, { $inc: { count: 1 } }, (err, updated) => {
       if (err) {
       }
       logger.serverLog(TAG,
