@@ -386,8 +386,11 @@ class CreateConvo extends React.Component {
   }
 
   removeComponent (obj) {
+    console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    console.log('temp', temp)
+    console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
   }
 

@@ -54,73 +54,6 @@ const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
 var array = []
 
-exports.indexx = function (req, res) {
-  CompanyUsers.findOne({ domain_email: req.user.domain_email },
-    (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      if (req.params.days === '0') {
-        Broadcasts.find({ companyId: companyUser.companyId }, (err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({ status: 'failed', description: 'Broadcasts not found' })
-          }
-          BroadcastPage.find({ companyId: companyUser.companyId },
-            (err, broadcastpages) => {
-              if (err) {
-                return res.status(404)
-                  .json({ status: 'failed', description: 'Broadcasts not found' })
-              }
-              res.status(200).json({
-                status: 'success',
-                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
-              })
-            })
-        })
-      } else {
-        Broadcasts.aggregate([
-          {
-            $match: {
-              companyId: companyUser.companyId,
-              'datetime': {
-                $gte: new Date(
-                  (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
-              }
-            }
-          }
-        ], (err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({ status: 'failed', description: 'Broadcasts not found' })
-          }
-          BroadcastPage.find({ companyId: companyUser.companyId },
-            (err, broadcastpages) => {
-              if (err) {
-                return res.status(404)
-                  .json({ status: 'failed', description: 'Broadcasts not found' })
-              }
-              res.status(200).json({
-                status: 'success',
-                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
-              })
-            })
-        })
-      }
-    })
-}
-
 exports.index = function (req, res) {
   CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
@@ -175,13 +108,28 @@ exports.index = function (req, res) {
         }
       }
       if (req.body.first_page === 'first') {
-        finalCriteria = {$match: findCriteria}
+        finalCriteria = [
+          { $match: findCriteria },
+          { $sort: { datetime: -1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       } else if (req.body.first_page === 'next') {
-        finalCriteria = { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }
         recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+        finalCriteria = [
+          { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
+          { $sort: { datetime: -1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       } else if (req.body.first_page === 'previous') {
-        finalCriteria = { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }
         recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+        finalCriteria = [
+          { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
+          { $sort: { datetime: 1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       }
       Broadcasts.aggregate([
         { $match: findCriteria },
@@ -191,7 +139,7 @@ exports.index = function (req, res) {
           return res.status(404)
             .json({ status: 'failed', description: 'BroadcastsCount not found' })
         }
-        Broadcasts.aggregate([finalCriteria, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
+        Broadcasts.aggregate(finalCriteria)
             .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)
@@ -205,7 +153,7 @@ exports.index = function (req, res) {
                   }
                   res.status(200).json({
                     status: 'success',
-                    payload: { broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                    payload: { broadcasts: req.body.first_page === 'previous' ? broadcasts.reverse() : broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
                   })
                 })
             })
@@ -609,7 +557,7 @@ function updateList (phoneNumber, sender, page) {
 }
 
 function sendCommentReply (body) {
-  let index = 1
+  let send = true
   FacebookPosts.findOne({
     post_id: body.entry[0].changes[0].value.post_id
   }).populate('pageId userId').exec((err, post) => {
@@ -621,6 +569,28 @@ function sendCommentReply (body) {
       logger.serverLog(TAG,
         `response from comment on facebook ${JSON.stringify(post)}`)
       if (post && post.pageId) {
+        if (body.entry[0].changes[0].value.post_id.message) {
+          if (post.includedKeywords && post.includedKeywords.length > 0) {
+            send = false
+            for (let i = 0; i < post.includedKeywords.length; i++) {
+              if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+                send = true
+                break
+              }
+            }
+          }
+          if (post.excludedKeywords && post.excludedKeywords.length > 0) {
+            send = true
+            for (let i = 0; i < post.includedKeywords.length; i++) {
+              if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.excludedKeywords[i].toLowerCase())) {
+                send = false
+                break
+              }
+            }
+          }
+        }
+      }
+      if (send) {
         needle.get(
           `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
           (err, resp) => {
@@ -636,18 +606,6 @@ function sendCommentReply (body) {
                 }
                 logger.serverLog(TAG,
                   `response from comment on facebook ${JSON.stringify(resp.body)}`)
-                if (body.entry[0].changes[0].value.post_id.message) {
-                  if (post.includedKeywords && post.includedKeywords.length > 0) {
-                    for (let i = 0; i < post.includedKeywords.length; i++) {
-                      if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
-                        index = 2
-                        break
-                      }
-                    }
-                  }
-                }
-                logger.serverLog(TAG,
-                  `value of index ${JSON.stringify(index)}`)
               })
           })
       }

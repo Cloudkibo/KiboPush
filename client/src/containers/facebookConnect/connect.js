@@ -23,7 +23,8 @@ class Connect extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.successSkip) {
+    console.log('nextProps in connect', nextProps)
+    if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
       browserHistory.push({
         pathname: '/dashboard'
       })
@@ -109,7 +110,8 @@ class Connect extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    successSkip: (state.signupInfo.successSkip)
+    successSkip: (state.signupInfo.successSkip),
+    user: (state.basicInfo.user)
   }
 }
 
