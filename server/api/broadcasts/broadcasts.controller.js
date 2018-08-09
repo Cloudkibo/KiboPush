@@ -54,73 +54,6 @@ const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
 var array = []
 
-exports.indexx = function (req, res) {
-  CompanyUsers.findOne({ domain_email: req.user.domain_email },
-    (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      if (req.params.days === '0') {
-        Broadcasts.find({ companyId: companyUser.companyId }, (err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({ status: 'failed', description: 'Broadcasts not found' })
-          }
-          BroadcastPage.find({ companyId: companyUser.companyId },
-            (err, broadcastpages) => {
-              if (err) {
-                return res.status(404)
-                  .json({ status: 'failed', description: 'Broadcasts not found' })
-              }
-              res.status(200).json({
-                status: 'success',
-                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
-              })
-            })
-        })
-      } else {
-        Broadcasts.aggregate([
-          {
-            $match: {
-              companyId: companyUser.companyId,
-              'datetime': {
-                $gte: new Date(
-                  (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
-              }
-            }
-          }
-        ], (err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({ status: 'failed', description: 'Broadcasts not found' })
-          }
-          BroadcastPage.find({ companyId: companyUser.companyId },
-            (err, broadcastpages) => {
-              if (err) {
-                return res.status(404)
-                  .json({ status: 'failed', description: 'Broadcasts not found' })
-              }
-              res.status(200).json({
-                status: 'success',
-                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
-              })
-            })
-        })
-      }
-    })
-}
-
 exports.index = function (req, res) {
   CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
@@ -177,11 +110,21 @@ exports.index = function (req, res) {
       if (req.body.first_page === 'first') {
         finalCriteria = {$match: findCriteria}
       } else if (req.body.first_page === 'next') {
-        finalCriteria = { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }
         recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+        finalCriteria = [
+          { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
+          { $sort: { datetime: -1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       } else if (req.body.first_page === 'previous') {
-        finalCriteria = { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }
         recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+        finalCriteria = [
+          { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
+          { $sort: { datetime: 1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       }
       Broadcasts.aggregate([
         { $match: findCriteria },
@@ -191,7 +134,7 @@ exports.index = function (req, res) {
           return res.status(404)
             .json({ status: 'failed', description: 'BroadcastsCount not found' })
         }
-        Broadcasts.aggregate([finalCriteria, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
+        Broadcasts.aggregate(finalCriteria)
             .exec((err, broadcasts) => {
               if (err) {
                 return res.status(404)

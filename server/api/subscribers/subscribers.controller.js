@@ -9,78 +9,6 @@ const TAG = 'api/subscribers/subscribers.controller.js'
 const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 const mongoose = require('mongoose')
 
-exports.index = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email},
-    (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      Subscribers.find({
-        companyId: companyUser.companyId,
-        isEnabledByPage: true,
-        isSubscribed: true
-      }).populate('pageId').exec((err, subscribers) => {
-        if (err) {
-          logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
-          return res.status(404)
-            .json({status: 'failed', description: 'Subscribers not found'})
-        }
-        let subsArray = []
-        let subscribersPayload = []
-        for (let i = 0; i < subscribers.length; i++) {
-          subsArray.push(subscribers[i]._id)
-          subscribersPayload.push({
-            _id: subscribers[i]._id,
-            firstName: subscribers[i].firstName,
-            lastName: subscribers[i].lastName,
-            locale: subscribers[i].locale,
-            gender: subscribers[i].gender,
-            timezone: subscribers[i].timezone,
-            profilePic: subscribers[i].profilePic,
-            companyId: subscribers[i].companyId,
-            pageScopedId: '',
-            email: '',
-            senderId: subscribers[i].senderId,
-            pageId: subscribers[i].pageId,
-            datetime: subscribers[i].datetime,
-            isEnabledByPage: subscribers[i].isEnabledByPage,
-            isSubscribed: subscribers[i].isSubscribed,
-            phoneNumber: subscribers[i].phoneNumber,
-            unSubscribedBy: subscribers[i].unSubscribedBy,
-            tags: [],
-            source: subscribers[i].source
-          })
-        }
-        TagsSubscribers.find({subscriberId: {$in: subsArray}})
-          .populate('tagId')
-          .exec((err, tags) => {
-            if (err) {
-              logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
-              return res.status(404)
-                .json({status: 'failed', description: 'Subscribers not found'})
-            }
-            for (let i = 0; i < subscribers.length; i++) {
-              for (let j = 0; j < tags.length; j++) {
-                if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
-                  subscribersPayload[i].tags.push(tags[j].tagId.tag)
-                }
-              }
-            }
-            res.status(200).json(subscribersPayload)
-          })
-      })
-    })
-}
-
 exports.allSubscribers = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
     (err, companyUser) => {
@@ -373,7 +301,7 @@ exports.getAll = function (req, res) {
         }
       } else if (req.body.first_page === 'next') {
         let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-        
+
         if (!req.body.filter) {
           Subscribers.aggregate([
             { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), isEnabledByPage: true} },
@@ -533,7 +461,7 @@ exports.getAll = function (req, res) {
         }
       } else if (req.body.first_page === 'previous') {
         let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-        
+
         if (!req.body.filter) {
           Subscribers.aggregate([
             { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), isEnabledByPage: true} },
