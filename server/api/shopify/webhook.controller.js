@@ -197,7 +197,7 @@ exports.serveScript = function (req, res) {
    .then((results) => {
      const pageId = results.pageId
      // logger.serverLog(TAG, `Found the shop using url ${pageId}`)
-     res.send(mainScript.renderJS(pageId, config.facebook.clientID))
+     res.send(mainScript.renderJS(pageId, config.facebook.clientID, results.shopUrl))
    }).catch((err) => {
      logger.serverLog(TAG, `Error in finding the shop using Url ${JSON.stringify(err)}`)
      return res.status(500).json({status: 'failed', error: err})
@@ -240,4 +240,24 @@ exports.handleNewSubscriber = function (payload) {
   })
 
   logger.serverLog(TAG, `Page Id: ${JSON.stringify(pageId)} and UserRef ${JSON.stringify(userRef)}`)
+}
+
+exports.clickCount = function (req, res) {
+  logger.serverLog(TAG, `Query param received from Messenger Click ${req.query}`)
+  CheckoutInfo.findOne({_id: req.query.checkoutId}).exec()
+  .then((result) => {
+    if (!result) { return res.status(500).json({status: 'failed', description: 'Cannot redirect to abandoned checkout'}) }
+    logger.serverLog(TAG, `Incrementing the click count`)
+    StoreAnalytics.findOneAndUpdate({storeId: result.storeId},
+      {$inc: {totalClicks: 1}},
+      (err) => {
+        if (err) {
+          logger.serverLog(TAG, `Error in updating click count ${JSON.stringify(err)}`)
+        }
+      })  // Store Analytics save and update
+    return res.redirect(result.abandonedCheckoutUrl)
+  }).catch((err) => {
+    logger.serverLog(TAG, `Error in click count ${JSON.stringify(err)}`)
+    return res.status(500).json({status: 'failed', description: 'Failed to find the checkout'})
+  })
 }

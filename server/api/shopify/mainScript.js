@@ -1,4 +1,4 @@
-exports.renderJS =  (pageId, appId) => {
+exports.renderJS =  (pageId, appId, shopUrl) => {
   return  `
 		window.fbAsyncInit = function() {
 	    FB.init({
@@ -86,7 +86,7 @@ exports.renderJS =  (pageId, appId) => {
 	  	let text = document.createTextNode('Hello From KiboPush: ' + pageId)
 	  	let messengerComponent = document.createElement('div')
 	  	messengerComponent.classList.add("fb-messenger-checkbox");
-	  	messengerComponent.setAttribute('origin', 'https://cloudkibo.myshopify.com/');
+	  	messengerComponent.setAttribute('origin', 'https://${shopUrl}/');
 	  	messengerComponent.setAttribute('page_id',  pageId);
 	  	messengerComponent.setAttribute('messenger_app_id',  ${appId});
 	  	console.log("User Ref before rendering", userRef)

@@ -2,12 +2,12 @@ const CheckoutInfo = require('./CheckoutInfo.model')
 const StoreInfo = require('./StoreInfo.model')
 const Pages = require('../pages/Pages.model')
 const utility = require('../broadcasts/broadcasts.utility')
-const Subscriber = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
 const TAG = 'api/abandoned_checkouts/utility_abandoned.js'
 const Shopify = require('shopify-api-node')
 const StoreAnalytics = require('./StoreAnalytics.model')
 const request = require('request')
+const config = require('./../../config/environment/index')
 
 // This function needs store Object as well because from store will we read the shop URL and token
 // We also need to pass callback because shopify makes a async call and we need the result back in calling function
@@ -50,7 +50,7 @@ function sendToFacebook (checkout, store, details) {
         },
         componentType: 'card',
         title: details[0].title,
-        buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Product'}],
+        buttons: [{'type': 'web_url', 'url': `${config.domain}/api/shopify/clickCount?checkoutId=${checkout._id}`, 'title': 'Visit Product'}],
         description: 'You forgot to checkout this product' + '. Vendor: ' + details[0].vendor
       }
       payload = obj
@@ -59,7 +59,7 @@ function sendToFacebook (checkout, store, details) {
       details.forEach((item) => {
         let temp = {
           title: item.title,
-          buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Our Shop'}],
+          buttons: [{'type': 'web_url', 'url': `${config.domain}/api/shopify/clickCount?checkoutId=${checkout._id}`, 'title': 'Visit Our Shop'}],
           subtitle: 'You forgot to checkout this product' + '. Vendor: ' + item.vendor,
           image_url: (item.image && item.image.src) ? item.image.src : 'https://cdn.shopify.com/assets/images/logos/shopify-bag.png'
         }

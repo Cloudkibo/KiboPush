@@ -36,4 +36,7 @@ router.post('/theme-publish',
 router.get('/serveScript',
   webhook.serveScript) // this id will be userid
 
+router.get('/clickCount',
+  webhook.clickCount) // this id will be userid
+
 module.exports = router

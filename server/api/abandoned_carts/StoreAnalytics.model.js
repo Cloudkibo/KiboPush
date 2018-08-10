@@ -6,6 +6,7 @@ const storeAnalyticsSchema = new Schema({
   totalAbandonedCarts: { type: Number, default: 0 },
   totalPurchasedCarts: { type: Number, default: 0 },
   totalSubscribers: {type: Number, default: 0},
-  totalPushSent: {type: Number, default: 0}
+  totalPushSent: {type: Number, default: 0},
+  totalClicks: {type: Number, default: 0}
 })
 module.exports = mongoose.model('storeAnalytics', storeAnalyticsSchema)

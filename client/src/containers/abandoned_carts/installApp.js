@@ -29,10 +29,19 @@ class InstallApp extends React.Component {
     }
   }
 
-
-
   selectPage (event) {
     this.setState({selectedPage: event.target.value})
+  }
+
+  verifyString (event) {
+    let re = new RegExp('\\b(https?|ftp|file):\/\/[\\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\\-A-Za-z0-9+&@#\/%=~_|]')
+    if (re.test(this.state.pageUrl)) {
+      let hostname = new URL(this.state.pageUrl).host
+      this.setState({pageUrl: hostname})
+    } else {
+      this.msg.error('The URL format is not valid')
+      event.preventDefault()
+    }
   }
 
   render () {
@@ -54,22 +63,22 @@ class InstallApp extends React.Component {
                 <h1> KiboPush </h1>
                 <h1> Install Shopify App </h1>
                 <br />
-                <form method='post' action={ '/api/shopify?access_token=' + auth.getToken() }>
-                <input autoFocus className='form-control m-input' type='text' placeholder='Shop Url e.g. mystore.myshopify.com' ref='domain' required
-                  style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
-                  value={this.state.pageUrl} name="shop" onChange={(event) => { this.setState({pageUrl: event.target.value}) }} />
-                <br />
-                <select style={{height: '45px', width: 80 + '%'}} onChange={this.selectPage.bind(this)} name="pageId">
-                  { (this.props.pages)
+                <form method='post' action={'/api/shopify?access_token=' + auth.getToken()}>
+                  <input autoFocus className='form-control m-input' type='text' placeholder='Shop Url e.g. mystore.myshopify.com' ref='domain' required
+                    style={{ WebkitBoxShadow: 'none', boxShadow: 'none', height: '45px' }}
+                    value={this.state.pageUrl} name='shop' onChange={(event) => { this.setState({pageUrl: event.target.value}) }} />
+                  <br />
+                  <select style={{height: '45px', width: 80 + '%'}} onChange={this.selectPage.bind(this)} name='pageId'>
+                    { (this.props.pages)
                     ? this.props.pages.map((page) => {
                       return <option value={page.pageId} key={page._id}> {page.pageName} </option>
                     }) : <option>No Pages Found</option>
                   }
-                </select>
-                <br />
-                <br />
-                <button type='submit' className='btn  btn-success btn-lg' style={{marginTop: 25 + 'px'}}>Install</button>
-                </ form>
+                  </select>
+                  <br />
+                  <br />
+                  <button type='submit' onClick={this.verifyString.bind(this)} className='btn  btn-success btn-lg' style={{marginTop: 25 + 'px'}}>Install</button>
+                </form>
               </div>
             </div>
           </div>
@@ -93,7 +102,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadMyPagesList: loadMyPagesList,
+      loadMyPagesList: loadMyPagesList
     },
     dispatch)
 }

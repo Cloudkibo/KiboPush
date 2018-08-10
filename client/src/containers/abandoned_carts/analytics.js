@@ -21,8 +21,8 @@ class Analytics extends React.Component {
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
                   <h3 className='m-portlet__head-text substring-dashboard'>
-                Store Name
-              </h3>
+                    { (this.props.storeList && this.props.storeList.length > 0) ? this.props.storeList[0].shopUrl : '' }
+                  </h3>
                 </div>
               </div>
             </div>
@@ -121,10 +121,10 @@ class Analytics extends React.Component {
               <div className='m-widget26'>
                 <div className='m-widget26__number'>
                   {
-                 (this.props.analytics && this.props.analytics.totalSubscribers) ? this.props.analytics.totalSubscribers : 0
+                 (this.props.analytics && this.props.analytics.totalClicks) ? this.props.analytics.totalClicks : 0
                   }
                   <small>
-                Shopify Subscribers
+                Total Clicks
               </small>
                 </div>
               </div>
