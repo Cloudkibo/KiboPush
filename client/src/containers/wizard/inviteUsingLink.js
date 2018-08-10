@@ -14,6 +14,7 @@ import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
@@ -217,10 +218,7 @@ class InviteSubscribers extends React.Component {
                     </div>
                     <div className='m-portlet__body'>
                       { this.props.pages && this.props.pages.length === 0 &&
-                        <div classNameName='alert alert-success'>
-                          <h4 classNameName='block'>0 Connected Pages</h4>
-                          You do not have any connected pages. Please click <Link to='/addPageWizard' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages.
-                        </div>
+                        <AlertMessage type='page' />
                       }
                       {this.state.selectedTab === 'becomeSubscriber' &&
                         <div>

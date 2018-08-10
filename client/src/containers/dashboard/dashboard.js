@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
@@ -372,6 +372,21 @@ class Dashboard extends React.Component {
           </div>
         </div>
         <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0 &&
+            <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation-1' style={{color: 'white'}} />
+                <span />
+              </div>
+              <div className='m-alert__text'>
+                <strong>
+                0 Pages Connected!&nbsp;
+                </strong>
+                You have no pages connected. Please connect your facebook pages to get started.&nbsp; <Link style={{cursor: 'pointer'}} to='/addPages' >Connect Page</Link>
+              </div>
+            </div>
+          }
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
             this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
