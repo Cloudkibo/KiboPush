@@ -610,22 +610,27 @@ function updateList (phoneNumber, sender, page) {
 
 function sendCommentReply (body) {
   let send = true
+  let postId = body.entry[0].changes[0].value.post_id
   FacebookPosts.findOne({
-    post_id: body.entry[0].changes[0].value.post_id
+    post_id: postId
   }).populate('pageId userId').exec((err, post) => {
     if (err) {
     }
-    FacebookPosts.update({ post_id: body.entry[0].changes[0].value.post_id }, { $inc: { count: 1 } }, (err, updated) => {
+    FacebookPosts.update({ post_id: postId }, { $inc: { count: 1 } }, (err, updated) => {
       if (err) {
       }
       logger.serverLog(TAG,
+        `updated value ${JSON.stringify(updated)}`)
+      logger.serverLog(TAG,
         `response from comment on facebook ${JSON.stringify(post)}`)
       if (post && post.pageId) {
-        if (body.entry[0].changes[0].value.post_id.message) {
+        if (body.entry[0].changes[0].value.message) {
           if (post.includedKeywords && post.includedKeywords.length > 0) {
             send = false
             for (let i = 0; i < post.includedKeywords.length; i++) {
-              if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+              if (body.entry[0].changes[0].value.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+                logger.serverLog(TAG,
+                  `inside if send value ${JSON.stringify(send)}`)
                 send = true
                 break
               }
@@ -634,13 +639,15 @@ function sendCommentReply (body) {
           if (post.excludedKeywords && post.excludedKeywords.length > 0) {
             send = true
             for (let i = 0; i < post.includedKeywords.length; i++) {
-              if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.excludedKeywords[i].toLowerCase())) {
+              if (body.entry[0].changes[0].value.message.toLowerCase().includes(post.excludedKeywords[i].toLowerCase())) {
                 send = false
                 break
               }
             }
           }
         }
+        logger.serverLog(TAG,
+          `send value ${JSON.stringify(send)}`)
         if (send) {
           needle.get(
             `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
@@ -656,7 +663,7 @@ function sendCommentReply (body) {
                     logger.serverLog(TAG, err)
                   }
                   logger.serverLog(TAG,
-                    `response from comment on facebook ${JSON.stringify(resp.body)}`)
+                    `response from comment on facebook 2 ${JSON.stringify(resp.body)}`)
                 })
             })
         }
