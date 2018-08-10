@@ -562,4 +562,21 @@ router.get('/updateSkip', (req, res) => {
   })
   res.status(200).json({status: 'success', description: 'users updated successfully'})
 })
+
+router.get('/addAgentActivityTime', (req, res) => {
+  Sessions.find({}, (err, sessions) => {
+    if (err) {
+      logger.serverLog(TAG, `Line 569: ERROR! at getting sessions: ${JSON.stringify(err)}`)
+    }
+    sessions.forEach((session) => {
+      Sessions.update({_id: session._id}, {agent_activity_time: session.request_time}, (err, updatedSession) => {
+        if (err) {
+          logger.serverLog(TAG, `Line 574: ERROR! at updating session: ${JSON.stringify(err)}`)
+        }
+      })
+    })
+    res.status(200).json({status: 'success', description: 'Added successfully!'})
+  })
+})
+
 module.exports = router
