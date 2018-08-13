@@ -104,7 +104,6 @@ class CreateSequence extends React.Component {
   }
   onSelectedMessage (Message) {
     console.log('Selected Message id is:', Message)
-    this.setState({selectedMessageClickId: Message})
     let buttonList = []
     this.props.messages.map((message, i) => {
       if (message._id === Message) {
@@ -118,16 +117,14 @@ class CreateSequence extends React.Component {
       }
     })
     console.log('The buttonList is  ', buttonList)
-    this.setState({buttonList: buttonList})
+    this.setState({buttonList: buttonList, selectedMessageClickId: Message})
   }
   onSelectedOption (menu) {
-    this.setState({eventNameSelected: menu})
     if (menu === 'clicks') {
-      this.setState({displayAction: true})
+      this.setState({displayAction: true, eventNameSelected: menu})
       console.log('Display action set true')
     } else {
-      this.setState({displayAction: false})
-      this.setState({selectedButton: ''})
+      this.setState({displayAction: false, eventNameSelected: menu, selectedButton: ''})
       console.log('Display action set false')
     }
   }
@@ -203,11 +200,7 @@ class CreateSequence extends React.Component {
   }
 
   CloseDialogTrigger (message) {
-    this.setState({ShowTrigger: false})
-    this.setState({displayAction: false})
-    this.setState({buttonList: []})
-    this.setState({selectedButton: ''})
-    this.setState({selectedMessageClickId: ''})
+    this.setState({ShowTrigger: false, displayAction: false, buttonList: [], selectedButton: '', selectedMessageClickId: ''})
   }
 
   componentDidMount () {
