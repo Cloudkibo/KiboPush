@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { connect } from 'react-redux'
 import {
@@ -16,13 +16,15 @@ import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
-
+import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 class Page extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       isShowingModal: false,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
+      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       page: {},
       pagesData: [],
       totalLength: 0,
@@ -140,7 +142,7 @@ class Page extends React.Component {
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false})
+    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
   }
 
   inviteSubscribers (page) {
@@ -201,17 +203,15 @@ class Page extends React.Component {
           </ModalContainer>
         }
         {
-          this.state.isShowingZeroSubModal &&
+          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
               onClose={this.closeZeroSubDialog}>
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Subscribers</h4>
-    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
-    below on how to get started.
-              </div>
+              {this.state.isShowingZeroPageModal
+              ? <AlertMessageModal type='page' />
+            : <AlertMessageModal type='subscriber' />
+            }
               <div>
                 <YouTube
                   videoId='9kY3Fmj_tbM'
@@ -236,26 +236,10 @@ class Page extends React.Component {
             </div>
           </div>
           <div className='m-content'>
-            { !this.state.connectedPages
-              ? <div className='alert alert-success'>
-                <h4 className='block'>0 Connected Pages</h4>
-                You do not have any connected pages. Please click on Connect Facebook Pages to connect your Facebook Pages.
-              </div>
-            : <div>
-              { this.props.subscribers &&
-                this.props.subscribers.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not
-                  have any subscriber, you will not be able to broadcast
-                  message, polls and surveys.
-                  Lets invite subscribers first. Dont worry, we will guide
-                  you on how you can invite subscribers.
-                  Click on 'Invite Subscribers' button on right side of the
-                  page title.
-                </div>
-              }
-            </div>
+            {
+              this.props.pages && this.props.pages.length === 0
+              ? <AlertMessage type='page' />
+            : <AlertMessage type='subscriber' />
             }
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>

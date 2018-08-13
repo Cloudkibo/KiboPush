@@ -17,6 +17,7 @@ import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import EditTags from './editTags'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -902,10 +903,7 @@ class Subscriber extends React.Component {
           <div className='m-content'>
             {
               this.props.pages && this.props.pages.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Connected Pages</h4>
-                  You do not have any connected pages. Unless you do not connect any pages, you won't be able to invite subscribers. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your facebook page.
-                </div>
+              <AlertMessage type='page' />
             }
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>

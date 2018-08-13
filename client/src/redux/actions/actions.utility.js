@@ -1,4 +1,5 @@
 export function removeButtonOldurl (data) {
+  console.log('data in removeButtonOldurl', data)
   for (let i = 0; i <= data.payload.length; i++) {
     if (i === data.payload.length) {
       console.log(data)

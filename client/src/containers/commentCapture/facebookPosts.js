@@ -254,7 +254,7 @@ class FacebookPosts extends React.Component {
                               style={{height: '55px'}} key={i}>
                               <td data-field='post' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{this.getPostText(post.payload)}</span></td>
                               <td data-field='keywords' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.reply}</span></td>
-                              <td data-field='commentsCount' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{post.commentsCount ? post.commentCount : '0'}</span></td>
+                              <td data-field='commentsCount' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{post.count ? post.count : '0'}</span></td>
                               <td data-field='dateCreated' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{handleDate(post.datetime)}</span></td>
                               <td data-field='actions' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'>
                                 <span>
