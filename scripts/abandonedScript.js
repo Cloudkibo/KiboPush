@@ -9,12 +9,17 @@ const request = require('request')
 
 mongoose = mongoose.connect(config.mongo.uri)
 
+var https = require('https')
+https.get('https://cronhub.io/ping/8ba0c020-9c23-11e8-98df-53965cfb8da9')
+
 /*
 { isPurchased: false,
   scheduled_at: { '$lt': Date.now() }
 }
 */
-CheckoutInfo.find({ isPurchased: false }, (err, data) => {
+CheckoutInfo.find({ isPurchased: false,
+  scheduled_at: { '$lt': Date.now() }
+}, (err, data) => {
   if (err) {
     logger.serverLog(TAG, `No Checkout found ${JSON.stringify(err)}`)
     setTimeout(function (mongoose) { closeDB(mongoose) }, 2000)
@@ -32,7 +37,10 @@ CheckoutInfo.find({ isPurchased: false }, (err, data) => {
       })
     }
     setTimeout(function (mongoose) { closeDB(mongoose) }, 20000)
-  } // If data clause check
+  } else {
+    setTimeout(function (mongoose) { closeDB(mongoose) }, 2000)
+  }
+   // If data clause check
 })  // CheckoutInfo find ends here
 
 function closeDB () {

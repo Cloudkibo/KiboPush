@@ -18,9 +18,16 @@ export function updateAbandonedList (data) {
   }
 }
 
+export function updateSentCount (data) {
+  return {
+    type: ActionTypes.UPDATE_SENT_COUNT,
+    data
+  }
+}
+
 export function updateAnalytics (data) {
   return {
-    type: ActionTypes.UPDATE_ABANDONED_LIST,
+    type: ActionTypes.UPDATE_ANALYTICS,
     data
   }
 }
@@ -71,14 +78,13 @@ export function sendAbandonedCartNow (data, msg) {
   return (dispatch) => {
     callApi('abandonedCarts/sendCheckout', 'post', data)
       .then(res => {
-        if (res.status === 'Success') {
-          // Add logic to display success Message
+        if (res.status === 'success') {
+          // Add logic to display success Message: res.payload.id
           console.log('updated successfully: ' + JSON.stringify(res))
           msg.success('Abandoned Cart Sent Successfully')
-        } else if (res.status === 'Failed') {
+          dispatch(updateSentCount(res.payload.id))
+        } else if (res.status === 'failed') {
           msg.error('Abandoned Cart Sent Failed')
-        } else if (res.status === 'Not Found') {
-          msg.info('Abandoned Cart Not Found')
         }
       })
   }

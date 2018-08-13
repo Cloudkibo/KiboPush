@@ -12,6 +12,7 @@ const request = require('request-promise')
 const StoreInfo = require('./../abandoned_carts/StoreInfo.model')
 const Shopify = require('shopify-api-node')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const StoreAnalytics = require('./../abandoned_carts/StoreAnalytics.model')
 const TAG = 'api/shopify/shopify.controller.js'
 // const Users = require('./../user/Users.model')
 // const needle = require('needle')
@@ -173,11 +174,19 @@ exports.callback = function (req, res) {
       shopToken: accessToken,
       companyId: companyId
     })
-    store.save((err) => {
+    store.save((err, savedStore) => {
       if (err) {
         return res.status(500).json({ status: 'failed', error: err })
       }
-      return res.redirect('/')
+      const storeAnalytics = new StoreAnalytics({
+        storeId: savedStore._id
+      })
+      storeAnalytics.save((err) => {
+        if (err) {
+          return res.status(500).json({ status: 'failed', error: err })
+        }
+        return res.redirect('/')
+      }) // store analytics save
     })
   })
   .catch((error) => {

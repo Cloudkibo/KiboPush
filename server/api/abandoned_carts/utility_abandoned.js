@@ -2,11 +2,12 @@ const CheckoutInfo = require('./CheckoutInfo.model')
 const StoreInfo = require('./StoreInfo.model')
 const Pages = require('../pages/Pages.model')
 const utility = require('../broadcasts/broadcasts.utility')
-const Subscriber = require('../subscribers/Subscribers.model')
 const logger = require('../../components/logger')
 const TAG = 'api/abandoned_checkouts/utility_abandoned.js'
 const Shopify = require('shopify-api-node')
+const StoreAnalytics = require('./StoreAnalytics.model')
 const request = require('request')
+const config = require('./../../config/environment/index')
 
 // This function needs store Object as well because from store will we read the shop URL and token
 // We also need to pass callback because shopify makes a async call and we need the result back in calling function
@@ -45,11 +46,11 @@ function sendToFacebook (checkout, store, details) {
         // Send one card
       obj = {
         fileurl: {
-          url: details[0].image.src
+          url: (details[0].image && details[0].image.src) ? details[0].image.src : 'https://cdn.shopify.com/assets/images/logos/shopify-bag.png'
         },
         componentType: 'card',
         title: details[0].title,
-        buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Product'}],
+        buttons: [{'type': 'web_url', 'url': `${config.domain}/api/shopify/clickCount?checkoutId=${checkout._id}`, 'title': 'Visit Product'}],
         description: 'You forgot to checkout this product' + '. Vendor: ' + details[0].vendor
       }
       payload = obj
@@ -58,9 +59,9 @@ function sendToFacebook (checkout, store, details) {
       details.forEach((item) => {
         let temp = {
           title: item.title,
-          buttons: [{'type': 'web_url', 'url': checkout.abandonedCheckoutUrl, 'title': 'Visit Our Shop'}],
+          buttons: [{'type': 'web_url', 'url': `${config.domain}/api/shopify/clickCount?checkoutId=${checkout._id}`, 'title': 'Visit Our Shop'}],
           subtitle: 'You forgot to checkout this product' + '. Vendor: ' + item.vendor,
-          image_url: item.image.src
+          image_url: (item.image && item.image.src) ? item.image.src : 'https://cdn.shopify.com/assets/images/logos/shopify-bag.png'
         }
         gallery.push(temp)
       })
@@ -105,27 +106,38 @@ const send = (batchMessages, page) => {
 }
 
 const sendCheckout = (id, cb) => {
-  CheckoutInfo.findOne({_id: id}, (err, checkout) => {
+  CheckoutInfo.findOne({_id: id, sentCount: { '$lt': 3 }}, (err, checkout) => {
     if (err) {
+      logger.serverLog(TAG, `Cannot find the checkout ${JSON.stringify(err)}`)
       return cb(err, null)
     }
 
     if (checkout) {
       StoreInfo.findOne({_id: checkout.storeId}, (err, store) => {
         if (err) {
+          logger.serverLog(TAG, `Cannot find the store ${JSON.stringify(err)}`)
           return cb(err, null)
         }
 
         fetchProductDetails(checkout.productIds, store, (err, details) => {
           if (err) {
+            logger.serverLog(TAG, `Error in fetching product details ${JSON.stringify(err)}`)
             return cb(err, null)
           }
 
           logger.serverLog(TAG, 'Product Details: ' + details)
           sendToFacebook(checkout, store, details)
           checkout.status = 'sent'
+          checkout.sentCount = checkout.sentCount + 1
+          StoreAnalytics.findOneAndUpdate({storeId: store._id}, {$inc: {totalPushSent: 1}}, (err) => {
+            if (err) {
+              logger.serverLog(TAG, `Error in updating analytics ${JSON.stringify(err)}`)
+              return cb(err, null)
+            }
+          })
           checkout.save((err) => {
             if (err) {
+              logger.serverLog(TAG, `Error in updating checkout ${JSON.stringify(err)}`)
               return cb(err, null)
             }
 

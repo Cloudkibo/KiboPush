@@ -80,7 +80,7 @@ class AbandonedList extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {
+                    { /* DONOT DELETE THIS: Will be used in v2
                       this.props.storeList[0] &&
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.handleStatusChange}>
                         <span>
@@ -92,6 +92,7 @@ class AbandonedList extends React.Component {
                           </span>
                         </span>
                       </button>
+                      */
                     }
                   </div>
                 </div>
@@ -101,10 +102,6 @@ class AbandonedList extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{ height: '53px' }}>
-                          <th data-field='name'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{ width: '125px' }}>Subscriber Name</span>
-                          </th>
                           <th data-field='page'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '125px'}}>Created At</span>
@@ -121,6 +118,10 @@ class AbandonedList extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{ width: '125px' }}>Status</span>
                           </th>
+                          <th data-field='sentCount'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '125px' }}>Sent Count</span>
+                          </th>
                           <th data-field='actions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '250px'}}>Actions</span>
@@ -132,14 +133,14 @@ class AbandonedList extends React.Component {
                         (this.props.abandonedList) && this.props.abandonedList.map((item) => {
                           return <tr className='m-datatable__row m-datatable__row--even' key={item._id}
                             style={{height: '55px'}}>
-                            <td data-field='name' className='m-datatable__cell'><span style={{width: '125px'}}>Dayem Siddiqui</span></td>
                             <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{new Date(item.created_at).toString()}</span></td>
                             <td data-field='page' className='m-datatable__cell'><span style={{width: '125px'}}>{new Date(item.scheduled_at).toString()}</span></td>
                             <td data-field='value' className='m-datatable__cell'><span style={{width: '125px'}}>{item.totalPrice}</span></td>
                             <td data-field='status' className='m-datatable__cell'><span style={{width: '125px'}}>{item.status}</span></td>
+                            <td data-field='sentCount' className='m-datatable__cell'><span style={{width: '125px'}}>{item.sentCount}</span></td>
                             <td data-field='status' className='m-datatable__cell'><span style={{width: '250px'}}>
                               {
-                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => { this.onClickSendNow(item._id) }}>
+                                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={item.sentCount >= 3 } onClick={() => { this.onClickSendNow(item._id) }}>
                                   <span>
                                     <i className='la la-info' />
                                     <span>

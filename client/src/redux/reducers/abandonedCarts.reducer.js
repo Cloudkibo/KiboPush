@@ -23,6 +23,17 @@ export function abandonedInfo (state = initialState, action) {
       return Object.assign({}, state, {
         analytics: action.data
       })
+    case ActionTypes.UPDATE_SENT_COUNT:
+      let newList = state.abandonedList.map((item) => {
+        if(item._id === action.data) {
+          item.sentCount = item.sentCount + 1
+          item.status = 'sent'
+        }
+        return item
+      })
+      return Object.assign({}, state, {
+        abandonedList: newList
+      })
     default:
       return state
   }
