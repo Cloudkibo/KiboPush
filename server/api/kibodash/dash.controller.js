@@ -21,6 +21,7 @@ const CompanyUsers = require('../companyuser/companyuser.model')
 const mongoose = require('mongoose')
 
 exports.platformWiseData = function (req, res) {
+  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   let startDate = req.body.start_date
   let dateFilterAggregates = filterDate
   dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
@@ -60,6 +61,7 @@ exports.platformWiseData = function (req, res) {
 }
 
 exports.pageWiseData = function (req, res) {
+  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   let startDate = req.body.startDate
   let dateFilterSubscribers = filterPageSubscribers
   // add the date filter(as from reqeust) in the aggregate pipeline query for subscribers page wise
@@ -119,6 +121,7 @@ exports.pageWiseData = function (req, res) {
 }
 
 exports.companyWiseData = function (req, res) {
+  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   let startDate = req.body.startDate
   let dateFilterSubscribers = filterCompanySubscribers
   dateFilterSubscribers['$project']['companysubscribers']['$filter']['cond'] = {$gte: ['$$companysubscriber.datetime', new Date(startDate)]}
@@ -171,6 +174,7 @@ exports.companyWiseData = function (req, res) {
 
 // Twitter AutoPosting Data
 exports.getTwitterAutoposting = function (req, res) {
+  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   Autoposting
   .aggregate([
     joinAutpostingMessages,
@@ -189,6 +193,7 @@ exports.getTwitterAutoposting = function (req, res) {
 
 // Facebook AutoPosting Data
 exports.getFacebookAutoposting = function (req, res) {
+  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   Autoposting
   .aggregate([
     joinAutpostingMessages,
@@ -207,6 +212,7 @@ exports.getFacebookAutoposting = function (req, res) {
 
 // Wordpress AutoPosting Data
 exports.getWordpressAutoposting = function (req, res) {
+  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   Autoposting
   .aggregate([
     joinAutpostingMessages,
