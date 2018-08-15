@@ -43,8 +43,8 @@ class List extends React.Component {
         this.props.cards[k].id = k
         tmp.push({element: <Card id={k} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} topElementStyle={this.topElementStyle} removeElement={this.removeElement} topStyle={this.props.list.topElementStyle} />, key: k})
       }
-      console.log()
-      this.setState({cards: tmp, broadcast: this.props.cards, topElementStyle: this.props.list.topElementStyle})
+      console.log('list is', this.props)
+      this.setState({cards: tmp, broadcast: this.props.cards, topElementStyle: this.props.list.topElementStyle, buttons: this.props.list.buttons})
     }
     if (this.props.listDetails && this.props.listDetails !== '') {
       console.log('this.props.listDetails', this.props.listDetails)
