@@ -258,8 +258,9 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
             dispatch(sendBroadcastFailure())
           }
         }
-        handleSendBroadcast(res)
-        //  dispatch(loadBroadcastsList())
+        if (handleSendBroadcast) {
+          handleSendBroadcast(res)
+        }
       })
   }
 }
