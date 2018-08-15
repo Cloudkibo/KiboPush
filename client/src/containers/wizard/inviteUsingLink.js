@@ -147,7 +147,7 @@ class InviteSubscribers extends React.Component {
       platform: 'facebook',
       payload: [{ text: 'Hello! this is a test broadcast.', componentType: 'text' }],
       isSegmented: false,
-      segmentationPageIds: [],
+      segmentationPageIds: [this.state.selectPage.pageId],
       segmentationLocale: '',
       segmentationGender: '',
       segmentationTimeZone: '',
@@ -155,6 +155,7 @@ class InviteSubscribers extends React.Component {
       segmentationList: '',
       isList: false
     }
+    this.msg.info('Sending test message...')
     this.props.sendBroadcast(data, this.msg)
   }
   setPage () {
