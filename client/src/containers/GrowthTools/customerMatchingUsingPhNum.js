@@ -598,7 +598,7 @@ class CustomerMatching extends React.Component {
             {
                 this.props.pages &&
                 this.props.pages.length === 0 &&
-                <AlertMessage type='subscriber' />
+                <AlertMessage type='page' />
             }
 
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>

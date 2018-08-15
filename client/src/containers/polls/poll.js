@@ -289,7 +289,8 @@ class Poll extends React.Component {
           {
             this.props.pages && this.props.pages.length === 0
             ? <AlertMessage type='page' />
-          : <AlertMessage type='subscriber' />
+          : this.props.subscribers && this.props.subscribers.length === 0 &&
+            <AlertMessage type='subscriber' />
           }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
