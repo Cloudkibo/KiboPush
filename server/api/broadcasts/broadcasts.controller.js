@@ -613,15 +613,15 @@ function sendCommentReply (body) {
                   logger.serverLog(TAG,
                     `response from comment on facebook 2 ${JSON.stringify(resp.body)}`)
                 })
-              needle.post(
-                `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/comments?access_token=${resp.body.access_token}`,
-                messageData, (err, resp) => {
-                  if (err) {
-                    logger.serverLog(TAG, err)
-                  }
-                  logger.serverLog(TAG,
-                    `response from comment on facebook 3 ${JSON.stringify(resp.body)}`)
-                })
+              // needle.post(
+              //   `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/comments?access_token=${resp.body.access_token}`,
+              //   messageData, (err, resp) => {
+              //     if (err) {
+              //       logger.serverLog(TAG, err)
+              //     }
+              //     logger.serverLog(TAG,
+              //       `response from comment on facebook 3 ${JSON.stringify(resp.body)}`)
+              //   })
             })
         }
       }
