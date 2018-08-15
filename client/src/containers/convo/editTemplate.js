@@ -186,6 +186,7 @@ class EditTemplate extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
+      console.log('this.props.location.state.payload', this.props.location.state.payload)
       this.setEditComponents(this.props.location.state.payload)
     } else if (nextprops.broadcastDetails) {
       if (this.state.stay === false) {
