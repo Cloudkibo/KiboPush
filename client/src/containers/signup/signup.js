@@ -260,7 +260,7 @@ class Signup extends React.Component {
                       <div className='m-login__form-action'>
                         <div className='checkbox'>
                           <input type='checkbox' onChange={e => this.acceptEULA(e)} />
-                          <label style={{marginBottom: 35, marginLeft: 15, fontSize: 13}}>I've read and accept the <a onClick={this.showDialog} href='#eulaAgreement'>terms and conditions</a></label>
+                          <label style={{marginBottom: 35, marginLeft: 0, fontSize: 13, paddingLeft: 0}}>I've read and accept the <a onClick={this.showDialog} href='#eulaAgreement'>terms and conditions</a></label>
                         </div>
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess}>
                           Sign Up
