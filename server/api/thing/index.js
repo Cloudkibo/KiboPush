@@ -562,7 +562,6 @@ router.get('/updateSkip', (req, res) => {
   })
   res.status(200).json({status: 'success', description: 'users updated successfully'})
 })
-
 router.get('/addAgentActivityTime', (req, res) => {
   Sessions.find({}, (err, sessions) => {
     if (err) {
