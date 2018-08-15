@@ -37,6 +37,8 @@ const all = {
 
   domain: `${process.env.DOMAIN || 'https://staging.kibopush.com'}`,
 
+  kibodashdomain: `${process.env.KIBODASH || 'http://localhost:5050'}`,
+
   // List of user roles, NOTE: don't change the order
   userRoles: ['buyer', 'admin', 'supervisor', 'agent'],
 
