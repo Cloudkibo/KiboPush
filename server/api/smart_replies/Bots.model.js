@@ -19,7 +19,8 @@ const botSchema = new Schema({
   hitCount: Number,
   missCount: Number,
   datetime: {type: Date, default: Date.now},
-  blockedSubscribers: [String]
+  blockedSubscribers: [String],
+  fbMessageTag: String
 })
 
 module.exports = mongoose.model('bots', botSchema)

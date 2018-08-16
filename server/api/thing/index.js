@@ -562,6 +562,44 @@ router.get('/updateSkip', (req, res) => {
   })
   res.status(200).json({status: 'success', description: 'users updated successfully'})
 })
+router.get('/updatePageSubscriptionPermission', (req, res) => {
+  Pages.update({}, {gotPageSubscriptionPermission: false}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Broadcasts.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Surveys.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Polls.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  LiveChat.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Bots.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  SequenceMessages.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  res.status(200).json({status: 'success', description: 'pages updated successfully'})
+})
 
 router.get('/addAgentActivityTime', (req, res) => {
   Sessions.find({}, (err, sessions) => {
