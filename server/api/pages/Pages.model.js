@@ -35,7 +35,7 @@ const pageSchema = new Schema({
     type: Boolean, default: true
   },
   gotPageSubscriptionPermission: {
-    type: Boolean, default: true
+    type: Boolean, default: false
   }
 })
 

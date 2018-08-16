@@ -133,7 +133,8 @@ class CreatePoll extends React.Component {
         segmentationTags: tagIDs,
         segmentationPoll: this.state.pollValue,
         isList: isListValue,
-        segmentationList: this.state.listSelected
+        segmentationList: this.state.listSelected,
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
       }
       console.log('Adding Poll', data)
       this.props.addPoll('', data)
@@ -214,7 +215,8 @@ class CreatePoll extends React.Component {
           segmentationTags: tagIDs,
           isList: isListValue,
           segmentationPoll: this.state.pollValue,
-          segmentationList: this.state.listSelected
+          segmentationList: this.state.listSelected,
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
         }
         console.log('Sending Poll', data)
         this.props.sendPollDirectly(data, this.msg)

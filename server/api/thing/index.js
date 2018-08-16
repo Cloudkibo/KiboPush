@@ -583,16 +583,6 @@ router.get('/updatePageSubscriptionPermission', (req, res) => {
       logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
     }
   })
-  LiveChat.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
-    if (err) {
-      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
-    }
-  })
-  Bots.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
-    if (err) {
-      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
-    }
-  })
   SequenceMessages.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
     if (err) {
       logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)

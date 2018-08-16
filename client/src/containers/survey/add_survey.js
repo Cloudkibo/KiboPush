@@ -221,6 +221,7 @@ class AddSurvey extends React.Component {
             description: this.state.description, // description of survey
             image: '' // image url
           },
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
           questions: this.state.surveyQuestions,
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
@@ -522,6 +523,7 @@ class AddSurvey extends React.Component {
               description: this.state.description, // description of survey
               image: '' // image url
             },
+            fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
             questions: this.state.surveyQuestions,
             isSegmented: isSegmentedValue,
             segmentationPageIds: this.state.pageValue,
