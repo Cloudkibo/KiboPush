@@ -457,7 +457,7 @@ class CreateBroadcastTemplate extends React.Component {
                               </div>
                             </div>
                             <div className='col-3'>
-                              <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this)}}>
+                              <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
                                 <div className='align-center'>
                                   <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                   <h6>Gallery</h6>
