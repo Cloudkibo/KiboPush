@@ -16,7 +16,7 @@ class PlatformStats extends React.Component {
     return (
       <div className='row'>
         <div className='col-xl-8' style={{height: '366px'}}>
-          { (true === true)
+          { (this.props.platformStats)
           ? <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
@@ -39,7 +39,7 @@ class PlatformStats extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {23}
+                          {(this.props.platformStats) ? this.props.platformStats.totalPages : 0}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -57,7 +57,7 @@ class PlatformStats extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                            {23}
+                          {(this.props.platformStats) ? this.props.platformStats.totalConnectedPages : 0}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -75,7 +75,7 @@ class PlatformStats extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {23}
+                          {(this.props.platformStats) ? this.props.platformStats.totalSubscribers : 0}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -89,14 +89,19 @@ class PlatformStats extends React.Component {
                 <div className='m-widget15'>
                   <div className='m-widget15__item'>
                     <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                      {0}
+                      {(this.props.platformStats) ? Math.floor(this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100) + '%' : 0 + '%'}
                     </span>
                     <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                       Pages Connected
                     </span>
                     <div className='m--space-10' />
                     <div className='progress m-progress--sm' style={{height: '6px'}}>
-                      <div className='progress-bar bg-success' role='progressbar' style={{width: 50 + '%'}} aria-valuenow={50} aria-valuemin='0' aria-valuemax='100' />
+                      {
+                      (this.props.platformStats) 
+                      ? <div className='progress-bar bg-success' role='progressbar' style={{width: (this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100) + '%'}} aria-valuenow={(this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100)} aria-valuemin='0' aria-valuemax='100' />
+                      : <div className='progress-bar bg-success' role='progressbar' style={{width: 0 + '%'}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
+                    }
+
                     </div>
                   </div>
                 </div>
@@ -106,7 +111,7 @@ class PlatformStats extends React.Component {
         : <p>No data to display </p>
           }
         </div>
-        
+
         <div className='col-xl-4'>
           <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit' style={{height: 'fit-content'}}>
             <div className='m-portlet__head'>

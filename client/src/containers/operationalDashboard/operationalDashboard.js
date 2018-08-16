@@ -76,7 +76,7 @@ class OperationalDashboard extends React.Component {
       showBroadcasts: false,
       showDropDown: false
     }
-    
+
     props.allLocales()
     props.loadDataObjectsCount(0)
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
@@ -86,7 +86,6 @@ class OperationalDashboard extends React.Component {
     props.loadSurveysGraphData(0)
     props.loadSessionsGraphData(0)
     props.fetchPlatformStats()
-    
 
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
@@ -421,7 +420,7 @@ class OperationalDashboard extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-content'>
             { this.state.objectsLength > 0 &&
-              <PlatformStats />
+              <PlatformStats platformStats={this.props.platformStats} />
             }
             <div className='row'>
               <Reports
@@ -615,7 +614,8 @@ function mapStateToProps (state) {
     broadcastsGraphData: (state.backdoorInfo),
     pollsGraphData: (state.backdoorInfo),
     surveysGraphData: (state.backdoorInfo),
-    sessionsGraphData: (state.backdoorInfo)
+    sessionsGraphData: (state.backdoorInfo),
+    platformStats: state.backdoorInfo.platformStatsInfo
   }
 }
 
