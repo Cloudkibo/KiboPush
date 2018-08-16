@@ -14,13 +14,15 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-
+import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 class SegmentedList extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       isShowingModalDelete: false,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
+      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       deleteid: '',
       customerLists: [],
       totalLength: 0,
@@ -56,7 +58,7 @@ class SegmentedList extends React.Component {
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false})
+    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
   }
 
   updateListName (e) {
@@ -155,17 +157,15 @@ class SegmentedList extends React.Component {
           </ModalContainer>
         }
         {
-          this.state.isShowingZeroSubModal &&
+          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
               onClose={this.closeZeroSubDialog}>
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Subscribers</h4>
-    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
-    below on how to get started.
-              </div>
+              {this.state.isShowingZeroPageModal
+              ? <AlertMessageModal type='page' />
+            : <AlertMessageModal type='subscriber' />
+            }
               <div>
                 <YouTube
                   videoId='9kY3Fmj_tbM'
@@ -182,17 +182,11 @@ class SegmentedList extends React.Component {
           </ModalContainer>
         }
         <div className='m-content'>
-          { this.props.pages && this.props.pages.length === 0
-          ? <div className='alert alert-success'>
-            <h4 className='block'>0 Pages Connected</h4>
-            You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{color: 'blue', cursor: 'pointer'}} to='/addPages' >Add Pages</Link>
-          </div>
+          {
+            this.props.pages && this.props.pages.length === 0
+            ? <AlertMessage type='page' />
           : this.props.subscribers && this.props.subscribers.length === 0 &&
-            <div className='alert alert-success'>
-              <h4 className='block'>0 Subscribers</h4>
-                Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to create segmented subscribers lists and broadcast message, polls and surveys.
-                To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
-            </div>
+            <AlertMessage type='subscriber' />
           }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>

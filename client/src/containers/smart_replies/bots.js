@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
@@ -11,6 +11,7 @@ import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class Bot extends React.Component {
   constructor (props, context) {
@@ -284,10 +285,7 @@ class Bot extends React.Component {
           <div className='m-content'>
             {
               this.props.user && this.props.user.role !== 'agent' && this.props.pages && this.props.pages.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Connected Pages</h4>
-                  You do not have any connected pages. Unless you do not connect any pages, you won't be able to create a bot. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your facebook page.
-                </div>
+              <AlertMessage type='page' />
             }
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>

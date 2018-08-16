@@ -16,10 +16,13 @@ export function isWelcomeMessageEnabled (data) {
   }
 }
 export function createWelcomeMessage (messageData, msg) {
-  let data = removeButtonOldurl(messageData)
+  console.log('messageData', messageData)
+  let data = removeButtonOldurl({payload: messageData.welcomeMessage})
+  let dataToSend = {_id: messageData._id, welcomeMessage: data.payload}
   return (dispatch) => {
-    callApi(`pages/createWelcomeMessage/`, 'post', data)
+    callApi(`pages/createWelcomeMessage/`, 'post', dataToSend)
       .then(res => {
+        console.log('response from createWelcomeMessage', res)
         if (res.status === 'success') {
           msg.success('Message saved successfully')
         } else {

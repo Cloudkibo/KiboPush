@@ -8,7 +8,7 @@ import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
-import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
+// import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
@@ -79,7 +79,7 @@ socket.on('message', (data) => {
     store.dispatch(loadMyPagesList())
     store.dispatch(loadDashboardData())
   } else if (data.action === 'new_broadcast') {
-    store.dispatch(loadBroadcastsList())
+    // store.dispatch(loadBroadcastsList())
     store.dispatch(sentVsSeen())
   } else if (data.action === 'poll_created') {
     store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))

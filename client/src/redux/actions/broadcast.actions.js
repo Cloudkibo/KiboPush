@@ -202,6 +202,7 @@ export function uploadRequest (data) {
 }
 
 export function addButton (data, handleFunction) {
+  console.log('the data is', data)
   return (dispatch) => {
     callApi(`broadcasts/addButton`, 'post', data).then(res => {
       if (res.status === 'success') {
@@ -258,8 +259,9 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
             dispatch(sendBroadcastFailure())
           }
         }
-        handleSendBroadcast(res)
-        //  dispatch(loadBroadcastsList())
+        if (handleSendBroadcast) {
+          handleSendBroadcast(res)
+        }
       })
   }
 }
