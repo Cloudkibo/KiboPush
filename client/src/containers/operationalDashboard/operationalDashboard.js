@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import DataObjectsCount from './dataObjectsCount'
+import PlatformStats from './platformStats'
 import SurveysByDays from './surveysByDays'
 import BroadcastsByDays from './broadcastsByDays'
 import PollsByDays from './pollsByDays'
@@ -24,7 +24,22 @@ import {
   loadSurveysGraphData,
   loadSessionsGraphData,
   sendEmail,
-  allLocales
+  allLocales,
+  fetchPlatformStats,
+  fetchPlatformStatsDateWise,
+  fetchUserStats,
+  fetchUserStatsDateWise,
+  fetchOneUserStats,
+  fetchOneUserStatsDateWise,
+  fetchPageStats,
+  fetchPageStatsDateWise,
+  fetchOnePageStats,
+  fetchOnePageStatsDateWise,
+  fetchTopPages,
+  fetchAutopostingPlatformWise,
+  fetchAutopostingPlatformWiseDateWise,
+  fetchAutopostingUserWise,
+  fetchAutopostingUserWiseDateWise
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -61,6 +76,7 @@ class OperationalDashboard extends React.Component {
       showBroadcasts: false,
       showDropDown: false
     }
+
     props.allLocales()
     props.loadDataObjectsCount(0)
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
@@ -69,6 +85,8 @@ class OperationalDashboard extends React.Component {
     props.loadPollsGraphData(0)
     props.loadSurveysGraphData(0)
     props.loadSessionsGraphData(0)
+    props.fetchPlatformStats()
+
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -331,7 +349,6 @@ class OperationalDashboard extends React.Component {
       pathname: `/userDetails`,
       state: user
     })
-    // browserHistory.push(`/viewsurveydetail/${survey._id}`)
   }
 
   searchUser (event) {
@@ -342,14 +359,6 @@ class OperationalDashboard extends React.Component {
     } else {
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
     }
-    // var filtered = []
-    // for (let i = 0; i < this.props.users.length; i++) {
-    //   if (this.props.users[i].name.toLowerCase().includes(event.target.value.toLowerCase())) {
-    //     filtered.push(this.props.users[i])
-    //   }
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
 
   getFile () {
@@ -381,36 +390,6 @@ class OperationalDashboard extends React.Component {
     } else {
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
     }
-    //   if (this.state.localeValue !== '') {
-    //     for (var a = 0; a < this.props.users.length; a++) {
-    //       if (this.props.users[a].locale === this.state.localeValue) {
-    //         filtered.push(this.props.users[a])
-    //       }
-    //     }
-    //   } else {
-    //     filtered = this.props.users
-    //   }
-    //   this.setState({genderValue: ''})
-    // } else {
-    //   if (this.state.localeValue !== '') {
-    //     for (var i = 0; i < this.props.users.length; i++) {
-    //       if (this.props.users[i].gender === e.target.value && this.props.users[i].locale === this.state.localeValue) {
-    //         filtered.push(this.props.users[i])
-    //       }
-    //     }
-    //   } else if (e.target.value === 'all') {
-    //     filtered = this.props.users
-    //   } else {
-    //     for (var j = 0; j < this.props.users.length; j++) {
-    //       if (this.props.users[j].gender.toString() === e.target.value.toString()) {
-    //         filtered.push(this.props.users[j])
-    //       }
-    //     }
-    //   }
-    //   this.setState({genderValue: e.target.value})
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
 
   onFilterByLocale (e) {
@@ -421,42 +400,12 @@ class OperationalDashboard extends React.Component {
     } else {
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
     }
-    // var filtered = []
-    // if (!data) {
-    //   if (this.state.genderValue !== '') {
-    //     for (var a = 0; a < this.props.users.length; a++) {
-    //       if (this.props.users[a].gender === this.state.genderValue) {
-    //         filtered.push(this.props.users[a])
-    //       }
-    //     }
-    //   } else {
-    //     filtered = this.props.users
-    //   }
-    //   this.setState({localeValue: ''})
-    // } else {
-    //   if (this.state.genderValue !== '') {
-    //     for (var i = 0; i < this.props.users.length; i++) {
-    //       if (this.props.users[i].gender === this.state.genderValue && this.props.users[i].locale === data.value) {
-    //         filtered.push(this.props.users[i])
-    //       }
-    //     }
-    //   } else {
-    //     for (var j = 0; j < this.props.users.length; j++) {
-    //       if (this.props.users[j].locale === data.value) {
-    //         filtered.push(this.props.users[j])
-    //       }
-    //     }
-    //   }
-    //   this.setState({localeValue: data.value})
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
   sendEmail () {
     this.props.sendEmail(this.msg)
   }
   render () {
-    var alertOptions = {
+    let alertOptions = {
       offset: 14,
       position: 'top right',
       theme: 'dark',
@@ -471,7 +420,7 @@ class OperationalDashboard extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-content'>
             { this.state.objectsLength > 0 &&
-              <DataObjectsCount objectsData={this.state.objects} length={this.state.objectsLength} logChange={this.logChange} selectedValue={this.state.selectedValue} options={this.state.options} />
+              <PlatformStats platformStats={this.props.platformStats} />
             }
             <div className='row'>
               <Reports
@@ -505,57 +454,6 @@ class OperationalDashboard extends React.Component {
                         <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
                           <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
                             <Link onClick={this.handleClick} style={{padding: 10 + 'px'}}> <i className='flaticon flaticon-more' /> </Link>
-                            {/*
-                                this.state.showDropDown &&
-                                <div className='m-dropdown__wrapper'>
-                                  <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                                  <div className='m-dropdown__inner'>
-                                    <div className='m-dropdown__body'>
-                                      <div className='m-dropdown__content'>
-                                        <ul className='m-nav'>
-                                          <li className='m-nav__section m-nav__section--first'>
-                                            <span className='m-nav__section-text'>
-                                              Actions:
-                                            </span>
-                                          </li>
-                                          <li className='m-nav__item'>
-                                            <a onClick={this.getFile} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                              Download Data
-                                            </a>
-                                          </li>
-                                          <li className='m-nav__item'>
-                                            <a onClick={this.sendEmail} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                              Send Weekly Email
-                                            </a>
-                                          </li>
-                                          <li className='m-nav__section m-nav__section--first'>
-                                            <span className='m-nav__section-text'>
-                                              Filter by:
-                                            </span>
-                                          </li>
-                                              <li className='m-nav__item'>
-                                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
-                                                  <option value='' disabled>Filter by gender...</option>
-                                                  <option value=''>All</option>
-                                                  {
-                                                    this.state.genders.map((gender, i) => (
-                                                      <option value={gender.value}>{gender.label}</option>
-                                                    ))
-                                                  }
-                                                </select>
-                                              </li>
-                                          <li className='m-nav__separator m-nav__separator--fit' />
-                                          <li className='m-nav__item'>
-                                            <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                                Cancel
-                                              </a>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              */}
                             <Popover
                               style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
                               placement='bottom'
@@ -692,80 +590,6 @@ class OperationalDashboard extends React.Component {
                       </div>
                     </div>
                   </div>
-                  {/* <div className='m-portlet__body'>
-                    <div className='tab-content'>
-                      <div className='tab-pane active m-scrollable' role='tabpanel'>
-                        <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                          <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                            <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                              <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                                <div className='tab-content'>
-                                  <div className='tab-pane active' id='m_widget4_tab1_content'>
-                                    {
-                                      this.state.usersData && this.state.usersData.length > 0
-                                    ? <div className='m-widget4'>
-                                      {
-                                         this.state.usersData.map((user, i) => (
-                                           <div className='m-widget4__item' key={i}>
-                                             <div className='m-widget4__img m-widget4__img--pic'>
-                                               <img alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'icons/users.jpg'} />
-                                             </div>
-                                             <div className='m-widget4__info'>
-                                               <span className='m-widget4__title'>
-                                                 {user.name}
-                                               </span>
-                                               {user.email &&
-                                                 <br /> }
-                                               {user.email &&
-                                                 <span className='m-widget4__sub'>
-                                                      Email: {user.email}
-                                                 </span>
-                                               }
-                                               <br />
-                                               <span className='m-widget4__sub'>
-                                                  Created At: {this.handleDate(user.createdAt)}
-                                               </span>
-                                               <br />
-                                               <span className='m-widget4__sub'>
-                                                  Gender: {user.facebookInfo ? user.facebookInfo.gender : ''}
-                                               </span>&nbsp;&nbsp;&nbsp;
-                                               <span className='m-widget4__sub'>
-                                                  Locale: {user.facebookInfo ? user.facebookInfo.locale : ''}
-                                               </span>
-                                             </div>
-                                             <div className='m-widget4__ext'>
-                                               <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
-                                                See more
-                                              </button>
-                                             </div>
-                                           </div>
-                                        ))}
-                                    </div>
-                                    : <div>No Data to display</div>
-                                    }
-                                    {this.state.usersData.length < this.props.count &&
-                                    <center>
-                                      <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                      <a id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
-                                    </center>
-                                    }
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='pull-right' style={{display: 'inline-block', paddingTop: '40px'}} onClick={this.getFile}>
-                        <div style={{display: 'inline-block', verticalAlign: 'middle'}}>
-                          <label>Get data in CSV file: </label>
-                        </div>
-                        <div style={{display: 'inline-block', marginLeft: '10px'}}>
-                          <i style={{cursor: 'pointer'}} className='fa fa-download fa-2x' />
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -790,22 +614,40 @@ function mapStateToProps (state) {
     broadcastsGraphData: (state.backdoorInfo),
     pollsGraphData: (state.backdoorInfo),
     surveysGraphData: (state.backdoorInfo),
-    sessionsGraphData: (state.backdoorInfo)
+    sessionsGraphData: (state.backdoorInfo),
+    platformStats: state.backdoorInfo.platformStatsInfo
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadUsersList: loadUsersList,
-    loadDataObjectsCount: loadDataObjectsCount,
-    loadTopPages: loadTopPages,
-    saveUserInformation: saveUserInformation,
-    downloadFile: downloadFile,
-    loadBroadcastsGraphData: loadBroadcastsGraphData,
-    loadSurveysGraphData: loadSurveysGraphData,
-    loadPollsGraphData: loadPollsGraphData,
-    loadSessionsGraphData: loadSessionsGraphData,
-    sendEmail: sendEmail,
-    allLocales: allLocales},
+  return bindActionCreators({
+    loadUsersList,
+    loadDataObjectsCount,
+    loadTopPages,
+    saveUserInformation,
+    downloadFile,
+    loadBroadcastsGraphData,
+    loadSurveysGraphData,
+    loadPollsGraphData,
+    loadSessionsGraphData,
+    sendEmail,
+    allLocales,
+    fetchPlatformStats,
+    fetchPlatformStatsDateWise,
+    fetchUserStats,
+    fetchUserStatsDateWise,
+    fetchOneUserStats,
+    fetchOneUserStatsDateWise,
+    fetchPageStats,
+    fetchPageStatsDateWise,
+    fetchOnePageStats,
+    fetchOnePageStatsDateWise,
+    fetchTopPages,
+    fetchAutopostingPlatformWise,
+    fetchAutopostingPlatformWiseDateWise,
+    fetchAutopostingUserWise,
+    fetchAutopostingUserWiseDateWise
+  },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
