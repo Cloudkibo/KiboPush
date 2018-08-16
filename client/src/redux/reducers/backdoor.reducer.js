@@ -16,7 +16,8 @@ const initialState = {
   broadcastsGraphInfo: [],
   surveysGraphInfo: [],
   pollsGraphInfo: [],
-  sessionsGraphInfo: []
+  sessionsGraphInfo: [],
+  platformStatsInfo: false
 }
 
 export function backdoorInfo (state = initialState, action) {
@@ -155,6 +156,10 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.DELETE_ACCOUNT_RESPONSE:
       return Object.assign({}, state, {
         response: action.data
+      })
+    case ActionTypes.UPDATE_PLATFORM_STATS:
+      return Object.assign({}, state, {
+        platformStatsInfo: action.data
       })
 
     default:

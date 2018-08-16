@@ -29,15 +29,15 @@ router.post('/userwise/oneUser/ranged', user.oneUserRanged)
 
 // Pagewise Data
 router.get('/pagewise', page.index)
-router.get('/pagewise/ranged', page.ranged)
-router.get('/pagewise/onePage', page.onePage)
-router.get('/pagewise/onePage/ranged', page.onePageRanged)
-router.get('/pagewise/topPages', page.topPages)
+router.post('/pagewise/ranged', page.ranged)
+router.post('/pagewise/onePage', page.onePage)
+router.post('/pagewise/onePage/ranged', page.onePageRanged)
+router.post('/pagewise/topPages', page.topPages)
 
 // Autoposting Data
 router.get('/autoposting/platformwise', autoposting.index)
-router.get('/autoposting/platformwise/ranged', autoposting.ranged)
-router.get('/autoposting/userwise', autoposting.userwise)
-router.get('/autoposting/userwise/ranged', autoposting.userwiseRanged)
+router.post('/autoposting/platformwise/ranged', autoposting.ranged)
+router.post('/autoposting/userwise', autoposting.userwise)
+router.post('/autoposting/userwise/ranged', autoposting.userwiseRanged)
 
 module.exports = router
