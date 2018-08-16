@@ -11,7 +11,8 @@ const messageSchema = new Schema({
   isActive: { type: Boolean, default: false },
   sent: {type: Number, default: 0},
   seen: {type: Number, default: 0},
-  clicks: {type: Number, default: 0}
+  clicks: {type: Number, default: 0},
+  fbMessageTag: String
 })
 
 module.exports = mongoose.model('sequenceMessages', messageSchema)
