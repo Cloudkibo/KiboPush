@@ -494,7 +494,8 @@ class EditTemplate extends React.Component {
           segmentationTags: tagIDs,
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
-          isList: isListValue
+          isList: isListValue,
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
         }
         console.log('Sending Broadcast', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
@@ -553,7 +554,8 @@ class EditTemplate extends React.Component {
         segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
-        isList: isListValue
+        isList: isListValue,
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
 
       }
       this.props.sendBroadcast(data, this.msg)

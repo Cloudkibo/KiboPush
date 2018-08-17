@@ -202,7 +202,8 @@ exports.create = function (req, res) {
       description: req.body.survey.description,
       userId: req.user._id,
       companyId: companyUser.companyId,
-      isresponded: 0
+      isresponded: 0,
+      fbMessageTag: req.body.fbMessageTag
     }
     if (req.body.isSegmented) {
       surveyPayload.isSegmented = true
@@ -655,9 +656,10 @@ exports.send = function (req, res) {
                                   }
                                 }
                                 const data = {
-                                  messaging_type: 'UPDATE',
+                                  messaging_type: 'MESSAGE_TAG',
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                  message: messageData
+                                  message: messageData,
+                                  tag: req.body.fbMessageTag
                                 }
 
                                 // checks the age of function using callback
@@ -776,11 +778,11 @@ exports.send = function (req, res) {
                                 }
                               }
                               const data = {
-                                messaging_type: 'UPDATE',
+                                messaging_type: 'MESSAGE_TAG',
                                 recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                message: messageData
+                                message: messageData,
+                                tag: 'NON_PROMOTIONAL_SUBSCRIPTION'
                               }
-
                               // this calls the needle when the last message was older than 30 minutes
                               // checks the age of function using callback
                               compUtility.checkLastMessageAge(subscribers[j].senderId, (err, isLastMessage) => {
@@ -914,7 +916,8 @@ exports.sendSurvey = function (req, res) {
       description: req.body.survey.description,
       userId: req.user._id,
       companyId: companyUser.companyId,
-      isresponded: 0
+      isresponded: 0,
+      fbMessageTag: req.body.fbMessageTag
     }
     if (req.body.isSegmented) {
       surveyPayload.isSegmented = true
@@ -1159,9 +1162,10 @@ exports.sendSurvey = function (req, res) {
                                     }
                                   }
                                   const data = {
-                                    messaging_type: 'UPDATE',
+                                    messaging_type: 'MESSAGE_TAG',
                                     recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                    message: messageData
+                                    message: messageData,
+                                    tag: req.body.fbMessageTag
                                   }
                                   // this calls the needle when the last message was older than 30 minutes
                                   // checks the age of function using callback
@@ -1282,9 +1286,10 @@ exports.sendSurvey = function (req, res) {
                                   }
                                 }
                                 const data = {
-                                  messaging_type: 'UPDATE',
+                                  messaging_type: 'MESSAGE_TAG',
                                   recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                  message: messageData
+                                  message: messageData,
+                                  tag: req.body.fbMessageTag
                                 }
                                 // this calls the needle when the last message was older than 30 minutes
                                 // checks the age of function using callback

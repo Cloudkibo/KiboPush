@@ -434,7 +434,8 @@ class CreateConvo extends React.Component {
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
-          isList: isListValue
+          isList: isListValue,
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
         }
         //  this.setState({tabActive: 'broadcast'})
         console.log('Sending Broadcast', data)
@@ -493,7 +494,8 @@ class CreateConvo extends React.Component {
         segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
-        isList: isListValue
+        isList: isListValue,
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
 
       }
       this.props.sendBroadcast(data, this.msg)
