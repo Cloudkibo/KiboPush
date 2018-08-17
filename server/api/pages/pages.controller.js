@@ -769,15 +769,19 @@ exports.enable = function (req, res) {
                       `Page access token from graph api error ${JSON.stringify(
                         err)}`)
                   }
-                  if (respp.body && respp.body.data && respp.body.data[0] && respp.body.data[0].feature === 'subscription_messaging' && respp.body.data[0].status === 'approved') {
-                    Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
-                      if (err) {
-                        res.status(500).json({
-                          status: 'Failed',
-                          description: 'Failed to update record'
+                  if (respp.body && respp.body.data && respp.body.data.length > 0) {
+                    for (let a = 0; a < respp.body.data.length; a++) {
+                      if (respp.body.data[a].feature === 'subscription_messaging' && respp.body.data[a].status === 'approved') {
+                        Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
+                          if (err) {
+                            res.status(500).json({
+                              status: 'Failed',
+                              description: 'Failed to update record'
+                            })
+                          }
                         })
                       }
-                    })
+                    }
                   }
                 })
               }

@@ -321,7 +321,6 @@ exports.otherPages = function (req, res) {
 }
 
 exports.stats = function (req, res) {
-  console.log('in stats')
   const payload = {
     scheduledBroadcast: 0,
     username: req.user.name
@@ -355,7 +354,6 @@ exports.stats = function (req, res) {
                 })
               }
               let allPagesWithoutDuplicates = removeDuplicates(allPages, 'pageId')
-              console.log(allPagesWithoutDuplicates)
               payload.totalPages = allPagesWithoutDuplicates.length
 
               if (err) {
@@ -400,15 +398,19 @@ exports.stats = function (req, res) {
                                     `Page access token from graph api error ${JSON.stringify(
                                       err)}`)
                                 }
-                                if (respp.body && respp.body.data && respp.body.data[0] && respp.body.data[0].feature === 'subscription_messaging' && respp.body.data[0].status === 'approved') {
-                                  Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
-                                    if (err) {
-                                      res.status(500).json({
-                                        status: 'Failed',
-                                        description: 'Failed to update record'
+                                if (respp.body && respp.body.data && respp.body.data.length > 0) {
+                                  for (let a = 0; a < respp.body.data.length; a++) {
+                                    if (respp.body.data[a].feature === 'subscription_messaging' && respp.body.data[a].status === 'approved') {
+                                      Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
+                                        if (err) {
+                                          res.status(500).json({
+                                            status: 'Failed',
+                                            description: 'Failed to update record'
+                                          })
+                                        }
                                       })
                                     }
-                                  })
+                                  }
                                 }
                               })
                             }
