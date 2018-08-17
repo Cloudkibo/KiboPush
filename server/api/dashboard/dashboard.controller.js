@@ -400,7 +400,7 @@ exports.stats = function (req, res) {
                                     `Page access token from graph api error ${JSON.stringify(
                                       err)}`)
                                 }
-                                if (respp.body.data && respp.body.data[0] && respp.body.data[0].feature === 'subscription_messaging' && respp.body.data[0].status === 'approved') {
+                                if (respp.body && respp.body.data && respp.body.data[0] && respp.body.data[0].feature === 'subscription_messaging' && respp.body.data[0].status === 'approved') {
                                   Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
                                     if (err) {
                                       res.status(500).json({

@@ -32,7 +32,7 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { onClickText, onImageClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick, onCardClick, onGalleryClick } from '../menu/utility'
 
 class CreateMessage extends React.Component {
@@ -45,7 +45,8 @@ class CreateMessage extends React.Component {
       disabled: false,
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
-      stay: false
+      stay: false,
+      isShowingModalGuideLines: false
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -62,6 +63,15 @@ class CreateMessage extends React.Component {
     this.setEditComponents = this.setEditComponents.bind(this)
     this.goBack = this.goBack.bind(this)
     this.handleMedia = this.handleMedia.bind(this)
+    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
+    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
+  }
+  showGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: true})
+  }
+
+  closeGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: false})
   }
   componentWillMount () {
     // this.props.loadMyPagesList();
@@ -398,10 +408,67 @@ class CreateMessage extends React.Component {
     let timeStamp = new Date().getTime()
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.isShowingModalGuideLines &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeGuideLinesDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeGuideLinesDialog}>
+              <h4>Message Types</h4>
+              <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
+              <div className='panel-group accordion' id='accordion1'>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                    </div>
+                  </div>
+                </div>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+            </div>
+          </div>
           <div className='row'>
             <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>
