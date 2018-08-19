@@ -157,8 +157,8 @@ class LiveChat extends React.Component {
 
   handleSearch (e) {
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
-    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
   }
 
   handleSort (value) {

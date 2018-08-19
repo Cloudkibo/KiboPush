@@ -121,8 +121,8 @@ exports.getNewSessions = function (req, res) {
     let sortCriteria = {
       request_time: 1
     }
-    if (req.body.filter && req.body.page_value !== '') {
-      findCriteria = Object.assign(findCriteria, {page_id: req.body.page_value})
+    if (req.body.filter && req.body.filter_criteria.page_value !== '') {
+      findCriteria = Object.assign(findCriteria, {page_id: req.body.filter_criteria.page_value})
     }
     if (req.body.filter) {
       sortCriteria = {
@@ -142,8 +142,12 @@ exports.getNewSessions = function (req, res) {
       }
       let tempSessionsData = []
       for (var a = 0; a < sessionsData.length; a++) {
+        let fullName = ''
+        if (sessionsData[a] && sessionsData[a].subscriber_id) {
+          fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
+        }
         if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-          sessionsData[a].subscriber_id.isSubscribed) {
+          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) || req.body.filter_criteria.search_value === '')) {
           tempSessionsData.push(sessionsData[a])
         }
       }
@@ -158,7 +162,14 @@ exports.getNewSessions = function (req, res) {
         }
         let tempSessions = []
         for (var i = 0; i < sessions.length; i++) {
-          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
+          let fullName = ''
+          if (sessions[i] && sessions[i].subscriber_id) {
+            fullName = sessions[i].subscriber_id.firstName + ' ' + sessions[i].subscriber_id.lastName
+          }
+          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
+            sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' &&
+            fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) ||
+            req.body.filter_criteria.search_value === '')) {
             tempSessions.push(sessions[i])
           }
         }
@@ -244,8 +255,8 @@ exports.getResolvedSessions = function (req, res) {
     let sortCriteria = {
       request_time: 1
     }
-    if (req.body.filter && req.body.page_value !== '') {
-      findCriteria = Object.assign(findCriteria, {page_id: req.body.page_value})
+    if (req.body.filter && req.body.filter_criteria.page_value !== '') {
+      findCriteria = Object.assign(findCriteria, {page_id: req.body.filter_criteria.page_value})
     }
     if (req.body.filter) {
       sortCriteria = {
@@ -269,7 +280,7 @@ exports.getResolvedSessions = function (req, res) {
           fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
         }
         if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
+          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) || req.body.filter_criteria.search_value === '')) {
           tempSessionsData.push(sessionsData[a])
         }
       }
@@ -283,7 +294,14 @@ exports.getResolvedSessions = function (req, res) {
         }
         let tempSessions = []
         for (var i = 0; i < sessions.length; i++) {
-          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
+          let fullName = ''
+          if (sessions[i] && sessions[i].subscriber_id) {
+            fullName = sessions[i].subscriber_id.firstName + ' ' + sessions[i].subscriber_id.lastName
+          }
+          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
+            sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' &&
+            fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) ||
+            req.body.filter_criteria.search_value === '')) {
             tempSessions.push(sessions[i])
           }
         }
