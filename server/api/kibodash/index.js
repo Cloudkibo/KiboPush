@@ -15,8 +15,8 @@ router.get('/', controller.platformWiseData)
 router.post('/getPlatformData', controller.platformWiseData)
 router.post('/getPageData', controller.pageWiseData)
 router.post('/getCompanyData', controller.companyWiseData)
-router.get('/getFacebookAutoposting', controller.getFacebookAutoposting)
-router.get('/getTwitterAutoposting', controller.getTwitterAutoposting)
-router.get('/getWordpressAutoposting', controller.getWordpressAutoposting)
+router.post('/getFacebookAutoposting', controller.getFacebookAutoposting)
+router.post('/getTwitterAutoposting', controller.getTwitterAutoposting)
+router.post('/getWordpressAutoposting', controller.getWordpressAutoposting)
 
 module.exports = router

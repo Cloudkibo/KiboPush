@@ -39,11 +39,14 @@ import {
   fetchAutopostingPlatformWise,
   fetchAutopostingPlatformWiseDateWise,
   fetchAutopostingUserWise,
-  fetchAutopostingUserWiseDateWise
+  fetchAutopostingUserWiseDateWise,
+  fetchPlatformStatsMonthly,
+  fetchPlatformStatsWeekly
 } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+import AutopostingDetails from './autopostingDetails'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
@@ -86,6 +89,10 @@ class OperationalDashboard extends React.Component {
     props.loadSurveysGraphData(0)
     props.loadSessionsGraphData(0)
     props.fetchPlatformStats()
+    props.fetchAutopostingPlatformWise()
+    props.fetchPlatformStatsMonthly()
+    props.fetchPlatformStatsWeekly()
+    props.fetchTopPages(10)
 
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
@@ -423,6 +430,9 @@ class OperationalDashboard extends React.Component {
               <PlatformStats platformStats={this.props.platformStats} />
             }
             <div className='row'>
+              <AutopostingDetails autopostingStats={this.props.autopostingStats} />
+            </div>
+            <div className='row'>
               <Reports
                 iconClassName={'fa fa-line-chart'}
                 title={'Reports'}
@@ -432,7 +442,7 @@ class OperationalDashboard extends React.Component {
                 />
             </div>
             <div className='row'>
-              <Top10pages pagesData={this.props.toppages} />
+              <Top10pages pagesData={this.props.toppages} pages={this.props.kiboTopPages} />
               <div className='col-xl-12'>
                 <div className='m-portlet m-portlet--full-height '>
                   <div className='m-portlet__head'>
@@ -615,7 +625,11 @@ function mapStateToProps (state) {
     pollsGraphData: (state.backdoorInfo),
     surveysGraphData: (state.backdoorInfo),
     sessionsGraphData: (state.backdoorInfo),
-    platformStats: state.backdoorInfo.platformStatsInfo
+    platformStats: state.backdoorInfo.platformStatsInfo,
+    autopostingStats: state.backdoorInfo.autopostingStatsInfo,
+    platformStatsWeekly: state.backdoorInfo.weeklyPlatformStats,
+    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats,
+    kiboTopPages: state.backdoorInfo.kiboTopPages
   }
 }
 
@@ -646,7 +660,9 @@ function mapDispatchToProps (dispatch) {
     fetchAutopostingPlatformWise,
     fetchAutopostingPlatformWiseDateWise,
     fetchAutopostingUserWise,
-    fetchAutopostingUserWiseDateWise
+    fetchAutopostingUserWiseDateWise,
+    fetchPlatformStatsMonthly,
+    fetchPlatformStatsWeekly
   },
     dispatch)
 }

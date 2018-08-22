@@ -5,10 +5,44 @@ class PlatformStats extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      options: [
-        { value: 10, label: '10 days' },
-        { value: 30, label: '30 days' }],
-      selectedValue: 0
+      selectedValue: 'all',
+      users: 0,
+      broadcasts: 0,
+      polls: 0,
+      surveys: 0
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.platformStats && this.state.selectedValue === 'all') {
+      this.setState({
+        users: (this.props.platformStats.totalUsers) ? this.props.platformStats.totalUsers : 0,
+        broadcasts: (this.props.platformStats.totalBroadcasts) ? this.props.platformStats.totalBroadcasts : 0,
+        polls: (this.props.platformStats.totalPolls) ? this.props.platformStats.totalPolls : 0,
+        surveys: (this.props.platformStats.totalSurveys) ? this.props.platformStats.totalSurveys : 0
+      })
+    }
+  }
+
+  onChange (event) {
+    this.setState({selectedValue: event.target.value})
+    switch (event.target.value) {
+      case 'all':
+        this.setState({
+          users: (this.props.platformStats && this.props.platformStats.totalUsers) ? this.props.platformStats.totalUsers : 0,
+          broadcasts: (this.props.platformStats && this.props.platformStats.totalBroadcasts) ? this.props.platformStats.totalBroadcasts : 0,
+          polls: (this.props.platformStats && this.props.platformStats.totalPolls) ? this.props.platformStats.totalPolls : 0,
+          surveys: (this.props.platformStats && this.props.platformStats.totalSurveys) ? this.props.platformStats.totalSurveys : 0
+        })
+        break
+      case '10':
+        break
+      case '30':
+        this.setState({users: 0})
+        break
+
+      default:
+        break
     }
   }
 
@@ -97,7 +131,7 @@ class PlatformStats extends React.Component {
                     <div className='m--space-10' />
                     <div className='progress m-progress--sm' style={{height: '6px'}}>
                       {
-                      (this.props.platformStats) 
+                      (this.props.platformStats)
                       ? <div className='progress-bar bg-success' role='progressbar' style={{width: (this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100) + '%'}} aria-valuenow={(this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100)} aria-valuemin='0' aria-valuemax='100' />
                       : <div className='progress-bar bg-success' role='progressbar' style={{width: 0 + '%'}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
                     }
@@ -123,7 +157,7 @@ class PlatformStats extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools' style={{textAlign: 'left'}}>
-                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.props.selectedValue} onChange={this.props.logChange}>
+                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onChange.bind(this)}>
                   <option value='' disabled>Filter by last</option>
                   <option value='all'>All</option>
                   <option value='10'>10 days</option>
@@ -139,7 +173,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.users}
                         <small>
                           Users
                         </small>
@@ -152,7 +186,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.polls}
                         <small>
                           Polls
                         </small>
@@ -166,7 +200,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.broadcasts}
                         <small>
                           Broadcasts
                         </small>
@@ -179,7 +213,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.surveys}
                         <small>
                           Surveys
                         </small>

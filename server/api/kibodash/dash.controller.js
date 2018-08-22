@@ -175,12 +175,21 @@ exports.companyWiseData = function (req, res) {
 // Twitter AutoPosting Data
 exports.getTwitterAutoposting = function (req, res) {
   logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
+  let queries = []
+  if (req.body.start_date !== '') {
+    queries = [
+      joinAutpostingMessages,
+      dateFilterAutoposting(req.body.startDate),
+      selectAutoPostingFields,
+      selectTwitterType]
+  } else {
+    queries = [
+      joinAutpostingMessages,
+      selectAutoPostingFields,
+      selectTwitterType]
+  }
   Autoposting
-  .aggregate([
-    joinAutpostingMessages,
-    dateFilterAutoposting('2018-08-12T23:12:05.414Z'),
-    selectAutoPostingFields,
-    selectTwitterType])
+  .aggregate(queries)
   .exec()
   .then((result) => {
     return res.status(200).json({status: 'success', payload: result})
@@ -194,12 +203,21 @@ exports.getTwitterAutoposting = function (req, res) {
 // Facebook AutoPosting Data
 exports.getFacebookAutoposting = function (req, res) {
   logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
+  let queries = []
+  if (req.body.startDate !== '') {
+    queries = [
+      joinAutpostingMessages,
+      dateFilterAutoposting(req.body.startDate),
+      selectAutoPostingFields,
+      selectFacebookType]
+  } else {
+    queries = [
+      joinAutpostingMessages,
+      selectAutoPostingFields,
+      selectFacebookType]
+  }
   Autoposting
-  .aggregate([
-    joinAutpostingMessages,
-    dateFilterAutoposting('2018-08-12T23:12:05.414Z'),
-    selectAutoPostingFields,
-    selectFacebookType])
+  .aggregate(queries)
   .exec()
   .then((result) => {
     return res.status(200).json({status: 'success', payload: result})
@@ -213,12 +231,21 @@ exports.getFacebookAutoposting = function (req, res) {
 // Wordpress AutoPosting Data
 exports.getWordpressAutoposting = function (req, res) {
   logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
+  let queries = []
+  if (req.body.startDate !== '') {
+    queries = [
+      joinAutpostingMessages,
+      dateFilterAutoposting(req.body.startDate),
+      selectAutoPostingFields,
+      selectWordpressType]
+  } else {
+    queries = [
+      joinAutpostingMessages,
+      selectAutoPostingFields,
+      selectWordpressType]
+  }
   Autoposting
-  .aggregate([
-    joinAutpostingMessages,
-    dateFilterAutoposting('2018-08-12T23:12:05.414Z'),
-    selectAutoPostingFields,
-    selectWordpressType])
+  .aggregate(queries)
   .exec()
   .then((result) => {
     return res.status(200).json({status: 'success', payload: result})
