@@ -142,7 +142,6 @@ class Sequence extends React.Component {
 
   handleSaveTrigger (event) {
     console.log('in submittt')
-    console.log('event'+ JSON.stringify(event))
     event.preventDefault()
     alert(`You chose the ${this.state.seqTriggerVal} value.`)
   }
