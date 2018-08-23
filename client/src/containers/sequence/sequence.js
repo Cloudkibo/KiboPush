@@ -28,7 +28,7 @@ class Sequence extends React.Component {
       pageNumber: 0,
       filter: false,
       isShowModalTrigger: false,
-      isSelected : false
+      seqTriggerVal: ''
 
     }
     props.fetchAllSequence()
@@ -47,7 +47,8 @@ class Sequence extends React.Component {
     this.getSequenceStatus = this.getSequenceStatus.bind(this)
     this.showDialogTrigger = this.showDialogTrigger.bind(this)
     this.closeDialogTrigger = this.closeDialogTrigger.bind(this)
-    this.handleClickSequenceTrigger = this.handleClickSequenceTrigger.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSaveTrigger = this.handleSaveTrigger.bind(this)
   }
 
   scrollToTop () {
@@ -133,7 +134,17 @@ class Sequence extends React.Component {
     this.setState({ isShowModalTrigger: false })
   }
 
-  handleClickSequenceTrigger () {
+  handleChange (event) {
+    this.setState({
+      seqTriggerVal: event.target.value
+    })
+  }
+
+  handleSaveTrigger (event) {
+    console.log('in submittt')
+    console.log('event'+ JSON.stringify(event))
+    event.preventDefault()
+    alert(`You chose the ${this.state.seqTriggerVal} value.`)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -277,35 +288,87 @@ class Sequence extends React.Component {
                 <h3 style={{ marginBottom: '20px' }}>Update Sequence Trigger</h3>
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div id='1' className='sequence-trigger-box' onClick={() => {this.handleClickSequenceTrigger()}}>
+                    <div className='sequence-trigger-box'>
+                      {/* <div id='1' className='sequence-trigger-box' onClick={() => { this.handleClickSequenceTrigger() }}>
                       <p> When subscriber subscribes to sequence </p>
+                    </div> */}
+                      <label>
+                        <input
+                          type='radio'
+                          value='1'
+                          checked={this.state.seqTriggerVal === '1'}
+                          onChange={this.handleChange}
+                        />
+                        When subscriber subscribes to sequence
+                     </label>
                     </div>
                   </div>
-                  <div className='col-sm-4 col-md-4 col-lg-4' onClick={this.handleClickSequenceTrigger}>
-                    <div id='2' className='sequence-trigger-box'>
-                      <p> When subscriber joins</p>
+                  <div className='col-sm-4 col-md-4 col-lg-4' >
+                    <div className='sequence-trigger-box'>
+                      <label>
+                        <input
+                          type='radio'
+                          value='2'
+                          checked={this.state.seqTriggerVal === '2'}
+                          onChange={this.handleChange}
+                        />
+                        When subscriber joins
+                     </label>
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div id='3' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
+                    {/* <div id='3' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
                       <p> When subscriber has seen all the messages of specific sequence </p>
+                    </div> */}
+                    <div className='sequence-trigger-box'>
+                      <label>
+                        <input
+                          type='radio'
+                          value='3'
+                          checked={this.state.seqTriggerVal === '3'}
+                          onChange={this.handleChange}
+                        />
+                        When subscriber has seen all the messages of specific sequence
+                     </label>
                     </div>
                   </div>
 
                 </div>
                 <div className='row'>
-                  <div id='4' className='col-sm-4 col-md-4 col-lg-4'>
-                    <div className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
+                  <div className='col-sm-4 col-md-4 col-lg-4'>
+                    {/* <div className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
                       <p> When subscriber unsubscribes from specific sequence </p>
+                    </div> */}
+                    <div className='sequence-trigger-box'>
+                      <label>
+                        <input
+                          type='radio'
+                          value='4'
+                          checked={this.state.seqTriggerVal === '4'}
+                          onChange={this.handleChange}
+                        />
+                       When subscriber unsubscribes from specific sequence
+                     </label>
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div id='5' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
+                    {/* <div id='5' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
                       <p> When subscriber responds to specific poll </p>
+                    </div> */}
+                    <div className='sequence-trigger-box'>
+                      <label>
+                        <input
+                          type='radio'
+                          value='5'
+                          checked={this.state.seqTriggerVal === '5'}
+                          onChange={this.handleChange}
+                        />
+                       When subscriber responds to specific poll
+                     </label>
                     </div>
                   </div>
                 </div>
-                <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} > Save </button>
+                <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={this.handleSaveTrigger} > Save </button>
                 <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
               </ModalDialog>
             </ModalContainer>
