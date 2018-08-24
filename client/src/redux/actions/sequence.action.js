@@ -233,3 +233,24 @@ export function deleteMessage (id, msg, seqId) {
       })
   }
 }
+
+export function updateTrigger (data) {
+  return (dispatch) => {
+    callApi('sequenceMessaging/updateTrigger', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('response---' + 'seq')
+          //msg.success('updated successfully')
+          //dispatch(fetchAllSequence())
+        }
+
+        // } else {
+        //   if (res.status === 'failed' && res.description) {
+        //     //msg.error(`Failed . ${res.description}`)
+        //   } else {
+        //     msg.error('Failed ')
+        //   }
+        // }
+      })
+  }
+}

@@ -7,7 +7,7 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, deleteSequence } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, deleteSequence, updateTrigger } from '../../redux/actions/sequence.action'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -142,8 +142,17 @@ class Sequence extends React.Component {
 
   handleSaveTrigger (event) {
     console.log('in submittt')
-    event.preventDefault()
+    //event.preventDefault()
     alert(`You chose the ${this.state.seqTriggerVal} value.`)
+    var data = {
+      trigger: {
+        event: this.state.seqTriggerVal,
+        value: null
+      },
+      type: 'sequence'
+    }
+    console.log('data' + JSON.stringify(data))
+    this.props.updateTrigger(data)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -294,8 +303,9 @@ class Sequence extends React.Component {
                       <label>
                         <input
                           type='radio'
-                          value='1'
-                          checked={this.state.seqTriggerVal === '1'}
+                          value='subscribes_to_sequence'
+                          defaultChecked
+                          checked={this.state.seqTriggerVal === 'subscribes_to_sequence'}
                           onChange={this.handleChange}
                         />
                         When subscriber subscribes to sequence
@@ -307,8 +317,8 @@ class Sequence extends React.Component {
                       <label>
                         <input
                           type='radio'
-                          value='2'
-                          checked={this.state.seqTriggerVal === '2'}
+                          value='subscriber_joins'
+                          checked={this.state.seqTriggerVal === 'subscriber_joins'}
                           onChange={this.handleChange}
                         />
                         When subscriber joins
@@ -323,8 +333,8 @@ class Sequence extends React.Component {
                       <label>
                         <input
                           type='radio'
-                          value='3'
-                          checked={this.state.seqTriggerVal === '3'}
+                          value='seen_all_sequence_messages'
+                          checked={this.state.seqTriggerVal === 'seen_all_sequence_messages'}
                           onChange={this.handleChange}
                         />
                         When subscriber has seen all the messages of specific sequence
@@ -342,8 +352,8 @@ class Sequence extends React.Component {
                       <label>
                         <input
                           type='radio'
-                          value='4'
-                          checked={this.state.seqTriggerVal === '4'}
+                          value='unsubscribes_from_other_sequence'
+                          checked={this.state.seqTriggerVal === 'unsubscribes_from_other_sequence'}
                           onChange={this.handleChange}
                         />
                        When subscriber unsubscribes from specific sequence
@@ -358,8 +368,8 @@ class Sequence extends React.Component {
                       <label>
                         <input
                           type='radio'
-                          value='5'
-                          checked={this.state.seqTriggerVal === '5'}
+                          value='responds_to_poll'
+                          checked={this.state.seqTriggerVal === 'responds_to_poll'}
                           onChange={this.handleChange}
                         />
                        When subscriber responds to specific poll
@@ -367,7 +377,7 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                 </div>
-                <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={this.handleSaveTrigger} > Save </button>
+                <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
                 <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
               </ModalDialog>
             </ModalContainer>
@@ -513,7 +523,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchAllSequence: fetchAllSequence,
     createSequence: createSequence,
-    deleteSequence: deleteSequence
+    deleteSequence: deleteSequence,
+    updateTrigger: updateTrigger
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sequence)
