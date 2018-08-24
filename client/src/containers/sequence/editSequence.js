@@ -36,7 +36,8 @@ class CreateSequence extends React.Component {
       segmentationCondition: 'any',
       selectedSequenceId: '',
       selectedMessageId: '',
-      validSegmentation: false
+      validSegmentation: false,
+      isShowModalSchedule: false
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
@@ -67,6 +68,8 @@ class CreateSequence extends React.Component {
     this.onNameCriteriaChange = this.onNameCriteriaChange.bind(this)
     this.onConditionChange = this.onConditionChange.bind(this)
     this.validateSegmentation = this.validateSegmentation.bind(this)
+    this.showDialogSchedule = this.showDialogSchedule.bind(this)
+    this.closeDialogSchedule = this.closeDialogSchedule.bind(this)
   }
 
   saveSegmentation () {
@@ -304,6 +307,14 @@ class CreateSequence extends React.Component {
     this.setState({isShowingModalSegmentation: false})
   }
 
+  showDialogSchedule (message) {
+    this.setState({isShowModalSchedule: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
+  }
+
+  closeDialogSchedule () {
+    this.setState({isShowModalSchedule: false})
+  }
+
   componentDidMount () {
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.module === 'edit') {
@@ -375,6 +386,49 @@ class CreateSequence extends React.Component {
                 </ModalDialog>
               </ModalContainer>
             }
+        {this.state.isShowModalSchedule &&
+          <ModalContainer style={{ width: '500px' }}
+            onClose={this.closeDialogSchedule}>
+            <ModalDialog style={{ width: '500px' }}
+              onClose={this.closeDialogSchedule}>
+              <h3>Schedule Message</h3>
+              <div className='row'>
+              <div className='col-lg-12 col-md-12 col-sm-12'>
+              <p>Send this message:</p>
+              </div>
+              </div>
+              <div className='row'>
+              {console.log('this.state.condition', this.state.condition)}
+              <div className='col-lg-5 col-md-5 col-sm-5' style={{marginBottom: '10px'}}>
+                <select className='form-control m-input' onChange={(e, i) => this.changeCondition(e, i)}
+                  value={this.state.condition}>
+                  <option value='after'>After</option>
+                  <option value='immediately'>Immediately</option>
+                </select>
+              </div>
+              <div className='col-lg-3 col-md-3 col-sm-3'>
+                <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+              </div>
+              <div className='col-lg-4 col-md-4 col-sm-4'>
+              <select className='form-control m-input' onChange={(e, i) => this.changeCondition(e, i)}
+                  value={this.state.condition}>
+                  <option value='minutes'>Minutes</option>
+                  <option value='hours'>Hours</option>
+                  <option value='day(s)'>Day(s)</option>
+                </select>
+              </div>
+              </div>
+              <div className='row'>
+              <div className='col-lg-12 col-md-12 col-sm-12'><br></br></div>
+              </div>
+
+              
+              <button onClick={() => this.saveSchedule()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} > Save </button>
+              <button onClick={() => this.closeDialogSchedule()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+            </ModalDialog>
+          </ModalContainer>
+
+        }
 
             {
               this.state.isShowingModalSegmentation &&
@@ -558,13 +612,21 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-link'> -- Edit</span>
                                     </span>
 
-                                    <span style={{display: 'block'}}>
+                                    {/* <span style={{display: 'block'}}>
                                       <span>Schedule</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           Immediately
                                         </span>
                                         <span className='sequence-link' id={'buttonTarget-' + message._id} ref={(b) => { this.target = b }} onClick={() => this.handleClick(message._id, i)}> -- Edit</span>
-                                    </span>
+                            </span> */}
+
+                                     <span style={{display: 'block'}}>
+                                      <span>Schedule</span>:
+                                        <span className='sequence-trigger' style={{marginLeft: '10px'}}>
+                                          None
+                                        </span>
+                                      <span onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
+                                    </span> 
 
                                     <span style={{display: 'inlineblock'}}>
                                       <span>Segment</span>:
