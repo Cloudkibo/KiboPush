@@ -28,7 +28,7 @@ class Sequence extends React.Component {
       pageNumber: 0,
       filter: false,
       isShowModalTrigger: false,
-      seqTriggerVal: ''
+      seqTriggerVal: 'subscribes_to_sequence'
 
     }
     props.fetchAllSequence()
@@ -127,7 +127,7 @@ class Sequence extends React.Component {
   }
 
   showDialogTrigger (sequence) {
-    this.setState({ isShowModalTrigger: true, selectedSequenceId: sequence._id })
+    this.setState({ isShowModalTrigger: true, selectedSequenceId: sequence.sequence._id })
   }
 
   closeDialogTrigger () {
@@ -141,18 +141,18 @@ class Sequence extends React.Component {
   }
 
   handleSaveTrigger (event) {
-    console.log('in submittt')
-    //event.preventDefault()
-    alert(`You chose the ${this.state.seqTriggerVal} value.`)
     var data = {
       trigger: {
         event: this.state.seqTriggerVal,
         value: null
       },
-      type: 'sequence'
+      type: 'sequence',
+      sequenceId: this.state.selectedSequenceId
     }
     console.log('data' + JSON.stringify(data))
     this.props.updateTrigger(data)
+    this.closeDialogTrigger()
+    this.props.fetchAllSequence()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -451,7 +451,14 @@ class Sequence extends React.Component {
                                       <span>
                                         <span>Trigger</span>:
                                       <span className='sequence-trigger' style={{ marginLeft: '10px' }}>
-                                          When subscriber subscribes to this sequence.
+                                        {
+                                            sequence.sequence.trigger.event === 'subscribes_to_sequence' ? 'When subscriber subscribes to sequence'
+                                            : sequence.sequence.trigger.event === 'subscriber_joins' ? 'When Subscriber joins'
+                                            : sequence.sequence.trigger.event === 'seen_all_sequence_messages' ? 'When Subscriber has seen all messages of specific sequence'
+                                            : sequence.sequence.trigger.event === 'unsubscribes_from_other_sequence' ? 'When Subscriber unsubscribes from specific sequence'
+                                            : sequence.sequence.trigger.event === 'responds_to_poll' ? 'When Subscriber responds to specific poll' : 'When subscriber subscribes to sequence'
+
+                                          }
                                       </span>
                                         <span className='sequence-link' onClick={() => this.showDialogTrigger(sequence)}>
                                           -- Edit

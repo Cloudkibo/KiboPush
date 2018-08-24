@@ -235,9 +235,12 @@ export function deleteMessage (id, msg, seqId) {
 }
 
 export function updateTrigger (data) {
+  console.log('data' + JSON.stringify(data))
   return (dispatch) => {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
+        
+        console.log('response' + JSON.stringify(res))
         if (res.status === 'success') {
           console.log('response---' + 'seq')
           //msg.success('updated successfully')
