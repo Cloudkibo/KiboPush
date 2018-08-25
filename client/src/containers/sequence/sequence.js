@@ -297,9 +297,6 @@ class Sequence extends React.Component {
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box'>
-                      {/* <div id='1' className='sequence-trigger-box' onClick={() => { this.handleClickSequenceTrigger() }}>
-                      <p> When subscriber subscribes to sequence </p>
-                    </div> */}
                       <label>
                         <input
                           type='radio'
@@ -326,17 +323,13 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    {/* <div id='3' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
-                      <p> When subscriber has seen all the messages of specific sequence </p>
-                    </div> */}
                     <div className='sequence-trigger-box'>
                       <label>
                         <input
                           type='radio'
                           value='seen_all_sequence_messages'
                           checked={this.state.seqTriggerVal === 'seen_all_sequence_messages'}
-                          onChange={this.handleChange}
-                        />
+                          onChange={this.handleChange} />
                         When subscriber has seen all the messages of specific sequence
                      </label>
                     </div>
@@ -345,9 +338,6 @@ class Sequence extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    {/* <div className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
-                      <p> When subscriber unsubscribes from specific sequence </p>
-                    </div> */}
                     <div className='sequence-trigger-box'>
                       <label>
                         <input
@@ -361,9 +351,6 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    {/* <div id='5' className='sequence-trigger-box' onClick={this.handleClickSequenceTrigger}>
-                      <p> When subscriber responds to specific poll </p>
-                    </div> */}
                     <div className='sequence-trigger-box'>
                       <label>
                         <input
