@@ -138,6 +138,9 @@ class Sequence extends React.Component {
     this.setState({
       seqTriggerVal: event.target.value
     })
+    if(event.target.value==='seen_all_sequence_messages'){
+
+    }
   }
 
   handleSaveTrigger (event) {
@@ -329,9 +332,20 @@ class Sequence extends React.Component {
                           type='radio'
                           value='seen_all_sequence_messages'
                           checked={this.state.seqTriggerVal === 'seen_all_sequence_messages'}
-                          onChange={this.handleChange} />
+                          onChange={this.handleChange &&
+                            <select className='form-control m-input' >
+
+                            <option value=''>sequence</option>
+                            {
+                              this.state.sequencesData.map(function(sequence) {
+                                return <option key={sequence.sequence._id}
+                                  value={sequence.sequence.name}>{sequence.sequence.name}</option>
+                              })
+                            }
+                          </select> } />
                         When subscriber has seen all the messages of specific sequence
                      </label>
+                    
                     </div>
                   </div>
 
