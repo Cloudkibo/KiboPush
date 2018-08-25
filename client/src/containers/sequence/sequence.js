@@ -8,6 +8,7 @@ import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAllSequence, createSequence, deleteSequence, updateTrigger } from '../../redux/actions/sequence.action'
+import { loadPollsList } from '../../redux/actions/poll.actions'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
@@ -28,10 +29,13 @@ class Sequence extends React.Component {
       pageNumber: 0,
       filter: false,
       isShowModalTrigger: false,
-      seqTriggerVal: 'subscribes_to_sequence'
+      seqTriggerVal: 'subscribes_to_sequence',
+      isShowSequenceDropDown: false,
+      isShowSequenceDropDownUnsub: false
 
     }
     props.fetchAllSequence()
+    props.loadPollsList()
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchSequence = this.searchSequence.bind(this)
@@ -138,8 +142,18 @@ class Sequence extends React.Component {
     this.setState({
       seqTriggerVal: event.target.value
     })
-    if(event.target.value==='seen_all_sequence_messages'){
-
+    if (event.target.value === 'seen_all_sequence_messages') {
+      this.setState({
+        isShowSequenceDropDown: true
+      })
+    }
+    if (event.target.value === 'unsubscribes_from_other_sequence') {
+      this.setState({
+        isShowSequenceDropDownUnsub: true
+      })
+    }
+    if (event.target.value === 'responds_to_poll') {
+      console.log('res' + JSON.stringify(this.props))
     }
   }
 
@@ -304,7 +318,6 @@ class Sequence extends React.Component {
                         <input
                           type='radio'
                           value='subscribes_to_sequence'
-                          defaultChecked
                           checked={this.state.seqTriggerVal === 'subscribes_to_sequence'}
                           onChange={this.handleChange}
                         />
@@ -332,20 +345,22 @@ class Sequence extends React.Component {
                           type='radio'
                           value='seen_all_sequence_messages'
                           checked={this.state.seqTriggerVal === 'seen_all_sequence_messages'}
-                          onChange={this.handleChange &&
-                            <select className='form-control m-input' >
+                          onChange={this.handleChange}
 
-                            <option value=''>sequence</option>
-                            {
-                              this.state.sequencesData.map(function(sequence) {
-                                return <option key={sequence.sequence._id}
-                                  value={sequence.sequence.name}>{sequence.sequence.name}</option>
-                              })
-                            }
-                          </select> } />
+                              />
                         When subscriber has seen all the messages of specific sequence
                      </label>
-                    
+                      {
+                        this.state.isShowSequenceDropDown &&
+                        <select className='form-control m-input' >
+                          <option value=''>sequence</option>{
+                            this.state.sequencesData.map(function (sequence) {
+                              return <option key={sequence.sequence._id}
+                                value={sequence.sequence.name}>{sequence.sequence.name}</option>
+                            })
+                          }
+                        </select>
+                      }
                     </div>
                   </div>
 
@@ -362,6 +377,17 @@ class Sequence extends React.Component {
                         />
                        When subscriber unsubscribes from specific sequence
                      </label>
+                      {
+                        this.state.isShowSequenceDropDownUnsub &&
+                        <select className='form-control m-input' >
+                          <option value=''>sequence</option>{
+                            this.state.sequencesData.map(function (sequence) {
+                              return <option key={sequence.sequence._id}
+                                value={sequence.sequence.name}>{sequence.sequence.name}</option>
+                            })
+                          }
+                        </select>
+                      }
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
@@ -378,12 +404,12 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                 </div>
+
                 <button className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} onClick={() => { this.handleSaveTrigger() }}> Save </button>
                 <button style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right' onClick={() => this.closeDialogTrigger()}> Cancel </button>
               </ModalDialog>
             </ModalContainer>
           }
-
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -532,7 +558,8 @@ function mapDispatchToProps (dispatch) {
     fetchAllSequence: fetchAllSequence,
     createSequence: createSequence,
     deleteSequence: deleteSequence,
-    updateTrigger: updateTrigger
+    updateTrigger: updateTrigger,
+    loadPollsList: loadPollsList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Sequence)
