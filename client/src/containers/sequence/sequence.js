@@ -53,6 +53,7 @@ class Sequence extends React.Component {
     this.closeDialogTrigger = this.closeDialogTrigger.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSaveTrigger = this.handleSaveTrigger.bind(this)
+    this.handleSequenceDropdown = this.handleSequenceDropdown.bind(this)
   }
 
   scrollToTop () {
@@ -131,7 +132,7 @@ class Sequence extends React.Component {
   }
 
   showDialogTrigger (sequence) {
-    this.setState({ isShowModalTrigger: true, selectedSequenceId: sequence.sequence._id })
+    this.setState({ isShowModalTrigger: true, selectedSequenceId: sequence.sequence._id, seqTriggerVal: sequence.sequence.trigger.event })
   }
 
   closeDialogTrigger () {
@@ -144,17 +145,37 @@ class Sequence extends React.Component {
     })
     if (event.target.value === 'seen_all_sequence_messages') {
       this.setState({
-        isShowSequenceDropDown: true
+        isShowSequenceDropDown: true,
+        isShowSequenceDropDownUnsub: false
       })
-    }
-    if (event.target.value === 'unsubscribes_from_other_sequence') {
+    } else if (event.target.value === 'unsubscribes_from_other_sequence') {
       this.setState({
-        isShowSequenceDropDownUnsub: true
+        isShowSequenceDropDownUnsub: true,
+        isShowSequenceDropDown: false
+      })
+    } else if (event.target.value === 'responds_to_poll') {
+      console.log('res' + JSON.stringify(this.props.polls))
+      this.setState({
+        isShowSequenceDropDownUnsub: false,
+        isShowSequenceDropDown: false
+      })
+    } else if (event.target.value === 'subscriber_joins') {
+      this.setState({
+        isShowSequenceDropDownUnsub: false,
+        isShowSequenceDropDown: false
+      })
+    } else if (event.target.value === 'subscribes_to_sequence') {
+      this.setState({
+        isShowSequenceDropDownUnsub: false,
+        isShowSequenceDropDown: false
       })
     }
-    if (event.target.value === 'responds_to_poll') {
-      console.log('res' + JSON.stringify(this.props))
-    }
+  }
+
+  handleSequenceDropdown (event) {
+    const selectedIndex = event.target.options.selectedIndex
+    let selectedSequenceId = event.target.options[selectedIndex].getAttribute('data-key')
+    this.setState({ isShowModalTrigger: true, selectedSequenceId: selectedSequenceId })
   }
 
   handleSaveTrigger (event) {
@@ -352,10 +373,10 @@ class Sequence extends React.Component {
                      </label>
                       {
                         this.state.isShowSequenceDropDown &&
-                        <select className='form-control m-input' >
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} required>
                           <option value=''>sequence</option>{
                             this.state.sequencesData.map(function (sequence) {
-                              return <option key={sequence.sequence._id}
+                              return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
                                 value={sequence.sequence.name}>{sequence.sequence.name}</option>
                             })
                           }
@@ -379,10 +400,10 @@ class Sequence extends React.Component {
                      </label>
                       {
                         this.state.isShowSequenceDropDownUnsub &&
-                        <select className='form-control m-input' >
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown}>
                           <option value=''>sequence</option>{
                             this.state.sequencesData.map(function (sequence) {
-                              return <option key={sequence.sequence._id}
+                              return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
                                 value={sequence.sequence.name}>{sequence.sequence.name}</option>
                             })
                           }
