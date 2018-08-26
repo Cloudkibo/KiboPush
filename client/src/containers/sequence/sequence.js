@@ -30,6 +30,8 @@ class Sequence extends React.Component {
       filter: false,
       isShowModalTrigger: false,
       seqTriggerVal: 'subscribes_to_sequence',
+      value: '',
+      selectedSequenceName: '',
       isShowSequenceDropDown: false,
       isShowSequenceDropDownUnsub: false
 
@@ -132,7 +134,18 @@ class Sequence extends React.Component {
   }
 
   showDialogTrigger (sequence) {
-    this.setState({ isShowModalTrigger: true, selectedSequenceId: sequence.sequence._id, seqTriggerVal: sequence.sequence.trigger.event })
+    console.log('sequence' + JSON.stringify(sequence))
+    if (sequence.sequence.trigger.event === 'seen_all_sequence_messages') {
+      this.setState({isShowSequenceDropDown: true})
+    } else if (sequence.sequence.trigger.event === 'unsubscribes_from_other_sequence') {
+      this.setState({isShowSequenceDropDownUnsub: true})
+    }
+    this.setState({
+      isShowModalTrigger: true,
+      selectedSequenceId: sequence.sequence._id,
+      seqTriggerVal: sequence.sequence.trigger.event,
+      value: sequence.sequence.trigger.value
+    })
   }
 
   closeDialogTrigger () {
@@ -174,15 +187,28 @@ class Sequence extends React.Component {
 
   handleSequenceDropdown (event) {
     const selectedIndex = event.target.options.selectedIndex
-    let selectedSequenceId = event.target.options[selectedIndex].getAttribute('data-key')
-    this.setState({ isShowModalTrigger: true, selectedSequenceId: selectedSequenceId })
+    let selectSequenceId = event.target.options[selectedIndex].getAttribute('data-key')
+    this.setState({ isShowModalTrigger: true, value: selectSequenceId, selectedSequenceName: event.target.value })
   }
 
   handleSaveTrigger (event) {
+    let value = ''
+    if (this.state.seqTriggerVal === 'subscriber_joins') {
+      value = null
+    } else if (this.state.seqTriggerVal === 'subscribes_to_sequence') {
+      value = this.state.selectedSequenceId
+    } else if (this.state.seqTriggerVal === 'seen_all_sequence_messages') {
+      value = this.state.value
+    } else if (this.state.seqTriggerVal === 'unsubscribes_from_other_sequence') {
+      value = this.state.value
+    } else if (this.state.seqTriggerVal === 'responds_to_poll') {
+      value = null
+    }
+
     var data = {
       trigger: {
         event: this.state.seqTriggerVal,
-        value: null
+        value: value
       },
       type: 'sequence',
       sequenceId: this.state.selectedSequenceId
@@ -339,6 +365,7 @@ class Sequence extends React.Component {
                         <input
                           type='radio'
                           value='subscribes_to_sequence'
+                          defaultChecked
                           checked={this.state.seqTriggerVal === 'subscribes_to_sequence'}
                           onChange={this.handleChange}
                         />
@@ -367,14 +394,13 @@ class Sequence extends React.Component {
                           value='seen_all_sequence_messages'
                           checked={this.state.seqTriggerVal === 'seen_all_sequence_messages'}
                           onChange={this.handleChange}
-
                               />
                         When subscriber has seen all the messages of specific sequence
                      </label>
                       {
                         this.state.isShowSequenceDropDown &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} required>
-                          <option value=''>sequence</option>{
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.value} >
+                          <option value={this.state.value}>sequence</option>{
                             this.state.sequencesData.map(function (sequence) {
                               return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
                                 value={sequence.sequence.name}>{sequence.sequence.name}</option>
@@ -400,7 +426,7 @@ class Sequence extends React.Component {
                      </label>
                       {
                         this.state.isShowSequenceDropDownUnsub &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown}>
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.value}>
                           <option value=''>sequence</option>{
                             this.state.sequencesData.map(function (sequence) {
                               return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
