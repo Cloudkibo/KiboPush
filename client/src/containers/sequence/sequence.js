@@ -134,7 +134,6 @@ class Sequence extends React.Component {
   }
 
   showDialogTrigger (sequence) {
-    console.log('sequence' + JSON.stringify(sequence))
     if (sequence.sequence.trigger.event === 'seen_all_sequence_messages') {
       this.setState({isShowSequenceDropDown: true})
     } else if (sequence.sequence.trigger.event === 'unsubscribes_from_other_sequence') {
@@ -167,7 +166,6 @@ class Sequence extends React.Component {
         isShowSequenceDropDown: false
       })
     } else if (event.target.value === 'responds_to_poll') {
-      console.log('res' + JSON.stringify(this.props.polls))
       this.setState({
         isShowSequenceDropDownUnsub: false,
         isShowSequenceDropDown: false
