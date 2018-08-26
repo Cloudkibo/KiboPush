@@ -30,10 +30,11 @@ class Sequence extends React.Component {
       filter: false,
       isShowModalTrigger: false,
       seqTriggerVal: 'subscribes_to_sequence',
-      value: '',
-      selectedSequenceName: '',
+      selectedDropdownVal: '',
+      selectDropdownName: '',
       isShowSequenceDropDown: false,
-      isShowSequenceDropDownUnsub: false
+      isShowSequenceDropDownUnsub: false,
+      isShowPollsDropdown: false
 
     }
     props.fetchAllSequence()
@@ -56,6 +57,7 @@ class Sequence extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSaveTrigger = this.handleSaveTrigger.bind(this)
     this.handleSequenceDropdown = this.handleSequenceDropdown.bind(this)
+    this.handlePollsDropdown = this.handlePollsDropdown.bind(this)
   }
 
   scrollToTop () {
@@ -134,16 +136,34 @@ class Sequence extends React.Component {
   }
 
   showDialogTrigger (sequence) {
-    if (sequence.sequence.trigger.event === 'seen_all_sequence_messages') {
-      this.setState({isShowSequenceDropDown: true})
-    } else if (sequence.sequence.trigger.event === 'unsubscribes_from_other_sequence') {
+    this.setState({isShowSequenceDropDown: true})
+    let seqEvent = sequence.sequence.trigger.event
+    if (seqEvent === 'seen_all_sequence_messages') {
+      this.state.sequencesData.map((sequence2) => {
+        if (sequence.sequence.trigger.value === sequence2.sequence._id) {
+          console.log('in if')
+          this.setState({selectDropdownName: sequence2.name})
+        }
+      })
+    } else if (seqEvent === 'unsubscribes_from_other_sequence') {
+      this.state.sequencesData.map((sequence2) => {
+        if (sequence.sequence.trigger.value === sequence2.sequence._id) {
+          this.setState({selectDropdownName: sequence2.name})
+        }
+      })
       this.setState({isShowSequenceDropDownUnsub: true})
+    } else if (seqEvent === 'responds_to_poll') {
+      this.setState({isShowPollsDropdown: true})
+      this.props.polls.map((poll) => {
+        if (sequence.sequence.trigger.value === poll._id) {
+          this.setState({selectDropdownName: poll.statement})
+        }
+      })
     }
     this.setState({
       isShowModalTrigger: true,
       selectedSequenceId: sequence.sequence._id,
-      seqTriggerVal: sequence.sequence.trigger.event,
-      value: sequence.sequence.trigger.value
+      seqTriggerVal: sequence.sequence.trigger.event
     })
   }
 
@@ -158,35 +178,47 @@ class Sequence extends React.Component {
     if (event.target.value === 'seen_all_sequence_messages') {
       this.setState({
         isShowSequenceDropDown: true,
-        isShowSequenceDropDownUnsub: false
+        isShowSequenceDropDownUnsub: false,
+        isShowPollsDropdown: false
+
       })
     } else if (event.target.value === 'unsubscribes_from_other_sequence') {
       this.setState({
         isShowSequenceDropDownUnsub: true,
-        isShowSequenceDropDown: false
+        isShowSequenceDropDown: false,
+        isShowPollsDropdown: false
       })
     } else if (event.target.value === 'responds_to_poll') {
       this.setState({
         isShowSequenceDropDownUnsub: false,
-        isShowSequenceDropDown: false
+        isShowSequenceDropDown: false,
+        isShowPollsDropdown: true
       })
     } else if (event.target.value === 'subscriber_joins') {
       this.setState({
         isShowSequenceDropDownUnsub: false,
-        isShowSequenceDropDown: false
+        isShowSequenceDropDown: false,
+        isShowPollsDropdown: false
       })
     } else if (event.target.value === 'subscribes_to_sequence') {
       this.setState({
         isShowSequenceDropDownUnsub: false,
-        isShowSequenceDropDown: false
+        isShowSequenceDropDown: false,
+        isShowPollsDropdown: false
       })
     }
   }
 
   handleSequenceDropdown (event) {
     const selectedIndex = event.target.options.selectedIndex
-    let selectSequenceId = event.target.options[selectedIndex].getAttribute('data-key')
-    this.setState({ isShowModalTrigger: true, value: selectSequenceId, selectedSequenceName: event.target.value })
+    let selectedPoll = event.target.options[selectedIndex].getAttribute('data-key')
+    this.setState({ isShowModalTrigger: true, selectedDropdownVal: selectedPoll, selectDropdownName: event.target.value })
+  }
+
+  handlePollsDropdown (event) {
+    const selectedIndex = event.target.options.selectedIndex
+    let selectPollId = event.target.options[selectedIndex].getAttribute('data-key')
+    this.setState({ isShowModalTrigger: true, selectedDropdownVal: selectPollId, selectDropdownName: event.target.value })
   }
 
   handleSaveTrigger (event) {
@@ -196,11 +228,11 @@ class Sequence extends React.Component {
     } else if (this.state.seqTriggerVal === 'subscribes_to_sequence') {
       value = this.state.selectedSequenceId
     } else if (this.state.seqTriggerVal === 'seen_all_sequence_messages') {
-      value = this.state.value
+      value = this.state.selectedDropdownVal
     } else if (this.state.seqTriggerVal === 'unsubscribes_from_other_sequence') {
-      value = this.state.value
+      value = this.state.selectedDropdownVal
     } else if (this.state.seqTriggerVal === 'responds_to_poll') {
-      value = null
+      value = this.state.selectedDropdownVal
     }
 
     var data = {
@@ -397,8 +429,8 @@ class Sequence extends React.Component {
                      </label>
                       {
                         this.state.isShowSequenceDropDown &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.value} >
-                          <option value={this.state.value}>sequence</option>{
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.selectDropdownName} >
+                          <option value={this.state.selectDropdownName}>sequence</option>{
                             this.state.sequencesData.map(function (sequence) {
                               return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
                                 value={sequence.sequence.name}>{sequence.sequence.name}</option>
@@ -424,8 +456,8 @@ class Sequence extends React.Component {
                      </label>
                       {
                         this.state.isShowSequenceDropDownUnsub &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.value}>
-                          <option value=''>sequence</option>{
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.selectDropdownName}>
+                          <option value={this.state.selectDropdownName}>sequence</option>{
                             this.state.sequencesData.map(function (sequence) {
                               return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
                                 value={sequence.sequence.name}>{sequence.sequence.name}</option>
@@ -446,6 +478,17 @@ class Sequence extends React.Component {
                         />
                        When subscriber responds to specific poll
                      </label>
+                      {
+                        this.state.isShowPollsDropdown &&
+                        <select className='form-control m-input' onChange={this.handlePollsDropdown} >
+                          <option value=''>poll</option>{
+                            this.props.polls.map(function (poll) {
+                              return <option key={poll._id} data-key={poll._id}
+                                value={poll.statement}>{poll.statement}</option>
+                            })
+                          }
+                        </select>
+                      }
                     </div>
                   </div>
                 </div>
@@ -594,7 +637,8 @@ class Sequence extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    sequences: (state.sequenceInfo.sequences)
+    sequences: (state.sequenceInfo.sequences),
+    polls: (state.pollsInfo.polls)
   }
 }
 
