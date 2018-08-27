@@ -7,7 +7,7 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation, updateTrigger } from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
@@ -801,14 +801,11 @@ function mapDispatchToProps (dispatch) {
     deleteMessage: deleteMessage,
     setSchedule: setSchedule,
     createMessage: createMessage,
-<<<<<<< HEAD
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
-    updateSegmentation: updateSegmentation
-=======
+    updateSegmentation: updateSegmentation,
     updateTrigger: updateTrigger,
     setStatus: setStatus
->>>>>>> message-sequencing-v2
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
