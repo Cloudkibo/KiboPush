@@ -581,4 +581,13 @@ router.get('/addAgentActivityTime', (req, res) => {
   })
 })
 
+router.get('/addDefaultUIMode', (req, res) => {
+  Users.update({uiMode: {$exists: false}}, {uiMode: 'all'}, {multi: true}, (err, updatedUsers) => {
+    if (err) {
+      logger.serverLog(TAG, `Line 587: ERROR! at updating users: ${JSON.stringify(err)}`)
+    }
+    res.status(200).json({status: 'success', description: 'Added successfully!'})
+  })
+})
+
 module.exports = router

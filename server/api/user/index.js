@@ -22,5 +22,6 @@ router.post('/authenticatePassword', auth.isAuthenticated(), controller.authenti
 router.get('/movePlan', controller.movePlan)
 router.post('/enableDelete', auth.isAuthenticated(), controller.enableDelete)
 router.get('/cancelDeletion', auth.isAuthenticated(), controller.cancelDeletion)
+router.post('/changeUIMode', auth.isAuthenticated(), controller.changeMode)
 
 module.exports = router
