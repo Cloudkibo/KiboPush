@@ -24,7 +24,8 @@ class CreateSequence extends React.Component {
       disabled: true,
       targetValue: '',
       selectedDays: '0',
-      condition: 'immediately',
+      time: 'immediately',
+      condition: 'minutes',
       sequenceId: '',
       isShowingModalSegmentation: false,
       segmentationOptions: [{
@@ -37,7 +38,9 @@ class CreateSequence extends React.Component {
       selectedSequenceId: '',
       selectedMessageId: '',
       validSegmentation: false,
-      isShowModalSchedule: false
+      isShowModalSchedule: false,
+      isDaysInputDisabled: true,
+      isMinutesInputDisabled: true
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
@@ -54,6 +57,7 @@ class CreateSequence extends React.Component {
     this.handleToggle = this.handleToggle.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.changeCondition = this.changeCondition.bind(this)
+    this.changeTime = this.changeTime.bind(this)
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -81,7 +85,7 @@ class CreateSequence extends React.Component {
     })
   }
 
-  validateSegmentation() {
+  validateSegmentation () {
     console.log('validating')
     if (this.state.segmentation.length === 0) {
       return false
@@ -94,7 +98,7 @@ class CreateSequence extends React.Component {
 
   onConditionChange (condition) {
     this.setState({segmentationCondition: condition})
-  } 
+  }
 
   onNameCriteriaChange (criteria, id) {
     let segmentation = this.state.segmentation
@@ -241,6 +245,15 @@ class CreateSequence extends React.Component {
     this.setState({condition: e.target.value})
   }
 
+  changeTime (event) {
+    this.setState({time: event.target.value})
+    if (event.target.value === 'immediately') {
+      this.setState({isDaysInputDisabled: true, isMinutesInputDisabled: true, selectedDays: 0, condition: 'minutes'})
+    } else {
+      this.setState({isDaysInputDisabled: false, isMinutesInputDisabled: false, selectedDays: 0, condition: 'minutes'})
+    }
+  }
+
   onDaysChange (e) {
     this.setState({selectedDays: e.target.value})
   }
@@ -263,8 +276,10 @@ class CreateSequence extends React.Component {
 
   handleDone () {
     this.setState({openPopover: !this.state.openPopover})
-    if (this.state.condition === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.messageId}, this.state.sequenceId)
+    if (this.state.time === 'immediately') {
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.closeDialogSchedule()
+      this.props.fetchAllMessages(this.state.sequenceId)
     } else {
       var d1 = new Date()
       if (this.state.condition === 'hours') {
@@ -275,7 +290,9 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
-      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
+      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.closeDialogSchedule()
+      this.props.fetchAllMessages(this.state.sequenceId)
     }
   }
 
@@ -308,7 +325,17 @@ class CreateSequence extends React.Component {
   }
 
   showDialogSchedule (message) {
-    this.setState({isShowModalSchedule: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
+    this.setState({isShowModalSchedule: true,
+      selectedSequenceId: message.sequenceId,
+      selectedMessageId: message._id,
+      selectedDays: message.schedule.days
+    })
+    if (message.schedule.condition !== 'immediately') {
+      this.setState({time: 'after'})
+      this.setState({condition: message.schedule.condition})
+    } else {
+      this.setState({condition: message.schedule.conditions})
+    }
   }
 
   closeDialogSchedule () {
@@ -400,18 +427,19 @@ class CreateSequence extends React.Component {
               <div className='row'>
               {console.log('this.state.condition', this.state.condition)}
               <div className='col-lg-5 col-md-5 col-sm-5' style={{marginBottom: '10px'}}>
-                <select className='form-control m-input' onChange={(e, i) => this.changeCondition(e, i)}
-                  value={this.state.condition}>
+                <select className='form-control m-input' onChange={(e, i) => this.changeTime(e, i)}
+                  value={this.state.time}>
                   <option value='after'>After</option>
                   <option value='immediately'>Immediately</option>
                 </select>
               </div>
               <div className='col-lg-3 col-md-3 col-sm-3'>
-                <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange}
+                disabled={this.state.time === 'immediately'}  />
               </div>
               <div className='col-lg-4 col-md-4 col-sm-4'>
-              <select className='form-control m-input' onChange={(e, i) => this.changeCondition(e, i)}
-                  value={this.state.condition}>
+              <select className='form-control m-input'  disabled={this.state.time === 'immediately'}
+                  value={this.state.condition} onChange={(e, i) => this.changeCondition(e, i)} >
                   <option value='minutes'>Minutes</option>
                   <option value='hours'>Hours</option>
                   <option value='day(s)'>Day(s)</option>
@@ -419,11 +447,11 @@ class CreateSequence extends React.Component {
               </div>
               </div>
               <div className='row'>
-              <div className='col-lg-12 col-md-12 col-sm-12'><br></br></div>
+              <div className='col-lg-12 col-md-12 col-sm-12'><br></br>
+              <p>after the user is subscribed to this sequence</p> 
               </div>
-
-              
-              <button onClick={() => this.saveSchedule()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} > Save </button>
+              </div>
+              <button onClick={this.handleDone} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} > Save </button>
               <button onClick={() => this.closeDialogSchedule()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
             </ModalDialog>
           </ModalContainer>
@@ -607,7 +635,7 @@ class CreateSequence extends React.Component {
                                     <span style={{display: 'inline-block', marginBottom: '10px'}}>
                                       <span>Trigger</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
-                                          None
+                                        None
                                         </span>
                                         <span className='sequence-link'> -- Edit</span>
                                     </span>
@@ -623,7 +651,7 @@ class CreateSequence extends React.Component {
                                      <span style={{display: 'block'}}>
                                       <span>Schedule</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
-                                          None
+                                        {message.schedule.condition === 'immediately' ? 'Immediately' : 'After ' + message.schedule.days + ' ' + message.schedule.condition   }
                                         </span>
                                       <span onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
                                     </span> 
