@@ -11,16 +11,38 @@ class PlatformStats extends React.Component {
       polls: 0,
       surveys: 0
     }
+    this.updateCurrentState = this.updateCurrentState.bind(this)
+  }
+
+  aggregateStats (data) {
+    let aggregate = {
+      totalBroadcasts: 0,
+      totalUsers: 0,
+      totalPolls: 0,
+      totalSurveys: 0
+    }
+    data.map((item) => {
+      aggregate.totalBroadcasts += item.totalBroadcasts
+      aggregate.totalPolls += item.totalPolls
+      aggregate.totalSurveys += item.totalSurveys
+      aggregate.totalUsers += item.totalUsers
+    })
+
+    return aggregate
+  }
+
+  updateCurrentState (data) {
+    this.setState({
+      users: (data.totalUsers) ? data.totalUsers : 0,
+      broadcasts: (data.totalBroadcasts) ? data.totalBroadcasts : 0,
+      polls: (data.totalPolls) ? data.totalPolls : 0,
+      surveys: (data.totalSurveys) ? data.totalSurveys : 0
+    })
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.platformStats && this.state.selectedValue === 'all') {
-      this.setState({
-        users: (this.props.platformStats.totalUsers) ? this.props.platformStats.totalUsers : 0,
-        broadcasts: (this.props.platformStats.totalBroadcasts) ? this.props.platformStats.totalBroadcasts : 0,
-        polls: (this.props.platformStats.totalPolls) ? this.props.platformStats.totalPolls : 0,
-        surveys: (this.props.platformStats.totalSurveys) ? this.props.platformStats.totalSurveys : 0
-      })
+      this.updateCurrentState(this.props.platformStats)
     }
   }
 
@@ -28,17 +50,15 @@ class PlatformStats extends React.Component {
     this.setState({selectedValue: event.target.value})
     switch (event.target.value) {
       case 'all':
-        this.setState({
-          users: (this.props.platformStats && this.props.platformStats.totalUsers) ? this.props.platformStats.totalUsers : 0,
-          broadcasts: (this.props.platformStats && this.props.platformStats.totalBroadcasts) ? this.props.platformStats.totalBroadcasts : 0,
-          polls: (this.props.platformStats && this.props.platformStats.totalPolls) ? this.props.platformStats.totalPolls : 0,
-          surveys: (this.props.platformStats && this.props.platformStats.totalSurveys) ? this.props.platformStats.totalSurveys : 0
-        })
+        this.updateCurrentState(this.props.platformStats)
         break
       case '10':
+        let weeklyStats = this.aggregateStats(this.props.weeklyPlatformStats)
+        this.updateCurrentState(weeklyStats)
         break
       case '30':
-        this.setState({users: 0})
+        let monthlyStats = this.aggregateStats(this.props.monthlyPlatformStats)
+        this.updateCurrentState(monthlyStats)
         break
 
       default:
@@ -47,6 +67,7 @@ class PlatformStats extends React.Component {
   }
 
   render () {
+    console.log('Props from Platform Stats', this.props)
     return (
       <div className='row'>
         <div className='col-xl-8' style={{height: '366px'}}>

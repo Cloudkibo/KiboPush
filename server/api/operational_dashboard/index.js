@@ -13,31 +13,31 @@ const platform = require('./platform.controller')
 const user = require('./user.controller')
 const page = require('./page.controller')
 const autoposting = require('./autoposting.controller')
-// const auth = require('../../auth/auth.service')
+const auth = require('../../auth/auth.service')
 
-router.get('/', controller.index)
+router.get('/', auth.isAuthorizedSuperUser(), controller.index)
 
 // Platformwise Data
-router.get('/platformwise', platform.index)
-router.post('/platformwise/ranged', platform.ranged)
+router.get('/platformwise', auth.isAuthorizedSuperUser(), platform.index)
+router.post('/platformwise/ranged', auth.isAuthorizedSuperUser(), platform.ranged)
 
 // Userwise Data
-router.get('/userwise', user.index)
-router.post('/userwise/ranged', user.ranged)
-router.post('/userwise/oneUser', user.oneUser)
-router.post('/userwise/oneUser/ranged', user.oneUserRanged)
+router.get('/userwise', auth.isAuthorizedSuperUser(), user.index)
+router.post('/userwise/ranged', auth.isAuthorizedSuperUser(), user.ranged)
+router.post('/userwise/oneUser', auth.isAuthorizedSuperUser(), user.oneUser)
+router.post('/userwise/oneUser/ranged', auth.isAuthorizedSuperUser(), user.oneUserRanged)
 
 // Pagewise Data
-router.get('/pagewise', page.index)
-router.post('/pagewise/ranged', page.ranged)
-router.post('/pagewise/onePage', page.onePage)
-router.post('/pagewise/onePage/ranged', page.onePageRanged)
-router.post('/pagewise/topPages', page.topPages)
+router.get('/pagewise', auth.isAuthorizedSuperUser(), page.index)
+router.post('/pagewise/ranged', auth.isAuthorizedSuperUser(), page.ranged)
+router.post('/pagewise/onePage', auth.isAuthorizedSuperUser(), page.onePage)
+router.post('/pagewise/onePage/ranged', auth.isAuthorizedSuperUser(), page.onePageRanged)
+router.post('/pagewise/topPages', auth.isAuthorizedSuperUser(), page.topPages)
 
 // Autoposting Data
-router.get('/autoposting/platformwise', autoposting.index)
-router.post('/autoposting/platformwise/ranged', autoposting.ranged)
-router.post('/autoposting/userwise', autoposting.userwise)
-router.post('/autoposting/userwise/ranged', autoposting.userwiseRanged)
+router.get('/autoposting/platformwise', auth.isAuthorizedSuperUser(), autoposting.index)
+router.post('/autoposting/platformwise/ranged', auth.isAuthorizedSuperUser(), autoposting.ranged)
+router.post('/autoposting/userwise', auth.isAuthorizedSuperUser(), autoposting.userwise)
+router.post('/autoposting/userwise/ranged', auth.isAuthorizedSuperUser(), autoposting.userwiseRanged)
 
 module.exports = router

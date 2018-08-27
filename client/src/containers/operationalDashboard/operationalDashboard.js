@@ -15,9 +15,6 @@ import { Link } from 'react-router'
 import Popover from 'react-simple-popover'
 import {
   loadUsersList,
-  loadDataObjectsCount,
-  loadTopPages,
-  saveUserInformation,
   downloadFile,
   loadBroadcastsGraphData,
   loadPollsGraphData,
@@ -43,6 +40,7 @@ import {
   fetchPlatformStatsMonthly,
   fetchPlatformStatsWeekly
 } from '../../redux/actions/backdoor.actions'
+import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -81,9 +79,7 @@ class OperationalDashboard extends React.Component {
     }
 
     props.allLocales()
-    props.loadDataObjectsCount(0)
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
-    props.loadTopPages()
     props.loadBroadcastsGraphData(0)
     props.loadPollsGraphData(0)
     props.loadSurveysGraphData(0)
@@ -96,10 +92,8 @@ class OperationalDashboard extends React.Component {
 
     this.displayData = this.displayData.bind(this)
     this.displayObjects = this.displayObjects.bind(this)
-    this.handlePageClick = this.handlePageClick.bind(this)
     this.searchUser = this.searchUser.bind(this)
     this.getFile = this.getFile.bind(this)
-    this.logChange = this.logChange.bind(this)
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
     this.handleDate = this.handleDate.bind(this)
@@ -110,16 +104,6 @@ class OperationalDashboard extends React.Component {
     this.handleClose = this.handleClose.bind(this)
     this.sendEmail = this.sendEmail.bind(this)
     this.loadMore = this.loadMore.bind(this)
-    this.showDropdown = this.showDropdown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
-  }
-
-  showDropdown () {
-    this.setState({showDropDown: true})
-  }
-
-  hideDropDown () {
-    this.setState({showDropDown: false})
   }
 
   loadMore () {
@@ -148,10 +132,6 @@ class OperationalDashboard extends React.Component {
     temp.push(users)
     this.setState({objects: users})
     this.setState({objectsLength: 1})
-  }
-
-  handlePageClick (data) {
-    this.displayData(data.selected, this.state.usersDataAll)
   }
 
   handleDate (d) {
@@ -373,21 +353,6 @@ class OperationalDashboard extends React.Component {
     this.props.downloadFile()
   }
 
-  logChange (e) {
-    if (!e.target.value) {
-      this.setState({selectedValue: null})
-      this.props.loadDataObjectsCount(0)
-    } else if (e.target.value === '10') {
-      this.setState({selectedValue: e.target.value})
-      this.props.loadDataObjectsCount(10)
-    } else if (e.target.value === '30') {
-      this.setState({ selectedValue: e.target.value })
-      this.props.loadDataObjectsCount(30)
-    } else if (e.target.value === 'all') {
-      this.setState({ selectedValue: e.target.value })
-      this.props.loadDataObjectsCount(0)
-    }
-  }
   onFilterByGender (e) {
     //  var filtered = []
     this.setState({genderValue: e.target.value})
@@ -427,7 +392,7 @@ class OperationalDashboard extends React.Component {
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-content'>
             { this.state.objectsLength > 0 &&
-              <PlatformStats platformStats={this.props.platformStats} />
+              <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} />
             }
             <div className='row'>
               <AutopostingDetails autopostingStats={this.props.autopostingStats} />
@@ -442,7 +407,7 @@ class OperationalDashboard extends React.Component {
                 />
             </div>
             <div className='row'>
-              <Top10pages pagesData={this.props.toppages} pages={this.props.kiboTopPages} />
+              <Top10pages pagesData={this.props.toppages} />
               <div className='col-xl-12'>
                 <div className='m-portlet m-portlet--full-height '>
                   <div className='m-portlet__head'>
@@ -471,39 +436,41 @@ class OperationalDashboard extends React.Component {
                               show={this.state.openPopover}
                               onHide={this.handleClose} >
                               <div>
-                                <label style={{color: '#716aca'}}>Filters:</label>
-                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
-                                  <option value='' disabled>Filter by gender...</option>
-                                  <option value='all'>All</option>
-                                  {
+                                <div>
+                                  <label style={{color: '#716aca'}}>Filters:</label>
+                                  <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
+                                    <option key='Gender' value='' disabled>Filter by gender...</option>
+                                    <option key='GenderALL' value='all'>All</option>
+                                    {
                                     this.state.genders.map((gender, i) => (
-                                      <option value={gender.value}>{gender.label}</option>
+                                      <option key={'Gender' + i} value={gender.value}>{gender.label}</option>
                                     ))
                                   }
-                                </select>
-                                <br />
-                                <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale} style={{marginTop: '10px', width: '155px'}}>
-                                  <option key='' value='' disabled>Filter by Locale...</option>
-                                  <option key='ALL' value='all'>ALL</option>
-                                  {
+                                  </select>
+                                  <br />
+                                  <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale} style={{marginTop: '10px', width: '155px'}}>
+                                    <option key='' value='' disabled>Filter by Locale...</option>
+                                    <option key='ALL' value='all'>ALL</option>
+                                    {
                                     this.props.locales && this.props.locales.map((locale, i) => (
                                       <option key={i} value={locale}>{locale}</option>
                                     ))
                                   }
-                                </select>
-                              </div>
-                              <br />
-                              <div>
-                                <label style={{color: '#716aca'}}>Actions:</label>
+                                  </select>
+                                </div>
                                 <br />
-                                <i className='la la-download' />&nbsp;<a onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                <div>
+                                  <label style={{color: '#716aca'}}>Actions:</label>
+                                  <br />
+                                  <i className='la la-download' />&nbsp;<a onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
                                   Download Data
                                 </a>
-                                <br />
-                                <i className='la la-envelope-o' />&nbsp;<a onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                  <br />
+                                  <i className='la la-envelope-o' />&nbsp;<a onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
                                   Send Weekly Email
                                 </a>
-                                <br />
+                                  <br />
+                                </div>
                               </div>
                             </Popover>
                           </div>
@@ -620,7 +587,7 @@ function mapStateToProps (state) {
     locales: (state.backdoorInfo.locales),
     currentUser: (state.backdoorInfo.currentUser),
     dataobjects: (state.backdoorInfo.dataobjects),
-    toppages: (state.backdoorInfo.toppages),
+    toppages: state.backdoorInfo.kiboTopPages,
     broadcastsGraphData: (state.backdoorInfo),
     pollsGraphData: (state.backdoorInfo),
     surveysGraphData: (state.backdoorInfo),
@@ -628,16 +595,13 @@ function mapStateToProps (state) {
     platformStats: state.backdoorInfo.platformStatsInfo,
     autopostingStats: state.backdoorInfo.autopostingStatsInfo,
     platformStatsWeekly: state.backdoorInfo.weeklyPlatformStats,
-    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats,
-    kiboTopPages: state.backdoorInfo.kiboTopPages
+    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadUsersList,
-    loadDataObjectsCount,
-    loadTopPages,
     saveUserInformation,
     downloadFile,
     loadBroadcastsGraphData,

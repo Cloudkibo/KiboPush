@@ -22,7 +22,7 @@ const mongoose = require('mongoose')
 
 exports.platformWiseData = function (req, res) {
   logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
-  let startDate = req.body.start_date
+  let startDate = req.body.startDate
   let dateFilterAggregates = filterDate
   dateFilterAggregates['$match']['datetime'] = { $gte: new Date(startDate) }
 
@@ -174,14 +174,15 @@ exports.companyWiseData = function (req, res) {
 
 // Twitter AutoPosting Data
 exports.getTwitterAutoposting = function (req, res) {
-  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
+  logger.serverLog(TAG, `Request from KiboDash Twitter ${JSON.stringify(req.body)}`)
   let queries = []
-  if (req.body.start_date !== '') {
+  if (req.body.startDate && req.body.startDate !== '') {
     queries = [
       joinAutpostingMessages,
       dateFilterAutoposting(req.body.startDate),
       selectAutoPostingFields,
       selectTwitterType]
+    logger.serverLog(TAG, `Start Date Query Twitter ${JSON.stringify(dateFilterAutoposting(req.body.startDate))}`)
   } else {
     queries = [
       joinAutpostingMessages,
@@ -202,14 +203,16 @@ exports.getTwitterAutoposting = function (req, res) {
 
 // Facebook AutoPosting Data
 exports.getFacebookAutoposting = function (req, res) {
-  logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
+  logger.serverLog(TAG, `Request from KiboDash Facebook Autoposting ${JSON.stringify(req.body)}`)
   let queries = []
-  if (req.body.startDate !== '') {
+  if (req.body.startDate && req.body.startDate !== '') {
     queries = [
       joinAutpostingMessages,
       dateFilterAutoposting(req.body.startDate),
       selectAutoPostingFields,
       selectFacebookType]
+
+    logger.serverLog(TAG, `Start Date Query ${JSON.stringify(dateFilterAutoposting(req.body.startDate))}`)
   } else {
     queries = [
       joinAutpostingMessages,
@@ -220,6 +223,7 @@ exports.getFacebookAutoposting = function (req, res) {
   .aggregate(queries)
   .exec()
   .then((result) => {
+    logger.serverLog(TAG, `Sending facebook response ${JSON.stringify(result)}`)
     return res.status(200).json({status: 'success', payload: result})
   })
   .catch((err) => {
@@ -232,7 +236,7 @@ exports.getFacebookAutoposting = function (req, res) {
 exports.getWordpressAutoposting = function (req, res) {
   logger.serverLog(TAG, `Request from KiboDash ${req.body}`)
   let queries = []
-  if (req.body.startDate !== '') {
+  if (req.body.startDate && req.body.startDate !== '') {
     queries = [
       joinAutpostingMessages,
       dateFilterAutoposting(req.body.startDate),

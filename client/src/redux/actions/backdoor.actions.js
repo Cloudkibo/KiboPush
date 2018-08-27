@@ -395,3 +395,15 @@ export function fetchPlatformStatsMonthly () {
       .then(res => dispatch(handleAction(ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS, res.payload)))
   }
 }
+
+export function downloadSubscribersData (pageId) {
+  callApi(`backdoor/allsubscribers/${pageId}`)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          console.log('Herray', res)
+          fileDownload(res.payload, 'subscribers.csv')
+        } else {
+          console.log('Cannot fetch the subscriber data')
+        }
+      })
+}
