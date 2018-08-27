@@ -223,6 +223,7 @@ class CreateConvo extends React.Component {
   }
 
   handleText (obj) {
+    console.log('handleText', obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
@@ -230,6 +231,8 @@ class CreateConvo extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -371,6 +374,7 @@ class CreateConvo extends React.Component {
       if (data.id === obj.id) {
         temp[i].listItems = obj.listItems
         temp[i].topElementStyle = obj.topElementStyle
+        temp[i].buttons = obj.buttons
         isPresent = true
       }
     })
@@ -382,8 +386,11 @@ class CreateConvo extends React.Component {
   }
 
   removeComponent (obj) {
+    console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    console.log('temp', temp)
+    console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
   }
 
@@ -432,7 +439,7 @@ class CreateConvo extends React.Component {
         //  this.setState({tabActive: 'broadcast'})
         console.log('Sending Broadcast', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
-        // this.setState({broadcast: [], list: []})
+        this.msg.info('Sending broadcast.... You will be notified when it is sent.')
       }
     }
   }

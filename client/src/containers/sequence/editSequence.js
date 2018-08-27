@@ -7,10 +7,11 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateTrigger } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation, updateTrigger } from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class CreateSequence extends React.Component {
   constructor (props, context) {
@@ -24,24 +25,32 @@ class CreateSequence extends React.Component {
       disabled: true,
       targetValue: '',
       selectedDays: '0',
-      condition: 'immediately',
+      time: 'immediately',
+      condition: 'minutes',
       sequenceId: '',
+      isShowingModalSegmentation: false,
+      segmentationOptions: [{
+        'name': true,
+        'page': true,
+        'subscribed': true
+      }],
+      segmentation: [],
+      segmentationCondition: 'any',
       selectedSequenceId: '',
       selectedMessageId: '',
       validSegmentation: false,
-      selectedMessage: '',
-      selectedEvent: '',
-      displayAction: false,
-      selectedMessageClickId: '',
-      selectedButton: '',
-      buttonList: [],
-      eventNameSelected: ''
+      isShowModalSchedule: false,
+      isDaysInputDisabled: true,
+      isMinutesInputDisabled: true
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
     }
+    props.loadMyPagesList()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.showDialogSegmentation = this.showDialogSegmentation.bind(this)
+    this.closeDialogSegmentation = this.closeDialogSegmentation.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -49,9 +58,169 @@ class CreateSequence extends React.Component {
     this.handleToggle = this.handleToggle.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.changeCondition = this.changeCondition.bind(this)
+    this.changeTime = this.changeTime.bind(this)
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.gotoView = this.gotoView.bind(this)
+    this.addSegmentationOption = this.addSegmentationOption.bind(this)
+    this.removeSegmentationOption = this.removeSegmentationOption.bind(this)
+    this.saveSegmentation = this.saveSegmentation.bind(this)
+    this.onNameSegmentationChange = this.onNameSegmentationChange.bind(this)
+    this.onPageSegmentationChange = this.onPageSegmentationChange.bind(this)
+    this.onSubscribedSegmentationChange = this.onSubscribedSegmentationChange.bind(this)
+    this.onNameConditionChange = this.onNameConditionChange.bind(this)
+    this.onSubscribedCriteriaChange = this.onSubscribedCriteriaChange.bind(this)
+    this.onNameCriteriaChange = this.onNameCriteriaChange.bind(this)
+    this.onConditionChange = this.onConditionChange.bind(this)
+    this.validateSegmentation = this.validateSegmentation.bind(this)
+    this.showDialogSchedule = this.showDialogSchedule.bind(this)
+    this.closeDialogSchedule = this.closeDialogSchedule.bind(this)
+  }
+
+  saveSegmentation () {
+    this.props.updateSegmentation({
+      messageId: this.state.selectedMessageId,
+      sequenceId: this.state.selectedSequenceId,
+      segmentationCondition: this.state.segmentationCondition,
+      segmentation: this.state.segmentation
+    })
+  }
+
+  validateSegmentation () {
+    console.log('validating')
+    if (this.state.segmentation.length === 0) {
+      return false
+    }
+    let invalidSegment = this.state.segmentation.find((segment) => {
+      return (!segment.value)
+    })
+    return !invalidSegment
+  }
+
+  onConditionChange (condition) {
+    this.setState({segmentationCondition: condition})
+  }
+
+  onNameCriteriaChange (criteria, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].criteria = criteria
+    } else {
+      segmentation.push({
+        'condition': 'first_name',
+        'value': '',
+        'criteria': criteria,
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onNameConditionChange (condition, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].condition = condition
+    } else {
+      segmentation.push({
+        'condition': condition,
+        'value': '',
+        'criteria': 'is',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onSubscribedCriteriaChange (criteria, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].criteria = criteria
+    } else {
+      segmentation.push({
+        'condition': 'subscription_date',
+        'value': '',
+        'criteria': criteria,
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onNameSegmentationChange (value, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].value = value
+    } else {
+      segmentation.push({
+        'condition': 'first_name',
+        'value': value,
+        'criteria': 'is',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onPageSegmentationChange (value, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].value = value
+    } else {
+      segmentation.push({
+        'condition': 'page',
+        'value': value,
+        'criteria': 'is',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  onSubscribedSegmentationChange (value, id) {
+    let segmentation = this.state.segmentation
+    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
+    if (segmentationIndex >= 0) {
+      segmentation[segmentationIndex].value = value
+    } else {
+      segmentation.push({
+        'condition': 'subscription_date',
+        'value': value,
+        'criteria': 'on',
+        'id': id
+      })
+    }
+    console.log('segmentation', segmentation)
+    this.setState({segmentation: segmentation})
+  }
+
+  addSegmentationOption () {
+    let segmentationOptions = this.state.segmentationOptions
+    segmentationOptions.push(
+      {
+        'name': true,
+        'page': true,
+        'subscribed': true
+      }
+    )
+    this.setState({segmentationOptions: segmentationOptions})
+  }
+
+  removeSegmentationOption (index, option) {
+    let segmentationOptions = this.state.segmentationOptions
+    segmentationOptions[index][option] = false
+    let segmentation = this.state.segmentation
+    segmentation.splice(index, 1)
+    this.setState({segmentationOptions: segmentationOptions, segmentation: segmentation})
     this.ShowDialogTrigger = this.ShowDialogTrigger.bind(this)
     this.CloseDialogTrigger = this.CloseDialogTrigger.bind(this)
     this.validateTrigger = this.validateTrigger.bind(this)
@@ -137,6 +306,15 @@ class CreateSequence extends React.Component {
     this.setState({condition: e.target.value})
   }
 
+  changeTime (event) {
+    this.setState({time: event.target.value})
+    if (event.target.value === 'immediately') {
+      this.setState({isDaysInputDisabled: true, isMinutesInputDisabled: true, selectedDays: 0, condition: 'minutes'})
+    } else {
+      this.setState({isDaysInputDisabled: false, isMinutesInputDisabled: false, selectedDays: 0, condition: 'minutes'})
+    }
+  }
+
   onDaysChange (e) {
     this.setState({selectedDays: e.target.value})
   }
@@ -159,8 +337,10 @@ class CreateSequence extends React.Component {
 
   handleDone () {
     this.setState({openPopover: !this.state.openPopover})
-    if (this.state.condition === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.messageId}, this.state.sequenceId)
+    if (this.state.time === 'immediately') {
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.closeDialogSchedule()
+      this.props.fetchAllMessages(this.state.sequenceId)
     } else {
       var d1 = new Date()
       if (this.state.condition === 'hours') {
@@ -171,7 +351,9 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
-      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
+      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.closeDialogSchedule()
+      this.props.fetchAllMessages(this.state.sequenceId)
     }
   }
 
@@ -201,6 +383,32 @@ class CreateSequence extends React.Component {
 
   CloseDialogTrigger (message) {
     this.setState({ShowTrigger: false, displayAction: false, buttonList: [], selectedButton: '', selectedMessageClickId: ''})
+  }
+
+  showDialogSegmentation (message) {
+    this.setState({isShowingModalSegmentation: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
+  }
+
+  closeDialogSegmentation () {
+    this.setState({isShowingModalSegmentation: false})
+  }
+
+  showDialogSchedule (message) {
+    this.setState({isShowModalSchedule: true,
+      selectedSequenceId: message.sequenceId,
+      selectedMessageId: message._id,
+      selectedDays: message.schedule.days
+    })
+    if (message.schedule.condition !== 'immediately') {
+      this.setState({time: 'after'})
+      this.setState({condition: message.schedule.condition})
+    } else {
+      this.setState({condition: message.schedule.conditions})
+    }
+  }
+
+  closeDialogSchedule () {
+    this.setState({isShowModalSchedule: false})
   }
 
   componentDidMount () {
@@ -274,65 +482,138 @@ class CreateSequence extends React.Component {
                 </ModalDialog>
               </ModalContainer>
             }
+        {this.state.isShowModalSchedule &&
+          <ModalContainer style={{ width: '500px' }}
+            onClose={this.closeDialogSchedule}>
+            <ModalDialog style={{ width: '500px' }}
+              onClose={this.closeDialogSchedule}>
+              <h3>Schedule Message</h3>
+              <div className='row'>
+              <div className='col-lg-12 col-md-12 col-sm-12'>
+              <p>Send this message:</p>
+              </div>
+              </div>
+              <div className='row'>
+              {console.log('this.state.condition', this.state.condition)}
+              <div className='col-lg-5 col-md-5 col-sm-5' style={{marginBottom: '10px'}}>
+                <select className='form-control m-input' onChange={(e, i) => this.changeTime(e, i)}
+                  value={this.state.time}>
+                  <option value='after'>After</option>
+                  <option value='immediately'>Immediately</option>
+                </select>
+              </div>
+              <div className='col-lg-3 col-md-3 col-sm-3'>
+                <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange}
+                disabled={this.state.time === 'immediately'}  />
+              </div>
+              <div className='col-lg-4 col-md-4 col-sm-4'>
+              <select className='form-control m-input'  disabled={this.state.time === 'immediately'}
+                  value={this.state.condition} onChange={(e, i) => this.changeCondition(e, i)} >
+                  <option value='minutes'>Minutes</option>
+                  <option value='hours'>Hours</option>
+                  <option value='day(s)'>Day(s)</option>
+                </select>
+              </div>
+              </div>
+              <div className='row'>
+              <div className='col-lg-12 col-md-12 col-sm-12'><br></br>
+              <p>after the user is subscribed to this sequence</p> 
+              </div>
+              </div>
+              <button onClick={this.handleDone} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} > Save </button>
+              <button onClick={() => this.closeDialogSchedule()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+            </ModalDialog>
+          </ModalContainer>
+
+        }
 
             {
-              this.state.ShowTrigger &&
-              <ModalContainer style={{width: '600px', paddingLeft: '33px', paddingRight: '33px'}}
-                onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '600px',  paddingLeft: '33px', paddingRight: '33px'}}
-                  onClose={this.CloseDialogTrigger}>
-                  <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
-                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
-
-                         subscriber 
-                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option disabled selected value>Select Event </option>
-                         <option value='sees'>sees</option>
-                          <option value='clicks'>clicks</option>
-                          <option value='receive'>receive</option>
-                      </select>   
-                        <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                        <option disabled selected value>Select Message </option>
-                        {
-                          
-                          this.props.messages.map((message, i) => {
-
-                          if (this.state.selectedMessageId != message._id) {
-                            return <option value={message._id}>{message.title}</option> 
-                          }
-                           
-                          
-                        })}
-                       
-                       </select>
-
-                      
-                       { 
-                         this.state.displayAction && 
-                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option disabled selected value>Select Button </option>
-                       {
-                          
-                          this.state.buttonList.map((button, i) => {
-
-                         
-                            return <option value={button.title}>{button.title}</option> 
-                          
-                           
-                          
-                        })}
-                      </select> 
-                        
-                       
-                       }
-                      
+              this.state.isShowingModalSegmentation &&
+              <ModalContainer style={{width: '500px', paddingLeft: '33px', paddingRight: '33px'}}
+                onClose={this.closeDialogSegmentation}>
+                <ModalDialog style={{width: '500px',  paddingLeft: '33px', paddingRight: '33px'}}
+                  onClose={this.closeDialogSegmentation}>
+                  <h3  style={{marginBottom: '20px'}}>Segment Subscribers</h3>
+                  <div style={{marginBottom: '20px'}}>Subscribers match  
+                        <select onChange={(e) => this.onConditionChange(e.target.value)} style={{marginLeft: '10px', marginRight: '10px'}}>
+                          <option value='any'>any</option>
+                          <option value='all'>all</option>
+                      </select>
+                      of the following conditions
                   </div>
-                       
+                  {
+                    this.state.segmentationOptions.map((option, i) => {
+                      return (
+                      <div key = {i}>    
+                        {
+                          option.name ? 
+                        <div style={{marginBottom: '10px'}}>
+                          <i onClick={() => this.removeSegmentationOption(i, 'name')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
+                          <select onChange={(e) => this.onNameConditionChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
+                            <option value='first_name'>First Name</option>
+                            <option value='last_name'>Last Name</option>
+                        </select>
+                        <select onChange={(e) => this.onNameCriteriaChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px'}}>
+                          <option value='is'>is</option>
+                          <option value='contains'>contains</option>
+                          <option value='begins_with'>begins with</option>
+                          </select>
+                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} type='text' onChange={(e) => this.onNameSegmentationChange(e.target.value, 'name'+i)}></input>
+                        </div> : null
+                        }
 
-                  
 
-                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                        {
+                          option.page ? 
+                        <div style={{marginBottom: '10px'}}>
+                          <i onClick={() => this.removeSegmentationOption(i, 'page')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
+                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
+                            <option>
+                              Page
+                            </option>
+                        </select>
+                        <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
+                          <option>is</option>
+                          </select>
+                          <select className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} onChange={(e) => this.onPageSegmentationChange(e.target.value, 'page'+i)} >
+                          <option disabled selected value> -- Select a Page -- </option>
+                          {
+                              this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                              ))
+                          }
+                          </select>
+                        </div> : null
+                        }
+
+                        {
+                          option.subscribed ?            
+                        <div style={{marginBottom: '10px'}}>
+                          <i onClick={() => this.removeSegmentationOption(i, 'subscribed')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
+                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
+                            <option>Subscribed</option>
+                        </select>
+                        <select onChange={(e) => this.onSubscribedCriteriaChange(e.target.value, 'subscribed'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
+                          <option>on</option>
+                          <option>before</option>
+                          <option>after</option>
+                          </select>
+                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px'}} type='date' onChange={(e) => this.onSubscribedSegmentationChange(e.target.value, 'subscribed'+i)}></input>
+                        </div> : null
+                        }
+                      </div>
+                      )
+                      
+                    })
+                  }
+
+                  <div onClick={() => this.addSegmentationOption()} className="sequence-link">
+                    <i className="fa fa-plus-circle" style={{fontSize:'24px'}}></i> 
+                    <span style={{bottom: '3px', position: 'relative', fontWeight: 'bold', marginLeft: '5px'}} >Add</span>
+                  </div>
+
+                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateSegmentation()}> Save </button>
+                    <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
@@ -423,30 +704,38 @@ class CreateSequence extends React.Component {
                                     <span style={{display: 'inline-block', marginBottom: '10px'}}>
                                       <span>Trigger</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
-                                          None
+                                        None
                                         </span>
                                         <span onClick={() => this.ShowDialogTrigger(message)} className='sequence-link'> -- Edit</span>
                                     </span>
 
-                                    <span style={{display: 'block'}}>
+                                    {/* <span style={{display: 'block'}}>
                                       <span>Schedule</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           Immediately
                                         </span>
                                         <span className='sequence-link' id={'buttonTarget-' + message._id} ref={(b) => { this.target = b }} onClick={() => this.handleClick(message._id, i)}> -- Edit</span>
-                                    </span>
+                            </span> */}
+
+                                     <span style={{display: 'block'}}>
+                                      <span>Schedule</span>:
+                                        <span className='sequence-trigger' style={{marginLeft: '10px'}}>
+                                        {message.schedule.condition === 'immediately' ? 'Immediately' : 'After ' + message.schedule.days + ' ' + message.schedule.condition   }
+                                        </span>
+                                      <span onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
+                                    </span> 
 
                                     <span style={{display: 'inlineblock'}}>
                                       <span>Segment</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           None
                                         </span>
-                                      <span className='sequence-link'> -- Edit</span>
+                                      <span onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
                                     </span>
                                   </span>
 
                                   <span style={{position: 'relative', bottom: '60px', left: '40%'}}>
-                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '19%'}}>
                                       <span className='sequence-number'>{message.sent}</span>
                                       <br />
                                       <span>Sent</span>
@@ -458,7 +747,7 @@ class CreateSequence extends React.Component {
                                       <span>Seen</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '4%'}}>
                                       <span className='sequence-number'>{message.clicks}</span>
                                       <br />
                                       <span>Clicked</span>
@@ -499,7 +788,8 @@ function mapStateToProps (state) {
   return {
     sequences: (state.sequenceInfo.sequences),
     createdSequence: (state.sequenceInfo.createdSequence),
-    messages: (state.sequenceInfo.messages)
+    messages: (state.sequenceInfo.messages),
+    pages: (state.pagesInfo.pages),
   }
 }
 
@@ -511,6 +801,9 @@ function mapDispatchToProps (dispatch) {
     deleteMessage: deleteMessage,
     setSchedule: setSchedule,
     createMessage: createMessage,
+    setStatus: setStatus,
+    loadMyPagesList: loadMyPagesList,
+    updateSegmentation: updateSegmentation,
     updateTrigger: updateTrigger,
     setStatus: setStatus
   }, dispatch)

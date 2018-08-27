@@ -7,12 +7,6 @@ const router = express.Router()
 const controller = require('./polls.controller')
 const auth = require('../../auth/auth.service')
 
-router.get('/all/:days',
-  auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('polls'),
-  auth.doesRolePermitsThisAction('pollsPermission'),
-  controller.index)
-
 router.post('/allPolls',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('polls'),

@@ -327,7 +327,7 @@ class Sequence extends React.Component {
                                   </span>
                                 </span>
 
-                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '15%'}}>
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '20%'}}>
                                   <span className='sequence-number'>{sequence.subscribers.length}</span>
                                   <br />
                                   <span>Subscribers</span>

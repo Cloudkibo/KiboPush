@@ -3,11 +3,33 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { Link, browserHistory } from 'react-router'
 import auth from '../../utility/auth.service'
 import $ from 'jquery'
+import { skip } from '../../redux/actions/signup.actions'
 
 class Connect extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.skip = this.skip.bind(this)
+  }
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+  componentWillReceiveProps (nextProps) {
+    console.log('nextProps in connect', nextProps)
+    if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
+      browserHistory.push({
+        pathname: '/dashboard'
+      })
+    }
+  }
   componentDidMount () {
     /* eslint-disable */
     if ($('#sidebarDiv')) {
@@ -17,6 +39,9 @@ class Connect extends React.Component {
       $('#headerDiv').addClass('hideHeader')
     }
     /* eslint-enable */
+  }
+  skip () {
+    this.props.skip()
   }
   render () {
     return (
@@ -51,7 +76,7 @@ class Connect extends React.Component {
                   this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <Link to='/dashboard' className='m-link m-link--focus m-login__account-link'>Skip</Link>
+                    <a onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
                   </div>
                 }
               </div>
@@ -83,5 +108,16 @@ class Connect extends React.Component {
     )
   }
 }
+function mapStateToProps (state) {
+  return {
+    successSkip: (state.signupInfo.successSkip),
+    user: (state.basicInfo.user)
+  }
+}
 
-export default Connect
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    skip: skip
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Connect)

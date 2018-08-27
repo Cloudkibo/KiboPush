@@ -23,6 +23,10 @@ export function signupInfo (state = initialState, action) {
       return Object.assign({}, state, {
         successSignup: action.successMessage
       })
+    case ActionTypes.SKIP_SUCCESS:
+      return Object.assign({}, state, {
+        successSkip: action.successSkip
+      })
     default:
       return state
   }

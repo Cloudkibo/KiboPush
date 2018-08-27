@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { loadBotsList, createBot, deleteBot, loadAnalytics } from '../../redux/actions/smart_replies.actions'
 import { bindActionCreators } from 'redux'
@@ -11,11 +11,11 @@ import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class Bot extends React.Component {
   constructor (props, context) {
     props.loadBotsList()
-    props.loadAnalytics()
     props.loadMyPagesList()
     super(props, context)
     this.state = {
@@ -34,7 +34,10 @@ class Bot extends React.Component {
       pageNumber: 0,
       filter: false,
       pages: [],
-      showDropDown: false
+      showDropDown: false,
+      responded: 0,
+      total: 0,
+      notResponded: 0
     }
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -138,7 +141,7 @@ class Bot extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     var filtered = []
-    if (e.target.value && this.state.searchValue === '') {
+    if (e.target.value && e.target.value !== 'all' && this.state.searchValue === '') {
       // this.setState({filter: true})
       // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
       for (let i = 0; i < this.props.bots.length; i++) {
@@ -146,7 +149,7 @@ class Bot extends React.Component {
           filtered.push(this.props.bots[i])
         }
       }
-    } else if (e.target.value !== '' && this.state.searchValue !== '') {
+    } else if (e.target.value !== '' && e.target.value !== 'all' && this.state.searchValue !== '') {
       for (let i = 0; i < this.props.bots.length; i++) {
         if (this.props.bots[i].botName && this.props.bots[i].botName.toLowerCase().includes(this.state.searchValue.toLowerCase()) && this.props.bots[i].pageId._id === e.target.value) {
           filtered.push(this.props.bots[i])
@@ -163,8 +166,17 @@ class Bot extends React.Component {
     console.log('nextprops in bots.js', nextProps)
     if (nextProps.bots && nextProps.bots.length > 0) {
       this.displayData(0, nextProps.bots)
-      this.updateAllowedPages(nextProps.pages, nextProps.bots)
+      //  this.updateAllowedPages(nextProps.pages, nextProps.bots)
       this.setState({ totalLength: nextProps.bots.length })
+      var responded = 0
+      var total = 0
+      var notResponded = 0
+      for (let i = 0; i < nextProps.bots.length; i++) {
+        responded = responded + nextProps.bots[i].hitCount
+        total = total + nextProps.bots[i].hitCount + nextProps.bots[i].missCount
+        notResponded = notResponded + nextProps.bots[i].missCount
+      }
+      this.setState({responded: responded, total: total, notResponded: notResponded})
     } else {
       this.setState({botsData: [], totalLength: 0})
     }
@@ -273,10 +285,7 @@ class Bot extends React.Component {
           <div className='m-content'>
             {
               this.props.user && this.props.user.role !== 'agent' && this.props.pages && this.props.pages.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Connected Pages</h4>
-                  You do not have any connected pages. Unless you do not connect any pages, you won't be able to create a bot. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your facebook page.
-                </div>
+              <AlertMessage type='page' />
             }
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
@@ -296,7 +305,6 @@ class Bot extends React.Component {
                 Bots might take 30mins to 1 hour to train. Please test the bot after 1 hour to see if it is working
               </div>
             </div>
-            {this.props.analytics &&
             <div className='row'>
               <div className='col-xl-12'>
                 <div className='row m-row--full-height'>
@@ -304,7 +312,7 @@ class Bot extends React.Component {
                     <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-brand'>
                       <div className='m-portlet__body'>
                         <div className='m-widget26'>
-                          <div className='m-widget26__number'>{this.props.analytics.totalQueries}
+                          <div className='m-widget26__number'>{this.state.total}
                             <small>
                               Total Queries
                             </small>
@@ -317,7 +325,7 @@ class Bot extends React.Component {
                     <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
                       <div className='m-portlet__body'>
                         <div className='m-widget26'>
-                          <div className='m-widget26__number'>{this.props.analytics.responded}
+                          <div className='m-widget26__number'>{this.state.responded}
                             <small>
                               Responded
                             </small>
@@ -330,7 +338,7 @@ class Bot extends React.Component {
                     <div className='m-portlet m-portlet--half-height m-portlet--border-bottom-success'>
                       <div className='m-portlet__body'>
                         <div className='m-widget26'>
-                          <div className='m-widget26__number'>{this.props.analytics.notResponded}
+                          <div className='m-widget26__number'>{this.state.notResponded}
                             <small>
                               Not Responded
                             </small>
@@ -342,7 +350,6 @@ class Bot extends React.Component {
                 </div>
               </div>
             </div>
-          }
             <div className='row'>
               <div className='col-xl-12'>
                 <div className='m-portlet'>
@@ -468,7 +475,7 @@ class Bot extends React.Component {
                               <option key={i} value={page._id}>{page.pageName}</option>
                             ))
                           }
-                          <option value=''>All</option>
+                          <option value='all'>All</option>
                         </select>
                       </div>
                     </div>

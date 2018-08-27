@@ -25,94 +25,7 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const utility = require('./../broadcasts/broadcasts.utility')
 const compUtility = require('../../components/utility')
 
-exports.index = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-    if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: `Internal Server Error ${JSON.stringify(err)}`
-      })
-    }
-    if (!companyUser) {
-      return res.status(404).json({
-        status: 'failed',
-        description: 'The user account does not belong to any company. Please contact support'
-      })
-    }
-    if (req.params.days === '0') {
-      Surveys.find({companyId: companyUser.companyId}, (err, surveys) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
-          if (err) {
-            return res.status(404)
-            .json({status: 'failed', description: 'Surveys not found'})
-          }
-          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-            if (err2) {
-              return res.status(404)
-              .json({status: 'failed', description: 'responses count not found'})
-            }
-            res.status(200).json({
-              status: 'success',
-              payload: {surveys, surveypages, responsesCount}
-            })
-          })
-        })
-      })
-    } else {
-      Surveys.aggregate([
-        {
-          $match: {companyId: companyUser.companyId,
-            'datetime': {
-              $gte: new Date(
-                (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
-              $lt: new Date(
-                (new Date().getTime()))
-            }
-          }
-        }
-      ], (err, surveys) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
-          if (err) {
-            return res.status(404)
-            .json({status: 'failed', description: 'Surveys not found'})
-          }
-          Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
-            if (err2) {
-              return res.status(404)
-              .json({status: 'failed', description: 'responses count not found'})
-            }
-            res.status(200).json({
-              status: 'success',
-              payload: {surveys, surveypages, responsesCount}
-            })
-          })
-        })
-      })
-    }
-  })
-}
-
 exports.allSurveys = function (req, res) {
-  /*
-  body = {
-    first_page:
-    last_id:
-    number_of_records:
-    days:
-}
-  */
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -174,7 +87,6 @@ exports.allSurveys = function (req, res) {
       })
     } else if (req.body.first_page === 'next') {
       let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-      
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
@@ -222,7 +134,6 @@ exports.allSurveys = function (req, res) {
       })
     } else if (req.body.first_page === 'previous') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0

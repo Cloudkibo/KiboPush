@@ -15,6 +15,7 @@ import { Popover, PopoverBody } from 'reactstrap'
 import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from './viewScreen'
 import YouTube from 'react-youtube'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 const styles = {
   iconclass: {
@@ -270,10 +271,7 @@ class GreetingMessage extends React.Component {
                   {
                     this.props.pages &&
                     this.props.pages.length === 0 &&
-                    <div className='alert alert-success'>
-                      <h4 className='block'>0 Pages Connected</h4>
-                      You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
-                    </div>
+                    <AlertMessage type='page' />
                   }
                   <div className='form-group m-form__group'>
                     <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
