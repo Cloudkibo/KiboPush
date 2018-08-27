@@ -45,6 +45,10 @@ class Signup extends React.Component {
 
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.onCancel = this.onCancel.bind(this)
+  }
+  onCancel () {
+    this.setState({account_type: 'none'})
   }
   check () {
     this.setState({domain: true})
@@ -265,7 +269,7 @@ class Signup extends React.Component {
                         <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess}>
                           Sign Up
                         </button>
-                        <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                        <Link id='m_login_signup_cancel' onClick={this.onCancel} className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                           Cancel
                         </Link>
                       </div>
