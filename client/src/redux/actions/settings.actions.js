@@ -136,6 +136,7 @@ export function getPermissions () {
   return (dispatch) => {
     callApi('permissions/fetchPermissions')
       .then(res => {
+        console.log('getPermissions', res)
         if (res.status === 'success') {
           console.log('permissions', res.payload)
           dispatch(getPermissionsSuccess(res.payload))

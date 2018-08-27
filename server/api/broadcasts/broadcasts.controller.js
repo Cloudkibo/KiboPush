@@ -586,7 +586,7 @@ function sendCommentReply (body) {
           }
           if (post.excludedKeywords && post.excludedKeywords.length > 0) {
             send = true
-            for (let i = 0; i < post.includedKeywords.length; i++) {
+            for (let i = 0; i < post.excludedKeywords.length; i++) {
               if (body.entry[0].changes[0].value.message.toLowerCase().includes(post.excludedKeywords[i].toLowerCase())) {
                 send = false
                 break
