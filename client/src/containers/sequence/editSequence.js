@@ -21,6 +21,7 @@ class CreateSequence extends React.Component {
       deleteid: '',
       error: false,
       openPopover: false,
+      ShowTrigger: false,
       disabled: true,
       targetValue: '',
       selectedDays: '0',
@@ -220,6 +221,10 @@ class CreateSequence extends React.Component {
     let segmentation = this.state.segmentation
     segmentation.splice(index, 1)
     this.setState({segmentationOptions: segmentationOptions, segmentation: segmentation})
+    this.ShowDialogTrigger = this.ShowDialogTrigger.bind(this)
+    this.CloseDialogTrigger = this.CloseDialogTrigger.bind(this)
+    this.validateTrigger = this.validateTrigger.bind(this)
+    this.saveTriggerMessage = this.saveTriggerMessage.bind(this)
   }
 
   gotoView (message) {
@@ -234,6 +239,62 @@ class CreateSequence extends React.Component {
         pathname: `/createMessageSeq`,
         state: {title: message.title, payload: message.payload, id: this.state.sequenceId, messageId: message._id}
       })
+    }
+  }
+  saveTriggerMessage () {
+    this.props.updateTrigger({
+      trigger: [{
+        event: this.state.eventNameSelected,
+        value: this.state.selectedMessageClickId,
+        buttonTitle: this.state.selectedButton }],
+      type: 'message',
+      messageId: this.state.selectedMessageId
+    })
+    this.setState({ShowTrigger: false})
+  }
+  validateTrigger () {
+    console.log('validating TRIGGER')
+    if (this.state.displayAction === true) {
+      if (this.state.selectedButton === '') {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      if (this.state.selectedMessageClickId === '') {
+        return false
+      }
+      return true
+    }
+  }
+  onSelectedDropDownButton (buttonTitle) {
+    console.log('Button title name is ', buttonTitle)
+    this.setState({selectedButton: buttonTitle})
+  }
+  onSelectedMessage (Message) {
+    console.log('Selected Message id is:', Message)
+    let buttonList = []
+    this.props.messages.map((message, i) => {
+      if (message._id === Message) {
+        message.payload.map((payload, j) => {
+          if (payload.buttons) {
+            payload.buttons.map((button, k) => {
+              buttonList.push(button) 
+            })
+          }
+        })
+      }
+    })
+    console.log('The buttonList is  ', buttonList)
+    this.setState({buttonList: buttonList, selectedMessageClickId: Message})
+  }
+  onSelectedOption (menu) {
+    if (menu === 'clicks') {
+      this.setState({displayAction: true, eventNameSelected: menu})
+      console.log('Display action set true')
+    } else {
+      this.setState({displayAction: false, eventNameSelected: menu, selectedButton: ''})
+      console.log('Display action set false')
     }
   }
 
@@ -314,6 +375,14 @@ class CreateSequence extends React.Component {
 
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
+  }
+  ShowDialogTrigger (message) {
+    console.log('the message id is', message._id)
+    this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
+  }
+
+  CloseDialogTrigger (message) {
+    this.setState({ShowTrigger: false, displayAction: false, buttonList: [], selectedButton: '', selectedMessageClickId: ''})
   }
 
   showDialogSegmentation (message) {
@@ -637,7 +706,7 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                         None
                                         </span>
-                                        <span className='sequence-link'> -- Edit</span>
+                                        <span onClick={() => this.ShowDialogTrigger(message)} className='sequence-link'> -- Edit</span>
                                     </span>
 
                                     {/* <span style={{display: 'block'}}>
@@ -732,9 +801,14 @@ function mapDispatchToProps (dispatch) {
     deleteMessage: deleteMessage,
     setSchedule: setSchedule,
     createMessage: createMessage,
+<<<<<<< HEAD
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
     updateSegmentation: updateSegmentation
+=======
+    updateTrigger: updateTrigger,
+    setStatus: setStatus
+>>>>>>> message-sequencing-v2
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
