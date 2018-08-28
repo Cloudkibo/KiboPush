@@ -110,7 +110,7 @@ export function getAdminSubscriptions () {
 export function updateMode (data) {
   console.log('data for updateMode', data)
   return (dispatch) => {
-    callApi('user/changeUIMode', 'post', data).then(res => {
+    callApi('users/changeUIMode', 'post', data).then(res => {
       console.log('response from updateMode', res)
       if (res.status === 'success') {
         dispatch(showUpdatedUserDetails(res.payload))

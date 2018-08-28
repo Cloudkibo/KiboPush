@@ -153,7 +153,9 @@ class Sidebar extends Component {
   }
 
   showBroadcastsItem () {
+    console.log('broadcasts state', this.state.broadcasts)
     if (this.props.user) {
+      console.log('broadcasts props', this.props.user.uiMode)
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -408,6 +410,7 @@ class Sidebar extends Component {
   }
 
   render () {
+    console.log('render in sidebar')
     if (this.props.user && this.props.user.permissionsRevoked) {
       //  browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
@@ -496,6 +499,7 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('state in sidebar', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),

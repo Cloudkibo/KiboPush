@@ -220,7 +220,7 @@ class Header extends React.Component {
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
                           <div className='btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand' style={{display: 'inline-block'}}>
-                            <span className='m-nav__link-text' style={{verticalAlign: 'middle', textAlign: 'center'}}>{this.props.user.uiMode ? this.props.user.uiMode.mode : 'default'}&nbsp;<i className='fa fa-chevron-down' />
+                            <span className='m-nav__link-text' style={{verticalAlign: 'middle', textAlign: 'center'}}>{this.props.user.uiMode && this.props.user.uiMode.mode === 'kiboengage' ? 'Cutomer Engagement' : this.props.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : this.props.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'all'}&nbsp;<i className='fa fa-chevron-down' />
                             </span>
                           </div>
                         </span>
