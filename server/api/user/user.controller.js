@@ -146,10 +146,26 @@ exports.index = function (req, res) {
             user.currentPlan = company.stripe.plan
             user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
+            user.uiMode = config.uiModes[user.uiMode]
             res.status(200).json({status: 'success', payload: user})
           })
         })
       })
+    })
+  })
+}
+
+exports.changeMode = function (req, res) {
+  Users.update({_id: req.user._id}, {uiMode: req.body.mode}, (err, updatedUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: config.uiModes[req.body.mode]
     })
   })
 }
