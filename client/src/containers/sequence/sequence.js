@@ -240,16 +240,12 @@ class Sequence extends React.Component {
   }
 
   handleSequenceDropdown (event) {
-    // const selectedIndex = event.target.options.selectedIndex
-    // let selectedSeqId = event.target.options[selectedIndex].getAttribute('data-key')
-    //let selectedSeqId = event.target.value
-    //console.log('id--val' + selectedSeqId)
+   
     this.setState({ selectedDropdownVal: event.target.value })
   }
 
   handlePollsDropdown (event) {
-    // const selectedIndex = event.target.options.selectedIndex
-    // let selectPollId = event.target.options[selectedIndex].getAttribute('data-key')
+   
     this.setState({ selectedDropdownVal: event.target.value })
   }
 
@@ -666,6 +662,72 @@ class Sequence extends React.Component {
                         : <span>
                           <p> No data to display </p>
                         </span>
+                          <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                        </div>
+                        {
+                          this.state.sequencesData && this.state.sequencesData.length > 0
+                          ? <div>{
+                            this.state.sequencesData.map((sequence, i) => (
+                              <div key={i} className='sequence-box'>
+                                <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
+
+                                <span>
+                                  <span className='sequence-name'>
+                                    {sequence.sequence.name}
+                                  </span>
+                                  <br />
+                                  <span>
+                                    <span>Trigger</span>:
+                                      <span className='sequence-trigger' style={{marginLeft: '10px'}}>
+                                        When subscriber subscribes to this sequence.
+                                      </span>
+                                    <span className='sequence-link'>
+                                        -- Edit
+                                    </span>
+                                  </span>
+                                </span>
+
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '20%'}}>
+                                  <span className='sequence-number'>{sequence.subscribers.length}</span>
+                                  <br />
+                                  <span>Subscribers</span>
+                                </span>
+
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
+                                  <span className='sequence-number'>{sequence.messages.length}</span>
+                                  <br />
+                                  <span>Messages</span>
+                                </span>
+
+                                <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%', cursor: 'pointer'}} onClick={() => this.goToEdit(sequence.sequence)}>
+                                  <i className='fa fa-edit' style={{fontSize: '24px'}} />
+                                  <br />
+                                  <span>Edit</span>
+                                </span>
+                              </div>
+                            ))
+                          }
+                            <div className='pagination'>
+                              <ReactPaginate
+                                previousLabel={'previous'}
+                                nextLabel={'next'}
+                                breakLabel={<a>...</a>}
+                                breakClassName={'break-me'}
+                                pageCount={Math.ceil(this.state.totalLength / 5)}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={3}
+                                onPageChange={this.handlePageClick}
+                                containerClassName={'pagination'}
+                                subContainerClassName={'pages pagination'}
+                                activeClassName={'active'} />
+                            </div>
+                          </div>
+                          : <p>No data to display</p>
+                        }
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
                     }
                   </div>
                 </div>

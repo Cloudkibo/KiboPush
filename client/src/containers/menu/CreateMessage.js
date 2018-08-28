@@ -20,6 +20,7 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
+import { onClickText, onImageClick, onCardClick, onGalleryClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick } from '../menu/utility'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -188,6 +189,8 @@ class CreateMessage extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -444,7 +447,7 @@ class CreateMessage extends React.Component {
               <div>
                 <div className='row' >
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={timeStamp} component='text' key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: temp.length, text: '', button: []}) }}>
+                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
                         <h6>Text</h6>
@@ -452,7 +455,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={timeStamp} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}); this.handleImage({id: temp.length, componentType: 'image', image_url: '', fileurl: ''}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onImageClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                         <h6>Image</h6>
@@ -460,7 +463,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={timeStamp} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: temp.length, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
                         <h6>Card</h6>
@@ -468,7 +471,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={timeStamp} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: temp.length, componentType: 'gallery', cards: []}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                         <h6>Gallery</h6>
@@ -478,7 +481,7 @@ class CreateMessage extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'audio', fileurl: ''}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onAudioClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                         <h6>Audio</h6>
@@ -486,7 +489,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'video', fileurl: ''}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onVideoClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
                         <h6>Video</h6>
@@ -494,7 +497,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'file', fileurl: ''}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
                         <h6>File</h6>
@@ -502,7 +505,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<List id={timeStamp} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />)}]}); this.handleList({id: temp.length, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
                         <h6>List</h6>
@@ -512,7 +515,7 @@ class CreateMessage extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, {content: (<Media id={timeStamp} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}); this.handleMedia({id: temp.length, componentType: 'media', fileurl: '', buttons: []}) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
                       <div className='align-center'>
                         <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
                         <h6>Media</h6>
@@ -531,7 +534,7 @@ class CreateMessage extends React.Component {
             </div>
             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
               <div style={{padding: '25px'}} className='row' />
-              <StickyDiv offsetTop={70} zIndex={1}>
+              <StickyDiv zIndex={1}>
                 <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
                   <div style={{padding: '5px'}}>
                     <h3>Message</h3>

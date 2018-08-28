@@ -19,6 +19,8 @@ const PollPage = require('../page_poll/page_poll.model')
 const mongoose = require('mongoose')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const sortBy = require('sort-array')
+const Users = require('./../user/Users.model')
+const needle = require('needle')
 
 let _ = require('lodash')
 
@@ -352,7 +354,6 @@ exports.stats = function (req, res) {
                 })
               }
               let allPagesWithoutDuplicates = removeDuplicates(allPages, 'pageId')
-              console.log(allPagesWithoutDuplicates)
               payload.totalPages = allPagesWithoutDuplicates.length
 
               if (err) {
@@ -365,6 +366,58 @@ exports.stats = function (req, res) {
                     return res.status(500)
                       .json({status: 'failed', description: JSON.stringify(err)})
                   }
+                  userPages.forEach((page) => {
+                    if (page.userId) {
+                      Users.findOne({_id: page.userId}, (err, connectedUser) => {
+                        if (err) {
+                          return res.status(500).json({
+                            status: 'failed',
+                            description: `Internal Server Error ${JSON.stringify(err)}`
+                          })
+                        }
+                        var currentUser
+                        if (req.user.facebookInfo) {
+                          currentUser = req.user
+                        } else {
+                          currentUser = connectedUser
+                        }
+                        needle.get(
+                          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                          (err, resp) => {
+                            if (err) {
+                              logger.serverLog(TAG,
+                                `Page access token from graph api error ${JSON.stringify(
+                                  err)}`)
+                            }
+                            if (resp.body && resp.body.access_token) {
+                              needle.get(
+                              `https://graph.facebook.com/v2.11/me/messaging_feature_review?access_token=${resp.body.access_token}`,
+                              (err, respp) => {
+                                if (err) {
+                                  logger.serverLog(TAG,
+                                    `Page access token from graph api error ${JSON.stringify(
+                                      err)}`)
+                                }
+                                if (respp.body && respp.body.data && respp.body.data.length > 0) {
+                                  for (let a = 0; a < respp.body.data.length; a++) {
+                                    if (respp.body.data[a].feature === 'subscription_messaging' && respp.body.data[a].status === 'approved') {
+                                      Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
+                                        if (err) {
+                                          res.status(500).json({
+                                            status: 'Failed',
+                                            description: 'Failed to update record'
+                                          })
+                                        }
+                                      })
+                                    }
+                                  }
+                                }
+                              })
+                            }
+                          })
+                      })
+                    }
+                  })
                   // let userPagesCount = userPages.length
                   // for (let a = 0; a < allPages.length; a++) {
                   //   let increment = true

@@ -177,6 +177,7 @@ export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
 export const RESEND_FAILURE = 'RESEND_FAILURE'
 export const RESEND_SUCCESS = 'RESEND_SUCCESS'
+export const SKIP_SUCCESS = 'SKIP_SUCCESS'
 
 // constants for subscribers
 export const LOAD_SUBSCRIBERS_LIST = 'LOAD_SUBSCRIBERS_LIST'

@@ -227,7 +227,7 @@ class PollsInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '120px'}}>{poll.statement}</span></td>
-                                { poll.user[0] && (poll.user[0].plan === 'plan_A' || poll.user[0].plan === 'plan_B')
+                                { poll.company[0] && poll.company[0].stripe && poll.company[0].stripe.plan && (poll.company[0].stripe.plan === 'plan_A' || poll.company[0].stripe.plan === 'plan_B')
                               ? <td data-field='user' className='m-datatable__cell'>
                                 <span style={{width: '120px'}}>{poll.user[0].name}</span></td>
                                 : <td data-field='user' className='m-datatable__cell'>

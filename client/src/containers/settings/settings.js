@@ -150,7 +150,7 @@ class Settings extends React.Component {
   }
   setBilling () {
     this.setState({
-      openTab: 'billing'
+      openTab: 'billing', show: false
     })
   }
   setWebhook () {

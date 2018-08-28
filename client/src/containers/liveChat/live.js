@@ -157,25 +157,20 @@ class LiveChat extends React.Component {
 
   handleSearch (e) {
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-    if (e.target.value !== '') {
-      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-    } else {
-      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
-      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
-    }
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
   }
 
   handleSort (value) {
     this.setState({sortValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   handleFilter (value) {
     this.setState({filterValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
   }
 
   showDropdown () {
@@ -322,20 +317,27 @@ class LiveChat extends React.Component {
         }
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-content'>
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
+            <div className='row'>
+              <div className='col'>
+                <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                  <div className='m-alert__icon'>
+                    <i className='flaticon-technology m--font-accent' />
+                  </div>
+                  <div className='m-alert__text'>
+                    Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank'>Click Here. </a>
+                    Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
+                  </div>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                Need help in understanding this page? <a href='http://kibopush.com/live-chat/' target='_blank'>Click Here. </a>
-                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial.</a>
-              </div>
-              <br />
-              <div className='m-alert__icon'>
-                <i className='flaticon-exclamation m--font-brand' />
-              </div>
-              <div className='m-alert__text'>
-                To view Facebook guidelines regarding types of messages <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Click here.</Link>
+              <div className='col'>
+                <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+                  <div className='m-alert__icon'>
+                    <i className='flaticon-exclamation m--font-brand' />
+                  </div>
+                  <div className='m-alert__text'>
+                    To view Facebook guidelines regarding types of messages <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Click here.</Link>
+                  </div>
+                </div>
               </div>
             </div>
             {
@@ -806,7 +808,8 @@ class LiveChat extends React.Component {
                   </div>
                   <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                     <div className='panel-body'>
-                      <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                      <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
                     </div>
                   </div>
                 </div>

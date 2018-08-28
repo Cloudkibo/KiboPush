@@ -11,7 +11,6 @@ import EditButton from './EditButton'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../utility/utils'
-import templates from '../templates/templates';
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -276,8 +275,8 @@ class Card extends React.Component {
       return elm
     })
     this.setState({button: temp}, () => {
-      console.log('In edit temp the value of temp is',temp)
-      console.log('In edit button the value of button is',this.state.button)
+      console.log('In edit temp the value of temp is', temp)
+      console.log('In edit button the value of button is', this.state.button)
       this.props.handleCard({id: this.props.id,
         componentType: 'card',
         fileurl: this.state.fileurl,
@@ -289,11 +288,10 @@ class Card extends React.Component {
         description: this.state.subtitle,
         buttons: this.state.button})
     })
-
-    
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
+    console.log('temp in removeButton', temp)
     this.setState({button: temp})
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
@@ -304,7 +302,7 @@ class Card extends React.Component {
       size: this.state.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: this.state.button})
+      buttons: temp})
   }
 
   setLoading () {
@@ -399,6 +397,7 @@ class Card extends React.Component {
               <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '90%' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             </center>
           </div>
+          
           {!this.state.checkbox &&
           <div style={{display: 'inline-grid', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
@@ -417,8 +416,8 @@ class Card extends React.Component {
           </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
-            <div className='col-md-2' style={{display: 'contents'}} onClick={this.removeImage}>
-              <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
+            <div className='col-md-2' style={{display: 'contents'}} >
+              <i className='fa fa-times-circle-o' style={{fontSize: '1rem', position: 'relative', marginLeft: '7px'}} onClick={this.removeImage} />
             </div>
           }
         </div>
@@ -426,9 +425,7 @@ class Card extends React.Component {
         <div className='row'>
           <div className='col-md-6'>
             {(!this.state.button || !this.state.button.length > 0) &&
-            <div className='ui-block hoverborder' style={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
-              <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-            </div>
+              <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
             }
             {(this.state.button) ? this.state.button.map((obj, index) => {
               return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>

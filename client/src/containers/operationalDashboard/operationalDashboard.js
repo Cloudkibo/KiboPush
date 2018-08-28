@@ -375,7 +375,7 @@ class OperationalDashboard extends React.Component {
   onFilterByGender (e) {
     //  var filtered = []
     this.setState({genderValue: e.target.value})
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
     } else {
@@ -415,7 +415,7 @@ class OperationalDashboard extends React.Component {
 
   onFilterByLocale (e) {
     this.setState({localeValue: e.target.value})
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
     } else {
@@ -566,7 +566,7 @@ class OperationalDashboard extends React.Component {
                                 <label style={{color: '#716aca'}}>Filters:</label>
                                 <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
                                   <option value='' disabled>Filter by gender...</option>
-                                  <option value=''>All</option>
+                                  <option value='all'>All</option>
                                   {
                                     this.state.genders.map((gender, i) => (
                                       <option value={gender.value}>{gender.label}</option>
@@ -576,7 +576,7 @@ class OperationalDashboard extends React.Component {
                                 <br />
                                 <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale} style={{marginTop: '10px', width: '155px'}}>
                                   <option key='' value='' disabled>Filter by Locale...</option>
-                                  <option key='ALL' value=''>ALL</option>
+                                  <option key='ALL' value='all'>ALL</option>
                                   {
                                     this.props.locales && this.props.locales.map((locale, i) => (
                                       <option key={i} value={locale}>{locale}</option>

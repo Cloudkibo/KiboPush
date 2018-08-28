@@ -35,6 +35,10 @@ export function downloadSampleFile () {
       fileDownload(csv, 'sampleFile.csv')
     }
   })
+  return {
+    type: ActionTypes.SAVE_PHONE_NUMBERS,
+    data: ''
+  }
 }
 export function clearAlertMessage () {
   return {

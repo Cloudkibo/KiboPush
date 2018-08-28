@@ -11,6 +11,13 @@
     position: relative;
 }
 
+}
+
+.sequence-input {
+  border-radius: 5px;
+  border: 1px solid grey
+}
+
 .sequence-link {
   color: #5867dd;
   cursor: pointer;
