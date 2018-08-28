@@ -16,6 +16,17 @@ export function showAllSequenceNew (data) {
     count: data.count
   }
 }
+export function updateTrigger (data) {
+  console.log('updateTrigger data', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/updateTrigger', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('data send successfully')
+        }
+      })
+  }
+}
 
 export function showSubscriberSequence (data) {
   return {
