@@ -251,15 +251,12 @@ export function updateTrigger (data) {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
         if (res.status === 'success') {
+          console.log('data updated successfully')
+        } else {
+          if (res.status === 'failed' && res.description) {
+            console.log('error in updating' + res.description)
+          }
         }
-
-        // } else {
-        //   if (res.status === 'failed' && res.description) {
-        //     //msg.error(`Failed . ${res.description}`)
-        //   } else {
-        //     msg.error('Failed ')
-        //   }
-        // }
       })
   }
 }
