@@ -240,6 +240,89 @@ const all = {
         price: 0
       }
     }
+  },
+
+  uiModes: {
+    kiboengage: {
+      broadcasts: true,
+      polls: true,
+      surveys: true,
+      sequenceMessaging: true,
+      templates: true,
+      livechat: false,
+      smartReplies: false,
+      abandonedCarts: false,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: true,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    },
+    kibochat: {
+      broadcasts: false,
+      polls: false,
+      surveys: false,
+      sequenceMessaging: false,
+      templates: false,
+      livechat: true,
+      smartReplies: true,
+      abandonedCarts: false,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: false,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    },
+    kibocommerce: {
+      broadcasts: false,
+      polls: false,
+      surveys: false,
+      sequenceMessaging: false,
+      templates: false,
+      livechat: false,
+      smartReplies: false,
+      abandonedCarts: true,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: false,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    },
+    all: {
+      broadcasts: true,
+      polls: true,
+      surveys: true,
+      sequenceMessaging: true,
+      templates: true,
+      livechat: true,
+      smartReplies: true,
+      abandonedCarts: true,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: true,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    }
   }
 }
 
