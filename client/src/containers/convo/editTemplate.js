@@ -380,6 +380,7 @@ class EditTemplate extends React.Component {
 
         temp[i].listItems = obj.listItems
         temp[i].topElementStyle = obj.topElementStyle
+        temp[i].buttons = obj.buttons
         isPresent = true
       }
     })

@@ -101,7 +101,7 @@ class Sidebar extends Component {
     }
   }
   showCommentCapture () {
-    if (this.props.user && this.props.user.isSuperUser && this.props.user.advancedMode) {
+    if (this.props.user && this.props.user.advancedMode) {
       // include user persmissions
       if (this.state.commentCapture) {
         return (

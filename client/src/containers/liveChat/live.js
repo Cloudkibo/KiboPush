@@ -157,25 +157,20 @@ class LiveChat extends React.Component {
 
   handleSearch (e) {
     this.setState({searchValue: e.target.value.toLowerCase(), filter: true})
-    if (e.target.value !== '') {
-      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
-    } else {
-      this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
-      this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: ''}})
-    }
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: this.state.filterValue, search_value: e.target.value.toLowerCase()}})
   }
 
   handleSort (value) {
     this.setState({sortValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
   }
 
   handleFilter (value) {
     this.setState({filterValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: this.props.closeSessions.length > 0 ? this.props.closeSessions[this.props.closeSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: this.props.openSessions.length > 0 ? this.props.openSessions[this.props.openSessions.length - 1]._id : 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
+    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: this.state.sortValue, page_value: value, search_value: this.state.searchValue}})
   }
 
   showDropdown () {
