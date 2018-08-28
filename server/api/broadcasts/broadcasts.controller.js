@@ -2738,7 +2738,7 @@ const sendSequence = (batchMessages, page) => {
   form.append('batch', batchMessages)
 }
 
-function getAllMessagesOfSequencesSubscribers (subscriber) {
+exports.getAllMessagesOfSequencesSubscribers = function (subscriber) {
   // keep all the messages of all the sequences that the user is subscribed to
   let subscribedSequenceMessages = []
 
@@ -2764,12 +2764,12 @@ function getAllMessagesOfSequencesSubscribers (subscriber) {
           }
         })
       }
+      return subscribedSequenceMessages
     }
   })
-  return subscribedSequenceMessages
 }
 // get all the sentMessages to the subscriber
-function getSentSequenceMessages (subscriber) {
+exports.getSentSequenceMessages = function (subscriber) {
   let sentSequenceMessageIds = []
   SequenceSubscriberMessages.find({ subscriberId: subscriber._id }, (err, sentMessages) => {
     if (err) {
@@ -2779,12 +2779,12 @@ function getSentSequenceMessages (subscriber) {
       for (let sentSequenceMessage of sentMessages) {
         sentSequenceMessageIds.push(sentSequenceMessage._id)
       }
+      return sentSequenceMessageIds
     }
   })
-  return sentSequenceMessageIds
 }
 // find the message to be scheduled on basis of event seen/clicked etc..
-function findMessageToBeScheduled (subscribedSequenceMessages, sentSequenceMessageIds, subscriber) {
+exports.findMessageToBeScheduled = function (subscribedSequenceMessages, sentSequenceMessageIds, subscriber, triggerEvent) {
   // iterate through the array of subscribed sequencemessages
   for (let subscribedSequenceMessage of subscribedSequenceMessages) {
     // get the trigger of message
@@ -2792,7 +2792,7 @@ function findMessageToBeScheduled (subscribedSequenceMessages, sentSequenceMessa
     if (msgTrigger.value !== null && msgTrigger.event !== 'none') {
       for (let sentSequenceMsgId of sentSequenceMessageIds) {
         // if the sentmessages id is in the sequenceMessages
-        if (msgTrigger.value === sentSequenceMsgId && msgTrigger.event === 'seen') {
+        if (msgTrigger.value === sentSequenceMsgId && msgTrigger.event === triggerEvent ) {
           // schedule the message
           scheduleSequenceMessage(subscriber, subscribedSequenceMessage)
         }
