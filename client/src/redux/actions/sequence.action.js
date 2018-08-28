@@ -16,17 +16,6 @@ export function showAllSequenceNew (data) {
     count: data.count
   }
 }
-export function updateTrigger (data) {
-  console.log('updateTrigger data', data)
-  return (dispatch) => {
-    callApi('sequenceMessaging/updateTrigger', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log('data send successfully')
-        }
-      })
-  }
-}
 
 export function showSubscriberSequence (data) {
   return {
@@ -239,6 +228,22 @@ export function deleteMessage (id, msg, seqId) {
             msg.error(`Failed to delete Message. ${res.description}`)
           } else {
             msg.error('Failed to delete Message')
+          }
+        }
+      })
+  }
+}
+
+export function updateTrigger (data, msg) {
+  return (dispatch) => {
+    callApi('sequenceMessaging/updateTrigger', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Sequence Trigger Updated Successfully')
+        } else {
+          if (res.status === 'failed' && res.description) {
+            console.log('error in updating sequence trigger' + res.description)
+            msg.error(`Failed to delete Message. ${res.description}`)
           }
         }
       })
