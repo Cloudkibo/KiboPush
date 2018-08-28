@@ -246,7 +246,6 @@ export function deleteMessage (id, msg, seqId) {
 }
 
 export function updateTrigger (data) {
-  console.log('data' + JSON.stringify(data))
   return (dispatch) => {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
