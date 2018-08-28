@@ -2738,8 +2738,8 @@ const sendSequence = (batchMessages, page) => {
   form.append('batch', batchMessages)
 }
 
-exports.getAllMessagesOfSequencesSubscribers = function (subscriber) {
-  // keep all the messages of all the sequences that the user is subscribed to
+const getAllMessagesOfSequencesSubscribers = (subscriber) => {
+    // keep all the messages of all the sequences that the user is subscribed to
   let subscribedSequenceMessages = []
 
   // find the sequences that the subscriber is subscribed to
@@ -2769,7 +2769,7 @@ exports.getAllMessagesOfSequencesSubscribers = function (subscriber) {
   })
 }
 // get all the sentMessages to the subscriber
-exports.getSentSequenceMessages = function (subscriber) {
+const getSentSequenceMessages = (subscriber) => {
   let sentSequenceMessageIds = []
   SequenceSubscriberMessages.find({ subscriberId: subscriber._id }, (err, sentMessages) => {
     if (err) {
@@ -2784,7 +2784,7 @@ exports.getSentSequenceMessages = function (subscriber) {
   })
 }
 // find the message to be scheduled on basis of event seen/clicked etc..
-exports.findMessageToBeScheduled = function (subscribedSequenceMessages, sentSequenceMessageIds, subscriber, triggerEvent) {
+const findMessageToBeScheduled = (subscribedSequenceMessages, sentSequenceMessageIds, subscriber, triggerEvent) => {
   // iterate through the array of subscribed sequencemessages
   for (let subscribedSequenceMessage of subscribedSequenceMessages) {
     // get the trigger of message
@@ -2876,3 +2876,6 @@ function scheduleSequenceMessage (subscriber, message) {
     }
   })
 }
+exports.getAllMessagesOfSequencesSubscribers = getAllMessagesOfSequencesSubscribers
+exports.getSentSequenceMessages = getSentSequenceMessages
+exports.findMessageToBeScheduled = findMessageToBeScheduled
