@@ -996,7 +996,6 @@ exports.deleteMessage = function (req, res) {
 }
 
 exports.updateTrigger = function (req, res) {
-  console.log('in update triggerrr')
   let parametersMissing = false
 
   if (!_.has(req.body, 'trigger')) parametersMissing = true
