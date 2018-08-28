@@ -251,9 +251,6 @@ export function updateTrigger (data) {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          console.log('response---' + 'seq')
-          //msg.success('updated successfully')
-          //dispatch(fetchAllSequence())
         }
 
         // } else {

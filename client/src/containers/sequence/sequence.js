@@ -466,7 +466,7 @@ class Sequence extends React.Component {
                      </label> */}
                        When subscriber has seen all the messages of specific sequence
                       {
-                        this.state.isShowSequenceDropDown &&
+                        this.state.isShowSequenceDropDown && this.state.sequenceList.length > 0 &&
                         <select className='form-control m-input' onChange={this.handleSequenceDropdown} value={this.state.selectedDropdownVal} >
 
                           {
@@ -496,7 +496,7 @@ class Sequence extends React.Component {
                      </label> */}
                        When subscriber unsubscribes from specific sequence
                       {
-                        this.state.isShowSequenceDropDownUnsub &&
+                        this.state.isShowSequenceDropDownUnsub && this.state.sequenceList.length > 0 &&
                         <select className='form-control m-input' onChange={this.handleSequenceDropdown} value={this.state.selectedDropdownVal}
                         >
                           {
@@ -523,7 +523,7 @@ class Sequence extends React.Component {
                      </label> */}
                        When subscriber responds to specific poll
                       {
-                        this.state.isShowPollsDropdown &&
+                        this.state.isShowPollsDropdown && this.props.polls.length > 0 &&
                         <select className='form-control m-input' onChange={this.handlePollsDropdown} value={this.state.selectedDropdownVal}>
                           {
                             this.props.polls.map(function (poll) {
