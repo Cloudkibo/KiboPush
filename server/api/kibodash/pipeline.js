@@ -161,4 +161,4 @@ exports.selectTwitterType = { $match: { subscriptionType: 'twitter' } }
 
 exports.selectFacebookType = { $match: { subscriptionType: 'facebook' } }
 
-exports.selectWordpressType = { $match: { subscriptionType: 'twitter' } }
+exports.selectWordpressType = { $match: { subscriptionType: 'wordpress' } }

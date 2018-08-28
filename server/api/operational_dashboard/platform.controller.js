@@ -25,7 +25,12 @@ exports.index = (req, res) => {
   }
   request(options)
   .then((result) => {
-    return res.status(200).json({status: 'success', payload: result.payload})
+    if (result.status === 'success' && result.payload.length === 1) {
+      // The array length will always be 1
+      return res.status(200).json({status: 'success', payload: result.payload[0]})
+    } else {
+      return res.status(500).json({status: 'failed', description: 'Unable to fetch data from KiboDash'})
+    }
   })
   .catch((err) => {
     logger.serverLog(TAG, `Error in fetching data from KiboDash ${JSON.stringify(err)}`)
