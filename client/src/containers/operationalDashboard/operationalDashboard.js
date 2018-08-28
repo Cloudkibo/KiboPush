@@ -404,6 +404,8 @@ class OperationalDashboard extends React.Component {
                 lineChartData={this.state.chartData}
                 onDaysChange={this.onDaysChange}
                 selectedDays={this.state.selectedDays}
+                week={this.props.platformStatsWeekly}
+                month={this.props.platformStatsMonthly}
                 />
             </div>
             <div className='row'>

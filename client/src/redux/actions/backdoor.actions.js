@@ -380,7 +380,7 @@ export function fetchAutopostingUserWiseDateWise (startDate, companyId) {
 
 export function fetchPlatformStatsWeekly () {
   let date = new Date()
-  date.setDate(date.getDate() - 7)
+  date.setDate(date.getDate() - 10)
   return (dispatch) => {
     callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
       .then(res => dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload)))
