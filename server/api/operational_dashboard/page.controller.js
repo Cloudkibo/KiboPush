@@ -5,6 +5,8 @@ const logger = require('../../components/logger')
 const TAG = 'api/operational_dashboard/operational.controller.js'
 const request = require('request-promise')
 const config = require('../../config/environment/index')
+const Pages = require('../pages/Pages.model')
+const utility = require('./utility')
 
 /*
 Endpoint: /api/v1/PagewiseData
@@ -117,7 +119,22 @@ exports.topPages = (req, res) => {
   }
   request(options)
   .then((result) => {
-    return res.status(200).json({status: 'success', payload: result.payload})
+    let pageIds = utility.getPageIdsFromTopPagesPayload(result.payload)
+    if (pageIds) {
+      Pages.find({pageId: {$in: pageIds}})
+      .populate('userId')
+      .exec()
+      .then((results) => {
+        let finalPayload = utility.mergePayload(results, result.payload)
+        return res.status(200).json({status: 'success', payload: finalPayload})
+      })
+      .catch((err) => {
+        logger.serverLog(TAG, `Error in fetching data from KiboDash ${JSON.stringify(err)}`)
+        return res.status(500).json({status: 'failed', description: err})
+      })
+    } else {
+      return res.status(500).json({status: 'failed', description: 'Error in finding pageIds'})
+    }
   })
   .catch((err) => {
     logger.serverLog(TAG, `Error in fetching data from KiboDash ${JSON.stringify(err)}`)

@@ -375,3 +375,35 @@ export function fetchAutopostingUserWiseDateWise (startDate, companyId) {
       .then(res => dispatch(handleAction(ActionTypes.UPDATE_AUTPOSTING_USER_RANGED, res.payload)))
   }
 }
+
+// -- Custom Actions ---
+
+export function fetchPlatformStatsWeekly () {
+  let date = new Date()
+  date.setDate(date.getDate() - 10)
+  return (dispatch) => {
+    callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
+      .then(res => dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload)))
+  }
+}
+
+export function fetchPlatformStatsMonthly () {
+  let date = new Date()
+  date.setDate(date.getDate() - 30)
+  return (dispatch) => {
+    callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
+      .then(res => dispatch(handleAction(ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS, res.payload)))
+  }
+}
+
+export function downloadSubscribersData (pageId) {
+  callApi(`backdoor/allsubscribers/${pageId}`)
+      .then(res => {
+        if (res.status === 'success' && res.payload) {
+          console.log('Herray', res)
+          fileDownload(res.payload, 'subscribers.csv')
+        } else {
+          console.log('Cannot fetch the subscriber data')
+        }
+      })
+}

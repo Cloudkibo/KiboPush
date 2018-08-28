@@ -5,14 +5,69 @@ class PlatformStats extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      options: [
-        { value: 10, label: '10 days' },
-        { value: 30, label: '30 days' }],
-      selectedValue: 0
+      selectedValue: 'all',
+      users: 0,
+      broadcasts: 0,
+      polls: 0,
+      surveys: 0
+    }
+    this.updateCurrentState = this.updateCurrentState.bind(this)
+  }
+
+  aggregateStats (data) {
+    let aggregate = {
+      totalBroadcasts: 0,
+      totalUsers: 0,
+      totalPolls: 0,
+      totalSurveys: 0
+    }
+    data.map((item) => {
+      aggregate.totalBroadcasts += item.totalBroadcasts
+      aggregate.totalPolls += item.totalPolls
+      aggregate.totalSurveys += item.totalSurveys
+      aggregate.totalUsers += item.totalUsers
+    })
+
+    return aggregate
+  }
+
+  updateCurrentState (data) {
+    this.setState({
+      users: (data.totalUsers) ? data.totalUsers : 0,
+      broadcasts: (data.totalBroadcasts) ? data.totalBroadcasts : 0,
+      polls: (data.totalPolls) ? data.totalPolls : 0,
+      surveys: (data.totalSurveys) ? data.totalSurveys : 0
+    })
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.platformStats && this.state.selectedValue === 'all') {
+      this.updateCurrentState(this.props.platformStats)
+    }
+  }
+
+  onChange (event) {
+    this.setState({selectedValue: event.target.value})
+    switch (event.target.value) {
+      case 'all':
+        this.updateCurrentState(this.props.platformStats)
+        break
+      case '10':
+        let weeklyStats = this.aggregateStats(this.props.weeklyPlatformStats)
+        this.updateCurrentState(weeklyStats)
+        break
+      case '30':
+        let monthlyStats = this.aggregateStats(this.props.monthlyPlatformStats)
+        this.updateCurrentState(monthlyStats)
+        break
+
+      default:
+        break
     }
   }
 
   render () {
+    console.log('Props from Platform Stats', this.props)
     return (
       <div className='row'>
         <div className='col-xl-8' style={{height: '366px'}}>
@@ -97,7 +152,7 @@ class PlatformStats extends React.Component {
                     <div className='m--space-10' />
                     <div className='progress m-progress--sm' style={{height: '6px'}}>
                       {
-                      (this.props.platformStats) 
+                      (this.props.platformStats)
                       ? <div className='progress-bar bg-success' role='progressbar' style={{width: (this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100) + '%'}} aria-valuenow={(this.props.platformStats.totalConnectedPages / this.props.platformStats.totalPages * 100)} aria-valuemin='0' aria-valuemax='100' />
                       : <div className='progress-bar bg-success' role='progressbar' style={{width: 0 + '%'}} aria-valuenow={0} aria-valuemin='0' aria-valuemax='100' />
                     }
@@ -123,7 +178,7 @@ class PlatformStats extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools' style={{textAlign: 'left'}}>
-                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.props.selectedValue} onChange={this.props.logChange}>
+                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.selectedValue} onChange={this.onChange.bind(this)}>
                   <option value='' disabled>Filter by last</option>
                   <option value='all'>All</option>
                   <option value='10'>10 days</option>
@@ -139,7 +194,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.users}
                         <small>
                           Users
                         </small>
@@ -152,7 +207,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.polls}
                         <small>
                           Polls
                         </small>
@@ -166,7 +221,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.broadcasts}
                         <small>
                           Broadcasts
                         </small>
@@ -179,7 +234,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {0}
+                        {this.state.surveys}
                         <small>
                           Surveys
                         </small>
