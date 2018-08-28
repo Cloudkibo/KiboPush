@@ -244,6 +244,7 @@ const all = {
 
   uiModes: {
     kiboengage: {
+      mode: 'kiboengage',
       broadcasts: true,
       polls: true,
       surveys: true,
@@ -264,6 +265,7 @@ const all = {
       commentCapture: true
     },
     kibochat: {
+      mode: 'kibochat',
       broadcasts: false,
       polls: false,
       surveys: false,
@@ -284,6 +286,7 @@ const all = {
       commentCapture: true
     },
     kibocommerce: {
+      mode: 'kibocommerce',
       broadcasts: false,
       polls: false,
       surveys: false,
@@ -304,6 +307,7 @@ const all = {
       commentCapture: true
     },
     all: {
+      mode: 'all',
       broadcasts: true,
       polls: true,
       surveys: true,
