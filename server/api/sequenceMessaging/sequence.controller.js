@@ -729,6 +729,7 @@ exports.subscribeToSequence = function (req, res) {
 
         messages.forEach(message => {
           if (message.schedule.condition === 'immediately') {
+            message.isActive = true
             if (message.isActive === true) {
               Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                 if (err) {
@@ -863,12 +864,21 @@ exports.unsubscribeToSequence = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-
         SequenceMessageQueue.remove({sequenceId: req.body.sequenceId, subscriberId: subscriberId}, (err, result) => {
           if (err) {
             return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-
+          Subscribers.findOne({ _id: subscriberId }, (err, subscriber) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Error occurred in finding subscriber ${JSON.stringify(
+                  err)}`)
+            }
+            if (subscriber) {
+              logger.serverLog(TAG, `Unsubscribes ${JSON.stringify(subscriber)}`)
+              setSequenceTrigger(subscriber.companyId, subscriber._id, {event: 'unsubscribes_from_other_sequence', value: req.body.sequenceId})
+            }
+          })
           if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
             require('./../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
@@ -1044,6 +1054,7 @@ exports.updateSegmentation = function (req, res) {
   }
 
   if (!_.has(req.body, 'messageId')) parametersMissing = true
+  if (!_.has(req.body, 'segmentationCondition')) parametersMissing = true
 
   // If parameter missing return
   if (parametersMissing) {
@@ -1051,16 +1062,17 @@ exports.updateSegmentation = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  Sequences.updateOne({_id: req.body.sequenceId}, {segmentation: req.body.segmentation}, (err, result) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to update record'
+  SequenceMessages.updateOne({_id: req.body.messageId}, {segmentation: req.body.segmentation, segmentationCondition: req.body.segmentationCondition},
+      (err, result) => {
+        if (err) {
+          res.status(500).json({
+            status: 'Failed',
+            description: 'Failed to update record'
+          })
+        } else {
+          res.status(200).json({status: 'success', payload: result})
+        }
       })
-    } else {
-      res.status(200).json({status: 'success', payload: result})
-    }
-  })
 }
 
 exports.testScheduler = function (req, res) {
@@ -1189,3 +1201,113 @@ const sendSequence = (batchMessages, page) => {
   form.append('access_token', page.accessToken)
   form.append('batch', batchMessages)
 }
+
+const setSequenceTrigger = function (companyId, subscriberId, trigger) {
+  Sequences.find({companyId: companyId},
+  (err, sequences) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
+    }
+    if (sequences) {
+      sequences.forEach(sequence => {
+        if (sequence.trigger && sequence.trigger.event) {
+          if ((sequence.trigger.event === trigger.event && !trigger.value) || (sequence.trigger.event === trigger.event && sequence.trigger.value === trigger.value)) {
+            SequenceMessages.find({sequenceId: sequence._id}, (err, messages) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
+              }
+              if (messages) {
+                messages.forEach(message => {
+                  if (message.schedule.condition === 'immediately') {
+                    if (message.isActive === true) {
+                      Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
+                        if (err) {
+                          return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+                        }
+
+                        Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                          if (err) {
+                            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                          }
+
+                          if (message.payload.length > 0) {
+                            AppendURLCount(message, (newPayload) => {
+                              let sequenceSubMessage = new SequenceSubscriberMessage({
+                                subscriberId: subscriberId,
+                                messageId: message._id,
+                                companyId: subscriber.companyId,
+                                datetime: new Date(),
+                                seen: false
+                              })
+                              sequenceSubMessage.save((err2, result) => {
+                                if (err2) {
+                                  return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                }
+                                logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                                SequenceMessages.update(
+                                  {_id: message._id},
+                                  {$inc: {sent: 1}},
+                                  {multi: true}, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                              })
+                            })
+                          }
+                        })
+                      })
+                    }
+                  } else {
+                    let d1 = new Date()
+                    if (message.schedule.condition === 'hours') {
+                      d1.setHours(d1.getHours() + Number(message.schedule.days))
+                    } else if (message.schedule.condition === 'minutes') {
+                      d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+                    } else if (message.schedule.condition === 'day(s)') {
+                      d1.setDate(d1.getDate() + Number(message.schedule.days))
+                    }
+                    let utcDate = new Date(d1)
+                    let sequenceQueuePayload = {
+                      sequenceId: sequence._id,
+                      subscriberId: subscriberId,
+                      companyId: companyId,
+                      sequenceMessageId: message._id,
+                      queueScheduledTime: utcDate,
+                      isActive: message.isActive
+                    }
+                    const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+                    sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                      if (err) {
+                        return logger.serverLog(TAG, `ERROR saving message in queue${JSON.stringify(err)}`)
+                      }
+                    })
+                  }
+                })
+              }
+            })
+
+            let sequenceSubscriberPayload = {
+              sequenceId: sequence._id,
+              subscriberId: subscriberId,
+              companyId: companyId,
+              status: 'subscribed'
+            }
+            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+            sequenceSubcriber.save((err, subscriberCreated) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
+              } else {
+                // insert socket.io code here
+                logger.serverLog(TAG, `Subscribed to sequence successfully`)
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+}
+exports.setSequenceTrigger = setSequenceTrigger

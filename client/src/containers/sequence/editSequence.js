@@ -7,7 +7,7 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation } from '../../redux/actions/sequence.action'
+import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation, updateTrigger } from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
 import { Popover, PopoverBody } from 'reactstrap'
@@ -21,10 +21,26 @@ class CreateSequence extends React.Component {
       deleteid: '',
       error: false,
       openPopover: false,
+      ShowTrigger: false,
       disabled: true,
       targetValue: '',
       selectedDays: '0',
-      condition: 'immediately',
+      condition: 'minutes',
+      sequenceId: '',
+      selectedSequenceId: '',
+      selectedMessageId: '',
+      validSegmentation: false,
+      selectedMessage: '',
+      selectedEvent: '',
+      displayAction: false,
+      selectedMessageClickId: '',
+      selectedButton: '',
+      buttonList: [],
+      eventNameSelected: '',
+      time: 'immediately',
+      isShowModalSchedule: false,
+      isDaysInputDisabled: true,
+      isMinutesInputDisabled: true,
       sequenceId: '',
       isShowingModalSegmentation: false,
       segmentationOptions: [{
@@ -56,6 +72,13 @@ class CreateSequence extends React.Component {
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.gotoView = this.gotoView.bind(this)
+    this.ShowDialogTrigger = this.ShowDialogTrigger.bind(this)
+    this.CloseDialogTrigger = this.CloseDialogTrigger.bind(this)
+    this.validateTrigger = this.validateTrigger.bind(this)
+    this.saveTriggerMessage = this.saveTriggerMessage.bind(this)
+    this.changeTime = this.changeTime.bind(this)
+    this.showDialogSchedule = this.showDialogSchedule.bind(this)
+    this.closeDialogSchedule = this.closeDialogSchedule.bind(this)
     this.addSegmentationOption = this.addSegmentationOption.bind(this)
     this.removeSegmentationOption = this.removeSegmentationOption.bind(this)
     this.saveSegmentation = this.saveSegmentation.bind(this)
@@ -229,6 +252,62 @@ class CreateSequence extends React.Component {
       })
     }
   }
+  saveTriggerMessage () {
+    this.props.updateTrigger({
+      trigger: [{
+        event: this.state.eventNameSelected,
+        value: this.state.selectedMessageClickId,
+        buttonTitle: this.state.selectedButton }],
+      type: 'message',
+      messageId: this.state.selectedMessageId
+    })
+    this.setState({ShowTrigger: false})
+  }
+  validateTrigger () {
+    console.log('validating TRIGGER')
+    if (this.state.displayAction === true) {
+      if (this.state.selectedButton === '') {
+        return false
+      } else {
+        return true
+      }
+    } else {
+      if (this.state.selectedMessageClickId === '') {
+        return false
+      }
+      return true
+    }
+  }
+  onSelectedDropDownButton (buttonTitle) {
+    console.log('Button title name is ', buttonTitle)
+    this.setState({selectedButton: buttonTitle})
+  }
+  onSelectedMessage (Message) {
+    console.log('Selected Message id is:', Message)
+    let buttonList = []
+    this.props.messages.map((message, i) => {
+      if (message._id === Message) {
+        message.payload.map((payload, j) => {
+          if (payload.buttons) {
+            payload.buttons.map((button, k) => {
+              buttonList.push(button)
+            })
+          }
+        })
+      }
+    })
+    console.log('The buttonList is  ', buttonList)
+    this.setState({buttonList: buttonList, selectedMessageClickId: Message})
+  }
+  onSelectedOption (menu) {
+    if (menu === 'clicks') {
+      this.setState({displayAction: true, eventNameSelected: menu})
+      console.log('Display action set true')
+    } else {
+      this.setState({displayAction: false, eventNameSelected: menu, selectedButton: ''})
+      console.log('Display action set false')
+    }
+  }
 
   changeStatus (e, id) {
     this.props.setStatus({ messageId: id, isActive: e.target.checked }, this.state.sequenceId)
@@ -260,8 +339,10 @@ class CreateSequence extends React.Component {
 
   handleDone () {
     this.setState({openPopover: !this.state.openPopover})
-    if (this.state.condition === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.messageId}, this.state.sequenceId)
+    if (this.state.time === 'immediately') {
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.closeDialogSchedule()
+      this.props.fetchAllMessages(this.state.sequenceId)
     } else {
       var d1 = new Date()
       if (this.state.condition === 'hours') {
@@ -272,7 +353,9 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
-      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.messageId}, this.state.sequenceId)
+      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId}, this.state.sequenceId)
+      this.closeDialogSchedule()
+      this.props.fetchAllMessages(this.state.sequenceId)
     }
   }
 
@@ -294,6 +377,41 @@ class CreateSequence extends React.Component {
 
   closeDialogDelete () {
     this.setState({isShowingModalDelete: false})
+  }
+  ShowDialogTrigger (message) {
+    console.log('the message id is', message._id)
+    this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
+  }
+
+  CloseDialogTrigger (message) {
+    this.setState({ShowTrigger: false, displayAction: false, buttonList: [], selectedButton: '', selectedMessageClickId: ''})
+  }
+
+  changeTime (event) {
+    this.setState({time: event.target.value})
+    if (event.target.value === 'immediately') {
+      this.setState({isDaysInputDisabled: true, isMinutesInputDisabled: true, selectedDays: 0, condition: 'minutes'})
+    } else {
+      this.setState({isDaysInputDisabled: false, isMinutesInputDisabled: false, selectedDays: 0, condition: 'minutes'})
+    }
+  }
+
+  showDialogSchedule (message) {
+    this.setState({isShowModalSchedule: true,
+      selectedSequenceId: message.sequenceId,
+      selectedMessageId: message._id,
+      selectedDays: message.schedule.days
+    })
+    if (message.schedule.condition !== 'immediately') {
+      this.setState({time: 'after'})
+      this.setState({condition: message.schedule.condition})
+    } else {
+      this.setState({condition: message.schedule.conditions})
+    }
+  }
+
+  closeDialogSchedule () {
+    this.setState({isShowModalSchedule: false})
   }
 
   showDialogSegmentation (message) {
@@ -377,6 +495,112 @@ class CreateSequence extends React.Component {
             }
 
             {
+              this.state.ShowTrigger &&
+              <ModalContainer style={{width: '600px', paddingLeft: '33px', paddingRight: '33px'}}
+                onClose={this.CloseDialogTrigger}>
+                <ModalDialog style={{width: '600px',  paddingLeft: '33px', paddingRight: '33px'}}
+                  onClose={this.CloseDialogTrigger}>
+                  <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
+                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
+
+                         subscriber 
+                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                        <option disabled selected value>Select Event </option>
+                         <option value='sees'>sees</option>
+                          <option value='clicks'>clicks</option>
+                          <option value='receive'>receive</option>
+                      </select>   
+                        <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
+                        <option disabled selected value>Select Message </option>
+                        {
+                          
+                          this.props.messages.map((message, i) => {
+
+                          if (this.state.selectedMessageId != message._id) {
+                            return <option value={message._id}>{message.title}</option> 
+                          }
+                           
+                          
+                        })}
+                       
+                       </select>
+
+                      
+                       { 
+                         this.state.displayAction && 
+                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                        <option disabled selected value>Select Button </option>
+                       {
+                          
+                          this.state.buttonList.map((button, i) => {
+
+                         
+                            return <option value={button.title}>{button.title}</option> 
+                          
+                           
+                          
+                        })}
+                      </select> 
+                        
+                       
+                       }
+                      
+                  </div>
+                       
+
+                  
+
+                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
+                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                </ModalDialog>
+              </ModalContainer>
+            }
+
+        {this.state.isShowModalSchedule &&
+          <ModalContainer style={{ width: '500px' }}
+            onClose={this.closeDialogSchedule}>
+            <ModalDialog style={{ width: '500px' }}
+              onClose={this.closeDialogSchedule}>
+              <h3>Schedule Message</h3>
+              <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12'>
+                  <p>Send this message:</p>
+                </div>
+              </div>
+              <div className='row'>
+                {console.log('this.state.condition', this.state.condition)}
+                <div className='col-lg-5 col-md-5 col-sm-5' style={{ marginBottom: '10px' }}>
+                  <select className='form-control m-input' onChange={(e, i) => this.changeTime(e, i)}
+                    value={this.state.time}>
+                    <option value='after'>After</option>
+                    <option value='immediately'>Immediately</option>
+                  </select>
+                </div>
+                <div className='col-lg-3 col-md-3 col-sm-3'>
+                  <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays} className='form-control' onChange={this.onDaysChange}
+                    disabled={this.state.time === 'immediately'} />
+                </div>
+                <div className='col-lg-4 col-md-4 col-sm-4'>
+                  <select className='form-control m-input' disabled={this.state.time === 'immediately'}
+                    value={this.state.condition} onChange={(e, i) => this.changeCondition(e, i)} >
+                    <option value='minutes'>Minutes</option>
+                    <option value='hours'>Hours</option>
+                    <option value='day(s)'>Day(s)</option>
+                  </select>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12'><br></br>
+                  <p>after the user is subscribed to this sequence</p>
+                </div>
+              </div>
+              <button onClick={this.handleDone} className='btn btn-primary btn-md pull-right' style={{ marginLeft: '20px' }} > Save </button>
+              <button onClick={() => this.closeDialogSchedule()} style={{ color: '#333', backgroundColor: '#fff', borderColor: '#ccc' }} className='btn pull-right'> Cancel </button>
+            </ModalDialog>
+          </ModalContainer>
+
+        }
+
               this.state.isShowingModalSegmentation &&
               <ModalContainer style={{width: '500px', paddingLeft: '33px', paddingRight: '33px'}}
                 onClose={this.closeDialogSegmentation}>
@@ -555,6 +779,11 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           None
                                         </span>
+
+                                        <span onClick={() => this.ShowDialogTrigger(message)} className='sequence-link'> -- Edit</span>
+                                    </span>
+
+                                    {/* <span style={{display: 'block'}}>
                                         <span className='sequence-link'> -- Edit</span>
                                     </span>
 
@@ -564,19 +793,39 @@ class CreateSequence extends React.Component {
                                           Immediately
                                         </span>
                                         <span className='sequence-link' id={'buttonTarget-' + message._id} ref={(b) => { this.target = b }} onClick={() => this.handleClick(message._id, i)}> -- Edit</span>
+
+                                    </span> */}
+
+                                    <span style={{display: 'block'}}>
+                                      <span>Schedule</span>:
+                                        <span className='sequence-trigger' style={{marginLeft: '10px'}}>
+                                        {message.schedule.condition === 'immediately' ? 'Immediately' : 'After ' + message.schedule.days + ' ' + message.schedule.condition   }
+                                        </span>
+                                      <span onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
+                                    </span> 
+
                                     </span>
+
 
                                     <span style={{display: 'inlineblock'}}>
                                       <span>Segment</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                           None
                                         </span>
+
+                                      <span className='sequence-link'> -- Edit</span>
+
                                       <span onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
+
                                     </span>
                                   </span>
 
                                   <span style={{position: 'relative', bottom: '60px', left: '40%'}}>
+
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%'}}>
+
                                     <span className='sequence-text sequence-centered-text' style={{marginLeft: '19%'}}>
+
                                       <span className='sequence-number'>{message.sent}</span>
                                       <br />
                                       <span>Sent</span>
@@ -588,7 +837,11 @@ class CreateSequence extends React.Component {
                                       <span>Seen</span>
                                     </span>
 
+
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
+
                                     <span className='sequence-text sequence-centered-text' style={{marginLeft: '4%'}}>
+
                                       <span className='sequence-number'>{message.clicks}</span>
                                       <br />
                                       <span>Clicked</span>
@@ -642,9 +895,11 @@ function mapDispatchToProps (dispatch) {
     deleteMessage: deleteMessage,
     setSchedule: setSchedule,
     createMessage: createMessage,
+    updateTrigger: updateTrigger,
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
     updateSegmentation: updateSegmentation
+
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)

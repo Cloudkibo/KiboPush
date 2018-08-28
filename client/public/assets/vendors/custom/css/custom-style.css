@@ -3,12 +3,14 @@
 }
 
 .sequence-box {
-    border: 1px solid rgb(204,204,204);
+    border: 1px solid grey;
     border-radius: 10px;
-    padding: 20px;
+    padding: 25px;
     margin-top: 25px;
-    box-shadow:rgb(204,204,204) 2px 5px;
+    box-shadow:rgba(204,204,204) 3px 5px;
     position: relative;
+}
+
 }
 
 .sequence-input {
@@ -38,6 +40,15 @@
 .sequence-trigger {
   max-width: 250px;
   display: inline-table;
+}
+.sequence-trigger-box {
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 25px;
+  margin-top: 25px;
+  box-shadow:rgba(204,204,204) 3px 5px;
+  position: relative;
+  height:165px;
 }
 
 .sequence-centered-text {
