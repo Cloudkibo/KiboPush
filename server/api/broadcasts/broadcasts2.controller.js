@@ -96,7 +96,7 @@ const sendTestBroadcast = (companyUser, page, payload, req, res) => {
     let temp = subscriptionUser.userId.facebookInfo.name.split(' ')
     let fname = temp[0]
     let lname = temp[1] ? temp[1] : ''
-    utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res)
+    utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res, req.body.fbMessageTag)
   })
 }
 
@@ -129,7 +129,7 @@ const sendToSubscribers = (subscriberFindCriteria, req, res, page, broadcast, co
               err2
             })
           }
-          utility.getBatchData(payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, res, index, taggedSubscribers.length)
+          utility.getBatchData(payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, res, index, taggedSubscribers.length, req.body.fbMessageTag)
         })
       })
     })
