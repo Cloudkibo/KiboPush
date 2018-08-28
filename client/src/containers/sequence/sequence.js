@@ -195,11 +195,11 @@ class Sequence extends React.Component {
     let selectedTriggerValue = event.target.attributes.getNamedItem('data-val').value
     let id = event.target.id
     if (this.state.selectedDivId !== id) {
-      document.getElementById(id).style.background = 'rgb(194, 202, 214)'
+      document.getElementById(id).style.background = 'rgb(194, 202, 214,0.7)'
       document.getElementById(this.state.selectedDivId).style.background = 'rgb(255, 255, 255)'
       this.setState({setSelected: true, selectedDivId: id})
     } else {
-      document.getElementById(this.state.selectedDivId).style.background = 'rgb(194, 202, 214)'
+      document.getElementById(this.state.selectedDivId).style.background = 'rgb(194, 202, 214,0.7)'
       this.setState({setSelected: true, selectedDivId: id})
     }
     this.setState({
@@ -276,7 +276,7 @@ class Sequence extends React.Component {
       sequenceId: this.state.selectedSequenceId
     }
     console.log('data' + JSON.stringify(data))
-    this.props.updateTrigger(data)
+    this.props.updateTrigger(data, this.msg)
     this.closeDialogTrigger()
     this.props.fetchAllSequence()
   }
@@ -422,7 +422,7 @@ class Sequence extends React.Component {
                 <h3 style={{ marginBottom: '20px' }}>Update Sequence Trigger</h3>
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div style={{backgroundColor: this.state.seqTriggerVal === 'subscribes_to_sequence' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}
+                    <div style={{backgroundColor: this.state.seqTriggerVal === 'subscribes_to_sequence' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}
                       id='1' data-val='subscribes_to_sequence' className='sequence-trigger-box' onClick={this.handleChange}>
                       {/* <label className='sequence-radio-label'>
                         <input className='sequence-radio'
@@ -439,7 +439,7 @@ class Sequence extends React.Component {
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div id='2' data-val='subscriber_joins' className='sequence-trigger-box' onClick={this.handleChange}
-                      style={{backgroundColor: this.state.seqTriggerVal === 'subscriber_joins' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
+                      style={{backgroundColor: this.state.seqTriggerVal === 'subscriber_joins' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input className='sequence-radio'
                           type='radio'
@@ -454,7 +454,7 @@ class Sequence extends React.Component {
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box' id='3' data-val='seen_all_sequence_messages' onClick={this.handleChange} 
-                      style={{backgroundColor: this.state.seqTriggerVal === 'seen_all_sequence_messages' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
+                      style={{backgroundColor: this.state.seqTriggerVal === 'seen_all_sequence_messages' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
                           type='radio'
@@ -484,7 +484,7 @@ class Sequence extends React.Component {
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box' id='4' data-val='unsubscribes_from_other_sequence' onClick={this.handleChange}
-                      style={{backgroundColor: this.state.seqTriggerVal === 'unsubscribes_from_other_sequence' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
+                      style={{backgroundColor: this.state.seqTriggerVal === 'unsubscribes_from_other_sequence' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
                           type='radio'
@@ -511,7 +511,7 @@ class Sequence extends React.Component {
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box' id='5' data-val='responds_to_poll' onClick={this.handleChange}
-                      style={{backgroundColor: this.state.seqTriggerVal === 'responds_to_poll' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
+                      style={{backgroundColor: this.state.seqTriggerVal === 'responds_to_poll' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
                           type='radio'

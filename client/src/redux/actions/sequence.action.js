@@ -245,16 +245,17 @@ export function deleteMessage (id, msg, seqId) {
   }
 }
 
-export function updateTrigger (data) {
+export function updateTrigger (data, msg) {
   console.log('data' + JSON.stringify(data))
   return (dispatch) => {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          console.log('data updated successfully')
+          msg.success('Sequence Trigger Updated Successfully')
         } else {
           if (res.status === 'failed' && res.description) {
-            console.log('error in updating' + res.description)
+            console.log('error in updating sequence trigger' + res.description)
+            msg.error(`Failed to delete Message. ${res.description}`)
           }
         }
       })
