@@ -311,6 +311,7 @@ exports.create = function (req, res) {
   if (!_.has(req.body, 'email')) parametersMissing = true
   if (!_.has(req.body, 'password')) parametersMissing = true
   if (!_.has(req.body, 'name')) parametersMissing = true
+  if (!_.has(req.body, 'uiMode')) parametersMissing = true
   // if (!_.has(req.body, 'domain')) parametersMissing = true
   // if (!_.has(req.body, 'company_description')) parametersMissing = true
   // if (!_.has(req.body, 'company_name')) parametersMissing = true
@@ -355,7 +356,8 @@ exports.create = function (req, res) {
               domain: req.body.domain.toLowerCase(),
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
-              role: 'buyer'
+              role: 'buyer',
+              uiMode: req.body.uiMode
             })
 
             accountData.save(function (err, user) {
@@ -563,7 +565,8 @@ exports.create = function (req, res) {
           domain: domain,
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
-          role: 'buyer'
+          role: 'buyer',
+          uiMode: req.body.uiMode
         })
 
         accountData.save(function (err, user) {
