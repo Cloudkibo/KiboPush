@@ -156,23 +156,22 @@ class Sequence extends React.Component {
         sequenceList.push(sequence2)
       }
     })
-    this.setState({isShowSequenceDropDown: true, sequenceList: sequenceList})
+    this.setState({sequenceList: sequenceList})
     let seqEvent = sequence.sequence.trigger.event
-    if (seqEvent === 'subscribes_to_sequence') {
-    } else if (seqEvent === 'subscriber_joins') {
-    } else if (seqEvent === 'seen_all_sequence_messages') {
+    if (seqEvent === 'seen_all_sequence_messages') {
       this.state.sequencesData.map((sequence2) => {
         if (sequence.sequence.trigger.value === sequence2.sequence._id) {
           this.setState({selectDropdownName: sequence2.sequence.name})
         }
       })
+      //this.setState({isShowSequenceDropDown: true})
     } else if (seqEvent === 'unsubscribes_from_other_sequence') {
       this.state.sequencesData.map((sequence2) => {
         if (sequence.sequence.trigger.value === sequence2.sequence._id) {
           this.setState({selectDropdownName: sequence2.sequence.name})
         }
       })
-      this.setState({isShowSequenceDropDownUnsub: true})
+      //this.setState({isShowSequenceDropDownUnsub: true})
     } else if (seqEvent === 'responds_to_poll') {
       this.setState({isShowPollsDropdown: true})
       this.props.polls.map((poll) => {
@@ -241,15 +240,17 @@ class Sequence extends React.Component {
   }
 
   handleSequenceDropdown (event) {
-    const selectedIndex = event.target.options.selectedIndex
-    let selectedSeqId = event.target.options[selectedIndex].getAttribute('data-key')
-    this.setState({ selectedDropdownVal: selectedSeqId })
+    // const selectedIndex = event.target.options.selectedIndex
+    // let selectedSeqId = event.target.options[selectedIndex].getAttribute('data-key')
+    //let selectedSeqId = event.target.value
+    //console.log('id--val' + selectedSeqId)
+    this.setState({ selectedDropdownVal: event.target.value })
   }
 
   handlePollsDropdown (event) {
-    const selectedIndex = event.target.options.selectedIndex
-    let selectPollId = event.target.options[selectedIndex].getAttribute('data-key')
-    this.setState({ selectedDropdownVal: selectPollId })
+    // const selectedIndex = event.target.options.selectedIndex
+    // let selectPollId = event.target.options[selectedIndex].getAttribute('data-key')
+    this.setState({ selectedDropdownVal: event.target.value })
   }
 
   handleSaveTrigger (event) {
@@ -421,7 +422,8 @@ class Sequence extends React.Component {
                 <h3 style={{ marginBottom: '20px' }}>Update Sequence Trigger</h3>
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div id='1' data-val='subscribes_to_sequence' className='sequence-trigger-box' onClick={this.handleChange}>
+                    <div style={{backgroundColor: this.state.seqTriggerVal === 'subscribes_to_sequence' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}
+                      id='1' data-val='subscribes_to_sequence' className='sequence-trigger-box' onClick={this.handleChange}>
                       {/* <label className='sequence-radio-label'>
                         <input className='sequence-radio'
                           type='radio'
@@ -436,7 +438,8 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div id='2' data-val='subscriber_joins' className='sequence-trigger-box' onClick={this.handleChange}>
+                    <div id='2' data-val='subscriber_joins' className='sequence-trigger-box' onClick={this.handleChange}
+                      style={{backgroundColor: this.state.seqTriggerVal === 'subscriber_joins' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input className='sequence-radio'
                           type='radio'
@@ -450,7 +453,8 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div className='sequence-trigger-box' id='3' data-val='seen_all_sequence_messages' onClick={this.handleChange}>
+                    <div className='sequence-trigger-box' id='3' data-val='seen_all_sequence_messages' onClick={this.handleChange} 
+                      style={{backgroundColor: this.state.seqTriggerVal === 'seen_all_sequence_messages' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
                           type='radio'
@@ -463,12 +467,12 @@ class Sequence extends React.Component {
                        When subscriber has seen all the messages of specific sequence
                       {
                         this.state.isShowSequenceDropDown &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} >
-                          <option value={this.state.selectDropdownName}>sequence</option>
-                          { 
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} value={this.state.selectedDropdownVal} >
+
+                          {
                             this.state.sequenceList.map(function (sequence) {
                               return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
-                                value={sequence.sequence.name}>{sequence.sequence.name}</option>
+                                value={sequence.sequence._id}>{sequence.sequence.name}</option>
                             })
                           }
                         </select>
@@ -479,7 +483,8 @@ class Sequence extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div className='sequence-trigger-box' id='4' data-val='unsubscribes_from_other_sequence' onClick={this.handleChange}>
+                    <div className='sequence-trigger-box' id='4' data-val='unsubscribes_from_other_sequence' onClick={this.handleChange}
+                      style={{backgroundColor: this.state.seqTriggerVal === 'unsubscribes_from_other_sequence' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
                           type='radio'
@@ -492,11 +497,12 @@ class Sequence extends React.Component {
                        When subscriber unsubscribes from specific sequence
                       {
                         this.state.isShowSequenceDropDownUnsub &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} selected={this.state.selectDropdownName}>
-                          <option value={this.state.selectDropdownName}>sequence</option>{
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} value={this.state.selectedDropdownVal}
+                        >
+                          {
                             this.state.sequenceList.map(function (sequence) {
                               return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
-                                value={sequence.sequence.name}>{sequence.sequence.name}</option>
+                                value={sequence.sequence._id}>{sequence.sequence.name}</option>
                             })
                           }
                         </select>
@@ -504,7 +510,8 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div className='sequence-trigger-box' id='5' data-val='responds_to_poll' onClick={this.handleChange}>
+                    <div className='sequence-trigger-box' id='5' data-val='responds_to_poll' onClick={this.handleChange}
+                      style={{backgroundColor: this.state.seqTriggerVal === 'responds_to_poll' ? 'rgb(194, 202, 214)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
                           type='radio'
@@ -517,11 +524,11 @@ class Sequence extends React.Component {
                        When subscriber responds to specific poll
                       {
                         this.state.isShowPollsDropdown &&
-                        <select className='form-control m-input' onChange={this.handlePollsDropdown} >
-                          <option value={this.state.selectDropdownName}>poll</option>{
+                        <select className='form-control m-input' onChange={this.handlePollsDropdown} value={this.state.selectedDropdownVal}>
+                          {
                             this.props.polls.map(function (poll) {
                               return <option key={poll._id} data-key={poll._id}
-                                value={poll.statement}>{poll.statement}</option>
+                                value={poll._id}>{poll.statement}</option>
                             })
                           }
                         </select>

@@ -16,17 +16,17 @@ export function showAllSequenceNew (data) {
     count: data.count
   }
 }
-export function updateTrigger (data) {
-  console.log('updateTrigger data', data)
-  return (dispatch) => {
-    callApi('sequenceMessaging/updateTrigger', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log('data send successfully')
-        }
-      })
-  }
-}
+// export function updateTrigger (data) {
+//   console.log('updateTrigger data', data)
+//   return (dispatch) => {
+//     callApi('sequenceMessaging/updateTrigger', 'post', data)
+//       .then(res => {
+//         if (res.status === 'success') {
+//           console.log('data send successfully')
+//         }
+//       })
+//   }
+// }
 
 export function showSubscriberSequence (data) {
   return {
@@ -250,8 +250,6 @@ export function updateTrigger (data) {
   return (dispatch) => {
     callApi('sequenceMessaging/updateTrigger', 'post', data)
       .then(res => {
-        
-        console.log('response' + JSON.stringify(res))
         if (res.status === 'success') {
           console.log('response---' + 'seq')
           //msg.success('updated successfully')
