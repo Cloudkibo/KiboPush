@@ -397,6 +397,7 @@ class Card extends React.Component {
               <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '90%' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             </center>
           </div>
+          
           {!this.state.checkbox &&
           <div style={{display: 'inline-grid', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
@@ -415,8 +416,8 @@ class Card extends React.Component {
           </div>
           }
           {this.state.imgSrc !== '' && !this.state.checkbox &&
-            <div className='col-md-2' style={{display: 'contents'}} onClick={this.removeImage}>
-              <i className='fa fa-times-circle-o' style={{fontSize: '1rem'}} onClick={this.removeImage} />
+            <div className='col-md-2' style={{display: 'contents'}} >
+              <i className='fa fa-times-circle-o' style={{fontSize: '1rem', position: 'relative', marginLeft: '7px'}} onClick={this.removeImage} />
             </div>
           }
         </div>
