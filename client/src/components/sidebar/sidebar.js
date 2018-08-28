@@ -36,7 +36,7 @@ class Sidebar extends Component {
       inviteMembers: true,
       members: true,
       welcomeMessage: true,
-      createPhoneList: true,
+      segmentSubscribers: true,
       commentCapture: true,
       smartReplies: true,
       templates: true,
@@ -64,7 +64,24 @@ class Sidebar extends Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
     if (nextProps.updatedUser) {
-      this.setState({templates: nextProps.user.advancedMode, persistentMenu: nextProps.user.advancedMode, phoneNumber: nextProps.user.advancedMode, createPhoneList: nextProps.user.advancedMode, commentCapture: nextProps.user.advancedMode, sequenceMessaging: nextProps.user.advancedMode})
+      this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
+        polls: nextProps.user.uiMode.polls,
+        surveys: nextProps.user.uiMode.surveys,
+        sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
+        templates: nextProps.user.uiMode.templates,
+        livechat: nextProps.user.uiMode.livechat,
+        smartReplies: nextProps.user.uiMode.smartReplies,
+        abandonedCarts: nextProps.user.uiMode.abandonedCarts,
+        subscribers: nextProps.user.uiMode.subscribers,
+        segmentSubscribers: nextProps.user.uiMode.segmentSubscribers,
+        autoposting: nextProps.user.uiMode.autoposting,
+        persistentMenu: nextProps.user.uiMode.persistentMenu,
+        pages: nextProps.user.uiMode.pages,
+        phoneNumber: nextProps.user.uiMode.phoneNumber,
+        inviteMembers: nextProps.user.uiMode.inviteMembers,
+        members: nextProps.user.uiMode.members,
+        welcomeMessage: nextProps.user.uiMode.welcomeMessage,
+        commentCapture: nextProps.user.uiMode.commentCapture})
     }
   }
   showOperationalDashboard () {
@@ -136,7 +153,9 @@ class Sidebar extends Component {
   }
 
   showBroadcastsItem () {
+    console.log('broadcasts state', this.state.broadcasts)
     if (this.props.user) {
+      console.log('broadcasts props', this.props.user.uiMode)
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -309,7 +328,7 @@ class Sidebar extends Component {
     }
   }
   showCreatePhoneList () {
-    if (this.state.createPhoneList && this.props.user && this.props.user.advancedMode && this.props.user.plan.customer_matching) {
+    if (this.state.segmentSubscribers && this.props.user && this.props.user.advancedMode && this.props.user.plan.customer_matching) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/segmentedLists' className='m-menu__link m-menu__toggle'>
@@ -391,6 +410,7 @@ class Sidebar extends Component {
   }
 
   render () {
+    console.log('render in sidebar')
     if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
@@ -479,6 +499,7 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('state in sidebar', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),

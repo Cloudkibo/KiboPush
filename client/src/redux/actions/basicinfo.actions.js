@@ -44,7 +44,7 @@ export function updateKeys (data) {
 
 export function showUpdatedUserDetails (data) {
   // NOTE: don't remove following auth method call
-  auth.putUserId(data._id)
+  //  auth.putUserId(data._id)
   return {
     type: ActionTypes.LOAD_UPDATED_USER_DETAILS,
     data
@@ -110,7 +110,7 @@ export function getAdminSubscriptions () {
 export function updateMode (data) {
   console.log('data for updateMode', data)
   return (dispatch) => {
-    callApi('users/updateMode', 'post', data).then(res => {
+    callApi('users/changeUIMode', 'post', data).then(res => {
       console.log('response from updateMode', res)
       if (res.status === 'success') {
         dispatch(showUpdatedUserDetails(res.payload))
