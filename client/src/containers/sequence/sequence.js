@@ -164,14 +164,12 @@ class Sequence extends React.Component {
           this.setState({selectDropdownName: sequence2.sequence.name})
         }
       })
-      //this.setState({isShowSequenceDropDown: true})
     } else if (seqEvent === 'unsubscribes_from_other_sequence') {
       this.state.sequencesData.map((sequence2) => {
         if (sequence.sequence.trigger.value === sequence2.sequence._id) {
           this.setState({selectDropdownName: sequence2.sequence.name})
         }
       })
-      //this.setState({isShowSequenceDropDownUnsub: true})
     } else if (seqEvent === 'responds_to_poll') {
       this.setState({isShowPollsDropdown: true})
       this.props.polls.map((poll) => {
@@ -240,16 +238,10 @@ class Sequence extends React.Component {
   }
 
   handleSequenceDropdown (event) {
-    // const selectedIndex = event.target.options.selectedIndex
-    // let selectedSeqId = event.target.options[selectedIndex].getAttribute('data-key')
-    //let selectedSeqId = event.target.value
-    //console.log('id--val' + selectedSeqId)
     this.setState({ selectedDropdownVal: event.target.value })
   }
 
   handlePollsDropdown (event) {
-    // const selectedIndex = event.target.options.selectedIndex
-    // let selectPollId = event.target.options[selectedIndex].getAttribute('data-key')
     this.setState({ selectedDropdownVal: event.target.value })
   }
 
@@ -453,7 +445,7 @@ class Sequence extends React.Component {
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
-                    <div className='sequence-trigger-box' id='3' data-val='seen_all_sequence_messages' onClick={this.handleChange} 
+                    <div className='sequence-trigger-box' id='3' data-val='seen_all_sequence_messages' onClick={this.handleChange}
                       style={{backgroundColor: this.state.seqTriggerVal === 'seen_all_sequence_messages' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                       {/* <label>
                         <input
