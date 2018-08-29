@@ -40,7 +40,7 @@ class Sidebar extends Component {
       commentCapture: true,
       smartReplies: true,
       templates: true,
-      //sequenceMessaging: true,
+      sequenceMessaging: true,
       waitingResponse: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
@@ -67,7 +67,7 @@ class Sidebar extends Component {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
         surveys: nextProps.user.uiMode.surveys,
-        //sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
+        sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
         templates: nextProps.user.uiMode.templates,
         livechat: nextProps.user.uiMode.livechat,
         smartReplies: nextProps.user.uiMode.smartReplies,
@@ -441,7 +441,7 @@ class Sidebar extends Component {
                   {this.showPersistentMenuItem()}
                   {this.showPagesItem()}
                   {this.showSubscribersItem()}
-                  {/* {this.showSequenceMessaging()} */}
+                  {this.showSequenceMessaging()}
                   {this.showCreatePhoneList()}
                   {this.showInviteMembersItem()}
                   {this.showMembersItem()}
