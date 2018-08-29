@@ -20,7 +20,8 @@ class Header extends React.Component {
       ignore: true,
       planInfo: '',
       seenNotifications: [],
-      unseenNotifications: []
+      unseenNotifications: [],
+      mode: 'All'
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -31,7 +32,7 @@ class Header extends React.Component {
     this.changeMode = this.changeMode.bind(this)
   }
   changeMode (mode) {
-    this.props.updateMode({mode: mode})
+    this.props.updateMode({mode: mode}, this.props.user)
   }
   changeStatus (e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
@@ -57,11 +58,13 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
+    console.log('nextProps in header', nextProps)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ignore: false})
     }
     if (nextProps.user) {
+      let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Cutomer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
+      this.setState({mode: mode})
       // FS.identify(nextProps.user.email, {
       //   displayName: nextProps.user.name,
       //   email: nextProps.user.email,
@@ -220,7 +223,7 @@ class Header extends React.Component {
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
                           <div className='btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand' style={{display: 'inline-block'}}>
-                            <span className='m-nav__link-text' style={{verticalAlign: 'middle', textAlign: 'center'}}>{this.props.user.uiMode && this.props.user.uiMode.mode === 'kiboengage' ? 'Cutomer Engagement' : this.props.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : this.props.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'all'}&nbsp;<i className='fa fa-chevron-down' />
+                            <span className='m-nav__link-text' style={{verticalAlign: 'middle', textAlign: 'center'}}>{this.state.mode}&nbsp;<i className='fa fa-chevron-down' />
                             </span>
                           </div>
                         </span>
@@ -510,12 +513,14 @@ class Header extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state in header', state)
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),
     socketSession: (state.liveChat.socketSession),
     subscribers: (state.subscribersInfo.subscribers),
-    notifications: (state.notificationsInfo.notifications)
+    notifications: (state.notificationsInfo.notifications),
+    updatedUser: (state.basicInfo.updatedUser)
   }
 }
 

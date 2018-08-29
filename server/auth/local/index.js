@@ -30,6 +30,9 @@ router.post('/', function (req, res, next) {
           description: 'No account found with this email address.'
         })
       }
+      user = user.toObject()
+      console.log('user', user)
+      console.log('user', req.body.domain.toLowerCase())
       if (user.domain !== req.body.domain.toLowerCase()) {
         return res.status(401)
         .json({
