@@ -3,18 +3,19 @@
 }
 
 .sequence-box {
-    border: 1px solid rgb(204,204,204);
+  border: 1px solid rgb(204,204,204);
     border-radius: 10px;
     padding: 20px;
     margin-top: 25px;
-    box-shadow:rgb(204,204,204) 2px 5px;
+    box-shadow:rgba(204,204,204) 3px 5px;
     position: relative;
 }
 
 .sequence-input {
   border-radius: 5px;
-  border: 1px solid grey
-}
+  border: 1px solid grey;
+  max-width: 165px;
+ }
 
 .sequence-link {
   color: #5867dd;
@@ -38,6 +39,15 @@
 .sequence-trigger {
   max-width: 250px;
   display: inline-table;
+}
+.sequence-trigger-box {
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding: 25px;
+  margin-top: 25px;
+  box-shadow:rgba(204,204,204) 3px 5px;
+  position: relative;
+  height:165px;
 }
 
 .sequence-centered-text {
