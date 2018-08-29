@@ -21,6 +21,7 @@ const UserSchema = new Schema({
   isSuperUser: {type: Boolean, default: false},
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},
+  wizardSeen: {type: Boolean, default: false},
   uiMode: String,
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
