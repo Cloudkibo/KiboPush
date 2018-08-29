@@ -459,7 +459,7 @@ class Header extends React.Component {
                                 </li>
                                 {this.props.user && this.props.user.role !== 'agent' &&
                                 <li className='m-nav__item'>
-                                  <Link to='/addPageWizard' className='m-nav__link'>
+                                  <Link to='/inviteUsingLinkWizard' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-list-2' />
                                     <span className='m-nav__link-text'>Setup Using Wizard</span>
                                   </Link>
