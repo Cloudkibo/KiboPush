@@ -3,13 +3,18 @@
 }
 
 .sequence-box {
-    border: 1px solid grey;
+  border: 1px solid rgb(204,204,204);
     border-radius: 10px;
-    padding: 25px;
+    padding: 20px;
     margin-top: 25px;
     box-shadow:rgba(204,204,204) 3px 5px;
     position: relative;
 }
+
+.sequence-input {
+  border-radius: 5px;
+  border: 1px solid grey
+ }
 
 .sequence-link {
   color: #5867dd;

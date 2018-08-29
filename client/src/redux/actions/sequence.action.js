@@ -43,6 +43,18 @@ export function createSequence (data) {
   }
 }
 
+export function updateSegmentation (data) {
+  console.log('updateSegmentation data', data)
+  return (dispatch) => {
+    callApi('sequenceMessaging/updateSegmentation', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          fetchAllMessages(data.segmentationId)
+        }
+      })
+  }
+}
+
 export function createMessage (data) {
   console.log('data createMessage', data)
   return (dispatch) => {
