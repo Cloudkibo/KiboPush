@@ -17,7 +17,6 @@ let router = express.Router()
 router.post('/', function (req, res, next) {
   if (req.body.domain) {
     User.findOne({
-      domain: req.body.domain.toLowerCase(),
       email: req.body.email.toLowerCase()
     }, (err, user) => {
       if (err) {
@@ -28,7 +27,21 @@ router.post('/', function (req, res, next) {
         return res.status(401)
         .json({
           status: 'failed',
+          description: 'No account found with this email address.'
+        })
+      }
+      if (user.domain !== req.body.domain.toLowerCase()) {
+        return res.status(401)
+        .json({
+          status: 'failed',
           description: 'This workspace name is not registered with us or your account does not belong to this domain'
+        })
+      }
+      if (user.domain === req.body.domain.toLowerCase() && user.email !== req.body.email.toLowerCase()) {
+        return res.status(401)
+        .json({
+          status: 'failed',
+          description: 'No account found with this email address.'
         })
       }
       logger.serverLog(TAG, `User in login: ${JSON.stringify(user)}`)

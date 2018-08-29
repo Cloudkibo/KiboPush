@@ -146,6 +146,7 @@ exports.index = function (req, res) {
             user.currentPlan = company.stripe.plan
             user.last4 = company.stripe.last4
             user.plan = plan[company.stripe.plan]
+            user.uiMode = config.uiModes[user.uiMode]
             res.status(200).json({status: 'success', payload: user})
           })
         })
@@ -154,10 +155,35 @@ exports.index = function (req, res) {
   })
 }
 
+exports.changeMode = function (req, res) {
+  Users.update({_id: req.user._id}, {uiMode: req.body.mode}, (err, updatedUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: config.uiModes[req.body.mode]
+    })
+  })
+}
+
 exports.fbAppId = function (req, res) {
   res.status(200).json({status: 'success', payload: config.facebook.clientID})
 }
-
+exports.updateSkipConnect = function (req, res) {
+  Users.update({_id: req.user._id}, {skippedFacebookConnect: true}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    return res.status(200).json({status: 'success', payload: user})
+  })
+}
 exports.updateChecks = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
@@ -285,6 +311,7 @@ exports.create = function (req, res) {
   if (!_.has(req.body, 'email')) parametersMissing = true
   if (!_.has(req.body, 'password')) parametersMissing = true
   if (!_.has(req.body, 'name')) parametersMissing = true
+  if (!_.has(req.body, 'uiMode')) parametersMissing = true
   // if (!_.has(req.body, 'domain')) parametersMissing = true
   // if (!_.has(req.body, 'company_description')) parametersMissing = true
   // if (!_.has(req.body, 'company_name')) parametersMissing = true
@@ -329,7 +356,8 @@ exports.create = function (req, res) {
               domain: req.body.domain.toLowerCase(),
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
-              role: 'buyer'
+              role: 'buyer',
+              uiMode: req.body.uiMode
             })
 
             accountData.save(function (err, user) {
@@ -537,7 +565,8 @@ exports.create = function (req, res) {
           domain: domain,
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
-          role: 'buyer'
+          role: 'buyer',
+          uiMode: req.body.uiMode
         })
 
         accountData.save(function (err, user) {

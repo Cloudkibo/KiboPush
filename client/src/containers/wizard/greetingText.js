@@ -57,6 +57,7 @@ class GreetingMessage extends React.Component {
     this.selectPage = this.selectPage.bind(this)
     props.loadMyPagesList()
   }
+
   showPreviewDialog () {
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
@@ -116,6 +117,8 @@ class GreetingMessage extends React.Component {
       var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
       this.props.saveGreetingMessage(payload, this.msg)
       this.props.loadMyPagesList()
+    } else {
+      this.msg.error('Invitation message cannot be empty')
     }
   }
   onGreetingMessageChange (e) {
@@ -332,11 +335,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                             <div>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                              {
-                                this.state.greetingMessage.length > 0
-                                ? <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                                : <button style={{display: 'inline-block'}} className='btn btn-primary' disabled>Save</button>
-                              }
+                              <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
                             </div>
                           </div>
                         </div>

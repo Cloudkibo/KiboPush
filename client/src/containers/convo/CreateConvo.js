@@ -223,6 +223,7 @@ class CreateConvo extends React.Component {
   }
 
   handleText (obj) {
+    console.log('handleText', obj)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
@@ -230,6 +231,8 @@ class CreateConvo extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -371,6 +374,7 @@ class CreateConvo extends React.Component {
       if (data.id === obj.id) {
         temp[i].listItems = obj.listItems
         temp[i].topElementStyle = obj.topElementStyle
+        temp[i].buttons = obj.buttons
         isPresent = true
       }
     })
@@ -382,8 +386,11 @@ class CreateConvo extends React.Component {
   }
 
   removeComponent (obj) {
+    console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    console.log('temp', temp)
+    console.log('temp2', temp2)
     this.setState({list: temp, broadcast: temp2})
   }
 
@@ -427,12 +434,13 @@ class CreateConvo extends React.Component {
           segmentationTimeZone: '',
           title: this.state.convoTitle,
           segmentationList: this.state.listSelected,
-          isList: isListValue
+          isList: isListValue,
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
         }
         //  this.setState({tabActive: 'broadcast'})
         console.log('Sending Broadcast', data)
         this.props.sendBroadcast(data, this.msg, this.handleSendBroadcast)
-        // this.setState({broadcast: [], list: []})
+        this.msg.info('Sending broadcast.... You will be notified when it is sent.')
       }
     }
   }
@@ -486,7 +494,8 @@ class CreateConvo extends React.Component {
         segmentationTags: tagIDs,
         segmentationTimeZone: '',
         segmentationList: this.state.listSelected,
-        isList: isListValue
+        isList: isListValue,
+        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
 
       }
       this.props.sendBroadcast(data, this.msg)
@@ -731,36 +740,37 @@ class CreateConvo extends React.Component {
                                   <ModalDialog style={{width: '500px'}}
                                     onClose={this.closeGuideLinesDialog}>
                                     <h4>Message Types</h4>
-                                    <p> Following are the types of broadcasts that can be sent to facebook messenger.</p>
+                                    <p> Following are the types of messages that can be sent to facebook messenger.</p>
                                     <div className='panel-group accordion' id='accordion1'>
                                       <div className='panel panel-default'>
                                         <div className='panel-heading guidelines-heading'>
                                           <h4 className='panel-title'>
-                                            <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Broadcasts</a>
+                                            <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Messages</a>
                                           </h4>
                                         </div>
                                         <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                                           <div className='panel-body'>
-                                            <p>Subscription broadcast messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity.</p>
+                                            <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+                                            <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
                                           </div>
                                         </div>
                                       </div>
                                       <div className='panel panel-default'>
                                         <div className='panel-heading guidelines-heading'>
                                           <h4 className='panel-title'>
-                                            <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Broadcasts</a>
+                                            <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Messages</a>
                                           </h4>
                                         </div>
                                         <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                                           <div className='panel-body'>
-                                            Promotional broadcast messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                                            Promotional messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
                                           </div>
                                         </div>
                                       </div>
                                       <div className='panel panel-default'>
                                         <div className='panel-heading guidelines-heading'>
                                           <h4 className='panel-title'>
-                                            <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Broadcasts</a>
+                                            <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Messages</a>
                                           </h4>
                                         </div>
                                         <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>

@@ -785,7 +785,7 @@ class CreateSequence extends React.Component {
                                       <span>Seen</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '5%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '4%'}}>
                                       <span className='sequence-number'>{message.clicks}</span>
                                       <br />
                                       <span>Clicked</span>

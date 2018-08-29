@@ -265,79 +265,112 @@ function trainBot (payload, token) {
 }
 
 exports.index = function (req, res) {
-  Bots
-    .find({
-      userId: req.user._id
-    }).populate('pageId').exec((err, bots) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    Bots.find({companyId: companyUser.companyId})
+    .populate('pageId')
+    .exec((err, bots) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
+
       return res.status(200).json({ status: 'success', payload: bots })
     })
+  })
 }
 
 exports.create = function (req, res) {
   logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   var uniquebotName = req.body.botName + req.user._id + Date.now()
-  request(
-    {
-      'method': 'POST',
-      'uri': 'https://api.wit.ai/apps?v=20170307',
-      headers: {
-        'Authorization': 'Bearer ' + WIT_AI_TOKEN,
-        'Content-Type': 'application/json'
-      },
-      body: {
-        'name': uniquebotName,
-        'lang': 'en',
-        'private': 'false'
-      },
-      json: true
-    },
-      (err, witres) => {
-        if (err) {
-          return logger.serverLog(TAG,
-            'Error Occured In Creating WIT.AI app')
-          // return res.status(500).json({status: 'failed', payload: {error: err}})
-        } else {
-          if (witres.statusCode !== 200) {
-            logger.serverLog(TAG,
-              `Error occurred in creating Wit ai app ${JSON.stringify(
-                witres.body.errors)}`)
-            return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
-          } else {
-            logger.serverLog(TAG,
-              'Wit.ai app created successfully', witres.body)
-
-            const bot = new Bots({
-              pageId: req.body.pageId, // TODO ENUMS
-              userId: req.user._id,
-              botName: req.body.botName,
-              witAppId: witres.body.app_id,
-              witToken: witres.body.access_token,
-              witAppName: uniquebotName,
-              isActive: req.body.isActive,
-              hitCount: 0,
-              missCount: 0
-            })
-
-            bot.save((err, newbot) => {
-              if (err) {
-                res.status(500).json({
-                  status: 'Failed',
-                  error: err,
-                  description: 'Failed to insert record'
-                })
-              } else {
-                return res.status(200).json({status: 'success', payload: newbot})
-              }
-            })
-          }
-        }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
+    }
+
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    request(
+      {
+        'method': 'POST',
+        'uri': 'https://api.wit.ai/apps?v=20170307',
+        headers: {
+          'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: {
+          'name': uniquebotName,
+          'lang': 'en',
+          'private': 'false'
+        },
+        json: true
+      },
+        (err, witres) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              'Error Occured In Creating WIT.AI app')
+            // return res.status(500).json({status: 'failed', payload: {error: err}})
+          } else {
+            if (witres.statusCode !== 200) {
+              logger.serverLog(TAG,
+                `Error occurred in creating Wit ai app ${JSON.stringify(
+                  witres.body.errors)}`)
+              return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
+            } else {
+              logger.serverLog(TAG,
+                'Wit.ai app created successfully', witres.body)
+
+              const bot = new Bots({
+                pageId: req.body.pageId, // TODO ENUMS
+                userId: req.user._id,
+                botName: req.body.botName,
+                companyId: companyUser.companyId,  // Must be send from client
+                witAppId: witres.body.app_id,
+                witToken: witres.body.access_token,
+                witAppName: uniquebotName,
+                isActive: req.body.isActive,
+                hitCount: 0,
+                missCount: 0
+              })
+
+              bot.save((err, newbot) => {
+                if (err) {
+                  res.status(500).json({
+                    status: 'Failed',
+                    error: err,
+                    description: 'Failed to insert record'
+                  })
+                } else {
+                  return res.status(200).json({status: 'success', payload: newbot})
+                }
+              })
+            }
+          }
+        })
+  })
 }
 
 exports.edit = function (req, res) {
@@ -347,7 +380,7 @@ exports.edit = function (req, res) {
     if (err) {
       return logger.serverLog(TAG, 'Error Occured In editing the bot')
     }
-    console.log('affected rows %d', affected)
+    logger.serverLog(TAG, 'affected rows %d: ' + JSON.stringify(affected))
     Bots
     .find({
       _id: req.body.botId

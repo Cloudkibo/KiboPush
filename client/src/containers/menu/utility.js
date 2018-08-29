@@ -1,3 +1,13 @@
+import React from 'react'
+import Text from '../convo/Text'
+import Image from '../convo/Image'
+import Audio from '../convo/Audio'
+import Video from '../convo/Video'
+import File from '../convo/File'
+import List from '../convo/List'
+import Media from '../convo/Media'
+import Card from '../convo/Card'
+import Gallery from '../convo/Gallery'
 export function transformData (data) {
   data = JSON.parse(JSON.stringify(data))
   data.map((item) => {
@@ -108,4 +118,64 @@ export function removeMenuPayload () {
   payload.persistent_menu = [{locale: 'default', composer_input_disabled: false}]
   JSONstringify(payload)
   return payload
+}
+
+export function onClickText (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Text Component Added')
+  refObj.setState({ list: [...temp, { content: (<Text id={timeStamp} key={timeStamp} handleText={refObj.handleText} onRemove={refObj.removeComponent} removeState />) }] })
+  refObj.handleText({ id: timeStamp, text: '', button: [] })
+}
+
+export function onImageClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Image Component Added')
+  refObj.setState({list: [...temp, {content: (<Image id={timeStamp} key={timeStamp} handleImage={refObj.handleImage} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''})
+}
+
+export function onAudioClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Audio Component Added')
+  refObj.setState({list: [...temp, {content: (<Audio id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''})
+}
+export function onVideoClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Video Component Added')
+  refObj.setState({list: [...temp, {content: (<Video id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleFile({id: timeStamp, componentType: 'video', fileurl: ''})
+}
+
+export function onFileClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New File Component Added')
+  refObj.setState({list: [...temp, {content: (<File id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleFile({id: timeStamp, componentType: 'file', fileurl: ''})
+}
+export function onListClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New List Component Added')
+  refObj.setState({list: [...temp, {content: (<List id={timeStamp} key={timeStamp} handleList={refObj.handleList} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'})
+}
+export function onMediaClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Media Component Added')
+  refObj.setState({list: [...temp, {content: (<Media id={timeStamp} key={timeStamp} handleMedia={refObj.handleMedia} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []})
+}
+
+export function onCardClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Card Component Added')
+  refObj.setState({list: [...temp, {content: (<Card id={timeStamp} key={timeStamp} handleCard={refObj.handleCard} onRemove={refObj.removeComponent} singleCard />)}]})
+  refObj.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []})
+}
+
+export function onGalleryClick (timeStamp, refObj) {
+  let temp = refObj.state.list
+  refObj.msg.info('New Gallery Component Added')
+  refObj.setState({list: [...temp, {content: (<Gallery id={timeStamp} key={timeStamp} handleGallery={refObj.handleGallery} onRemove={refObj.removeComponent} />)}]})
+  refObj.handleGallery({id: timeStamp, componentType: 'gallery', cards: []})
 }

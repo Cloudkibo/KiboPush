@@ -44,9 +44,9 @@ class ListItem extends React.Component {
               <span className='m-widget5__info-label'>
                 Subscription URL:&nbsp;
               </span>
-              <span className='m-widget5__info-date m--font-info'>
+              <a href={this.props.item.subscriptionUrl} target='_blank' className='m-widget5__info-date m--font-info'>
                 {this.props.item.subscriptionUrl}
-              </span>
+              </a>
               <br />
               <span className='m-widget5__info-date m--font-info'>
                 <Link onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>

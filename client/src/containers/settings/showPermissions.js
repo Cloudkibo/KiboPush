@@ -145,7 +145,7 @@ class ShowPermissions extends React.Component {
                           return (<div className='m-widget4__item'>
                             <div className='m-widget4__info'>
                               <span className='m-widget4__title'>
-                                {permission.userId.name}
+                                {permission.userId && permission.userId.name ? permission.userId.name : ''}
                               </span>
                               <br />
                               <span className='m-widget4__sub'>

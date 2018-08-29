@@ -18,6 +18,8 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
+import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -30,6 +32,7 @@ class Convo extends React.Component {
       filterValue: '',
       isShowingModal: false,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
+      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       selectedDays: '0',
       searchValue: '',
       filter: false,
@@ -86,7 +89,7 @@ class Convo extends React.Component {
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false})
+    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
   }
 
   closeDialog () {
@@ -204,7 +207,7 @@ class Convo extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
       // for (let i = 0; i < this.props.broadcasts.length; i++) {
@@ -262,17 +265,10 @@ class Convo extends React.Component {
         </div>
         <div className='m-content'>
           {
-              this.props.pages && this.props.pages.length === 0
-              ? <div className='alert alert-success'>
-                <h4 className='block'>0 Pages Connected</h4>
-                You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{color: 'blue', cursor: 'pointer'}} to='/addPages' >Add Pages</Link>
-              </div>
-            : this.props.subscribers && this.props.subscribers.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
-              </div>
+            this.props.pages && this.props.pages.length === 0
+            ? <AlertMessage type='page' />
+          : this.props.subscribers && this.props.subscribers.length === 0 &&
+            <AlertMessage type='subscriber' />
           }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -348,32 +344,30 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   {
-                        this.state.isShowingZeroSubModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeZeroSubDialog}>
-                          <ModalDialog style={{width: '700px', top: '75px'}}
-                            onClose={this.closeZeroSubDialog}>
-                            <div className='alert alert-success'>
-                              <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
-                  below on how to get started.
-                            </div>
-                            <div>
-                              <YouTube
-                                videoId='9kY3Fmj_tbM'
-                                opts={{
-                                  height: '390',
-                                  width: '640',
-                                  playerVars: {
-                                    autoplay: 0
-                                  }
-                                }}
-                              />
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                    (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeZeroSubDialog}>
+                      <ModalDialog style={{width: '700px', top: '75px'}}
+                        onClose={this.closeZeroSubDialog}>
+                        {this.state.isShowingZeroPageModal
+                        ? <AlertMessageModal type='page' />
+                      : <AlertMessageModal type='subscriber' />
+                        }
+                        <div>
+                          <YouTube
+                            videoId='9kY3Fmj_tbM'
+                            opts={{
+                              height: '390',
+                              width: '640',
+                              playerVars: {
+                                autoplay: 0
+                              }
+                            }}
+                          />
+                        </div>
+                      </ModalDialog>
+                    </ModalContainer>
+                    }
                   <div className='form-row'>
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
@@ -389,8 +383,9 @@ class Convo extends React.Component {
                         <option value='video'>video</option>
                         <option value='file'>file</option>
                         <option value='list'>list</option>
+                        <option value='media'>media</option>
                         <option value='miscellaneous'>miscellaneous</option>
-                        <option value=''>all</option>
+                        <option value='all'>all</option>
                       </select>
                     </div>
                     <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>

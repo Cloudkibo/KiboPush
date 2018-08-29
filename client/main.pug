@@ -48,14 +48,15 @@ html(lang="en")
         },
       })
     // end::Web font
-    // LuckyOrange Code Start
-    script(type='text/javascript').
-      window.__lo_site_id = 114153;
-      (function() {
-      var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
-      wa.src = 'https://d10lpsik1i8c69.cloudfront.net/w.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
-      })();
+    if environment === 'production'
+      // LuckyOrange Code Start
+      script(type='text/javascript').
+        window.__lo_site_id = 114153;
+        (function() {
+        var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+        wa.src = 'https://d10lpsik1i8c69.cloudfront.net/w.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+        })();
     link(rel="shortcut icon" href="assets/demo/default/media/img/logo/favicon.ico")
     // Slick Carousel
     link(rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css")
@@ -85,7 +86,7 @@ html(lang="en")
       // Dashboard custom CSS
         link(href="dist/dashboard.min.css" rel="stylesheet" type="text/css")
     // React Select CSS
-    link(rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css")
+    link(rel="stylesheet" href="https://unpkg.com/react-select@1.2.0/dist/react-select.css")
     // Global site tag (gtag.js) - Google Analytics
     script(async="" src="https://www.googletagmanager.com/gtag/js?id=UA-104907011-1")
     script.
@@ -111,7 +112,7 @@ html(lang="en")
         display: none;
       }
   // end::Head
-  body.m-page--fluid.m--skin-.m-content--skin-light2.m-header--fixed.m-header--fixed-mobile.m-aside-left--enabled.m-aside-left--skin-dark.m-aside-left--offcanvas.m-footer--push.m-aside--offcanvas-default
+  body.m-page--fluid.m--skin-.m-content--skin-light2.m-aside-left--fixed.m-header--fixed.m-header--fixed-mobile.m-aside-left--enabled.m-aside-left--skin-dark.m-aside-left--offcanvas.m-footer--push.m-aside--offcanvas-default
     #content.m-grid.m-grid--hor.m-grid--root.m-page
     // <script src="js/jquery-3.2.0.min.js"></script>
     //

@@ -1,22 +1,18 @@
 /**
  * Created by sojharo on 19/09/2017.
  */
-
-// const logger = require('../../components/logger')
-// const TAG = 'api/broadcast/broadcasts.controller.js'
-
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
-// eslint-disable-next-line no-unused-vars
 const logger = require('../../components/logger')
-// eslint-disable-next-line no-unused-vars
 const TAG = 'api/broadcast/broadcasts.utility.js'
 const utility = require('../../components/utility')
 const TagSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 const SurveyResponses = require('./../surveys/surveyresponse.model')
 const PollResponses = require('./../polls/pollresponse.model')
+const URL = require('./../URLforClickedCount/URL.model')
 const request = require('request')
+const mongoose = require('mongoose')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -613,20 +609,22 @@ function prepareMessageData (page, subscriberId, body, fname, lname) {
 }
 
 /* eslint-disable */
-function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, res) {
+function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, res, subscriberNumber, subscribersLength, fbMessageTag) {
   let recipient = "recipient=" + encodeURIComponent(JSON.stringify({"id": recipientId}))
+  let tag = "tag=" + encodeURIComponent(fbMessageTag)
+  let messagingType = "messaging_type=" + encodeURIComponent("MESSAGE_TAG")
   let batch = []
   logger.serverLog(TAG, `Payload received to send: ${JSON.stringify(payload)}`)
   payload.forEach((item, index) => {
     // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
     let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(page, recipientId, item, fname, lname)))
     if (index === 0) {
-      batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
+      batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message + "&" + messagingType +  "&" + tag})
     } else {
-      batch.push({ "method": "POST", "name": `message${index + 1}`, "depends_on": `message${index}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message })
+      batch.push({ "method": "POST", "name": `message${index + 1}`, "depends_on": `message${index}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message + "&" + messagingType +  "&" + tag})
     }
     if (index === (payload.length - 1)) {
-      sendBroadcast(JSON.stringify(batch), page, res)
+      sendBroadcast(JSON.stringify(batch), page, res, subscriberNumber, subscribersLength)
     }
   })
 }
@@ -635,10 +633,7 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
 function uploadOnFacebook (payloadItem, pageAccessToken) {
   let dir = path.resolve(__dirname, '../../../broadcastFiles/')
   let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payloadItem.fileurl.name)
-  let type = payloadItem.componentType
-  if (payloadItem.componentType === 'media') {
-    type = payloadItem.mediaType
-  }
+  let type = payloadItem.componentType === 'media' ? payloadItem.mediaType : payloadItem.componentType
   const messageData = {
     'message': JSON.stringify({
       'attachment': {
@@ -670,6 +665,76 @@ function uploadOnFacebook (payloadItem, pageAccessToken) {
     })
 }
 
+function addModuleIdIfNecessary (payload, broadcastId) {
+  for (let i = 0; i < payload.length; i++) {
+    if (payload[i].buttons && payload[i].buttons.length > 0) {
+      payload[i].buttons.forEach((button) => {
+        if (button.url) {
+          let temp = button.url.split('/')
+          let urlId = temp[temp.length - 1]
+          URL.findOne({_id: mongoose.Types.ObjectId(urlId)}, (err, URLObject) => {
+            if (err) {
+              logger.serverLog(TAG, `Line# 676: update module id failed for url: ${JSON.stringify(err)}`)
+            }
+            let module = URLObject.module
+            module.id = broadcastId
+            URLObject.module = module
+            console.log(URLObject)
+            URLObject.save((err2, savedurl) => {
+              if (err) {
+                logger.serverLog(TAG, `Line# 681: save url failed.: ${JSON.stringify(err)}`)
+              }
+              console.log(savedurl)
+            })
+          })
+        }
+      })
+    } else if (payload[i].componentType === 'gallery') {
+      payload[i].cards.forEach((card) => {
+        card.buttons.forEach((button) => {
+          if (button.url) {
+            let temp = button.url.split('/')
+            let urlId = temp[temp.length - 1]
+            URL.findOne({_id: urlId}, (err, URLObject) => {
+              if (err) {
+                logger.serverLog(TAG, `Line# 696: update module id failed for url: ${JSON.stringify(err)}`)
+              }
+              URLObject.module.id = broadcastId
+              URLObject.save((err2, savedurl) => {
+                if (err) {
+                  logger.serverLog(TAG, `Line# 701: save url failed.: ${JSON.stringify(err)}`)
+                }
+              })
+            })
+          }
+        })
+      })
+    } else if (payload[i].componentType === 'list') {
+      payload[i].listItems.forEach((element, lindex) => {
+        if (element.buttons && element.buttons.length > 0) {
+          element.buttons.forEach((button, bindex) => {
+            if (button.url) {
+              let temp = button.url.split('/')
+              let urlId = temp[temp.length - 1]
+              URL.findOne({_id: urlId}, (err, URLObject) => {
+                if (err) {
+                  logger.serverLog(TAG, `Line# 717: update module id failed for url: ${JSON.stringify(err)}`)
+                }
+                URLObject.module.id = broadcastId
+                URLObject.save((err2, savedurl) => {
+                  if (err) {
+                    logger.serverLog(TAG, `Line# 722: save url failed.: ${JSON.stringify(err)}`)
+                  }
+                })
+              })
+            }
+          })
+        }
+      })
+    }
+  }
+}
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
@@ -679,3 +744,4 @@ exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
 exports.getBatchData = getBatchData
 exports.uploadOnFacebook = uploadOnFacebook
+exports.addModuleIdIfNecessary = addModuleIdIfNecessary

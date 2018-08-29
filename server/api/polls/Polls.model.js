@@ -20,7 +20,8 @@ const pollSchema = new Schema({
   segmentationTags: [String],
   isList: { type: Boolean, default: false },
   segmentationList: [String],
-  segmentationPoll: [String]
+  segmentationPoll: [String],
+  fbMessageTag: String
 
 })
 

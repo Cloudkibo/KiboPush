@@ -33,6 +33,9 @@ const pageSchema = new Schema({
   },
   isWelcomeMessageEnabled: {
     type: Boolean, default: true
+  },
+  gotPageSubscriptionPermission: {
+    type: Boolean, default: false
   }
 })
 
