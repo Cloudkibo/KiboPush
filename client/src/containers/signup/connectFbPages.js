@@ -1,0 +1,168 @@
+/**
+ * Created by imran on 20/07/2017.
+ */
+
+import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import {
+  addPages,
+  enablePage,
+  removePageInAddPage
+} from '../../redux/actions/pages.actions'
+import { bindActionCreators } from 'redux'
+
+class AddPage extends React.Component {
+  constructor (props) {
+    super(props)
+    props.getuserdetails()
+    props.addPages()
+    this.state = {
+      showAlert: false,
+      alertmsg: '',
+      showWarning: false,
+      connected: 0
+    }
+    this.closeDialog = this.closeDialog.bind(this)
+  }
+
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentDidMount () {
+    document.title = 'KiboPush | Add Pages'
+  }
+
+  closeDialog () {
+    this.setState({showWarning: false})
+  }
+
+  componentWillReceiveProps (nextprops) {
+    if (nextprops.message && nextprops.message !== '') {
+      this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
+    } else if (nextprops.page_connected && nextprops.page_connected !== '') {
+      this.setState({showAlert: true, alertmsg: nextprops.page_connected, connected: this.state.connected + 1})
+    } else {
+      this.setState({showAlert: false, alertmsg: ''})
+    }
+    if (nextprops.otherPages && nextprops.otherPages.length === 0) {
+      this.setState({showWarning: true})
+    }
+  }
+
+  onDismissAlert () {
+    this.setState({showAlert: false, alertmsg: ''})
+  }
+
+  render () {
+    return (
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-subheader '>
+          {
+            this.state.showWarning &&
+            <ModalContainer style={{width: '300px'}}
+              onClose={this.closeDialog}>
+              <ModalDialog style={{width: '300px'}}
+                onClose={this.closeDialog}>
+                <h3><i style={{fontSize: '1.75rem'}} className='fa fa-exclamation-triangle' aria-hidden='true' /> Warning:</h3>
+                <p>You are not admin of any Facebook page. In order to use the application you must need to create your own Facebook page and grow audience.</p>
+              </ModalDialog>
+            </ModalContainer>
+          }
+        </div>
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-12'>
+              {
+                this.state.showAlert === true &&
+                <div className='alert alert-danger alert-dismissible fade show' role='alert'>
+                  <button type='button' className='close' data-dismiss='alert' aria-label='Close' />
+                  {this.state.alertmsg}
+                  </div>
+              }
+              <div className='m-portlet m-portlet--full-height '>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Connect Facebook Pages
+                      </h3>
+                    </div>
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                      <li className='nav-item m-tabs__item'>
+                        <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled={this.state.connected === 0}>
+                          Done
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='m-widget4'>
+                    {
+                      (this.props.otherPages) &&
+                      this.props.otherPages.map((page, i) => (
+                        <div className='m-widget4__item' key={i + '-addPageItem'}>
+                          <div className='m-widget4__img m-widget4__img--icon'>
+                            <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          </div>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__text'>
+                              {page.pageName}
+                            </span>
+                          </div>
+                          <div className='m-widget4__ext'>
+                            {
+                              (page.connected) &&
+                              <a onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                                <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                              </a>
+                            }
+                            {
+                              (!page.connected) &&
+                              <a onClick={() => this.props.enablePage(page)} className='m-widget4__icon'>
+                                <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+function mapStateToProps (state) {
+  return {
+    user: (state.basicInfo.user),
+    otherPages: (state.pagesInfo.otherPages),
+    page_connected: (state.pagesInfo.page_connected),
+    message: (state.pagesInfo.message)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    getuserdetails: getuserdetails,
+    enablePage: enablePage,
+    removePageInAddPage: removePageInAddPage,
+    addPages: addPages
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(AddPage)

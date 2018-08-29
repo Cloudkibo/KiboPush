@@ -269,7 +269,7 @@ class Signup extends React.Component {
                             <option value='kiboengage'>Customer Engagement</option>
                             <option value='kibochat'>Customer Chat</option>
                             <option value='kibocommerce'>E-Commerce</option>
-                            <option value='all'>all</option>
+                            <option value='all'>All</option>
                           </select>
                         </div>
                         <div style={{verticalAlign: 'middle', lineHeight: '38px'}} className='col-xl-2'>
