@@ -41,7 +41,7 @@ export function basicInfo (state = initialState, action) {
       temp.uiMode = action.data
       return Object.assign({}, state, {
         user: temp,
-        updatedUser: temp,
+        updatedUser: action.data,
         error: ''
       })
 
