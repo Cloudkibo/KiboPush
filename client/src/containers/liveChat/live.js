@@ -163,19 +163,19 @@ class LiveChat extends React.Component {
 
   handleSort (value) {
     this.setState({sortValue: value, filter: true})
-    if (value === 1) {
-      this.props.openSessions = this.props.openSessions.sort(function (a, b) {
-        return new Date(b.request_time) - new Date(a.request_time)
+    if (value === -1) {
+      this.props.openSessions.sort(function (a, b) {
+        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
-      this.props.closeSessions = this.props.closeSessions.sort(function (a, b) {
-        return new Date(b.request_time) - new Date(a.request_time)
+      this.props.closeSessions.sort(function (a, b) {
+        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
-    } else if (value === -1) {
-      this.props.openSessions = this.props.openSessions.sort(function (a, b) {
-        return new Date(a.request_time) - new Date(b.request_time)
+    } else if (value === 1) {
+      this.props.openSessions.sort(function (a, b) {
+        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
       })
-      this.props.closeSessions = this.props.closeSessions.sort(function (a, b) {
-        return new Date(a.request_time) - new Date(b.request_time)
+      this.props.closeSessions.sort(function (a, b) {
+        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
       })
     }
   }
