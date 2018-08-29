@@ -119,7 +119,7 @@ exports.getNewSessions = function (req, res) {
       status: 'new'
     }
     let sortCriteria = {
-      request_time: 1
+      request_time: -1
     }
     if (req.body.filter && req.body.filter_criteria.page_value !== '') {
       findCriteria = Object.assign(findCriteria, {page_id: req.body.filter_criteria.page_value})
