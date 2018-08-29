@@ -50,7 +50,7 @@ class LiveChat extends React.Component {
       ignore: true,
       searchValue: '',
       filterValue: '',
-      sortValue: 1,
+      sortValue: -1,
       showDropDown: false,
       isShowingModalGuideLines: false,
       tabValue: 'open',
@@ -440,7 +440,7 @@ class LiveChat extends React.Component {
                                                 </li>
                                               ))
                                             }
-                                            <li key={page.pageId} className='m-nav__item'>
+                                            <li className='m-nav__item'>
                                               <a onClick={() => this.handleFilter('')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                 <span className='m-nav__link-text'>
                                                   All
