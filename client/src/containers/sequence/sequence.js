@@ -269,8 +269,8 @@ class Sequence extends React.Component {
     }
     console.log('data' + JSON.stringify(data))
     this.props.updateTrigger(data, this.msg)
+    //this.props.fetchAllSequence()
     this.closeDialogTrigger()
-    this.props.fetchAllSequence()
   }
 
   componentWillReceiveProps (nextProps) {

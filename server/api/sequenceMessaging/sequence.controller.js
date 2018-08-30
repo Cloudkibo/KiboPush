@@ -505,7 +505,7 @@ exports.allSequences = function (req, res) {
       })
     }
 
-    Sequences.find({companyId: companyUser.companyId},
+    Sequences.find({companyId: companyUser.companyId}, {}, {sort: {datetime: 1}},
     (err, sequences) => {
       if (err) {
         return res.status(500).json({
