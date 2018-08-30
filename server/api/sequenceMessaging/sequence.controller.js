@@ -505,7 +505,7 @@ exports.allSequences = function (req, res) {
       })
     }
 
-    Sequences.find({companyId: companyUser.companyId},
+    Sequences.find({companyId: companyUser.companyId}, {}, {sort: {datetime: 1}},
     (err, sequences) => {
       if (err) {
         return res.status(500).json({
@@ -514,8 +514,9 @@ exports.allSequences = function (req, res) {
         })
       }
       let sequencePayload = []
-      sequences.forEach(sequence => {
-        Messages.find({sequenceId: sequence._id},
+      if (sequences.length > 0) {
+        sequences.forEach(sequence => {
+          Messages.find({sequenceId: sequence._id},
         (err, messages) => {
           if (err) {
             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -538,7 +539,10 @@ exports.allSequences = function (req, res) {
             }
           })
         })
-      })
+        })
+      } else {
+        res.status(200).json({status: 'success', payload: []})
+      }
     })
   })
 }

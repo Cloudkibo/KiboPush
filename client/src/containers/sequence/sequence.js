@@ -270,11 +270,11 @@ class Sequence extends React.Component {
     console.log('data' + JSON.stringify(data))
     this.props.updateTrigger(data, this.msg)
     this.closeDialogTrigger()
-    this.props.fetchAllSequence()
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.sequences) {
+    console.log('nextprops in sequence', nextProps)
+    if (nextProps.sequences && nextProps.sequences.length > 0) {
       this.displayData(0, nextProps.sequences)
       this.setState({ totalLength: nextProps.sequences.length })
     }

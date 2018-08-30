@@ -107,7 +107,6 @@ export function fetchAllSequence () {
   return (dispatch) => {
     callApi(`sequenceMessaging/allSequences`)
       .then(res => {
-        console.log('fetchAllSequence', res)
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))
@@ -252,6 +251,7 @@ export function updateTrigger (data, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Sequence Trigger Updated Successfully')
+          dispatch(fetchAllSequence)
         } else {
           if (res.status === 'failed' && res.description) {
             console.log('error in updating sequence trigger' + res.description)
