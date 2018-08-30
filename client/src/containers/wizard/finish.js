@@ -193,13 +193,13 @@ class Finish extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='9' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 6 : (this.props.user.uiMode.mode === 'kibochat') ? 5 : 5} />
+                  <Sidebar step='7' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Step {this.props.user.uiMode && (this.props.user.uiMode.mode === 'all') ? 8 : (this.props.user.uiMode.mode === 'kibocommerce') ? 6 : 7}: Subscribe To Kibopush
+                            Step {this.props.user.uiMode && (this.props.user.uiMode.mode === 'all') ? 7 : (this.props.user.uiMode.mode === 'kibocommerce') ? 5 : 6}: Subscribe To Kibopush
                           </h3>
                         </div>
                       </div>

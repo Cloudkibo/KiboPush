@@ -158,7 +158,7 @@ class Dashboard extends React.Component {
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
         browserHistory.push({
-          pathname: '/addPageWizard'
+          pathname: '/inviteUsingLinkWizard'
         })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers

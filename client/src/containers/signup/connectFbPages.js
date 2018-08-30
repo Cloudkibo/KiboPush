@@ -22,8 +22,7 @@ class AddPage extends React.Component {
     this.state = {
       showAlert: false,
       alertmsg: '',
-      showWarning: false,
-      connected: 0
+      showWarning: false
     }
     this.closeDialog = this.closeDialog.bind(this)
   }
@@ -48,7 +47,7 @@ class AddPage extends React.Component {
     if (nextprops.message && nextprops.message !== '') {
       this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
-      this.setState({showAlert: true, alertmsg: nextprops.page_connected, connected: this.state.connected + 1})
+      this.setState({showAlert: true, alertmsg: nextprops.page_connected})
     } else {
       this.setState({showAlert: false, alertmsg: ''})
     }
@@ -99,7 +98,7 @@ class AddPage extends React.Component {
                   <div className='m-portlet__head-tools'>
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                       <li className='nav-item m-tabs__item'>
-                        <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled={this.state.connected === 0}>
+                        <Link to='/dashboard' className='btn m-btn--pill btn-success' data-toggle='tab' role='tab' disabled={this.props.pages.length === 0}>
                           Done
                         </Link>
                       </li>
@@ -149,11 +148,13 @@ class AddPage extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state', state)
   return {
     user: (state.basicInfo.user),
     otherPages: (state.pagesInfo.otherPages),
     page_connected: (state.pagesInfo.page_connected),
-    message: (state.pagesInfo.message)
+    message: (state.pagesInfo.message),
+    pages: (state.pagesInfo.pages)
   }
 }
 
