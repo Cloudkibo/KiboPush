@@ -15,6 +15,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import { updateChecks } from '../../redux/actions/wizard.actions'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
@@ -89,6 +90,7 @@ class InviteSubscribers extends React.Component {
     addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
     addScript.type = 'text/javascript'
     document.body.appendChild(addScript)
+    this.props.updateChecks({wizardSeen: true})
     if (this.props.location.state && this.props.location.state.pageUserName) {
       this.setState({
         fblink: `https://m.me/${this.props.location.state.pageUserName}`,
@@ -187,13 +189,13 @@ class InviteSubscribers extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='2' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 6 : (this.props.user.uiMode.mode === 'kibochat') ? 5 : 5} />
+                  <Sidebar step='1' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Step 2: Invite Subscribers
+                            Step 1: Invite Subscribers
                           </h3>
                         </div>
                       </div>
@@ -343,14 +345,7 @@ class InviteSubscribers extends React.Component {
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                       <div className='m-form__actions'>
                         <div className='row'>
-                          <div className='col-lg-6 m--align-left' >
-                            <button onClick={this.goBack} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                              <span>
-                                <i className='la la-arrow-left' />
-                                <span>Back</span>&nbsp;&nbsp;
-                              </span>
-                            </button>
-                          </div>
+                          <div className='col-lg-6 m--align-left' />
                           <div className='col-lg-6 m--align-right'>
                             <Link to='/greetingTextWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
@@ -383,7 +378,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList, clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast}, dispatch)
+  return bindActionCreators({loadMyPagesList: loadMyPagesList, clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast, updateChecks: updateChecks}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteSubscribers)

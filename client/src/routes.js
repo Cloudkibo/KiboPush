@@ -123,13 +123,13 @@ function requireAuth (nextState, replace) {
 
 function redirectAuthUsers (nextState, replace) {
   if (auth.loggedIn()) {
-    // if (auth.getNext() === 'addPages') {
-    //   auth.removeNext()
-    //   return replace({
-    //     pathname: '/addfbpages',
-    //     state: { nextPathname: nextState.location.pathname }
-    //   })
-    // }
+    if (auth.getNext() === 'addPages') {
+      auth.removeNext()
+      return replace({
+        pathname: '/addfbpages',
+        state: { nextPathname: nextState.location.pathname }
+      })
+    }
     replace({
       pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
