@@ -273,7 +273,7 @@ class Signup extends React.Component {
                           </select>
                         </div>
                         <div style={{verticalAlign: 'middle', lineHeight: '38px'}} className='col-xl-2'>
-                          <a href='http://kibopush.com/ui-modes/'>
+                          <a target='_blank' href='http://kibopush.com/ui-modes/'>
                             <i className='la la-info-circle' />
                           </a>
                         </div>
