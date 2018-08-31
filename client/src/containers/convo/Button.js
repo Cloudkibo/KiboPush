@@ -94,7 +94,7 @@ class Button extends React.Component {
     } else if (this.state.sequenceValue !== '') {
       if (this.state.openSubscribe && !this.state.openUnsubscribe) {
         let data = {
-          type: 'web_url',
+          type: 'postback',
           title: this.state.title, // User defined label
           sequenceId: this.state.sequenceValue,
           action: 'subscribe'
@@ -102,7 +102,7 @@ class Button extends React.Component {
         this.props.addButton(data, this.props.onAdd)
       } else if (!this.state.openSubscribe && this.state.openUnsubscribe) {
         let data = {
-          type: 'web_url',
+          type: 'postback',
           title: this.state.title, // User defined label
           sequenceId: this.state.sequenceValue,
           action: 'unsubscribe'
