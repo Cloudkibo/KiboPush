@@ -189,13 +189,13 @@ class EditButton extends React.Component {
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
                   </div>
                   {
-                    this.props.sequences && this.props.sequences.length > 0 &&
+                    this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showSubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
                     </div>
                   }
                   {
-                    this.props.sequences && this.props.sequences.length > 0 &&
+                    this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showUnsubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
                     </div>
