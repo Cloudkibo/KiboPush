@@ -33,7 +33,11 @@ class Profile extends React.Component {
       addTag: '',
       removeTag: '',
       tagOptions: [],
-      saveEnable: false
+      saveEnable: false,
+      assignedTeam: this.props.currentSession.assigned_to.name,
+      assignedAgent: this.props.currentSession.assigned_to.name,
+      Role: this.props.currentSession.assigned_to.type
+
     }
     props.loadTags()
     this.toggleAdd = this.toggleAdd.bind(this)
@@ -145,8 +149,9 @@ class Profile extends React.Component {
         break
       }
     }
-
-    this.setState({teamValue: e.target.value, teamObject: team})
+    console.log('The team name  is', team.name)
+    //this.setState({assignedTeam: team.name})
+    this.setState({teamValue: e.target.value, teamObject: team, assignedTeam: team.name})
   }
 
   onAgentChange (e) {
@@ -158,10 +163,11 @@ class Profile extends React.Component {
         break
       }
     }
-    this.setState({agentValue: e.target.value, agentObject: agent})
+    this.setState({agentValue: e.target.value, agentObject: agent, assignedAgent: agent.name})
   }
 
   assignToAgent () {
+    this.setState({showAssignAgent: !this.state.showAssignAgent, Role: 'agent'})
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
@@ -198,6 +204,7 @@ class Profile extends React.Component {
   }
 
   assignToTeam () {
+    this.setState({showAssignTeam: !this.state.showAssignTeam, Role: 'team'})
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
@@ -234,7 +241,10 @@ class Profile extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    return (
+    console.log('The value of assigned team is', this.state.assignedTeam)
+    console.log('The value of Isassigned', this.props.currentSession.is_assigned)
+    console.log('The value of assigned type', this.state.Role) 
+    return (        
       <div className='col-xl-3'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
@@ -292,10 +302,11 @@ class Profile extends React.Component {
                       this.props.currentSession.is_assigned &&
                       <div style={{marginBottom: '20px'}}>
                         <span className='m--font-bolder'>Team:</span>
-                        <span> {this.props.currentSession.assigned_to.type === 'team' ? this.props.currentSession.assigned_to.name : 'Not Assigned'}</span>
+                        <span> {
+                          this.state.Role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
                         <br />
                         <span className='m--font-bolder'>Agent:</span>
-                        <span> {this.props.currentSession.assigned_to.type === 'agent' ? this.props.currentSession.assigned_to.name : 'Not Assigned'}</span>
+                        <span> {this.state.Role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
                       </div>
                     }
                     {
