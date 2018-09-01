@@ -323,6 +323,7 @@ exports.getfbMessage = function (req, res) {
                           if (page.welcomeMessage &&
                             page.isWelcomeMessageEnabled) {
                             logger.serverLog(TAG, `Going to send welcome message`)
+
                             utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name)
                           }
                         }
@@ -1477,32 +1478,31 @@ function updateseenstatus (req) {
                                                     if (messages) {
                                                       messages.forEach(message => {
                                                         if (message.schedule.condition === 'immediately') {
-                                                          if (message.isActive === true) {
-                                                            Subscribers.findOne({ '_id': subscriber._id }, (err, subscriber) => {
+                                                          Subscribers.findOne({ '_id': subscriber._id }, (err, subscriber) => {
+                                                            if (err) {
+                                                              return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+                                                            }
+
+                                                            Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
                                                               if (err) {
-                                                                return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+                                                                return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                                               }
 
-                                                              Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
-                                                                if (err) {
-                                                                  return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                                                }
-
-                                                                if (message.payload.length > 0) {
-                                                                  AppendURLCount(message, (newPayload) => {
-                                                                    let sequenceSubMessage = new SequenceSubscriberMessage({
-                                                                      subscriberId: subscriber._id,
-                                                                      messageId: message._id,
-                                                                      companyId: subscriber.companyId,
-                                                                      datetime: new Date(),
-                                                                      seen: false
-                                                                    })
-                                                                    sequenceSubMessage.save((err2, result) => {
-                                                                      if (err2) {
-                                                                        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                                                                      }
-                                                                      logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
-                                                                      SequenceMessages.update(
+                                                              if (message.payload.length > 0) {
+                                                                AppendURLCount(message, (newPayload) => {
+                                                                  let sequenceSubMessage = new SequenceSubscriberMessage({
+                                                                    subscriberId: subscriber._id,
+                                                                    messageId: message._id,
+                                                                    companyId: subscriber.companyId,
+                                                                    datetime: new Date(),
+                                                                    seen: false
+                                                                  })
+                                                                  sequenceSubMessage.save((err2, result) => {
+                                                                    if (err2) {
+                                                                      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                                                    }
+                                                                    logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                                                                    SequenceMessages.update(
                                                                         { _id: message._id },
                                                                         { $inc: { sent: 1 } },
                                                                         { multi: true }, (err, updated) => {
@@ -1510,13 +1510,13 @@ function updateseenstatus (req) {
                                                                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                                                           }
                                                                         })
-                                                                      utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
-                                                                    })
+
+                                                                    utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, '', '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                                                                   })
-                                                                }
-                                                              })
+                                                                })
+                                                              }
                                                             })
-                                                          }
+                                                          })
                                                         } else {
                                                           let d1 = new Date()
                                                           if (message.schedule.condition === 'hours') {
@@ -1585,16 +1585,16 @@ function updateseenstatus (req) {
 
   // Code for message trigger sequence messaging when message is seen
   // get subscriber using senderId
-  Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
-    if (err) {
-      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-    }
-    if (subscriber) {
-      let messagesOfllSequences = getAllMessagesOfSequencesSubscribers(subscriber)
-      let sentSequenceMessages = getSentSequenceMessages(subscriber)
-      findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
-    }
-  })
+  // Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+  //   if (err) {
+  //     return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+  //   }
+  //   if (subscriber) {
+  //     let messagesOfllSequences = getAllMessagesOfSequencesSubscribers(subscriber)
+  //     let sentSequenceMessages = getSentSequenceMessages(subscriber)
+  //     findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
+  //   }
+  // })
 }
 
 function sendMenuReply (req) {
@@ -2543,7 +2543,7 @@ const findMessageToBeScheduled = (subscribedSequenceMessages, sentSequenceMessag
     if (msgTrigger.value !== null && msgTrigger.event !== 'none') {
       for (let sentSequenceMsgId of sentSequenceMessageIds) {
         // if the sentmessages id is in the sequenceMessages
-        if (msgTrigger.value === sentSequenceMsgId && msgTrigger.event === triggerEvent ) {
+        if (msgTrigger.value === sentSequenceMsgId && msgTrigger.event === triggerEvent) {
           // schedule the message
           scheduleSequenceMessage(subscriber, subscribedSequenceMessage)
         }

@@ -190,7 +190,8 @@ class Sequence extends React.Component {
   }
 
   handleChange (event) {
-    let selectedTriggerValue = event.target.attributes.getNamedItem('data-val').value
+    let selectedTriggerValue = event.target.attributes.getNamedItem('data-val') ? event.target.attributes.getNamedItem('data-val').nodeValue : 'id'
+    console.log('val--', event.target.attributes)
     let id = event.target.id
     if (this.state.selectedDivId !== id) {
       document.getElementById(id).style.background = 'rgb(194, 202, 214,0.7)'
@@ -607,7 +608,7 @@ class Sequence extends React.Component {
                                             : sequence.sequence.trigger.event === 'subscriber_joins' ? 'When Subscriber joins'
                                             : sequence.sequence.trigger.event === 'seen_all_sequence_messages' ? 'When Subscriber has seen all messages of specific sequence'
                                             : sequence.sequence.trigger.event === 'unsubscribes_from_other_sequence' ? 'When Subscriber unsubscribes from specific sequence'
-                                            : sequence.sequence.trigger.event === 'responds_to_poll' ? 'When Subscriber responds to specific poll' : 'When subscriber subscribes to sequence'
+                                            : sequence.sequence.trigger.event === 'responds_to_poll' ? 'When Subscriber responds to specific poll' : 'None'
 
                                           }
                                       </span>

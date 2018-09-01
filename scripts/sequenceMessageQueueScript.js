@@ -237,7 +237,8 @@ SequenceMessagesQueue.find({}, (err, data) => {
                                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                     }
                                   })
-                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                                  let fbMessageTag= 'NON_PROMOTIONAL_SUBSCRIPTION'
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, '','' ,'' ,fbMessageTag)
                                 SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
                                   if (err) {
                                     logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
@@ -267,7 +268,8 @@ SequenceMessagesQueue.find({}, (err, data) => {
                                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                     }
                                   })
-                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                                  let fbMessageTag= 'NON_PROMOTIONAL_SUBSCRIPTION'
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, '','' ,'' ,fbMessageTag)
                                 SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
                                   if (err) {
                                     logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
@@ -296,7 +298,8 @@ SequenceMessagesQueue.find({}, (err, data) => {
                                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                   }
                                 })
-                            BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+                                let fbMessageTag= 'NON_PROMOTIONAL_SUBSCRIPTION'
+                            BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, '','' ,'' ,fbMessageTag)
                             SequenceMessagesQueue.deleteOne({ '_id': message._id }, (err, result) => {
                               if (err) {
                                 logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)

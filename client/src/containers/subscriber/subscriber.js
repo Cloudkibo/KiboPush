@@ -325,7 +325,8 @@ class Subscriber extends React.Component {
     }
     let data = {
       sequenceId: this.state.sequenceValue,
-      subscriberIds: subscribers
+      subscriberIds: subscribers,
+      fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
     }
     this.props.subscribeToSequence(data, this.msg)
     this.setState({selectAllChecked: false, sequenceValue: ''})

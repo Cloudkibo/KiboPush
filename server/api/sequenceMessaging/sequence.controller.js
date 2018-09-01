@@ -72,7 +72,6 @@ exports.createMessage = function (req, res) {
                 queueScheduledTime: req.body.schedule.date
 
               }
-
               const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
               sequenceMessageForQueue.save((err, messageQueueCreated) => {
                 if (err) {
@@ -169,7 +168,6 @@ exports.setSchedule = function (req, res) {
           .json({status: 'failed', description: 'Record not found'})
       }
       if (req.body.condition === 'immediately') {
-        if (message.isActive === true) {
           SequenceMessageQueue.find({'sequenceMessageId': message._id}, (err, messagesFromQueue) => {
             if (err) {
               return res.status(404)
@@ -216,7 +214,7 @@ exports.setSchedule = function (req, res) {
                                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                               }
                             })
-                          BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                          BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, res,'' ,'' ,req.body.fbMessageTag)
                           SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                             if (err) {
                               logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
@@ -230,7 +228,6 @@ exports.setSchedule = function (req, res) {
               }
             }
           })
-        }
       } else {
         SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
         (err, result) => {
@@ -336,7 +333,7 @@ exports.setStatus = function (req, res) {
                               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                             }
                           })
-                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, req.body.fbMessageTag)
                         SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                           if (err) {
                             logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
@@ -697,6 +694,7 @@ exports.subscriberSequences = function (req, res) {
 }
 
 exports.subscribeToSequence = function (req, res) {
+  console.log('req subscribe to sequence', JSON.stringify(req.body))
   let parametersMissing = false
 
   if (!_.has(req.body, 'sequenceId')) parametersMissing = true
@@ -724,6 +722,7 @@ exports.subscribeToSequence = function (req, res) {
     req.body.subscriberIds.forEach(subscriberId => {
     // Following code will run when user subscribes to sequence
       SequenceMessages.find({sequenceId: req.body.sequenceId}, (err, messages) => {
+        console.log('sequenc messages ', JSON.stringify(messages))
         if (err) {
           res.status(500).json({
             status: 'Failed',
@@ -735,6 +734,7 @@ exports.subscribeToSequence = function (req, res) {
           if (message.schedule.condition === 'immediately') {
             message.isActive = true
             if (message.isActive === true) {
+              console.log('in active msg condition')
               Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                 if (err) {
                   return res.status(404)
@@ -774,7 +774,8 @@ exports.subscribeToSequence = function (req, res) {
                               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                             }
                           })
-                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, '', '', '', req.body.fbMessageTag)
                       })
                     })
                   }
@@ -1223,7 +1224,7 @@ const setSequenceTrigger = function (companyId, subscriberId, trigger) {
               if (messages) {
                 messages.forEach(message => {
                   if (message.schedule.condition === 'immediately') {
-                    if (message.isActive === true) {
+                    
                       Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                         if (err) {
                           return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
@@ -1256,13 +1257,13 @@ const setSequenceTrigger = function (companyId, subscriberId, trigger) {
                                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                     }
                                   })
-                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, '', '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                               })
                             })
                           }
                         })
                       })
-                    }
+                    
                   } else {
                     let d1 = new Date()
                     if (message.schedule.condition === 'hours') {
