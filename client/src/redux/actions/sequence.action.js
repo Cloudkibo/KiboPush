@@ -251,7 +251,6 @@ export function updateTrigger (data, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Sequence Trigger Updated Successfully')
-          dispatch(fetchAllSequence)
         } else {
           if (res.status === 'failed' && res.description) {
             console.log('error in updating sequence trigger' + res.description)

@@ -488,7 +488,7 @@ exports.editSequence = function (req, res) {
 }
 
 exports.allSequences = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, {}, {sort: {dateTime: 1}}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
