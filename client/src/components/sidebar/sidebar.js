@@ -101,7 +101,7 @@ class Sidebar extends Component {
     }
   }
   showCommentCapture () {
-    if (this.props.user && this.props.user.advancedMode) {
+    if (this.props.user) {
       // include user persmissions
       if (this.state.commentCapture) {
         return (
@@ -119,7 +119,7 @@ class Sidebar extends Component {
   }
 
   showSequenceMessaging () {
-    if (this.props.user && this.state.sequenceMessaging && this.props.user.advancedMode) {
+    if (this.props.user && this.state.sequenceMessaging) {
       if (this.props.user.isSuperUser) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -172,7 +172,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastTemplates () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.templates && this.props.user.advancedMode) {
+    if (this.props.user && this.props.user.isSuperUser && this.state.templates) {
       if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -224,7 +224,7 @@ class Sidebar extends Component {
 
   showSmartRespliesItem () {
     // if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode) {
-    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
      this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -278,7 +278,7 @@ class Sidebar extends Component {
   }
 
   showPersistentMenuItem () {
-    if (this.props.user && this.props.user.advancedMode) {
+    if (this.props.user) {
       if (this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -328,7 +328,7 @@ class Sidebar extends Component {
     }
   }
   showCreatePhoneList () {
-    if (this.state.segmentSubscribers && this.props.user && this.props.user.advancedMode && this.props.user.plan.customer_matching) {
+    if (this.state.segmentSubscribers && this.props.user && this.props.user.plan.customer_matching) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/segmentedLists' className='m-menu__link m-menu__toggle'>
@@ -393,7 +393,7 @@ class Sidebar extends Component {
   }
 
   showTeams () {
-    if (this.props.user && this.props.user.advancedMode) {
+    if (this.props.user) {
       if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -447,7 +447,7 @@ class Sidebar extends Component {
                   {this.showMembersItem()}
                   {this.showTeams()}
                   {this.showBroadcastTemplates()}
-                  {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
+                  {this.props.user && this.state.phoneNumber && this.props.user.plan.customer_matching &&
                     <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
                       <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
                         <i className='m-menu__link-icon flaticon-list-3' title='Invite using phone number' />
