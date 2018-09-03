@@ -97,9 +97,12 @@
     infoPayload.fullUrl = location.href;
     infoPayload.pathname = location.pathname;
     infoPayload.pageTitle = document.title;
+    window.__infoPayload = infoPayload
+
+    console.log(infoPayload)
 
     var xmlhttp = new XMLHttpRequest();
-    var url = "https://localhost:3000/api/ip2country/findIp";
+    var url = "http://localhost:3000/api/ip2country/findIp";
 
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
@@ -119,3 +122,4 @@
 
   }, 3000)
 })()
+

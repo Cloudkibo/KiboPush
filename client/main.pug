@@ -10,16 +10,24 @@ html(lang="en")
     meta(name="description" content="Latest updates and statistic charts")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
-    //script(type='text/javascript').
+    script(type='text/javascript').
       window.__kibo_company_id = "5aae50b46f9da939b8659d12";
-      (function () {
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log('running script')
         var wa = document.createElement('script');
         wa.type = 'text/javascript';
         wa.async = true;
-        wa.src = 'https://localhost:3000/scripts/widgetAppSrc.js';
+        wa.src = 'http://localhost:3000/scripts/widgetAppSrc.js';
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(wa, s);
-      })();
+        setTimeout(function() {
+          console.log(window.__infoPayload)
+          let plugin = document.getElementsByClassName('fb-customerchat')[0]
+          plugin.setAttribute('data-ref', JSON.stringify(window.__infoPayload))
+          console.log(plugin)
+          //- document.body.appendChild(plugin);
+        }, 5000)
+      });
     // script(src="https://kibopush-sojharo.ngrok.io/scripts/widgetAppSrc.js" type="text/javascript")
     // begin::Web font
     // Facebook Pixel Code
@@ -113,10 +121,8 @@ html(lang="en")
       }
   // end::Head
   body.m-page--fluid.m--skin-.m-content--skin-light2.m-aside-left--fixed.m-header--fixed.m-header--fixed-mobile.m-aside-left--enabled.m-aside-left--skin-dark.m-aside-left--offcanvas.m-footer--push.m-aside--offcanvas-default
-    #content.m-grid.m-grid--hor.m-grid--root.m-page
-    // <script src="js/jquery-3.2.0.min.js"></script>
-    //
-      <script>
+    #content.m-grid.m-grid--hor.m-grid--root.m-page  
+    script.
       window.fbAsyncInit = function () {
       FB.init({
       appId: '132767517443810',
@@ -133,7 +139,6 @@ html(lang="en")
       js.src = 'https://connect.facebook.net/en_US/sdk.js'
       fjs.parentNode.insertBefore(js, fjs)
       }(document, 'script', 'facebook-jssdk'))
-      </script>
     script(src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous")
     script.
       function readCookie(name) {
@@ -192,3 +197,4 @@ html(lang="en")
     // begin::Page Snippets
     script(src="assets/app/js/dashboard.js" type="text/javascript")
     // end::Page Snippets
+
