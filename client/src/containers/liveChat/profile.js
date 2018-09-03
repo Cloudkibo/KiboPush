@@ -36,8 +36,11 @@ class Profile extends React.Component {
       saveEnable: false,
       assignedTeam: this.props.currentSession.assigned_to.name,
       assignedAgent: this.props.currentSession.assigned_to.name,
-      Role: this.props.currentSession.assigned_to.type
-
+      Role: this.props.currentSession.assigned_to.type,
+      assignAdmin: false,
+      assignAgent: false,
+      isAssigned: this.props.currentSession.is_assigned
+      
     }
     props.loadTags()
     this.toggleAdd = this.toggleAdd.bind(this)
@@ -56,8 +59,9 @@ class Profile extends React.Component {
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
+    this.willAssignTeam = this.willAssignTeam.bind(this)
+    this.willAssignAgent = this.willAssignAgent.bind(this)
   }
-
   showAddTag () {
     this.setState({
       addTag: null,
@@ -167,11 +171,12 @@ class Profile extends React.Component {
   }
 
   assignToAgent () {
-    this.setState({showAssignAgent: !this.state.showAssignAgent, Role: 'agent'})
+    this.setState({showAssignAgent: !this.state.showAssignAgent, Role: 'agent', assignAgent: false, isAssigned: true})
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
-      sessionId: this.props.currentSession._id
+      sessionId: this.props.currentSession._id,
+      isAssigned: true
     }
     this.props.assignToAgent(data)
     if (this.state.agentObject._id !== this.props.user._id) {
@@ -204,11 +209,12 @@ class Profile extends React.Component {
   }
 
   assignToTeam () {
-    this.setState({showAssignTeam: !this.state.showAssignTeam, Role: 'team'})
+    this.setState({showAssignTeam: !this.state.showAssignTeam, Role: 'team', assignAdmin: false, isAssigned: true })
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
-      sessionId: this.props.currentSession._id
+      sessionId: this.props.currentSession._id,
+      isAssigned: true
     }
     this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
     this.props.assignToTeam(data)
@@ -217,10 +223,44 @@ class Profile extends React.Component {
   toggleAssignTeam () {
     this.setState({showAssignTeam: !this.state.showAssignTeam})
   }
-
   toggleAssignAgent () {
     this.setState({showAssignAgent: !this.state.showAssignAgent})
   }
+
+  willAssignTeam () {
+    this.setState({isAssigned: false}) 
+    let data = {
+      teamId: this.state.teamObject._id,
+      teamName: this.state.teamObject.name,
+      sessionId: this.props.currentSession._id,
+      isAssigned: false
+    }
+    this.props.fetchTeamAgents(this.state.teamObject._id, this.handleAgents)
+    this.props.assignToTeam(data)
+
+    console.log('The value of unassigned is ', this.state.isAssigned)
+  }
+  willAssignAgent () {
+    this.setState({isAssigned: false}) 
+    let data = {
+      agentId: this.state.agentObject._id,
+      agentName: this.state.agentObject.name,
+      sessionId: this.props.currentSession._id,
+      isAssigned: false
+    }
+    this.props.assignToAgent(data)
+    if (this.state.agentObject._id !== this.props.user._id) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.currentSession.subscriber_id.firstName + ' ' + this.props.currentSession.subscriber_id.lastName} has been assigned to you.`,
+        category: {type: 'chat_session', id: this.props.currentSession._id},
+        agentIds: [this.state.agentObject._id],
+        companyId: this.props.currentSession.company_id
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.tags) {
       var tagOptions = []
@@ -241,8 +281,9 @@ class Profile extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('The value of assigned team is', this.state.assignedTeam)
-    console.log('The value of Isassigned', this.props.currentSession.is_assigned)
+    console.log('The value of assigned team is', this.state.assignedAgent)
+    console.log('The value of Isassigned', this.state.isAssigned)
+    console.log('The value of assignAgent', this.state.assignAgent)
     console.log('The value of assigned type', this.state.Role) 
     return (        
       <div className='col-xl-3'>
@@ -299,7 +340,7 @@ class Profile extends React.Component {
                   (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
                   <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
                     {
-                      this.props.currentSession.is_assigned &&
+                      this.state.isAssigned &&
                       <div style={{marginBottom: '20px'}}>
                         <span className='m--font-bolder'>Team:</span>
                         <span> {
@@ -309,13 +350,26 @@ class Profile extends React.Component {
                         <span> {this.state.Role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
                       </div>
                     }
-                    {
-                      this.state.showAssignTeam
+                    { 
+                      (this.state.assignAdmin || this.state.isAssigned) && this.state.Role==='team'
+                      ?
+                      <div className='m-accordion__item'> 
+                      <div className='m-accordion__item-head'>
+                          <span className='m-accordion__item-icon'>
+                            <i className='fa fa-users' />
+                          </span> 
+                          <span className='m-accordion__item-title'>UnAssign team</span>
+                          <span style={{cursor: 'pointer'}} onClick={this.willAssignTeam} className='m-accordion__item-icon'>
+                            <i className='la la-minus' />
+                          </span>
+                        </div>
+                        </div>
+                      : this.state.showAssignTeam
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-users' />
-                          </span>
+                          </span> 
                           <span className='m-accordion__item-title'>Assign to team</span>
                           <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
                             <i className='la la-minus' />
@@ -348,7 +402,19 @@ class Profile extends React.Component {
                       </div>
                     }
                     {
-                      this.state.showAssignAgent
+                      (this.state.assignAgent || this.state.isAssigned) && this.state.Role=== 'agent'
+                      ? <div className='m-accordion__item'>
+                        <div className='m-accordion__item-head'>
+                          <span className='m-accordion__item-icon'>
+                            <i className='fa fa-user' />
+                          </span>
+                          <span className='m-accordion__item-title'>UnAssign Agent</span>
+                          <span style={{cursor: 'pointer'}} onClick={this.willAssignAgent} className='m-accordion__item-icon'>
+                            <i className='la la-minus' />
+                          </span>
+                        </div>
+                        </div>
+                      : this.state.showAssignAgent
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>

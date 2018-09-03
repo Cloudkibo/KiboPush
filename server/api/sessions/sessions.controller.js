@@ -741,7 +741,7 @@ exports.assignAgent = function (req, res) {
 
     Sessions.update(
       {_id: req.body.sessionId},
-      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+      {assigned_to: assignedTo, is_assigned: req.body.isAssigned}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
@@ -796,7 +796,7 @@ exports.assignTeam = function (req, res) {
 
     Sessions.update(
       {_id: req.body.sessionId},
-      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+      {assigned_to: assignedTo, is_assigned: req.body.isAssigned}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
