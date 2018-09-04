@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { loadPageSubscribersList, allLocales } from '../../redux/actions/backdoor.actions'
+import { loadPageSubscribersList, allLocales, downloadSubscribersData } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Select from 'react-select'
@@ -199,6 +199,12 @@ class PageSubscribers extends React.Component {
     }
   }
 
+  downloadData () {
+    if (this.props.currentPage && this.props.currentPage._id) {
+      downloadSubscribersData(this.props.currentPage._id)
+    }
+  }
+
   render () {
     return (
       <div>
@@ -221,6 +227,7 @@ class PageSubscribers extends React.Component {
                         <h3 className='m-portlet__head-text'>
                           Subscribers
                         </h3>
+                        <button className='btn btn-primary' style={{margin: 18 + 'px', marginLeft: 680 + '%'}} onClick={this.downloadData.bind(this)}>Download</button>
                       </div>
                     </div>
                   </div>
@@ -402,8 +409,10 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadPageSubscribersList: loadPageSubscribersList,
-    allLocales: allLocales},
+  return bindActionCreators({
+    loadPageSubscribersList: loadPageSubscribersList,
+    allLocales: allLocales
+  },
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(PageSubscribers)

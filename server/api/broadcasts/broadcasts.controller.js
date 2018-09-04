@@ -1585,17 +1585,17 @@ function updateseenstatus (req) {
 
   // Code for message trigger sequence messaging when message is seen
   // get subscriber using senderId
-  Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
-    if (err) {
-      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-    }
-    if (subscriber) {
-      let messagesOfllSequences = getAllMessagesOfSequencesSubscribers(subscriber)
-      let sentSequenceMessages = getSentSequenceMessages(subscriber)
-      findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
-    }
-  })
-}
+//   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+//     if (err) {
+//       return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+//     }
+//     if (subscriber) {
+//       let messagesOfllSequences = getAllMessagesOfSequencesSubscribers(subscriber)
+//       let sentSequenceMessages = getSentSequenceMessages(subscriber)
+//       findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
+//     }
+//   })
+// }
 
 function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
