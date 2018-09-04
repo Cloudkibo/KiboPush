@@ -72,7 +72,6 @@ exports.createMessage = function (req, res) {
                 queueScheduledTime: req.body.schedule.date
 
               }
-
               const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
               sequenceMessageForQueue.save((err, messageQueueCreated) => {
                 if (err) {
@@ -169,7 +168,6 @@ exports.setSchedule = function (req, res) {
           .json({status: 'failed', description: 'Record not found'})
       }
       if (req.body.condition === 'immediately') {
-        if (message.isActive === true) {
           SequenceMessageQueue.find({'sequenceMessageId': message._id}, (err, messagesFromQueue) => {
             if (err) {
               return res.status(404)
@@ -216,7 +214,7 @@ exports.setSchedule = function (req, res) {
                                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                               }
                             })
-                          BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                          BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, res,'' ,'' ,req.body.fbMessageTag)
                           SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                             if (err) {
                               logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
@@ -230,7 +228,6 @@ exports.setSchedule = function (req, res) {
               }
             }
           })
-        }
       } else {
         SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
         (err, result) => {
@@ -336,7 +333,7 @@ exports.setStatus = function (req, res) {
                               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                             }
                           })
-                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, req.body.fbMessageTag)
                         SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                           if (err) {
                             logger.serverLog(TAG, `could not delete the message from queue ${JSON.stringify(err)}`)
@@ -774,7 +771,8 @@ exports.subscribeToSequence = function (req, res) {
                               logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                             }
                           })
-                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+
+                        BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, '', '', '', req.body.fbMessageTag)
                       })
                     })
                   }
@@ -1223,7 +1221,7 @@ const setSequenceTrigger = function (companyId, subscriberId, trigger) {
               if (messages) {
                 messages.forEach(message => {
                   if (message.schedule.condition === 'immediately') {
-                    if (message.isActive === true) {
+                    
                       Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                         if (err) {
                           return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
@@ -1256,13 +1254,13 @@ const setSequenceTrigger = function (companyId, subscriberId, trigger) {
                                       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                     }
                                   })
-                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName, '', '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                               })
                             })
                           }
                         })
                       })
-                    }
+                    
                   } else {
                     let d1 = new Date()
                     if (message.schedule.condition === 'hours') {

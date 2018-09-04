@@ -626,7 +626,7 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
     if (index === (payload.length - 1)) {
       sendBroadcast(JSON.stringify(batch), page, res, subscriberNumber, subscribersLength)
     }
-  })
+  }) 
 }
 /* eslint-enable */
 
