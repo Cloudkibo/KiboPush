@@ -117,3 +117,48 @@ exports.pageWiseAggregate = {
     totalCount: { $sum: 1 }
   }
 }
+
+exports.joinAutpostingMessages = {
+  $lookup:
+  {
+    from: 'autoposting_messages',
+    localField: '_id',
+    foreignField: 'autopostingId',
+    as: 'posts'
+  }
+}
+
+exports.dateFilterAutoposting = function (ISODateString) {
+  return {
+    $project: {
+      userId: true,
+      companyId: true,
+      subscriptionType: true,
+      subscriptionUrl: true,
+      posts: {
+        $filter: {
+          input: '$posts',
+          as: 'posts',
+          cond: { $gte: [ '$$posts.datetime', new Date(ISODateString) ] }
+        }
+      },
+      totalAutopostingSent: { $size: '$posts' }
+    }
+  }
+}
+
+exports.selectAutoPostingFields = {
+  $project: {
+    userId: true,
+    companyId: true,
+    subscriptionType: true,
+    subscriptionUrl: true,
+    totalAutopostingSent: { $size: '$posts' }
+  }
+}
+
+exports.selectTwitterType = { $match: { subscriptionType: 'twitter' } }
+
+exports.selectFacebookType = { $match: { subscriptionType: 'facebook' } }
+
+exports.selectWordpressType = { $match: { subscriptionType: 'wordpress' } }
