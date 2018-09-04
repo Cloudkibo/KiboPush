@@ -694,7 +694,6 @@ exports.subscriberSequences = function (req, res) {
 }
 
 exports.subscribeToSequence = function (req, res) {
-  console.log('req subscribe to sequence', JSON.stringify(req.body))
   let parametersMissing = false
 
   if (!_.has(req.body, 'sequenceId')) parametersMissing = true
@@ -722,7 +721,6 @@ exports.subscribeToSequence = function (req, res) {
     req.body.subscriberIds.forEach(subscriberId => {
     // Following code will run when user subscribes to sequence
       SequenceMessages.find({sequenceId: req.body.sequenceId}, (err, messages) => {
-        console.log('sequenc messages ', JSON.stringify(messages))
         if (err) {
           res.status(500).json({
             status: 'Failed',
@@ -734,7 +732,6 @@ exports.subscribeToSequence = function (req, res) {
           if (message.schedule.condition === 'immediately') {
             message.isActive = true
             if (message.isActive === true) {
-              console.log('in active msg condition')
               Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                 if (err) {
                   return res.status(404)
