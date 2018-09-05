@@ -147,7 +147,7 @@ class CreateMessage extends React.Component {
       if (payload[i].componentType === 'text') {
         console.log('paload[i].text', payload[i].text)
         console.log('paload[i].buttons', payload[i].buttons)
-        temp.push({content: (<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
+        temp.push({content: (<Text module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -172,22 +172,22 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
+        temp.push({content: (<Card module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'gallery') {
-        temp.push({content: (<Gallery id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        temp.push({content: (<Gallery module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'list') {
-        temp.push({content: (<List id={payload[i].id} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+        temp.push({content: (<List module='sequenceMessaging' id={payload[i].id} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'media') {
-        temp.push({content: (<Media id={payload[i].id} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
+        temp.push({content: (<Media module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
