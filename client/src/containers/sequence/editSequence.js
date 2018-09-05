@@ -10,8 +10,10 @@ import { bindActionCreators } from 'redux'
 import { fetchAllSequence, createSequence, fetchAllMessages, deleteMessage, setSchedule, createMessage, setStatus, updateSegmentation, updateTrigger } from '../../redux/actions/sequence.action'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
-import { Popover, PopoverBody } from 'reactstrap'
+import { Popover, PopoverBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { loadTags } from '../../redux/actions/tags.actions'
+import { allLocales } from '../../redux/actions/subscribers.actions'
 
 class CreateSequence extends React.Component {
   constructor (props, context) {
@@ -28,13 +30,9 @@ class CreateSequence extends React.Component {
       condition: 'minutes',
       sequenceId: '',
       isShowingModalSegmentation: false,
-      segmentationOptions: [{
-        'name': true,
-        'page': true,
-        'subscribed': true
-      }],
-      segmentation: [],
-      segmentationCondition: 'any',
+      conditions: [{condition: '', criteria: '', value: ''}],
+      errorMessages: [],
+      joiningCondition: 'AND',
       selectedSequenceId: '',
       selectedMessageId: '',
       validSegmentation: false,
@@ -48,13 +46,16 @@ class CreateSequence extends React.Component {
       time: 'immediately',
       isShowModalSchedule: false,
       isDaysInputDisabled: true,
-      isMinutesInputDisabled: true
-
+      isMinutesInputDisabled: true,
+      dropdownConditionOpen: false,
+      genders: ['male', 'female', 'other'],
+      segmentation: []
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
     }
     props.loadMyPagesList()
+    props.loadTags()
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogSegmentation = this.showDialogSegmentation.bind(this)
@@ -69,17 +70,7 @@ class CreateSequence extends React.Component {
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.gotoView = this.gotoView.bind(this)
-    this.addSegmentationOption = this.addSegmentationOption.bind(this)
-    this.removeSegmentationOption = this.removeSegmentationOption.bind(this)
     this.saveSegmentation = this.saveSegmentation.bind(this)
-    this.onNameSegmentationChange = this.onNameSegmentationChange.bind(this)
-    this.onPageSegmentationChange = this.onPageSegmentationChange.bind(this)
-    this.onSubscribedSegmentationChange = this.onSubscribedSegmentationChange.bind(this)
-    this.onNameConditionChange = this.onNameConditionChange.bind(this)
-    this.onSubscribedCriteriaChange = this.onSubscribedCriteriaChange.bind(this)
-    this.onNameCriteriaChange = this.onNameCriteriaChange.bind(this)
-    this.onConditionChange = this.onConditionChange.bind(this)
-    this.validateSegmentation = this.validateSegmentation.bind(this)
     this.ShowDialogTrigger = this.ShowDialogTrigger.bind(this)
     this.CloseDialogTrigger = this.CloseDialogTrigger.bind(this)
     this.validateTrigger = this.validateTrigger.bind(this)
@@ -87,144 +78,87 @@ class CreateSequence extends React.Component {
     this.changeTime = this.changeTime.bind(this)
     this.showDialogSchedule = this.showDialogSchedule.bind(this)
     this.closeDialogSchedule = this.closeDialogSchedule.bind(this)
+    this.toggleCondition = this.toggleCondition.bind(this)
+    this.changeConditionToAnd = this.changeConditionToAnd.bind(this)
+    this.changeConditionToOr = this.changeConditionToOr.bind(this)
+    this.addCondition = this.addCondition.bind(this)
+    this.changeCondition = this.changeCondition.bind(this)
+    this.changeCriteria = this.changeCriteria.bind(this)
+    this.changeText = this.changeText.bind(this)
+    this.removeCondition = this.removeCondition.bind(this)
+    this.updateTextBox = this.updateTextBox.bind(this)
   }
 
   saveSegmentation () {
-    this.props.updateSegmentation({
+    let data = {
       messageId: this.state.selectedMessageId,
       sequenceId: this.state.selectedSequenceId,
-      segmentationCondition: this.state.segmentationCondition,
-      segmentation: this.state.segmentation
-    })
-  }
-  validateSegmentation () {
-    console.log('validating')
-    if (this.state.segmentation.length === 0) {
-      return false
+      segmentation: this.state.conditions,
+      segmentationCondition: this.state.joiningCondition
     }
-    let invalidSegment = this.state.segmentation.find((segment) => {
-      return (!segment.value)
-    })
-    return !invalidSegment
+    console.log('segmentation data', data)
+    this.props.updateSegmentation(data)
+    this.closeDialogSegmentation()
   }
 
-  onConditionChange (condition) {
-    this.setState({segmentationCondition: condition})
+  changeConditionToAnd () {
+    this.setState({
+      joiningCondition: 'AND'
+    })
   }
-  onNameCriteriaChange (criteria, id) {
-    let segmentation = this.state.segmentation
-    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
-    if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].criteria = criteria
-    } else {
-      segmentation.push({
-        'condition': 'first_name',
-        'value': '',
-        'criteria': criteria,
-        'id': id
-      })
-    }
-    console.log('segmentation', segmentation)
-    this.setState({segmentation: segmentation})
+  changeConditionToOr () {
+    this.setState({
+      joiningCondition: 'OR'
+    })
   }
-  onNameConditionChange (condition, id) {
-    let segmentation = this.state.segmentation
-    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
-    if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].condition = condition
-    } else {
-      segmentation.push({
-        'condition': condition,
-        'value': '',
-        'criteria': 'is',
-        'id': id
-      })
-    }
-    console.log('segmentation', segmentation)
-    this.setState({segmentation: segmentation})
-  }
-  onSubscribedCriteriaChange (criteria, id) {
-    let segmentation = this.state.segmentation
-    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
-    if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].criteria = criteria
-    } else {
-      segmentation.push({
-        'condition': 'subscription_date',
-        'value': '',
-        'criteria': criteria,
-        'id': id
-      })
-    }
-    console.log('segmentation', segmentation)
-    this.setState({segmentation: segmentation})
-  }
-  onNameSegmentationChange (value, id) {
-    let segmentation = this.state.segmentation
-    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
-    if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].value = value
-    } else {
-      segmentation.push({
-        'condition': 'first_name',
-        'value': value,
-        'criteria': 'is',
-        'id': id
-      })
-    }
-    console.log('segmentation', segmentation)
-    this.setState({segmentation: segmentation})
-  }
-  onPageSegmentationChange (value, id) {
-    let segmentation = this.state.segmentation
-    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
-    if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].value = value
-    } else {
-      segmentation.push({
-        'condition': 'page',
-        'value': value,
-        'criteria': 'is',
-        'id': id
-      })
-    }
-    console.log('segmentation', segmentation)
-    this.setState({segmentation: segmentation})
-  }
-  onSubscribedSegmentationChange (value, id) {
-    let segmentation = this.state.segmentation
-    let segmentationIndex = segmentation.findIndex((o) => o.id === id)
-    if (segmentationIndex >= 0) {
-      segmentation[segmentationIndex].value = value
-    } else {
-      segmentation.push({
-        'condition': 'subscription_date',
-        'value': value,
-        'criteria': 'on',
-        'id': id
-      })
-    }
-    console.log('segmentation', segmentation)
-    this.setState({segmentation: segmentation})
-  }
-  addSegmentationOption () {
-    let segmentationOptions = this.state.segmentationOptions
-    segmentationOptions.push(
-      {
-        'name': true,
-        'page': true,
-        'subscribed': true
+
+  removeCondition (e, index) {
+    var tempConditions = this.state.conditions
+    for (var i = 0; i < tempConditions.length; i++) {
+      if (i === index) {
+        tempConditions.splice(i, 1)
       }
-    )
-    this.setState({segmentationOptions: segmentationOptions})
+    }
+    this.setState({
+      conditions: tempConditions
+    })
   }
-  removeSegmentationOption (index, option) {
-    let segmentationOptions = this.state.segmentationOptions
-    segmentationOptions[index][option] = false
-    this.setState({segmentationOptions: segmentationOptions})
-    let segmentation = this.state.segmentation
-    segmentation.splice(index, 1)
-    this.setState({segmentationOptions: segmentationOptions, segmentation: segmentation})
+
+  changeCondition (e, index) {
+    var conditions = this.state.conditions
+    for (var i = 0; i < this.state.conditions.length; i++) {
+      if (index === i) {
+        conditions[i].condition = e.target.value
+      }
+    }
+    this.setState({conditions: conditions})
+  }
+  changeCriteria (e, index) {
+    var conditions = this.state.conditions
+    for (var i = 0; i < this.state.conditions.length; i++) {
+      if (index === i) {
+        conditions[i].criteria = e.target.value
+      }
+    }
+    this.setState({conditions: conditions})
+  }
+  changeText (e, index) {
+    var conditions = this.state.conditions
+    for (var i = 0; i < this.state.conditions.length; i++) {
+      if (index === i) {
+        conditions[i].value = (e.target.value).trim()
+        console.log('value: ' + conditions[i].value)
+      }
+    }
+    this.setState({conditions: conditions})
+  }
+  addCondition () {
+    this.setState({errorMessages: []})
+    var conditions = this.state.conditions
+    conditions.push({condition: '', criteria: '', value: ''})
+    this.setState({
+      conditions: conditions
+    })
   }
   gotoView (message) {
     //  this.props.createSequence({name: this.state.name})
@@ -301,10 +235,6 @@ class CreateSequence extends React.Component {
     this.props.setStatus({ messageId: id, isActive: e.target.checked }, this.state.sequenceId)
   }
 
-  changeCondition (e) {
-    this.setState({condition: e.target.value})
-  }
-
   onDaysChange (e) {
     this.setState({selectedDays: e.target.value})
   }
@@ -328,7 +258,7 @@ class CreateSequence extends React.Component {
   handleDone () {
     this.setState({openPopover: !this.state.openPopover})
     if (this.state.time === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId, fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, this.state.sequenceId)
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId}, this.state.sequenceId)
       this.closeDialogSchedule()
       this.props.fetchAllMessages(this.state.sequenceId)
     } else {
@@ -341,7 +271,7 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
-      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId, fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, this.state.sequenceId)
+      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId}, this.state.sequenceId)
       this.closeDialogSchedule()
       this.props.fetchAllMessages(this.state.sequenceId)
     }
@@ -363,6 +293,10 @@ class CreateSequence extends React.Component {
     }
   }
 
+  toggleCondition () {
+    this.setState({dropdownConditionOpen: !this.state.dropdownConditionOpen})
+  }
+
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
@@ -376,7 +310,7 @@ class CreateSequence extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
   showDialogSegmentation (message) {
-    this.setState({isShowingModalSegmentation: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id})
+    this.setState({isShowingModalSegmentation: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, conditions: message.segmentation.length > 0 ? message.segmentation : [{condition: '', criteria: '', value: ''}], joiningCondition: message.segmentationCondition})
   }
   closeDialogSegmentation () {
     this.setState({isShowingModalSegmentation: false})
@@ -427,7 +361,65 @@ class CreateSequence extends React.Component {
       this.props.fetchAllMessages(nextProps.createdSequence._id)
     }
     if (nextProps.messages) {
-      //  this.setState({condition: nextProps.messages.schedule.condition, selectedDays: nextProps.messages.schedule.selectedDays})
+      // this.setState({condition: nextProps.messages.schedule.condition, selectedDays: nextProps.messages.schedule.selectedDays})
+    }
+  }
+
+  updateTextBox (i, condition) {
+    console.log('textbox condition', condition)
+    if (condition.condition === 'page') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value}>
+          <option disabled selected value>Select a Page</option>
+          {
+                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                  <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                ))
+            }
+        </select>
+      )
+    } else if (condition.condition === 'gender') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value} >
+          <option disabled selected value>Select a Gender</option>
+          {
+                this.state.genders && this.state.genders.length > 0 && this.state.genders.map((gender, i) => (
+                  <option key={i} value={gender}>{gender}</option>
+                ))
+            }
+        </select>
+      )
+    } else if (condition.condition === 'tag') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value}>
+          <option disabled selected value>Select a Tag</option>
+          {
+            this.props.tags && this.props.tags.length > 0 && this.props.tags.map((tag, i) => (
+              <option key={i} value={tag._id}>{tag.tag}</option>
+            ))
+        }
+        </select>
+      )
+    } else if (condition.condition === 'locale') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value}>
+          <option disabled selected value>Select a Locale</option>
+          {
+            this.props.locales && this.props.locales.map((locale, i) => (
+              <option key={i} value={locale}>{locale}</option>
+            ))
+          }
+        </select>
+      )
+    } else {
+      return (
+        <input className='form-control m-input'
+          onChange={(e) => this.changeText(e, i)}
+          value={condition.value}
+          id='text'
+          placeholder='Value'
+          type={condition === 'subscription_date' || condition === 'reply' ? 'date' : 'text'} />
+      )
     }
   }
 
@@ -449,6 +441,7 @@ class CreateSequence extends React.Component {
     })
   }
   render () {
+    console.log('editSequence state', this.state)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -482,86 +475,169 @@ class CreateSequence extends React.Component {
 
               {
               this.state.isShowingModalSegmentation &&
-              <ModalContainer style={{width: '500px', paddingLeft: '33px', paddingRight: '33px'}}
+              <ModalContainer style={{width: '700px', left: '400px', paddingLeft: '33px', paddingRight: '33px'}}
                 onClose={this.closeDialogSegmentation}>
-                <ModalDialog style={{width: '500px',  paddingLeft: '33px', paddingRight: '33px'}}
+                <ModalDialog style={{width: '700px', left: '400px', paddingLeft: '33px', paddingRight: '33px'}}
                   onClose={this.closeDialogSegmentation}>
-                  <h3  style={{marginBottom: '20px'}}>Segment Subscribers</h3>
-                  <div style={{marginBottom: '20px'}}>Subscribers match  
-                        <select onChange={(e) => this.onConditionChange(e.target.value)} style={{marginLeft: '10px', marginRight: '10px'}}>
-                          <option value='any'>any</option>
-                          <option value='all'>all</option>
-                      </select>
-                      of the following conditions
-                  </div>
-                  {
-                    this.state.segmentationOptions.map((option, i) => {
-                      return (
-                      <div key = {i}>    
-                        {
-                          option.name ? 
-                        <div style={{marginBottom: '10px'}}>
-                          <i onClick={() => this.removeSegmentationOption(i, 'name')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
-                          <select onChange={(e) => this.onNameConditionChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
-                            <option value='first_name'>First Name</option>
-                            <option value='last_name'>Last Name</option>
-                        </select>
-                        <select onChange={(e) => this.onNameCriteriaChange(e.target.value, 'name'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px'}}>
-                          <option value='is'>is</option>
-                          <option value='contains'>contains</option>
-                          <option value='begins_with'>begins with</option>
-                          </select>
-                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} type='text' onChange={(e) => this.onNameSegmentationChange(e.target.value, 'name'+i)}></input>
-                        </div> : null
-                        }
-                         {
-                          option.page ? 
-                        <div style={{marginBottom: '10px'}}>
-                          <i onClick={() => this.removeSegmentationOption(i, 'page')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
-                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
-                            <option>
-                              Page
-                            </option>
-                        </select>
-                        <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
-                          <option>is</option>
-                          </select>
-                          <select className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '165px'}} onChange={(e) => this.onPageSegmentationChange(e.target.value, 'page'+i)} >
-                          <option disabled selected value> -- Select a Page -- </option>
-                          {
-                              this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
-                              ))
-                          }
-                          </select>
-                        </div> : null
-                        }
-                         {
-                          option.subscribed ?            
-                        <div style={{marginBottom: '10px'}}>
-                          <i onClick={() => this.removeSegmentationOption(i, 'subscribed')} className="fa fa-minus-circle" style={{fontSize:'24px'}}></i> 
-                          <select style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '110px'}}>
-                            <option>Subscribed</option>
-                        </select>
-                        <select onChange={(e) => this.onSubscribedCriteriaChange(e.target.value, 'subscribed'+i)} style={{bottom: '3px', position: 'relative', marginLeft: '10px', minWidth: '105px'}}>
-                          <option>on</option>
-                          <option>before</option>
-                          <option>after</option>
-                          </select>
-                          <input className='sequence-input' style={{bottom: '3px', position: 'relative', marginLeft: '10px'}} type='date' onChange={(e) => this.onSubscribedSegmentationChange(e.target.value, 'subscribed'+i)}></input>
-                        </div> : null
-                        }
+                      <div className='form-group m-form__group col-12' style={{marginBottom: '20px', color: '#337ab7', display: 'flex'}}>
+                        <Dropdown id='switchCondition' style={{marginLeft: '10px'}}isOpen={this.state.dropdownConditionOpen} toggle={this.toggleCondition}>
+                          <DropdownToggle caret>
+                             Change Joining Condition
+                          </DropdownToggle>
+                          <DropdownMenu>
+                            <DropdownItem onClick={this.changeConditionToAnd}>all of the following conditions</DropdownItem>
+                            <DropdownItem onClick={this.changeConditionToOr}>any of the following conditions</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
                       </div>
-                      )
-                      
-                    })
-                  }
-                   <div onClick={() => this.addSegmentationOption()} className="sequence-link">
-                    <i className="fa fa-plus-circle" style={{fontSize:'24px'}}></i> 
-                    <span style={{bottom: '3px', position: 'relative', fontWeight: 'bold', marginLeft: '5px'}} >Add</span>
-                  </div>
-                  <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateSegmentation()}> Save </button>
-                   <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
+                      <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                        <div style={{marginBottom: '10px'}}>Segment subscribers based on<span id='switchCondition' style={{fontWeight: 'bold', textDecoration: 'underline'}}>{this.state.joiningCondition === 'OR' ? ' any of the following conditions' : ' all of the following conditions'}:</span></div>
+                        <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                          <table className='m-datatable__table'
+                            id='m-datatable--27866229129' style={{
+                              display: 'block',
+                              height: 'auto',
+                              overflowX: 'auto'
+                            }}>
+                            <thead className='m-datatable__head'>
+                              <tr className='m-datatable__row'
+                                style={{height: '53px'}}>
+                                <th data-field='title'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
+                                  <span>Condition</span>
+                                </th>
+                                <th data-field='title'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
+                                  <span>Criteria</span>
+                                </th>
+                                <th data-field='text'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
+                                  <span>Value</span>
+                                </th>
+                                <th data-field='remove'
+                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort' style={{width: '25%'}}>
+                                  <span />
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                              {
+                               this.state.conditions.map((condition, i) => (
+                                 <tr data-row={i}
+                                   className='m-datatable__row m-datatable__row--even'
+                                   style={{height: '55px'}} key={i}>
+                                   <td data-field='title'
+                                     className='m-datatable__cell' style={{width: '25%'}}>
+                                     <select className='form-control m-input' onChange={(e) => this.changeCondition(e, i)}
+                                       value={condition.condition} >
+                                       <option value=''>Select Condition</option>
+                                       <option value='first_name'>First Name</option>
+                                       <option value='last_name'>Last Name</option>
+                                       <option value='page'>Page</option>
+                                       <option value='gender'>Gender</option>
+                                       <option value='locale'>Locale</option>
+                                       <option value='tag'>Tag</option>
+                                       <option value='subscription_date'>Subscribed</option>
+                                     </select>
+                                     <span className='m-form__help'>
+                                       {
+                                         this.state.errorMessages.map((m) => (
+                                           m.error === 'conditions' && m.message.map((msg) => {
+                                             return (msg.field === 'condition' && msg.index === i &&
+                                             <span style={{color: 'red'}}>{msg.message}</span>
+                                             )
+                                           })
+                                         ))
+                                       }
+                                     </span>
+                                   </td>
+                                   <td data-field='title'
+                                     className='m-datatable__cell' style={{width: '25%'}}>
+                                     { this.state.conditions[i].condition === 'subscription_date' || this.state.conditions[i].condition === 'reply'
+                                       ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                         value={condition.criteria}>
+                                         <option value=''>Select Criteria</option>
+                                         <option value='on'>on</option>
+                                         <option value='before'>Before</option>
+                                         <option value='after'>After</option>
+                                       </select>
+                                       :
+                                       <div>
+                                        {
+                                          this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'first_name' ?
+                                          <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                         value={condition.criteria}>
+                                            <option value=''>Select Criteria</option>
+                                            <option value='is'>is</option>
+                                            <option value='contains'>contains</option>
+                                            <option value='begins_with'>begins with</option>
+                                          </select>
+                                          : 
+                                          <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                          value={condition.criteria}>
+                                             <option value=''>Select Criteria</option>
+                                             <option value='is'>is</option>
+                                           </select>
+                                        }
+                                        </div>
+                                      }
+
+                                     <span className='m-form__help'>
+                                       {
+                                         this.state.errorMessages.map((m) => (
+                                           m.error === 'conditions' && m.message.map((msg) => {
+                                             return (msg.field === 'criteria' && msg.index === i &&
+                                             <span style={{color: 'red'}}>{msg.message}</span>
+                                             )
+                                           })
+                                         ))
+                                       }
+                                     </span>
+                                   </td>
+                                   <td data-field='title'
+                                     className='m-datatable__cell' style={{width: '25%'}}>
+                                     {
+                                       this.updateTextBox(i, this.state.conditions[i])
+                                     }
+
+                                     <span className='m-form__help'>
+                                       {
+                                         this.state.errorMessages.map((m) => (
+                                           m.error === 'conditions' && m.message.map((msg) => {
+                                             return (msg.field === 'text' && msg.index === i &&
+                                             <span style={{color: 'red'}}>{msg.message}</span>
+                                             )
+                                           })
+                                         ))
+                                       }
+                                     </span>
+                                   </td>
+                                   <td data-field='title'
+                                     className='m-datatable__cell' style={{width: '25%'}}>
+                                     { (this.state.conditions.length > 1)
+                                       ? <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={(e) => this.removeCondition(e, i)} >
+                                        Remove
+                                      </button>
+                                      : <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' disabled >
+                                       Remove
+                                     </button>
+                                    }
+                                   </td>
+                                 </tr>
+                               ))
+                             }
+                            </tbody>
+                          </table>
+                          <button style={{margin: '15px'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={this.addCondition}>
+                           + Add Condition
+                         </button>
+                        </div>
+                      </div>
+                  <div style={{textAlign: 'center'}}>
+                    <button onClick={() => this.saveSegmentation()} className='btn btn-primary btn-md' style={{marginLeft: '20px', marginTop: '20px'}}> Save </button>
+                   <button onClick={() => this.closeDialogSegmentation()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc', marginLeft: '20px', marginTop: '20px'}} className='btn'> Cancel </button>
+                   </div>
+
                 </ModalDialog>
               </ModalContainer>
             }
@@ -657,14 +733,14 @@ class CreateSequence extends React.Component {
 
             <div className='m-content'>
               <div className='m-portlet  m-portlet--full-height '>
-              	<div className='m-portlet__head'>
-              		<div className='m-portlet__head-caption'>
-              			<div className='m-portlet__head-title'>
-              				<h3 className='m-portlet__head-text'>
-            				     {this.props.location.state.name}
-              				</h3>
-              			</div>
-              		</div>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text' style={{position: 'relative', right: '4.5em'}}>
+                         {this.props.location.state.name}
+                      </h3>
+                    </div>
+                  </div>
                   <div className='m-portlet__head-tools'>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createMessage}>
                         <span>
@@ -675,8 +751,8 @@ class CreateSequence extends React.Component {
                         </span>
                       </button>
                   </div>
-              	</div>
-              	<div className='m-portlet__body'>
+                </div>
+                <div className='m-portlet__body'>
                   {this.props.messages && this.props.messages.length > 0
                   ? <div className='row'>
                     <div className='col-12'>
@@ -770,14 +846,14 @@ class CreateSequence extends React.Component {
                                     <span style={{display: 'inlineblock'}}>
                                       <span>Segment</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
-                                          None
+                                          {message.segmentation.length === 0 ? 'None' : 'Segmented'}
                                         </span>
                                         <span onClick={() => this.showDialogSegmentation(message)} className='sequence-link'> -- Edit</span>
                                     </span>
                                   </span>
 
                                   <span style={{position: 'relative', bottom: '60px', left: '40%'}}>
-                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '19%'}}>
+                                    <span className='sequence-text sequence-centered-text' style={{marginLeft: '10%'}}>
                                       <span className='sequence-number'>{message.sent}</span>
                                       <br />
                                       <span>Sent</span>
@@ -831,7 +907,9 @@ function mapStateToProps (state) {
     sequences: (state.sequenceInfo.sequences),
     createdSequence: (state.sequenceInfo.createdSequence),
     messages: (state.sequenceInfo.messages),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    tags: (state.tagsInfo.tags),
+    locales: (state.subscribersInfo.locales)
   }
 }
 
@@ -846,7 +924,10 @@ function mapDispatchToProps (dispatch) {
     updateTrigger: updateTrigger,
     setStatus: setStatus,
     loadMyPagesList: loadMyPagesList,
-    updateSegmentation: updateSegmentation
+    updateSegmentation: updateSegmentation,
+    loadTags: loadTags,
+    allLocales: allLocales,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
+

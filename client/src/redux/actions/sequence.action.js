@@ -49,7 +49,7 @@ export function updateSegmentation (data) {
     callApi('sequenceMessaging/updateSegmentation', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          fetchAllMessages(data.segmentationId)
+          dispatch(fetchAllMessages(data.sequenceId))
         }
       })
   }
@@ -107,6 +107,7 @@ export function fetchAllSequence () {
   return (dispatch) => {
     callApi(`sequenceMessaging/allSequences`)
       .then(res => {
+        console.log('fetchAllSequence', res)
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))

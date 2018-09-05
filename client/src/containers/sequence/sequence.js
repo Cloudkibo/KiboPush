@@ -555,7 +555,7 @@ class Sequence extends React.Component {
                             this.state.sequencesData && this.state.sequencesData.length > 0
                               ? <div>{
                                 this.state.sequencesData.map((sequence, i) => (
-                                  <div key={i} className='sequence-box'>
+                                  <div key={i} className='sequence-box' style={{height: '10em'}}>
                                     <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
 
                                     <span>
@@ -565,7 +565,7 @@ class Sequence extends React.Component {
                                       <br />
                                       <span>
                                         <span>Trigger</span>:
-                                      <span className='sequence-trigger' style={{ marginLeft: '10px' }}>
+                                      <span className='sequence-trigger' style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '15px' }}>
                                         {
                                             sequence.sequence.trigger.event === 'subscribes_to_sequence' ? 'When subscriber subscribes to sequence'
                                             : sequence.sequence.trigger.event === 'subscriber_joins' ? 'When Subscriber joins'
@@ -581,19 +581,19 @@ class Sequence extends React.Component {
                                       </span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '20%' }}>
+                                    <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '65%'}}>
                                       <span className='sequence-number'>{sequence.subscribers.length}</span>
                                       <br />
                                       <span>Subscribers</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '5%' }}>
+                                    <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '77%'}}>
                                       <span className='sequence-number'>{sequence.messages.length}</span>
                                       <br />
                                       <span>Messages</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '10%', cursor: 'pointer' }} onClick={() => this.goToEdit(sequence.sequence)}>
+                                    <span className='sequence-text sequence-centered-text' style={{ position: 'absolute', left: '90%', cursor: 'pointer', top: '40%' }} onClick={() => this.goToEdit(sequence.sequence)}>
                                       <i className='fa fa-edit' style={{ fontSize: '24px' }} />
                                       <br />
                                       <span>Edit</span>
