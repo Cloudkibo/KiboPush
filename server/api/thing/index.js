@@ -271,8 +271,8 @@ router.get('/updateTriggerSequenceSchema', (req, res) => {
   })
 })
 
-router.get('/updateSegmentationSequenceSchema', (req, res) => {
-  Sequences.update({}, {$set: {segmentation: []}}, {multi: true}, (err, result) => {
+router.get('/updateSegmentationMessageSchema', (req, res) => {
+  SequenceMessages.update({}, {$set: {segmentation: [], segmentationCondition: 'or'}}, {multi: true}, (err, result) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
     } else {
@@ -562,6 +562,34 @@ router.get('/updateSkip', (req, res) => {
   })
   res.status(200).json({status: 'success', description: 'users updated successfully'})
 })
+router.get('/updatePageSubscriptionPermission', (req, res) => {
+  Pages.update({}, {gotPageSubscriptionPermission: false}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Broadcasts.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Surveys.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  Polls.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  SequenceMessages.update({}, {fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'}, {multi: true}, (err, updated) => {
+    if (err) {
+      logger.serverLog(TAG, `Error in updating page: ${JSON.stringify(err)}`)
+    }
+  })
+  res.status(200).json({status: 'success', description: 'pages updated successfully'})
+})
 
 router.get('/addAgentActivityTime', (req, res) => {
   Sessions.find({}, (err, sessions) => {
@@ -577,6 +605,15 @@ router.get('/addAgentActivityTime', (req, res) => {
         })
       }
     })
+    res.status(200).json({status: 'success', description: 'Added successfully!'})
+  })
+})
+
+router.get('/addDefaultUIMode', (req, res) => {
+  Users.update({uiMode: {$exists: false}}, {uiMode: 'all'}, {multi: true}, (err, updatedUsers) => {
+    if (err) {
+      logger.serverLog(TAG, `Line 587: ERROR! at updating users: ${JSON.stringify(err)}`)
+    }
     res.status(200).json({status: 'success', description: 'Added successfully!'})
   })
 })

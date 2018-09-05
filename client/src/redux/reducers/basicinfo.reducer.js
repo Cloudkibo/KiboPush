@@ -37,8 +37,10 @@ export function basicInfo (state = initialState, action) {
       })
 
     case ActionTypes.LOAD_UPDATED_USER_DETAILS:
+      let temp = state.user
+      temp.uiMode = action.data
       return Object.assign({}, state, {
-        user: action.data,
+        user: temp,
         updatedUser: action.data,
         error: ''
       })

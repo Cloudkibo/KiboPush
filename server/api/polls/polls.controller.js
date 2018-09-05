@@ -254,7 +254,8 @@ exports.create = function (req, res) {
       statement: req.body.statement,
       options: req.body.options,
       companyId: companyUser.companyId,
-      userId: req.user._id
+      userId: req.user._id,
+      fbMessageTag: req.body.fbMessageTag
     }
     if (req.body.isSegmented) {
       pollPayload.isSegmented = true
@@ -560,9 +561,10 @@ exports.send = function (req, res) {
                       subscribers = taggedSubscribers
                       for (let j = 0; j < subscribers.length; j++) {
                         const data = {
-                          messaging_type: 'UPDATE',
+                          messaging_type: 'MESSAGE_TAG',
                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                          message: messageData
+                          message: messageData,
+                          tag: req.body.fbMessageTag
                         }
 
                         // this calls the needle when the last message was older than 30 minutes
@@ -671,9 +673,10 @@ exports.send = function (req, res) {
                         subscribers = repliedSubscribers
                         for (let j = 0; j < subscribers.length; j++) {
                           const data = {
-                            messaging_type: 'UPDATE',
+                            messaging_type: 'MESSAGE_TAG',
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                            message: messageData
+                            message: messageData,
+                            tag: req.body.fbMessageTag
                           }
                           // this calls the needle when the last message was older than 30 minutes
                           // checks the age of function using callback
@@ -854,7 +857,8 @@ exports.sendPoll = function (req, res) {
       statement: req.body.statement,
       options: req.body.options,
       companyId: companyUser.companyId,
-      userId: req.user._id
+      userId: req.user._id,
+      fbMessageTag: req.body.fbMessageTag
     }
     if (req.body.isSegmented) {
       pollPayload.isSegmented = true
@@ -1059,9 +1063,10 @@ exports.sendPoll = function (req, res) {
                         subscribers = taggedSubscribers
                         for (let j = 0; j < subscribers.length; j++) {
                           const data = {
-                            messaging_type: 'UPDATE',
+                            messaging_type: 'MESSAGE_TAG',
                             recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                            message: messageData
+                            message: messageData,
+                            tag: req.body.fbMessageTag
                           }
                           // this calls the needle when the last message was older than 30 minutes
                           // checks the age of function using callback
@@ -1171,9 +1176,10 @@ exports.sendPoll = function (req, res) {
                           subscribers = repliedSubscribers
                           for (let j = 0; j < subscribers.length; j++) {
                             const data = {
-                              messaging_type: 'UPDATE',
+                              messaging_type: 'MESSAGE_TAG',
                               recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                              message: messageData
+                              message: messageData,
+                              tag: req.body.fbMessageTag
                             }
                             // this calls the needle when the last message was older than 30 minutes
                             // checks the age of function using callback

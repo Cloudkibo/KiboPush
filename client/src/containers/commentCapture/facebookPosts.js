@@ -188,7 +188,7 @@ class FacebookPosts extends React.Component {
                 <i className='flaticon-technology m--font-accent' />
               </div>
               <div className='m-alert__text'>
-                Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/commentCapture' target='_blank'>documentation</a>.
+                Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
               </div>
             </div>
             <div className='row'>
