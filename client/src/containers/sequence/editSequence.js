@@ -682,6 +682,10 @@ class CreateSequence extends React.Component {
                     <div className='col-12'>
                       <p style={{marginTop: '10px'}}> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive messages from this sequence after 30 mins of ending the conversation.</p>
                     </div>
+                    <div className='col-12'>
+                      <p style={{marginTop: '10px'}}> {this.props.location.state.trigger === 'subscriber_joins' ? 'Note: Messages of this sequence will be sent after welcome message' : '' }</p>
+                    </div>
+
                     {this.state.targetValue &&
                     <Popover placement='right' isOpen={this.state.openPopover} style={{marginTop: '55px'}} target={this.state.targetValue} toggle={this.handleToggle}>
                       <PopoverBody style={{height: '230px'}}>
