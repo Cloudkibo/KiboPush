@@ -53,7 +53,7 @@ exports.createMessage = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
-        // utility.addToMessageQueue(req.body.sequenceId, req.body.schedule.date, messageCreated._id)
+        utility.addToMessageQueue(req.body.sequenceId, req.body.schedule.date, messageCreated._id)
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
