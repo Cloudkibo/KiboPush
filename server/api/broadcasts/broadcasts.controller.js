@@ -1595,7 +1595,7 @@ function updateseenstatus (req) {
 //       findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
 //     }
 //   })
-// }
+}
 
 function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
