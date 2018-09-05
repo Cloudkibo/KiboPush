@@ -171,15 +171,15 @@ class Sequence extends React.Component {
     //       this.setState({selectDropdownName: sequence2.sequence.name})
     //     }
     //   })
-    // } 
-     if (seqEvent === 'responds_to_poll') {
-      this.setState({isShowPollsDropdown: true})
-      this.props.polls.map((poll) => {
+    // }
+    if (seqEvent === 'responds_to_poll') {
+       this.setState({isShowPollsDropdown: true})
+       this.props.polls.map((poll) => {
         if (sequence.sequence.trigger.value === poll._id) {
           this.setState({selectDropdownName: poll.statement})
         }
       })
-    }
+     }
     this.setState({
       isShowModalTrigger: true,
       selectedSequenceId: sequence.sequence._id,
@@ -355,7 +355,7 @@ class Sequence extends React.Component {
     // console.log('pages', pages)
     browserHistory.push({
       pathname: `/editSequence`,
-      state: { module: 'edit', name: sequence.name, _id: sequence._id }
+      state: { module: 'edit', name: sequence.name, _id: sequence._id, trigger: sequence.trigger.event }
     })
   }
 
@@ -431,6 +431,9 @@ class Sequence extends React.Component {
                     <div id='2' data-val='subscriber_joins' className='sequence-trigger-box' onClick={this.handleChange}
                       style={{backgroundColor: this.state.seqTriggerVal === 'subscriber_joins' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                        When subscriber joins
+                       <br /> <br />
+                      <span style={{fontWeight: 'bold', fontSize:'11px'}}> Note: Messages of this sequence will be sent after welcome message</span>
+
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
