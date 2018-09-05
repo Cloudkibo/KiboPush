@@ -12,7 +12,7 @@ const Tags = require('../server/api/tags/tags.model')
 const Company = require('../server/api/companyuser/companyuser.model')
 const SequenceMessage = require('../server/api/sequenceMessaging/message.model')
 const URL = require('../server/api/URLforClickedCount/URL.model')
-const TAG = 'scripts/monodb_script.js'
+const TAG = 'scripts/SequenceMessageQueueScript.js'
 
 const request = require('request')
 
@@ -63,97 +63,6 @@ SequenceMessagesQueue.find({}, (err, data) => {
                       }
 
                       let newPayload = sequenceMessage.payload
-                        // Appending click count url to payload
-                      if (sequenceMessage.payload.length > 0) {
-                        sequenceMessage.payload.forEach((payloadItem, pindex) => {
-                          if (payloadItem.buttons) {
-                            payloadItem.buttons.forEach((button, bindex) => {
-                              if (!(button.type === 'postback')) {
-                                let URLObject = new URL({
-                                  originalURL: button.url,
-                                  module: {
-                                    id: sequence._id,
-                                    type: 'sequence'
-                                  }
-                                })
-                                URLObject.save((err, savedurl) => {
-                                  if (err) logger.serverLog(TAG, err)
-                                  let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-                                  newPayload[pindex].buttons[bindex].url = newURL
-                                })
-                              }
-                            })
-                          }
-                          if (payloadItem.componentType === 'media' && payloadItem.buttons) {
-                            payloadItem.buttons.forEach((button, bindex) => {
-                              let URLObject = new URL({
-                                originalURL: button.url,
-                                module: {
-                                  id: sequence._id,
-                                  type: 'sequence'
-                                }
-                              })
-                              URLObject.save((err, savedurl) => {
-                                if (err) logger.serverLog(TAG, err)
-                                let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-                                newPayload[pindex].buttons[bindex].url = newURL
-                              })
-                            })
-                          }
-                          if (payloadItem.componentType === 'gallery') {
-                            payloadItem.cards.forEach((card, cindex) => {
-                              card.buttons.forEach((button, bindex) => {
-                                let URLObject = new URL({
-                                  originalURL: button.url,
-                                  module: {
-                                    id: sequence._id,
-                                    type: 'sequence'
-                                  }
-                                })
-                                URLObject.save((err, savedurl) => {
-                                  if (err) logger.serverLog(TAG, err)
-                                  let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-                                  newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
-                                })
-                              })
-                            })
-                          }
-                          if (payloadItem.componentType === 'list') {
-                            payloadItem.listItems.forEach((element, lindex) => {
-                              if (element.buttons && element.buttons.length > 0) {
-                                element.buttons.forEach((button, bindex) => {
-                                  let URLObject = new URL({
-                                    originalURL: button.url,
-                                    module: {
-                                      id: sequence._id,
-                                      type: 'sequence'
-                                    }
-                                  })
-                                  URLObject.save((err, savedurl) => {
-                                    if (err) logger.serverLog(TAG, err)
-                                    let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-                                    newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
-                                  })
-                                })
-                              }
-                              if (element.default_action) {
-                                let URLObject = new URL({
-                                  originalURL: element.default_action.url,
-                                  module: {
-                                    id: sequence._id,
-                                    type: 'sequence'
-                                  }
-                                })
-                                URLObject.save((err, savedurl) => {
-                                  if (err) logger.serverLog(TAG, err)
-                                  let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
-                                  newPayload[pindex].listItems[lindex].default_action.url = newURL
-                                })
-                              }
-                            })
-                          }
-                        })
-                      }
 
                       let sequenceSubMessage = new SequenceSubscriberMessage({
                         subscriberId: subscriber._id,

@@ -78,17 +78,17 @@ export function setSchedule (data, sequenceId) {
   }
 }
 
-export function setStatus (data, sequenceId) {
-  console.log('data', data)
-  return (dispatch) => {
-    callApi('sequenceMessaging/setStatus', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(fetchAllMessages(sequenceId))
-        }
-      })
-  }
-}
+// export function setStatus (data, sequenceId) {
+//   console.log('data', data)
+//   return (dispatch) => {
+//     callApi('sequenceMessaging/setStatus', 'post', data)
+//       .then(res => {
+//         if (res.status === 'success') {
+//           dispatch(fetchAllMessages(sequenceId))
+//         }
+//       })
+//   }
+// }
 
 export function editMessage (data, msg) {
   console.log('data', data)
