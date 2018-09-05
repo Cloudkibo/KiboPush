@@ -99,10 +99,8 @@
     infoPayload.pageTitle = document.title;
     window.__infoPayload = infoPayload
 
-    console.log(infoPayload)
-
     var xmlhttp = new XMLHttpRequest();
-    var url = "http://localhost:3000/api/ip2country/findIp";
+    var url = "http://staging.kibopush.com/api/ip2country/findIp";
 
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
@@ -110,12 +108,20 @@
         console.log(myRes)
 
         infoPayload.location = myRes.payload;
+        window.__infoPayload = infoPayload
 
         console.log(infoPayload)
       } else if (this.readyState === 4) {
         console.log(this)
       }
     };
+    setTimeout(function() {
+      console.log(window.__infoPayload)
+      let plugin = document.getElementsByClassName('fb-customerchat')[0]
+      plugin.setAttribute('data-ref', JSON.stringify(window.__infoPayload))
+      console.log(plugin)
+      //- document.body.appendChild(plugin);
+    }, 5000)
     xmlhttp.open("POST", url, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send("company_id=" + window.__kibo_company_id);
