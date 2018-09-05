@@ -59,8 +59,8 @@ class Profile extends React.Component {
     this.toggleAssignTeam = this.toggleAssignTeam.bind(this)
     this.toggleAssignAgent = this.toggleAssignAgent.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
-    this.willAssignTeam = this.willAssignTeam.bind(this)
-    this.willAssignAgent = this.willAssignAgent.bind(this)
+    this.unassignTeam = this.unassignTeam.bind(this)
+    this.unassignAgent = this.unassignAgent.bind(this)
   }
   showAddTag () {
     this.setState({
@@ -227,7 +227,7 @@ class Profile extends React.Component {
     this.setState({showAssignAgent: !this.state.showAssignAgent})
   }
 
-  willAssignTeam () {
+  unassignTeam () {
     this.setState({isAssigned: false}) 
     let data = {
       teamId: this.state.teamObject._id,
@@ -240,7 +240,7 @@ class Profile extends React.Component {
 
     console.log('The value of unassigned is ', this.state.isAssigned)
   }
-  willAssignAgent () {
+  unassignAgent () {
     this.setState({isAssigned: false}) 
     let data = {
       agentId: this.state.agentObject._id,
@@ -358,8 +358,8 @@ class Profile extends React.Component {
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-users' />
                           </span> 
-                          <span className='m-accordion__item-title'>UnAssign team</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.willAssignTeam} className='m-accordion__item-icon'>
+                          <span className='m-accordion__item-title'>Unassign team</span>
+                          <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
                             <i className='la la-minus' />
                           </span>
                         </div>
@@ -408,8 +408,8 @@ class Profile extends React.Component {
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-user' />
                           </span>
-                          <span className='m-accordion__item-title'>UnAssign Agent</span>
-                          <span style={{cursor: 'pointer'}} onClick={this.willAssignAgent} className='m-accordion__item-icon'>
+                          <span className='m-accordion__item-title'>Unassign Agent</span>
+                          <span style={{cursor: 'pointer'}} onClick={this.unassignAgent} className='m-accordion__item-icon'>
                             <i className='la la-minus' />
                           </span>
                         </div>
