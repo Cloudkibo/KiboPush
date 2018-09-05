@@ -220,7 +220,8 @@ class EditButton extends React.Component {
                       <option key='' value='' disabled>Select Sequence...</option>
                       {
                         this.props.sequences.map((seq, i) => (
-                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                        seq.sequence.trigger.event === 'subcribes_to_sequence'
+                        ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                         ))
                       }
                     </select>
@@ -236,7 +237,8 @@ class EditButton extends React.Component {
                       <option key='' value='' disabled>Select Sequence...</option>
                       {
                         this.props.sequences.map((seq, i) => (
-                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                        seq.sequence.trigger.event === 'subscribes_to_sequence' 
+                         ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                         ))
                       }
                     </select>
