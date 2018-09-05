@@ -624,23 +624,6 @@ exports.subscribeToSequence = function (req, res) {
           })
         }
 
-        messages.forEach(message => {
-          if (message.schedule.condition === 'immediately') {
-            utility.addToMessageQueue(req.body.sequenceId, new Date(), message._id)
-          } else {
-            let d1 = new Date()
-            if (message.schedule.condition === 'hours') {
-              d1.setHours(d1.getHours() + Number(message.schedule.days))
-            } else if (message.schedule.condition === 'minutes') {
-              d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-            } else if (message.schedule.condition === 'day(s)') {
-              d1.setDate(d1.getDate() + Number(message.schedule.days))
-            }
-            let utcDate = new Date(d1)
-            utility.addToMessageQueue(req.body.sequenceId, utcDate, message._id)
-          }
-        })  // Messages Foreach ends here
-
         let sequenceSubscriberPayload = {
           sequenceId: req.body.sequenceId,
           subscriberId: subscriberId,
@@ -656,7 +639,24 @@ exports.subscribeToSequence = function (req, res) {
               status: 'Failed',
               description: 'Failed to insert record'
             })
-          } else if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+          }
+          messages.forEach(message => {
+            if (message.schedule.condition === 'immediately') {
+              utility.addToMessageQueue(req.body.sequenceId, new Date(), message._id)
+            } else {
+              let d1 = new Date()
+              if (message.schedule.condition === 'hours') {
+                d1.setHours(d1.getHours() + Number(message.schedule.days))
+              } else if (message.schedule.condition === 'minutes') {
+                d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+              } else if (message.schedule.condition === 'day(s)') {
+                d1.setDate(d1.getDate() + Number(message.schedule.days))
+              }
+              let utcDate = new Date(d1)
+              utility.addToMessageQueue(req.body.sequenceId, utcDate, message._id)
+            }
+          })
+          if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
             require('./../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
@@ -950,41 +950,41 @@ const setSequenceTrigger = function (companyId, subscriberId, trigger) {
               if (err) {
                 return logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
               }
-              if (messages) {
-                messages.forEach(message => {
-                  if (message.schedule.condition === 'immediately') {
-                    utility.addToMessageQueue(sequence._id, new Date(), message._id)
-                  } else {
-                    let d1 = new Date()
-                    if (message.schedule.condition === 'hours') {
-                      d1.setHours(d1.getHours() + Number(message.schedule.days))
-                    } else if (message.schedule.condition === 'minutes') {
-                      d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-                    } else if (message.schedule.condition === 'day(s)') {
-                      d1.setDate(d1.getDate() + Number(message.schedule.days))
-                    }
-                    let utcDate = new Date(d1)
-                    utility.addToMessageQueue(sequence._id, utcDate, message._id)
+
+              let sequenceSubscriberPayload = {
+                sequenceId: sequence._id,
+                subscriberId: subscriberId,
+                companyId: companyId,
+                status: 'subscribed'
+              }
+              const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+              sequenceSubcriber.save((err, subscriberCreated) => {
+                if (err) {
+                  return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
+                } else {
+                  if (messages) {
+                    messages.forEach(message => {
+                      if (message.schedule.condition === 'immediately') {
+                        utility.addToMessageQueue(sequence._id, new Date(), message._id)
+                      } else {
+                        let d1 = new Date()
+                        if (message.schedule.condition === 'hours') {
+                          d1.setHours(d1.getHours() + Number(message.schedule.days))
+                        } else if (message.schedule.condition === 'minutes') {
+                          d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+                        } else if (message.schedule.condition === 'day(s)') {
+                          d1.setDate(d1.getDate() + Number(message.schedule.days))
+                        }
+                        let utcDate = new Date(d1)
+                        utility.addToMessageQueue(sequence._id, utcDate, message._id)
+                      }
+                    })
                   }
-                })
-              }
-            })
-
-            let sequenceSubscriberPayload = {
-              sequenceId: sequence._id,
-              subscriberId: subscriberId,
-              companyId: companyId,
-              status: 'subscribed'
-            }
-            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
-
-            sequenceSubcriber.save((err, subscriberCreated) => {
-              if (err) {
-                return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
-              } else {
-                // insert socket.io code here
-                logger.serverLog(TAG, `Subscribed to sequence successfully`)
-              }
+                  // insert socket.io code here
+                  logger.serverLog(TAG, `Subscribed to sequence successfully`)
+                }
+              })
             })
           }
         }
