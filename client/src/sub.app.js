@@ -61,11 +61,8 @@ class App extends Component {
                { this.props.children }
              </div>
            </div>
-           : <div>
-             <SimpleHeader />
-             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               { this.props.children }
-             </div>
+           : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+             { this.props.children }
            </div>
         }
       </div>
