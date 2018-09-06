@@ -58,7 +58,6 @@ exports.broadcast = function (req, res) {
 }
 
 exports.sequence = function (req, res) {
-  console.log('req--', JSON.stringify(req.body))
   logger.serverLog(`Sequence Click Count ${JSON.stringify(req.params.id)}`)
   URL.findOne({_id: req.params.id}, (err, URLObject) => {
     if (err) {
