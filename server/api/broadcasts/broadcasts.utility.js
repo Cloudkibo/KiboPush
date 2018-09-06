@@ -1,7 +1,7 @@
 /**
  * Created by sojharo on 19/09/2017.
  */
-import SequenceUtility from '../sequenceMessaging/utility'
+const SequenceUtility = require('../sequenceMessaging/utility')
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
