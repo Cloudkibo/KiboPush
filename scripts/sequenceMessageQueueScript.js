@@ -63,10 +63,8 @@ SequenceMessagesQueue.find({}, (err, data) => {
 })  // Quence find ends here
 
 function closeDB () {
-  console.log('last index reached')
   mongoose.disconnect(function (err) {
     if (err) throw err
-    console.log('disconnected')
     process.exit()
   })
 }
