@@ -53,7 +53,13 @@ exports.createMessage = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
-        utility.addToMessageQueue(req.body.sequenceId, req.body.schedule.date, messageCreated._id)
+        if (message.trigger.event === 'none') {
+          let utcDate = utility.setScheduleDate(message.schedule)
+          utility.addToMessageQueue(req.body.sequenceId, utcDate, messageCreated._id)
+        } else if (['does_not_see', 'does_not_click'].indexOf(message.trigger.event) > -1) {
+          // check dependent message trigger and add to queu if necessary
+          utility.checkParentMessageTrigger(messageCreated)
+        }
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
@@ -641,20 +647,8 @@ exports.subscribeToSequence = function (req, res) {
             })
           }
           messages.forEach(message => {
-            if (message.schedule.condition === 'immediately') {
-              utility.addToMessageQueue(req.body.sequenceId, new Date(), message._id)
-            } else {
-              let d1 = new Date()
-              if (message.schedule.condition === 'hours') {
-                d1.setHours(d1.getHours() + Number(message.schedule.days))
-              } else if (message.schedule.condition === 'minutes') {
-                d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-              } else if (message.schedule.condition === 'day(s)') {
-                d1.setDate(d1.getDate() + Number(message.schedule.days))
-              }
-              let utcDate = new Date(d1)
-              utility.addToMessageQueue(req.body.sequenceId, utcDate, message._id)
-            }
+            let utcDate = utility.setScheduleDate(message.schedule)
+            utility.addToMessageQueue(req.body.sequenceId, utcDate, message._id)
           })
           if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
             require('./../../config/socketio').sendMessageToClient({
@@ -869,14 +863,45 @@ exports.updateTrigger = function (req, res) {
       }
     })
   } else if (req.body.type === 'message') {   // Logic to update the trigger if the type is message
-    SequenceMessages.updateOne({_id: req.body.messageId}, {trigger: req.body.trigger}, (err, result) => {
+    SequenceMessages.findOne({_id: req.body.messageId}, (err, message) => {
       if (err) {
         res.status(500).json({
           status: 'Failed',
           description: 'Failed to update record'
         })
       } else {
-        res.status(200).json({status: 'success', payload: result})
+        // update the trigger
+        message.trigger = req.body.trigger
+        message.save((err, savedMessage) => {
+          if (err) {
+            res.status(500).json({
+              status: 'Failed',
+              description: 'Failed to insert record'
+            })
+          }
+          // add to queue if event is not none
+          if (req.body.trigger.event !== 'none') {
+            SequenceMessageQueue.deleteMany({sequenceMessageId: message._id}, (err, result) => {
+              if (err) {
+                return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+              } else {
+                let utcDate = utility.setScheduleDate(message.schedule)
+                utility.addToMessageQueue(message.sequenceId, utcDate, message._id)
+              }
+            })
+          } else {
+            // remove from queue if event is none
+            SequenceMessageQueue.deleteMany({sequenceMessageId: message._id}, (err, result) => {
+              if (err) {
+                return res.status(500)
+              .json({status: 'failed', description: 'Internal Server Error'})
+              } else {
+                res.status(200).json({status: 'success', payload: savedMessage})
+              }
+            })
+          }
+        })
       }
     })
   }
@@ -965,20 +990,8 @@ const setSequenceTrigger = function (companyId, subscriberId, trigger) {
                 } else {
                   if (messages) {
                     messages.forEach(message => {
-                      if (message.schedule.condition === 'immediately') {
-                        utility.addToMessageQueue(sequence._id, new Date(), message._id)
-                      } else {
-                        let d1 = new Date()
-                        if (message.schedule.condition === 'hours') {
-                          d1.setHours(d1.getHours() + Number(message.schedule.days))
-                        } else if (message.schedule.condition === 'minutes') {
-                          d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-                        } else if (message.schedule.condition === 'day(s)') {
-                          d1.setDate(d1.getDate() + Number(message.schedule.days))
-                        }
-                        let utcDate = new Date(d1)
-                        utility.addToMessageQueue(sequence._id, utcDate, message._id)
-                      }
+                      let utcDate = utility.setScheduleDate(message.schedule)
+                      utility.addToMessageQueue(sequence._id, utcDate, message._id)
                     })
                   }
                   // insert socket.io code here
