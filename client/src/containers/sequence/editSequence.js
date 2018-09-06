@@ -50,7 +50,8 @@ class CreateSequence extends React.Component {
       isDaysInputDisabled: true,
       isMinutesInputDisabled: true,
       triggerMessage: 'None',
-      triggerEvent: ''
+      selectedTriggerMsgId: '',
+      selectedTriggerBtnTitle: ''    
     }
     if (this.props.location.state && (this.props.location.state.module === 'edit' || this.props.location.state.module === 'view')) {
       props.fetchAllMessages(this.props.location.state._id)
@@ -91,13 +92,17 @@ class CreateSequence extends React.Component {
     this.updateMessageTitle = this.updateMessageTitle.bind(this)
   }
   updateMessageTitle (message) {
+   
+
+    console.log('Trigger event is ', this.triggerEvent)
     let trigMsg = ''
     this.props.messages.map((msg, k) => {
       if (msg._id === message.trigger[0].value) {   
         trigMsg = msg.title
+       
       }
     })
-
+   // this.setState({triggerMessage: 'When subscriber ' + message.trigger[0].event + ' this ' + trigMsg})
     return 'When subscriber ' + message.trigger[0].event + ' this ' + trigMsg
   }
 
@@ -261,12 +266,13 @@ class CreateSequence extends React.Component {
       type: 'message',
       messageId: this.state.selectedMessageId
     })
-   
+
+    this.props.fetchAllMessages(this.state.sequenceId)
     this.setState({ShowTrigger: false})
   }
   validateTrigger () {
     console.log('validating TRIGGER')
-    if (this.state.displayAction === true) {
+   /* if (this.state.displayAction === true) {
       if (this.state.selectedButton === '') {
         return false
       } else {
@@ -278,6 +284,40 @@ class CreateSequence extends React.Component {
       }
       return true
     }
+    */
+   console.log(this.state.triggerEvent)
+   console.log(this.state.selectedTriggerMsgId)
+    if (this.state.triggerEvent === 'clicks') {
+      if (this.state.selectedTriggerMsgId === '') {
+        return false 
+      } else {
+        if (this.state.selectedTriggerBtnTitle === '' || this.state.selectedButton === '') {
+           return false
+        } else { 
+          return true
+        }
+      }
+    }
+    else {
+      if (this.state.selectedTriggerMsgId === '') {
+       return false
+      } else {
+            return true
+      }
+    }
+  }
+
+  ShowDialogTrigger (message) {
+    console.log('the message id is', message._id)
+    if (message.trigger.event === 'none') {
+      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
+    }
+    else {
+      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger[0].event, selectedTriggerMsgId: message.trigger[0].value, selectedTriggerBtnTitle: message.trigger[0].buttonTitle})
+    }
+
+
+    
   }
   onSelectedDropDownButton (buttonTitle) {
     console.log('Button title name is ', buttonTitle)
@@ -395,15 +435,7 @@ class CreateSequence extends React.Component {
   closeDialogSegmentation () {
     this.setState({isShowingModalSegmentation: false})
   }
-  ShowDialogTrigger (message) {
-    console.log('the message id is', message._id)
-    if (message.trigger.event === 'none') {
-      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
-    }
-    else {
-      this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger[0].event})
-    }
-  }
+  
 
   CloseDialogTrigger (message) {
     this.setState({ShowTrigger: false, displayAction: false, buttonList: [], selectedButton: '', selectedMessageClickId: ''})
@@ -659,15 +691,27 @@ class CreateSequence extends React.Component {
                           <option value='receive'>receive</option>
                       </select>   
                          
-
+                          
                          
                            
                            <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                           <option disabled selected value>Select Message </option>
+                                
+                           {
+
+                                this.props.messages.map((message, i) => {
+                                  if (this.state.selectedTriggerMsgId == message._id) {
+                                  return <option  selected value>{message.title} </option> 
+                                }
+                                })
+
+                           }
+                             
+
+                          
                            {
                              
                              this.props.messages.map((message, i) => {
-                               if (this.state.selectedMessageId != message._id) {
+                               if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
                                return <option value={message._id}>{message.title}</option> 
                              }
                            })}
@@ -720,15 +764,25 @@ class CreateSequence extends React.Component {
                          
                            
                            <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                           <option disabled selected value>Select Message </option>
                            {
-                             
-                             this.props.messages.map((message, i) => {
-                               if (this.state.selectedMessageId != message._id) {
-                               return <option value={message._id}>{message.title}</option> 
-                             }
-                           })}
-                            
+
+                              this.props.messages.map((message, i) => {
+                                if (this.state.selectedTriggerMsgId == message._id) {
+                                return <option  selected value>{message.title} </option> 
+                              }
+                              })
+
+                              }
+
+
+
+                              {
+
+                              this.props.messages.map((message, i) => {
+                              if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
+                              return <option value={message._id}>{message.title}</option> 
+                              }
+                              })}
                            
                         
 
@@ -777,14 +831,25 @@ class CreateSequence extends React.Component {
                          
                            
                            <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                           <option disabled selected value>Select Message </option>
                            {
-                             
-                             this.props.messages.map((message, i) => {
-                               if (this.state.selectedMessageId != message._id) {
-                               return <option value={message._id}>{message.title}</option> 
-                             }
-                           })}
+
+                            this.props.messages.map((message, i) => {
+                              if (this.state.selectedTriggerMsgId == message._id) {
+                              return <option  selected value>{message.title} </option> 
+                            }
+                            })
+
+                            }
+
+
+
+                            {
+
+                            this.props.messages.map((message, i) => {
+                            if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
+                            return <option value={message._id}>{message.title}</option> 
+                            }
+                            })}
                             
                            
                         
@@ -797,7 +862,7 @@ class CreateSequence extends React.Component {
                        { 
                          this.state.displayAction && 
                       <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option disabled selected value>Select Button </option>
+                        <option  selected value>{buttonTitle} </option>
                        {
                           this.state.buttonList.map((button, i) => {
                             return <option value={button.title}>{button.title}</option> 
@@ -945,7 +1010,7 @@ class CreateSequence extends React.Component {
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                          {
                                            
-                                           message.trigger.event === 'none' ? 'None' : this.updateMessageTitle(message)
+                                           message.trigger.event === 'none' ? 'None' : this.updateMessageTitle(message)  
                                             
                                          }
                                         </span>
