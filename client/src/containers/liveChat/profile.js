@@ -281,10 +281,7 @@ class Profile extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('The value of assigned team is', this.state.assignedAgent)
-    console.log('The value of Isassigned', this.state.isAssigned)
-    console.log('The value of assignAgent', this.state.assignAgent)
-    console.log('The value of assigned type', this.state.Role) 
+
     return (        
       <div className='col-xl-3'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
