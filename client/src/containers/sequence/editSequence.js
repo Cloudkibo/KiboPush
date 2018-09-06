@@ -90,15 +90,17 @@ class CreateSequence extends React.Component {
   }
 
   saveSegmentation () {
-    let data = {
-      messageId: this.state.selectedMessageId,
-      sequenceId: this.state.selectedSequenceId,
-      segmentation: this.state.conditions,
-      segmentationCondition: this.state.joiningCondition
+    if (this.validateSegmentation()) {
+      let data = {
+        messageId: this.state.selectedMessageId,
+        sequenceId: this.state.selectedSequenceId,
+        segmentation: this.state.conditions,
+        segmentationCondition: this.state.joiningCondition
+      }
+      console.log('segmentation data', data)
+      this.props.updateSegmentation(data)
+      this.closeDialogSegmentation()
     }
-    console.log('segmentation data', data)
-    this.props.updateSegmentation(data)
-    this.closeDialogSegmentation()
   }
 
   changeConditionToAnd () {
@@ -160,6 +162,40 @@ class CreateSequence extends React.Component {
       conditions: conditions
     })
   }
+
+  validateSegmentation () {
+    let errors = false
+    let errorMessages = []
+    let conditionErrors = []
+    let conditionError = {}
+    let isErrorInCondition = false
+    for (let i = 0; i < this.state.conditions.length; i++) {
+      if (this.state.conditions[i].condition === '') {
+        isErrorInCondition = true
+        errors = true
+        conditionError = {field: 'condition', index: i, message: 'Please choose a valid condition'}
+        conditionErrors.push(conditionError)
+      }
+      if (this.state.conditions[i].criteria === '') {
+        isErrorInCondition = true
+        errors = true
+        conditionError = {field: 'criteria', index: i, message: 'Please choose a valid criteria'}
+        conditionErrors.push(conditionError)
+      }
+      if (this.state.conditions[i].value === '') {
+        isErrorInCondition = true
+        errors = true
+        conditionError = {field: 'text', index: i, message: 'Please choose a valid value'}
+        conditionErrors.push(conditionError)
+      }
+    }
+    if (isErrorInCondition) {
+      errorMessages.push({error: 'conditions', message: conditionErrors})
+      this.setState({errorMessages: errorMessages})
+    }
+    return !errors
+  }
+
   gotoView (message) {
     //  this.props.createSequence({name: this.state.name})
     if (message.payload && message.payload.length > 0) {
@@ -310,10 +346,13 @@ class CreateSequence extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
   showDialogSegmentation (message) {
+    console.log('show dialog segmentation', message)
+    this.props.fetchAllMessages(this.state.sequenceId)
     this.setState({isShowingModalSegmentation: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, conditions: message.segmentation.length > 0 ? message.segmentation : [{condition: '', criteria: '', value: ''}], joiningCondition: message.segmentationCondition})
   }
   closeDialogSegmentation () {
-    this.setState({isShowingModalSegmentation: false})
+    console.log('closing segmentation dialog', this.props.messages)
+    this.setState({isShowingModalSegmentation: false, errorMessages: []})
   }
   ShowDialogTrigger (message) {
     console.log('the message id is', message._id)
@@ -418,7 +457,7 @@ class CreateSequence extends React.Component {
           value={condition.value}
           id='text'
           placeholder='Value'
-          type={condition === 'subscription_date' || condition === 'reply' ? 'date' : 'text'} />
+          type={condition.condition === 'subscription_date' ? 'date' : 'text'} />
       )
     }
   }
@@ -442,6 +481,7 @@ class CreateSequence extends React.Component {
   }
   render () {
     console.log('editSequence state', this.state)
+    console.log('message props', this.props.messages)
     var alertOptions = {
       offset: 75,
       position: 'top right',
