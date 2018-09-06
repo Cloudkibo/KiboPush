@@ -2,6 +2,8 @@ const URL = require('./URL.model')
 const AutopostingMessages = require('./../autoposting_messages/autoposting_messages.model')
 const Broadcasts = require('./../broadcasts/broadcasts.model')
 const SequenceMessages = require('./../sequenceMessaging/message.model')
+const Subscribers = require('../subscribers/Subscribers.model')
+const {getAllMessagesOfSequencesSubscribers, getSentSequenceMessages, findMessageToBeScheduled} = require('./../broadcasts/broadcasts.controller')
 const logger = require('../../components/logger')
 
 exports.index = function (req, res) {
@@ -56,6 +58,7 @@ exports.broadcast = function (req, res) {
 }
 
 exports.sequence = function (req, res) {
+  console.log('req--', JSON.stringify(req.body))
   logger.serverLog(`Sequence Click Count ${JSON.stringify(req.params.id)}`)
   URL.findOne({_id: req.params.id}, (err, URLObject) => {
     if (err) {
@@ -73,6 +76,18 @@ exports.sequence = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
+        
+        // get subscriber using senderId
+        Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          if (subscriber) {
+            let messagesOfllSequences = getAllMessagesOfSequencesSubscribers(subscriber)
+            let sentSequenceMessages = getSentSequenceMessages(subscriber)
+            findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
+          }
+        })
 
         res.writeHead(301, {Location: URLObject.originalURL.startsWith('http') ? URLObject.originalURL : `https://${URLObject.originalURL}`})
         res.end()

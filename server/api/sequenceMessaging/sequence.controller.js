@@ -9,6 +9,7 @@ const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const Subscribers = require('./../subscribers/Subscribers.model')
 const _ = require('lodash')
 const utility = require('./utility')
+const mongoose = require('mongoose')
 
 exports.allMessages = function (req, res) {
   Messages.find({sequenceId: req.params.id},
@@ -868,7 +869,49 @@ exports.updateTrigger = function (req, res) {
         res.status(200).json({status: 'success', payload: result})
       }
     })
-  } else if (req.body.type === 'message') {   // Logic to update the trigger if the type is message
+  } else if (req.body.type === 'message') {
+    console.log('req--', JSON.stringify(req.body))  // Logic to update the trigger if the type is message
+    let trigger = req.body.trigger[0]
+    if (trigger.event === 'clicks') {
+      let messageIdToBeUpdated = mongoose.Types.ObjectId(trigger.value)
+      // find the message whose payload needs to be updated
+      SequenceMessages.findOne({_id: messageIdToBeUpdated}, (err, seqMessage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        if (seqMessage) {
+          let tempPayloadArray = []
+          let tempButtonsArray = []
+          let payLoadArray = seqMessage.payload
+          if (payLoadArray.length > 0) {
+            for (let payLoad of payLoadArray) {
+              let buttonArray = payLoad.buttons
+              if (buttonArray.length > 0) {
+                for (let button of buttonArray) {
+                  if (button.buttonId === trigger.buttonId) {
+                    button.type = 'postback'
+                    tempButtonsArray.push(button)
+                  }
+                }
+              }
+              tempPayloadArray.push(payLoad)
+            }
+          }
+          seqMessage.payLoad = tempPayloadArray
+          console.log('seqMessage', JSON.stringify(seqMessage))
+          const sequenceMesaage = new SequenceMessages(seqMessage)
+          sequenceMesaage.save((err, savedMessage) => {
+            if (err) {
+              return res.status(404).json({ status: 'failed', description: 'Record Not Updated' })
+            }
+          })
+        }
+      })
+    }
+
     SequenceMessages.updateOne({_id: req.body.messageId}, {trigger: req.body.trigger}, (err, result) => {
       if (err) {
         res.status(500).json({

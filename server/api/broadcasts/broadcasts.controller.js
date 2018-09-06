@@ -2560,31 +2560,30 @@ function scheduleSequenceMessage (subscriber, message) {
     }
     if (sequence) {
       if (message.schedule.condition === 'immediately') {
-        if (message.isActive === true) {
-          Subscribers.findOne({ '_id': subscriber._id }, (err, subscriber) => {
+        Subscribers.findOne({ '_id': subscriber._id }, (err, subscriber) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+          }
+          Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
             if (err) {
-              return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
-              if (err) {
-                return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
 
-              if (message.payload.length > 0) {
-                AppendURLCount(message, (newPayload) => {
-                  let sequenceSubMessage = new SequenceSubscriberMessage({
-                    subscriberId: subscriber._id,
-                    messageId: message._id,
-                    companyId: subscriber.companyId,
-                    datetime: new Date(),
-                    seen: false
-                  })
-                  sequenceSubMessage.save((err2, result) => {
-                    if (err2) {
-                      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                    }
-                    logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
-                    SequenceMessages.update(
+            if (message.payload.length > 0) {
+              AppendURLCount(message, (newPayload) => {
+                let sequenceSubMessage = new SequenceSubscriberMessage({
+                  subscriberId: subscriber._id,
+                  messageId: message._id,
+                  companyId: subscriber.companyId,
+                  datetime: new Date(),
+                  seen: false
+                })
+                sequenceSubMessage.save((err2, result) => {
+                  if (err2) {
+                    return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                  logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                  SequenceMessages.update(
                       { _id: message._id },
                       { $inc: { sent: 1 } },
                       { multi: true }, (err, updated) => {
@@ -2592,37 +2591,12 @@ function scheduleSequenceMessage (subscriber, message) {
                           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                         }
                       })
-                    utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
-                  })
+                  utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                 })
-              }
-            })
-          })
-        } else {
-          let d1 = new Date()
-          if (message.schedule.condition === 'hours') {
-            d1.setHours(d1.getHours() + Number(message.schedule.days))
-          } else if (message.schedule.condition === 'minutes') {
-            d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-          } else if (message.schedule.condition === 'day(s)') {
-            d1.setDate(d1.getDate() + Number(message.schedule.days))
-          }
-          let utcDate = new Date(d1)
-          let sequenceQueuePayload = {
-            sequenceId: sequence._id,
-            subscriberId: subscriber._id,
-            companyId: subscriber.companyId,
-            sequenceMessageId: message._id,
-            queueScheduledTime: utcDate,
-            isActive: message.isActive
-          }
-          const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
-          sequenceMessageForQueue.save((err, messageQueueCreated) => {
-            if (err) {
-              return logger.serverLog(TAG, `ERROR saving message in queue${JSON.stringify(err)}`)
+              })
             }
           })
-        }
+        })
       }
     }
   })

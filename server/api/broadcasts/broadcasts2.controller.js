@@ -21,6 +21,7 @@ let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const needle = require('needle')
+const uniqid = require('uniqid')
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -443,8 +444,11 @@ exports.addButton = function (req, res) {
   }
   let buttonPayload = {
     title: req.body.title,
-    type: req.body.type
+    type: req.body.type,
+    buttonId: uniqid()
+   
   }
+  console.log('buttonPayload--', buttonPayload)
   if (req.body.type === 'web_url') {
     // TODO save module id when sending broadcast
     let URLObject = new URL({
@@ -472,8 +476,10 @@ exports.addButton = function (req, res) {
     buttonPayload.payload = JSON.stringify({
       sequenceId: req.body.sequenceId,
       action: req.body.action
+     
     })
     buttonPayload.sequenceValue = req.body.sequenceId
+    //buttonPayload.buttonId = uniqid()
     return res.status(200).json({
       status: 'success',
       payload: buttonPayload
