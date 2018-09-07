@@ -76,7 +76,7 @@ class Invitations extends React.Component {
     return (
       <div>
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>

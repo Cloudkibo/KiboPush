@@ -47,7 +47,6 @@ export function loadInvitationsList () {
 }
 
 export function addInvitation (data, msg) {
-  console.log('msg', msg)
   return (dispatch) => {
     callApi('company/invite', 'post', data)
     .then(res => {
@@ -65,11 +64,10 @@ export function addInvitation (data, msg) {
 }
 
 export function cancelinvitation (data, msg) {
-  console.log('msg', msg)
   return (dispatch) => {
     callApi('invitations/cancel', 'post', data)
     .then(res => {
-      console.log('resposne from cancel', res)
+      console.log('response from cancel invitation', res)
       if (res.status === 'success') {
         msg.success('Invitation Cancelled Successfully')
         dispatch(loadInvitationsList())
