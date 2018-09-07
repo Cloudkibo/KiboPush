@@ -9,9 +9,10 @@ const TAG = 'api/sequenceMessaging/sequence.controller.js'
 const Subscribers = require('./../subscribers/Subscribers.model')
 const _ = require('lodash')
 const utility = require('./utility')
+const mongoose = require('mongoose')
 
 exports.allMessages = function (req, res) {
-  Messages.find({sequenceId: req.params.id},
+  Messages.find({ sequenceId: req.params.id },
     (err, messages) => {
       if (err) {
         return res.status(500).json({
@@ -19,12 +20,12 @@ exports.allMessages = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      res.status(200).json({status: 'success', payload: messages})
+      res.status(200).json({ status: 'success', payload: messages })
     })
 }
 
 exports.createMessage = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -69,14 +70,14 @@ exports.createMessage = function (req, res) {
             }
           }
         })
-        res.status(201).json({status: 'success', payload: messageCreated})
+        res.status(201).json({ status: 'success', payload: messageCreated })
       }
     })
   })
 }
 
 exports.editMessage = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -92,18 +93,18 @@ exports.editMessage = function (req, res) {
     Messages.findById(req.body._id, (err, message) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+          .json({ status: 'failed', description: 'Internal Server Error' })
       }
       if (!message) {
         return res.status(404)
-          .json({status: 'failed', description: 'Record not found'})
+          .json({ status: 'failed', description: 'Record not found' })
       }
       message.title = req.body.title
       message.payload = req.body.payload
       message.save((err2) => {
         if (err2) {
           return res.status(500)
-            .json({status: 'failed', description: 'Poll update failed'})
+            .json({ status: 'failed', description: 'Poll update failed' })
         }
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
@@ -114,14 +115,14 @@ exports.editMessage = function (req, res) {
             }
           }
         })
-        res.status(201).json({status: 'success', payload: message})
+        res.status(201).json({ status: 'success', payload: message })
       })
     })
   })
 }
 
 exports.setSchedule = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -137,26 +138,26 @@ exports.setSchedule = function (req, res) {
     SequenceMessages.findById(req.body.messageId, (err, message) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+          .json({ status: 'failed', description: 'Internal Server Error' })
       }
       if (!message) {
         return res.status(404)
-          .json({status: 'failed', description: 'Record not found'})
+          .json({ status: 'failed', description: 'Record not found' })
       }
-      SequenceMessageQueue.update({sequenceMessageId: message._id}, {queueScheduledTime: req.body.date}, {multi: true},
-      (err, result) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-      })
-      message.schedule = {condition: req.body.condition, days: req.body.days, date: req.body.date}
+      SequenceMessageQueue.update({ sequenceMessageId: message._id }, { queueScheduledTime: req.body.date }, { multi: true },
+        (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+        })
+      message.schedule = { condition: req.body.condition, days: req.body.days, date: req.body.date }
       message.save((err2) => {
         if (err2) {
           return res.status(500)
-            .json({status: 'failed', description: 'Poll update failed'})
+            .json({ status: 'failed', description: 'Poll update failed' })
         }
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
@@ -167,7 +168,7 @@ exports.setSchedule = function (req, res) {
             }
           }
         })
-        res.status(201).json({status: 'success', payload: message})
+        res.status(201).json({ status: 'success', payload: message })
       })
     })
   })
@@ -298,10 +299,10 @@ exports.createSequence = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({ status: 'failed', description: 'Parameters are missing' })
   }
 
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -338,7 +339,7 @@ exports.createSequence = function (req, res) {
             }
           }
         })
-        res.status(201).json({status: 'success', payload: sequenceCreated})
+        res.status(201).json({ status: 'success', payload: sequenceCreated })
       }
     })
   })
@@ -352,10 +353,10 @@ exports.editSequence = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({ status: 'failed', description: 'Parameters are missing' })
   }
 
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -372,18 +373,18 @@ exports.editSequence = function (req, res) {
     Sequences.findById(req.body.sequenceId, (err, sequence) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+          .json({ status: 'failed', description: 'Internal Server Error' })
       }
       if (!sequence) {
         return res.status(404)
-          .json({status: 'failed', description: 'Record not found'})
+          .json({ status: 'failed', description: 'Record not found' })
       }
       sequence.name = req.body.name
 
       sequence.save((err2) => {
         if (err2) {
           return res.status(500)
-            .json({status: 'failed', description: 'Sequence update failed'})
+            .json({ status: 'failed', description: 'Sequence update failed' })
         }
         require('./../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
@@ -394,14 +395,14 @@ exports.editSequence = function (req, res) {
             }
           }
         })
-        res.status(201).json({status: 'success', payload: sequence})
+        res.status(201).json({ status: 'success', payload: sequence })
       })
     })
   })
 }
 
 exports.allSequences = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -415,50 +416,50 @@ exports.allSequences = function (req, res) {
       })
     }
 
-    Sequences.find({companyId: companyUser.companyId}, {}, {sort: {datetime: 1}},
-    (err, sequences) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      let sequencePayload = []
-      if (sequences.length > 0) {
-        sequences.forEach(sequence => {
-          Messages.find({sequenceId: sequence._id},
-        (err, messages) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-
-          SequenceSubscribers.find({sequenceId: sequence._id})
-          .populate('subscriberId')
-          .exec((err, subscribers) => {
-            if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-            }
-
-            sequencePayload.push({
-              sequence: sequence,
-              messages: messages,
-              subscribers: subscribers
-            })
-            if (sequencePayload.length === sequences.length) {
-              res.status(200).json({status: 'success', payload: sequencePayload})
-            }
+    Sequences.find({ companyId: companyUser.companyId }, {}, { sort: { datetime: 1 } },
+      (err, sequences) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
           })
-        })
-        })
-      } else {
-        res.status(200).json({status: 'success', payload: []})
-      }
-    })
+        }
+        let sequencePayload = []
+        if (sequences.length > 0) {
+          sequences.forEach(sequence => {
+            Messages.find({ sequenceId: sequence._id },
+              (err, messages) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+
+                SequenceSubscribers.find({ sequenceId: sequence._id })
+                  .populate('subscriberId')
+                  .exec((err, subscribers) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+
+                    sequencePayload.push({
+                      sequence: sequence,
+                      messages: messages,
+                      subscribers: subscribers
+                    })
+                    if (sequencePayload.length === sequences.length) {
+                      res.status(200).json({ status: 'success', payload: sequencePayload })
+                    }
+                  })
+              })
+          })
+        } else {
+          res.status(200).json({ status: 'success', payload: [] })
+        }
+      })
   })
 }
 
 exports.getAll = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -475,7 +476,7 @@ exports.getAll = function (req, res) {
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         companyId: companyUser.companyId,
-        name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+        name: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true }
       }
       Sequences.aggregate([
         { $match: findCriteria },
@@ -483,52 +484,52 @@ exports.getAll = function (req, res) {
       ], (err, sequenceCount) => {
         if (err) {
           return res.status(404)
-            .json({status: 'failed', description: 'BroadcastsCount not found'})
+            .json({ status: 'failed', description: 'BroadcastsCount not found' })
         }
         Sequences.find(findCriteria).limit(req.body.number_of_records)
-        .exec((err, sequences) => {
-          if (err) {
-            return res.status(500).json({
-              status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
-            })
-          }
-          let sequencePayload = []
-          sequences.forEach(sequence => {
-            Messages.find({sequenceId: sequence._id},
-            (err, messages) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
-
-              SequenceSubscribers.find({sequenceId: sequence._id})
-              .populate('subscriberId')
-              .exec((err, subscribers) => {
-                if (err) {
-                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                }
-
-                sequencePayload.push({
-                  sequence: sequence,
-                  messages: messages,
-                  subscribers: subscribers
-                })
-                if (sequencePayload.length === sequences.length) {
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {sequences: sequencePayload, count: sequencePayload.length > 0 ? sequenceCount[0].count : ''}
-                  })
-                }
+          .exec((err, sequences) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
               })
+            }
+            let sequencePayload = []
+            sequences.forEach(sequence => {
+              Messages.find({ sequenceId: sequence._id },
+                (err, messages) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+
+                  SequenceSubscribers.find({ sequenceId: sequence._id })
+                    .populate('subscriberId')
+                    .exec((err, subscribers) => {
+                      if (err) {
+                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                      }
+
+                      sequencePayload.push({
+                        sequence: sequence,
+                        messages: messages,
+                        subscribers: subscribers
+                      })
+                      if (sequencePayload.length === sequences.length) {
+                        res.status(200).json({
+                          status: 'success',
+                          payload: { sequences: sequencePayload, count: sequencePayload.length > 0 ? sequenceCount[0].count : '' }
+                        })
+                      }
+                    })
+                })
             })
           })
-        })
       })
     } else {
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         companyId: companyUser.companyId,
-        name: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}
+        name: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true }
       }
       Sequences.aggregate([
         { $match: findCriteria },
@@ -536,63 +537,63 @@ exports.getAll = function (req, res) {
       ], (err, sequenceCount) => {
         if (err) {
           return res.status(404)
-            .json({status: 'failed', description: 'BroadcastsCount not found'})
+            .json({ status: 'failed', description: 'BroadcastsCount not found' })
         }
-        Sequences.find(Object.assign(findCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
-        .exec((err, sequences) => {
-          if (err) {
-            return res.status(500).json({
-              status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
-            })
-          }
-          let sequencePayload = []
-          sequences.forEach(sequence => {
-            Messages.find({sequenceId: sequence._id},
-            (err, messages) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
-
-              SequenceSubscribers.find({sequenceId: sequence._id})
-              .populate('subscriberId')
-              .exec((err, subscribers) => {
-                if (err) {
-                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                }
-
-                sequencePayload.push({
-                  sequence: sequence,
-                  messages: messages,
-                  subscribers: subscribers
-                })
-                if (sequencePayload.length === sequences.length) {
-                  res.status(200).json({
-                    status: 'success',
-                    payload: {sequences: sequencePayload, count: sequencePayload.length > 0 ? sequenceCount[0].count : ''}
-                  })
-                }
+        Sequences.find(Object.assign(findCriteria, { _id: { $gt: req.body.last_id } })).limit(req.body.number_of_records)
+          .exec((err, sequences) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
               })
+            }
+            let sequencePayload = []
+            sequences.forEach(sequence => {
+              Messages.find({ sequenceId: sequence._id },
+                (err, messages) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+
+                  SequenceSubscribers.find({ sequenceId: sequence._id })
+                    .populate('subscriberId')
+                    .exec((err, subscribers) => {
+                      if (err) {
+                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                      }
+
+                      sequencePayload.push({
+                        sequence: sequence,
+                        messages: messages,
+                        subscribers: subscribers
+                      })
+                      if (sequencePayload.length === sequences.length) {
+                        res.status(200).json({
+                          status: 'success',
+                          payload: { sequences: sequencePayload, count: sequencePayload.length > 0 ? sequenceCount[0].count : '' }
+                        })
+                      }
+                    })
+                })
             })
           })
-        })
       })
     }
   })
 }
 
 exports.subscriberSequences = function (req, res) {
-  SequenceSubscribers.find({subscriberId: req.params.id, status: 'subscribed'})
-  .populate('sequenceId')
-  .exec((err, sequences) => {
-    if (err) {
-      return res.status(500).json({
-        status: 'failed',
-        description: `Internal Server Error ${JSON.stringify(err)}`
-      })
-    }
-    res.status(200).json({status: 'success', payload: sequences})
-  })
+  SequenceSubscribers.find({ subscriberId: req.params.id, status: 'subscribed' })
+    .populate('sequenceId')
+    .exec((err, sequences) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      res.status(200).json({ status: 'success', payload: sequences })
+    })
 }
 
 exports.subscribeToSequence = function (req, res) {
@@ -603,10 +604,10 @@ exports.subscribeToSequence = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({ status: 'failed', description: 'Parameters are missing' })
   }
 
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -621,8 +622,8 @@ exports.subscribeToSequence = function (req, res) {
     }
 
     req.body.subscriberIds.forEach(subscriberId => {
-    // Following code will run when user subscribes to sequence
-      SequenceMessages.find({sequenceId: req.body.sequenceId}, (err, messages) => {
+      // Following code will run when user subscribes to sequence
+      SequenceMessages.find({ sequenceId: req.body.sequenceId }, (err, messages) => {
         if (err) {
           res.status(500).json({
             status: 'Failed',
@@ -660,7 +661,7 @@ exports.subscribeToSequence = function (req, res) {
                 }
               }
             })
-            res.status(201).json({status: 'success', description: 'Subscribers subscribed successfully'})
+            res.status(201).json({ status: 'success', description: 'Subscribers subscribed successfully' })
           }
         })  // Sequence subscriber save ends here
       }) // Sequence message find ends here
@@ -676,10 +677,10 @@ exports.unsubscribeToSequence = function (req, res) {
 
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({ status: 'failed', description: 'Parameters are missing' })
   }
 
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -694,47 +695,47 @@ exports.unsubscribeToSequence = function (req, res) {
     }
 
     req.body.subscriberIds.forEach(subscriberId => {
-      SequenceSubscribers.remove({sequenceId: req.body.sequenceId})
-      .where('subscriberId').equals(subscriberId)
-      .exec((err, updated) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-        SequenceMessageQueue.remove({sequenceId: req.body.sequenceId, subscriberId: subscriberId}, (err, result) => {
+      SequenceSubscribers.remove({ sequenceId: req.body.sequenceId })
+        .where('subscriberId').equals(subscriberId)
+        .exec((err, updated) => {
           if (err) {
-            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-          Subscribers.findOne({ _id: subscriberId }, (err, subscriber) => {
+          SequenceMessageQueue.remove({ sequenceId: req.body.sequenceId, subscriberId: subscriberId }, (err, result) => {
             if (err) {
-              logger.serverLog(TAG,
-                `Error occurred in finding subscriber ${JSON.stringify(
-                  err)}`)
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
-            if (subscriber) {
-              logger.serverLog(TAG, `Unsubscribes ${JSON.stringify(subscriber)}`)
-              setSequenceTrigger(subscriber.companyId, subscriber._id, {event: 'unsubscribes_from_other_sequence', value: req.body.sequenceId})
-            }
-          })
-          if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-            require('./../../config/socketio').sendMessageToClient({
-              room_id: companyUser.companyId,
-              body: {
-                action: 'sequence_update',
-                payload: {
-                  sequence_id: req.body.sequenceId
-                }
+            Subscribers.findOne({ _id: subscriberId }, (err, subscriber) => {
+              if (err) {
+                logger.serverLog(TAG,
+                  `Error occurred in finding subscriber ${JSON.stringify(
+                    err)}`)
+              }
+              if (subscriber) {
+                logger.serverLog(TAG, `Unsubscribes ${JSON.stringify(subscriber)}`)
+                setSequenceTrigger(subscriber.companyId, subscriber._id, { event: 'unsubscribes_from_other_sequence', value: req.body.sequenceId })
               }
             })
-            res.status(201).json({status: 'success', description: 'Subscribers unsubscribed successfully'})
-          }
+            if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: companyUser.companyId,
+                body: {
+                  action: 'sequence_update',
+                  payload: {
+                    sequence_id: req.body.sequenceId
+                  }
+                }
+              })
+              res.status(201).json({ status: 'success', description: 'Subscribers unsubscribed successfully' })
+            }
+          })
         })
-      })
     })
   })
 }
 
 exports.deleteSequence = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -748,28 +749,28 @@ exports.deleteSequence = function (req, res) {
       })
     }
 
-    Sequences.deleteOne({_id: req.params.id}, (err, deleted) => {
+    Sequences.deleteOne({ _id: req.params.id }, (err, deleted) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+          .json({ status: 'failed', description: 'Internal Server Error' })
       }
 
-      SequenceSubscribers.deleteMany({sequenceId: req.params.id}, (err, result) => {
+      SequenceSubscribers.deleteMany({ sequenceId: req.params.id }, (err, result) => {
         if (err) {
           return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+            .json({ status: 'failed', description: 'Internal Server Error' })
         }
 
-        SequenceMessageQueue.deleteMany({sequenceId: req.params.id}, (err, result) => {
+        SequenceMessageQueue.deleteMany({ sequenceId: req.params.id }, (err, result) => {
           if (err) {
             return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+              .json({ status: 'failed', description: 'Internal Server Error' })
           }
 
-          SequenceMessages.deleteMany({sequenceId: req.params.id}, (err, result) => {
+          SequenceMessages.deleteMany({ sequenceId: req.params.id }, (err, result) => {
             if (err) {
               return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+                .json({ status: 'failed', description: 'Internal Server Error' })
             }
 
             require('./../../config/socketio').sendMessageToClient({
@@ -781,7 +782,7 @@ exports.deleteSequence = function (req, res) {
                 }
               }
             })
-            res.status(201).json({status: 'success', payload: deleted})
+            res.status(201).json({ status: 'success', payload: deleted })
           })  //  ends sequence message delete
         }) // ends queue deletemany
       })  // ends sequence-sub deletemany
@@ -790,7 +791,7 @@ exports.deleteSequence = function (req, res) {
 }
 
 exports.deleteMessage = function (req, res) {
-  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+  CompanyUsers.findOne({ domain_email: req.user.domain_email }, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
@@ -804,16 +805,16 @@ exports.deleteMessage = function (req, res) {
       })
     }
 
-    SequenceMessages.deleteOne({_id: req.params.id}, (err, deleted) => {
+    SequenceMessages.deleteOne({ _id: req.params.id }, (err, deleted) => {
       if (err) {
         return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+          .json({ status: 'failed', description: 'Internal Server Error' })
       }
 
-      SequenceMessageQueue.deleteMany({sequenceMessageId: req.params.id}, (err, result) => {
+      SequenceMessageQueue.deleteMany({ sequenceMessageId: req.params.id }, (err, result) => {
         if (err) {
           return res.status(500)
-          .json({status: 'failed', description: 'Internal Server Error'})
+            .json({ status: 'failed', description: 'Internal Server Error' })
         }
 
         require('./../../config/socketio').sendMessageToClient({
@@ -825,7 +826,7 @@ exports.deleteMessage = function (req, res) {
             }
           }
         })
-        res.status(201).json({status: 'success', payload: deleted})
+        res.status(201).json({ status: 'success', payload: deleted })
       })  // message queue deletemany ends here
     })  // sequence message deleteOne ends here
   })
@@ -847,23 +848,23 @@ exports.updateTrigger = function (req, res) {
   // If parameter missing return
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({ status: 'failed', description: 'Parameters are missing' })
   }
 
   // Logic to update trigger for sequence
   if (req.body.type === 'sequence') {
-    Sequences.updateOne({_id: req.body.sequenceId}, {trigger: req.body.trigger}, (err, result) => {
+    Sequences.updateOne({ _id: req.body.sequenceId }, { trigger: req.body.trigger }, (err, result) => {
       if (err) {
         res.status(500).json({
           status: 'Failed',
           description: 'Failed to update record'
         })
       } else {
-        res.status(200).json({status: 'success', payload: result})
+        res.status(200).json({ status: 'success', payload: result })
       }
     })
   } else if (req.body.type === 'message') {   // Logic to update the trigger if the type is message
-    SequenceMessages.findOne({_id: req.body.messageId}, (err, message) => {
+    SequenceMessages.findOne({ _id: req.body.messageId }, (err, message) => {
       if (err) {
         res.status(500).json({
           status: 'Failed',
@@ -880,24 +881,53 @@ exports.updateTrigger = function (req, res) {
             })
           }
           // add to queue if event is not none
-          if (req.body.trigger.event !== 'none') {
-            SequenceMessageQueue.deleteMany({sequenceMessageId: message._id}, (err, result) => {
+
+          SequenceMessageQueue.deleteMany({ sequenceMessageId: message._id }, (err, result) => {
+            if (err) {
+              return res.status(500)
+                .json({ status: 'failed', description: 'Internal Server Error' })
+            } else {
+              let utcDate = utility.setScheduleDate(message.schedule)
+              utility.addToMessageQueue(message.sequenceId, utcDate, message._id)
+            }
+          })
+          let trigger = req.body.trigger
+          if (trigger.event === 'clicks') {
+            let messageIdToBeUpdated = mongoose.Types.ObjectId(trigger.value)
+            // find the message whose payload needs to be updated
+            SequenceMessages.findOne({ _id: messageIdToBeUpdated }, (err, seqMessage) => {
               if (err) {
-                return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-              } else {
-                let utcDate = utility.setScheduleDate(message.schedule)
-                utility.addToMessageQueue(message.sequenceId, utcDate, message._id)
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
               }
-            })
-          } else {
-            // remove from queue if event is none
-            SequenceMessageQueue.deleteMany({sequenceMessageId: message._id}, (err, result) => {
-              if (err) {
-                return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
-              } else {
-                res.status(200).json({status: 'success', payload: savedMessage})
+              if (seqMessage) {
+                let tempPayloadArray = []
+                let tempButtonsArray = []
+                let payLoadArray = seqMessage.payload
+                if (payLoadArray.length > 0) {
+                  for (let payLoad of payLoadArray) {
+                    let buttonArray = payLoad.buttons
+                    if (buttonArray.length > 0) {
+                      for (let button of buttonArray) {
+                        if (button.buttonId === trigger.buttonId) {
+                          button.type = 'postback'
+                          tempButtonsArray.push(button)
+                        }
+                      }
+                    }
+                    tempPayloadArray.push(payLoad)
+                  }
+                }
+                seqMessage.payLoad = tempPayloadArray
+                console.log('seqMessage', JSON.stringify(seqMessage))
+                const sequenceMesaage = new SequenceMessages(seqMessage)
+                sequenceMesaage.save((err, savedMessage) => {
+                  if (err) {
+                    return res.status(404).json({ status: 'failed', description: 'Record Not Updated' })
+                  }
+                })
               }
             })
           }
@@ -926,20 +956,20 @@ exports.updateSegmentation = function (req, res) {
   // If parameter missing return
   if (parametersMissing) {
     return res.status(400)
-      .json({status: 'failed', description: 'Parameters are missing'})
+      .json({ status: 'failed', description: 'Parameters are missing' })
   }
 
-  SequenceMessages.updateOne({_id: req.body.messageId}, {segmentation: req.body.segmentation, segmentationCondition: req.body.segmentationCondition},
-      (err, result) => {
-        if (err) {
-          res.status(500).json({
-            status: 'Failed',
-            description: 'Failed to update record'
-          })
-        } else {
-          res.status(200).json({status: 'success', payload: result})
-        }
-      })
+  SequenceMessages.updateOne({ _id: req.body.messageId }, { segmentation: req.body.segmentation, segmentationCondition: req.body.segmentationCondition },
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to update record'
+        })
+      } else {
+        res.status(200).json({ status: 'success', payload: result })
+      }
+    })
 }
 
 exports.testScheduler = function (req, res) {
@@ -956,53 +986,53 @@ exports.testScheduler = function (req, res) {
         description: 'Failed to insert record'
       })
     } else {
-      res.status(201).json({status: 'success', payload: sequenceCreated})
+      res.status(201).json({ status: 'success', payload: sequenceCreated })
     }
   })
 }
 
 const setSequenceTrigger = function (companyId, subscriberId, trigger) {
-  Sequences.find({companyId: companyId},
-  (err, sequences) => {
-    if (err) {
-      return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
-    }
-    if (sequences) {
-      sequences.forEach(sequence => {
-        if (sequence.trigger && sequence.trigger.event) {
-          if ((sequence.trigger.event === trigger.event && !trigger.value) || (sequence.trigger.event === trigger.event && sequence.trigger.value === trigger.value)) {
-            SequenceMessages.find({sequenceId: sequence._id}, (err, messages) => {
-              if (err) {
-                return logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
-              }
-
-              let sequenceSubscriberPayload = {
-                sequenceId: sequence._id,
-                subscriberId: subscriberId,
-                companyId: companyId,
-                status: 'subscribed'
-              }
-              const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
-
-              sequenceSubcriber.save((err, subscriberCreated) => {
+  Sequences.find({ companyId: companyId },
+    (err, sequences) => {
+      if (err) {
+        return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
+      }
+      if (sequences) {
+        sequences.forEach(sequence => {
+          if (sequence.trigger && sequence.trigger.event) {
+            if ((sequence.trigger.event === trigger.event && !trigger.value) || (sequence.trigger.event === trigger.event && sequence.trigger.value === trigger.value)) {
+              SequenceMessages.find({ sequenceId: sequence._id }, (err, messages) => {
                 if (err) {
-                  return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
-                } else {
-                  if (messages) {
-                    messages.forEach(message => {
-                      let utcDate = utility.setScheduleDate(message.schedule)
-                      utility.addToMessageQueue(sequence._id, utcDate, message._id)
-                    })
-                  }
-                  // insert socket.io code here
-                  logger.serverLog(TAG, `Subscribed to sequence successfully`)
+                  return logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
                 }
+
+                let sequenceSubscriberPayload = {
+                  sequenceId: sequence._id,
+                  subscriberId: subscriberId,
+                  companyId: companyId,
+                  status: 'subscribed'
+                }
+                const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+                sequenceSubcriber.save((err, subscriberCreated) => {
+                  if (err) {
+                    return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
+                  } else {
+                    if (messages) {
+                      messages.forEach(message => {
+                        let utcDate = utility.setScheduleDate(message.schedule)
+                        utility.addToMessageQueue(sequence._id, utcDate, message._id)
+                      })
+                    }
+                    // insert socket.io code here
+                    logger.serverLog(TAG, `Subscribed to sequence successfully`)
+                  }
+                })
               })
-            })
+            }
           }
-        }
-      })
-    }
-  })
+        })
+      }
+    })
 }
 exports.setSequenceTrigger = setSequenceTrigger
