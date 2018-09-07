@@ -132,24 +132,25 @@ html(lang="en")
     //-   js.src = 'https://connect.facebook.net/en_US/sdk.js'
     //-   fjs.parentNode.insertBefore(js, fjs)
     //-   }(document, 'script', 'facebook-jssdk'))
-    script(src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous")
-    script.
-      function readCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-          var c = ca[i];
-          while (c.charAt(0)==' ') c = c.substring(1,c.length);
-          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-        }
-        var env = readCookie("environment");
-        if (env !== "development") {
-          Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
-            autoBreadcrumbs: {
-            console: false
+    if environment === 'production'
+      script(src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous")
+      script.
+        function readCookie(name) {
+          var nameEQ = name + "=";
+          var ca = document.cookie.split(';');
+          for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
           }
-        }).install()
-        }
+          var env = readCookie("environment");
+          if (env !== "development") {
+            Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
+              autoBreadcrumbs: {
+              console: false
+            }
+          }).install()
+          }
     script(src="js/bundle.js")
     // Js effects for material design. + Tooltips
     // <script src="js/material.min.js"></script>
