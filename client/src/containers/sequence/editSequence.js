@@ -204,9 +204,6 @@ class CreateSequence extends React.Component {
   }
   validateTrigger () {
     console.log('validating TRIGGER')
-    console.log(this.state.eventNameSelected)
-    console.log(this.state.selectedMessageClickId)
-    console.log(this.state.selectedButton)
     if (this.state.eventNameSelected === 'clicks') {
       if (this.state.selectedMessageClickId === '') {
         return false
