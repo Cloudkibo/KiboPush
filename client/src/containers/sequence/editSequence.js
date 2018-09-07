@@ -204,6 +204,9 @@ class CreateSequence extends React.Component {
   }
   validateTrigger () {
     console.log('validating TRIGGER')
+    console.log(this.state.eventNameSelected)
+    console.log(this.state.selectedMessageClickId)
+    console.log(this.state.selectedButton)
     if (this.state.eventNameSelected === 'clicks') {
       if (this.state.selectedMessageClickId === '') {
         return false
@@ -227,12 +230,21 @@ class CreateSequence extends React.Component {
     }
   }
   ShowDialogTrigger (message) {
-    console.log('the message id is', message._id)
+    console.log('the  is', message._id)
     if (message.trigger.event === 'none') {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
     }
     else {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger[0].event, eventNameSelected: message.trigger[0].event, selectedTriggerMsgId: message.trigger[0].value, selectedMessageClickId: message.trigger[0].value, selectedTriggerBtnTitle: message.trigger[0].buttonTitle, selectedButton: message.trigger[0].buttonTitle})
+    }
+    if (message.trigger.event !== 'none' && message.trigger[0].event === 'clicks') {
+
+      console.log('Display action set true')
+      this.setState({displayAction: true})
+    }
+    else if (message.trigger.event !== 'none' && message.trigger[0].event !== 'clicks') {
+      console.log('Display action set false')
+      this.setState({displayAction: false})
     }
   }
   onSelectedDropDownButton (buttonTitle) {
@@ -258,9 +270,25 @@ class CreateSequence extends React.Component {
     this.setState({buttonList: buttonList, selectedMessageClickId: Message})
   }
   onSelectedOption (menu) {
+    console.log('Menu is ', menu)
     if (menu === 'clicks') {
       this.setState({displayAction: true, eventNameSelected: menu})
       console.log('Display action set true')
+      let buttonList = []
+      this.props.messages.map((message, i) => {
+        if (message._id === this.state.selectedMessageClickId) {
+          console.log('Selected Message name is:', message.title)
+          message.payload.map((payload, j) => {
+            if (payload.buttons) {
+              payload.buttons.map((button, k) => {
+                buttonList.push(button)
+              })
+            }
+          })
+        }
+      })
+      console.log('The buttonList is  ', buttonList)
+      this.setState({buttonList: buttonList})
     } else {
       this.setState({displayAction: false, eventNameSelected: menu, selectedButton: ''})
       console.log('Display action set false')
@@ -714,13 +742,13 @@ class CreateSequence extends React.Component {
                       
                   </div>
                   
-                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this. validateTrigger}> Save </button>
+                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this. validateTrigger()}> Save </button>
                     <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
               </ModalContainer>
             }
             {
-              this.state.ShowTrigger && this.state.triggerEvent === 'sees' &&
+              this.state.ShowTrigger && this.state.triggerEvent !== 'none' &&
               <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px'}}
                 onClose={this.CloseDialogTrigger}>
                 <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px'}}
@@ -730,113 +758,11 @@ class CreateSequence extends React.Component {
 
                          subscriber 
                       
-                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option  selected > sees </option>
-                          <option value='clicks'>clicks</option>
-                          <option value='receive'>receive</option>
-                      </select>    
-                        <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                            
-                        {
-                            this.props.messages.map((message, i) => {
-                              if (this.state.selectedTriggerMsgId == message._id) {
-                              return <option  selected value>{message.title} </option> 
-                            }
-                            })
-                        }
-                          
-                        {
-                          this.props.messages.map((message, i) => {
-                            if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
-                            return <option value={message._id}>{message.title}</option> 
-                          }
-                        })} 
-                       </select>
-                       { 
-                         this.state.displayAction && 
-                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option disabled selected value>Select Button </option>
-                       {
-                          this.state.buttonList.map((button, i) => {
-                            return <option value={button.title}>{button.title}</option> 
-                        })}
-                      </select> 
-                       }
-                      
-                  </div>
-                  
-                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.ShowTrigger && this.state.triggerEvent === 'receive' &&
-              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px'}}
-                onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px'}}
-                  onClose={this.CloseDialogTrigger}>
-                  <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
-                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
+                         <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                        <option  selected={this.state.triggerEvent === 'clicks' ? true : null} value='clicks'>clicks</option>
+                         <option selected={this.state.triggerEvent === 'sees' ? true : null} value='sees'>sees</option>
 
-                         subscriber 
-                      
-                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option  selected value>receive </option>
-                         <option value='sees'>sees</option>
-                          <option value='clicks'>clicks</option>
-                         
-                      </select>    
-                        <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
-                        {
-                          this.props.messages.map((message, i) => {
-                            if (this.state.selectedTriggerMsgId == message._id) {
-                            return <option  selected value>{message.title} </option> 
-                          }
-                          })
-
-                        }
-                          {
-                          this.props.messages.map((message, i) => {
-                          if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
-                          return <option value={message._id}>{message.title}</option> 
-                          }
-                          })}
-                    </select>
-                       { 
-                         this.state.displayAction && 
-                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option disabled selected value>Select Button </option>
-                       {
-                          this.state.buttonList.map((button, i) => {
-                            return <option value={button.title}>{button.title}</option> 
-                        })}
-                      </select> 
-                       }
-                      
-                  </div>
-                  
-                    <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
-                    <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.ShowTrigger && this.state.triggerEvent === 'clicks' &&
-              <ModalContainer style={{width: '700px', paddingLeft: '33px', paddingRight: '33px'}}
-                onClose={this.CloseDialogTrigger}>
-                <ModalDialog style={{width: '700px',  paddingLeft: '33px', paddingRight: '33px'}}
-                  onClose={this.CloseDialogTrigger}>
-                  <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
-                  <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
-
-                         subscriber 
-                      
-                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
-                        <option  selected value>clicks</option>
-                         <option value='sees'>sees</option>
-
-                          <option value='receive'>receive</option>
+                          <option selected={this.state.triggerEvent === 'receive' ? true : null} value='receive'>receive</option>
                       </select>   
                           
                       <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
@@ -859,11 +785,16 @@ class CreateSequence extends React.Component {
                        { 
                          this.state.displayAction && 
                       <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                       { this.state.selectedTriggerBtnTitle !==''?
                         <option  selected value>{this.state.selectedTriggerBtnTitle} </option>
+                        :
+                        <option disabled  selected value>Select Button </option>
+                       }
                        {
                           this.state.buttonList.map((button, i) => {
+                            if(button.title!=this.state.selectedTriggerBtnTitle) {
                             return <option value={button.title}>{button.title}</option> 
-                        })}
+                        } })}
                       </select> 
                        }
                       
