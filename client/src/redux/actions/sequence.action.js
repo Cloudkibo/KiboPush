@@ -49,7 +49,7 @@ export function updateSegmentation (data) {
     callApi('sequenceMessaging/updateSegmentation', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          fetchAllMessages(data.segmentationId)
+          dispatch(fetchAllMessages(data.sequenceId))
         }
       })
   }
@@ -78,17 +78,17 @@ export function setSchedule (data, sequenceId) {
   }
 }
 
-export function setStatus (data, sequenceId) {
-  console.log('data', data)
-  return (dispatch) => {
-    callApi('sequenceMessaging/setStatus', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(fetchAllMessages(sequenceId))
-        }
-      })
-  }
-}
+// export function setStatus (data, sequenceId) {
+//   console.log('data', data)
+//   return (dispatch) => {
+//     callApi('sequenceMessaging/setStatus', 'post', data)
+//       .then(res => {
+//         if (res.status === 'success') {
+//           dispatch(fetchAllMessages(sequenceId))
+//         }
+//       })
+//   }
+// }
 
 export function editMessage (data, msg) {
   console.log('data', data)
@@ -107,6 +107,7 @@ export function fetchAllSequence () {
   return (dispatch) => {
     callApi(`sequenceMessaging/allSequences`)
       .then(res => {
+        console.log('fetchAllSequence', res)
         if (res.status === 'success') {
           console.log('allSequences', res.payload)
           dispatch(showAllSequence(res.payload))
@@ -251,7 +252,6 @@ export function updateTrigger (data, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Sequence Trigger Updated Successfully')
-          dispatch(fetchAllSequence)
         } else {
           if (res.status === 'failed' && res.description) {
             console.log('error in updating sequence trigger' + res.description)
