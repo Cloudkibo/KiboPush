@@ -270,21 +270,6 @@ class CreateSequence extends React.Component {
   }
   validateTrigger () {
     console.log('validating TRIGGER')
-    
-   /* if (this.state.displayAction === true) {
-      if (this.state.selectedButton === '') {
-        return false
-      } else {
-        return true
-      }
-    } else {
-      if (this.state.selectedMessageClickId === '') {
-        return false
-      }
-      return true
-    }
-    */
-    
     if (this.state.eventNameSelected === 'clicks') {
       if (this.state.selectedMessageClickId === '') {
         return false 
@@ -307,44 +292,6 @@ class CreateSequence extends React.Component {
       return false
     }
   }
-
- /* validateTrigger () {
-    console.log('validating TRIGGER')
-   /* if (this.state.displayAction === true) {
-      if (this.state.selectedButton === '') {
-        return false
-      } else {
-        return true
-      }
-    } else {
-      if (this.state.selectedMessageClickId === '') {
-        return false
-      }
-      return true
-    }
-    
-   console.log(this.state.eventNameSelected)
-   console.log(this.state.selectedMessageClickId)
-   console.log(this.state.selectedButton)
-    if (this.state.eventNameSelected === 'clicks') {
-      if (this.state.selectedMessageClickId === '') {
-        return false 
-      } else {
-        if (this.state.selectedButton === '' ) {
-           return false
-        } else { 
-          return true
-        }
-      }
-    }
-    else {
-      if (this.state.selectedMessageClickId === '') {
-       return false
-      } else {
-            return true
-      }
-    }
-}*/
   ShowDialogTrigger (message) {
     console.log('the message id is', message._id)
     if (message.trigger.event === 'none') {
@@ -353,11 +300,6 @@ class CreateSequence extends React.Component {
     else {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger[0].event, eventNameSelected: message.trigger[0].event, selectedTriggerMsgId: message.trigger[0].value, selectedMessageClickId: message.trigger[0].value, selectedTriggerBtnTitle: message.trigger[0].buttonTitle, selectedButton: message.trigger[0].buttonTitle})
     }
-
-    //event: this.state.eventNameSelected,
-    //value: this.state.selectedMessageClickId,
-    //buttonTitle: this.state.selectedButton
-    
   }
   onSelectedDropDownButton (buttonTitle) {
     console.log('Button title name is ', buttonTitle)
