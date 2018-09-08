@@ -36,18 +36,18 @@ class Dashboard extends React.Component {
     props.getuserdetails()
     props.loadMyPagesList()
     props.loadDashboardData()
-    props.sentVsSeen()
     props.loadSubscribersList()
     props.loadGraphData(0)
     props.loadTopPages()
-
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
       chartData: [],
       selectedDays: 10,
       topPages: [],
-      loading: true
+      loading: true,
+      showDropDown: false,
+      pageId: ''
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -56,6 +56,9 @@ class Dashboard extends React.Component {
     this.exportDashboardInformation = this.exportDashboardInformation.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
     this.formatDate = this.formatDate.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+    this.changePage = this.changePage.bind(this)
   }
 
   scrollToTop () {
@@ -184,6 +187,10 @@ class Dashboard extends React.Component {
       if (nextprops.graphData) {
         this.setChartData(nextprops.graphData)
       }
+    }
+
+    if (!this.props.pages && nextprops.pages) {
+      this.props.sentVsSeen(nextprops.pages[0].pageId)
     }
   }
   setChartData (graphData) {
@@ -353,6 +360,33 @@ class Dashboard extends React.Component {
     })
   }
 
+  changePage (page) {
+    let index = 0
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (page === this.props.pages[i].pageName) {
+        console.log('in if change page')
+        index = i
+        break
+      }
+    }
+    this.props.sentVsSeen(this.props.pages[index].pageId)
+    this.setState({
+      selectedPage: this.props.pages[index].pageName,
+      likes: this.props.pages[index].likes,
+      subscribers: this.props.pages[index].subscribers,
+      unsubscribes: this.props.pages[index].unsubscribes,
+      selectedPageId: this.props.pages[index].pageId
+    })
+  }
+
+  showDropDown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -371,6 +405,57 @@ class Dashboard extends React.Component {
             </div>
           </div>
         </div>
+        <div className='row'>
+          <div className='col-sm-4 col-md-4 col-lg-4' />
+          <div className='col-sm-4 col-md-4 col-lg-4'>
+            <div className='m-portlet__head-tools'>
+              <ul className='m-portlet__nav'>
+                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                  <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                    Change Page
+                  </a>
+                  {
+                    this.state.showDropDown &&
+                    <div className='m-dropdown__wrapper'>
+                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                      <div className='m-dropdown__inner'>
+                        <div className='m-dropdown__body'>
+                          <div className='m-dropdown__content'>
+                            <ul className='m-nav'>
+                              <li className='m-nav__section m-nav__section--first'>
+                                <span className='m-nav__section-text'>
+                                  Connected Pages
+                                </span>
+                              </li>
+                              {
+                                this.props.pages.map((page, i) => (
+                                  <li key={page.pageId} className='m-nav__item'>
+                                    <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                      <span className='m-nav__link-text'>
+                                        {page.pageName}
+                                      </span>
+                                    </a>
+                                  </li>
+                                ))
+                              }
+                              <li className='m-nav__separator m-nav__separator--fit' />
+                              <li className='m-nav__item'>
+                                <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                  Cancel
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0 &&
@@ -403,7 +488,7 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
                 this.props.pages && this.props.pages.length > 0 &&
-                <PageLikesSubscribers connectedPages={this.props.pages} />
+                <PageLikesSubscribers firstPage={this.props.pages[0]} connectedPages={this.props.pages} selectedPage={this.state.selectedPage} subscribers={this.state.subscribers} unsubscribes={this.state.unsubscribes} likes={this.state.likes} />
               }
               {
                 this.props.dashboard &&

@@ -37,6 +37,8 @@ exports.index = function (req, res) {
 }
 
 exports.sentVsSeen = function (req, res) {
+  let pageId = req.params.pageId
+  console.log('page--id', pageId)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -50,9 +52,10 @@ exports.sentVsSeen = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+    console.log('company-id', companyUser.companyId)
     pageBroadcast.aggregate(
       [
-        {$match: {companyId: companyUser.companyId}},
+        {$match: {companyId: companyUser.companyId, pageId: pageId}},
         {$group: {_id: null, count: {$sum: 1}}}
       ], (err, broadcastSentCount) => {
       if (err) {
@@ -64,7 +67,7 @@ exports.sentVsSeen = function (req, res) {
       }
       pageBroadcast.aggregate(
         [
-            {$match: {seen: true, companyId: companyUser.companyId}},
+            {$match: {seen: true, companyId: companyUser.companyId, pagedId: pageId} },
             {$group: {_id: null, count: {$sum: 1}}}
         ], (err, broadcastSeenCount) => {
         if (err) {
@@ -76,7 +79,7 @@ exports.sentVsSeen = function (req, res) {
         }
         pageSurvey.aggregate(
           [
-                {$match: {companyId: companyUser.companyId}},
+                {$match: {companyId: companyUser.companyId, pagedId: pageId}},
                 {$group: {_id: null, count: {$sum: 1}}}
           ], (err, surveySentCount) => {
           if (err) {
@@ -88,7 +91,7 @@ exports.sentVsSeen = function (req, res) {
           }
           pageSurvey.aggregate(
             [
-                    {$match: {seen: true, companyId: companyUser.companyId}},
+                    {$match: {seen: true, companyId: companyUser.companyId, pageId: pageId}},
                     {$group: {_id: null, count: {$sum: 1}}}
             ], (err, surveySeenCount) => {
             if (err) {
@@ -100,7 +103,7 @@ exports.sentVsSeen = function (req, res) {
             }
             pagePoll.aggregate(
               [
-                        {$match: {companyId: companyUser.companyId}},
+                        {$match: {companyId: companyUser.companyId, pageId: pageId}},
                         {$group: {_id: null, count: {$sum: 1}}}
               ], (err, pollSentCount) => {
               if (err) {
@@ -112,7 +115,7 @@ exports.sentVsSeen = function (req, res) {
               }
               pagePoll.aggregate(
                 [
-                            {$match: {seen: true, companyId: companyUser.companyId}},
+                            {$match: {seen: true, companyId: companyUser.companyId, pageId: pageId}},
                             {$group: {_id: null, count: {$sum: 1}}}
                 ], (err, pollSeenCount) => {
                 if (err) {
