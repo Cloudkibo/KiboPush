@@ -38,7 +38,6 @@ exports.index = function (req, res) {
 
 exports.sentVsSeen = function (req, res) {
   let pageId = req.params.pageId
-  console.log('page--id', pageId)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -52,7 +51,6 @@ exports.sentVsSeen = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    console.log('company-id', companyUser.companyId)
     pageBroadcast.aggregate(
       [
         {$match: {companyId: companyUser.companyId, pageId: pageId}},
