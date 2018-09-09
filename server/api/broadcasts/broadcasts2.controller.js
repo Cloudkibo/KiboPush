@@ -444,8 +444,11 @@ exports.addButton = function (req, res) {
   }
   let buttonPayload = {
     title: req.body.title,
-    type: req.body.type
+    type: req.body.type,
+    buttonId: uniqid()
+   
   }
+  console.log('buttonPayload--', buttonPayload)
   if (req.body.type === 'web_url') {
     // TODO save module id when sending broadcast
     let URLObject = new URL({
