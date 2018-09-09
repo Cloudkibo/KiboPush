@@ -921,7 +921,6 @@ exports.updateTrigger = function (req, res) {
                   }
                 }
                 seqMessage.payLoad = tempPayloadArray
-                console.log('seqMessage', JSON.stringify(seqMessage))
                 const sequenceMesaage = new SequenceMessages(seqMessage)
                 sequenceMesaage.save((err, savedMessage) => {
                   if (err) {
