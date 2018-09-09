@@ -470,15 +470,19 @@ exports.addButton = function (req, res) {
       })
     })
   } else {
-    buttonPayload.payload = JSON.stringify({
-      sequenceId: req.body.sequenceId,
-      action: req.body.action
-    })
-    buttonPayload.sequenceValue = req.body.sequenceId
-    return res.status(200).json({
-      status: 'success',
-      payload: buttonPayload
-    })
+    if (req.body.module.type === 'sequenceMessaging') {
+      let buttonId = uniqid()
+      buttonPayload.payload = JSON.stringify({
+        sequenceId: req.body.sequenceId,
+        action: req.body.action,
+        buttonId: buttonId
+      })
+      buttonPayload.sequenceValue = req.body.sequenceId
+      return res.status(200).json({
+        status: 'success',
+        payload: buttonPayload
+      })
+    }
   }
 }
 
