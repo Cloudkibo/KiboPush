@@ -39,7 +39,7 @@ class PageLikesSubscribers extends React.Component {
   // }
 
   render () {
-    var convertRate = this.props.likes ? ((this.props.subscribers / this.props.likes) * 100).toFixed(1) + '%' : '0%'
+    var convertRate = this.props.pageLikesSubscribes.likes ? ((this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100).toFixed(1) + '%' : '0%'
     return (
       <div className='col-xl-6'>
         <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
@@ -47,7 +47,7 @@ class PageLikesSubscribers extends React.Component {
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
                 <h3 className='m-portlet__head-text substring-dashboard'>
-                  {this.props.selectedPage ? this.props.selectedPage : this.props.firstPage.pageName}
+                  {this.props.pageLikesSubscribes.selectedPage ? this.props.pageLikesSubscribes.selectedPage : this.props.firstPage.pageName}
                 </h3>
               </div>
             </div>
@@ -110,7 +110,7 @@ class PageLikesSubscribers extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {this.props.subscribers ? this.props.subscribers : this.props.firstPage.subscribers }
+                          {this.props.pageLikesSubscribes.subscribers ? this.props.pageLikesSubscribes.subscribers : this.props.firstPage.subscribers }
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -130,7 +130,7 @@ class PageLikesSubscribers extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {this.props.likes ? this.props.likes : this.props.firstPage.likes}
+                          {this.props.pageLikesSubscribes.likes ? this.props.pageLikesSubscribes.likes : this.props.firstPage.likes}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -150,7 +150,7 @@ class PageLikesSubscribers extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {this.props.unsubscribes ? this.props.unsubscribes : this.props.firstPage.unsubscribes}
+                          {this.props.pageLikesSubscribes.unsubscribes ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -172,7 +172,7 @@ class PageLikesSubscribers extends React.Component {
                   </span>
                   <div className='m--space-10' />
                   <div className='progress m-progress--sm' style={{height: '6px'}}>
-                    <div className='progress-bar bg-success' role='progressbar' style={{width: convertRate}} aria-valuenow={(this.props.subscribers / this.props.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
+                    <div className='progress-bar bg-success' role='progressbar' style={{width: convertRate}} aria-valuenow={(this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
                   </div>
                 </div>
               </div>

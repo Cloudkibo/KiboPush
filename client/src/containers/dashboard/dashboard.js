@@ -47,7 +47,7 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      pageId: ''
+      pageLikesSubscribes: {}
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -371,12 +371,15 @@ class Dashboard extends React.Component {
     }
     this.props.sentVsSeen(this.props.pages[index].pageId)
     this.setState({
-      selectedPage: this.props.pages[index].pageName,
-      likes: this.props.pages[index].likes,
-      subscribers: this.props.pages[index].subscribers,
-      unsubscribes: this.props.pages[index].unsubscribes,
-      selectedPageId: this.props.pages[index].pageId
-    })
+      pageLikesSubscribes: {
+        selectedPage: this.props.pages[index].pageName,
+        likes: this.props.pages[index].likes,
+        subscribers: this.props.pages[index].subscribers,
+        unsubscribes: this.props.pages[index].unsubscribes,
+        selectedPageId: this.props.pages[index].pageId
+      }
+    }
+      )
   }
 
   showDropDown () {
@@ -406,7 +409,7 @@ class Dashboard extends React.Component {
           </div>
         </div>
         <div className='row'>
-          <div className='col-sm-4 col-md-4 col-lg-4' />
+          <div className='col-sm-3 col-md-3 col-lg-3' />
           <div className='col-sm-4 col-md-4 col-lg-4'>
             <div className='m-portlet__head-tools'>
               <ul className='m-portlet__nav'>
@@ -488,7 +491,7 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
                 this.props.pages && this.props.pages.length > 0 &&
-                <PageLikesSubscribers firstPage={this.props.pages[0]} connectedPages={this.props.pages} selectedPage={this.state.selectedPage} subscribers={this.state.subscribers} unsubscribes={this.state.unsubscribes} likes={this.state.likes} />
+                <PageLikesSubscribers firstPage={this.props.pages[0]} pageLikesSubscribes={this.state.pageLikesSubscribes} />
               }
               {
                 this.props.dashboard &&
