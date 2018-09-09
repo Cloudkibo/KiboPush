@@ -88,7 +88,11 @@ class Button extends React.Component {
       let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
-        title: this.state.title // User defined label
+        title: this.state.title, // User defined label
+        module: {
+          type: this.props.module,
+          id: ''//messageId
+        }
       }
       this.props.addButton(data, this.props.onAdd)
     } else if (this.state.sequenceValue !== '') {

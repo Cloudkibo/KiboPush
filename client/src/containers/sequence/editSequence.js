@@ -230,7 +230,7 @@ class CreateSequence extends React.Component {
       trigger: [{
         event: this.state.eventNameSelected,
         value: this.state.selectedMessageClickId,
-        buttonTitle: this.state.selectedButton }],
+        buttonId: this.state.selectedButton }],
       type: 'message',
       messageId: this.state.selectedMessageId
     })
@@ -772,7 +772,7 @@ class CreateSequence extends React.Component {
                         <option disabled selected value>Select Button </option>
                        {
                           this.state.buttonList.map((button, i) => {
-                            return <option value={button.title}>{button.title}</option> 
+                            return <option value={button.buttonId}>{button.title}</option> 
                         })}
                       </select> 
                        }

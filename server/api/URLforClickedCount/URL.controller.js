@@ -2,7 +2,10 @@ const URL = require('./URL.model')
 const AutopostingMessages = require('./../autoposting_messages/autoposting_messages.model')
 const Broadcasts = require('./../broadcasts/broadcasts.model')
 const SequenceMessages = require('./../sequenceMessaging/message.model')
+const Subscribers = require('../subscribers/Subscribers.model')
+const {getAllMessagesOfSequencesSubscribers, getSentSequenceMessages, findMessageToBeScheduled} = require('./../broadcasts/broadcasts.controller')
 const logger = require('../../components/logger')
+const sequenceUtility = require('./../sequenceMessaging/utility')
 
 exports.index = function (req, res) {
   URL.findOne({_id: req.params.id}, (err, URLObject) => {
@@ -73,6 +76,40 @@ exports.sequence = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
+        let seqMessageId = URLObject.module.id
+        SequenceMessages.find({_id: seqMessageId}, (err, seqMessage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (seqMessage) {
+            // get sequenceId of the message
+            let sequenceId = seqMessage.sequenceId
+            // find the all the messages of this sequence
+            SequenceMessages.find({sequenceId: sequenceId}, (err, seqMessages) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              if (seqMessages && seqMessages.length > 0) {
+                 // iterate through all the messages of this sequence.
+                for (let message of seqMessages) {
+                // check if this message is in the trigger of any message of this sequence then add it to queue.
+                  if (message.trigger.value !== '') {
+                    if (message.trigger.value === seqMessageId) {
+                      // add this message to queue.
+                      sequenceUtility.addToMessageQueue(message.sequenceId, message.schedule.date, message._id)
+                    }
+                  }
+                }
+              }
+            })
+          }
+        })
 
         res.writeHead(301, {Location: URLObject.originalURL.startsWith('http') ? URLObject.originalURL : `https://${URLObject.originalURL}`})
         res.end()
