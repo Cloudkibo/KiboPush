@@ -92,7 +92,7 @@ class InviteSubscribers extends React.Component {
     document.title = 'KiboPush | Getting Started'
     var addScript = document.createElement('script')
     addScript.setAttribute('type', 'text/javascript')
-    addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')
     addScript.type = 'text/javascript'
     document.body.appendChild(addScript)
     this.props.updateChecks({wizardSeen: true})

@@ -497,7 +497,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
                                     </div>
                                   </div>
@@ -505,7 +505,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onImageClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                       <h6>Image</h6>
                                     </div>
                                   </div>
@@ -513,7 +513,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
                                     </div>
                                   </div>
@@ -521,7 +521,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                       <h6>Gallery</h6>
                                     </div>
                                   </div>
@@ -531,7 +531,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onAudioClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                       <h6>Audio</h6>
                                     </div>
                                   </div>
@@ -539,7 +539,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onVideoClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                       <h6>Video</h6>
                                     </div>
                                   </div>
@@ -547,7 +547,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                                       <h6>File</h6>
                                     </div>
                                   </div>
@@ -555,7 +555,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                       <h6>List</h6>
                                     </div>
                                   </div>
@@ -565,7 +565,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                       <h6>Media</h6>
                                     </div>
                                   </div>
