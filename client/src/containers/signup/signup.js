@@ -210,7 +210,7 @@ class Signup extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#'>
-                      <img src='img/logo.png' style={{maxWidth: 250}} />
+                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signup'>

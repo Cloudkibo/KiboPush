@@ -110,7 +110,7 @@ class Image extends React.Component {
             {
               (this.state.imgSrc === '')
               ? <div className='align-center'>
-                <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
               : <img style={{maxWidth: '100%', height: 'auto'}} src={this.state.imgSrc} />

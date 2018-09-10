@@ -335,7 +335,7 @@ class Card extends React.Component {
       console.log('this.props.cardDetails', this.props.cardDetails)
     }
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(https://cdn.cloudkibo.com/public/icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -384,7 +384,7 @@ class Card extends React.Component {
               accept='image/*'
               title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
-            <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
           </div>
           <br />
         </center>
@@ -397,7 +397,7 @@ class Card extends React.Component {
               <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '90%' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             </center>
           </div>
-          
+
           {!this.state.checkbox &&
           <div style={{display: 'inline-grid', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
@@ -410,7 +410,7 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: '40px', margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            ? <img style={{maxHeight: '40px', margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
           : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
           </div>
