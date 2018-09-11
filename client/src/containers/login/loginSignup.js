@@ -45,9 +45,9 @@ class LoginSignup extends React.Component {
                         </Link>
                         <br />
                         <br />
-                        {/* <Link to='/signup' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                        <Link to='/signup' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Signup
-                        </Link> */}
+                        </Link>
                       </center>
                     </div>
                   </div>
