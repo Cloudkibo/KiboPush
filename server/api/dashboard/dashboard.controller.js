@@ -390,9 +390,8 @@ exports.stats = function (req, res) {
                                   `Page access token from graph api error ${JSON.stringify(
                                     err)}`)
                               }
-                              if (resp) {
-                                if (resp.body && resp.body.access_token) {
-                                  needle.get(
+                              if (resp && resp.body && resp.body.access_token) {
+                                needle.get(
                                   `https://graph.facebook.com/v2.11/me/messaging_feature_review?access_token=${resp.body.access_token}`,
                                   (err, respp) => {
                                     if (err) {
@@ -415,7 +414,6 @@ exports.stats = function (req, res) {
                                       }
                                     }
                                   })
-                                }
                               }
                             })
                         }
