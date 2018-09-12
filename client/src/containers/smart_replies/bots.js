@@ -369,7 +369,7 @@ class Bot extends React.Component {
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                Create Bot
+                                Create New
                               </span>
                             </span>
                           </button>
@@ -380,7 +380,7 @@ class Bot extends React.Component {
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                Create Bot
+                                Create New
                               </span>
                             </span>
                           </button>
@@ -456,13 +456,13 @@ class Bot extends React.Component {
                           </ModalContainer>
                         }
                       </div>
-                      <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                      <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
                         <input type='text' placeholder='Search bots by name...' className='form-control m-input m-input--solid' onChange={this.searchBot} />
                         <span className='m-input-icon__icon m-input-icon__icon--left'>
                           <span><i className='la la-search' /></span>
                         </span>
                       </div>
-                      <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                      <div style={{margin: '5px'}} className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
                       <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
                         <div className='m-form__label'>
                           <label>Pages:&nbsp;&nbsp;</label>

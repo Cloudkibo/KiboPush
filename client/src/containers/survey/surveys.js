@@ -301,7 +301,7 @@ class Survey extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create Survey
+                              Create New
                             </span>
                           </span>
                         </button>
@@ -310,7 +310,7 @@ class Survey extends React.Component {
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create Survey
+                            Create New
                           </span>
                         </span>
                       </button>

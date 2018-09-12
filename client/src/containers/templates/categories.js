@@ -114,7 +114,7 @@ class Category extends React.Component {
                       <span>
                         <i className='la la-plus' />
                         <span>
-                          Add Category
+                          Add New
                         </span>
                       </span>
                     </button>
