@@ -17,23 +17,26 @@ class Reports extends React.Component {
   }
 
   transformData (data) {
-    let transformed = data.map((item) => {
-      return {
-        date: item.createdAt.slice(0, 10),
-        surveyscount: item.totalSurveys,
-        pollscount: item.totalPolls,
-        broadcastscount: item.totalBroadcasts,
-        sessionscount: 0
-      }
-    })
-
-    // Removing duplicate dates
-    let temp = {}
-    transformed.reverse().map((item) => {
-      temp[item.date] = item
-    })
-    transformed = Object.values(temp)
-    return transformed
+    if (data) {
+      let transformed = data.map((item) => {
+        return {
+          date: item.createdAt.slice(0, 10),
+          surveyscount: item.totalSurveys,
+          pollscount: item.totalPolls,
+          broadcastscount: item.totalBroadcasts,
+          sessionscount: 0
+        }
+      })
+      // Removing duplicate dates
+      let temp = {}
+      transformed.reverse().map((item) => {
+        temp[item.date] = item
+      })
+      transformed = Object.values(temp)
+      return transformed
+    } else {
+      return {}
+    }
   }
 
   onChange (event) {
