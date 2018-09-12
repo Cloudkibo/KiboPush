@@ -137,7 +137,7 @@ class Sidebar extends Component {
   showBroadcastingItems () {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a href='' className='m-menu__link m-menu__toggle'>
+        <a className='m-menu__link m-menu__toggle'>
           <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
           <span className='m-menu__link-text'>Broadcasting</span>
           <i className='m-menu__ver-arrow la la-angle-right' />
@@ -146,7 +146,7 @@ class Sidebar extends Component {
           <span className='m-menu__arrow' />
           <ul className='m-menu__subnav'>
             <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a href='' className='m-menu__link'>
+              <a className='m-menu__link'>
                 <span className='m-menu__link-text'>
                   Broadcasting
                 </span>
@@ -185,7 +185,7 @@ class Sidebar extends Component {
   showAutomationItems () {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a href='' className='m-menu__link m-menu__toggle'>
+        <a className='m-menu__link m-menu__toggle'>
           <i className='m-menu__link-icon flaticon-share' title='Automation' />
           <span className='m-menu__link-text'>Automation</span>
           <i className='m-menu__ver-arrow la la-angle-right' />
@@ -194,7 +194,7 @@ class Sidebar extends Component {
           <span className='m-menu__arrow' />
           <ul className='m-menu__subnav'>
             <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a href='' className='m-menu__link'>
+              <a className='m-menu__link'>
                 <span className='m-menu__link-text'>
                   Automation
                 </span>
@@ -212,7 +212,7 @@ class Sidebar extends Component {
   showGrowthToolsItems () {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a href='' className='m-menu__link m-menu__toggle'>
+        <a className='m-menu__link m-menu__toggle'>
           <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
           <span className='m-menu__link-text'>Growth Tools</span>
           <i className='m-menu__ver-arrow la la-angle-right' />
@@ -221,7 +221,7 @@ class Sidebar extends Component {
           <span className='m-menu__arrow' />
           <ul className='m-menu__subnav'>
             <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a href='' className='m-menu__link'>
+              <a className='m-menu__link'>
                 <span className='m-menu__link-text'>
                   Growth Tools
                 </span>
@@ -230,8 +230,6 @@ class Sidebar extends Component {
             {this.showCommentCapture()}
             {this.showInviteUsingPhoneNumber()}
             {this.showInviteSubscribers()}
-            {this.showHTMLWidget()}
-            {this.showKiboPushWidget()}
           </ul>
         </div>
       </li>
@@ -241,7 +239,7 @@ class Sidebar extends Component {
   showManagePagesItems () {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-        <a href='' className='m-menu__link m-menu__toggle'>
+        <a className='m-menu__link m-menu__toggle'>
           <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
           <span className='m-menu__link-text'>Manage Pages</span>
           <i className='m-menu__ver-arrow la la-angle-right' />
@@ -250,7 +248,7 @@ class Sidebar extends Component {
           <span className='m-menu__arrow' />
           <ul className='m-menu__subnav'>
             <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-              <a href='' className='m-menu__link'>
+              <a className='m-menu__link'>
                 <span className='m-menu__link-text'>
                   Manage Pages
                 </span>
@@ -270,7 +268,7 @@ class Sidebar extends Component {
     if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='' className='m-menu__link m-menu__toggle'>
+          <a className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-share' title='Organization' />
             <span className='m-menu__link-text'>Organization</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
@@ -279,7 +277,7 @@ class Sidebar extends Component {
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='' className='m-menu__link'>
+                <a className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Organization
                   </span>
