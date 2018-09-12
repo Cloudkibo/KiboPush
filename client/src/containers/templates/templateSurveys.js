@@ -170,7 +170,7 @@ class templateSurveys extends React.Component {
                     <span>
                       <i className='la la-plus' />
                       <span>
-                        Create Template Survey
+                        Create New
                       </span>
                     </span>
                   </button>
@@ -203,13 +203,13 @@ class templateSurveys extends React.Component {
               </div>
               <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
                     <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchSurvey(event) }} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
                   </div>
-                  <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                  <div style={{margin: '5px'}} className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
                   <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
                     <div className='m-form__label'>
                       <label>Category:&nbsp;&nbsp;</label>
