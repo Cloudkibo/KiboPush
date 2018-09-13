@@ -11,7 +11,7 @@ const router = express.Router()
 const auth = require('../../auth/auth.service')
 const controller = require('./dashboard.controller')
 
-router.get('/sentVsSeen',
+router.get('/sentVsSeen/:pageId',
   auth.isAuthenticated(),
   auth.doesPlanPermitsThisAction('dashboard'),
   auth.doesRolePermitsThisAction('dashboardPermission'),

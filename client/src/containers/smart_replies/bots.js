@@ -144,9 +144,11 @@ class Bot extends React.Component {
     if (e.target.value && e.target.value !== 'all' && this.state.searchValue === '') {
       // this.setState({filter: true})
       // this.props.loadBotsListNew({last_id: this.props.bots.length > 0 ? this.props.bots[this.props.bots.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, page_value: e.target.value}})
-      for (let i = 0; i < this.props.bots.length; i++) {
-        if (this.props.bots[i].pageId._id === e.target.value) {
-          filtered.push(this.props.bots[i])
+      if (this.props.bots && this.props.bots.length > 0) {
+        for (let i = 0; i < this.props.bots.length; i++) {
+          if (this.props.bots[i].pageId._id === e.target.value) {
+            filtered.push(this.props.bots[i])
+          }
         }
       }
     } else if (e.target.value !== '' && e.target.value !== 'all' && this.state.searchValue !== '') {
