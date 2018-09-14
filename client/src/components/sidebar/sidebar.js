@@ -740,6 +740,7 @@ class Sidebar extends Component {
                 <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
                   {this.showOperationalDashboard()}
                   {this.showDashboard()}
+                  {this.showSubscribersItem()}
                   {this.showBroadcastingItems()}
                   {this.showLiveChatItem()}
                   {this.showAutomationItems()}
