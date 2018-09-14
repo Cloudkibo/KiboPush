@@ -199,7 +199,7 @@ class Bot extends React.Component {
       return true
     })
     // console.log('Updating the allowed pages', temp)
-    this.setState({pages: temp, pageSelected: temp[0]._id})
+    this.setState({pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : []})
   }
 
   changePage (e) {
