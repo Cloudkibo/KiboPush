@@ -57,6 +57,7 @@ module.exports = function (app) {
   app.use('/migrations', require('./api/migrations'))
   app.use('/api/permissions', require('./api/permissions'))
   app.use('/api/webhooks', require('./api/webhooks'))
+  app.use('/api/webhooks_facebook', require('./api/webhooks_facebook'))
   app.use('/api/kibodash', require('./api/kibodash'))
   app.use('/api/cronScheduler', require('./api/cron_scheduler'))
   app.use('/api/operational', require('./api/operational_dashboard'))
