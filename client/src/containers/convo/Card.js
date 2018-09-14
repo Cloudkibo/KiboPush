@@ -144,6 +144,7 @@ class Card extends React.Component {
         title: this.state.title,
         description: this.state.subtitle,
         buttons: temp})
+      console.log('after add button: ', temp)
     })
   }
 
