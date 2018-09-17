@@ -5,10 +5,12 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
   var obj = {}
   var subSetIds = []
   for (let i = 0; i < conditions.length; i++) {
+    console.log('conditions length', conditions.length)
     if (conditions[i].criteria === 'is') {
       field = conditions[i].condition
       text = conditions[i].text
       for (let i = 0; i < data.length; i++) {
+        console.log('data', JSON.stringify(data))
         obj = data[i]
         if (field === 'page') {
           for (let j = 0; j < pages.length; j++) {
