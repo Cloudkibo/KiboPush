@@ -611,4 +611,154 @@ router.get('/addDefaultUIMode', (req, res) => {
   })
 })
 
+router.get('/refeshUserAccount', (req, res) => {
+  const options = {
+    headers: {
+      'X-Custom-Header': 'CloudKibo Web Application'
+    },
+    json: true
+
+  }
+  // fetch users
+  Users.find({}, (err, users) => {
+    if (err) {
+      logger.serverLog(TAG, `Line 632: ERROR! at fetching users: ${JSON.stringify(err)}`)
+      res.status(500).json({status: 'success', description: err})
+    }
+
+    users.forEach((user) => {
+      // get the code
+      needle.get(`https://graph.facebook.com/oauth/client_code?access_token=${user.facebookInfo.fbToken}&client_secret=${config.facebook.clientSecret}&redirect_uri=${config.facebook.callbackURL}&client_id=${config.facebook.clientID}`, options, (err, resp) => {
+        if (err !== null) {
+          logger.serverLog(TAG, 'Line 637: ERROR! from graph api to get the code: ')
+          logger.serverLog(TAG, JSON.stringify(err))
+          res.status(500).json({status: 'success', description: err})
+        }
+        let code = resp.code
+        // redeemed the code for access token
+        needle.get(`https://graph.facebook.com/oauth/access_token?code=${code}&client_id=${config.facebook.clientID}&redirect_uri=${config.facebook.callbackURL}`, options, (err, respp) => {
+          if (err !== null) {
+            logger.serverLog(TAG, 'Line 649: ERROR! from graph api to get the access_token: ')
+            logger.serverLog(TAG, JSON.stringify(err))
+            res.status(500).json({status: 'success', description: err})
+          }
+          let accessToken = respp.access_token
+          // update user
+          user['facebookInfo']['fbToken'] = accessToken
+          user.save((err, updatedUser) => {
+            if (err) {
+              logger.serverLog(TAG, `Line 658: ERROR! at updating the user: ${JSON.stringify(err)}`)
+              res.status(500).json({status: 'success', description: err})
+            }
+            // fetch pages
+            fetchPages(`https://graph.facebook.com/v2.10/${user.facebookInfo.fbId}/accounts?access_token=${user.facebookInfo.fbToken}`, updatedUser, disconnectPages)
+            res.status(200).json({status: 'success', description: 'Successfully refreshed!'})
+          })
+        })
+      })
+    })
+  })
+})
+
+function fetchPages (url, user, cb) {
+  const options = {
+    headers: {
+      'X-Custom-Header': 'CloudKibo Web Application'
+    },
+    json: true
+
+  }
+  needle.get(url, options, (err, resp) => {
+    if (err !== null) {
+      logger.serverLog(TAG, 'Line 684: ERROR! from graph api to fetch pages: ')
+      logger.serverLog(TAG, JSON.stringify(err))
+    }
+    const data = resp.body.data
+    const cursor = resp.body.paging
+    if (data) {
+      data.forEach((item) => {
+        Pages.findOne({
+          pageId: item.id,
+          userId: user._id
+        }, (err, page) => {
+          if (err) {
+            logger.serverLog(TAG,
+              `Internal Server Error ${JSON.stringify(err)}`)
+          }
+          page.pagePic = `https://graph.facebook.com/v2.10/${item.id}/picture`
+          page.accessToken = item.access_token
+          page.save((err) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Internal Server Error ${JSON.stringify(err)}`)
+            }
+          })
+        })
+      })
+    } else {
+      logger.serverLog(TAG, 'Empty response from graph API to get pages list data')
+    }
+    if (cursor && cursor.next) {
+      fetchPages(cursor.next, user, cb)
+    } else {
+      logger.serverLog(TAG, 'Undefined Cursor from graph API')
+      cb(user)
+    }
+  })
+}
+
+function disconnectPages (user) {
+  Pages.find({userId: user._id, connected: true}, (err, connectedPages) => {
+    if (err) {
+      logger.serverLog(TAG,
+        `Internal Server Error ${JSON.stringify(err)}`)
+    }
+    Pages.update({userId: user._id, connected: true}, {connected: false}, {multi: true}, (err) => {
+      if (err) {
+        logger.serverLog(TAG, `Line 728: ERROR! at updating pages: ${JSON.stringify(err)}`)
+      } else {
+        connectedPages.forEach((page, index) => {
+          const options = {
+            url: `https://graph.facebook.com/v2.6/${page.pageId}/subscribed_apps?access_token=${page.accessToken}`,
+            qs: {access_token: page.accessToken},
+            method: 'DELETE'
+          }
+
+          needle.delete(options.url, options, (error, response) => {
+            if (error) {
+              logger.serverLog(TAG, `Line 738: ERROR! unsubscribing app from facebook: ${JSON.stringify(error)}`)
+            }
+            if (index === (connectedPages.length - 1)) {
+              // reconnect all pages
+              reconnectPages(connectedPages, user)
+            }
+          })
+        })
+      }
+    })
+  })
+}
+
+function reconnectPages (connectedPages, user) {
+  connectedPages.forEach((page, index) => {
+    Pages.update({_id: page._id}, {connected: true}, (err) => {
+      if (err) {
+        logger.serverLog(TAG, `Line 753: ERROR! at updating pages: ${JSON.stringify(err)}`)
+      } else {
+        const options = {
+          url: `https://graph.facebook.com/v2.6/${page.pageId}/subscribed_apps?access_token=${page.accessToken}`,
+          qs: {access_token: page.accessToken},
+          method: 'POST'
+        }
+
+        needle.post(options.url, options, (error, response) => {
+          if (error) {
+            logger.serverLog(TAG, `Line 763: ERROR! at subscribing app to facebook: ${JSON.stringify(err)}`)
+          }
+        })
+      }
+    })
+  })
+}
+
 module.exports = router
