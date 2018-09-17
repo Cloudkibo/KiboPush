@@ -11,8 +11,8 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
       field = conditions[i].condition
       console.log('field', field)
       text = conditions[i].text
+      console.log('data--', JSON.stringify(data))
       for (let i = 0; i < data.length; i++) {
-        console.log('data', JSON.stringify(data))
         obj = data[i]
         console.log('obj--', JSON.stringify(obj))
         console.log('obj field', JSON.stringify(obj[field]))
