@@ -407,3 +407,10 @@ export function downloadSubscribersData (pageId) {
         }
       })
 }
+
+export function saveSurveyInformation (survey) {
+  return {
+    type: ActionTypes.SAVE_SURVEY_INFORMATION,
+    data: survey
+  }
+}

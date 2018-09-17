@@ -13,6 +13,7 @@ import {
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class Members extends React.Component {
   constructor (props, context) {
@@ -92,7 +93,7 @@ class Members extends React.Component {
       userId: member.userId._id,
       companyId: member.companyId,
       domain_email: member.domain_email
-    })
+    }, this.msg)
   }
 
   updateRole (member, role) {
@@ -107,8 +108,16 @@ class Members extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'top right',
+      theme: 'dark',
+      time: 3000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
