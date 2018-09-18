@@ -57,6 +57,7 @@ class GreetingMessage extends React.Component {
     this.selectPage = this.selectPage.bind(this)
     props.loadMyPagesList()
   }
+
   showPreviewDialog () {
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
@@ -116,6 +117,8 @@ class GreetingMessage extends React.Component {
       var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
       this.props.saveGreetingMessage(payload, this.msg)
       this.props.loadMyPagesList()
+    } else {
+      this.msg.error('Invitation message cannot be empty')
     }
   }
   onGreetingMessageChange (e) {
@@ -250,13 +253,13 @@ class GreetingMessage extends React.Component {
               <div className='m-portlet__body m-portlet__body--no-padding'>
                 <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                   <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                    <Sidebar step='3' user={this.props.user} />
+                    <Sidebar step='2' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
                     <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                       <div className='m-portlet__head'>
                         <div className='m-portlet__head-caption'>
                           <div className='m-portlet__head-title'>
                             <h3 className='m-portlet__head-text'>
-                              Step 3: Greeting Text
+                              Step 2: Greeting Text
                             </h3>
                           </div>
                         </div>
@@ -332,11 +335,7 @@ class GreetingMessage extends React.Component {
                           <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
                             <div>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                              {
-                                this.state.greetingMessage.length > 0
-                                ? <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                                : <button style={{display: 'inline-block'}} className='btn btn-primary' disabled>Save</button>
-                              }
+                              <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
                             </div>
                           </div>
                         </div>

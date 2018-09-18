@@ -207,6 +207,18 @@ export function loadWaitingSubscribers (id) {
   }
 }
 
+export function removeWaitingSubscribers (id) {
+  return (dispatch) => {
+    console.log('Calling remove waiting subscribers api')
+    callApi('bots/removeWaitingSubscribers/', 'post', {_id: id})
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('Result of Deleting waiting subscriber: ' + res.payload)
+        }
+      })
+  }
+}
+
 export function loadUnansweredQuestions (id) {
   return (dispatch) => {
     console.log('Calling load unanswered questions api')

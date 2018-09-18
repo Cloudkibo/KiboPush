@@ -219,8 +219,8 @@ class FacebookPosts extends React.Component {
     }
     var payload = {
       postId: this.props.currentPost._id,
-      includedKeywords: this.state.includedKeywords.split(','),
-      excludedKeywords: this.state.excludedKeywords.split(',')
+      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
     this.props.editFacebookPost(payload, this.msg)
   }
@@ -376,8 +376,8 @@ class FacebookPosts extends React.Component {
       pageId: this.state.selectedPage._id,
       payload: this.state.facebookPost,
       reply: this.state.autoReply,
-      includedKeywords: this.state.includedKeywords.split(','),
-      excludedKeywords: this.state.excludedKeywords.split(',')
+      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
     console.log('facebook post', payload)
     this.props.createFacebookPost(payload, this.msg, this.reset)
@@ -392,56 +392,56 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div>
-      {
-        this.state.loading
-        ? <ModalContainer>
-          <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
-            className='align-center'>
-            <center><Halogen.RingLoader color='#716aca' /></center>
-          </div>
-        </ModalContainer>
-        : <span />
-      }
-      {
-        this.state.showVideo &&
-        <ModalContainer style={{width: '500px'}}
-          onClose={() => { this.setState({showVideo: false}) }}>
-          <ModalDialog style={{width: '500px'}}
+        {
+          this.state.loading
+          ? <ModalContainer>
+            <div style={{position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em'}}
+              className='align-center'>
+              <center><Halogen.RingLoader color='#716aca' /></center>
+            </div>
+          </ModalContainer>
+          : <span />
+        }
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '500px'}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <div>
-              { this.state.attachments.length > 0 && this.state.videoPost &&
-                <ReactPlayer
-                  url={this.state.attachments[0].url}
-                  controls
-                  width='100%'
-                  height='auto'
-                  onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
-                />
-              }
-            </div>
-          </ModalDialog>
-        </ModalContainer>
-      }
-      {
-        this.state.showImages &&
-        <ModalContainer style={{width: '500px', top: '100px'}}
-          onClose={() => { this.setState({showImages: false}) }}>
-          <ModalDialog style={{width: '500px', top: '100px'}}
-            onClose={() => { this.setState({showImages: false}) }}>
-            <div>
-              {
-            this.state.attachments.map((attachment, i) => (
-              <div className='col-12'>
-                <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                  <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
-                </div>
+            <ModalDialog style={{width: '500px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                { this.state.attachments.length > 0 && this.state.videoPost &&
+                  <ReactPlayer
+                    url={this.state.attachments[0].url}
+                    controls
+                    width='100%'
+                    height='auto'
+                    onPlay={this.onTestURLVideo(this.state.attachments[0].url)}
+                  />
+                }
               </div>
-            ))
-            }
-            </div>
-          </ModalDialog>
-        </ModalContainer>
-      }
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.showImages &&
+          <ModalContainer style={{width: '500px', top: '100px'}}
+            onClose={() => { this.setState({showImages: false}) }}>
+            <ModalDialog style={{width: '500px', top: '100px'}}
+              onClose={() => { this.setState({showImages: false}) }}>
+              <div>
+                {
+              this.state.attachments.map((attachment, i) => (
+                <div className='col-12'>
+                  <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
+                    <img src={attachment.url} alt='Image' style={{maxWidth: '400px', maxHeight: '200px'}} />
+                  </div>
+                </div>
+              ))
+              }
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <div className='m-subheader '>
@@ -520,7 +520,7 @@ class FacebookPosts extends React.Component {
                                         </div>
                                         }
                                         { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
-                                          <img src='icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                          <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
                                         </div>
                                         }
                                       </div>

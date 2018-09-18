@@ -32,7 +32,8 @@ import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import StickyDiv from 'react-stickydiv'
 import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
+import { onClickText, onImageClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick, onCardClick, onGalleryClick } from '../menu/utility'
 
 class CreateMessage extends React.Component {
   constructor (props, context) {
@@ -44,7 +45,8 @@ class CreateMessage extends React.Component {
       disabled: false,
       isShowingModal: false,
       convoTitle: 'Broadcast Title',
-      stay: false
+      stay: false,
+      isShowingModalGuideLines: false
     }
     this.handleText = this.handleText.bind(this)
     this.handleCard = this.handleCard.bind(this)
@@ -61,6 +63,15 @@ class CreateMessage extends React.Component {
     this.setEditComponents = this.setEditComponents.bind(this)
     this.goBack = this.goBack.bind(this)
     this.handleMedia = this.handleMedia.bind(this)
+    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
+    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
+  }
+  showGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: true})
+  }
+
+  closeGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: false})
   }
   componentWillMount () {
     // this.props.loadMyPagesList();
@@ -225,6 +236,8 @@ class CreateMessage extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -308,6 +321,8 @@ class CreateMessage extends React.Component {
   }
 
   handleImage (obj) {
+    console.log('obj', obj)
+    console.log('this.state.broadcast', this.state.broadcast)
     var temp = this.state.broadcast
     var isPresent = false
     temp.map((data, i) => {
@@ -320,7 +335,7 @@ class CreateMessage extends React.Component {
     if (!isPresent) {
       temp.push(obj)
     }
-
+    console.log('temp', temp)
     this.setState({broadcast: temp})
   }
 
@@ -378,7 +393,7 @@ class CreateMessage extends React.Component {
     } else {
       browserHistory.push({
         pathname: `/editSequence`,
-        state: {module: 'view', _id: this.props.location.state.id, name: this.props.location.state.title}
+        state: {module: 'view', _id: this.props.location.state.id, name: this.state.convoTitle}
       })
     }
   }
@@ -393,10 +408,68 @@ class CreateMessage extends React.Component {
     let timeStamp = new Date().getTime()
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.isShowingModalGuideLines &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeGuideLinesDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeGuideLinesDialog}>
+              <h4>Message Types</h4>
+              <p> Following are the types of messages that can be sent to facebook messenger.</p>
+              <div className='panel-group accordion' id='accordion1'>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Messages</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+                      <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
+                    </div>
+                  </div>
+                </div>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Messages</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      Promotional messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                    </div>
+                  </div>
+                </div>
+                <div className='panel panel-default'>
+                  <div className='panel-heading guidelines-heading'>
+                    <h4 className='panel-title'>
+                      <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Messages</a>
+                    </h4>
+                  </div>
+                  <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                    <div className='panel-body'>
+                      After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-exclamation m--font-brand' />
+            </div>
+            <div className='m-alert__text'>
+              View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+            </div>
+          </div>
           <div className='row'>
             <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>
@@ -422,33 +495,33 @@ class CreateMessage extends React.Component {
                             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                               <div className='row' >
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}); this.handleText({id: temp.length, text: '', button: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={timeStamp} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}); this.handleImage({id: temp.length, componentType: 'image', image_url: '', fileurl: ''}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onImageClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                       <h6>Image</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={timeStamp} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}); this.handleCard({id: temp.length, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={timeStamp} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}); this.handleGallery({id: temp.length, componentType: 'gallery', cards: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                       <h6>Gallery</h6>
                                     </div>
                                   </div>
@@ -456,33 +529,33 @@ class CreateMessage extends React.Component {
                               </div>
                               <div className='row'>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'audio', fileurl: ''}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onAudioClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                       <h6>Audio</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'video', fileurl: ''}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onVideoClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                       <h6>Video</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}); this.handleFile({id: temp.length, componentType: 'file', fileurl: ''}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                                       <h6>File</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, {content: (<List id={timeStamp} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} sequence />)}]}); this.handleList({id: temp.length, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                       <h6>List</h6>
                                     </div>
                                   </div>
@@ -490,9 +563,9 @@ class CreateMessage extends React.Component {
                               </div>
                               <div className='row'>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, {content: (<Media id={timeStamp} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />)}]}); this.handleMedia({id: temp.length, componentType: 'media', fileurl: '', buttons: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                       <h6>Media</h6>
                                     </div>
                                   </div>

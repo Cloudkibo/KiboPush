@@ -11,6 +11,7 @@ const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQue
 const PhoneNumber = require('../growthtools/growthtools.model')
 const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
+const sequenceController = require('./../sequenceMessaging/sequence.controller')
 const Bots = require('./../smart_replies/Bots.model')
 const WaitingSubscriber = require('./../smart_replies/waitingSubscribers.model')
 const logger = require('../../components/logger')
@@ -42,10 +43,7 @@ const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
 const Webhooks = require(
   './../webhooks/webhooks.model')
-// const SequenceMessages = require(
-//  './../sequenceMessaging/message.model')
-// const SequenceSubscriberMessages = require(
-//  './../sequenceMessaging/sequenceSubscribersMessages.model')
+const SequenceSubscriberMessages = require('./../sequenceMessaging/sequenceSubscribersMessages.model')
 const { sendBroadcast } = require('./broadcasts2.controller')
 const utility = require('./broadcasts.utility')
 const compUtility = require('../../components/utility')
@@ -58,78 +56,10 @@ const request = require('request')
 const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
 const shopifyWebhook = require('./../shopify/webhook.controller')
-
+const SequenceSubscriberMessage = require('../sequenceMessaging/sequenceSubscribersMessages.model')
 var array = []
 
-exports.indexx = function (req, res) {
-  CompanyUsers.findOne({ domain_email: req.user.domain_email },
-    (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      if (req.params.days === '0') {
-        Broadcasts.find({ companyId: companyUser.companyId }, (err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({ status: 'failed', description: 'Broadcasts not found' })
-          }
-          BroadcastPage.find({ companyId: companyUser.companyId },
-            (err, broadcastpages) => {
-              if (err) {
-                return res.status(404)
-                  .json({ status: 'failed', description: 'Broadcasts not found' })
-              }
-              res.status(200).json({
-                status: 'success',
-                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
-              })
-            })
-        })
-      } else {
-        Broadcasts.aggregate([
-          {
-            $match: {
-              companyId: companyUser.companyId,
-              'datetime': {
-                $gte: new Date(
-                  (new Date().getTime() - (req.params.days * 24 * 60 * 60 * 1000))),
-                $lt: new Date(
-                  (new Date().getTime()))
-              }
-            }
-          }
-        ], (err, broadcasts) => {
-          if (err) {
-            return res.status(404)
-              .json({ status: 'failed', description: 'Broadcasts not found' })
-          }
-          BroadcastPage.find({ companyId: companyUser.companyId },
-            (err, broadcastpages) => {
-              if (err) {
-                return res.status(404)
-                  .json({ status: 'failed', description: 'Broadcasts not found' })
-              }
-              res.status(200).json({
-                status: 'success',
-                payload: { broadcasts: broadcasts, broadcastpages: broadcastpages }
-              })
-            })
-        })
-      }
-    })
-}
-
 exports.index = function (req, res) {
-  logger.serverLog(TAG, `req.body broadcasts ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({ domain_email: req.user.domain_email },
     (err, companyUser) => {
       if (err) {
@@ -143,312 +73,96 @@ exports.index = function (req, res) {
           status: 'failed',
           description: 'The user account does not belong to any company. Please contact support'
         })
+      }
+      let search = ''
+      let findCriteria = {}
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
+      let finalCriteria = {}
+      let recordsToSkip = 0
+      if (!req.body.filter) {
+        findCriteria = {
+          companyId: companyUser.companyId,
+          'datetime': req.body.filter_criteria.days !== '0' ? {
+            $gte: startDate
+          } : { $exists: true }
+        }
+      } else {
+        search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
+        if (req.body.filter_criteria.type_value === 'miscellaneous') {
+          findCriteria = {
+            companyId: companyUser.companyId,
+            'payload.1': { $exists: true },
+            title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
+            'datetime': req.body.filter_criteria.days !== '0' ? {
+              $gte: startDate
+            } : { $exists: true }
+          }
+        } else {
+          findCriteria = {
+            companyId: companyUser.companyId,
+            $and: [{'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true }}, {'payload.1': { $exists: false }}],
+            title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
+            'datetime': req.body.filter_criteria.days !== '0' ? {
+              $gte: startDate
+            } : { $exists: true }
+          }
+        }
       }
       if (req.body.first_page === 'first') {
-        if (!req.body.filter) {
-          let startDate = new Date()  // Current date
-          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-          startDate.setHours(0)   // Set the hour, minute and second components to 0
-          startDate.setMinutes(0)
-          startDate.setSeconds(0)
-          let findCriteria = {
-            companyId: companyUser.companyId,
-            'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: startDate
-            } : { $exists: true }
-          }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: findCriteria }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        } else {
-          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-          let findCriteria = {}
-          if (req.body.filter_criteria.type_value === 'miscellaneous') {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.1': { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          } else {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: findCriteria }, { $sort: { datetime: -1 } }]).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'BroadcastPage not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        }
+        finalCriteria = [
+          { $match: findCriteria },
+          { $sort: { datetime: -1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       } else if (req.body.first_page === 'next') {
-        let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-        if (!req.body.filter) {
-          let startDate = new Date()  // Current date
-          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-          startDate.setHours(0)   // Set the hour, minute and second components to 0
-          startDate.setMinutes(0)
-          startDate.setSeconds(0)
-          let findCriteria = {
-            companyId: companyUser.companyId,
-            'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: startDate
-            } : { $exists: true }
-          }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        } else {
-          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-          let findCriteria = {}
-          if (req.body.filter_criteria.type_value === 'miscellaneous') {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.1': { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          } else {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          }
-
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts, count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        }
+        recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
+        finalCriteria = [
+          { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
+          { $sort: { datetime: -1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       } else if (req.body.first_page === 'previous') {
-        let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-        if (!req.body.filter) {
-          let startDate = new Date()  // Current date
-          startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-          startDate.setHours(0)   // Set the hour, minute and second components to 0
-          startDate.setMinutes(0)
-          startDate.setSeconds(0)
-          let findCriteria = {
-            companyId: companyUser.companyId,
-            'datetime': req.body.filter_criteria.days !== '0' ? {
-              $gte: startDate
-            } : { $exists: true }
-          }
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: 1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        } else {
-          let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
-          let findCriteria = {}
-          if (req.body.filter_criteria.type_value === 'miscellaneous') {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.1': { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          } else {
-            let startDate = new Date()  // Current date
-            startDate.setDate(startDate.getDate() - req.body.filter_criteria.days)
-            startDate.setHours(0)   // Set the hour, minute and second components to 0
-            startDate.setMinutes(0)
-            startDate.setSeconds(0)
-            findCriteria = {
-              companyId: companyUser.companyId,
-              'payload.0.componentType': req.body.filter_criteria.type_value !== '' ? req.body.filter_criteria.type_value : { $exists: true },
-              title: req.body.filter_criteria.search_value !== '' ? { $regex: search } : { $exists: true },
-              'datetime': req.body.filter_criteria.days !== '0' ? {
-                $gte: startDate
-              } : { $exists: true }
-            }
-          }
-
-          Broadcasts.aggregate([
-            { $match: findCriteria },
-            { $group: { _id: null, count: { $sum: 1 } } }
-          ], (err, broadcastsCount) => {
-            if (err) {
-              return res.status(404)
-                .json({ status: 'failed', description: 'BroadcastsCount not found' })
-            }
-            Broadcasts.aggregate([{ $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } }, { $sort: { datetime: -1 } }]).skip(recordsToSkip).limit(req.body.number_of_records)
-              .exec((err, broadcasts) => {
-                if (err) {
-                  return res.status(404)
-                    .json({ status: 'failed', description: 'Broadcasts not found' })
-                }
-                BroadcastPage.find({ companyId: companyUser.companyId },
-                  (err, broadcastpages) => {
-                    if (err) {
-                      return res.status(404)
-                        .json({ status: 'failed', description: 'Broadcasts not found' })
-                    }
-                    res.status(200).json({
-                      status: 'success',
-                      payload: { broadcasts: broadcasts.reverse(), count: broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
-                    })
-                  })
-              })
-          })
-        }
+        recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+        finalCriteria = [
+          { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
+          { $sort: { datetime: 1 } },
+          { $skip: recordsToSkip },
+          { $limit: req.body.number_of_records }
+        ]
       }
+      Broadcasts.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, broadcastsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({ status: 'failed', description: 'BroadcastsCount not found' })
+        }
+        Broadcasts.aggregate(finalCriteria)
+            .exec((err, broadcasts) => {
+              if (err) {
+                return res.status(404)
+                  .json({ status: 'failed', description: 'Broadcasts not found' })
+              }
+              BroadcastPage.find({ companyId: companyUser.companyId },
+                (err, broadcastpages) => {
+                  if (err) {
+                    return res.status(404)
+                      .json({ status: 'failed', description: 'Broadcasts not found' })
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: { broadcasts: req.body.first_page === 'previous' ? broadcasts.reverse() : broadcasts, count: broadcastsCount && broadcastsCount.length > 0 ? broadcastsCount[0].count : 0, broadcastpages: broadcastpages }
+                  })
+                })
+            })
+      })
     })
 }
 
@@ -538,6 +252,17 @@ exports.getfbMessage = function (req, res) {
       req.body.entry[0].messaging[0].message.quick_reply.payload)
     if (resp.poll_id) {
       savepoll(req.body.entry[0].messaging[0], resp)
+      Subscribers.findOne({ senderId: req.body.entry[0].messaging[0].sender.id }, (err, subscriber) => {
+        if (err) {
+          logger.serverLog(TAG,
+            `Error occurred in finding subscriber ${JSON.stringify(
+              err)}`)
+        }
+        if (subscriber) {
+          logger.serverLog(TAG, `Subscriber Responeds to Poll ${JSON.stringify(subscriber)} ${resp.poll_id}`)
+          sequenceController.setSequenceTrigger(subscriber.companyId, subscriber._id, { event: 'responds_to_poll', value: resp.poll_id })
+        }
+      })
     }
   }
 
@@ -602,7 +327,7 @@ exports.getfbMessage = function (req, res) {
                     needle.get(options.url, options, (error, response) => {
                       logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
                       const subsriber = response.body
-                      if (!error) {
+                      if (!error && !response.error) {
                         if (event.sender && event.recipient && event.postback &&
                           event.postback.payload &&
                           event.postback.payload === '<GET_STARTED_PAYLOAD>') {
@@ -636,89 +361,98 @@ exports.getfbMessage = function (req, res) {
                         } else if (subscriberSource === 'chat_plugin') {
                           payload.source = 'chat_plugin'
                         }
-                        Subscribers.findOne({ senderId: sender },
-                          (err, subscriber) => {
+                        Pages.findOne({ _id: page._id, connected: true },
+                          (err, pageFound) => {
                             if (err) logger.serverLog(TAG, err)
-                            if (subscriber === null) {
-                              // subsriber not found, create subscriber
-                              Subscribers.create(payload,
-                                (err2, subscriberCreated) => {
-                                  if (err2) {
-                                    logger.serverLog(TAG, err2)
-                                  }
-                                  Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                    if (err) logger.serverLog(TAG, err)
-                                    if (webhook && webhook.isEnabled) {
-                                      needle.get(webhook.webhook_url, (err, r) => {
-                                        if (err) {
-                                          logger.serverLog(TAG, err)
-                                        } else if (r.statusCode === 200) {
-                                          if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                            var data = {
-                                              subscription_type: 'NEW_SUBSCRIBER',
-                                              payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
-                                            }
-                                            needle.post(webhook.webhook_url, data,
-                                              (error, response) => {
-                                                if (error) logger.serverLog(TAG, err)
-                                              })
+                            Subscribers.findOne({ senderId: sender, companyId: pageFound.companyId },
+                              (err, subscriber) => {
+                                if (err) logger.serverLog(TAG, err)
+                                else if (subscriber === null) {
+                                  // subsriber not found, create subscriber
+                                  Subscribers.create(payload,
+                                    (err2, subscriberCreated) => {
+                                      if (err2) {
+                                        logger.serverLog(TAG, err2)
+                                      } else {
+                                        Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
+                                          if (err) logger.serverLog(TAG, err)
+                                          else if (webhook && webhook.isEnabled) {
+                                            needle.get(webhook.webhook_url, (err, r) => {
+                                              if (err) {
+                                                logger.serverLog(TAG, err)
+                                              } else if (r.statusCode === 200) {
+                                                if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                                  var data = {
+                                                    subscription_type: 'NEW_SUBSCRIBER',
+                                                    payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                                  }
+                                                  needle.post(webhook.webhook_url, data,
+                                                    (error, response) => {
+                                                      if (error) logger.serverLog(TAG, err)
+                                                    })
+                                                }
+                                              } else {
+                                                webhookUtility.saveNotification(webhook)
+                                              }
+                                            })
                                           }
-                                        } else {
-                                          webhookUtility.saveNotification(webhook)
-                                        }
-                                      })
-                                    }
-                                  })
+                                        })
+                                      }
+                                      if (subscriberSource === 'customer_matching') {
+                                        updateList(phoneNumber, sender, page)
+                                      }
+                                      if (!(event.postback &&
+                                        event.postback.title === 'Get Started')) {
+                                        createSession(page, subscriberCreated,
+                                          event)
+                                      }
+                                      logger.serverLog(TAG, `Subscriber Joins Sequence Trigger ${JSON.stringify(subscriberCreated)}`)
+                                      sequenceController.setSequenceTrigger(subscriberCreated.companyId, subscriberCreated._id, { event: 'subscriber_joins', value: null })
+                                      require('./../../config/socketio')
+                                        .sendMessageToClient({
+                                          room_id: page.companyId,
+                                          body: {
+                                            action: 'dashboard_updated',
+                                            payload: {
+                                              subscriber_id: subscriberCreated._id,
+                                              company_id: page.companyId
+                                            }
+                                          }
+                                        })
+                                    })
+                                } else {
                                   if (subscriberSource === 'customer_matching') {
-                                    updateList(phoneNumber, sender, page)
+                                    // Subscribers.update({senderId: sender}, {
+                                    //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
+                                    //   source: 'customer_matching',
+                                    //   isSubscribed: true,
+                                    //   isEnabledByPage: true
+                                    // }, (err, subscriber) => {
+                                    //   if (err) return logger.serverLog(TAG, err)
+                                    //   logger.serverLog(TAG, subscriber)
+                                    // })
+                                  } else if (!subscriber.isSubscribed) {
+                                    // subscribing the subscriber again in case he
+                                    // or she unsubscribed and removed chat
+                                    Subscribers.update({ senderId: sender }, {
+                                      isSubscribed: true,
+                                      isEnabledByPage: true
+                                    }, (err, subscriber) => {
+                                      if (err) return logger.serverLog(TAG, err)
+                                      logger.serverLog(TAG, subscriber)
+                                    })
                                   }
                                   if (!(event.postback &&
                                     event.postback.title === 'Get Started')) {
-                                    createSession(page, subscriberCreated,
-                                      event)
+                                    createSession(page, subscriber, event)
                                   }
-                                  require('./../../config/socketio')
-                                    .sendMessageToClient({
-                                      room_id: page.companyId,
-                                      body: {
-                                        action: 'dashboard_updated',
-                                        payload: {
-                                          subscriber_id: subscriberCreated._id,
-                                          company_id: page.companyId
-                                        }
-                                      }
-                                    })
-                                })
-                            } else {
-                              if (subscriberSource === 'customer_matching') {
-                                // Subscribers.update({senderId: sender}, {
-                                //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                //   source: 'customer_matching',
-                                //   isSubscribed: true,
-                                //   isEnabledByPage: true
-                                // }, (err, subscriber) => {
-                                //   if (err) return logger.serverLog(TAG, err)
-                                //   logger.serverLog(TAG, subscriber)
-                                // })
-                              } else if (!subscriber.isSubscribed) {
-                                // subscribing the subscriber again in case he
-                                // or she unsubscribed and removed chat
-                                Subscribers.update({ senderId: sender }, {
-                                  isSubscribed: true,
-                                  isEnabledByPage: true
-                                }, (err, subscriber) => {
-                                  if (err) return logger.serverLog(TAG, err)
-                                  logger.serverLog(TAG, subscriber)
-                                })
-                              }
-                              if (!(event.postback &&
-                                event.postback.title === 'Get Started')) {
-                                createSession(page, subscriber, event)
-                              }
-                            }
+                                }
+                              })
                           })
                       } else {
-                        logger.serverLog(TAG, `ERROR ${JSON.stringify(error)}`)
+                        if (error) {
+                          logger.serverLog(TAG, `ERROR in fetching subscriber info ${JSON.stringify(error)}`)
+                        }
                       }
                     })
                   })
@@ -736,6 +470,17 @@ exports.getfbMessage = function (req, res) {
                 // savepoll(event)
               } else if (resp.survey_id) {
                 savesurvey(event)
+                Subscribers.findOne({ senderId: req.body.entry[0].messaging[0].sender.id }, (err, subscriber) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Error occurred in finding subscriber ${JSON.stringify(
+                        err)}`)
+                  }
+                  if (subscriber) {
+                    logger.serverLog(TAG, `Subscriber Responeds to Survey ${JSON.stringify(subscriber)} ${resp.survey_id}`)
+                    sequenceController.setSequenceTrigger(subscriber.companyId, subscriber._id, { event: 'responds_to_survey', value: resp.poll_id })
+                  }
+                })
               } else if (resp.unsubscribe) {
                 handleUnsubscribe(resp, event)
               } else if (resp.action === 'subscribe') {
@@ -849,47 +594,73 @@ function updateList (phoneNumber, sender, page) {
 }
 
 function sendCommentReply (body) {
-  let index = 1
+  let send = true
+  let postId = body.entry[0].changes[0].value.post_id
   FacebookPosts.findOne({
-    post_id: body.entry[0].changes[0].value.post_id
+    post_id: postId
   }).populate('pageId userId').exec((err, post) => {
     if (err) {
     }
-    FacebookPosts.update({ post_id: body.entry[0].changes[0].value.post_id }, { $inc: { count: 1 } }, (err, updated) => {
+    FacebookPosts.update({ post_id: postId }, { $inc: { count: 1 } }, (err, updated) => {
       if (err) {
       }
       logger.serverLog(TAG,
+        `updated value ${JSON.stringify(updated)}`)
+      logger.serverLog(TAG,
         `response from comment on facebook ${JSON.stringify(post)}`)
       if (post && post.pageId) {
-        needle.get(
-          `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
-          (err, resp) => {
-            if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        if (body.entry[0].changes[0].value.message) {
+          if (post.includedKeywords && post.includedKeywords.length > 0) {
+            send = false
+            for (let i = 0; i < post.includedKeywords.length; i++) {
+              if (body.entry[0].changes[0].value.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
+                logger.serverLog(TAG,
+                  `inside if send value ${JSON.stringify(send)}`)
+                send = true
+                break
+              }
             }
-            let messageData = { message: post.reply }
-            needle.post(
-              `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
-              messageData, (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG, err)
-                }
-                logger.serverLog(TAG,
-                  `response from comment on facebook ${JSON.stringify(resp.body)}`)
-                if (body.entry[0].changes[0].value.post_id.message) {
-                  if (post.includedKeywords && post.includedKeywords.length > 0) {
-                    for (let i = 0; i < post.includedKeywords.length; i++) {
-                      if (body.entry[0].changes[0].value.post_id.message.toLowerCase().includes(post.includedKeywords[i].toLowerCase())) {
-                        index = 2
-                        break
-                      }
-                    }
+          }
+          if (post.excludedKeywords && post.excludedKeywords.length > 0) {
+            send = true
+            for (let i = 0; i < post.excludedKeywords.length; i++) {
+              if (body.entry[0].changes[0].value.message.toLowerCase().includes(post.excludedKeywords[i].toLowerCase())) {
+                send = false
+                break
+              }
+            }
+          }
+        }
+        logger.serverLog(TAG,
+          `send value ${JSON.stringify(send)}`)
+        if (send) {
+          needle.get(
+            `https://graph.facebook.com/v2.10/${post.pageId.pageId}?fields=access_token&access_token=${post.userId.facebookInfo.fbToken}`,
+            (err, resp) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+              let messageData = { message: post.reply }
+              needle.post(
+                `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/private_replies?access_token=${resp.body.access_token}`,
+                messageData, (err, resp) => {
+                  if (err) {
+                    logger.serverLog(TAG, err)
                   }
-                }
-                logger.serverLog(TAG,
-                  `value of index ${JSON.stringify(index)}`)
-              })
-          })
+                  logger.serverLog(TAG,
+                    `response from comment on facebook 2 ${JSON.stringify(resp.body)}`)
+                })
+              // needle.post(
+              //   `https://graph.facebook.com/${body.entry[0].changes[0].value.comment_id}/comments?access_token=${resp.body.access_token}`,
+              //   messageData, (err, resp) => {
+              //     if (err) {
+              //       logger.serverLog(TAG, err)
+              //     }
+              //     logger.serverLog(TAG,
+              //       `response from comment on facebook 3 ${JSON.stringify(resp.body)}`)
+              //   })
+            })
+        }
       }
     })
   })
@@ -1539,6 +1310,7 @@ function addAdminAsSubscriber (payload) {
 }
 
 function updateseenstatus (req) {
+  logger.serverLog(TAG, `Seen Count Update ${JSON.stringify(req)}`)
   BroadcastPage.update(
     { pageId: req.recipient.id, subscriberId: req.sender.id, seen: false },
     { seen: true },
@@ -1644,36 +1416,214 @@ function updateseenstatus (req) {
         })
     })
   // updating seen count for sequence messages
-  // SequenceSubscriberMessages.distinct('messageId',
-  //   {subscriberId: req.sender.id, seen: false},
-  //   (err, sequenceMessagesIds) => {
-  //     if (err) {
-  //       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-  //     }
-  //     SequenceSubscriberMessages.update(
-  //       {
-  //         subscriberId: req.sender.id,
-  //         seen: false,
-  //         datetime: {$lte: new Date(req.read.watermark)}
-  //       },
-  //       {seen: true},
-  //       {multi: true}, (err, updated) => {
-  //         if (err) {
-  //           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-  //         }
-  //
-  //         sequenceMessagesIds.forEach(sequenceMessagesId => {
-  //           SequenceMessages.update(
-  //             {_id: sequenceMessagesId},
-  //             {$inc: {seen: 1}},
-  //             {multi: true}, (err, updated) => {
-  //               if (err) {
-  //                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-  //               }
-  //             })
-  //         })
-  //       })
-  //   })
+  Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    if (subscriber) {
+      SequenceSubscriberMessages.distinct('messageId',
+        { subscriberId: subscriber._id, seen: false },
+        (err, sequenceMessagesIds) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          logger.serverLog('MessageIds', `${JSON.stringify(sequenceMessagesIds)}`)
+          logger.serverLog('DateTime', `${JSON.stringify(new Date(req.read.watermark))}`)
+          SequenceSubscriberMessages.update(
+            {
+              subscriberId: subscriber._id,
+              seen: false,
+              datetime: { $lte: new Date(req.read.watermark) }
+            },
+            { seen: true },
+            { multi: true }, (err, updated) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+
+              sequenceMessagesIds.forEach((sequenceMessagesId, sIndex) => {
+                SequenceMessages.update(
+                  { _id: sequenceMessagesId },
+                  { $inc: { seen: 1 } },
+                  { multi: true }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                    // Logic to capture all seen messages for a sequence
+                    let smIds = []   // Will contain the message ids against a specific sub AND sequnce
+                    let length = sequenceMessagesIds.length - 1
+                    // Checking if the last index and all seen have been inserted
+                    if (sIndex === length) {
+                      // Finding all the sequences of the subscriber
+                      SequenceSubscribers.find({ subscriberId: subscriber._id }, (err, seqsubs) => {
+                        if (err) {
+                          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                        }
+
+                        if (seqsubs) {
+                          // Iterating for each sequence
+                          seqsubs.forEach((seqSub) => {
+                            // finding messages of all sequences one by one
+                            SequenceMessages.find({ sequenceId: seqSub.seqeunceId }, (err, sequenceMessages) => {
+                              if (err) {
+                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                              }
+                              // Inserting message ids against a specific subscriber and sequence
+                              for (let i = 0, length = sequenceMessages.length; i < length; i++) {
+                                smIds[i] = sequenceMessages[i]._id
+                              }
+                              // Finding all seen messages of that sequence
+                              SequenceSubscriberMessages.find({ subscriberId: subscriber._id, seen: true, messageId: { $in: smIds } }, (err, seqsubmessages) => {
+                                if (err) {
+                                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                }
+                                // Checking if all the message of sequence have been seen
+                                if (sequenceMessages.length === seqsubmessages.length) {
+                                  // It means that all of the messages of sequence have been seen
+                                  // Now we need to see if this sequence is added in trigger of any other sequences
+
+                                  Sequences.find({ companyId: subscriber.companyId },
+                                    (err, sequences) => {
+                                      if (err) {
+                                        return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
+                                      }
+                                      if (sequences) {
+                                        sequences.forEach(sequence => {
+                                          if (sequence.trigger && sequence.trigger.event) {
+                                            logger.serverLog(TAG, `seqSub ${JSON.stringify(seqSub)}`)
+                                            if (sequence.trigger.event === 'seen_all_sequence_messages' && (JSON.stringify(sequence.trigger.value) === JSON.stringify(seqSub.sequenceId))) {
+                                              SequenceSubscribers.find({ subscriberId: subscriber._id, sequenceId: sequence._id }, (err, sequenceSubscriber) => {
+                                                if (err) {
+                                                  logger.serverLog(TAG,
+                                                    `Internal Server Error ${JSON.stringify(err)}`)
+                                                }
+                                                if (sequenceSubscriber.length < 1) {
+                                                  logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(seqSub.sequenceId)}`)
+                                                  SequenceMessages.find({ sequenceId: sequence._id }, (err, messages) => {
+                                                    if (err) {
+                                                      return logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
+                                                    }
+                                                    if (messages) {
+                                                      messages.forEach(message => {
+                                                        if (message.schedule.condition === 'immediately') {
+                                                          if (message.isActive === true) {
+                                                            Subscribers.findOne({ '_id': subscriber._id }, (err, subscriber) => {
+                                                              if (err) {
+                                                                return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+                                                              }
+
+                                                              Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
+                                                                if (err) {
+                                                                  return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                                                }
+
+                                                                if (message.payload.length > 0) {
+                                                                  AppendURLCount(message, (newPayload) => {
+                                                                    let sequenceSubMessage = new SequenceSubscriberMessage({
+                                                                      subscriberId: subscriber._id,
+                                                                      messageId: message._id,
+                                                                      companyId: subscriber.companyId,
+                                                                      datetime: new Date(),
+                                                                      seen: false
+                                                                    })
+                                                                    sequenceSubMessage.save((err2, result) => {
+                                                                      if (err2) {
+                                                                        return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                                                      }
+                                                                      logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                                                                      SequenceMessages.update(
+                                                                        { _id: message._id },
+                                                                        { $inc: { sent: 1 } },
+                                                                        { multi: true }, (err, updated) => {
+                                                                          if (err) {
+                                                                            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                                                          }
+                                                                        })
+                                                                      utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                                                                    })
+                                                                  })
+                                                                }
+                                                              })
+                                                            })
+                                                          }
+                                                        } else {
+                                                          let d1 = new Date()
+                                                          if (message.schedule.condition === 'hours') {
+                                                            d1.setHours(d1.getHours() + Number(message.schedule.days))
+                                                          } else if (message.schedule.condition === 'minutes') {
+                                                            d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+                                                          } else if (message.schedule.condition === 'day(s)') {
+                                                            d1.setDate(d1.getDate() + Number(message.schedule.days))
+                                                          }
+                                                          let utcDate = new Date(d1)
+                                                          let sequenceQueuePayload = {
+                                                            sequenceId: sequence._id,
+                                                            subscriberId: subscriber._id,
+                                                            companyId: subscriber.companyId,
+                                                            sequenceMessageId: message._id,
+                                                            queueScheduledTime: utcDate,
+                                                            isActive: message.isActive
+                                                          }
+                                                          const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+                                                          sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                                                            if (err) {
+                                                              return logger.serverLog(TAG, `ERROR saving message in queue${JSON.stringify(err)}`)
+                                                            }
+                                                          })
+                                                        }
+                                                      })
+                                                    }
+                                                  })
+
+                                                  let sequenceSubscriberPayload = {
+                                                    sequenceId: sequence._id,
+                                                    subscriberId: subscriber._id,
+                                                    companyId: subscriber.companyId,
+                                                    status: 'subscribed'
+                                                  }
+                                                  const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+                                                  sequenceSubcriber.save((err, subscriberCreated) => {
+                                                    if (err) {
+                                                      return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
+                                                    } else {
+                                                      // insert socket.io code here
+                                                      logger.serverLog(TAG, `Subscribed to sequence successfully`)
+                                                    }
+                                                  })
+                                                }
+                                              })
+                                            }
+                                          }
+                                        })
+                                      }
+                                    })
+                                }
+                              })  // seqsubmessages find ends here
+                            })   // sequence messages find ends here
+                          })   // seqsubs Foreach ends here
+                        }
+                      })   // Sequence Subscriber find ends here
+                    }
+                  })  // Sequence Message Update ends here
+              })
+            })
+        })
+    }
+  })
+
+  // Code for message trigger sequence messaging when message is seen
+  // get subscriber using senderId
+//   Subscribers.findOne({senderId: req.sender.id}, (err, subscriber) => {
+//     if (err) {
+//       return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+//     }
+//     if (subscriber) {
+//       let messagesOfllSequences = getAllMessagesOfSequencesSubscribers(subscriber)
+//       let sentSequenceMessages = getSentSequenceMessages(subscriber)
+//       findMessageToBeScheduled(messagesOfllSequences, sentSequenceMessages, subscriber)
+//     }
+//   })
 }
 
 function sendMenuReply (req) {
@@ -1686,7 +1636,8 @@ function sendMenuReply (req) {
       if (err) {
         return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
       }
-      utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
+       // sending last parameter because to incorporate the changed getBatchData method
+      utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, 'menu')
     })
   })
 }
@@ -2277,7 +2228,7 @@ function subscribeToSequence (sequenceId, req) {
           })
           // CASE-2 Subscriber doesn't exist
         } else {
-          SequenceMessages.find({sequenceId: sequenceId}, (err, messages) => {
+          SequenceMessages.find({ sequenceId: sequenceId }, (err, messages) => {
             if (err) {
               return {
                 status: 'Failed',
@@ -2354,43 +2305,44 @@ function unsubscribeFromSequence (sequenceId, req) {
           `Internal Server Error ${JSON.stringify(err)}`)
       }
 
-      SequenceSubscribers.remove({sequenceId: sequenceId})
-      .where('subscriberId').equals(subscriber._id)
-      .exec((err, updated) => {
-        if (err) {
-          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-        }
-
-        SequenceMessageQueue.deleteMany({sequenceId: sequenceId, subscriberId: subscriber._id}, (err, result) => {
+      SequenceSubscribers.remove({ sequenceId: sequenceId })
+        .where('subscriberId').equals(subscriber._id)
+        .exec((err, updated) => {
           if (err) {
-            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
 
-          require('./../../config/socketio').sendMessageToClient({
-            room_id: sequence.companyId,
-            body: {
-              action: 'sequence_update',
-              payload: {
-                sequence_id: sequenceId
-              }
+          SequenceMessageQueue.deleteMany({ sequenceId: sequenceId, subscriberId: subscriber._id }, (err, result) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
+
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: sequence.companyId,
+              body: {
+                action: 'sequence_update',
+                payload: {
+                  sequence_id: sequenceId
+                }
+              }
+            })
           })
         })
-      })
     })
   })
 }
 
 function saveToWaitingSubscribers (payload, req) {
-  WaitingSubscriber.findOne({subscriberId: payload.subscriberId, botId: payload.botId}, (err, waitingSubscriber) => {
+  WaitingSubscriber.findOne({ subscriberId: payload.subscriberId, botId: payload.botId }, (err, waitingSubscriber) => {
     if (err) {
       logger.serverLog(TAG, `INTERNAL SERVER ERROR ${JSON.stringify(err)}`)
     }
 
     if (waitingSubscriber) {
       logger.serverLog(TAG, 'subscriber is already in waiting queue')
+      sendWaitingSubResponse('Agent will reply you soon', payload.pageId, payload.subscriberId)
     } else {
-      Pages.findOne({pageId: payload.pageId}, (err, page) => {
+      Pages.findOne({ pageId: payload.pageId }, (err, page) => {
         if (err) {
           logger.serverLog(TAG, `INTERNAL SERVER ERROR ${JSON.stringify(err)}`)
         }
@@ -2409,8 +2361,301 @@ function saveToWaitingSubscribers (payload, req) {
           }
 
           logger.serverLog(TAG, result)
+          sendWaitingSubResponse('Agent will contact you soon', payload.pageId, payload.subscriberId)
         })
       })
     }
   })
 }
+
+function sendWaitingSubResponse (message, pageId, subscriberId) {
+  Subscribers.findOne({ _id: subscriberId }, (err, subscriber) => {
+    if (err) {
+      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      return
+    }
+    if (subscriber === null) {
+      return
+    }
+    logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
+    let messageData = utility.prepareSendAPIPayload(
+      subscriber.senderId,
+      { 'componentType': 'text', 'text': message + '  (Bot)' }, subscriber.firstName, subscriber.lastName, true)
+    Pages.findOne({ pageId: pageId }, (err, page) => {
+      if (err) {
+        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+      }
+      request(
+        {
+          'method': 'POST',
+          'json': true,
+          'formData': messageData,
+          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+            page.accessToken
+        },
+        (err, res) => {
+          if (err) {
+            return logger.serverLog(TAG,
+              `At send message live chat ${JSON.stringify(err)}`)
+          } else {
+            if (res.statusCode !== 200) {
+              logger.serverLog(TAG,
+                `At send message live chat response ${JSON.stringify(
+                  res.body.error)}`)
+            } else {
+              logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+            }
+          }
+        })
+    })
+  })
+}
+const AppendURLCount = function (sequenceMessage, callback) {
+  logger.serverLog(TAG, `Append URL count${JSON.stringify(sequenceMessage)}`)
+  if (sequenceMessage.payload.length > 0) {
+    let newPayload = sequenceMessage.payload
+    sequenceMessage.payload.forEach((payloadItem, pindex) => {
+      if (payloadItem.buttons) {
+        payloadItem.buttons.forEach((button, bindex) => {
+          if (!(button.type === 'postback')) {
+            let URLObject = new URL({
+              originalURL: button.url,
+              module: {
+                id: sequenceMessage._id,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].buttons[bindex].url = newURL
+            })
+          }
+        })
+      }
+      if (payloadItem.componentType === 'media' && payloadItem.buttons) {
+        payloadItem.buttons.forEach((button, bindex) => {
+          let URLObject = new URL({
+            originalURL: button.url,
+            module: {
+              id: sequenceMessage._id,
+              type: 'sequence'
+            }
+          })
+          URLObject.save((err, savedurl) => {
+            if (err) logger.serverLog(TAG, err)
+            let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+            newPayload[pindex].buttons[bindex].url = newURL
+          })
+        })
+      }
+      if (payloadItem.componentType === 'gallery') {
+        payloadItem.cards.forEach((card, cindex) => {
+          card.buttons.forEach((button, bindex) => {
+            let URLObject = new URL({
+              originalURL: button.url,
+              module: {
+                id: sequenceMessage._id,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
+            })
+          })
+        })
+      }
+      if (payloadItem.componentType === 'list') {
+        payloadItem.listItems.forEach((element, lindex) => {
+          if (element.buttons && element.buttons.length > 0) {
+            element.buttons.forEach((button, bindex) => {
+              let URLObject = new URL({
+                originalURL: button.url,
+                module: {
+                  id: sequenceMessage._id,
+                  type: 'sequence'
+                }
+              })
+              URLObject.save((err, savedurl) => {
+                if (err) logger.serverLog(TAG, err)
+                let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+                newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
+              })
+            })
+          }
+          if (element.default_action) {
+            let URLObject = new URL({
+              originalURL: element.default_action.url,
+              module: {
+                id: sequenceMessage._id,
+                type: 'sequence'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/sequence/' + savedurl._id
+              newPayload[pindex].listItems[lindex].default_action.url = newURL
+            })
+          }
+        })
+      }
+    })
+    callback(newPayload)
+  }
+}
+
+const sendSequence = (batchMessages, page) => {
+  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
+    if (err) {
+      return logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
+    }
+    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
+  })
+  const form = r.form()
+  form.append('access_token', page.accessToken)
+  form.append('batch', batchMessages)
+}
+
+const getAllMessagesOfSequencesSubscribers = (subscriber) => {
+    // keep all the messages of all the sequences that the user is subscribed to
+  let subscribedSequenceMessages = []
+
+  // find the sequences that the subscriber is subscribed to
+  SequenceSubscribers.find({ subscriberId: subscriber._id }, (err, subscribedSequences) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR FIND SUBSCRIBED SEQUENCES ${JSON.stringify(err)}`)
+    }
+
+    if (subscribedSequences.length > 0) {
+      // iterate through everysequnce
+      for (let subscribedSequence of subscribedSequences) {
+        // find the messages of every sequence
+        SequenceMessages.find({ sequenceId: subscribedSequence.sequenceId }, (err, sequenceMessages) => {
+          if (err) {
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+          }
+          if (sequenceMessages.length > 0) {
+            // iterate through all the messages of the sequnce and put in array
+            for (let sequenceMessage of sequenceMessages) {
+              subscribedSequenceMessages.push(sequenceMessage)
+            }
+          }
+        })
+      }
+      return subscribedSequenceMessages
+    }
+  })
+}
+// get all the sentMessages to the subscriber
+const getSentSequenceMessages = (subscriber) => {
+  let sentSequenceMessageIds = []
+  SequenceSubscriberMessages.find({ subscriberId: subscriber._id }, (err, sentMessages) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    if (sentMessages.length > 0) {
+      for (let sentSequenceMessage of sentMessages) {
+        sentSequenceMessageIds.push(sentSequenceMessage._id)
+      }
+      return sentSequenceMessageIds
+    }
+  })
+}
+// find the message to be scheduled on basis of event seen/clicked etc..
+const findMessageToBeScheduled = (subscribedSequenceMessages, sentSequenceMessageIds, subscriber, triggerEvent) => {
+  // iterate through the array of subscribed sequencemessages
+  for (let subscribedSequenceMessage of subscribedSequenceMessages) {
+    // get the trigger of message
+    let msgTrigger = subscribedSequenceMessage.trigger
+    if (msgTrigger.value !== null && msgTrigger.event !== 'none') {
+      for (let sentSequenceMsgId of sentSequenceMessageIds) {
+        // if the sentmessages id is in the sequenceMessages
+        if (msgTrigger.value === sentSequenceMsgId && msgTrigger.event === triggerEvent ) {
+          // schedule the message
+          scheduleSequenceMessage(subscriber, subscribedSequenceMessage)
+        }
+      }
+    }
+  }
+}
+
+function scheduleSequenceMessage (subscriber, message) {
+  // find the sequence from message
+  Sequences.findOne({_id: message.sequenceId}, (err, sequence) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+    }
+    if (sequence) {
+      if (message.schedule.condition === 'immediately') {
+        if (message.isActive === true) {
+          Subscribers.findOne({ '_id': subscriber._id }, (err, subscriber) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+            }
+            Pages.findOne({ '_id': subscriber.pageId }, (err, page) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+
+              if (message.payload.length > 0) {
+                AppendURLCount(message, (newPayload) => {
+                  let sequenceSubMessage = new SequenceSubscriberMessage({
+                    subscriberId: subscriber._id,
+                    messageId: message._id,
+                    companyId: subscriber.companyId,
+                    datetime: new Date(),
+                    seen: false
+                  })
+                  sequenceSubMessage.save((err2, result) => {
+                    if (err2) {
+                      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                    logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                    SequenceMessages.update(
+                      { _id: message._id },
+                      { $inc: { sent: 1 } },
+                      { multi: true }, (err, updated) => {
+                        if (err) {
+                          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                        }
+                      })
+                    utility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                  })
+                })
+              }
+            })
+          })
+        } else {
+          let d1 = new Date()
+          if (message.schedule.condition === 'hours') {
+            d1.setHours(d1.getHours() + Number(message.schedule.days))
+          } else if (message.schedule.condition === 'minutes') {
+            d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+          } else if (message.schedule.condition === 'day(s)') {
+            d1.setDate(d1.getDate() + Number(message.schedule.days))
+          }
+          let utcDate = new Date(d1)
+          let sequenceQueuePayload = {
+            sequenceId: sequence._id,
+            subscriberId: subscriber._id,
+            companyId: subscriber.companyId,
+            sequenceMessageId: message._id,
+            queueScheduledTime: utcDate,
+            isActive: message.isActive
+          }
+          const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+          sequenceMessageForQueue.save((err, messageQueueCreated) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR saving message in queue${JSON.stringify(err)}`)
+            }
+          })
+        }
+      }
+    }
+  })
+}
+exports.getAllMessagesOfSequencesSubscribers = getAllMessagesOfSequencesSubscribers
+exports.getSentSequenceMessages = getSentSequenceMessages
+exports.findMessageToBeScheduled = findMessageToBeScheduled

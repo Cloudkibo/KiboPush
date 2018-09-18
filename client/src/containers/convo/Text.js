@@ -37,7 +37,10 @@ class Text extends React.Component {
       showEmojiPicker: false,
       count: 0,
       showUserOptions: false,
-      numOfButtons: 0
+      numOfButtons: 0,
+      styling: {
+        minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'
+      }
     }
     this.showEmojiPicker = this.showEmojiPicker.bind(this)
     this.closeEmojiPicker = this.closeEmojiPicker.bind(this)
@@ -196,17 +199,15 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState
-        ? <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
-          <Button button_id={this.props.id} onAdd={this.addButton} />
+        ? <div>
+          <Button button_id={this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-          <div className='ui-block hoverborder' style={{minHeight: 30, width: 100 + '%', marginLeft: 0 + 'px'}}>
-            <Button button_id={this.props.id} onAdd={this.addButton} />
-          </div>
+            <Button button_id={this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }

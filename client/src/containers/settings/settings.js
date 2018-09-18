@@ -150,7 +150,7 @@ class Settings extends React.Component {
   }
   setBilling () {
     this.setState({
-      openTab: 'billing'
+      openTab: 'billing', show: false
     })
   }
   setWebhook () {
@@ -479,7 +479,7 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>HTML Widget</span>
                       </a>
                     </li>
-                    { this.props.user && this.props.user.role === 'buyer' &&
+                    { this.props.user && this.props.user.role === 'buyer' && (this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'all') &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-list-2' />

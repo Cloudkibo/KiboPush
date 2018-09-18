@@ -12,6 +12,8 @@ import {
 } from '../../redux/actions/members.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class Members extends React.Component {
   constructor (props, context) {
@@ -22,10 +24,14 @@ class Members extends React.Component {
       membersDataAll: [],
       totalLength: 0,
       filterByName: '',
-      filterByEmail: ''
+      filterByEmail: '',
+      isShowingModalDelete: false,
+      deleteid: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeDialogDelete = this.closeDialogDelete.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -35,7 +41,14 @@ class Members extends React.Component {
       this.setState({totalLength: nextProps.members.length})
     }
   }
+  showDialogDelete (id) {
+    this.setState({isShowingModalDelete: true})
+    this.setState({deleteid: id})
+  }
 
+  closeDialogDelete () {
+    this.setState({isShowingModalDelete: false})
+  }
   displayData (n, members) {
     let offset = n * 4
     let data = []
@@ -58,16 +71,16 @@ class Members extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/theme-plugins.js')
     // document.body.appendChild(addScript)
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Members'
     this.scrollToTop()
@@ -80,7 +93,7 @@ class Members extends React.Component {
       userId: member.userId._id,
       companyId: member.companyId,
       domain_email: member.domain_email
-    })
+    }, this.msg)
   }
 
   updateRole (member, role) {
@@ -95,8 +108,16 @@ class Members extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'top right',
+      theme: 'dark',
+      time: 3000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -107,6 +128,24 @@ class Members extends React.Component {
               </div>
             </div>
           </div>
+          {
+            this.state.isShowingModalDelete &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeDialogDelete}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeDialogDelete}>
+                <h3>Delete Member</h3>
+                <p>Are you sure you want to delete this member?</p>
+                <button style={{float: 'right'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.removeMember(this.state.deleteid)
+                    this.closeDialogDelete()
+                  }}>Delete
+                </button>
+              </ModalDialog>
+            </ModalContainer>
+          }
           <div className='m-content'>
             <div
               className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
@@ -129,7 +168,7 @@ class Members extends React.Component {
                 </div>
                 {this.props.user.permissions.invitationsPermission &&
                 <div className='m-portlet__head-tools'>
-                  <Link to='newInvitation'>
+                  <Link to={{pathname: '/newInvitation', state: { prevPath: this.props.location.pathname }}}>
                     <button
                       className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
@@ -239,8 +278,7 @@ class Members extends React.Component {
                                             float: 'left',
                                             margin: 2
                                           }}
-                                          onClick={() => this.removeMember(
-                                            member)}>Delete
+                                          onClick={() => this.showDialogDelete(member)}>Delete
                                         </button>
                                       }
                                       {
@@ -250,8 +288,7 @@ class Members extends React.Component {
                                             float: 'left',
                                             margin: 2
                                           }}
-                                          onClick={() => this.removeMember(
-                                                  member)}>Delete
+                                          onClick={() => this.showDialogDelete(member)}>Delete
                                         </button>
                                       }
                                     </span>

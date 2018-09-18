@@ -21,23 +21,12 @@ const UserSchema = new Schema({
   isSuperUser: {type: Boolean, default: false},
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},
-  // tour seen variables
   wizardSeen: {type: Boolean, default: false},
-  getStartedSeen: {type: Boolean, default: false},
-  dashboardTourSeen: {type: Boolean, default: false},
-  surveyTourSeen: {type: Boolean, default: false},
-  convoTourSeen: {type: Boolean, default: false},
-  pollTourSeen: {type: Boolean, default: false},
-  growthToolsTourSeen: {type: Boolean, default: false},
-  subscriberTourSeen: {type: Boolean, default: false},
-  liveChatTourSeen: {type: Boolean, default: false},
-  autoPostingTourSeen: {type: Boolean, default: false},
-  mainMenuTourSeen: {type: Boolean, default: false},
-  subscribeToMessengerTourSeen: {type: Boolean, default: false},
-  pagesTourSeen: {type: Boolean, default: false},
+  uiMode: String,
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
   permissionsRevoked: {type: Boolean, default: false},
+  skippedFacebookConnect: {type: Boolean, default: false},
   deleteInformation: Schema.Types.Mixed
 })
 

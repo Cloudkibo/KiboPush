@@ -36,7 +36,7 @@ class Sidebar extends Component {
       inviteMembers: true,
       members: true,
       welcomeMessage: true,
-      createPhoneList: true,
+      segmentSubscribers: true,
       commentCapture: true,
       smartReplies: true,
       templates: true,
@@ -46,8 +46,6 @@ class Sidebar extends Component {
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
-    this.showOperationalDashboard = this.showOperationalDashboard.bind(this)
-    this.showBroadcastTemplates = this.showBroadcastTemplates.bind(this)
   }
   componentWillMount () {
     this.props.getuserdetails()
@@ -64,8 +62,25 @@ class Sidebar extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
-    if (nextProps.updatedUser) {
-      this.setState({templates: nextProps.user.advancedMode, persistentMenu: nextProps.user.advancedMode, phoneNumber: nextProps.user.advancedMode, createPhoneList: nextProps.user.advancedMode, commentCapture: nextProps.user.advancedMode, sequenceMessaging: nextProps.user.advancedMode})
+    if (nextProps.user) {
+      this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
+        polls: nextProps.user.uiMode.polls,
+        surveys: nextProps.user.uiMode.surveys,
+        sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
+        templates: nextProps.user.uiMode.templates,
+        livechat: nextProps.user.uiMode.livechat,
+        smartReplies: nextProps.user.uiMode.smartReplies,
+        abandonedCarts: nextProps.user.uiMode.abandonedCarts,
+        subscribers: nextProps.user.uiMode.subscribers,
+        segmentSubscribers: nextProps.user.uiMode.segmentSubscribers,
+        autoposting: nextProps.user.uiMode.autoposting,
+        persistentMenu: nextProps.user.uiMode.persistentMenu,
+        pages: nextProps.user.uiMode.pages,
+        phoneNumber: nextProps.user.uiMode.phoneNumber,
+        inviteMembers: nextProps.user.uiMode.inviteMembers,
+        members: nextProps.user.uiMode.members,
+        welcomeMessage: nextProps.user.uiMode.welcomeMessage,
+        commentCapture: nextProps.user.uiMode.commentCapture})
     }
   }
 
@@ -85,6 +100,7 @@ class Sidebar extends Component {
     }
   }
 
+
   showOperationalDashboard () {
     if (this.props.user) {
       if (this.props.user.isSuperUser) {
@@ -93,40 +109,6 @@ class Sidebar extends Component {
             <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-statistics' title='Operational Dashboard' />
               <span className='m-menu__link-text'>Operational Dashboard</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-  showCommentCapture () {
-    if (this.props.user && this.props.user.isSuperUser && this.props.user.advancedMode) {
-      // include user persmissions
-      if (this.state.commentCapture) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/commentCapture' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
-              <span className='m-menu__link-text'>Comment Capture</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSequenceMessaging () {
-    if (this.props.user && this.state.sequenceMessaging && this.props.user.advancedMode) {
-      if (this.props.user.isSuperUser) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/sequenceMessaging' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-dashboard' title='Sequence Messaging' />
-              <span className='m-menu__link-text'>Sequence Messaging</span>
             </Link>
           </li>
         )
@@ -153,14 +135,14 @@ class Sidebar extends Component {
     }
   }
 
-  showBroadcastsItem () {
+  showSubscribersItem () {
     if (this.props.user) {
-      if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/broadcasts' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasts' />
-              <span className='m-menu__link-text'>Broadcasts</span>
+            <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
+              <span className='m-menu__link-text'>Subscribers</span>
             </Link>
           </li>
         )
@@ -170,78 +152,37 @@ class Sidebar extends Component {
     }
   }
 
-  showBroadcastTemplates () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.templates && this.props.user.advancedMode) {
-      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/templates' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-file-1' title='Templates' />
-              <span className='m-menu__link-text'>Templates</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSurveysItem () {
-    if (this.props.user) {
-      if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/surveys' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-statistics' title='Surveys' />
-              <span className='m-menu__link-text'>Surveys</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showPollsItem () {
-    if (this.props.user) {
-      if (this.state.polls && this.props.user.permissions.pollsPermission && this.props.user.plan.polls) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/poll' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-graphic-2' title='Polls' />
-              <span className='m-menu__link-text'>Polls</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSmartRespliesItem () {
-    // if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.user.advancedMode) {
-    if (this.props.user && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-     this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/bots' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-comment' title='Smart Replies' />
-            <span className='m-menu__link-text'>Smart Replies</span>
-          </Link>
-        </li>
-      )
-    }
-    // } else {
-    //   return (null)
-    // }
+  showBroadcastingItems () {
+    return (
+      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+        <a className='m-menu__link m-menu__toggle'>
+          <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
+          <span className='m-menu__link-text'>Broadcasting</span>
+          <i className='m-menu__ver-arrow la la-angle-right' />
+        </a>
+        <div className='m-menu__submenu'>
+          <span className='m-menu__arrow' />
+          <ul className='m-menu__subnav'>
+            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+              <a className='m-menu__link'>
+                <span className='m-menu__link-text'>
+                  Broadcasting
+                </span>
+              </a>
+            </li>
+            {this.showBroadcastsItem()}
+            {this.showSurveysItem()}
+            {this.showPollsItem()}
+            {this.showSegmentSubscribers()}
+            {this.showTemplates()}
+          </ul>
+        </div>
+      </li>
+    )
   }
 
   showLiveChatItem () {
     if (this.props.user && this.props.automated_options) {
-      console.log('in live chat ' + this.props.automated_options)
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat &&
           (this.props.automated_options.automated_options === 'MIX_CHAT' ||
            this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
@@ -259,14 +200,414 @@ class Sidebar extends Component {
     }
   }
 
+  showAutomationItems () {
+    return (
+      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+        <a className='m-menu__link m-menu__toggle'>
+          <i className='m-menu__link-icon flaticon-share' title='Automation' />
+          <span className='m-menu__link-text'>Automation</span>
+          <i className='m-menu__ver-arrow la la-angle-right' />
+        </a>
+        <div className='m-menu__submenu'>
+          <span className='m-menu__arrow' />
+          <ul className='m-menu__subnav'>
+            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+              <a className='m-menu__link'>
+                <span className='m-menu__link-text'>
+                  Automation
+                </span>
+              </a>
+            </li>
+            {this.showSmartRespliesItem()}
+            {this.showAutoPostingItem()}
+            {this.showSequenceMessaging()}
+          </ul>
+        </div>
+      </li>
+    )
+  }
+
+  showGrowthToolsItems () {
+    return (
+      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+        <a className='m-menu__link m-menu__toggle'>
+          <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
+          <span className='m-menu__link-text'>Growth Tools</span>
+          <i className='m-menu__ver-arrow la la-angle-right' />
+        </a>
+        <div className='m-menu__submenu'>
+          <span className='m-menu__arrow' />
+          <ul className='m-menu__subnav'>
+            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+              <a className='m-menu__link'>
+                <span className='m-menu__link-text'>
+                  Growth Tools
+                </span>
+              </a>
+            </li>
+            {this.showCommentCapture()}
+            {this.showInviteUsingPhoneNumber()}
+            {this.showInviteSubscribers()}
+          </ul>
+        </div>
+      </li>
+    )
+  }
+
+  showManagePagesItems () {
+    return (
+      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+        <a className='m-menu__link m-menu__toggle'>
+          <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
+          <span className='m-menu__link-text'>Manage Pages</span>
+          <i className='m-menu__ver-arrow la la-angle-right' />
+        </a>
+        <div className='m-menu__submenu'>
+          <span className='m-menu__arrow' />
+          <ul className='m-menu__subnav'>
+            <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+              <a className='m-menu__link'>
+                <span className='m-menu__link-text'>
+                  Manage Pages
+                </span>
+              </a>
+            </li>
+            {this.showPagesItem()}
+            {this.showPersistentMenuItem()}
+            {this.showWelcomeMessageItem()}
+            {this.showGreetingText()}
+          </ul>
+        </div>
+      </li>
+    )
+  }
+
+  showOrganizationItems () {
+    if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-share' title='Organization' />
+            <span className='m-menu__link-text'>Organization</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </a>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <a className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Organization
+                  </span>
+                </a>
+              </li>
+              {this.showInviteMembersItem()}
+              {this.showMembersItem()}
+              {this.showTeams()}
+            </ul>
+          </div>
+        </li>
+      )
+    }
+  }
+
+  showSettings () {
+    if (this.state.settings) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/settings' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
+            <span className='m-menu__link-text'>Settings</span>
+          </Link>
+        </li>
+      )
+    }
+  }
+
+  showUserGuide () {
+    if (this.state.settings) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-info' title='User Guide' />
+            <span className='m-menu__link-text'>User Guide</span>
+          </a>
+        </li>
+      )
+    }
+  }
+
+  showBroadcastsItem () {
+    if (this.props.user) {
+      if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/broadcasts' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Broadcasts
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showSurveysItem () {
+    if (this.props.user) {
+      if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/surveys' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Surveys
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showPollsItem () {
+    if (this.props.user) {
+      if (this.state.polls && this.props.user.permissions.pollsPermission && this.props.user.plan.polls) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/poll' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Polls
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showSegmentSubscribers () {
+    if (this.state.segmentSubscribers && this.props.user && this.props.user.plan.customer_matching) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/segmentedLists' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Segment Subscribers
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showTemplates () {
+    if (this.props.user && this.props.user.isSuperUser && this.state.templates) {
+      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/templates' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Templates
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showSmartRespliesItem () {
+    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+     this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/bots' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Smart Replies
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   showAutoPostingItem () {
     if (this.props.user) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/autoposting' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-time-3' title='Auto Posting' />
-              <span className='m-menu__link-text'>Auto Posting</span>
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/autoposting' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Autoposting
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showSequenceMessaging () {
+    if (this.props.user && this.state.sequenceMessaging) {
+      if (this.props.user.isSuperUser) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/sequenceMessaging' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Sequence Messaging
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showCommentCapture () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.commentCapture) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/commentCapture' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Comment Capture
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showInviteUsingPhoneNumber () {
+    if (this.props.user) {
+      if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Invite Using Phone Numbers
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showInviteSubscribers () {
+    if (this.props.user) {
+      if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/inviteSubscribers' className='m-menu__link'>
+              <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Invite Subscribers
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showHTMLWidget () {
+    return (
+      <li className='m-menu__item' aria-haspopup='true' >
+        <a href='' className='m-menu__link'>
+          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+            <span />
+          </i>
+          <span className='m-menu__link-text'>
+            HTML Widget
+          </span>
+        </a>
+      </li>
+    )
+  }
+
+  showKiboPushWidget () {
+    return (
+      <li className='m-menu__item' aria-haspopup='true' >
+        <a href='' className='m-menu__link'>
+          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+            <span />
+          </i>
+          <span className='m-menu__link-text'>
+            KiboPush Widget
+          </span>
+        </a>
+      </li>
+    )
+  }
+
+  showPagesItem () {
+    if (this.props.user) {
+      if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/pages' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Pages
+              </span>
             </Link>
           </li>
         )
@@ -277,13 +618,17 @@ class Sidebar extends Component {
   }
 
   showPersistentMenuItem () {
-    if (this.props.user && this.props.user.advancedMode) {
+    if (this.props.user) {
       if (this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/menu' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-menu-button' title='Persistent Menu' />
-              <span className='m-menu__link-text'>Persistent Menu</span>
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/menu' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Persistent Menu
+              </span>
             </Link>
           </li>
         )
@@ -293,61 +638,18 @@ class Sidebar extends Component {
     }
   }
 
-  showPagesItem () {
-    if (this.props.user) {
-      if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/pages' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
-              <span className='m-menu__link-text'>Manage Pages</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSubscribersItem () {
-    if (this.props.user) {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/subscribers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
-              <span className='m-menu__link-text'>Subscribers</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-  showCreatePhoneList () {
-    if (this.state.createPhoneList && this.props.user && this.props.user.advancedMode && this.props.user.plan.customer_matching) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/segmentedLists' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-list' title='Segment Subscribers' />
-            <span className='m-menu__link-text'>Segment Subscribers</span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
   showWelcomeMessageItem () {
     if (this.props.user) {
       if (this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/welcomeMessage' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-menu-button' title='Welcome Message' />
-              <span className='m-menu__link-text'>Welcome Message</span>
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/welcomeMessage' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Welcome Message
+              </span>
             </Link>
           </li>
         )
@@ -355,16 +657,35 @@ class Sidebar extends Component {
         return (null)
       }
     }
+  }
+
+  showGreetingText () {
+    return (
+      <li className='m-menu__item' aria-haspopup='true' >
+        <a href='' className='m-menu__link'>
+          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+            <span />
+          </i>
+          <span className='m-menu__link-text'>
+            Greeting Text
+          </span>
+        </a>
+      </li>
+    )
   }
 
   showInviteMembersItem () {
     if (this.props.user) {
       if (this.state.inviteMembers && (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission) && this.props.user.plan.invite_team) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/inviteMembers' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-user-add' title='Invite Memebers' />
-              <span className='m-menu__link-text'>Invite Members</span>
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/inviteMembers' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Invite Members
+              </span>
             </Link>
           </li>
         )
@@ -378,10 +699,14 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.members && this.props.user.permissions.membersPermission && this.props.user.plan.team_members_management) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/members' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-users' title='Members' />
-              <span className='m-menu__link-text'>Members</span>
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/members' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Members
+              </span>
             </Link>
           </li>
         )
@@ -392,13 +717,17 @@ class Sidebar extends Component {
   }
 
   showTeams () {
-    if (this.props.user && this.props.user.advancedMode) {
+    if (this.props.user) {
       if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/teams' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-map' title='Teams' />
-              <span className='m-menu__link-text'>Teams</span>
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/teams' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Teams
+              </span>
             </Link>
           </li>
         )
@@ -417,7 +746,7 @@ class Sidebar extends Component {
         <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>
-        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark ' style={{height: 100 + '%'}}>
+        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
           <div
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
@@ -452,32 +781,16 @@ class Sidebar extends Component {
                   </Link>
                 </li>
               }
-              {this.state.settings &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <Link to='/settings' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
-                    <span className='m-menu__link-text'>Settings</span>
-                  </Link>
-                </li>
-              }
-              {this.state.userGuide &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-info' title='User Guide' />
-                    <span className='m-menu__link-text'>User Guide</span>
-                  </a>
-                </li>
-              }
-              {this.state.waitingResponse &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <Link to='/waitingReplyList' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-cogwheel' title='Waiting Response' />
-                    <span className='m-menu__link-text'>Waiting Response</span>
-                  </Link>
-                </li>
-             }
-            </ul>
-          }
+              </div>
+            </div>
+            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
+              <div className='mCSB_draggerContainer'>
+                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px'}}>
+                  <div className='mCSB_dragger_bar' style={{lineHeight: '50px'}} />
+                </div>
+                <div className='mCSB_draggerRail' />
+              </div>
+            </div>
           </div>
 
         </div>
@@ -486,6 +799,7 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps (state) {
+  console.log('state in sidebar', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),

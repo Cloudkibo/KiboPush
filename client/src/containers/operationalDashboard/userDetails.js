@@ -80,9 +80,9 @@ class UserDetails extends React.Component {
     if (data.selected === 0) {
       this.props.loadPagesList(this.props.location.state._id, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: this.state.searchValue})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPagesList(this.props.location.state._id, {first_page: 'next', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: this.state.searchValue})
+      this.props.loadPagesList(this.props.location.state._id, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'next', last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, search_value: this.state.searchValue})
     } else {
-      this.props.loadPagesList(this.props.location.state._id, {first_page: 'previous', last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, search_value: this.state.searchValue})
+      this.props.loadPagesList(this.props.location.state._id, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'previous', last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, search_value: this.state.searchValue})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.pages)

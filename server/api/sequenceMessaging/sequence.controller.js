@@ -207,7 +207,15 @@ exports.setSchedule = function (req, res) {
                               err2
                             })
                           }
-
+                          logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(req.body.messageId)}`)
+                          SequenceMessages.update(
+                            {_id: req.body.messageId},
+                            {$inc: {sent: 1}},
+                            {multi: true}, (err, updated) => {
+                              if (err) {
+                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                              }
+                            })
                           BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                           SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                             if (err) {
@@ -302,6 +310,7 @@ exports.setStatus = function (req, res) {
 
                   if (message.payload.length > 0) {
                     AppendURLCount(message, (newPayload) => {
+                      logger.serverLog(TAG, `New Payload ${JSON.stringify(newPayload)}`)
                       let sequenceSubMessage = new SequenceSubscriberMessage({
                         subscriberId: messageFromQueue.subscriberId,
                         messageId: message._id,
@@ -318,7 +327,15 @@ exports.setStatus = function (req, res) {
                             err2
                           })
                         }
-
+                        logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(req.body.messageId)}`)
+                        SequenceMessages.update(
+                          {_id: req.body.messageId},
+                          {$inc: {sent: 1}},
+                          {multi: true}, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                         SequenceMessageQueue.deleteOne({'_id': messageFromQueue._id}, (err, result) => {
                           if (err) {
@@ -712,6 +729,7 @@ exports.subscribeToSequence = function (req, res) {
 
         messages.forEach(message => {
           if (message.schedule.condition === 'immediately') {
+            message.isActive = true
             if (message.isActive === true) {
               Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
                 if (err) {
@@ -743,6 +761,15 @@ exports.subscribeToSequence = function (req, res) {
                             err2
                           })
                         }
+                        logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                        SequenceMessages.update(
+                          {_id: message._id},
+                          {$inc: {sent: 1}},
+                          {multi: true}, (err, updated) => {
+                            if (err) {
+                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                            }
+                          })
                         BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
                       })
                     })
@@ -837,12 +864,21 @@ exports.unsubscribeToSequence = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-
         SequenceMessageQueue.remove({sequenceId: req.body.sequenceId, subscriberId: subscriberId}, (err, result) => {
           if (err) {
             return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-
+          Subscribers.findOne({ _id: subscriberId }, (err, subscriber) => {
+            if (err) {
+              logger.serverLog(TAG,
+                `Error occurred in finding subscriber ${JSON.stringify(
+                  err)}`)
+            }
+            if (subscriber) {
+              logger.serverLog(TAG, `Unsubscribes ${JSON.stringify(subscriber)}`)
+              setSequenceTrigger(subscriber.companyId, subscriber._id, {event: 'unsubscribes_from_other_sequence', value: req.body.sequenceId})
+            }
+          })
           if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
             require('./../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
@@ -959,6 +995,86 @@ exports.deleteMessage = function (req, res) {
   })
 }
 
+exports.updateTrigger = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'trigger')) parametersMissing = true
+  if (!_.has(req.body, 'type')) parametersMissing = true
+
+  // Checking the type to update the trigger
+  if (req.body.type === 'sequence') {
+    if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  } else if (req.body.type === 'message') {
+    if (!_.has(req.body, 'messageId')) parametersMissing = true
+  }
+
+  // If parameter missing return
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  // Logic to update trigger for sequence
+  if (req.body.type === 'sequence') {
+    Sequences.updateOne({_id: req.body.sequenceId}, {trigger: req.body.trigger}, (err, result) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to update record'
+        })
+      } else {
+        res.status(200).json({status: 'success', payload: result})
+      }
+    })
+  } else if (req.body.type === 'message') {   // Logic to update the trigger if the type is message
+    SequenceMessages.updateOne({_id: req.body.messageId}, {trigger: req.body.trigger}, (err, result) => {
+      if (err) {
+        res.status(500).json({
+          status: 'Failed',
+          description: 'Failed to update record'
+        })
+      } else {
+        res.status(200).json({status: 'success', payload: result})
+      }
+    })
+  }
+}
+
+exports.updateSegmentation = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, 'sequenceId')) parametersMissing = true
+  if (!_.has(req.body, 'segmentation')) parametersMissing = true
+
+  // check if all the indexes of segmentation have required properties
+  for (let i = 0, length = req.body.segmentation.length; i < length; i++) {
+    if (!(req.body.segmentation[i].condition)) parametersMissing = true
+    if (!(req.body.segmentation[i].criteria)) parametersMissing = true
+    if (!(req.body.segmentation[i].value)) parametersMissing = true
+  }
+
+  if (!_.has(req.body, 'messageId')) parametersMissing = true
+  if (!_.has(req.body, 'segmentationCondition')) parametersMissing = true
+
+  // If parameter missing return
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+
+  SequenceMessages.updateOne({_id: req.body.messageId}, {segmentation: req.body.segmentation, segmentationCondition: req.body.segmentationCondition},
+      (err, result) => {
+        if (err) {
+          res.status(500).json({
+            status: 'Failed',
+            description: 'Failed to update record'
+          })
+        } else {
+          res.status(200).json({status: 'success', payload: result})
+        }
+      })
+}
+
 exports.testScheduler = function (req, res) {
   let sequencePayload = {
     name: req.body.name
@@ -979,6 +1095,7 @@ exports.testScheduler = function (req, res) {
 }
 
 const AppendURLCount = function (sequenceMessage, callback) {
+  logger.serverLog(TAG, `Append URL count${JSON.stringify(sequenceMessage)}`)
   if (sequenceMessage.payload.length > 0) {
     let newPayload = sequenceMessage.payload
     sequenceMessage.payload.forEach((payloadItem, pindex) => {
@@ -988,7 +1105,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
             let URLObject = new URL({
               originalURL: button.url,
               module: {
-                id: sequenceMessage.sequenceId,
+                id: sequenceMessage._id,
                 type: 'sequence'
               }
             })
@@ -1005,7 +1122,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
           let URLObject = new URL({
             originalURL: button.url,
             module: {
-              id: sequenceMessage.sequenceId,
+              id: sequenceMessage._id,
               type: 'sequence'
             }
           })
@@ -1022,7 +1139,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
             let URLObject = new URL({
               originalURL: button.url,
               module: {
-                id: sequenceMessage.sequenceId,
+                id: sequenceMessage._id,
                 type: 'sequence'
               }
             })
@@ -1041,7 +1158,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
               let URLObject = new URL({
                 originalURL: button.url,
                 module: {
-                  id: sequenceMessage.sequenceId,
+                  id: sequenceMessage._id,
                   type: 'sequence'
                 }
               })
@@ -1056,7 +1173,7 @@ const AppendURLCount = function (sequenceMessage, callback) {
             let URLObject = new URL({
               originalURL: element.default_action.url,
               module: {
-                id: sequenceMessage.sequenceId,
+                id: sequenceMessage._id,
                 type: 'sequence'
               }
             })
@@ -1084,3 +1201,113 @@ const sendSequence = (batchMessages, page) => {
   form.append('access_token', page.accessToken)
   form.append('batch', batchMessages)
 }
+
+const setSequenceTrigger = function (companyId, subscriberId, trigger) {
+  Sequences.find({companyId: companyId},
+  (err, sequences) => {
+    if (err) {
+      return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
+    }
+    if (sequences) {
+      sequences.forEach(sequence => {
+        if (sequence.trigger && sequence.trigger.event) {
+          if ((sequence.trigger.event === trigger.event && !trigger.value) || (sequence.trigger.event === trigger.event && sequence.trigger.value === trigger.value)) {
+            SequenceMessages.find({sequenceId: sequence._id}, (err, messages) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
+              }
+              if (messages) {
+                messages.forEach(message => {
+                  if (message.schedule.condition === 'immediately') {
+                    if (message.isActive === true) {
+                      Subscribers.findOne({'_id': subscriberId}, (err, subscriber) => {
+                        if (err) {
+                          return logger.serverLog(TAG, `ERROR getting subscribers ${JSON.stringify(err)}`)
+                        }
+
+                        Pages.findOne({'_id': subscriber.pageId}, (err, page) => {
+                          if (err) {
+                            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                          }
+
+                          if (message.payload.length > 0) {
+                            AppendURLCount(message, (newPayload) => {
+                              let sequenceSubMessage = new SequenceSubscriberMessage({
+                                subscriberId: subscriberId,
+                                messageId: message._id,
+                                companyId: subscriber.companyId,
+                                datetime: new Date(),
+                                seen: false
+                              })
+                              sequenceSubMessage.save((err2, result) => {
+                                if (err2) {
+                                  return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                }
+                                logger.serverLog(TAG, `UPDATE SENT COUNT ${JSON.stringify(message._id)}`)
+                                SequenceMessages.update(
+                                  {_id: message._id},
+                                  {$inc: {sent: 1}},
+                                  {multi: true}, (err, updated) => {
+                                    if (err) {
+                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                    }
+                                  })
+                                BroadcastUtility.getBatchData(newPayload, subscriber.senderId, page, sendSequence, subscriber.firstName, subscriber.lastName)
+                              })
+                            })
+                          }
+                        })
+                      })
+                    }
+                  } else {
+                    let d1 = new Date()
+                    if (message.schedule.condition === 'hours') {
+                      d1.setHours(d1.getHours() + Number(message.schedule.days))
+                    } else if (message.schedule.condition === 'minutes') {
+                      d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+                    } else if (message.schedule.condition === 'day(s)') {
+                      d1.setDate(d1.getDate() + Number(message.schedule.days))
+                    }
+                    let utcDate = new Date(d1)
+                    let sequenceQueuePayload = {
+                      sequenceId: sequence._id,
+                      subscriberId: subscriberId,
+                      companyId: companyId,
+                      sequenceMessageId: message._id,
+                      queueScheduledTime: utcDate,
+                      isActive: message.isActive
+                    }
+                    const sequenceMessageForQueue = new SequenceMessageQueue(sequenceQueuePayload)
+                    sequenceMessageForQueue.save((err, messageQueueCreated) => {
+                      if (err) {
+                        return logger.serverLog(TAG, `ERROR saving message in queue${JSON.stringify(err)}`)
+                      }
+                    })
+                  }
+                })
+              }
+            })
+
+            let sequenceSubscriberPayload = {
+              sequenceId: sequence._id,
+              subscriberId: subscriberId,
+              companyId: companyId,
+              status: 'subscribed'
+            }
+            const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+            sequenceSubcriber.save((err, subscriberCreated) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
+              } else {
+                // insert socket.io code here
+                logger.serverLog(TAG, `Subscribed to sequence successfully`)
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+}
+exports.setSequenceTrigger = setSequenceTrigger

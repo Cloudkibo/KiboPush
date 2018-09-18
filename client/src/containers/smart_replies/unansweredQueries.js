@@ -152,7 +152,7 @@ class UnansweredQueries extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{ width: '100px', overflow: 'inherit' }}>
-                                    {question.Confidence ? Math.round(question.Confidence * 100) + '%' : 'Confidence score is missing'}
+                                    {question.Confidence ? Math.round(question.Confidence * 100) + '%' : 'No Answer Found'}
                                   </span>
                                 </td>
                                 <td data-field='source'

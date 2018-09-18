@@ -12,6 +12,7 @@ import {
 } from '../../redux/actions/invitations.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
+import AlertContainer from 'react-alert'
 
 class Invitations extends React.Component {
   constructor (props, context) {
@@ -61,13 +62,21 @@ class Invitations extends React.Component {
   }
 
   cancelInvitation (invitation) {
-    this.props.cancelinvitation(invitation)
+    this.props.cancelinvitation(invitation, this.msg)
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
@@ -97,7 +106,7 @@ class Invitations extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__head-tools'>
-                  <Link to='newInvitation'>
+                  <Link to={{pathname: '/newInvitation', state: { prevPath: this.props.location.pathname }}}>
                     <button
                       className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>

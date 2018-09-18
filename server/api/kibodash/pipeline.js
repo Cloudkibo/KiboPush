@@ -9,6 +9,20 @@ exports.joinPageWithSubscribers = {
     as: 'pageSubscribers'
   }
 }
+
+exports.filterPageSubscribers = {
+  $project: {
+    _id: true,
+    pageName: true,
+    pageId: true,
+    pageSubscribers: {
+      $filter: {
+        input: '$pageSubscribers',
+        as: 'pageSubscriber'
+      }
+    }
+  }
+}
 exports.selectPageFields = {
   $project: {
     _id: true,
@@ -28,36 +42,6 @@ exports.selectPageFields = {
     }
   }
 }
-
-exports.broadcastPageCount = {
-  $project: {
-    pageCount: { $size: { '$ifNull': ['$segmentationPageIds', []] } }
-  }
-}
-
-exports.filterZeroPageCount = {
-  $match: {
-    pageCount: 0
-  }
-}
-
-exports.selectPageIdAndPageCount = {
-  $project: {
-    segmentationPageIds: true,
-    pageCount: { $size: { '$ifNull': ['$segmentationPageIds', []] } }
-  }
-}
-
-exports.getPageCountGreaterThanZero = {
-  $match: {
-    pageCount: {
-      $gt: 0
-    }
-  }
-}
-exports.expandPageIdArray = { $unwind: '$segmentationPageIds' }
-
-exports.countByPageId = { $group: { _id: '$segmentationPageIds', count: { $sum: 1 } } }
 
 exports.companyWisePageCount = {
   $group: {
@@ -126,3 +110,55 @@ exports.groupCompanyWiseAggregates = {
     totalCount: { $sum: 1 }
   }
 }
+
+exports.pageWiseAggregate = {
+  $group: {
+    _id: '$pageId',
+    totalCount: { $sum: 1 }
+  }
+}
+
+exports.joinAutpostingMessages = {
+  $lookup:
+  {
+    from: 'autoposting_messages',
+    localField: '_id',
+    foreignField: 'autopostingId',
+    as: 'posts'
+  }
+}
+
+exports.dateFilterAutoposting = function (ISODateString) {
+  return {
+    $project: {
+      userId: true,
+      companyId: true,
+      subscriptionType: true,
+      subscriptionUrl: true,
+      posts: {
+        $filter: {
+          input: '$posts',
+          as: 'posts',
+          cond: { $gte: [ '$$posts.datetime', new Date(ISODateString) ] }
+        }
+      },
+      totalAutopostingSent: { $size: '$posts' }
+    }
+  }
+}
+
+exports.selectAutoPostingFields = {
+  $project: {
+    userId: true,
+    companyId: true,
+    subscriptionType: true,
+    subscriptionUrl: true,
+    totalAutopostingSent: { $size: '$posts' }
+  }
+}
+
+exports.selectTwitterType = { $match: { subscriptionType: 'twitter' } }
+
+exports.selectFacebookType = { $match: { subscriptionType: 'facebook' } }
+
+exports.selectWordpressType = { $match: { subscriptionType: 'wordpress' } }

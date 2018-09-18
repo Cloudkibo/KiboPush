@@ -14,7 +14,7 @@ import {
 import Select from 'react-select'
 import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
-
+import AlertMessage from '../../components/alertMessages/alertMessage'
 class CustomerMatching extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -460,6 +460,7 @@ class CustomerMatching extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
+    this.selectPage()
   }
 
   render () {
@@ -597,11 +598,8 @@ class CustomerMatching extends React.Component {
             {
                 this.props.pages &&
                 this.props.pages.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Pages Connected</h4>
-                  You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
-                </div>
-          }
+                <AlertMessage type='page' />
+            }
 
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>

@@ -17,7 +17,6 @@ let router = express.Router()
 router.post('/', function (req, res, next) {
   if (req.body.domain) {
     User.findOne({
-      domain: req.body.domain.toLowerCase(),
       email: req.body.email.toLowerCase()
     }, (err, user) => {
       if (err) {
@@ -28,7 +27,22 @@ router.post('/', function (req, res, next) {
         return res.status(401)
         .json({
           status: 'failed',
+          description: 'No account found with this email address.'
+        })
+      }
+      user = user.toObject()
+      if (user.domain !== req.body.domain.toLowerCase()) {
+        return res.status(401)
+        .json({
+          status: 'failed',
           description: 'This workspace name is not registered with us or your account does not belong to this domain'
+        })
+      }
+      if (user.domain === req.body.domain.toLowerCase() && user.email !== req.body.email.toLowerCase()) {
+        return res.status(401)
+        .json({
+          status: 'failed',
+          description: 'No account found with this email address.'
         })
       }
       logger.serverLog(TAG, `User in login: ${JSON.stringify(user)}`)
@@ -77,27 +91,27 @@ router.post('/', function (req, res, next) {
           })
           .fail(e => {
             logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-            User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+            // User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
+            //   if (err) {
+            //     logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+            //   }
+            passport.authenticate('local', function (err, user, info) {
+              let error = err || info
+              if (error) return res.status(401).json(error)
+              if (!user) {
+                return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
               }
-              passport.authenticate('local', function (err, user, info) {
-                let error = err || info
-                if (error) return res.status(401).json(error)
-                if (!user) {
-                  return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
-                }
 
-                let token = auth.signToken(user._id)
-                res.json({token: token})
-                if (user.facebookInfo) {
-                  auth.fetchPages(`https://graph.facebook.com/v2.10/${
+              let token = auth.signToken(user._id)
+              res.json({token: token})
+              if (user.facebookInfo) {
+                auth.fetchPages(`https://graph.facebook.com/v2.10/${
                     user.facebookInfo.fbId}/accounts?access_token=${
                     user.facebookInfo.fbToken}`, user)
-                }
-              })(req, res, next)
-            })
+              }
+            })(req, res, next)
           })
+          // })
           } else {
             passport.authenticate('local', function (err, user, info) {
               let error = err || info
@@ -175,27 +189,27 @@ router.post('/', function (req, res, next) {
             })
             .fail(e => {
               logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-              User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+              // User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
+              //   if (err) {
+              //     logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+              //   }
+              passport.authenticate('local', function (err, user, info) {
+                let error = err || info
+                if (error) return res.status(401).json(error)
+                if (!user) {
+                  return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
                 }
-                passport.authenticate('local', function (err, user, info) {
-                  let error = err || info
-                  if (error) return res.status(401).json(error)
-                  if (!user) {
-                    return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
-                  }
 
-                  let token = auth.signToken(user._id)
-                  res.json({token: token})
-                  if (user.facebookInfo) {
-                    auth.fetchPages(`https://graph.facebook.com/v2.10/${
+                let token = auth.signToken(user._id)
+                res.json({token: token})
+                if (user.facebookInfo) {
+                  auth.fetchPages(`https://graph.facebook.com/v2.10/${
                       user.facebookInfo.fbId}/accounts?access_token=${
                       user.facebookInfo.fbToken}`, user)
-                  }
-                })(req, res, next)
-              })
+                }
+              })(req, res, next)
             })
+            // })
           } else {
             passport.authenticate('local', function (err, user, info) {
               let error = err || info

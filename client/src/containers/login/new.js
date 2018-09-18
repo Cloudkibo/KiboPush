@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { logIn } from '../../redux/actions/login.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -66,12 +66,20 @@ class Login extends React.Component {
     }
     if (nextprops.successMessage) {
       this.setState({success: true, error: false})
-      this.props.history.push({
-        pathname: '/dashboard'
-
+      browserHistory.push({
+        pathname: '/dashboard',
+        state: {loadScript: true}
       })
     }
   }
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -96,7 +104,7 @@ class Login extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#'>
-                      <img src='img/logo.png' style={{maxWidth: 250}} />
+                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signin'>
@@ -167,10 +175,10 @@ class Login extends React.Component {
                   <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
                 </div>
                 <br />
-                <div className='m-login__account'>
+                {/* <div className='m-login__account'>
                   <span className='m-login__account-msg'>Don't have an account yet ?</span>&nbsp;&nbsp;
                   <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
-                </div>
+                </div> */}
                 <br />
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
@@ -179,9 +187,9 @@ class Login extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
             <div className='m-grid__item m-grid__item--middle'>
-              <Link to='/signup' className='m-login__welcome'>Join KiboPush</Link>
+              <Link to='' className='m-login__welcome'>Join KiboPush</Link>
               <p className='m-login__msg'>Get connected with your facebook audience through push messages.
               Push surveys, polls, instant broadcasts to your Facebook subscribers.</p>
             </div>

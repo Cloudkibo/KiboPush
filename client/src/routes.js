@@ -109,6 +109,7 @@ import FacebookPost from './containers/commentCapture/newFacebookPost'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import UnansweredQueries from './containers/smart_replies/unansweredQueries'
 import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
+import ConnectFBPages from './containers/signup/connectFbPages'
 
 import auth from './utility/auth.service'
 
@@ -123,13 +124,13 @@ function requireAuth (nextState, replace) {
 
 function redirectAuthUsers (nextState, replace) {
   if (auth.loggedIn()) {
-    // if (auth.getNext() === 'addPages') {
-    //   auth.removeNext()
-    //   return replace({
-    //     pathname: '/addPages',
-    //     state: { nextPathname: nextState.location.pathname }
-    //   })
-    // }
+    if (auth.getNext() === 'addPages') {
+      auth.removeNext()
+      return replace({
+        pathname: '/addfbpages',
+        state: { nextPathname: nextState.location.pathname }
+      })
+    }
     replace({
       pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
@@ -142,11 +143,12 @@ const routes = (
     <IndexRoute component={LoginSignup} onEnter={redirectAuthUsers} />
     <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
+    <Route path='/addfbpages' component={ConnectFBPages} onEnter={requireAuth} />
+    <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
-    <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Convo} onEnter={requireAuth} />
     <Route path='/autoposting' component={Autoposting} onEnter={requireAuth} />

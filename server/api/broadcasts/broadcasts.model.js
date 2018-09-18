@@ -16,6 +16,7 @@ let broadcastSchema = new Schema({
   fileurl: String,
   attachmentType: String,
   isSegmented: { type: Boolean, default: false },
+  fbMessageTag: String,
   segmentationPageIds: [String],
   segmentationLocale: [String],
   segmentationGender: [String],

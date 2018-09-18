@@ -96,6 +96,7 @@ exports.allpages = function (req, res) {
                 pagesPayload.push({
                   _id: pages[i]._id,
                   pageId: pages[i].pageId,
+                  gotPageSubscriptionPermission: pages[i].gotPageSubscriptionPermission,
                   pageName: pages[i].pageName,
                   userId: pages[i].userId,
                   pagePic: pages[i].pagePic,
@@ -223,7 +224,8 @@ exports.getAllpages = function (req, res) {
                       welcomeMessage: pages[i].welcomeMessage,
                       subscribers: 0,
                       unsubscribes: 0,
-                      greetingText: pages[i].greetingText
+                      greetingText: pages[i].greetingText,
+                      gotPageSubscriptionPermission: pages[i].gotPageSubscriptionPermission
                     })
                   }
                   for (let i = 0; i < pagesPayload.length; i++) {
@@ -348,7 +350,7 @@ exports.getAllpages = function (req, res) {
         }
       } else if (req.body.first_page === 'next') {
         let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-        
+
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -536,7 +538,7 @@ exports.getAllpages = function (req, res) {
         }
       } else if (req.body.first_page === 'previous') {
         let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-        
+
         if (!req.body.filter) {
           Pages.aggregate([
             { $match: {connected: true, companyId: companyUser.companyId} },
@@ -751,12 +753,37 @@ exports.enable = function (req, res) {
         }
         if (currentUser.facebookInfo) {
           needle.get(
-            `https://graph.facebook.com/v2.10/${req.body.pageId}?fields=is_published&access_token=${currentUser.facebookInfo.fbToken}`,
+            `https://graph.facebook.com/v2.10/${req.body.pageId}?fields=is_published,access_token&access_token=${currentUser.facebookInfo.fbToken}`,
             (err, resp) => {
               if (err) {
                 logger.serverLog(TAG,
                   `Page access token from graph api error ${JSON.stringify(
                     err)}`)
+              }
+              if (resp.body && resp.body.access_token) {
+                needle.get(
+                `https://graph.facebook.com/v2.11/me/messaging_feature_review?access_token=${resp.body.access_token}`,
+                (err, respp) => {
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Page access token from graph api error ${JSON.stringify(
+                        err)}`)
+                  }
+                  if (respp.body && respp.body.data && respp.body.data.length > 0) {
+                    for (let a = 0; a < respp.body.data.length; a++) {
+                      if (respp.body.data[a].feature === 'subscription_messaging' && respp.body.data[a].status === 'approved') {
+                        Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
+                          if (err) {
+                            res.status(500).json({
+                              status: 'Failed',
+                              description: 'Failed to update record'
+                            })
+                          }
+                        })
+                      }
+                    }
+                  }
+                })
               }
               if (resp.body.is_published === false) {
                 return res.status(404).json({
@@ -818,7 +845,6 @@ exports.enable = function (req, res) {
                                       })
                                     }
                                     Pages.find({
-                                      userId: req.user._id,
                                       companyId: companyUser.companyId
                                     }, (err2, pages) => {
                                       if (err2) {
@@ -828,6 +854,8 @@ exports.enable = function (req, res) {
                                             err)}`
                                         })
                                       }
+                                      pages = removeDuplicates(pages, 'pageId')
+
                                       Pages.find({
                                         companyId: companyUser.companyId,
                                         connected: true
@@ -908,7 +936,7 @@ exports.enable = function (req, res) {
                         } else {
                           // page is already connected by someone else
                           Pages.find(
-                            {userId: req.user._id, companyId: companyUser.companyId},
+                            {companyId: companyUser.companyId},
                             (err2, pages) => {
                               if (err2) {
                                 return res.status(500).json({
@@ -917,6 +945,7 @@ exports.enable = function (req, res) {
                                     err)}`
                                 })
                               }
+                              pages = removeDuplicates(pages, 'pageId')
                               Users.findOne({_id: pagesbyOther[0].userId},
                               (err, userInfo) => {
                                 if (err) {
@@ -993,7 +1022,7 @@ exports.disable = function (req, res) {
                   }
                 })
                 Pages.find(
-                  {userId: req.user._id, companyId: companyUser.companyId},
+                  {companyId: companyUser.companyId},
                   (err2, pages) => {
                     if (err2) {
                       return res.status(500).json({
@@ -1002,6 +1031,7 @@ exports.disable = function (req, res) {
                           err)}`
                       })
                     }
+                    pages = removeDuplicates(pages, 'pageId')
                     const options = {
                       url: `https://graph.facebook.com/v2.6/${req.body.pageId}/subscribed_apps?access_token=${req.body.accessToken}`,
                       qs: {access_token: req.body.accessToken},
@@ -1094,6 +1124,12 @@ exports.disable = function (req, res) {
           }
         })
     })
+}
+
+function removeDuplicates (myArr, prop) {
+  return myArr.filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos
+  })
 }
 
 exports.otherPages = function (req, res) {

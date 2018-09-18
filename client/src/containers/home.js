@@ -8,7 +8,7 @@ import Dashboard from './dashboard/dashboard'
 class Home extends Component {
   render () {
     return (
-      <Dashboard />
+      <Dashboard location={this.props.location} />
     )
   }
 }
