@@ -1,6 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+import { removeButtonOldurl } from './actions.utility'
 export const API_URL = '/api'
 
 export function deleteFiles (data) {
@@ -200,7 +201,42 @@ export function uploadRequest (data) {
   }
 }
 
-export function sendBroadcast (data, msg, handleSendBroadcast) {
+export function addButton (data, handleFunction) {
+  console.log('the data is', data)
+  return (dispatch) => {
+    callApi(`broadcasts/addButton`, 'post', data).then(res => {
+      if (res.status === 'success') {
+        console.log('Response: ', res.payload)
+        handleFunction(res.payload)
+      } else {
+        console.log(res.description)
+      }
+    })
+  }
+}
+
+export function editButton (data, handleFunction) {
+  return (dispatch) => {
+    callApi(`broadcasts/editButton`, 'post', data).then(res => {
+      if (res.status === 'success') {
+        handleFunction(res.payload)
+      } else {
+        console.log(res.description)
+      }
+    })
+  }
+}
+
+export function deleteButton (id) {
+  return (dispatch) => {
+    callApi(`broadcasts/deleteButton/${id}`, 'delete').then(res => {
+      console.log(res.description)
+    })
+  }
+}
+
+export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
+  let data = removeButtonOldurl(broadcastData)
   return (dispatch) => {
     callApi('broadcasts/sendConversation', 'post', data)
       .then(res => {
@@ -211,7 +247,7 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
             // dispatch(sendBroadcastSuccess())
           } else {
             if (res.description) {
-              msg.error(`Failed to send conversation. ${res.description}`)
+              msg.error(`${res.description}`)
             } else {
               msg.error('Failed to send conversation')
             }
@@ -224,8 +260,9 @@ export function sendBroadcast (data, msg, handleSendBroadcast) {
             dispatch(sendBroadcastFailure())
           }
         }
-        handleSendBroadcast(res)
-        //  dispatch(loadBroadcastsList())
+        if (handleSendBroadcast) {
+          handleSendBroadcast(res)
+        }
       })
   }
 }

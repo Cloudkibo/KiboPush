@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
+import { allLocales } from '../../redux/actions/subscribers.actions'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -17,12 +18,7 @@ class Targeting extends React.Component {
         ]
       },
       Locale: {
-        options: [{id: 'en_US', text: 'en_US'},
-          {id: 'af_ZA', text: 'af_ZA'},
-          {id: 'ar_AR', text: 'ar_AR'},
-          {id: 'az_AZ', text: 'az_AZ'},
-          {id: 'pa_IN', text: 'pa_IN'}
-        ]
+        options: []
       },
       page: {
         options: []
@@ -41,7 +37,8 @@ class Targeting extends React.Component {
       showDropDownSurvey: false,
       showDropDownPoll: false,
       pollValue: [],
-      surveyValue: []
+      surveyValue: [],
+      showSubscriptionMsg: false
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
@@ -53,8 +50,10 @@ class Targeting extends React.Component {
     this.resetTargeting = this.resetTargeting.bind(this)
     this.showDropDownSurvey = this.showDropDownSurvey.bind(this)
     this.showDropDownPoll = this.showDropDownPoll.bind(this)
+    this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
     props.loadTags()
     props.loadCustomerLists()
+    props.allLocales()
   }
 
   componentDidMount () {
@@ -62,8 +61,12 @@ class Targeting extends React.Component {
   //  this.props.onRef(this)
 
     if (this.props.pages) {
+      console.log('this.props.pages[0].gotPageSubscriptionPermission', this.props.pages[0])
       for (var i = 0; i < this.props.pages.length; i++) {
         options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+      }
+      if (!this.props.pages[0].gotPageSubscriptionPermission) {
+        this.setState({showSubscriptionMsg: true})
       }
     }
     let pollOptions = []
@@ -78,11 +81,12 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
+    this.setState({pageValue: [options[0].id]})
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
-    this.initializeLocaleSelect(this.state.Locale.options)
+    //  this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     this.initializePollSelect(pollOptions)
     this.initializeSurveySelect(surveyOptions)
@@ -96,6 +100,20 @@ class Targeting extends React.Component {
       $('.surveyFilter').addClass('hideSegmentation')
     }
     /* eslint-enable */
+  }
+  showSubscriptionMsg (pageSelected) {
+    for (let i = 0; i < this.props.pages.length; i++) {
+      console.log('pageSelected', pageSelected)
+      console.log('pages', this.props.pages[i])
+      for (let j = 0; j < pageSelected.length; j++) {
+        if (pageSelected[j] === this.props.pages[i].pageId && !this.props.pages[i].gotPageSubscriptionPermission) {
+          console.log('inside if')
+          this.setState({showSubscriptionMsg: true})
+          return
+        }
+      }
+    }
+    this.setState({showSubscriptionMsg: false})
   }
   showDropDownSurvey () {
     this.setState({
@@ -249,9 +267,9 @@ class Targeting extends React.Component {
     $('#selectPage').select2({
       /* eslint-enable */
       data: pageOptions,
-      placeholder: this.props.component === 'broadcast' ? 'Select Pages - Default: All Pages' : 'Default: All Pages',
+      placeholder: this.props.component === 'broadcast' ? 'Select page' : 'Default: All Pages',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
     // this.setState({pageValue: pageOptions[0].id})
@@ -280,6 +298,7 @@ class Targeting extends React.Component {
           surveyValue: self.state.surveyValue
         })
       }
+      self.showSubscriptionMsg(selected)
     })
   }
 
@@ -446,32 +465,46 @@ class Targeting extends React.Component {
     if (this.props.tags) {
       this.initializeTagSelect(this.props.tags)
     }
+    if (nextProps.locales && nextProps.locales.length) {
+      let options = []
+      for (var a = 0; a < nextProps.locales.length; a++) {
+        options.push({id: nextProps.locales[a], text: nextProps.locales[a]})
+      }
+      this.setState({Locale: {options: options}})
+      this.initializeLocaleSelect(options)
+    }
   }
 
   render () {
     return (
       <div className='row'>
-        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
-          <i className='flaticon-exclamation m--font-brand' />
-          { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
-            If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
-            <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
-          </span>
-          }
-          { this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
-            If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
-          </span>
-          }
-          { this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
-            If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
-          </span>
-          }
-        </div>
         <div className='col-12' style={{paddingLeft: '20px'}}>
           <label>Select Page:</label>
           <div className='form-group m-form__group'>
             <select id='selectPage' style={{width: 200 + '%'}} />
           </div>
+          {this.state.showSubscriptionMsg &&
+          <div style={{paddingBottom: '10px'}}>
+            <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;
+            { /*  this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
+              If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
+              <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
+            </span>
+            */}
+            { /*  this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+              If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
+            </span>
+            */}
+            { /*  this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+              If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
+            </span>
+            */}
+            <span style={{fontSize: '0.9rem'}}>
+              This {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} will be sent to only those subscribers who you have chatted with in the last 24 hours. In order to send this {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} to all your subcribers, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
+            </span>
+          </div>
+          }
           <label>Select Segmentation:</label>
           <div className='radio-buttons' style={{marginLeft: '37px'}}>
             <div className='radio'>
@@ -645,7 +678,8 @@ function mapStateToProps (state) {
     customerLists: (state.listsInfo.customerLists),
     tags: (state.tagsInfo.tags),
     polls: (state.pollsInfo.polls),
-    surveys: (state.surveysInfo.surveys)
+    surveys: (state.surveysInfo.surveys),
+    locales: (state.subscribersInfo.locales)
   }
 }
 
@@ -653,7 +687,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getAllPollResults: getAllPollResults,
     loadCustomerLists: loadCustomerLists,
-    loadTags: loadTags
+    loadTags: loadTags,
+    allLocales: allLocales
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Targeting)

@@ -7,11 +7,11 @@ class ListItem extends React.Component {
     if (this.props.type === 'facebook') {
       icon = 'fa fa-facebook'
       color = '#365899'
-      image = '/assets/app/media/img//logos/fb-art.png'
+      image = 'https://cdn.cloudkibo.com/public/assets/app/media/img//logos/fb-art.png'
     } else if (this.props.type === 'youtube') {
       icon = 'fa fa-youtube'
       color = '#cc181e'
-      image = '/assets/app/media/img//logos/youtube.png'
+      image = 'https://cdn.cloudkibo.com/public/assets/app/media/img//logos/youtube.png'
     } else if (this.props.type === 'twitter') {
       icon = 'fa fa-twitter'
       color = '#00aced'
@@ -19,7 +19,7 @@ class ListItem extends React.Component {
     } else if (this.props.type === 'wordpress') {
       icon = 'fa fa-wordpress'
       color = '#365899'
-      image = '/assets/app/media/img//logos/wordpress.png'
+      image = 'https://cdn.cloudkibo.com/public/assets/app/media/img//logos/wordpress.png'
     }
     const item = {
       title: this.props.title,
@@ -44,9 +44,9 @@ class ListItem extends React.Component {
               <span className='m-widget5__info-label'>
                 Subscription URL:&nbsp;
               </span>
-              <span className='m-widget5__info-date m--font-info'>
+              <a href={this.props.item.subscriptionUrl} target='_blank' className='m-widget5__info-date m--font-info'>
                 {this.props.item.subscriptionUrl}
-              </span>
+              </a>
               <br />
               <span className='m-widget5__info-date m--font-info'>
                 <Link onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>

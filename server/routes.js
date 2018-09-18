@@ -59,7 +59,11 @@ module.exports = function (app) {
   app.use('/api/webhooks', require('./api/webhooks'))
   app.use('/api/planPermissions', require('./api/permissions_plan'))
   app.use('/api/plans', require('./api/plans'))
-
+  app.use('/api/kibodash', require('./api/kibodash'))
+  app.use('/api/abandonedCarts', require('./api/abandoned_carts'))
+  app.use('/api/shopify', require('./api/shopify'))
+  app.use('/api/cronScheduler', require('./api/cron_scheduler'))
+  app.use('/api/operational', require('./api/operational_dashboard'))
   app.use('/auth', require('./auth'))
 
   app.get('/', (req, res) => {

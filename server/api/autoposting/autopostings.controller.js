@@ -4,7 +4,6 @@
 
 const logger = require('../../components/logger')
 const AutoPosting = require('./autopostings.model')
-const AutoPostingMessages = require('../autoposting_messages/autoposting_messages.model')
 const TAG = 'api/autoposting/migrations.controller.js'
 const TwitterUtility = require('../../config/integrations/twitter')
 const CompanyUsers = require('./../companyuser/companyuser.model')
@@ -76,7 +75,7 @@ exports.create = function (req, res) {
             description: 'Internal Server Error'
           })
         }
-        if (gotCount > 0 && !companyUser.enableMoreAutoPostingIntegration) {
+        if (gotCount >= 2) {
           res.status(403).json({
             status: 'Failed',
             description: 'Cannot add more integrations. Please contact support or remove existing ones'

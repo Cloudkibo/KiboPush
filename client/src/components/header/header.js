@@ -20,7 +20,8 @@ class Header extends React.Component {
       ignore: true,
       planInfo: '',
       seenNotifications: [],
-      unseenNotifications: []
+      unseenNotifications: [],
+      mode: 'All'
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -28,8 +29,11 @@ class Header extends React.Component {
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.timeSince = this.timeSince.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
+    this.changeMode = this.changeMode.bind(this)
   }
-
+  changeMode (mode) {
+    this.props.updateMode({mode: mode}, this.props.user)
+  }
   changeStatus (e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
   }
@@ -54,11 +58,13 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
+    console.log('nextProps in header', nextProps)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ignore: false})
     }
     if (nextProps.user) {
+      let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
+      this.setState({mode: mode})
       // FS.identify(nextProps.user.email, {
       //   displayName: nextProps.user.name,
       //   email: nextProps.user.email,
@@ -153,7 +159,7 @@ class Header extends React.Component {
 
   render () {
     return (
-      <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
+      <header id='headerDiv' className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
 
         <div className='fb-customerchat'
           data-page_id='151990922046256'
@@ -195,6 +201,7 @@ class Header extends React.Component {
                   <a id='m_aside_header_menu_mobile_toggle' href='javascript:;' className='m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block'>
                     <span />
                   </a>
+
                   <a id='m_aside_header_topbar_mobile_toggle' href='javascript:;' className='m-brand__icon m--visible-tablet-and-mobile-inline-block'>
                     <i className='flaticon-more' />
                   </a>
@@ -205,22 +212,134 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
+              <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark'>
+                <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
+                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-redirect='true' aria-haspopup='true'>
+                    <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                      <i className='m-menu__link-icon flaticon-info' />
+                      <span className='m-menu__link-text'>
+                        Documentation
+                      </span>
+                    </a>
+                  </li>
+                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
+                    <a href='' className='m-menu__link m-menu__toggle'>
+                      <i className='m-menu__link-icon flaticon-interface-4' />
+                      <span className='m-menu__link-text'>
+                        Change UI Mode
+                      </span>
+                      <i className='m-menu__hor-arrow la la-angle-down' />
+                      <i className='m-menu__ver-arrow la la-angle-right' />
+                    </a>
+                    <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
+                      <span className='m-menu__arrow m-menu__arrow--adjust' />
+                      <ul className='m-menu__subnav'>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kiboengage') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'Customer Engagement'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              Customer Engagement
+                            </span>
+                          </a>
+                        </li>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibochat') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'Customer Chat'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              Customer Chat
+                            </span>
+                          </a>
+                        </li>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibocommerce') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'E-Commerce'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              E-Commerce
+                            </span>
+                          </a>
+                        </li>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('all') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'All'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              All
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   {this.props.user &&
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
-                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{marginRight: '-15px'}}>
-                      <label style={{fontWeight: 'inherit', marginTop: '25px'}}>Advanced Mode:
+                    {/* <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{marginRight: '-15px'}}>
+                      <label style={{fontWeight: 'inherit'}}>UI Mode:
                       </label>
-                    </li>
-                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                      <span className='m-switch m-switch--outline m-switch--icon m-switch--success' style={{marginTop: '17px'}}>
-                        <label>
-                          <input ref={this.props.user._id} type='checkbox' name='' defaultChecked={this.props.user.advancedMode} onChange={(e) => this.changeStatus(e, this.props.user._id)} />
-                          <span />
-                        </label>
-                      </span>
-                    </li>
+                    </li> */}
+                    {/* <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                      <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <span className='m-topbar__userpic'>
+                          <div className='btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand' style={{display: 'inline-block'}}>
+                            <span className='m-nav__link-text' style={{verticalAlign: 'middle', textAlign: 'center'}}>{this.state.mode}&nbsp;<i className='fa fa-chevron-down' />
+                            </span>
+                          </div>
+                        </span>
+                      </a>
+                      <div className='m-dropdown__wrapper' style={{left: '0'}}>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                        <div className='m-dropdown__inner' style={{width: '300px'}}>
+                          <div className='m-dropdown__body'>
+                            <div className='m-dropdown__content'>
+                              <ul className='m-nav m-nav--skin-light'>
+                                <li className='m-nav__item' style={{cursor: 'pointer'}} onClick={() => this.changeMode('kiboengage')}>
+                                  <Link className='m-nav__link'>
+                                    <i className='m-nav__link-icon fa fa-send-o' />
+                                    <span className='m-nav__link-text'>Customer Engagement</span>
+                                  </Link>
+                                </li>
+                                <li className='m-nav__item' style={{cursor: 'pointer'}} onClick={() => this.changeMode('kibochat')}>
+                                  <Link className='m-nav__link'>
+                                    <i className='m-nav__link-icon flaticon-chat-1' />
+                                    <span className='m-nav__link-text'>Customer Chat</span>
+                                  </Link>
+                                </li>
+                                <li className='m-nav__item' style={{cursor: 'pointer'}} onClick={() => this.changeMode('kibocommerce')}>
+                                  <Link className='m-nav__link'>
+                                    <i className='m-nav__link-icon fa fa-shopping-cart' />
+                                    <span className='m-nav__link-text'>E-Commerce</span>
+                                  </Link>
+                                </li>
+                                <li className='m-nav__item' style={{cursor: 'pointer'}} onClick={() => this.changeMode('all')}>
+                                  <Link className='m-nav__link'>
+                                    <i className='m-nav__link-icon flaticon-list-2' />
+                                    <span className='m-nav__link-text'>All</span>
+                                  </Link>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li> */}
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
@@ -376,7 +495,7 @@ class Header extends React.Component {
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
                           <div style={{display: 'inline-block', marginRight: '5px'}}>
-                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
                           </div>
                           <div style={{display: 'inline-block', height: '41px'}}>
                             <span className='m-nav__link-text' style={{lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center'}}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
@@ -393,7 +512,7 @@ class Header extends React.Component {
                           <div className='m-dropdown__header m--align-center'>
                             <div className='m-card-user m-card-user--skin-dark'>
                               <div className='m-card-user__pic'>
-                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
+                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
                               </div>
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>
@@ -416,7 +535,7 @@ class Header extends React.Component {
                                 </li>
                                 {this.props.user && this.props.user.role !== 'agent' &&
                                 <li className='m-nav__item'>
-                                  <Link to='/addPageWizard' className='m-nav__link'>
+                                  <Link to='/inviteUsingLinkWizard' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-list-2' />
                                     <span className='m-nav__link-text'>Setup Using Wizard</span>
                                   </Link>
@@ -454,9 +573,9 @@ class Header extends React.Component {
                       </div>
                     </li>
 
-                    <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
+                    {/* <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
                       <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
-                    </li>
+                    </li> */}
                   </ul>
                 }
                 </div>
@@ -470,12 +589,14 @@ class Header extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state in header', state)
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),
     socketSession: (state.liveChat.socketSession),
     subscribers: (state.subscribersInfo.subscribers),
-    notifications: (state.notificationsInfo.notifications)
+    notifications: (state.notificationsInfo.notifications),
+    updatedUser: (state.basicInfo.updatedUser)
   }
 }
 

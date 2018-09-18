@@ -8,24 +8,20 @@ const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
 const Lists = require('../lists/lists.model')
 const URL = require('./../URLforClickedCount/URL.model')
-// const PollResponse = require('../polls/pollresponse.model')
-// const SurveyResponse = require('../surveys/surveyresponse.model')
+const mongoose = require('mongoose')
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
-// const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Subscribers = require('../subscribers/Subscribers.model')
-const LiveChat = require('../livechat/livechat.model')
-const Session = require('../sessions/sessions.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
-const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
 const utility = require('./broadcasts.utility')
 let request = require('request')
-const mongoose = require('mongoose')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const needle = require('needle')
+const uniqid = require('uniqid')
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -36,237 +32,217 @@ function exists (list, content) {
   return false
 }
 
+const operation = (index, length) => {
+  if (index === length) {
+    return true
+  } else {
+    return false
+  }
+}
+
+const updatePayload = (self, payload, pageAccessToken, broadcast) => {
+  let shouldReturn = false
+  logger.serverLog(TAG, `Update Payload: ${JSON.stringify(payload)}`)
+  for (let j = 0; j < payload.length; j++) {
+    if (['image', 'audio', 'file', 'video', 'media'].indexOf(payload[j].componentType) > -1) {
+      let uploadResponse = utility.uploadOnFacebook(payload[j], pageAccessToken)
+      let interval = setInterval(() => {
+        if (uploadResponse) {
+          clearInterval(interval)
+          if (uploadResponse.status === 'success') {
+            payload[j] = uploadResponse.data
+          } else {
+            logger.serverLog(TAG, `ERROR! failed to upload attachment on Facebook: ${JSON.stringify(uploadResponse.data)}`)
+          }
+        }
+      }, 1000)
+      shouldReturn = operation(j, payload.length - 1)
+    } else if (!self && payload[j].componentType === 'list') {
+      payload[j].listItems.forEach((element, lindex) => {
+        if (element.default_action) {
+          let URLObject = new URL({
+            originalURL: element.default_action.url,
+            module: {
+              id: broadcast._id,
+              type: 'broadcast'
+            }
+          })
+          URLObject.save((err, savedurl) => {
+            if (err) logger.serverLog(TAG, err)
+            let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+            payload[j].listItems[lindex].default_action.url = newURL
+          })
+        }
+        if (lindex === (payload[j].listItems.length - 1)) {
+          shouldReturn = operation(j, payload.length - 1)
+        }
+      })
+    } else {
+      shouldReturn = operation(j, payload.length - 1)
+    }
+  }
+  if (shouldReturn) {
+    return payload
+  }
+}
+
+const sendTestBroadcast = (companyUser, page, payload, req, res) => {
+  PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id})
+  .populate('userId').exec((err, subscriptionUser) => {
+    if (err) {
+      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+      return res.status(404)
+      .json({status: 'failed', description: 'Pages subscription id not found'})
+    }
+    let temp = subscriptionUser.userId.facebookInfo.name.split(' ')
+    let fname = temp[0]
+    let lname = temp[1] ? temp[1] : ''
+    utility.getBatchData(payload, subscriptionUser.subscriberId, page, sendBroadcast, fname, lname, res, req.body.fbMessageTag)
+  })
+}
+
+const sendToSubscribers = (subscriberFindCriteria, req, res, page, broadcast, companyUser, payload) => {
+  Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
+    if (err) {
+      logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
+      taggedSubscribers.forEach((subscriber, index) => {
+        // update broadcast sent field
+        let pagebroadcast = new BroadcastPage({
+          pageId: page.pageId,
+          userId: req.user._id,
+          subscriberId: subscriber.senderId,
+          broadcastId: broadcast._id,
+          seen: false,
+          companyId: companyUser.companyId
+        })
+
+        pagebroadcast.save((err2, savedpagebroadcast) => {
+          if (err2) {
+            logger.serverLog(TAG, {
+              status: 'failed',
+              description: 'PageBroadcast create failed',
+              err2
+            })
+          }
+          utility.getBatchData(payload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, res, index, taggedSubscribers.length, req.body.fbMessageTag)
+        })
+      })
+    })
+  })
+}
+
+const sendBroadcast = (batchMessages, page, res, subscriberNumber, subscribersLength) => {
+  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
+    if (err) {
+      logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
+      return res.status(500).json({
+        status: 'failed',
+        description: `Failed to send broadcast ${JSON.stringify(err)}`
+      })
+    }
+    // Following change is to incorporate persistant menu
+
+    if (res === 'menu') {
+      // we don't need to send res for persistant menu
+    } else {
+      logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
+      if (subscriberNumber === (subscribersLength - 1)) {
+        return res.status(200)
+        .json({status: 'success', description: 'Conversation sent successfully!'})
+      }
+    }
+  })
+  const form = r.form()
+  form.append('access_token', page.accessToken)
+  form.append('batch', batchMessages)
+}
+
 exports.sendConversation = function (req, res) {
   logger.serverLog(TAG, `Sending Broadcast ${JSON.stringify(req.body)}`)
+  // validate braodcast
   if (!utility.validateInput(req.body)) {
     logger.serverLog(TAG, 'Parameters are missing.')
     return res.status(400)
     .json({status: 'failed', description: 'Please fill all the required fields'})
   }
-
-  if (req.body.self) {
-    CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
-
-      if (req.body.isSegmented) {
-        if (req.body.segmentationPageIds) {
-          pagesFindCriteria = _.merge(pagesFindCriteria, {
-            pageId: {
-              $in: req.body.segmentationPageIds
-            }
-          })
-        }
-      }
-
-      Pages.find(pagesFindCriteria, (err, pages) => {
-        if (err) {
-          logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-          return res.status(404)
-          .json({status: 'failed', description: 'Pages not found'})
-        }
-
-        pages.forEach(page => {
-          req.body.payload.forEach(payloadItem => {
-            PageAdminSubscriptions.findOne({companyId: companyUser.companyId, pageId: page._id, userId: req.user._id}).populate('userId').exec((err, subscriptionUser) => {
-              if (err) {
-                logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-                return res.status(404)
-                .json({status: 'failed', description: 'Pages subscription id not found'})
-              }
-              let messageData = utility.prepareSendAPIPayload(
-                subscriptionUser.subscriberId,
-                payloadItem, subscriptionUser.userId.name, '', false)
-
-              logger.serverLog(TAG,
-                `Payload for Messenger Send API for test: ${JSON.stringify(
-                  messageData)}`)
-
-              request(
-                {
-                  'method': 'POST',
-                  'json': true,
-                  'formData': messageData,
-                  'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                  page.accessToken
-                },
-                function (err, res) {
-                  if (err) {
-                    return logger.serverLog(TAG,
-                      `At send test message broadcast ${JSON.stringify(err)}`)
-                  } else {
-                    logger.serverLog(TAG,
-                      `At send test message broadcast response ${JSON.stringify(
-                        res)}`)
-                  }
-                })
-            })
-          })
-        })
+  // restrict to one page
+  if (req.body.segmentationPageIds.length !== 1) {
+    return res.status(400)
+    .json({status: 'failed', description: 'Please select only one page'})
+  }
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
       })
-      return res.status(200)
-      .json({status: 'success', payload: {broadcast: req.body}})
-    })
-  } else {
-    CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    let pagesFindCriteria = {companyId: companyUser.companyId, connected: true, pageId: req.body.segmentationPageIds[0]}
+    Pages.findOne(pagesFindCriteria).populate('userId').exec((err, page) => {
       if (err) {
+        logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+        return res.status(404)
+        .json({status: 'failed', description: 'Pages not found'})
+      }
+      if (!page.userId || (page.userId && !page.userId.facebookInfo)) {
+        logger.serverLog(TAG, `ERROR! Facebook Info not found`)
         return res.status(500).json({
           status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
+          description: `ERROR! Facebook Info not found`
         })
       }
-      if (!companyUser) {
-        return res.status(404).json({
-          status: 'failed',
-          description: 'The user account does not belong to any company. Please contact support'
-        })
-      }
-      const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req, companyUser.companyId))
-
-      broadcast.save((err, broadcast) => {
+      needle.get(
+      `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+      (err, resp) => {
         if (err) {
-          return res.status(500)
-          .json({status: 'failed', description: 'Broadcasts not created'})
+          logger.serverLog(TAG, `ERROR! unable to get page access_token: ${JSON.stringify(err)}`)
+          return res.status(500).json({
+            status: 'failed',
+            description: `ERROR! unable to get page access_token: ${JSON.stringify(err)}`
+          })
         }
-        let newPayload = req.body.payload
-        logger.serverLog('New Payload', newPayload)
-        req.body.payload.forEach((payloadItem, pindex) => {
-          if (payloadItem.buttons) {
-            payloadItem.buttons.forEach((button, bindex) => {
-              if (!(button.type === 'postback')) {
-                let URLObject = new URL({
-                  originalURL: button.url,
-                  module: {
-                    id: broadcast._id,
-                    type: 'broadcast'
-                  }
-                })
-                URLObject.save((err, savedurl) => {
-                  if (err) logger.serverLog(TAG, err)
-                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                  newPayload[pindex].buttons[bindex].url = newURL
-                })
-              }
-            })
-          }
-          if (payloadItem.componentType === 'media' && payloadItem.buttons) {
-            payloadItem.buttons.forEach((button, bindex) => {
-              let URLObject = new URL({
-                originalURL: button.url,
-                module: {
-                  id: broadcast._id,
-                  type: 'broadcast'
-                }
-              })
-              URLObject.save((err, savedurl) => {
-                if (err) logger.serverLog(TAG, err)
-                let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                newPayload[pindex].buttons[bindex].url = newURL
-              })
-            })
-          }
-          if (payloadItem.componentType === 'gallery') {
-            payloadItem.cards.forEach((card, cindex) => {
-              card.buttons.forEach((button, bindex) => {
-                let URLObject = new URL({
-                  originalURL: button.url,
-                  module: {
-                    id: broadcast._id,
-                    type: 'broadcast'
-                  }
-                })
-                URLObject.save((err, savedurl) => {
-                  if (err) logger.serverLog(TAG, err)
-                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                  newPayload[pindex].cards[cindex].buttons[bindex].url = newURL
-                })
-              })
-            })
-          }
-          if (payloadItem.componentType === 'list') {
-            payloadItem.listItems.forEach((element, lindex) => {
-              if (element.buttons && element.buttons.length > 0) {
-                element.buttons.forEach((button, bindex) => {
-                  let URLObject = new URL({
-                    originalURL: button.url,
-                    module: {
-                      id: broadcast._id,
-                      type: 'broadcast'
-                    }
-                  })
-                  URLObject.save((err, savedurl) => {
-                    if (err) logger.serverLog(TAG, err)
-                    let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                    newPayload[pindex].listItems[lindex].buttons[bindex].url = newURL
-                  })
-                })
-              }
-              if (element.default_action) {
-                let URLObject = new URL({
-                  originalURL: element.default_action.url,
-                  module: {
-                    id: broadcast._id,
-                    type: 'broadcast'
-                  }
-                })
-                URLObject.save((err, savedurl) => {
-                  if (err) logger.serverLog(TAG, err)
-                  let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-                  newPayload[pindex].listItems[lindex].default_action.url = newURL
-                })
-              }
-            })
-          }
-        })
-        require('./../../config/socketio').sendMessageToClient({
-          room_id: companyUser.companyId,
-          body: {
-            action: 'new_broadcast',
-            payload: {
-              broadcast_id: broadcast._id,
-              user_id: req.user._id,
-              user_name: req.user.name
+        let pageAccessToken = resp.body.access_token
+        let payloadData = req.body.payload
+        if (req.body.self) {
+          let payload = updatePayload(req.body.self, payloadData, pageAccessToken)
+          let interval = setInterval(() => {
+            if (payload) {
+              clearInterval(interval)
+              sendTestBroadcast(companyUser, page, payload, req, res)
             }
-          }
-        })
-
-        let pagesFindCriteria = {companyId: companyUser.companyId, connected: true}
-
-        if (req.body.isSegmented) {
-          if (req.body.segmentationPageIds.length > 0) {
-            if (req.body.segmentationPageIds[0].length > 0) {
-              let pageCriteria = req.body.segmentationPageIds
-              if (typeof (req.body.segmentationPageIds) === 'object') {
-                pageCriteria = req.body.segmentationPageIds[0]
-              }
-              pagesFindCriteria = _.merge(pagesFindCriteria, {
-                pageId: {
-                  $in: pageCriteria
-                }
-              })
+          }, 3000)
+        } else {
+          const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req, companyUser.companyId))
+          broadcast.save((err, broadcast) => {
+            if (err) {
+              return res.status(500)
+              .json({status: 'failed', description: 'Broadcasts not created'})
             }
-          }
-        }
-
-        Pages.find(pagesFindCriteria, (err, pages) => {
-          if (err) {
-            logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-            return res.status(404)
-            .json({status: 'failed', description: 'Pages not found'})
-          }
-
-          pages.forEach(page => {
+            require('./../../config/socketio').sendMessageToClient({
+              room_id: companyUser.companyId,
+              body: {
+                action: 'new_broadcast',
+                payload: {
+                  broadcast_id: broadcast._id,
+                  user_id: req.user._id,
+                  user_name: req.user.name
+                }
+              }
+            })
+            let payload = updatePayload(req.body.self, payloadData, pageAccessToken, broadcast)
+            utility.addModuleIdIfNecessary(payloadData, broadcast._id) // add module id in buttons for click count
             if (req.body.isList === true) {
               let ListFindCriteria = {}
               ListFindCriteria = _.merge(ListFindCriteria,
@@ -301,60 +277,12 @@ exports.sendConversation = function (req, res) {
                     }
                   })
                 }
-                Subscribers.find(subsFindCriteria, (err, subscribers) => {
-                  if (err) {
-                    return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+                let interval = setInterval(() => {
+                  if (payload) {
+                    clearInterval(interval)
+                    sendToSubscribers(subsFindCriteria, req, res, page, broadcast, companyUser, payload)
                   }
-                  utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                    taggedSubscribers.forEach(subscriber => {
-                      Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                        if (err) {
-                          return logger.serverLog(TAG,
-                            `At get session ${JSON.stringify(err)}`)
-                        }
-                        if (!session) {
-                          return logger.serverLog(TAG,
-                            `No chat session was found for broadcast`)
-                        }
-                        const chatMessage = new LiveChat({
-                          sender_id: page._id, // this is the page id: _id of Pageid
-                          recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                          sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                          recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                          session_id: session._id,
-                          company_id: req.user._id, // this is admin id till we have companies
-                          payload: '', // this where message content will go
-                          status: 'unseen' // seen or unseen
-                        })
-                        chatMessage.save((err, chatMessageSaved) => {
-                          if (err) {
-                            return logger.serverLog(TAG,
-                              `At get session ${JSON.stringify(err)}`)
-                          }
-                        })
-                      })
-                      // update broadcast sent field
-                      let pagebroadcast = new BroadcastPage({
-                        pageId: page.pageId,
-                        userId: req.user._id,
-                        subscriberId: subscriber.senderId,
-                        broadcastId: broadcast._id,
-                        seen: false,
-                        companyId: companyUser.companyId
-                      })
-                      pagebroadcast.save((err2, savedpagebroadcast) => {
-                        if (err2) {
-                          logger.serverLog(TAG, {
-                            status: 'failed',
-                            description: 'PageBroadcast create failed',
-                            err2
-                          })
-                        }
-                        utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                      })
-                    })
-                  })
-                })
+                }, 3000)
               })
             } else {
               let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
@@ -375,84 +303,18 @@ exports.sendConversation = function (req, res) {
                   })
                 }
               }
-
-              Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
-                if (err) {
-                  return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+              let interval = setInterval(() => {
+                if (payload) {
+                  clearInterval(interval)
+                  sendToSubscribers(subscriberFindCriteria, req, res, page, broadcast, companyUser, payload)
                 }
-                utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
-                  taggedSubscribers.forEach(subscriber => {
-                    Session.findOne({subscriber_id: subscriber._id, page_id: page._id, company_id: req.user._id}, (err, session) => {
-                      if (err) {
-                        return logger.serverLog(TAG,
-                          `At get session ${JSON.stringify(err)}`)
-                      }
-                      if (!session) {
-                        return logger.serverLog(TAG,
-                          `No chat session was found for broadcast`)
-                      }
-                      /* eslint-disable */
-                      const chatMessage = new LiveChat({
-                        sender_id: page._id, // this is the page id: _id of Pageid
-                        recipient_id: subscriber._id, // this is the subscriber id: _id of subscriberId
-                        sender_fb_id: page.pageId, // this is the (facebook) :page id of pageId
-                        recipient_fb_id: subscriber.senderId, // this is the (facebook) subscriber id : pageid of subscriber id
-                        session_id: session._id,
-                        company_id: req.user._id, // this is admin id till we have companies
-                        payload: '', // this where message content will go
-                        status: 'unseen' // seen or unseen
-                      })
-                      /* eslint-enable */
-                      // chatMessage.save((err, chatMessageSaved) => {
-                      //   if (err) {
-                      //     return logger.serverLog(TAG,
-                      //       `At get session ${JSON.stringify(err)}`)
-                      //   }
-                      // })
-                    })
-                    // update broadcast sent field
-                    let pagebroadcast = new BroadcastPage({
-                      pageId: page.pageId,
-                      userId: req.user._id,
-                      subscriberId: subscriber.senderId,
-                      broadcastId: broadcast._id,
-                      seen: false,
-                      companyId: companyUser.companyId
-                    })
-
-                    pagebroadcast.save((err2, savedpagebroadcast) => {
-                      if (err2) {
-                        logger.serverLog(TAG, {
-                          status: 'failed',
-                          description: 'PageBroadcast create failed',
-                          err2
-                        })
-                      }
-                      utility.getBatchData(newPayload, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName)
-                    })
-                  })
-                })
-              })
+              }, 3000)
             }
           })
-          return res.status(200)
-          .json({status: 'success', payload: {broadcast: broadcast}})
-        })
+        }
       })
     })
-  }
-}
-
-const sendBroadcast = (batchMessages, page) => {
-  const r = request.post('https://graph.facebook.com', (err, httpResponse, body) => {
-    if (err) {
-      return logger.serverLog(TAG, `Batch send error ${JSON.stringify(err)}`)
-    }
-    logger.serverLog(TAG, `Batch send response ${JSON.stringify(body)}`)
   })
-  const form = r.form()
-  form.append('access_token', page.accessToken)
-  form.append('batch', batchMessages)
 }
 
 exports.upload = function (req, res) {
@@ -497,68 +359,17 @@ exports.upload = function (req, res) {
       let writeData = fs.createWriteStream(dir + '/userfiles/' + req.files.file.name)
       readData.pipe(writeData)
       logger.serverLog(TAG,
-        `file uploaded on KiboPush, uploading it on Facebook: ${JSON.stringify({
+        `file uploaded on KiboPush, sending response ${JSON.stringify({
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
-      .populate('userId').exec((err, page) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'internal server error' + JSON.stringify(err)
-          })
+      return res.status(201).json({
+        status: 'success',
+        payload: {
+          id: serverPath,
+          name: req.files.file.name,
+          url: `${config.domain}/api/broadcasts/download/${serverPath}`
         }
-        needle.get(
-          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
-          (err, resp2) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: 'unable to get page access_token: ' + JSON.stringify(err)
-              })
-            }
-            let pageAccessToken = resp2.body.access_token
-            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
-            const messageData = {
-              'message': JSON.stringify({
-                'attachment': {
-                  'type': req.body.componentType,
-                  'payload': {
-                    'is_reusable': true
-                  }
-                }
-              }),
-              'filedata': fileReaderStream
-            }
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
-              },
-              function (err, resp) {
-                if (err) {
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
-                  })
-                } else {
-                  logger.serverLog(TAG,
-                    `file uploaded on Facebook, sending response now: ${JSON.stringify(resp.body)}`)
-                  return res.status(201).json({
-                    status: 'success',
-                    payload: {
-                      id: serverPath,
-                      attachment_id: resp.body.attachment_id,
-                      name: req.files.file.name,
-                      url: `${config.domain}/api/broadcasts/download/${serverPath}`
-                    }
-                  })
-                }
-              })
-          })
       })
     }
   )
@@ -603,6 +414,160 @@ exports.delete = function (req, res) {
       return res.status(200)
         .json({status: 'success', payload: 'File deleted successfully'})
     }
+  })
+}
+
+exports.addButton = function (req, res) {
+  if (!_.has(req.body, 'type')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Type is missing.'
+    })
+  }
+  if (!_.has(req.body, 'title')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Title is missing.'
+    })
+  }
+  if (req.body.type === 'web_url' && !(_.has(req.body, 'url'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Url is required for type web_url.'
+    })
+  }
+  if (req.body.type === 'postback' && !(_.has(req.body, 'sequenceId')) && !(_.has(req.body, 'action'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'SequenceId & action are required for type postback'
+    })
+  }
+  let buttonPayload = {
+    title: req.body.title,
+    type: req.body.type,
+    buttonId: uniqid()
+   
+  }
+  if (req.body.type === 'web_url') {
+    // TODO save module id when sending broadcast
+    let URLObject = new URL({
+      originalURL: req.body.url,
+      module: {
+        type: 'broadcast'
+      }
+    })
+    URLObject.save((err, savedurl) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Failed to save url object ${err}`
+        })
+      }
+      let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+      buttonPayload.newUrl = newURL
+      buttonPayload.url = req.body.url
+      return res.status(200).json({
+        status: 'success',
+        payload: buttonPayload
+      })
+    })
+  } else {
+    if (req.body.module.type === 'sequenceMessaging') {
+      let buttonId = uniqid()
+      buttonPayload.payload = JSON.stringify({
+        sequenceId: req.body.sequenceId,
+        action: req.body.action,
+        buttonId: buttonId
+      })
+      buttonPayload.sequenceValue = req.body.sequenceId
+      return res.status(200).json({
+        status: 'success',
+        payload: buttonPayload
+      })
+    }
+  }
+}
+
+exports.editButton = function (req, res) {
+  if (!_.has(req.body, 'type')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Type is missing.'
+    })
+  }
+  if (!_.has(req.body, 'title')) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Title is missing.'
+    })
+  }
+  if (req.body.type === 'web_url' && !(_.has(req.body, 'newUrl'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'Url is required for type web_url.'
+    })
+  }
+  if (req.body.type === 'postback' && !(_.has(req.body, 'sequenceId')) && !(_.has(req.body, 'action'))) {
+    return res.status(500).json({
+      status: 'failed',
+      description: 'SequenceId & action are required for type postback'
+    })
+  }
+  let buttonPayload = {
+    title: req.body.title,
+    type: req.body.type
+  }
+  if (req.body.type === 'web_url' && req.body.oldUrl) {
+    // TODO save module id when sending broadcast
+    let temp = req.body.oldUrl.split('/')
+    let id = temp[temp.length - 1]
+    URL.findOne({_id: mongoose.Types.ObjectId(id)}, (err, url) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Failed to find url object ${err}`
+        })
+      }
+      url.originalURL = req.body.newUrl
+      url.save((err, savedurl) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Failed to save url object ${err}`
+          })
+        }
+        let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+        buttonPayload.newUrl = newURL
+        buttonPayload.url = req.body.oldUrl
+        return res.status(200).json({
+          status: 'success',
+          payload: { id: req.body.id, button: buttonPayload }
+        })
+      })
+    })
+  } else {
+    buttonPayload.payload = JSON.stringify({
+      sequenceId: req.body.sequenceId,
+      action: req.body.action
+    })
+    buttonPayload.sequenceValue = req.body.sequenceId
+    return res.status(200).json({
+      status: 'success',
+      payload: { id: req.body.id, button: buttonPayload }
+    })
+  }
+}
+
+exports.deleteButton = function (req, res) {
+  URL.deleteOne({_id: mongoose.Types.ObjectId(req.params.id)}, (err, deleted) => {
+    if (err) {
+      return res.status(500)
+        .json({status: 'failed', description: 'Internal Server Error'})
+    }
+    return res.status(200).json({
+      status: 'success',
+      description: 'Url deleted successfully!'
+    })
   })
 }
 

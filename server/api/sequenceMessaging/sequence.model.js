@@ -5,6 +5,7 @@ const sequenceSchema = new Schema({
   name: String,
   companyId: { type: Schema.ObjectId, ref: 'companyprofile' },
   userId: { type: Schema.ObjectId, ref: 'users' },
+  trigger: {type: Schema.Types.Mixed, default: {event: 'subscribe_to_sequence', value: null}},
   datetime: { type: Date, default: Date.now }
 })
 

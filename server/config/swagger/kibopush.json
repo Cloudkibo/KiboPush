@@ -373,6 +373,664 @@
         }
       }
     },
+    "/abandonedCarts/getStores": {
+      "get": {
+        "description": "Gives all the stores created by the logged in user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AbandonedStore"
+                  },
+                  "description": "all the abandoned cart store data"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/abandonedCheckouts": {
+      "get": {
+        "description": "Gives all the Abandoned Checkouts",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AbandonedCheckout"
+                  },
+                  "description": "all the abandoned cart store data"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/saveStoreInfo": {
+      "post": {
+        "description": "Saved the information about store",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "formData",
+            "description": "the id of the user",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "pageId",
+            "in": "formData",
+            "description": "the id of the page",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "shopUrl",
+            "in": "formData",
+            "description": "unique url of the store",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "shopToken",
+            "in": "formData",
+            "description": "unique token of the store from shopify",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/saveCartInfo": {
+      "post": {
+        "description": "Stores the Cart Info of the Cart",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "formData",
+            "description": "the id of the store",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "shopifyCartId",
+            "in": "formData",
+            "description": "the id of the shopifyCart from shopify",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "cartToken",
+            "in": "formData",
+            "description": "Unique token of the cart",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "linePrice",
+            "in": "formData",
+            "description": "Price of the products in the carts",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "productIds",
+            "in": "formData",
+            "description": "IDs of the products in the cart",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/saveCheckoutInfo": {
+      "post": {
+        "description": "Stores the Checkout Info of the abandoned Checkout",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "formData",
+            "description": "the id of the store",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "shopifyCheckoutId",
+            "in": "formData",
+            "description": "the id of the shopify Checkout from shopify",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "checkoutToken",
+            "in": "formData",
+            "description": "Unique token of the Checkout",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "cartToken",
+            "in": "formData",
+            "description": "Unique token of the cart",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "totalPrice",
+            "in": "formData",
+            "description": "Price of the products in the carts",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "abandonedCheckoutUrl",
+            "in": "formData",
+            "description": "Unique URL of the abandoned Checkout",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "productIds",
+            "in": "formData",
+            "description": "IDs of the products in the cart",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/updateStatusStore": {
+      "post": {
+        "description": "Update the status of the store",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "formData",
+            "description": "the id of the store",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "isActive",
+            "in": "formData",
+            "description": "the id of the page",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/deleteAllCartInfo": {
+      "post": {
+        "description": "Delete all the Carts of the store",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "formData",
+            "description": "the id of the store",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/deleteOneCartInfo": {
+      "post": {
+        "description": "Delete One Cart of the store",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "formData",
+            "description": "the id of the store",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "cartInfoId",
+            "in": "formData",
+            "description": "the id of the cart",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/deleteCheckoutInfo": {
+      "post": {
+        "description": "Delete One Checkout of the store",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "checkoutInfoId",
+            "in": "formData",
+            "description": "the id of the CheckoutInfoId",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/deleteAllInfo": {
+      "get": {
+        "description": "Delete All information of Shopify",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "string",
+                  "description": "success message"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/sendCheckout": {
+      "post": {
+        "description": "Send the Abandoned Cart Immediately",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "formData",
+            "description": "the id of Checkout to be sent to messanger",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "string",
+                  "description": "success message"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
+    "/abandonedCarts/sendAnalytics": {
+      "get": {
+        "description": "Fetch all the analytics against a store",
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "success"
+                },
+                "payload": {
+                  "type": "object",
+                  "$ref": "#/definitions/AbandonedAnalytics",
+                  "description": "success message"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response400"
+            }
+          },
+          "404": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response404"
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "$ref": "#/definitions/Response500"
+            }
+          }
+        }
+      }
+    },
     "/bots": {
       "get": {
         "description": "Gets all bots of the logged in user",
@@ -10971,6 +11629,145 @@
         "datetime": {
           "type": "string",
           "description": "date and time of creation of the sequence"
+        }
+      }
+    },
+    "AbandonedStore": {
+      "type": "object",
+      "description": "This table is used to store the abandoned store information",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "unique id of the record"
+        },
+        "userId": {
+          "type": "string",
+          "description": "user Id of the creator"
+        },
+        "companyId": {
+          "type": "string",
+          "description": "company id of the company that the user belongs to"
+        },
+        "pageId": {
+          "type": "string",
+          "description": "page id of the page connected"
+        },
+        "shopUrl": {
+          "type": "string",
+          "description": "URL of the store object linked"
+        },
+        "shopToken": {
+          "type": "string",
+          "description": "Unique token of the shop provided by shopify"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Either the store is in active state or non active state"
+        }
+      }
+    },
+    "AbandonedAnalytics": {
+      "type": "object",
+      "description": "This table stores analytics against a store",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "unique id of the record"
+        },
+        "storeId": {
+          "type": "string",
+          "description": "unique id of the store the analytics belong to"
+        },
+        "totalExtraSales": {
+          "type": "number",
+          "description": "total amount generated by purchases of customers after using kibopush"
+        },
+        "totalAbandonedCarts": {
+          "type": "number",
+          "description": "total number of abandoned carts created against the store"
+        },
+        "totalPurchasedCarts": {
+          "type": "number",
+          "description": "total number of carts which converted to sales"
+        },
+        "totalSubscribers": {
+          "type": "number",
+          "description": "total number of subscriber of that store from shopify"
+        },
+        "totalPushSent": {
+          "type": "number",
+          "description": "total number of push messages sent to subscriber"
+        }
+      }
+    },
+    "AbandonedCheckout": {
+      "type": "object",
+      "description": "This table stores the abandoned checkouts",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "unique id of the record"
+        },
+        "shopifyCheckoutId": {
+          "type": "string",
+          "description": "unique shopify id of the checkout"
+        },
+        "checkoutToken": {
+          "type": "string",
+          "description": "unique token of the abandoned checkout"
+        },
+        "cartToken": {
+          "type": "string",
+          "description": "unique token of the cart belong to the checkout"
+        },
+        "storeId": {
+          "type": "string",
+          "description": "unique id of the store the analytics belong to"
+        },
+        "userId": {
+          "type": "string",
+          "description": "user Id of the creator"
+        },
+        "companyId": {
+          "type": "string",
+          "description": "company id of the company that the user belongs to"
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "total amount of value added to cart"
+        },
+        "abandonedCheckoutUrl": {
+          "type": "string",
+          "description": "URL to visit the abandoned checkout"
+        },
+        "status": {
+          "type": "string",
+          "description": "Either the cart is pending, sent or seen"
+        },
+        "userRef": {
+          "type": "string",
+          "description": "unique id from which Facebook recognizes the subscriber"
+        },
+        "productIds": {
+          "type": "array",
+          "items": {},
+          "description": "IDs of the products added to the abandoned checkout"
+        },
+        "created_at": {
+          "type": "object",
+          "description": "the date object at which the checkout was created"
+        },
+        "scheduled_at": {
+          "type": "object",
+          "description": "the date object at which the checkout was created"
+        },
+        "isPurchased": {
+          "type": "boolean",
+          "description": "Either the cart is purchased or not"
+        },
+        "isExtraSales": {
+          "type": "boolean",
+          "description": "Either the purchase was made after sending push or not"
         }
       }
     },

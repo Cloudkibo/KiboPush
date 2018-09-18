@@ -19,11 +19,13 @@ class Gallery extends React.Component {
     this.addSlide = this.addSlide.bind(this)
     this.removeSlide = this.removeSlide.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.state = {
       broadcast: [],
-      cards: [{element: <Card id={1} button_id={props.id} handleCard={this.handleCard} />, key: 1}, {element: <Card id={2} button_id={props.id} handleCard={this.handleCard} />, key: 2}],
+      cards: [{element: <Card id={1} module={this.props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 1}, {element: <Card id={2} module={this.props.module} button_id={props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: 2}],
       showPlus: false,
-      pageNumber: 1
+      pageNumber: 1,
+      loading: false
     }
   }
 
@@ -32,7 +34,7 @@ class Gallery extends React.Component {
       var tmp = []
       for (var k = 0; k < this.props.cards.length; k++) {
         this.props.cards[k].id = k
-        tmp.push({element: <Card id={k} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} />, key: k})
+        tmp.push({element: <Card id={k} module={this.props.module} button_id={this.props.id} buttons={this.props.cards[k].buttons} cardDetails={this.props.cards[k]} handleCard={this.handleCard} setLoading={this.setLoading} />, key: k})
       }
       this.setState({cards: tmp, broadcast: this.props.cards})
     }
@@ -43,7 +45,8 @@ class Gallery extends React.Component {
       var cardMessage = []
       for (var i = 0; i < cards.length; i++) {
         //  cards[i].id = i
-        card = {element: <Card id={i} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} />, key: i}
+        card = {element: <Card id={i} module={this.props.module} button_id={this.props.id} handleCard={this.handleCard} cardDetails={cards[i]} setLoading={this.setLoading} />, key: i}
+        cards[i].id = i   // This is very important. Don't change it if you don't understand it
         cardMessage.push(cards[i])
         temp.push(card)
       }
@@ -66,17 +69,21 @@ class Gallery extends React.Component {
     var temp = this.state.cards
     temp.splice(this.state.pageNumber - 1, 1)
     this.setState({cards: temp})
+    this.slider.slickPrev()
   }
 
   addSlide () {
+    let timeStamp = new Date().getTime()
     if (this.state.cards.length >= 10) {
       return this.msg.error('You cant add more than 10 cards.')
     }
     var temp = this.state.cards
-    this.setState({cards: [...temp, {element: <Card id={temp.length + 1} button_id={this.props.id} handleCard={this.handleCard} />, key: temp.length + 1}]})
+    this.setState({cards: [...temp, {element: <Card module={this.props.module} id={timeStamp} button_id={this.props.id} handleCard={this.handleCard} setLoading={this.setLoading} />, key: timeStamp}]})
     this.slider.slickNext()
   }
-
+  setLoading (value) {
+    this.setState({loading: value})
+  }
   handleCard (obj) {
     console.log('this.state.broadcast', this.state.broadcast)
     console.log('obj', obj)
@@ -119,7 +126,7 @@ class Gallery extends React.Component {
       speed: 500,
       slidesToShow: 1,
       slidesToScroll: 1,
-      nextArrow: <RightArrow />,
+      nextArrow: <RightArrow addSlide={this.addSlide} />,
       prevArrow: <LeftArrow />,
       afterChange: this.handleChange
     }
@@ -133,13 +140,17 @@ class Gallery extends React.Component {
         </div>  */}
         {
           <div style={{marginLeft: '-100px', zIndex: '2', marginBottom: '-15px', position: 'relative'}}>
+            {!this.state.loading &&
             <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', zIndex: 6, marginRight: '-30px'}}>
               <span style={{cursor: 'pointer'}} className='fa-stack'>
                 <i className='fa fa-times fa-stack-2x' />
               </span>
             </div>
+            }
             <span className='m-badge m-badge--brand m-badge--wide' onClick={this.addSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Add</span>
-            <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            {
+              this.state.cards.length > 1 && !this.state.loading && <span className='m-badge m-badge--brand m-badge--wide' onClick={this.removeSlide} style={{cursor: 'pointer', marginRight: '25px'}}>Remove</span>
+            }
             <span className='m-badge m-badge--brand m-badge--wide' style={{cursor: 'pointer'}}>Page {this.state.pageNumber} x</span>
           </div>
         }

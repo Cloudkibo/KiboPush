@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
@@ -221,8 +219,8 @@ class FacebookPosts extends React.Component {
     }
     var payload = {
       postId: this.props.currentPost._id,
-      includedKeywords: this.state.includedKeywords.split(','),
-      excludedKeywords: this.state.excludedKeywords.split(',')
+      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
     this.props.editFacebookPost(payload, this.msg)
   }
@@ -378,8 +376,8 @@ class FacebookPosts extends React.Component {
       pageId: this.state.selectedPage._id,
       payload: this.state.facebookPost,
       reply: this.state.autoReply,
-      includedKeywords: this.state.includedKeywords.split(','),
-      excludedKeywords: this.state.excludedKeywords.split(',')
+      includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
+      excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : []
     }
     console.log('facebook post', payload)
     this.props.createFacebookPost(payload, this.msg, this.reset)
@@ -394,7 +392,6 @@ class FacebookPosts extends React.Component {
     }
     return (
       <div>
-        <Header />
         {
           this.state.loading
           ? <ModalContainer>
@@ -445,262 +442,257 @@ class FacebookPosts extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Comment Capture</h3>
-                </div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Comment Capture</h3>
               </div>
             </div>
-            <div className='m-content'>
-              <div className='row'>
-                <div className='col-xl-12'>
-                  <div className='m-portlet'>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <p className='m-portlet__head-text'>
-                            People who comment on your facebook post will receive a message from your bot on messenger
-                          </p>
-                        </div>
+          </div>
+          <div className='m-content'>
+            <div className='row'>
+              <div className='col-xl-12'>
+                <div className='m-portlet'>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <p className='m-portlet__head-text'>
+                          People who comment on your facebook post will receive a message from your bot on messenger
+                        </p>
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      <div className='row'>
-                        <div className='col-12'>
-                          { this.state.isEdit === 'true'
-                        ? <div className='form-group m-form__group' style={{display: 'flex'}}>
-                          <div className='col-3'>
-                            <label className='col-form-label'>Page</label>
-                          </div>
-                          <div className='col-9'>
-                            <span>{this.state.selectedPage.pageName}</span>
-                          </div>
+                  </div>
+                  <div className='m-portlet__body'>
+                    <div className='row'>
+                      <div className='col-12'>
+                        { this.state.isEdit === 'true'
+                      ? <div className='form-group m-form__group' style={{display: 'flex'}}>
+                        <div className='col-3'>
+                          <label className='col-form-label'>Page</label>
                         </div>
-                        : <div className='form-group m-form__group' style={{display: 'flex'}}>
-                          <div className='col-3'>
-                            <label className='col-form-label'>Choose Page</label>
-                          </div>
-                          <div className='col-9'>
-                            <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
-                              {
-                                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                  <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
-                                ))
-                              }
-                            </select>
-                          </div>
+                        <div className='col-9'>
+                          <span>{this.state.selectedPage.pageName}</span>
                         </div>
-                          }
+                      </div>
+                      : <div className='form-group m-form__group' style={{display: 'flex'}}>
+                        <div className='col-3'>
+                          <label className='col-form-label'>Choose Page</label>
                         </div>
-                        <div className='col-12'>
-                          <div className='form-group m-form__group'>
-                            <div className='col-3'>
-                              <label className='col-form-label'>Facebook Post</label>
-                            </div>
-                            <div className='col-12'>
-                              { this.state.isEdit === 'false'
-                            ? <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
-                              <textarea
-                                className='form-control m-input m-input--solid'
-                                id='postTextArea' rows='3'
-                                placeholder={this.state.isVideo ? 'Describe your video here' : 'Enter text to post on facebook'}
-                                style={{height: '150px', resize: 'none'}}
-                                value={this.state.postText}
-                                onChange={this.onFacebookPostChange} />
-                              {
-                                  this.state.attachments.length > 0 &&
-                                  <div className='attachmentDiv' style={{display: 'flex'}}>
-                                    {
-                                    this.state.attachments.map((attachment, i) => (
-                                      <div className='col-2'>
-                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
-                                        <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
-                                          { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
-                                          </div>
-                                          }
-                                          { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src='icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
-                                          </div>
-                                          }
-                                        </div>
-                                      </div>
-                                    ))
-                                    }
-                                  </div>
-                                }
-                              <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
-                                <span>
-                                  <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
-                                </span>
-                              </span>
-                              <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
-                                <span>
-                                  <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
-                                    this.refs.selectImage.click()
-                                  }} />
-                                </span>
-                                <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
-                                  ref='selectImage' style={styles.inputf} />
-                              </span>
-                              <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                                <span>
-                                  <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
-                                    this.refs.selectVideo.click()
-                                  }} />
-                                </span>
-                                <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
-                                  ref='selectVideo' style={styles.inputf} />
-                              </span>
-                              <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
-                                <PopoverBody>
-                                  <div>
-                                    <Picker
-                                      emojiSize={24}
-                                      perLine={6}
-                                      skin={1}
-                                      set='facebook'
-                                      custom={[]}
-                                      autoFocus={false}
-                                      showPreview={false}
-                                      onClick={(emoji, event) => this.setEmoji(emoji)}
-                                    />
-                                  </div>
-                                </PopoverBody>
-                              </Popover>
-                            </div>
-                            : <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
-                              <textarea
-                                className='form-control m-input m-input--solid'
-                                id='postTextArea' rows='3'
-                                style={{height: '150px', resize: 'none'}}
-                                value={this.state.postText}
-                                disabled />
-                              { this.state.attachments.length > 0 && this.state.videoPost &&
-                                <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                                  <span>
-                                    <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
-                                  </span>
-                                </span>
-                              }
-                              { this.state.attachments.length > 0 && !this.state.videoPost &&
-                                <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
-                                  <span>
-                                    <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
-                                  </span>
-                                </span>
-                              }
-                            </div>
+                        <div className='col-9'>
+                          <select className='form-control' value={this.state.selectedPage._id} onChange={this.onPageChange}>
+                            {
+                              this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                <option key={page._id} value={page._id} selected={page._id === this.state.selectedPage._id}>{page.pageName}</option>
+                              ))
                             }
-                            </div>
-                          </div>
+                          </select>
                         </div>
-                        <div className='col-12'>
-                          <div className='form-group m-form__group'>
-                            <div className='col-3'>
-                              <label className='col-form-label'>Bot Reply</label>
-                            </div>
-                            <div className='col-12'>
-                              <p>
-                                Enter the reply that commentors will receive from your bot
-                              </p>
-                            </div>
+                      </div>
+                        }
+                      </div>
+                      <div className='col-12'>
+                        <div className='form-group m-form__group'>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Facebook Post</label>
+                          </div>
+                          <div className='col-12'>
                             { this.state.isEdit === 'false'
-                            ? <div className='col-12'>
-                              <textarea
-                                className='form-control m-input m-input--solid'
-                                id='replyTextArea' rows='3'
-                                placeholder='Enter Reply'
-                                style={{height: '100px', resize: 'none'}}
-                                value={this.state.autoReply}
-                                onChange={this.replyChange} />
-                            </div>
-                            : <div className='col-12'>
-                              <textarea
-                                className='form-control m-input m-input--solid'
-                                id='replyTextArea' rows='3'
-                                placeholder='Enter Reply'
-                                style={{height: '100px', resize: 'none'}}
-                                value={this.state.autoReply}
-                                disabled />
-                            </div>
+                          ? <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
+                            <textarea
+                              className='form-control m-input m-input--solid'
+                              id='postTextArea' rows='3'
+                              placeholder={this.state.isVideo ? 'Describe your video here' : 'Enter text to post on facebook'}
+                              style={{height: '150px', resize: 'none'}}
+                              value={this.state.postText}
+                              onChange={this.onFacebookPostChange} />
+                            {
+                                this.state.attachments.length > 0 &&
+                                <div className='attachmentDiv' style={{display: 'flex'}}>
+                                  {
+                                  this.state.attachments.map((attachment, i) => (
+                                    <div className='col-2'>
+                                      <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                      <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
+                                        { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
+                                          <img src={attachment.url} alt='Image' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                        </div>
+                                        }
+                                        { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
+                                          <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                        </div>
+                                        }
+                                      </div>
+                                    </div>
+                                  ))
+                                  }
+                                </div>
+                              }
+                            <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
+                              <span>
+                                <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
+                              </span>
+                            </span>
+                            <span id='uploadImage' className='pull-right' style={{marginRight: '5px', marginTop: '5px'}}>
+                              <span>
+                                <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={() => {
+                                  this.refs.selectImage.click()
+                                }} />
+                              </span>
+                              <input type='file' accept='image/*' onChange={(e) => this.onFileChange(e, 'image')} onError={this.onFilesError}
+                                ref='selectImage' style={styles.inputf} />
+                            </span>
+                            <span id='uploadVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                              <span>
+                                <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={() => {
+                                  this.refs.selectVideo.click()
+                                }} />
+                              </span>
+                              <input type='file' accept='video/*' onChange={(e) => this.onFileChange(e, 'video')} onError={this.onFilesError}
+                                ref='selectVideo' style={styles.inputf} />
+                            </span>
+                            <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
+                              <PopoverBody>
+                                <div>
+                                  <Picker
+                                    emojiSize={24}
+                                    perLine={6}
+                                    skin={1}
+                                    set='facebook'
+                                    custom={[]}
+                                    autoFocus={false}
+                                    showPreview={false}
+                                    onClick={(emoji, event) => this.setEmoji(emoji)}
+                                  />
+                                </div>
+                              </PopoverBody>
+                            </Popover>
+                          </div>
+                          : <div className='m-input-icon m-input-icon--right m-messenger__form-controls'>
+                            <textarea
+                              className='form-control m-input m-input--solid'
+                              id='postTextArea' rows='3'
+                              style={{height: '150px', resize: 'none'}}
+                              value={this.state.postText}
+                              disabled />
+                            { this.state.attachments.length > 0 && this.state.videoPost &&
+                              <span id='showVideo' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                <span>
+                                  <i className='fa fa-file-video-o postIcons' style={{cursor: 'pointer'}} onClick={this.previewVideo} />
+                                </span>
+                              </span>
+                            }
+                            { this.state.attachments.length > 0 && !this.state.videoPost &&
+                              <span id='showImage' className='pull-right' style={{marginRight: '10px', marginTop: '5px'}}>
+                                <span>
+                                  <i className='fa fa-image postIcons' style={{cursor: 'pointer'}} onClick={this.previewImages} />
+                                </span>
+                              </span>
+                            }
+                          </div>
                           }
                           </div>
                         </div>
-                        <div className='col-12'>
-                          <div className='form-group m-form__group'>
-                            <div className='col-3'>
-                              <label className='col-form-label'>Target Comments</label>
-                            </div>
-                            <div className='col-12'>
-                              <p>
-                                Reply if these keywords are used in the comment. Example 'When, Where, How'
-                              </p>
-                            </div>
-                            <div className='col-12'>
-                              <input type='text' className='form-control m-input m-input--square' value={this.state.includedKeywords} onChange={this.includedKeywordsChange} placeholder='Enter Keywords separated by {,}' />
-                            </div>
-                            <div className='col-12' style={{marginTop: '10px'}}>
-                              <p>
-                                Donot reply if these keywords are used in the comment. Example 'When, Where, How'
-                              </p>
-                            </div>
-                            <div className='col-12'>
-                              <input type='text' className='form-control m-input m-input--square' value={this.state.excludedKeywords} onChange={this.excludedKeywordsChange} placeholder='Enter Keywords separated by {,}' />
-                            </div>
-                            <span className='m-form__help'>
-                              {
-                                this.state.keywordErrors.map((m, i) => (
-                                  m.error === 'keywords' &&
-                                    <span style={{color: 'red', marginLeft: '20px'}}>{m.message}</span>
-                                ))
-                              }
-                            </span>
+                      </div>
+                      <div className='col-12'>
+                        <div className='form-group m-form__group'>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Bot Reply</label>
                           </div>
+                          <div className='col-12'>
+                            <p>
+                              Enter the reply that commentors will receive from your bot
+                            </p>
+                          </div>
+                          { this.state.isEdit === 'false'
+                          ? <div className='col-12'>
+                            <textarea
+                              className='form-control m-input m-input--solid'
+                              id='replyTextArea' rows='3'
+                              placeholder='Enter Reply'
+                              style={{height: '100px', resize: 'none'}}
+                              value={this.state.autoReply}
+                              onChange={this.replyChange} />
+                          </div>
+                          : <div className='col-12'>
+                            <textarea
+                              className='form-control m-input m-input--solid'
+                              id='replyTextArea' rows='3'
+                              placeholder='Enter Reply'
+                              style={{height: '100px', resize: 'none'}}
+                              value={this.state.autoReply}
+                              disabled />
+                          </div>
+                        }
+                        </div>
+                      </div>
+                      <div className='col-12'>
+                        <div className='form-group m-form__group'>
+                          <div className='col-3'>
+                            <label className='col-form-label'>Target Comments</label>
+                          </div>
+                          <div className='col-12'>
+                            <p>
+                              Reply if these keywords are used in the comment. Example 'When, Where, How'
+                            </p>
+                          </div>
+                          <div className='col-12'>
+                            <input type='text' className='form-control m-input m-input--square' value={this.state.includedKeywords} onChange={this.includedKeywordsChange} placeholder='Enter Keywords separated by {,}' />
+                          </div>
+                          <div className='col-12' style={{marginTop: '10px'}}>
+                            <p>
+                              Donot reply if these keywords are used in the comment. Example 'When, Where, How'
+                            </p>
+                          </div>
+                          <div className='col-12'>
+                            <input type='text' className='form-control m-input m-input--square' value={this.state.excludedKeywords} onChange={this.excludedKeywordsChange} placeholder='Enter Keywords separated by {,}' />
+                          </div>
+                          <span className='m-form__help'>
+                            {
+                              this.state.keywordErrors.map((m, i) => (
+                                m.error === 'keywords' &&
+                                  <span style={{color: 'red', marginLeft: '20px'}}>{m.message}</span>
+                              ))
+                            }
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit'>
-                      { this.state.isEdit === 'false'
-                     ? <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                       <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
-                        Back
-                       </Link>
-                       <button className='btn btn-secondary' onClick={this.reset}>
-                        Reset
-                       </button>
-                       { this.props.pages && this.props.pages.length > 0 && !this.state.disabled
-                        ? <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' onClick={this.onPost}>
-                          <i className='fa fa-facebook' /> Post on Facebook
-                        </button>
-                        : <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' disabled>
-                          <i className='fa fa-facebook' /> Post on Facebook
-                        </button>
-                        }
-                     </div>
-                    : <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
-                      <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
-                         Back
-                      </Link>
-                      <button className='btn btn-primary' onClick={this.editPost}>
-                         Save
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    { this.state.isEdit === 'false'
+                   ? <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                     <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
+                      Back
+                     </Link>
+                     <button className='btn btn-secondary' onClick={this.reset}>
+                      Reset
+                     </button>
+                     { this.props.pages && this.props.pages.length > 0 && !this.state.disabled
+                      ? <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' onClick={this.onPost}>
+                        <i className='fa fa-facebook' /> Post on Facebook
                       </button>
-                    </div>
-                    }
-                    </div>
+                      : <button type='submit' style={{marginRight: '10px'}} className='btn btn-primary pull-right' disabled>
+                        <i className='fa fa-facebook' /> Post on Facebook
+                      </button>
+                      }
+                   </div>
+                  : <div style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                    <Link style={{marginRight: '10px', marginLeft: '30px'}} className='btn btn-primary' to='/commentCapture'>
+                       Back
+                    </Link>
+                    <button className='btn btn-primary' onClick={this.editPost}>
+                       Save
+                    </button>
+                  </div>
+                  }
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     )
   }
