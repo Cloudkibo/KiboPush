@@ -743,5 +743,6 @@ exports.applyTagFilterIfNecessary = applyTagFilterIfNecessary
 exports.applySurveyFilterIfNecessary = applySurveyFilterIfNecessary
 exports.applyPollFilterIfNecessary = applyPollFilterIfNecessary
 exports.getBatchData = getBatchData
+exports.prepareMessageData = prepareMessageData
 exports.uploadOnFacebook = uploadOnFacebook
 exports.addModuleIdIfNecessary = addModuleIdIfNecessary
