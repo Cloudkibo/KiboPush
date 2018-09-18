@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start:script": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-asad.ngrok.io node scripts/mongodb_script.js",
-    "start:sequence-script": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-asad.ngrok.io node scripts/sequenceMessageQueueScript.js",
+    "start:sequence-script": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-mehrish.ngrok.io node scripts/sequenceMessageQueueScript.js",
     "start:abandoned-script": "cross-env DEBUG=kibopush:* NODE_ENV=development DOMAIN=https://kibopush-dayem.ngrok.io node scripts/abandonedScript.js",
     "start:profile-script": "cross-env DEBUG=kibopush:* DOMAIN=https://kibopush-asad.ngrok.io node scripts/update_profile_pic_script.js",
     "start:cron_script": "sh cronjob_script",

@@ -199,15 +199,15 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} module={this.props.module} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState
         ? <div>
-          <Button button_id={this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button button_id={this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+            <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }

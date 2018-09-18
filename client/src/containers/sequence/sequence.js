@@ -59,7 +59,8 @@ class Sequence extends React.Component {
     this.closeDialogTrigger = this.closeDialogTrigger.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSaveTrigger = this.handleSaveTrigger.bind(this)
-    this.handleSequenceDropdown = this.handleSequenceDropdown.bind(this)
+    this.handleSequenceDropdown1 = this.handleSequenceDropdown1.bind(this)
+    this.handleSequenceDropdown2 = this.handleSequenceDropdown2.bind(this)
     this.handlePollsDropdown = this.handlePollsDropdown.bind(this)
     this.createSelectItems = this.createSelectItems.bind(this)
   }
@@ -158,26 +159,27 @@ class Sequence extends React.Component {
     })
     this.setState({sequenceList: sequenceList})
     let seqEvent = sequence.sequence.trigger.event
-    if (seqEvent === 'seen_all_sequence_messages') {
-      this.state.sequencesData.map((sequence2) => {
-        if (sequence.sequence.trigger.value === sequence2.sequence._id) {
-          this.setState({selectDropdownName: sequence2.sequence.name})
-        }
-      })
-    } else if (seqEvent === 'unsubscribes_from_other_sequence') {
-      this.state.sequencesData.map((sequence2) => {
-        if (sequence.sequence.trigger.value === sequence2.sequence._id) {
-          this.setState({selectDropdownName: sequence2.sequence.name})
-        }
-      })
-    } else if (seqEvent === 'responds_to_poll') {
-      this.setState({isShowPollsDropdown: true})
-      this.props.polls.map((poll) => {
+    // if (seqEvent === 'seen_all_sequence_messages') {
+    //   this.state.sequencesData.map((sequence2) => {
+    //     if (sequence.sequence.trigger.value === sequence2.sequence._id) {
+    //       this.setState({selectDropdownName: sequence2.sequence.name})
+    //     }
+    //   })
+    // } else if (seqEvent === 'unsubscribes_from_other_sequence') {
+    //   this.state.sequencesData.map((sequence2) => {
+    //     if (sequence.sequence.trigger.value === sequence2.sequence._id) {
+    //       this.setState({selectDropdownName: sequence2.sequence.name})
+    //     }
+    //   })
+    // }
+    if (seqEvent === 'responds_to_poll') {
+       this.setState({isShowPollsDropdown: true})
+       this.props.polls.map((poll) => {
         if (sequence.sequence.trigger.value === poll._id) {
           this.setState({selectDropdownName: poll.statement})
         }
       })
-    }
+     }
     this.setState({
       isShowModalTrigger: true,
       selectedSequenceId: sequence.sequence._id,
@@ -190,19 +192,21 @@ class Sequence extends React.Component {
   }
 
   handleChange (event) {
-    let selectedTriggerValue = event.target.attributes.getNamedItem('data-val').value
+    let selectedTriggerValue = event.target.attributes.getNamedItem('data-val') ? event.target.attributes.getNamedItem('data-val').nodeValue : 'id'
     let id = event.target.id
-    if (this.state.selectedDivId !== id) {
-      document.getElementById(id).style.background = 'rgb(194, 202, 214,0.7)'
-      document.getElementById(this.state.selectedDivId).style.background = 'rgb(255, 255, 255)'
-      this.setState({setSelected: true, selectedDivId: id})
-    } else {
-      document.getElementById(this.state.selectedDivId).style.background = 'rgb(194, 202, 214,0.7)'
-      this.setState({setSelected: true, selectedDivId: id})
+    if (id) {
+      if (this.state.selectedDivId !== id) {
+        document.getElementById(id).style.background = 'rgb(194, 202, 214,0.7)'
+        document.getElementById(this.state.selectedDivId).style.background = 'rgb(255, 255, 255)'
+        this.setState({setSelected: true, selectedDivId: id})
+      } else {
+        document.getElementById(this.state.selectedDivId).style.background = 'rgb(194, 202, 214,0.7)'
+        this.setState({setSelected: true, selectedDivId: id})
+      }
+      this.setState({
+        seqTriggerVal: selectedTriggerValue
+      })
     }
-    this.setState({
-      seqTriggerVal: selectedTriggerValue
-    })
     if (selectedTriggerValue === 'seen_all_sequence_messages') {
       this.setState({
         isShowSequenceDropDown: true,
@@ -237,7 +241,10 @@ class Sequence extends React.Component {
     }
   }
 
-  handleSequenceDropdown (event) {
+  handleSequenceDropdown1 (event) {
+    this.setState({ selectedDropdownVal: event.target.value })
+  }
+  handleSequenceDropdown2 (event) {
     this.setState({ selectedDropdownVal: event.target.value })
   }
 
@@ -269,12 +276,13 @@ class Sequence extends React.Component {
     }
     console.log('data' + JSON.stringify(data))
     this.props.updateTrigger(data, this.msg)
-    this.closeDialogTrigger()
     this.props.fetchAllSequence()
+    this.closeDialogTrigger()
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.sequences) {
+    console.log('nextprops in sequence', nextProps)
+    if (nextProps.sequences && nextProps.sequences.length > 0) {
       this.displayData(0, nextProps.sequences)
       this.setState({ totalLength: nextProps.sequences.length })
     }
@@ -347,7 +355,7 @@ class Sequence extends React.Component {
     // console.log('pages', pages)
     browserHistory.push({
       pathname: `/editSequence`,
-      state: { module: 'edit', name: sequence.name, _id: sequence._id }
+      state: { module: 'edit', name: sequence.name, _id: sequence._id, trigger: sequence.trigger.event }
     })
   }
 
@@ -416,55 +424,29 @@ class Sequence extends React.Component {
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div style={{backgroundColor: this.state.seqTriggerVal === 'subscribes_to_sequence' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}
                       id='1' data-val='subscribes_to_sequence' className='sequence-trigger-box' onClick={this.handleChange}>
-                      {/* <label className='sequence-radio-label'>
-                        <input className='sequence-radio'
-                          type='radio'
-                          value='subscribes_to_sequence'
-                          defaultChecked
-                          checked={this.state.seqTriggerVal === 'subscribes_to_sequence'}
-                          onChange={this.handleChange}
-                        />
-                        When subscriber subscribes to sequence
-                     </label> */}
                       When subscriber subscribes to sequence
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div id='2' data-val='subscriber_joins' className='sequence-trigger-box' onClick={this.handleChange}
                       style={{backgroundColor: this.state.seqTriggerVal === 'subscriber_joins' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
-                      {/* <label>
-                        <input className='sequence-radio'
-                          type='radio'
-                          value='subscriber_joins'
-                          checked={this.state.seqTriggerVal === 'subscriber_joins'}
-                          onChange={this.handleChange}
-                        />
-                        When subscriber joins
-                     </label> */}
                        When subscriber joins
+                       <br /> <br />
+                      <span style={{fontWeight: 'bold', fontSize:'11px'}}> Note: Messages of this sequence will be sent after welcome message</span>
+
                     </div>
                   </div>
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box' id='3' data-val='seen_all_sequence_messages' onClick={this.handleChange}
                       style={{backgroundColor: this.state.seqTriggerVal === 'seen_all_sequence_messages' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
-                      {/* <label>
-                        <input
-                          type='radio'
-                          value='seen_all_sequence_messages'
-                          checked={this.state.seqTriggerVal === 'seen_all_sequence_messages'}
-                          onChange={this.handleChange}
-                              />
-                        When subscriber has seen all the messages of specific sequence
-                     </label> */}
                        When subscriber has seen all the messages of specific sequence
                       {
                         this.state.isShowSequenceDropDown && this.state.sequenceList.length > 0 &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} value={this.state.selectedDropdownVal} >
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown1} value={this.state.selectedDropdownVal} defaultValue={this.state.selectedDropdownVal} >
 
                           {
                             this.state.sequenceList.map(function (sequence) {
-                              return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
-                                value={sequence.sequence._id}>{sequence.sequence.name}</option>
+                              return <option key={sequence.sequence._id} value={sequence.sequence._id}>{sequence.sequence.name}</option>
                             })
                           }
                         </select>
@@ -477,23 +459,14 @@ class Sequence extends React.Component {
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box' id='4' data-val='unsubscribes_from_other_sequence' onClick={this.handleChange}
                       style={{backgroundColor: this.state.seqTriggerVal === 'unsubscribes_from_other_sequence' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
-                      {/* <label>
-                        <input
-                          type='radio'
-                          value='unsubscribes_from_other_sequence'
-                          checked={this.state.seqTriggerVal === 'unsubscribes_from_other_sequence'}
-                          onChange={this.handleChange}
-                        />
-                       When subscriber unsubscribes from specific sequence
-                     </label> */}
                        When subscriber unsubscribes from specific sequence
                       {
                         this.state.isShowSequenceDropDownUnsub && this.state.sequenceList.length > 0 &&
-                        <select className='form-control m-input' onChange={this.handleSequenceDropdown} value={this.state.selectedDropdownVal}
+                        <select className='form-control m-input' onChange={this.handleSequenceDropdown2} value={this.state.selectedDropdownVal}
                         >
                           {
                             this.state.sequenceList.map(function (sequence) {
-                              return <option key={sequence.sequence._id} data-key={sequence.sequence._id}
+                              return <option key={sequence.sequence._id}
                                 value={sequence.sequence._id}>{sequence.sequence.name}</option>
                             })
                           }
@@ -504,22 +477,13 @@ class Sequence extends React.Component {
                   <div className='col-sm-4 col-md-4 col-lg-4'>
                     <div className='sequence-trigger-box' id='5' data-val='responds_to_poll' onClick={this.handleChange}
                       style={{backgroundColor: this.state.seqTriggerVal === 'responds_to_poll' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
-                      {/* <label>
-                        <input
-                          type='radio'
-                          value='responds_to_poll'
-                          checked={this.state.seqTriggerVal === 'responds_to_poll'}
-                          onChange={this.handleChange}
-                        />
-                       When subscriber responds to specific poll
-                     </label> */}
                        When subscriber responds to specific poll
                       {
                         this.state.isShowPollsDropdown && this.props.polls.length > 0 &&
-                        <select className='form-control m-input' onChange={this.handlePollsDropdown} value={this.state.selectedDropdownVal}>
+                        <select className='form-control m-input' onChange={this.handlePollsDropdown} value={this.state.selectedDropdownVal} >
                           {
                             this.props.polls.map(function (poll) {
-                              return <option key={poll._id} data-key={poll._id}
+                              return <option key={poll._id}
                                 value={poll._id}>{poll.statement}</option>
                             })
                           }
@@ -591,7 +555,7 @@ class Sequence extends React.Component {
                             this.state.sequencesData && this.state.sequencesData.length > 0
                               ? <div>{
                                 this.state.sequencesData.map((sequence, i) => (
-                                  <div key={i} className='sequence-box'>
+                                  <div key={i} className='sequence-box' style={{height: '10em'}}>
                                     <div className='sequence-close-icon' onClick={() => this.showDialogDelete(sequence.sequence._id)} />
 
                                     <span>
@@ -601,13 +565,13 @@ class Sequence extends React.Component {
                                       <br />
                                       <span>
                                         <span>Trigger</span>:
-                                      <span className='sequence-trigger' style={{ marginLeft: '10px' }}>
+                                      <span className='sequence-trigger' style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '15px' }}>
                                         {
                                             sequence.sequence.trigger.event === 'subscribes_to_sequence' ? 'When subscriber subscribes to sequence'
                                             : sequence.sequence.trigger.event === 'subscriber_joins' ? 'When Subscriber joins'
                                             : sequence.sequence.trigger.event === 'seen_all_sequence_messages' ? 'When Subscriber has seen all messages of specific sequence'
                                             : sequence.sequence.trigger.event === 'unsubscribes_from_other_sequence' ? 'When Subscriber unsubscribes from specific sequence'
-                                            : sequence.sequence.trigger.event === 'responds_to_poll' ? 'When Subscriber responds to specific poll' : 'When subscriber subscribes to sequence'
+                                            : sequence.sequence.trigger.event === 'responds_to_poll' ? 'When Subscriber responds to specific poll' : 'None'
 
                                           }
                                       </span>
@@ -617,19 +581,19 @@ class Sequence extends React.Component {
                                       </span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '20%' }}>
+                                    <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '65%'}}>
                                       <span className='sequence-number'>{sequence.subscribers.length}</span>
                                       <br />
                                       <span>Subscribers</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '5%' }}>
+                                    <span className='sequence-text sequence-centered-text' style={{position: 'absolute', left: '77%'}}>
                                       <span className='sequence-number'>{sequence.messages.length}</span>
                                       <br />
                                       <span>Messages</span>
                                     </span>
 
-                                    <span className='sequence-text sequence-centered-text' style={{ marginLeft: '10%', cursor: 'pointer' }} onClick={() => this.goToEdit(sequence.sequence)}>
+                                    <span className='sequence-text sequence-centered-text' style={{ position: 'absolute', left: '90%', cursor: 'pointer', top: '40%' }} onClick={() => this.goToEdit(sequence.sequence)}>
                                       <i className='fa fa-edit' style={{ fontSize: '24px' }} />
                                       <br />
                                       <span>Edit</span>
