@@ -612,7 +612,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
                                     </div>
                                   </div>
@@ -620,7 +620,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, <Image id={timeStamp} key={timeStamp} handleImage={this.handleImage} onRemove={this.removeComponent} />]}); this.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                       <h6>Image</h6>
                                     </div>
                                   </div>
@@ -628,7 +628,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
                                     </div>
                                   </div>
@@ -636,7 +636,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                       <h6>Gallery</h6>
                                     </div>
                                   </div>
@@ -646,7 +646,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, <Audio id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                       <h6>Audio</h6>
                                     </div>
                                   </div>
@@ -654,7 +654,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, <Video id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'video', fileurl: ''}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                       <h6>Video</h6>
                                     </div>
                                   </div>
@@ -662,7 +662,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, <File id={timeStamp} key={timeStamp} handleFile={this.handleFile} onRemove={this.removeComponent} />]}); this.handleFile({id: timeStamp, componentType: 'file', fileurl: ''}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                                       <h6>File</h6>
                                     </div>
                                   </div>
@@ -670,7 +670,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                       <h6>List</h6>
                                     </div>
                                   </div>
@@ -680,7 +680,7 @@ class CreateConvo extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
                                     <div className='align-center'>
-                                      <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                       <h6>Media</h6>
                                     </div>
                                   </div>

@@ -13,6 +13,7 @@ import {
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import AlertContainer from 'react-alert'
 
 class Members extends React.Component {
   constructor (props, context) {
@@ -70,16 +71,16 @@ class Members extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/theme-plugins.js')
     // document.body.appendChild(addScript)
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     document.title = 'KiboPush | Members'
     this.scrollToTop()
@@ -92,7 +93,7 @@ class Members extends React.Component {
       userId: member.userId._id,
       companyId: member.companyId,
       domain_email: member.domain_email
-    })
+    }, this.msg)
   }
 
   updateRole (member, role) {
@@ -107,8 +108,16 @@ class Members extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'top right',
+      theme: 'dark',
+      time: 3000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-grid__item m-grid__item--fluid m-wrapper'>

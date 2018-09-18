@@ -144,6 +144,7 @@ class Card extends React.Component {
         title: this.state.title,
         description: this.state.subtitle,
         buttons: temp})
+      console.log('after add button: ', temp)
     })
   }
 
@@ -242,7 +243,7 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
             : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
            }
           </div>

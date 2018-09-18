@@ -188,7 +188,7 @@ class FacebookPosts extends React.Component {
                 <i className='flaticon-technology m--font-accent' />
               </div>
               <div className='m-alert__text'>
-                Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/commentCapture' target='_blank'>documentation</a>.
+                Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
               </div>
             </div>
             <div className='row'>
@@ -207,7 +207,7 @@ class FacebookPosts extends React.Component {
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create New Facebook Post
+                            Create New
                           </span>
                         </span>
                       </Link>
@@ -224,25 +224,25 @@ class FacebookPosts extends React.Component {
                         <thead className='m-datatable__head'>
                           <tr className='m-datatable__row'
                             style={{height: '53px'}}>
-                            <th data-field='posts' style={{width: 150}}
+                            <th data-field='posts'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span >Posts</span>
+                              <span style={{width: '150px'}}>Posts</span>
                             </th>
-                            <th data-field='reply' style={{width: 150}}
+                            <th data-field='reply'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span>Reply</span>
+                              <span style={{width: '150px'}}>Reply</span>
                             </th>
-                            <th data-field='commentsCount' style={{width: 100}}
+                            <th data-field='commentsCount'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span>Comments Count</span>
+                              <span style={{width: '100px'}}>Comments Count</span>
                             </th>
-                            <th data-field='dateCreated' style={{width: 100}}
+                            <th data-field='dateCreated'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span >Date Created</span>
+                              <span style={{width: '100px'}}>Date Created</span>
                             </th>
-                            <th data-field='dateCreated' style={{width: 150}}
+                            <th data-field='dateCreated'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span >Actions</span>
+                              <span style={{width: '150px'}}>Actions</span>
                             </th>
                           </tr>
                         </thead>
@@ -252,12 +252,12 @@ class FacebookPosts extends React.Component {
                             <tr data-row={i}
                               className='m-datatable__row m-datatable__row--even'
                               style={{height: '55px'}} key={i}>
-                              <td data-field='post' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{this.getPostText(post.payload)}</span></td>
-                              <td data-field='keywords' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span>{post.reply}</span></td>
-                              <td data-field='commentsCount' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{post.count ? post.count : '0'}</span></td>
-                              <td data-field='dateCreated' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{handleDate(post.datetime)}</span></td>
-                              <td data-field='actions' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'>
-                                <span>
+                              <td data-field='post' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.getPostText(post.payload)}</span></td>
+                              <td data-field='keywords' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{post.reply}</span></td>
+                              <td data-field='commentsCount' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.count ? post.count : '0'}</span></td>
+                              <td data-field='dateCreated' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
+                              <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '150px'}}>
                                   <Link to='/createPost' className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                       Edit
                                   </Link>

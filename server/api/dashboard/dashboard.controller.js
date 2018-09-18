@@ -37,6 +37,7 @@ exports.index = function (req, res) {
 }
 
 exports.sentVsSeen = function (req, res) {
+  let pageId = req.params.pageId
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -52,7 +53,7 @@ exports.sentVsSeen = function (req, res) {
     }
     pageBroadcast.aggregate(
       [
-        {$match: {companyId: companyUser.companyId}},
+        {$match: {companyId: companyUser.companyId, pageId: pageId}},
         {$group: {_id: null, count: {$sum: 1}}}
       ], (err, broadcastSentCount) => {
       if (err) {
@@ -64,7 +65,7 @@ exports.sentVsSeen = function (req, res) {
       }
       pageBroadcast.aggregate(
         [
-            {$match: {seen: true, companyId: companyUser.companyId}},
+            {$match: {seen: true, companyId: companyUser.companyId, pagedId: pageId} },
             {$group: {_id: null, count: {$sum: 1}}}
         ], (err, broadcastSeenCount) => {
         if (err) {
@@ -76,7 +77,7 @@ exports.sentVsSeen = function (req, res) {
         }
         pageSurvey.aggregate(
           [
-                {$match: {companyId: companyUser.companyId}},
+                {$match: {companyId: companyUser.companyId, pagedId: pageId}},
                 {$group: {_id: null, count: {$sum: 1}}}
           ], (err, surveySentCount) => {
           if (err) {
@@ -88,7 +89,7 @@ exports.sentVsSeen = function (req, res) {
           }
           pageSurvey.aggregate(
             [
-                    {$match: {seen: true, companyId: companyUser.companyId}},
+                    {$match: {seen: true, companyId: companyUser.companyId, pageId: pageId}},
                     {$group: {_id: null, count: {$sum: 1}}}
             ], (err, surveySeenCount) => {
             if (err) {
@@ -100,7 +101,7 @@ exports.sentVsSeen = function (req, res) {
             }
             pagePoll.aggregate(
               [
-                        {$match: {companyId: companyUser.companyId}},
+                        {$match: {companyId: companyUser.companyId, pageId: pageId}},
                         {$group: {_id: null, count: {$sum: 1}}}
               ], (err, pollSentCount) => {
               if (err) {
@@ -112,7 +113,7 @@ exports.sentVsSeen = function (req, res) {
               }
               pagePoll.aggregate(
                 [
-                            {$match: {seen: true, companyId: companyUser.companyId}},
+                            {$match: {seen: true, companyId: companyUser.companyId, pageId: pageId}},
                             {$group: {_id: null, count: {$sum: 1}}}
                 ], (err, pollSeenCount) => {
                 if (err) {
@@ -381,40 +382,42 @@ exports.stats = function (req, res) {
                         } else {
                           currentUser = connectedUser
                         }
-                        needle.get(
-                          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
-                          (err, resp) => {
-                            if (err) {
-                              logger.serverLog(TAG,
-                                `Page access token from graph api error ${JSON.stringify(
-                                  err)}`)
-                            }
-                            if (resp.body && resp.body.access_token) {
-                              needle.get(
-                              `https://graph.facebook.com/v2.11/me/messaging_feature_review?access_token=${resp.body.access_token}`,
-                              (err, respp) => {
-                                if (err) {
-                                  logger.serverLog(TAG,
-                                    `Page access token from graph api error ${JSON.stringify(
-                                      err)}`)
-                                }
-                                if (respp.body && respp.body.data && respp.body.data.length > 0) {
-                                  for (let a = 0; a < respp.body.data.length; a++) {
-                                    if (respp.body.data[a].feature === 'subscription_messaging' && respp.body.data[a].status === 'approved') {
-                                      Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
-                                        if (err) {
-                                          res.status(500).json({
-                                            status: 'Failed',
-                                            description: 'Failed to update record'
+                        if (req.user.facebookInfo) {
+                          needle.get(
+                            `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                            (err, resp) => {
+                              if (err) {
+                                logger.serverLog(TAG,
+                                  `Page access token from graph api error ${JSON.stringify(
+                                    err)}`)
+                              }
+                              if (resp && resp.body && resp.body.access_token) {
+                                needle.get(
+                                  `https://graph.facebook.com/v2.11/me/messaging_feature_review?access_token=${resp.body.access_token}`,
+                                  (err, respp) => {
+                                    if (err) {
+                                      logger.serverLog(TAG,
+                                        `Page access token from graph api error ${JSON.stringify(
+                                          err)}`)
+                                    }
+                                    if (respp.body && respp.body.data && respp.body.data.length > 0) {
+                                      for (let a = 0; a < respp.body.data.length; a++) {
+                                        if (respp.body.data[a].feature === 'subscription_messaging' && respp.body.data[a].status === 'approved') {
+                                          Pages.update({_id: req.body._id}, {gotPageSubscriptionPermission: true}, (err, updated) => {
+                                            if (err) {
+                                              res.status(500).json({
+                                                status: 'Failed',
+                                                description: 'Failed to update record'
+                                              })
+                                            }
                                           })
                                         }
-                                      })
+                                      }
                                     }
-                                  }
-                                }
-                              })
-                            }
-                          })
+                                  })
+                              }
+                            })
+                        }
                       })
                     }
                   })

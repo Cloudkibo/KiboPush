@@ -30,7 +30,7 @@ exports.create = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  req.body.agentIds.forEach(agentId => {
+  req.body.agentIds.forEach((agentId,i) => {
     const notification = new Notifications({
       message: req.body.message,
       category: req.body.category,
@@ -43,7 +43,10 @@ exports.create = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'Broadcasts not created'})
       }
-      return res.status(200).json({status: 'success', payload: savedNotification})
+      if (i === (req.body.agentIds.length - 1)) {
+        return res.status(200).json({status: 'success', payload: savedNotification})
+      }
+      
     })
   })
 }

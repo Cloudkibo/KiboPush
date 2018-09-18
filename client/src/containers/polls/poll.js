@@ -164,16 +164,16 @@ class Poll extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/theme-plugins.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
   }
 
@@ -315,12 +315,19 @@ class Poll extends React.Component {
                   <div className='m-portlet__head-tools'>
                     {
                       this.props.subscribers && this.props.subscribers.length === 0
-                      ? <span />
+                      ? <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Create New
+                          </span>
+                        </span>
+                      </button>
                       : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create Poll
+                            Create New
                           </span>
                         </span>
                       </button>

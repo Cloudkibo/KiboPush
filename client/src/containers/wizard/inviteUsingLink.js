@@ -9,12 +9,14 @@ import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import { updateChecks } from '../../redux/actions/wizard.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
@@ -27,23 +29,27 @@ class InviteSubscribers extends React.Component {
       copied: false,
       selectPage: {},
       selectedTab: 'becomeSubscriber',
-      sendTestMessage: false
+      sendTestMessage: false,
+      isShowingModal: (props.location && props.location.state)
     }
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
     this.setPage = this.setPage.bind(this)
     this.setLink = this.setLink.bind(this)
     this.setSubscriber = this.setSubscriber.bind(this)
     this.sendTestMessage = this.sendTestMessage.bind(this)
     this.sendTestBroadcast = this.sendTestBroadcast.bind(this)
     this.generateAlert = this.generateAlert.bind(this)
-    this.goBack = this.goBack.bind(this)
   }
 
-  goBack () {
-    browserHistory.push({
-      pathname: '/addPageWizard',
-      state: 'history'
-    })
+  showDialog () {
+    this.setState({isShowingModal: true})
   }
+
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
+
   getlink () {
     let linkurl = 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweb.facebook.com%2F' +
       this.state.selectPage.pageName + '-' +
@@ -86,9 +92,10 @@ class InviteSubscribers extends React.Component {
     document.title = 'KiboPush | Getting Started'
     var addScript = document.createElement('script')
     addScript.setAttribute('type', 'text/javascript')
-    addScript.setAttribute('src', '../../../public/assets/demo/default/custom/components/base/toastr.js')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')
     addScript.type = 'text/javascript'
     document.body.appendChild(addScript)
+    this.props.updateChecks({wizardSeen: true})
     if (this.props.location.state && this.props.location.state.pageUserName) {
       this.setState({
         fblink: `https://m.me/${this.props.location.state.pageUserName}`,
@@ -181,19 +188,42 @@ class InviteSubscribers extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <h3>Welcome to KiboPush</h3>
+              <p>Thank you for joining us. This wizard will walk you through the basic features of KiboPush and help you setup your account.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <Link style={{color: 'white'}} onClick={this.closeDialog} className='btn btn-primary'>
+                    Continue
+                  </Link>
+                </div>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <Link to='/dashboard' className='btn btn-secondary'>
+                    Skip
+                  </Link>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <Header />
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='2' user={this.props.user} />
+                  <Sidebar step='1' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Step 2: Invite Subscribers
+                            Step 1: Invite Subscribers
                           </h3>
                         </div>
                       </div>
@@ -343,14 +373,7 @@ class InviteSubscribers extends React.Component {
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                       <div className='m-form__actions'>
                         <div className='row'>
-                          <div className='col-lg-6 m--align-left' >
-                            <button onClick={this.goBack} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                              <span>
-                                <i className='la la-arrow-left' />
-                                <span>Back</span>&nbsp;&nbsp;
-                              </span>
-                            </button>
-                          </div>
+                          <div className='col-lg-6 m--align-left' />
                           <div className='col-lg-6 m--align-right'>
                             <Link to='/greetingTextWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
@@ -383,7 +406,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList, clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast}, dispatch)
+  return bindActionCreators({loadMyPagesList: loadMyPagesList, clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast, updateChecks: updateChecks}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InviteSubscribers)

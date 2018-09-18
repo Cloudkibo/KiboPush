@@ -226,7 +226,7 @@ class CreateTeam extends React.Component {
                             this.state.agentIds.map((agent, i) => (
                               <li className='m-nav__item'>
                                 <span>
-                                  <img alt='pic' style={{height: '30px'}} src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                                  <img alt='pic' style={{height: '30px'}} src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{agent.userId.name}</span>&nbsp;&nbsp;&nbsp;
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent.userId.name)} />
                                 </span>
@@ -297,7 +297,7 @@ class CreateTeam extends React.Component {
                             this.state.pageIds.map((page, i) => (
                               <li className='m-nav__item'>
                                 <span>
-                                  <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'icons/users.jpg'} />&nbsp;&nbsp;
+                                  <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page.pageName)} />
                                 </span>

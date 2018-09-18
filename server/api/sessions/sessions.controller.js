@@ -119,14 +119,14 @@ exports.getNewSessions = function (req, res) {
       status: 'new'
     }
     let sortCriteria = {
-      request_time: 1
+      last_activity_time: -1
     }
     if (req.body.filter && req.body.filter_criteria.page_value !== '') {
       findCriteria = Object.assign(findCriteria, {page_id: req.body.filter_criteria.page_value})
     }
     if (req.body.filter) {
       sortCriteria = {
-        request_time: req.body.filter_criteria.sort_value
+        last_activity_time: req.body.filter_criteria.sort_value
       }
     }
     if (!req.body.first_page) {
@@ -741,7 +741,7 @@ exports.assignAgent = function (req, res) {
 
     Sessions.update(
       {_id: req.body.sessionId},
-      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+      {assigned_to: assignedTo, is_assigned: req.body.isAssigned}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
@@ -796,7 +796,7 @@ exports.assignTeam = function (req, res) {
 
     Sessions.update(
       {_id: req.body.sessionId},
-      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+      {assigned_to: assignedTo, is_assigned: req.body.isAssigned}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }

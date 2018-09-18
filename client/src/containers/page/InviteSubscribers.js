@@ -134,10 +134,12 @@ class InviteSubscribers extends React.Component {
                   <form className='m-form m-form--fit m-form--label-align-right'>
                     <div className='m-portlet__body'>
                       <div className='form-group m-form__group row'>
-                        <label className='col-2 col-form-label'>
-                          Change Page
-                        </label>
-                        <div className='col-10'>
+                        <div className='col-md-2'>
+                          <label className='form-label'>
+                            Change Page
+                          </label>
+                        </div>
+                        <div className='col-md-10'>
                           <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
                             {
                               this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (

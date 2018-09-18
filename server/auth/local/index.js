@@ -30,6 +30,7 @@ router.post('/', function (req, res, next) {
           description: 'No account found with this email address.'
         })
       }
+      user = user.toObject()
       if (user.domain !== req.body.domain.toLowerCase()) {
         return res.status(401)
         .json({
@@ -90,27 +91,27 @@ router.post('/', function (req, res, next) {
           })
           .fail(e => {
             logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-            User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+            // User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
+            //   if (err) {
+            //     logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+            //   }
+            passport.authenticate('local', function (err, user, info) {
+              let error = err || info
+              if (error) return res.status(401).json(error)
+              if (!user) {
+                return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
               }
-              passport.authenticate('local', function (err, user, info) {
-                let error = err || info
-                if (error) return res.status(401).json(error)
-                if (!user) {
-                  return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
-                }
 
-                let token = auth.signToken(user._id)
-                res.json({token: token})
-                if (user.facebookInfo) {
-                  auth.fetchPages(`https://graph.facebook.com/v2.10/${
+              let token = auth.signToken(user._id)
+              res.json({token: token})
+              if (user.facebookInfo) {
+                auth.fetchPages(`https://graph.facebook.com/v2.10/${
                     user.facebookInfo.fbId}/accounts?access_token=${
                     user.facebookInfo.fbToken}`, user)
-                }
-              })(req, res, next)
-            })
+              }
+            })(req, res, next)
           })
+          // })
           } else {
             passport.authenticate('local', function (err, user, info) {
               let error = err || info
@@ -188,27 +189,27 @@ router.post('/', function (req, res, next) {
             })
             .fail(e => {
               logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-              User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+              // User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
+              //   if (err) {
+              //     logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+              //   }
+              passport.authenticate('local', function (err, user, info) {
+                let error = err || info
+                if (error) return res.status(401).json(error)
+                if (!user) {
+                  return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
                 }
-                passport.authenticate('local', function (err, user, info) {
-                  let error = err || info
-                  if (error) return res.status(401).json(error)
-                  if (!user) {
-                    return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
-                  }
 
-                  let token = auth.signToken(user._id)
-                  res.json({token: token})
-                  if (user.facebookInfo) {
-                    auth.fetchPages(`https://graph.facebook.com/v2.10/${
+                let token = auth.signToken(user._id)
+                res.json({token: token})
+                if (user.facebookInfo) {
+                  auth.fetchPages(`https://graph.facebook.com/v2.10/${
                       user.facebookInfo.fbId}/accounts?access_token=${
                       user.facebookInfo.fbToken}`, user)
-                  }
-                })(req, res, next)
-              })
+                }
+              })(req, res, next)
             })
+            // })
           } else {
             passport.authenticate('local', function (err, user, info) {
               let error = err || info

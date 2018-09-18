@@ -517,7 +517,7 @@ exports.editButton = function (req, res) {
     title: req.body.title,
     type: req.body.type
   }
-  if (req.body.type === 'web_url') {
+  if (req.body.type === 'web_url' && req.body.oldUrl) {
     // TODO save module id when sending broadcast
     let temp = req.body.oldUrl.split('/')
     let id = temp[temp.length - 1]

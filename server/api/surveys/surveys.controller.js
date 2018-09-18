@@ -79,7 +79,7 @@ exports.allSurveys = function (req, res) {
               }
               res.status(200).json({
                 status: 'success',
-                payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+                payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 && surveysCount.length > 0 ? surveysCount[0].count : ''}
               })
             })
           })
@@ -126,7 +126,7 @@ exports.allSurveys = function (req, res) {
               }
               res.status(200).json({
                 status: 'success',
-                payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+                payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 && surveysCount.length > 0 ? surveysCount[0].count : ''}
               })
             })
           })
@@ -173,7 +173,7 @@ exports.allSurveys = function (req, res) {
               }
               res.status(200).json({
                 status: 'success',
-                payload: {surveys: surveys.reverse(), surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 ? surveysCount[0].count : ''}
+                payload: {surveys: surveys.reverse(), surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 && surveysCount.length > 0 ? surveysCount[0].count : ''}
               })
             })
           })

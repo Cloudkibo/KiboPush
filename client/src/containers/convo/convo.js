@@ -298,7 +298,7 @@ class Convo extends React.Component {
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                Create New Broadcast
+                                Create New
                               </span>
                             </span>
                           </button>
@@ -307,7 +307,7 @@ class Convo extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create New Broadcast
+                              Create New
                             </span>
                           </span>
                         </button>
@@ -408,29 +408,29 @@ class Convo extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='platform' style={{width: 100}}
+                          <th data-field='platform'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span >Title</span>
+                            <span style={{width: '100px'}}>Title</span>
                           </th>
-                          <th data-field='statement' style={{width: 120}}
+                          <th data-field='statement'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Type</span>
+                            <span style={{width: '120px'}}>Type</span>
                           </th>
-                          <th data-field='datetime' style={{width: 100}}
+                          <th data-field='datetime'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Created At</span>
+                            <span style={{width: '100px'}}>Created At</span>
                           </th>
-                          <th data-field='sent' style={{width: 100}}
+                          <th data-field='sent'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span >Sent</span>
+                            <span style={{width: '100px'}}>Sent</span>
                           </th>
-                          <th data-field='seen' style={{width: 100}}
+                          <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Seen</span>
+                            <span style={{width: '100px'}}>Seen</span>
                           </th>
-                          <th data-field='clicks' style={{width: 100}}
+                          <th data-field='clicks'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Clicks</span>
+                            <span style={{width: '100px'}}>Clicks</span>
                           </th>
                         </tr>
                       </thead>
@@ -440,17 +440,12 @@ class Convo extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
-                            <td data-field='type' style={{width: 120, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
-                            <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
-                            <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
-                            <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
-                              <span >
-                                {broadcast.seen}
-
-                              </span>
-                            </td>
-                            <td data-field='clicks' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.clicks ? broadcast.clicks : 0}</span></td>
+                            <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
+                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                            <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
+                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>
+                            <td data-field='clicks' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.clicks ? broadcast.clicks : 0}</span></td>
                           </tr>
                         ))
                       }

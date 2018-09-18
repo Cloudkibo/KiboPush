@@ -9,44 +9,37 @@ import { Link } from 'react-router'
 class PageLikesSubscribers extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {
-      selectedPage: this.props.connectedPages[0].pageName,
-      likes: this.props.connectedPages[0].likes,
-      subscribers: this.props.connectedPages[0].subscribers,
-      unsubscribes: this.props.connectedPages[0].unsubscribes,
-      showDropDown: false
-    }
-    this.showDropDown = this.showDropDown.bind(this)
-    this.hideDropDown = this.hideDropDown.bind(this)
-    this.changePage = this.changePage.bind(this)
+    //this.showDropDown = this.showDropDown.bind(this)
+    //this.hideDropDown = this.hideDropDown.bind(this)
+    //this.changePage = this.changePage.bind(this)
   }
 
-  showDropDown () {
-    this.setState({showDropDown: true})
-  }
+  // showDropDown () {
+  //   this.setState({showDropDown: true})
+  // }
 
-  hideDropDown () {
-    this.setState({showDropDown: false})
-  }
+  // hideDropDown () {
+  //   this.setState({showDropDown: false})
+  // }
 
-  changePage (page) {
-    var index = 0
-    for (var i = 0; i < this.props.connectedPages.length; i++) {
-      if (page === this.props.connectedPages[i].pageName) {
-        index = i
-        break
-      }
-    }
-    this.setState({
-      selectedPage: this.props.connectedPages[index].pageName,
-      likes: this.props.connectedPages[index].likes,
-      subscribers: this.props.connectedPages[index].subscribers,
-      unsubscribes: this.props.connectedPages[index].unsubscribes
-    })
-  }
+  // changePage (page) {
+  //   let index = 0
+  //   for (let i = 0; i < this.props.connectedPages.length; i++) {
+  //     if (page === this.props.connectedPages[i].pageName) {
+  //       index = i
+  //       break
+  //     }
+  //   }
+  //   this.setState({
+  //     selectedPage: this.props.connectedPages[index].pageName,
+  //     likes: this.props.connectedPages[index].likes,
+  //     subscribers: this.props.connectedPages[index].subscribers,
+  //     unsubscribes: this.props.connectedPages[index].unsubscribes
+  //   })
+  // }
 
   render () {
-    var convertRate = this.state.likes ? ((this.state.subscribers / this.state.likes) * 100).toFixed(1) + '%' : '0%'
+    var convertRate = this.props.pageLikesSubscribes.likes ? ((this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100).toFixed(1) + '%' : '0%'
     return (
       <div className='col-xl-6'>
         <div className='m-portlet m-portlet--full-height m-portlet--skin-light m-portlet--fit'>
@@ -54,11 +47,11 @@ class PageLikesSubscribers extends React.Component {
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
                 <h3 className='m-portlet__head-text substring-dashboard'>
-                  {this.state.selectedPage}
+                  {this.props.pageLikesSubscribes.selectedPage ? this.props.pageLikesSubscribes.selectedPage : this.props.firstPage.pageName}
                 </h3>
               </div>
             </div>
-            <div className='m-portlet__head-tools'>
+            {/* <div className='m-portlet__head-tools'>
               <ul className='m-portlet__nav'>
                 <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                   <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
@@ -102,7 +95,7 @@ class PageLikesSubscribers extends React.Component {
                   }
                 </li>
               </ul>
-            </div>
+            </div> */}
           </div>
           <div className='m-portlet__body'>
             <div className='m-widget21'>
@@ -117,7 +110,7 @@ class PageLikesSubscribers extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {this.state.subscribers}
+                          {this.props.pageLikesSubscribes.subscribers ? this.props.pageLikesSubscribes.subscribers : this.props.firstPage.subscribers }
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -137,7 +130,7 @@ class PageLikesSubscribers extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {this.state.likes}
+                          {this.props.pageLikesSubscribes.likes ? this.props.pageLikesSubscribes.likes : this.props.firstPage.likes}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -157,7 +150,7 @@ class PageLikesSubscribers extends React.Component {
                       </span>
                       <div className='m-widget21__info'>
                         <span className='m-widget21__title'>
-                          {this.state.unsubscribes}
+                          {this.props.pageLikesSubscribes.unsubscribes ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -179,7 +172,7 @@ class PageLikesSubscribers extends React.Component {
                   </span>
                   <div className='m--space-10' />
                   <div className='progress m-progress--sm' style={{height: '6px'}}>
-                    <div className='progress-bar bg-success' role='progressbar' style={{width: convertRate}} aria-valuenow={(this.state.subscribers / this.state.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
+                    <div className='progress-bar bg-success' role='progressbar' style={{width: convertRate}} aria-valuenow={(this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
                   </div>
                 </div>
               </div>

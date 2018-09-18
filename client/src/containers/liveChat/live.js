@@ -50,7 +50,7 @@ class LiveChat extends React.Component {
       ignore: true,
       searchValue: '',
       filterValue: '',
-      sortValue: 1,
+      sortValue: -1,
       showDropDown: false,
       isShowingModalGuideLines: false,
       tabValue: 'open',
@@ -163,8 +163,21 @@ class LiveChat extends React.Component {
 
   handleSort (value) {
     this.setState({sortValue: value, filter: true})
-    this.props.fetchCloseSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
-    this.props.fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: true, filter_criteria: {sort_value: value, page_value: this.state.filterValue, search_value: this.state.searchValue}})
+    if (value === -1) {
+      this.props.openSessions.sort(function (a, b) {
+        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+      })
+      this.props.closeSessions.sort(function (a, b) {
+        return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+      })
+    } else if (value === 1) {
+      this.props.openSessions.sort(function (a, b) {
+        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
+      })
+      this.props.closeSessions.sort(function (a, b) {
+        return new Date(a.last_activity_time) - new Date(b.last_activity_time)
+      })
+    }
   }
 
   handleFilter (value) {
@@ -382,7 +395,7 @@ class LiveChat extends React.Component {
                                             <li className='m-nav__item'>
                                               <a onClick={() => this.handleSort(1)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                 {
-                                                  this.state.sortValue === 'old'
+                                                  this.state.sortValue === 1
                                                   ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                     <i className='la la-check' /> Oldest to Newest
                                                   </span>
@@ -395,7 +408,7 @@ class LiveChat extends React.Component {
                                             <li className='m-nav__item'>
                                               <a onClick={() => this.handleSort(-1)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                                 {
-                                                  this.state.sortValue === 'new'
+                                                  this.state.sortValue === -1
                                                   ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                     <i className='la la-check' /> Newest to Oldest
                                                   </span>
@@ -427,6 +440,13 @@ class LiveChat extends React.Component {
                                                 </li>
                                               ))
                                             }
+                                            <li className='m-nav__item'>
+                                              <a onClick={() => this.handleFilter('')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                                <span className='m-nav__link-text'>
+                                                  All
+                                                </span>
+                                              </a>
+                                            </li>
                                             <li className='m-nav__separator m-nav__separator--fit' />
                                             <li className='m-nav__item'>
                                               {
