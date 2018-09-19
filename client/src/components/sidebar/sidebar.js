@@ -100,7 +100,6 @@ class Sidebar extends Component {
     }
   }
 
-
   showOperationalDashboard () {
     if (this.props.user) {
       if (this.props.user.isSuperUser) {
@@ -749,37 +748,25 @@ class Sidebar extends Component {
         <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
           <div
             id='m_ver_menu'
-            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark'
-            data-menu-vertical='true'
-            data-menu-scrollable='false'>
-            {this.props.user &&
-            <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-              {this.showOperationalDashboard()}
-              {this.showDashboard()}
-              {this.showBroadcastsItem()}
-              {this.showCommentCapture()}
-              {this.showSurveysItem()}
-              {this.showPollsItem()}
-              {this.showAbandonedCarts()}
-              {this.showSmartRespliesItem()}
-              {this.showLiveChatItem()}
-              {this.showAutoPostingItem()}
-              {this.showPersistentMenuItem()}
-              {this.showPagesItem()}
-              {this.showSubscribersItem()}
-              {this.showSequenceMessaging()}
-              {this.showCreatePhoneList()}
-              {this.showInviteMembersItem()}
-              {this.showMembersItem()}
-              {this.showTeams()}
-              {this.showBroadcastTemplates()}
-              {this.props.user && this.props.user.advancedMode && this.state.phoneNumber && this.props.user.plan.customer_matching &&
-                <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-                  <Link to='/customerMatchingUsingPhNum' className='m-menu__link m-menu__toggle'>
-                    <i className='m-menu__link-icon flaticon-list-3' title='Invite using phone number' />
-                    <span className='m-menu__link-text'>Invite using phone number</span>
-                  </Link>
-                </li>
+            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide'
+            data-menu-vertical='1'
+            data-menu-scrollable='1'>
+            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{maxHeight: 'none'}}>
+              <div id='mCSB_2_container' className='mCSB_container' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
+                {this.props.user &&
+                <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+                  {this.showOperationalDashboard()}
+                  {this.showDashboard()}
+                  {this.showSubscribersItem()}
+                  {this.showBroadcastingItems()}
+                  {this.showLiveChatItem()}
+                  {this.showAutomationItems()}
+                  {this.showGrowthToolsItems()}
+                  {this.showManagePagesItems()}
+                  {this.showOrganizationItems()}
+                  {this.showSettings()}
+                  {this.showUserGuide()}
+                </ul>
               }
               </div>
             </div>
