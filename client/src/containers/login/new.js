@@ -176,7 +176,7 @@ class Login extends React.Component {
                 </div>
                 <br />
                 {/* <div className='m-login__account'>
-                  <span className='m-login__account-msg'>Dont have an account yet ?</span>&nbsp;&nbsp;
+                  <span className='m-login__account-msg'>Don't have an account yet ?</span>&nbsp;&nbsp;
                   <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
                 </div> */}
                 <br />
