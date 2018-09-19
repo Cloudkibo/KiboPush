@@ -175,10 +175,10 @@ class Login extends React.Component {
                   <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
                 </div>
                 <br />
-                <div className='m-login__account'>
+                {/* <div className='m-login__account'>
                   <span className='m-login__account-msg'>Dont have an account yet ?</span>&nbsp;&nbsp;
                   <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
-                </div>
+                </div> */}
                 <br />
                 <div className='m-login__account'>
                   <span className='m-login__account-msg'>Want to learn more about KiboPush ?</span>&nbsp;&nbsp;
