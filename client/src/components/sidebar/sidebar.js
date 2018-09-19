@@ -100,7 +100,6 @@ class Sidebar extends Component {
     }
   }
 
-
   showOperationalDashboard () {
     if (this.props.user) {
       if (this.props.user.isSuperUser) {
@@ -358,7 +357,6 @@ class Sidebar extends Component {
     }
   }
 
-  
   showSurveysItem () {
     if (this.props.user) {
       if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
