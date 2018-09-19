@@ -74,9 +74,14 @@ class Menu extends React.Component {
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
+        if (this.state.selectPage === '') {
+          compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
+        } else {
+          compProp.getIndexBypage(this.state.selectPage.pageId, self.handleIndexByPage)
+        }
       }
     })
+
     if (this.props.location.state && this.props.location.state.action === 'replyWithMessage') {
       var index = this.props.currentMenuItem.clickedIndex.split('-')
       var menuReturned = this.props.currentMenuItem.itemMenus
@@ -113,6 +118,10 @@ class Menu extends React.Component {
         }
       }
       this.props.saveCurrentMenuItem(null)
+    } else {
+      if (this.props.pages && this.props.pages.length > 0 && this.state.selectPage === '') {
+        this.setState({selectPage: this.props.pages[0]})
+      }
     }
   }
   validatePostbackPayload (indexVal) {
@@ -149,11 +158,7 @@ class Menu extends React.Component {
       menuItems: tempItemMenus
     })
   }
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.pages && nextProps.pages.length > 0 && this.state.selectPage === '') {
-      this.setState({selectPage: nextProps.pages[0]})
-    }
-  }
+
   replyWithMessage (e) {
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
