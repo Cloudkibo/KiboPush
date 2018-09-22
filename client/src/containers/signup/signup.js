@@ -35,16 +35,21 @@ class Signup extends React.Component {
       error: false,
       account_type: 'none',
       isShowingModal: false,
-      captchaSuccess: false
+      captchaSuccess: false,
+      mode: ''
     }
     this.check = this.check.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.equal = this.equal.bind(this)
     this.onChangeCaptcha = this.onChangeCaptcha.bind(this)
-
+    this.onSelectMode = this.onSelectMode.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.onCancel = this.onCancel.bind(this)
+  }
+  onCancel () {
+    this.setState({account_type: 'none'})
   }
   check () {
     this.setState({domain: true})
@@ -61,6 +66,15 @@ class Signup extends React.Component {
   componentDidMount () {
     log(TAG, 'signup Container Mounted')
   }
+
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
   componentWillReceiveProps (nextprops) {
     this.setState({error: false})
     if (nextprops.successSignup) {
@@ -79,6 +93,10 @@ class Signup extends React.Component {
 
   closeDialog () {
     this.setState({isShowingModal: false})
+  }
+
+  onSelectMode (e) {
+    this.setState({mode: e.target.value})
   }
 
   handlePwdChange (event) {
@@ -138,13 +156,15 @@ class Signup extends React.Component {
           email: this.refs.email.value.trim(),
           domain: this.refs.domain.value.trim(),
           password: this.refs.password.value.trim(),
-          company_name: this.refs.companyName.value.trim()
+          company_name: this.refs.companyName.value.trim(),
+          uiMode: this.state.mode
         }
       } else {
         data = {
           name: this.refs.name.value.trim(),
           email: this.refs.email.value.trim(),
-          password: this.refs.password.value.trim()
+          password: this.refs.password.value.trim(),
+          uiMode: this.state.mode
         }
       }
 
@@ -190,7 +210,7 @@ class Signup extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#'>
-                      <img src='img/logo.png' style={{maxWidth: 250}} />
+                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signup'>
@@ -250,6 +270,24 @@ class Signup extends React.Component {
                           <div id='email-error' style={{color: 'red'}}>Passwords do not match</div>
                         }
                       </div>
+                      <br />
+                      <div className='row form-group m-form__group'>
+                        <div style={{padding: '0px'}} className='col-xl-10'>
+                          <select className='custom-select' style={{width: '100%'}} value={this.state.mode} onChange={this.onSelectMode} >
+                            <option value='' disabled>Select use case...</option>
+                            <option value='kiboengage'>Customer Engagement</option>
+                            <option value='kibochat'>Customer Chat</option>
+                            <option value='kibocommerce'>E-Commerce</option>
+                            <option value='all'>All</option>
+                          </select>
+                        </div>
+                        <div style={{verticalAlign: 'middle', lineHeight: '38px'}} className='col-xl-2'>
+                          <a target='_blank' href='http://kibopush.com/ui-modes/'>
+                            <i className='la la-info-circle' />
+                          </a>
+                        </div>
+                      </div>
+                      <br />
                       <div className='form-group m-form__group'>
                         <ReCAPTCHA
                           ref='recaptcha'
@@ -260,12 +298,12 @@ class Signup extends React.Component {
                       <div className='m-login__form-action'>
                         <div className='checkbox'>
                           <input type='checkbox' onChange={e => this.acceptEULA(e)} />
-                          <label style={{marginBottom: 35, marginLeft: 15, fontSize: 13}}>I've read and accept the <a onClick={this.showDialog} href='#eulaAgreement'>terms and conditions</a></label>
+                          <label style={{marginBottom: 35, marginLeft: 0, fontSize: 13, paddingLeft: 0}}>I've read and accept the <a onClick={this.showDialog} href='#eulaAgreement'>terms and conditions</a></label>
                         </div>
-                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess}>
+                        <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' disabled={!this.state.eulaAgreed || !this.state.captchaSuccess || this.state.mode === ''}>
                           Sign Up
                         </button>
-                        <Link id='m_login_signup_cancel' to='/' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
+                        <Link id='m_login_signup_cancel' onClick={this.onCancel} className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                           Cancel
                         </Link>
                       </div>
@@ -345,7 +383,7 @@ class Signup extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
             <div className='m-grid__item m-grid__item--middle'>
               <h3 className='m-login__welcome'>Join KiboPush</h3>
               <p className='m-login__msg'>Get connected with your facebook audience through push messages.

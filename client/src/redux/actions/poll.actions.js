@@ -98,7 +98,7 @@ export function getAllResponses (data) {
 
 export function loadPollsList (days) {
   return (dispatch) => {
-    callApi(`polls/all/${days}`).then(res => dispatch(updatePollsList(res.payload)))
+    callApi(`polls/all/0`).then(res => dispatch(updatePollsList(res.payload)))
   }
 }
 export function loadPollsListNew (data) {

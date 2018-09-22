@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
@@ -45,7 +43,8 @@ class AddSurvey extends React.Component {
       isList: false,
       isShowingModal: false,
       lists: [],
-      resetTarget: false
+      resetTarget: false,
+      isShowingModalGuideLines: false
     }
     this.createSurvey = this.createSurvey.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -53,8 +52,16 @@ class AddSurvey extends React.Component {
     this.goToSend = this.goToSend.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
+    this.showGuideLinesDialog = this.showGuideLinesDialog.bind(this)
+    this.closeGuideLinesDialog = this.closeGuideLinesDialog.bind(this)
+  }
+  showGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: true})
   }
 
+  closeGuideLinesDialog () {
+    this.setState({isShowingModalGuideLines: false})
+  }
   checkValidation () {
     let flag = 0
     let questionLengthFlag = 0
@@ -133,13 +140,6 @@ class AddSurvey extends React.Component {
       this.props.history.push({
         pathname: '/surveys'
 
-      })
-    }
-    if (nextProps.warning) {
-      this.msg.error(nextProps.warning)
-    } else if (nextProps.surveyCreated) {
-      this.props.history.push({
-        pathname: '/surveys'
       })
     }
   }
@@ -230,6 +230,7 @@ class AddSurvey extends React.Component {
             description: this.state.description, // description of survey
             image: '' // image url
           },
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
           questions: this.state.surveyQuestions,
           isSegmented: isSegmentedValue,
           segmentationPageIds: this.state.pageValue,
@@ -531,6 +532,7 @@ class AddSurvey extends React.Component {
               description: this.state.description, // description of survey
               image: '' // image url
             },
+            fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
             questions: this.state.surveyQuestions,
             isSegmented: isSegmentedValue,
             segmentationPageIds: this.state.pageValue,
@@ -564,142 +566,195 @@ class AddSurvey extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 id='survey' className='m-subheader__title'>Create Survey Form</h3>
-                </div>
-              </div>
-            </div>
-            <div className='m-content'>
-              <div className='row'>
-                <div
-                  className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                  <div id='identity' className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
-                    <div className='m-portlet__body'>
-                      <div className='row align-items-center'>
-                        <div className='col-xl-8 order-2 order-xl-1' />
-                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
-                            this.state.isShowingModal &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialog}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialog}>
-                                <p>Do you want to send this survey right away or save it for later use? </p>
-                                <div style={{width: '100%', textAlign: 'center'}}>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <button className='btn btn-primary' onClick={() => {
-                                      this.closeDialog()
-                                      this.goToSend()
-                                    }}>
-                                      Send
-                                    </button>
-                                  </div>
-                                  <div style={{display: 'inline-block', padding: '5px'}}>
-                                    <button className='btn btn-primary' onClick={() => {
-                                      this.createSurvey()
-                                      this.closeDialog()
-                                      // this.props.history.push({
-                                      //   pathname: '/surveys'
-                                      // })
-                                    }}>
-                                      Save
-                                    </button>
-                                  </div>
-                                </div>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                        </div>
-                      </div>
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='titl'>
-                          <label className='control-label'><h5>Survey Title</h5></label>
-                          <input className='form-control' placeholder='Enter form title here'
-                            value={this.state.title} onChange={(e) => this.updateTitle(e)} />
-                        </div>
-                      </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <div className='form-group' id='desc'>
-                          <label className='control-label'><h5>Survey Introduction</h5></label>
-                          <textarea className='form-control'
-                            placeholder='Enter your survey introduction here'
-                            rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
-                        </div>
-                      </div>
-                      <br />
-                      <div className='col-xl-12'>
-                        <h5> Add Questions </h5>
-                        {this.createUI()}
-                      </div>
-
-                      {/*
-                     <div className='col-xl-12'>
-                     <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
-                     <div className='col-sm-6 col-md-4'>
-                     <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
-                     <option value='text'>Text</option>
-                     <option value='multichoice'>Multi Choice Question</option>
-                     </select>
-                     <br />
-                     </div>
-                     </div>
-                     */}
-
-                      <div id='questions' className='col-sm-6 col-md-4'>
-                        <button className='btn btn-primary btn-sm'
-                          onClick={this.addClick.bind(this)}> Add Questions
-                      </button>
-                      </div>
-                      <br />
-                      {this.state.alertMessage !== '' &&
-                      <center>
-                        <Alert type={this.state.alertType}>
-                          {this.state.alertMessage}
-                        </Alert>
-                      </center>
-
-                    }
+        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+          {
+            this.state.isShowingModalGuideLines &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeGuideLinesDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeGuideLinesDialog}>
+                <h4>Message Types</h4>
+                <p> Following are the types of messages that can be sent to facebook messenger.</p>
+                <div className='panel-group accordion' id='accordion1'>
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Subscription Messages</a>
+                      </h4>
                     </div>
-                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                      <div className='col-12'>
-                        <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this survey after 30 mins of ending the conversation.</p>
+                    <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                      <div className='panel-body'>
+                        <p>Subscription messages can&#39;t contain ads or promotional materials, but can be sent at any time regardless of time passed since last user activity. In order to send Subscription Messages, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+                        <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a></p>
                       </div>
-                      <div className='col-12'>
-                        <div className='m-form__actions' style={{'float': 'right'}}>
-                          <button className='btn btn-primary'
-                            onClick={this.checkValidation}> Create Survey
-                          </button>
-                          <Link
-                            to='/surveys'
-                            className='btn btn-secondary' style={{'margin-left': '10px'}}>
-                            Cancel
-                          </Link>
-                        </div>
+                    </div>
+                  </div>
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Promotional Messages</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                      <div className='panel-body'>
+                        Promotional messages can contain ads and promotional materials, but can only be sent to subscribers who were active in the past 24 hours.
+                      </div>
+                    </div>
+                  </div>
+                  <div className='panel panel-default'>
+                    <div className='panel-heading guidelines-heading'>
+                      <h4 className='panel-title'>
+                        <a className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Follow-Up Messages</a>
+                      </h4>
+                    </div>
+                    <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                      <div className='panel-body'>
+                        After the end of the 24 hours window you have an ability to send "1 follow up message" to these recipients. After that you won&#39;t be able to send them ads or promotional messages until they interact with you again.
                       </div>
                     </div>
                   </div>
                 </div>
-                <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-                  <div className='m-portlet' style={{height: '100%'}}>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                          Targeting
-                          </h3>
-                        </div>
+              </ModalDialog>
+            </ModalContainer>
+          }
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 id='survey' className='m-subheader__title'>Create Survey Form</h3>
+              </div>
+            </div>
+          </div>
+          <div className='m-content'>
+            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation m--font-brand' />
+              </div>
+              <div className='m-alert__text'>
+                View Facebook guidelines regarding types of messages here: <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer'}} onClick={this.showGuideLinesDialog} >Message Types</Link>
+              </div>
+            </div>
+            <div className='row'>
+              <div
+                className='col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                <div id='identity' className='m-portlet m-portlet--mobile' style={{height: '100%'}}>
+                  <div className='m-portlet__body'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1' />
+                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        {
+                          this.state.isShowingModal &&
+                          <ModalContainer style={{width: '500px'}}
+                            onClose={this.closeDialog}>
+                            <ModalDialog style={{width: '500px'}}
+                              onClose={this.closeDialog}>
+                              <p>Do you want to send this survey right away or save it for later use? </p>
+                              <div style={{width: '100%', textAlign: 'center'}}>
+                                <div style={{display: 'inline-block', padding: '5px'}}>
+                                  <button className='btn btn-primary' onClick={() => {
+                                    this.closeDialog()
+                                    this.goToSend()
+                                  }}>
+                                    Send
+                                  </button>
+                                </div>
+                                <div style={{display: 'inline-block', padding: '5px'}}>
+                                  <button className='btn btn-primary' onClick={() => {
+                                    this.createSurvey()
+                                    this.props.history.push({
+                                      pathname: '/surveys'
+                                    })
+                                  }}>
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            </ModalDialog>
+                          </ModalContainer>
+                        }
                       </div>
                     </div>
-                    <div className='m-portlet__body'>
-                      <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='survey' />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='titl'>
+                        <label className='control-label'><h5>Survey Title</h5></label>
+                        <input className='form-control' placeholder='Enter form title here'
+                          value={this.state.title} onChange={(e) => this.updateTitle(e)} />
+                      </div>
                     </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <div className='form-group' id='desc'>
+                        <label className='control-label'><h5>Survey Introduction</h5></label>
+                        <textarea className='form-control'
+                          placeholder='Enter your survey introduction here'
+                          rows='3' value={this.state.description} onChange={(e) => this.updateDescription(e)} />
+                      </div>
+                    </div>
+                    <br />
+                    <div className='col-xl-12'>
+                      <h5> Add Questions </h5>
+                      {this.createUI()}
+                    </div>
+
+                    {/*
+                   <div className='col-xl-12'>
+                   <label className='control-label col-sm-offset-2 col-sm-2'>Question Type</label>
+                   <div className='col-sm-6 col-md-4'>
+                   <select className='form-control' onChange={this.handleQuestionType.bind(this)}>
+                   <option value='text'>Text</option>
+                   <option value='multichoice'>Multi Choice Question</option>
+                   </select>
+                   <br />
+                   </div>
+                   </div>
+                   */}
+
+                    <div id='questions' className='col-sm-6 col-md-4'>
+                      <button className='btn btn-primary btn-sm'
+                        onClick={this.addClick.bind(this)}> Add Questions
+                    </button>
+                    </div>
+                    <br />
+                    {this.state.alertMessage !== '' &&
+                    <center>
+                      <Alert type={this.state.alertType}>
+                        {this.state.alertMessage}
+                      </Alert>
+                    </center>
+
+                  }
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                    <div className='col-12'>
+                      <p style={{marginTop: '10px'}}> <b>Note: </b>On sending, subscribers who are engaged in live chat with an agent, will receive this survey after 30 mins of ending the conversation.</p>
+                    </div>
+                    <div className='col-12'>
+                      <div className='m-form__actions' style={{'float': 'right'}}>
+                        <button className='btn btn-primary'
+                          onClick={this.checkValidation}> Create Survey
+                        </button>
+                        <Link
+                          to='/surveys'
+                          className='btn btn-secondary' style={{'margin-left': '10px'}}>
+                          Cancel
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id='target' className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
+                <div className='m-portlet' style={{height: '100%'}}>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                        Targeting
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='m-portlet__body'>
+                    <Targeting handleTargetValue={this.handleTargetValue} resetTarget={this.state.resetTarget} component='survey' />
                   </div>
                 </div>
               </div>
@@ -714,8 +769,6 @@ class AddSurvey extends React.Component {
 function mapStateToProps (state) {
   return {
     surveys: (state.surveysInfo.surveys),
-    surveyCreated: (state.surveysInfo.surveyCreated),
-    warning: (state.surveysInfo.warning),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers),

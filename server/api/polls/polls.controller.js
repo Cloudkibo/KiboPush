@@ -140,14 +140,6 @@ exports.index = function (req, res) {
 }
 
 exports.allPolls = function (req, res) {
-  /*
-  body = {
-    first_page:
-    last_id:
-    number_of_records:
-    days:
-}
-  */
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -228,6 +220,7 @@ exports.allPolls = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'next') {
+      let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
@@ -247,7 +240,7 @@ exports.allPolls = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
+        Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
         .exec((err, polls) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -294,6 +287,7 @@ exports.allPolls = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'previous') {
+      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
       let startDate = new Date()  // Current date
       startDate.setDate(startDate.getDate() - req.body.days)
       startDate.setHours(0)   // Set the hour, minute and second components to 0
@@ -313,7 +307,7 @@ exports.allPolls = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
+        Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
         .exec((err, polls) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -760,9 +754,10 @@ exports.send = function (req, res) {
                                       abort = true
                                     }
                                     const data = {
-                                      messaging_type: 'UPDATE',
+                                      messaging_type: 'MESSAGE_TAG',
                                       recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                      message: messageData
+                                      message: messageData,
+                                      tag: req.body.fbMessageTag
                                     }
 
                                     // this calls the needle when the last message was older than 30 minutes
@@ -888,9 +883,10 @@ exports.send = function (req, res) {
                                         abort = true
                                       }
                                       const data = {
-                                        messaging_type: 'UPDATE',
+                                        messaging_type: 'MESSAGE_TAG',
                                         recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                        message: messageData
+                                        message: messageData,
+                                        tag: req.body.fbMessageTag
                                       }
                                       // this calls the needle when the last message was older than 30 minutes
                                       // checks the age of function using callback
@@ -1072,6 +1068,7 @@ exports.sendPoll = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
+
     CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
         return res.status(500).json({
@@ -1324,9 +1321,10 @@ exports.sendPoll = function (req, res) {
                                         abort = true
                                       }
                                       const data = {
-                                        messaging_type: 'UPDATE',
+                                        messaging_type: 'MESSAGE_TAG',
                                         recipient: {id: subscribers[j].senderId}, // this is the subscriber id
-                                        message: messageData
+                                        message: messageData,
+                                        tag: req.body.fbMessageTag
                                       }
                                       // this calls the needle when the last message was older than 30 minutes
                                       // checks the age of function using callback

@@ -1,14 +1,13 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { browserHistory, Link } from 'react-router'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
+import { browserHistory } from 'react-router'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class WelcomeMessage extends React.Component {
   constructor (props, context) {
@@ -146,6 +145,8 @@ class WelcomeMessage extends React.Component {
                                         </div>
                                     }
                                   </div>
+                                    : <AlertMessage type='page' />
+                                  }
                                 </div>
                               </div>
                             </div>

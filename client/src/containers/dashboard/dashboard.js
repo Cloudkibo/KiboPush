@@ -1,10 +1,11 @@
+
 /* eslint-disable no-return-assign */
 /**
  * Created by sojharo on 20/07/2017.
  */
 
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
 import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
@@ -27,7 +28,6 @@ import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')
@@ -38,11 +38,9 @@ class Dashboard extends React.Component {
     props.getuserdetails()
     props.loadMyPagesList()
     props.loadDashboardData()
-    props.sentVsSeen()
     props.loadSubscribersList()
     props.loadGraphData(0)
     props.loadTopPages()
-
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
@@ -50,6 +48,8 @@ class Dashboard extends React.Component {
       selectedDays: 10,
       topPages: [],
       loading: true,
+      showDropDown: false,
+      pageLikesSubscribes: {},
       isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
@@ -59,6 +59,9 @@ class Dashboard extends React.Component {
     this.exportDashboardInformation = this.exportDashboardInformation.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
     this.formatDate = this.formatDate.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+    this.changePage = this.changePage.bind(this)
     this.showProDialog = this.showProDialog.bind(this)
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
@@ -76,6 +79,7 @@ class Dashboard extends React.Component {
       state: {module: 'pro'}
     })
   }
+
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
@@ -154,19 +158,18 @@ class Dashboard extends React.Component {
   }
   componentWillReceiveProps (nextprops) {
     console.log('in componentWillReceiveProps dashboard', nextprops)
-    if (nextprops.user && nextprops.user.emailVerified === false) {
-      browserHistory.push({
-        pathname: '/resendVerificationEmail'
-      })
-    }
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+      if (nextprops.user.emailVerified === false) {
+        browserHistory.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer') {
+      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
         if (nextprops.pages && nextprops.pages.length === 0) {
           console.log('going to push')
           browserHistory.push({
@@ -174,6 +177,11 @@ class Dashboard extends React.Component {
             state: { account_type: 'team' }
           })
         }
+      } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        console.log('going to push add page wizard')
+        browserHistory.push({
+          pathname: '/inviteUsingLinkWizard'
+        })
       } else if (nextprops.subscribers && nextprops.subscribers.length > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
@@ -186,13 +194,8 @@ class Dashboard extends React.Component {
           // pathname: '/addPages',
           // state: {showMsg: true}
         // })
-      } else if (nextprops.user && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-        console.log('going to push add page wizard')
-        browserHistory.push({
-          pathname: '/addPageWizard'
-        })
       }
-      if (nextprops.user && nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
+      if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({loading: false})
       }
       if (nextprops.sentseendata) {
@@ -203,6 +206,10 @@ class Dashboard extends React.Component {
       if (nextprops.graphData) {
         this.setChartData(nextprops.graphData)
       }
+    }
+
+    if (!this.props.pages && nextprops.pages) {
+      this.props.sentVsSeen(nextprops.pages[0].pageId)
     }
   }
   setChartData (graphData) {
@@ -351,6 +358,16 @@ class Dashboard extends React.Component {
     return dataChart
   }
   componentDidMount () {
+    console.log('location', this.props.location)
+    if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
+      console.log('in loadScript')
+      let addScript = document.createElement('script')
+      addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
+      document.body.appendChild(addScript)
+      let addScript1 = document.createElement('script')
+      addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
+      document.body.appendChild(addScript1)
+    }
     document.title = 'KiboPush | Dashboard'
     var compProp = this.props
     registerAction({
@@ -362,6 +379,36 @@ class Dashboard extends React.Component {
     })
   }
 
+  changePage (page) {
+    let index = 0
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (page === this.props.pages[i].pageName) {
+        console.log('in if change page')
+        index = i
+        break
+      }
+    }
+    this.props.sentVsSeen(this.props.pages[index].pageId)
+    this.setState({
+      pageLikesSubscribes: {
+        selectedPage: this.props.pages[index].pageName,
+        likes: this.props.pages[index].likes,
+        subscribers: this.props.pages[index].subscribers,
+        unsubscribes: this.props.pages[index].unsubscribes,
+        selectedPageId: this.props.pages[index].pageId
+      }
+    }
+      )
+  }
+
+  showDropDown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -370,6 +417,7 @@ class Dashboard extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('this.props.dashboard', this.props.dashboard)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
@@ -397,11 +445,77 @@ class Dashboard extends React.Component {
             </div>
           </div>
         </div>
+        <div className='row'>
+          <div className='col-sm-3 col-md-3 col-lg-3' />
+          <div className='col-sm-4 col-md-4 col-lg-4'>
+            <div className='m-portlet__head-tools'>
+              <ul className='m-portlet__nav'>
+                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                  <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                    Change Page
+                  </a>
+                  {
+                    this.state.showDropDown &&
+                    <div className='m-dropdown__wrapper'>
+                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                      <div className='m-dropdown__inner'>
+                        <div className='m-dropdown__body'>
+                          <div className='m-dropdown__content'>
+                            <ul className='m-nav'>
+                              <li className='m-nav__section m-nav__section--first'>
+                                <span className='m-nav__section-text'>
+                                  Connected Pages
+                                </span>
+                              </li>
+                              {
+                                this.props.pages.map((page, i) => (
+                                  <li key={page.pageId} className='m-nav__item'>
+                                    <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                      <span className='m-nav__link-text'>
+                                        {page.pageName}
+                                      </span>
+                                    </a>
+                                  </li>
+                                ))
+                              }
+                              <li className='m-nav__separator m-nav__separator--fit' />
+                              <li className='m-nav__item'>
+                                <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                  Cancel
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0 &&
+            <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation-1' style={{color: 'white'}} />
+                <span />
+              </div>
+              <div className='m-alert__text'>
+                <strong>
+                0 Pages Connected!&nbsp;
+                </strong>
+                You have no pages connected. Please connect your facebook pages to get started.&nbsp; <Link style={{cursor: 'pointer'}} to='/addPages' >Connect Page</Link>
+              </div>
+            </div>
+          }
           <AlertContainer ref={a => this.msg = a} {...alertOptions} />
           {
-            this.props.user && (((this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
-              (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')))
+            this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
+              (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
             ? null
             : <div>
               {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
@@ -414,7 +528,7 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
                 this.props.pages && this.props.pages.length > 0 &&
-                <PageLikesSubscribers connectedPages={this.props.pages} />
+                <PageLikesSubscribers firstPage={this.props.pages[0]} pageLikesSubscribes={this.state.pageLikesSubscribes} />
               }
               {
                 this.props.dashboard &&
@@ -442,27 +556,28 @@ class Dashboard extends React.Component {
             </div>
             <div className='row'>
               <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                {this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                {
+                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+              ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                <span>
+                  <i className='fa fa-download' />
                   <span>
-                    <i className='fa fa-download' />
-                    <span>
-                      Export Records in CSV File
-                    </span>
+                    Export Records in CSV File
                   </span>
-                </button>
-                : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                </span>
+              </button>
+              : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                <span>
+                  <i className='fa fa-download' />
                   <span>
-                    <i className='fa fa-download' />
-                    <span>
-                      Export Records in CSV File
-                    </span>&nbsp;&nbsp;
-                    <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                      <span style={{color: '#f4516c'}}>PRO</span>
-                    </span>
+                    Export Records in CSV File
+                  </span>&nbsp;&nbsp;
+                  <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                    <span style={{color: '#f4516c'}}>PRO</span>
                   </span>
-                </button>
-              }
+                </span>
+              </button>
+            }
               </div>
             </div>
           </div>

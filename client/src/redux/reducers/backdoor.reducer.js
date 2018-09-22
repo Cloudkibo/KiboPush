@@ -16,7 +16,12 @@ const initialState = {
   broadcastsGraphInfo: [],
   surveysGraphInfo: [],
   pollsGraphInfo: [],
-  sessionsGraphInfo: []
+  sessionsGraphInfo: [],
+  platformStatsInfo: false,
+  autopostingStatsInfo: false,
+  weeklyPlatformStats: false,
+  monthlyPlatformStats: false,
+  kiboTopPages: false
 }
 
 export function backdoorInfo (state = initialState, action) {
@@ -155,6 +160,26 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.DELETE_ACCOUNT_RESPONSE:
       return Object.assign({}, state, {
         response: action.data
+      })
+    case ActionTypes.UPDATE_PLATFORM_STATS:
+      return Object.assign({}, state, {
+        platformStatsInfo: action.data
+      })
+    case ActionTypes.UPDATE_AUTPOSTING_PLATFORM:
+      return Object.assign({}, state, {
+        autopostingStatsInfo: action.data
+      })
+    case ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS:
+      return Object.assign({}, state, {
+        weeklyPlatformStats: action.data
+      })
+    case ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS:
+      return Object.assign({}, state, {
+        monthlyPlatformStats: action.data
+      })
+    case ActionTypes.UPDATE_TOP_PAGES_KIBODASH:
+      return Object.assign({}, state, {
+        kiboTopPages: action.data
       })
 
     default:

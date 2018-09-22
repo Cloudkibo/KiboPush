@@ -40,7 +40,9 @@ class Media extends React.Component {
       loading: false,
       showPreview: false,
       file: '',
-      mediaType: ''
+      previewUrl: '',
+      mediaType: '',
+      styling: {minHeight: 30, maxWidth: 400}
     }
   }
   showDialog (page) {
@@ -224,11 +226,13 @@ class Media extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {!this.state.loading &&
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
+      }
         <div style={{minHeight: 170, maxWidth: 400, marginBottom: '-0.5px'}} className='ui-block hoverbordersolid'>
           {
           this.state.loading
@@ -244,32 +248,52 @@ class Media extends React.Component {
               accept='image/*, video/*'
               title=' '
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
-            {
-            (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
-            : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
-           }
-            { this.state.showPreview &&
-              <div style={{padding: '10px', marginTop: '40px'}}>
-                <ReactPlayer
-                  url={this.state.file.url}
-                  controls
-                  width='100%'
-                  height='auto'
-                  onPlay={this.onTestURLVideo(this.state.file.url)}
-                />
-              </div>
-            }
+            <div style={{width: '100%'}}>
+              {
+                (!this.state.showPreview && this.state.fileName === '') &&
+                <div className='align-center' style={{marginTop: '50px'}}>
+                  <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Text' />
+                  <h4 style={{pointerEvents: 'none', zIndex: -1}}> Media </h4>
+                </div>
+              }
+              {
+                (!this.state.showPreview && this.state.fileurl && this.state.fileurl !== '') &&
+                  <div className='align-center'>
+                    { this.state.mediaType === 'image' &&
+                    <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.fileurl.url} />
+                  }
+                    { this.state.mediaType === 'video' &&
+                    <div style={{marginTop: '50px'}}>
+                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                      <h4 style={{wordBreak: 'break-word'}}>{this.state.fileName !== '' ? this.state.fileName : 'Video'}</h4>
+                    </div>
+                  }
+                  </div>
+              }
+              {
+                this.state.showPreview && this.state.mediaType === 'image' &&
+                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.previewUrl} />
+              }
+              { this.state.showPreview && this.state.mediaType === 'video' &&
+                <div style={{padding: '10px'}}>
+                  <ReactPlayer
+                    url={this.state.previewUrl}
+                    controls
+                    width='100%'
+                    height='auto'
+                    onPlay={this.onTestURLVideo(this.state.previewUrl)}
+                  />
+                </div>
+              }
+            </div>
           </div>
           }
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         { this.state.button.length < 3 &&
-        <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-        </div>
+          <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
       </div>
     )

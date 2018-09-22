@@ -189,3 +189,39 @@ export function loadWaitingReplyList () {
     })
   }
 }
+
+export function loadWaitingSubscribers (id) {
+  return (dispatch) => {
+    console.log('Calling load waiting subscribers api')
+    callApi('bots/fetchWaitingSubscribers/', 'post', {botId: id})
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showWaitingReplyList(res.payload))
+        }
+      })
+  }
+}
+
+export function removeWaitingSubscribers (id) {
+  return (dispatch) => {
+    console.log('Calling remove waiting subscribers api')
+    callApi('bots/removeWaitingSubscribers/', 'post', {_id: id})
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('Result of Deleting waiting subscriber: ' + res.payload)
+        }
+      })
+  }
+}
+
+export function loadUnansweredQuestions (id) {
+  return (dispatch) => {
+    console.log('Calling load unanswered questions api')
+    callApi('bots/fetchUnansweredQueries/', 'post', {botId: id})
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showUnansweredQueries(res.payload))
+        }
+      })
+  }
+}

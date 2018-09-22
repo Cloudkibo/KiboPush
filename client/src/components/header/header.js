@@ -21,7 +21,8 @@ class Header extends React.Component {
       planInfo: '',
       seenNotifications: [],
       unseenNotifications: [],
-      showDropDown: false
+      showDropDown: false,
+      mode: 'All'
     }
     this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -34,6 +35,10 @@ class Header extends React.Component {
   showDropDown () {
     console.log('showDropDown')
     this.setState({showDropDown: true})
+    this.changeMode = this.changeMode.bind(this)
+  }
+  changeMode (mode) {
+    this.props.updateMode({mode: mode}, this.props.user)
   }
   changeStatus (e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
@@ -59,11 +64,13 @@ class Header extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
+    console.log('nextProps in header', nextProps)
     if (nextProps.socketSession !== '' && this.state.ignore) {
       this.setState({ignore: false})
     }
     if (nextProps.user) {
+      let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
+      this.setState({mode: mode})
       // FS.identify(nextProps.user.email, {
       //   displayName: nextProps.user.name,
       //   email: nextProps.user.email,
@@ -205,6 +212,7 @@ class Header extends React.Component {
                   <a id='m_aside_header_menu_mobile_toggle' href='javascript:;' className='m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block'>
                     <span />
                   </a>
+
                   <a id='m_aside_header_topbar_mobile_toggle' href='javascript:;' className='m-brand__icon m--visible-tablet-and-mobile-inline-block'>
                     <i className='flaticon-more' />
                   </a>
@@ -215,78 +223,23 @@ class Header extends React.Component {
               <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
                 <i className='la la-close' />
               </button>
-              {this.props.user && this.props.user.isSuperUser &&
-                <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark '>
-                  <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
-                    <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{height: '100%', display: 'table-cell', verticalAlign: 'middle', padding: '0 20px'}}>
-                      <a href='#' className='m-nav__link m-dropdown__toggle'>
-                        <span className='m-topbar__userpic'>
-                          <i className='m-nav__link-icon flaticon-settings' />&nbsp;&nbsp;
-                          <span className='m-nav__link-text'>
-                            Settings
-                          </span>&nbsp;&nbsp;
-                          <i className='m-nav__hor-arrow la la-angle-down' style={{fontSize: '0.9rem'}} />
-                        </span>
-                      </a>
-                      <div className='m-dropdown__wrapper' style={{width: '230px', left: '0'}}>
-                        <span className='m-dropdown__arrow m-dropdown__arrow--left' />
-                        <div className='m-dropdown__inner'>
-                          <div className='m-dropdown__body'>
-                            <div className='m-dropdown__content'>
-                              <ul className='m-nav m-nav--skin-light'>
-                                <li className='m-nav__item'>
-                                  <Link to='/plans' className='m-nav__link '>
-                                    <i className='m-nav__link-icon fa fa-cc-stripe' />
-                                    <span className='m-nav__link-text'>
-                                      Plans
-                                    </span>
-                                  </Link>
-                                </li>
-                                <li className='m-nav__item ' aria-haspopup='true'>
-                                  <Link to='/permissions' className='m-nav__link '>
-                                    <i className='m-nav__link-icon fa fa-key' />
-                                    <span className='m-nav__link-text'>
-                                      Permissions
-                                    </span>
-                                  </Link>
-                                </li>
-                                <li className='m-nav__item ' aria-haspopup='true'>
-                                  <Link to='/features' className='m-nav__link '>
-                                    <i className='m-nav__link-icon fa fa-th-list' />
-                                    <span className='m-nav__link-text'>
-                                      Features
-                                    </span>
-                                  </Link>
-                                </li>
-                                <li className='m-nav__item ' aria-haspopup='true'>
-                                  <Link to='/usage' className='m-nav__link '>
-                                    <i className='m-nav__link-icon fa fa-pie-chart' />
-                                    <span className='m-nav__link-text'>
-                                      Usage
-                                    </span>
-                                  </Link>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    {/*
-                    <li className='m-menu__item m-menu__item--submenu m-menu__item--rel m-menu__item--open-dropdown' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                      <a onClick={this.showDropDown} className='m-menu__link m-menu__toggle'>
+              <div id='m_header_menu' className='m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark'>
+                <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
+                  {
+                    this.props.user && this.props.user.isSuperUser
+                    ? <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
+                      <a href='' className='m-menu__link m-menu__toggle'>
                         <i className='m-menu__link-icon flaticon-settings' />
                         <span className='m-menu__link-text'>
-                          Settings
+                          Plans & Permissions
                         </span>
                         <i className='m-menu__hor-arrow la la-angle-down' />
                         <i className='m-menu__ver-arrow la la-angle-right' />
                       </a>
-                      {this.state.showDropDown &&
                       <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
-                        <span className='m-menu__arrow m-menu__arrow--adjust' style={{left: '73px'}} />
+                        <span className='m-menu__arrow m-menu__arrow--adjust' />
                         <ul className='m-menu__subnav'>
-                          <li className='m-menu__item ' aria-haspopup='true'>
+                          <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kiboengage') }}>
                             <Link to='/plans' className='m-menu__link '>
                               <i className='m-menu__link-icon fa fa-cc-stripe' />
                               <span className='m-menu__link-text'>
@@ -294,54 +247,111 @@ class Header extends React.Component {
                               </span>
                             </Link>
                           </li>
-                          <li className='m-menu__item ' aria-haspopup='true'>
-                            <a href='../../header/actions.html' className='m-menu__link '>
+                          <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibochat') }}>
+                            <Link to='/permissions' className='m-menu__link '>
                               <i className='m-menu__link-icon fa fa-key' />
                               <span className='m-menu__link-text'>
                                 Permissions
                               </span>
-                            </a>
+                            </Link>
                           </li>
-                          <li className='m-menu__item ' aria-haspopup='true'>
-                            <a href='../../header/actions.html' className='m-menu__link '>
+                          <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibocommerce') }}>
+                            <Link to='/features' className='m-menu__link '>
                               <i className='m-menu__link-icon fa fa-th-list' />
                               <span className='m-menu__link-text'>
                                 Features
                               </span>
-                            </a>
+                            </Link>
                           </li>
-                          <li className='m-menu__item ' aria-haspopup='true'>
-                            <a href='../../header/actions.html' className='m-menu__link '>
+                          <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('all') }}>
+                            <Link to='/usage' className='m-menu__link '>
                               <i className='m-menu__link-icon fa fa-pie-chart' />
                               <span className='m-menu__link-text'>
                                 Usage
                               </span>
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </div>
-                    }
                     </li>
-                    */ }
-                  </ul>
-                </div>
-              }
+                    : <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-redirect='true' aria-haspopup='true'>
+                      <a href='http://kibopush.com/user-guide/' target='_blank' className='m-menu__link m-menu__toggle'>
+                        <i className='m-menu__link-icon flaticon-info' />
+                        <span className='m-menu__link-text'>
+                          Documentation
+                        </span>
+                      </a>
+                    </li>
+                  }
+                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
+                    <a href='' className='m-menu__link m-menu__toggle'>
+                      <i className='m-menu__link-icon flaticon-interface-4' />
+                      <span className='m-menu__link-text'>
+                        Change UI Mode
+                      </span>
+                      <i className='m-menu__hor-arrow la la-angle-down' />
+                      <i className='m-menu__ver-arrow la la-angle-right' />
+                    </a>
+                    <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
+                      <span className='m-menu__arrow m-menu__arrow--adjust' />
+                      <ul className='m-menu__subnav'>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kiboengage') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'Customer Engagement'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              Customer Engagement
+                            </span>
+                          </a>
+                        </li>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibochat') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'Customer Chat'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              Customer Chat
+                            </span>
+                          </a>
+                        </li>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibocommerce') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'E-Commerce'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              E-Commerce
+                            </span>
+                          </a>
+                        </li>
+                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('all') }}>
+                          <a className='m-menu__link '>
+                            {
+                              this.state.mode === 'All'
+                              ? <i className='m-menu__link-icon la la-check' />
+                              : <i className='m-menu__link-icon' />
+                            }
+                            <span className='m-menu__link-text'>
+                              All
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   {this.props.user &&
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
-                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click' style={{marginRight: '-15px'}}>
-                      <label style={{fontWeight: 'inherit', marginTop: '25px'}}>Advanced Mode:
-                      </label>
-                    </li>
-                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                      <span className='m-switch m-switch--outline m-switch--icon m-switch--success' style={{marginTop: '17px'}}>
-                        <label>
-                          <input ref={this.props.user._id} type='checkbox' name='' defaultChecked={this.props.user.advancedMode} onChange={(e) => this.changeStatus(e, this.props.user._id)} />
-                          <span />
-                        </label>
-                      </span>
-                    </li>
                     <li className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
                       <a href='#' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                         {this.props.notifications && this.state.unseenNotifications.length > 0 &&
@@ -497,7 +507,7 @@ class Header extends React.Component {
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
                           <div style={{display: 'inline-block', marginRight: '5px'}}>
-                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
                           </div>
                           <div style={{display: 'inline-block', height: '41px'}}>
                             <span className='m-nav__link-text' style={{lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center'}}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
@@ -514,7 +524,7 @@ class Header extends React.Component {
                           <div className='m-dropdown__header m--align-center'>
                             <div className='m-card-user m-card-user--skin-dark'>
                               <div className='m-card-user__pic'>
-                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
+                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
                               </div>
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>
@@ -537,7 +547,7 @@ class Header extends React.Component {
                                 </li>
                                 {this.props.user && this.props.user.role !== 'agent' &&
                                 <li className='m-nav__item'>
-                                  <Link to='/addPageWizard' className='m-nav__link'>
+                                  <Link to='/inviteUsingLinkWizard' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-list-2' />
                                     <span className='m-nav__link-text'>Setup Using Wizard</span>
                                   </Link>
@@ -575,9 +585,9 @@ class Header extends React.Component {
                       </div>
                     </li>
 
-                    <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
+                    {/* <li className=' btn btn-sm m-btn m-btn--pill m-btn--gradient-from-focus m-btn--gradient-to-danger'>
                       <a href='http://kibopush.com/user-guide/' target='_blank' style={{color: 'white', textDecoration: 'none'}}> Documentation </a>
-                    </li>
+                    </li> */}
                   </ul>
                 }
                 </div>
@@ -591,12 +601,14 @@ class Header extends React.Component {
 }
 
 function mapStateToProps (state) {
+  console.log('state in header', state)
   return {
     user: (state.basicInfo.user),
     socketData: (state.liveChat.socketData),
     socketSession: (state.liveChat.socketSession),
     subscribers: (state.subscribersInfo.subscribers),
-    notifications: (state.notificationsInfo.notifications)
+    notifications: (state.notificationsInfo.notifications),
+    updatedUser: (state.basicInfo.updatedUser)
   }
 }
 

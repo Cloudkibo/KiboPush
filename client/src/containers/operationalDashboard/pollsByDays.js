@@ -55,9 +55,9 @@ class PollsInfo extends React.Component {
     if (data.selected === 0) {
       this.props.loadPollsByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[this.props.polls.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else {
-      this.props.loadPollsByDays({last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadPollsByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.polls)
@@ -227,7 +227,7 @@ class PollsInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '120px'}}>{poll.statement}</span></td>
-                                { poll.user[0] && (poll.user[0].plan === 'plan_A' || poll.user[0].plan === 'plan_B')
+                                { poll.company[0] && poll.company[0].stripe && poll.company[0].stripe.plan && (poll.company[0].stripe.plan === 'plan_A' || poll.company[0].stripe.plan === 'plan_B')
                               ? <td data-field='user' className='m-datatable__cell'>
                                 <span style={{width: '120px'}}>{poll.user[0].name}</span></td>
                                 : <td data-field='user' className='m-datatable__cell'>

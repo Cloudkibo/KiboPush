@@ -3,11 +3,36 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { Link, browserHistory } from 'react-router'
 import auth from '../../utility/auth.service'
+import { skip } from '../../redux/actions/signup.actions'
 
 class Connect extends React.Component {
+  constructor (props, context) {
+    super(props, context)
+    this.skip = this.skip.bind(this)
+  }
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+  componentWillReceiveProps (nextProps) {
+    console.log('nextProps in connect', nextProps)
+    if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
+      browserHistory.push({
+        pathname: '/dashboard'
+      })
+    }
+  }
   componentDidMount () {
+  }
+  skip () {
+    this.props.skip()
   }
   render () {
     return (
@@ -19,7 +44,7 @@ class Connect extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#'>
-                      <img src='img/logo.png' style={{maxWidth: 250}} />
+                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signin'>
@@ -42,7 +67,7 @@ class Connect extends React.Component {
                   this.props.location && this.props.location.state && this.props.location.state.account_type === 'team' &&
                   <div className='m-login__account'>
                     <span className='m-login__account-msg'>You may skip this step and let your team agents connect facebook pages.</span>&nbsp;&nbsp;
-                    <Link to='/dashboard' className='m-link m-link--focus m-login__account-link'>Skip</Link>
+                    <a onClick={this.skip} className='m-link m-link--focus m-login__account-link m--font-brand' style={{cursor: 'pointer'}}>Skip</a>
                   </div>
                 }
               </div>
@@ -50,7 +75,7 @@ class Connect extends React.Component {
           </div>
           {
             (this.props.location.state && this.props.location.state.permissionsRevoked)
-            ? <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+            ? <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
               <div className='m-grid__item m-grid__item--middle'>
                 <p className='m-login__msg'>You have revoked permissions for KiboPush. In order to use KiboPush,
                 you will have to reconnect Facebook, or alternatively log out and use another account.</p>
@@ -60,7 +85,7 @@ class Connect extends React.Component {
               </div>
             </div>
 
-            : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+            : <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
               <div className='m-grid__item m-grid__item--middle'>
                 <Link to='/signup' className='m-login__welcome'>Join KiboPush</Link>
                 <p className='m-login__msg'>Get connected with your facebook audience through push messages.
@@ -74,5 +99,16 @@ class Connect extends React.Component {
     )
   }
 }
+function mapStateToProps (state) {
+  return {
+    successSkip: (state.signupInfo.successSkip),
+    user: (state.basicInfo.user)
+  }
+}
 
-export default Connect
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    skip: skip
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Connect)

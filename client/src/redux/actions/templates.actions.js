@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import { removeButtonOldurl } from './actions.utility'
 
 export function addPoll (data, msg) {
   return {
@@ -320,7 +321,8 @@ export function loadBroadcastsListNew (data) {
   }
 }
 
-export function createBroadcast (broadcast, msg) {
+export function createBroadcast (data, msg) {
+  let broadcast = removeButtonOldurl(data)
   return (dispatch) => {
     callApi('templates/createBroadcast', 'post', broadcast)
       .then(res => {

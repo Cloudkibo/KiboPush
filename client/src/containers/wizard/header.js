@@ -54,6 +54,7 @@ class Header extends React.Component {
   componentWillMount () {
     this.props.getuserdetails()
   }
+
   render () {
     return (
       <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
@@ -161,8 +162,13 @@ class Header extends React.Component {
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
-                          <span className='m-nav__link-text'>{(this.props.user) ? this.props.user.name : 'hello'}</span>
-                          <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          <div style={{display: 'inline-block', marginRight: '5px'}}>
+                            <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                          </div>
+                          <div style={{display: 'inline-block', height: '41px'}}>
+                            <span className='m-nav__link-text' style={{lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center'}}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
+                            </span>
+                          </div>
                         </span>
                         <span className='m-topbar__username m--hide'>
                           {(this.props.user) ? this.props.user.name : 'Richard Hennricks'}
@@ -174,7 +180,7 @@ class Header extends React.Component {
                           <div className='m-dropdown__header m--align-center'>
                             <div className='m-card-user m-card-user--skin-dark'>
                               <div className='m-card-user__pic'>
-                                <img src={(this.props.user) ? this.props.user.profilePic : ''} className='m--img-rounded m--marginless' alt='' />
+                                <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
                               </div>
                               <div className='m-card-user__details'>
                                 <span className='m-card-user__name m--font-weight-500'>

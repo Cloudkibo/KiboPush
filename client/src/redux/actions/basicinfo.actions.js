@@ -42,9 +42,8 @@ export function updateKeys (data) {
   }
 }
 
-export function showUpdatedUserDetails (data) {
-  // NOTE: don't remove following auth method call
-  auth.putUserId(data._id)
+export function showUpdatedUserDetails (data, user) {
+  user.uiMode = data
   return {
     type: ActionTypes.LOAD_UPDATED_USER_DETAILS,
     data
@@ -83,7 +82,10 @@ export function setSocketStatus (data) {
 
 export function getuserdetails () {
   return (dispatch) => {
-    callApi('users').then(res => dispatch(showuserdetails(res.payload)))
+    callApi('users').then(res => {
+      console.log('response from getuserdetails', res)
+      dispatch(showuserdetails(res.payload))
+    })
   }
 }
 
@@ -104,13 +106,13 @@ export function getAdminSubscriptions () {
     callApi('adminsubscriptions').then(res => dispatch(storeAdminSubscriptions(res.payload)))
   }
 }
-export function updateMode (data) {
+export function updateMode (data, user) {
   console.log('data for updateMode', data)
   return (dispatch) => {
-    callApi('users/updateMode', 'post', data).then(res => {
+    callApi('users/changeUIMode', 'post', data).then(res => {
       console.log('response from updateMode', res)
       if (res.status === 'success') {
-        dispatch(showUpdatedUserDetails(res.payload))
+        dispatch(showUpdatedUserDetails(res.payload, user))
       }
     })
   }

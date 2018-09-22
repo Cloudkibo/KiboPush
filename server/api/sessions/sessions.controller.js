@@ -119,14 +119,14 @@ exports.getNewSessions = function (req, res) {
       status: 'new'
     }
     let sortCriteria = {
-      request_time: 1
+      last_activity_time: -1
     }
-    if (req.body.filter && req.body.page_value !== '') {
-      findCriteria = Object.assign(findCriteria, {page_id: req.body.page_value})
+    if (req.body.filter && req.body.filter_criteria.page_value !== '') {
+      findCriteria = Object.assign(findCriteria, {page_id: req.body.filter_criteria.page_value})
     }
     if (req.body.filter) {
       sortCriteria = {
-        request_time: req.body.filter_criteria.sort_value
+        last_activity_time: req.body.filter_criteria.sort_value
       }
     }
     if (!req.body.first_page) {
@@ -142,8 +142,12 @@ exports.getNewSessions = function (req, res) {
       }
       let tempSessionsData = []
       for (var a = 0; a < sessionsData.length; a++) {
+        let fullName = ''
+        if (sessionsData[a] && sessionsData[a].subscriber_id) {
+          fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
+        }
         if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-          sessionsData[a].subscriber_id.isSubscribed) {
+          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) || req.body.filter_criteria.search_value === '')) {
           tempSessionsData.push(sessionsData[a])
         }
       }
@@ -158,7 +162,14 @@ exports.getNewSessions = function (req, res) {
         }
         let tempSessions = []
         for (var i = 0; i < sessions.length; i++) {
-          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
+          let fullName = ''
+          if (sessions[i] && sessions[i].subscriber_id) {
+            fullName = sessions[i].subscriber_id.firstName + ' ' + sessions[i].subscriber_id.lastName
+          }
+          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
+            sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' &&
+            fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) ||
+            req.body.filter_criteria.search_value === '')) {
             tempSessions.push(sessions[i])
           }
         }
@@ -177,7 +188,10 @@ exports.getNewSessions = function (req, res) {
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
                 if (sessions[j]._id.toString() === gotUnreadCount[i].session_id.toString()) {
+<<<<<<< HEAD
                   console.log('inside if unread')
+=======
+>>>>>>> origin/staging
                   sessions[j].set('unreadCount',
                     gotUnreadCount[i].count,
                     {strict: false})
@@ -247,8 +261,8 @@ exports.getResolvedSessions = function (req, res) {
     let sortCriteria = {
       request_time: 1
     }
-    if (req.body.filter && req.body.page_value !== '') {
-      findCriteria = Object.assign(findCriteria, {page_id: req.body.page_value})
+    if (req.body.filter && req.body.filter_criteria.page_value !== '') {
+      findCriteria = Object.assign(findCriteria, {page_id: req.body.filter_criteria.page_value})
     }
     if (req.body.filter) {
       sortCriteria = {
@@ -272,7 +286,7 @@ exports.getResolvedSessions = function (req, res) {
           fullName = sessionsData[a].subscriber_id.firstName + ' ' + sessionsData[a].subscriber_id.lastName
         }
         if (sessionsData[a].page_id && sessionsData[a].page_id.connected && sessionsData[a].subscriber_id &&
-          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.lowerCase().includes(req.body.search_value)) || req.body.filter_criteria.search_value === '')) {
+          sessionsData[a].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' && fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) || req.body.filter_criteria.search_value === '')) {
           tempSessionsData.push(sessionsData[a])
         }
       }
@@ -286,14 +300,25 @@ exports.getResolvedSessions = function (req, res) {
         }
         let tempSessions = []
         for (var i = 0; i < sessions.length; i++) {
-          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id && sessions[i].subscriber_id.isSubscribed) {
+          let fullName = ''
+          if (sessions[i] && sessions[i].subscriber_id) {
+            fullName = sessions[i].subscriber_id.firstName + ' ' + sessions[i].subscriber_id.lastName
+          }
+          if (sessions[i].page_id && sessions[i].page_id.connected && sessions[i].subscriber_id &&
+            sessions[i].subscriber_id.isSubscribed && ((req.body.filter_criteria.search_value !== '' &&
+            fullName.toLowerCase().includes(req.body.filter_criteria.search_value)) ||
+            req.body.filter_criteria.search_value === '')) {
             tempSessions.push(sessions[i])
           }
         }
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
+<<<<<<< HEAD
             {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+=======
+            {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
+>>>>>>> origin/staging
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -302,7 +327,7 @@ exports.getResolvedSessions = function (req, res) {
             }
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
-                if (sessions[j]._id.toString() === gotUnreadCount[i]._id.toString()) {
+                if (sessions[j]._id.toString() === gotUnreadCount[i].session_id.toString()) {
                   sessions[j].set('unreadCount',
                     gotUnreadCount[i].count,
                     {strict: false})
@@ -351,7 +376,20 @@ exports.getResolvedSessions = function (req, res) {
 
 // get fb session
 exports.show = function (req, res) {
-  Sessions.findOne({_id: req.params.id})
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    Sessions.findOne({_id: req.params.id})
     .populate('subscriber_id page_id')
     .exec(function (err, session) {
       if (err) {
@@ -368,7 +406,7 @@ exports.show = function (req, res) {
           session.set('chats', JSON.parse(JSON.stringify(chats)),
             {strict: false})
           LiveChat.aggregate([
-            {$match: {status: 'unseen', format: 'facebook'}},
+            {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {
@@ -376,7 +414,7 @@ exports.show = function (req, res) {
               .json({status: 'failed', description: 'Internal Server Error'})
             }
             for (let i = 0; i < gotUnreadCount.length; i++) {
-              if (session._id.toString() === gotUnreadCount[i]._id.toString()) {
+              if (session._id.toString() === gotUnreadCount[i].session_id.toString()) {
                 session.set('unreadCount',
                   gotUnreadCount[i].count,
                   {strict: false})
@@ -417,6 +455,7 @@ exports.show = function (req, res) {
         })
       }
     })
+  })
 }
 
 // get fb session
@@ -712,7 +751,7 @@ exports.assignAgent = function (req, res) {
 
     Sessions.update(
       {_id: req.body.sessionId},
-      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+      {assigned_to: assignedTo, is_assigned: req.body.isAssigned}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
@@ -767,7 +806,7 @@ exports.assignTeam = function (req, res) {
 
     Sessions.update(
       {_id: req.body.sessionId},
-      {assigned_to: assignedTo, is_assigned: true}, (err, updated) => {
+      {assigned_to: assignedTo, is_assigned: req.body.isAssigned}, (err, updated) => {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }

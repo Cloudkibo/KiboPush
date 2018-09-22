@@ -107,7 +107,7 @@ class templateSurveys extends React.Component {
   onFilter (e) {
     this.setState({filterValue: e.target.value})
     //  var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.loadSurveysListNew({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 5, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, category_value: e.target.value}})
     } else {
@@ -170,7 +170,7 @@ class templateSurveys extends React.Component {
                     <span>
                       <i className='la la-plus' />
                       <span>
-                        Create Template Survey
+                        Create New
                       </span>
                     </span>
                   </button>
@@ -203,20 +203,20 @@ class templateSurveys extends React.Component {
               </div>
               <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                 <div className='form-group m-form__group row align-items-center'>
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4' style={{marginLeft: '15px'}}>
+                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
                     <input type='text' value={this.state.searchValue} placeholder='Search by Title...' className='form-control m-input m-input--solid' onChange={(event) => { this.searchSurvey(event) }} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
                   </div>
-                  <div className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
+                  <div style={{margin: '5px'}} className='col-md-4 col-lg-4 col-xl-4 row align-items-center' />
                   <div className='m-form__group m-form__group--inline col-md-4 col-lg-4 col-xl-4 row align-items-center'>
                     <div className='m-form__label'>
                       <label>Category:&nbsp;&nbsp;</label>
                     </div>
                     <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.filterValue} onChange={this.onFilter}>
                       <option value='' disabled>Filter by Category...</option>
-                      <option value=''>All</option>
+                      <option value='all'>All</option>
                       {
                         this.props.categories && this.props.categories.length > 0 && this.props.categories.map((category, i) => (
                           <option value={category.name}>{category.name}</option>

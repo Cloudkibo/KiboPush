@@ -1,12 +1,11 @@
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
+import AlertContainer from 'react-alert'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -56,6 +55,7 @@ class ItemSettings extends React.Component {
   }
 
   componentDidMount () {
+    console.log(this.props.location)
     this.props.loadTags()
     let options = []
     for (let i = 0; i < this.props.pages.length; i++) {
@@ -268,6 +268,9 @@ class ItemSettings extends React.Component {
   }
 
   editAutoposting () {
+    if (this.accountTitleValue.value === '') {
+      return this.msg.error('Please add Account Title')
+    }
     var isSegmented = false
     var isActive = false
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
@@ -300,17 +303,31 @@ class ItemSettings extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
-      <div>
-        <Header />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Feed Settings</h3>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Feed Settings</h3>
+            </div>
+          </div>
+        </div>
+        <div className='m-content'>
+          <div className='m-portlet m-portlet--mobile'>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
+                    <i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}
+                  </h3>
                 </div>
               </div>
             </div>

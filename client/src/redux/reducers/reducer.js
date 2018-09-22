@@ -30,6 +30,7 @@ import {billingPricingInfo} from './billingPricing.reducer'
 import {permissionsInfo} from './permissions.reducer'
 import {featuresInfo} from './features.reducer'
 import {usageInfo} from './usage.reducer'
+import {abandonedInfo} from './abandonedCarts.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -61,7 +62,8 @@ const appReducer = combineReducers({
   billingPricingInfo,
   permissionsInfo,
   featuresInfo,
-  usageInfo
+  usageInfo,
+  abandonedInfo
 })
 
 export default appReducer

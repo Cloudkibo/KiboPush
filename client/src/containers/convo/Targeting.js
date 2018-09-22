@@ -43,7 +43,8 @@ class Targeting extends React.Component {
       showDropDownPoll: false,
       pollValue: [],
       surveyValue: [],
-      isShowingModalPro: false
+      isShowingModalPro: false,
+      showSubscriptionMsg: false
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.initializeGenderSelect = this.initializeGenderSelect.bind(this)
@@ -58,6 +59,7 @@ class Targeting extends React.Component {
     this.showProDialog = this.showProDialog.bind(this)
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
     props.loadTags()
     props.loadCustomerLists()
   }
@@ -79,8 +81,12 @@ class Targeting extends React.Component {
   //  this.props.onRef(this)
 
     if (this.props.pages) {
+      console.log('this.props.pages[0].gotPageSubscriptionPermission', this.props.pages[0])
       for (var i = 0; i < this.props.pages.length; i++) {
         options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+      }
+      if (!this.props.pages[0].gotPageSubscriptionPermission) {
+        this.setState({showSubscriptionMsg: true})
       }
     }
     let pollOptions = []
@@ -95,6 +101,7 @@ class Targeting extends React.Component {
         surveyOptions[k] = {id: this.props.surveys[k]._id, text: this.props.surveys[k].title}
       }
     }
+    this.setState({pageValue: [options[0].id]})
     console.log('surveyOptions', surveyOptions)
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
@@ -113,6 +120,20 @@ class Targeting extends React.Component {
       $('.surveyFilter').addClass('hideSegmentation')
     }
     /* eslint-enable */
+  }
+  showSubscriptionMsg (pageSelected) {
+    for (let i = 0; i < this.props.pages.length; i++) {
+      console.log('pageSelected', pageSelected)
+      console.log('pages', this.props.pages[i])
+      for (let j = 0; j < pageSelected.length; j++) {
+        if (pageSelected[j] === this.props.pages[i].pageId && !this.props.pages[i].gotPageSubscriptionPermission) {
+          console.log('inside if')
+          this.setState({showSubscriptionMsg: true})
+          return
+        }
+      }
+    }
+    this.setState({showSubscriptionMsg: false})
   }
   showDropDownSurvey () {
     this.setState({
@@ -266,9 +287,9 @@ class Targeting extends React.Component {
     $('#selectPage').select2({
       /* eslint-enable */
       data: pageOptions,
-      placeholder: this.props.component === 'broadcast' ? 'Select Pages - Default: All Pages' : 'Default: All Pages',
+      placeholder: this.props.component === 'broadcast' ? 'Select page' : 'Default: All Pages',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
     // this.setState({pageValue: pageOptions[0].id})
@@ -297,6 +318,7 @@ class Targeting extends React.Component {
           surveyValue: self.state.surveyValue
         })
       }
+      self.showSubscriptionMsg(selected)
     })
   }
 
@@ -507,6 +529,28 @@ class Targeting extends React.Component {
           <div className='form-group m-form__group'>
             <select id='selectPage' style={{width: 200 + '%'}} />
           </div>
+          {this.state.showSubscriptionMsg &&
+          <div style={{paddingBottom: '10px'}}>
+            <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;
+            { /*  this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
+              If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
+              <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
+            </span>
+            */}
+            { /*  this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+              If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
+            </span>
+            */}
+            { /*  this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+              If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
+            </span>
+            */}
+            <span style={{fontSize: '0.9rem'}}>
+              This {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} will be sent to only those subscribers who you have chatted with in the last 24 hours. In order to send this {this.props.component === 'survey' ? 'survey' : this.props.component === 'poll' ? 'poll' : this.props.component === 'broadcast' ? 'broadcast' : ''} to all your subcribers, please apply for Subscription Messages Permission by following the steps given on this&nbsp;
+              <a href='https://developers.facebook.com/docs/messenger-platform/policy/app-to-page-subscriptions' target='_blank'>link.</a>
+            </span>
+          </div>
+          }
           <label>Select Segmentation:</label>
           <div className='radio-buttons' style={{marginLeft: '37px'}}>
             <div className='radio'>

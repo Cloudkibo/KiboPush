@@ -57,6 +57,7 @@ class GreetingMessage extends React.Component {
     this.selectPage = this.selectPage.bind(this)
     props.loadMyPagesList()
   }
+
   showPreviewDialog () {
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
@@ -116,6 +117,8 @@ class GreetingMessage extends React.Component {
       var payload = {pageId: this.state.selectPage.pageId, greetingText: this.state.greetingMessage}
       this.props.saveGreetingMessage(payload, this.msg)
       this.props.loadMyPagesList()
+    } else {
+      this.msg.error('Invitation message cannot be empty')
     }
   }
   onGreetingMessageChange (e) {
@@ -245,23 +248,38 @@ class GreetingMessage extends React.Component {
               </ModalDialog>
             </ModalContainer>
           }
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-            <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-              <div className='m-content'>
-                <div className='m-portlet m-portlet--full-height'>
-                  <div className='m-portlet__body m-portlet__body--no-padding'>
-                    <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
-                      <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                        <Sidebar step='3' />
-                        <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
-                          <div className='m-portlet__head'>
-                            <div className='m-portlet__head-caption'>
-                              <div className='m-portlet__head-title'>
-                                <h3 className='m-portlet__head-text'>
-                                  Step 3: Greeting Text
-                                </h3>
-                              </div>
-                            </div>
+          <div className='m-content'>
+            <div className='m-portlet m-portlet--full-height'>
+              <div className='m-portlet__body m-portlet__body--no-padding'>
+                <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                  <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                    <Sidebar step='2' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
+                    <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                      <div className='m-portlet__head'>
+                        <div className='m-portlet__head-caption'>
+                          <div className='m-portlet__head-title'>
+                            <h3 className='m-portlet__head-text'>
+                              Step 2: Greeting Text
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='m-portlet__body' style={{height: 'auto'}}>
+                        <br />
+                        <div className='form-group m-form__group row'>
+                          <label style={{fontWeight: 'normal'}}>This page will help you setup greeting text for your page. We have set the default text for you. Click on "See how it looks" to see how it would be shown on the welcome screen of your Facebook Page. Modify it and create your desired greeting text for your messenger audience.</label>
+                        </div>
+                        <br />
+                        <div className='form-group m-form__group row'>
+                          <label className='col-3 col-form-label' style={{textAlign: 'left'}}>  Change Page</label>
+                          <div className='col-8 input-group'>
+                            <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
+                              {
+                                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                  <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectPage.pageId}>{page.pageName}</option>
+                                ))
+                              }
+                            </select>
                           </div>
                           <div className='m-portlet__body' style={{height: 'auto'}}>
                             <br />
@@ -343,26 +361,34 @@ class GreetingMessage extends React.Component {
                               </div>
                             </div>
                           </div>
-                          <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                            <div className='m-form__actions'>
-                              <div className='row'>
-                                <div className='col-lg-6 m--align-left' >
-                                  <Link to='/inviteUsingLinkWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                    <span>
-                                      <i className='la la-arrow-left' />
-                                      <span>Back</span>&nbsp;&nbsp;
-                                    </span>
-                                  </Link>
-                                </div>
-                                <div className='col-lg-6 m--align-right'>
-                                  <Link to='/welcomeMessageWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                    <span>
-                                      <span>Next</span>&nbsp;&nbsp;
-                                      <i className='la la-arrow-right' />
-                                    </span>
-                                  </Link>
-                                </div>
-                              </div>
+                          <br />
+                          <div className='col-9' />
+                          <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
+                            <div>
+                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                        <div className='m-form__actions'>
+                          <div className='row'>
+                            <div className='col-lg-6 m--align-left' >
+                              <Link to='/inviteUsingLinkWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <span>
+                                  <i className='la la-arrow-left' />
+                                  <span>Back</span>&nbsp;&nbsp;
+                                </span>
+                              </Link>
+                            </div>
+                            <div className='col-lg-6 m--align-right'>
+                              <Link to='/welcomeMessageWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                <span>
+                                  <span>Next</span>&nbsp;&nbsp;
+                                  <i className='la la-arrow-right' />
+                                </span>
+                              </Link>
                             </div>
                           </div>
                         </div>
