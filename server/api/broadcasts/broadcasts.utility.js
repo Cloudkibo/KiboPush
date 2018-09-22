@@ -53,11 +53,13 @@ function validateInput (body) {
           body.payload[i].title === '') return false
         if (body.payload[i].fileurl === undefined ||
           body.payload[i].fileurl === '') return false
+        if (body.payload[i].image_url === undefined ||
+          body.payload[i].image_url === '') return false
         if (body.payload[i].description === undefined ||
           body.payload[i].description === '') return false
         if (body.payload[i].buttons === undefined) return false
         if (body.payload[i].buttons.length === 0) return false
-        if (!utility.validateUrl(body.payload[i].fileurl.url)) return false
+        if (!utility.validateUrl(body.payload[i].image_url)) return false
         for (let j = 0; j < body.payload[i].buttons.length; j++) {
           if (body.payload[i].buttons[j].type === 'web_url') {
             if (!utility.validateUrl(
@@ -104,16 +106,14 @@ function validateInput (body) {
         if (body.payload[i].listItems.length === 0) return false
         if (body.payload[i].topElementStyle === undefined ||
         body.payload[i].topElementStyle === '') return false
-        if (body.payload[i].buttons) {
-          for (let m = 0; m < body.payload[i].buttons.length; m++) {
-            if (body.payload[i].buttons[m].type === undefined ||
-            body.payload[i].buttons[m].type === '') return false
-            if (body.payload[i].buttons[m].title === undefined ||
-            body.payload[i].buttons[m].title === '') return false
-            if (body.payload[i].buttons[m].type === 'web_url') {
-              if (!utility.validateUrl(
-                body.payload[i].buttons[m].url)) return false
-            }
+        for (let m = 0; m < body.payload[i].buttons.length; m++) {
+          if (body.payload[i].buttons[m].type === undefined ||
+          body.payload[i].buttons[m].type === '') return false
+          if (body.payload[i].buttons[m].title === undefined ||
+          body.payload[i].buttons[m].title === '') return false
+          if (body.payload[i].buttons[m].type === 'web_url') {
+            if (!utility.validateUrl(
+              body.payload[i].buttons[m].url)) return false
           }
         }
         for (let j = 0; j < body.payload[i].listItems.length; j++) {
@@ -492,9 +492,10 @@ function applyPollFilterIfNecessary (req, subscribers, fn) {
   }
 }
 
-function prepareMessageData (page, subscriberId, body, fname, lname) {
+function prepareMessageData (subscriberId, body, fname, lname) {
   let payload = {}
   let text = body.text
+  console.log(body.buttons)
   if (body.componentType === 'text' && !body.buttons) {
     if (body.text.includes('{{user_full_name}}') || body.text.includes('[Username]')) {
       text = text.replace(
@@ -568,7 +569,7 @@ function prepareMessageData (page, subscriberId, body, fname, lname) {
           'elements': [
             {
               'title': body.title,
-              'image_url': body.fileurl.url,
+              'image_url': body.image_url,
               'subtitle': body.description,
               'buttons': body.buttons
             }
@@ -629,7 +630,7 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
   logger.serverLog(TAG, `Payload received to send: ${JSON.stringify(payload)}`)
   payload.forEach((item, index) => {
     // let message = "message=" + encodeURIComponent(JSON.stringify(prepareSendAPIPayload(recipientId, item).message))
-    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(page, recipientId, item, fname, lname)))
+    let message = "message=" + encodeURIComponent(JSON.stringify(prepareMessageData(recipientId, item, fname, lname)))
     if (index === 0) {
       batch.push({ "method": "POST", "name": `message${index + 1}`, "relative_url": "v2.6/me/messages", "body": recipient + "&" + message + "&" + messagingType +  "&" + tag})
     } else {

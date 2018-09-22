@@ -3,8 +3,6 @@
  */
 //
 const Sequences = require('../sequenceMessaging/sequence.model')
-const CheckoutInfo = require('../abandoned_carts/CheckoutInfo.model')
-const StoreInfo = require('../abandoned_carts/StoreInfo.model')
 const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
 const SequenceMessages = require('../sequenceMessaging/message.model')
 const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
@@ -13,7 +11,6 @@ const Lists = require('../lists/lists.model')
 const botController = require('./../smart_replies/bots.controller')
 const sequenceController = require('./../sequenceMessaging/sequence.controller')
 const Bots = require('./../smart_replies/Bots.model')
-const WaitingSubscriber = require('./../smart_replies/waitingSubscribers.model')
 const logger = require('../../components/logger')
 const Broadcasts = require('./broadcasts.model')
 const Pages = require('../pages/Pages.model')
@@ -40,8 +37,9 @@ const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
 const Webhooks = require(
   './../webhooks/webhooks.model')
-const SequenceSubscriberMessages = require('./../sequenceMessaging/sequenceSubscribersMessages.model')
 const { sendBroadcast } = require('./broadcasts2.controller')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
+const PlanUsage = require('./../featureUsage/planUsage.model')
 const utility = require('./broadcasts.utility')
 const compUtility = require('../../components/utility')
 const mongoose = require('mongoose')
@@ -53,7 +51,6 @@ const request = require('request')
 const webhookUtility = require('./../webhooks/webhooks.utility')
 let config = require('./../../config/environment')
 const shopifyWebhook = require('./../shopify/webhook.controller')
-const SequenceSubscriberMessage = require('../sequenceMessaging/sequenceSubscribersMessages.model')
 var array = []
 
 exports.index = function (req, res) {
@@ -362,90 +359,106 @@ exports.getfbMessage = function (req, res) {
                         Pages.findOne({ _id: page._id, connected: true },
                           (err, pageFound) => {
                             if (err) logger.serverLog(TAG, err)
-                            Subscribers.findOne({ senderId: sender, companyId: pageFound.companyId },
-                              (err, subscriber) => {
-                                if (err) logger.serverLog(TAG, err)
-                                else if (subscriber === null) {
-                                  // subsriber not found, create subscriber
-                                  Subscribers.create(payload,
-                                    (err2, subscriberCreated) => {
-                                      if (err2) {
-                                        logger.serverLog(TAG, err2)
+                            if (subsriber === null) {
+                              // subsriber not found, create subscriber
+                              CompanyProfile.findOne({ _id: page.companyId },
+                                function (err, company) {
+                                  if (err) {
+                                  }
+                                  PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
+                                    if (err) {
+                                    }
+                                    CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
+                                      if (err) {
+                                      }
+                                      if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
+                                        webhookUtility.limitReachedNotification('subscribers', company)
                                       } else {
-                                        Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                          if (err) logger.serverLog(TAG, err)
-                                          else if (webhook && webhook.isEnabled) {
-                                            needle.get(webhook.webhook_url, (err, r) => {
-                                              if (err) {
-                                                logger.serverLog(TAG, err)
-                                              } else if (r.statusCode === 200) {
-                                                if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                                  var data = {
-                                                    subscription_type: 'NEW_SUBSCRIBER',
-                                                    payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
-                                                  }
-                                                  needle.post(webhook.webhook_url, data,
-                                                    (error, response) => {
-                                                      if (error) logger.serverLog(TAG, err)
-                                                    })
+                                        Subscribers.create(payload,
+                                          (err2, subscriberCreated) => {
+                                            if (err2) {
+                                              logger.serverLog(TAG, err2)
+                                            }
+                                            CompanyUsage.update({companyId: page.companyId},
+                                              { $inc: { subscribers: 1 } }, (err, updated) => {
+                                                if (err) {
+                                                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                                 }
-                                              } else {
-                                                webhookUtility.saveNotification(webhook)
+                                              })
+                                            Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
+                                              if (err) logger.serverLog(TAG, err)
+                                              if (webhook && webhook.isEnabled) {
+                                                needle.get(webhook.webhook_url, (err, r) => {
+                                                  if (err) {
+                                                    logger.serverLog(TAG, err)
+                                                  } else if (r.statusCode === 200) {
+                                                    if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                                      var data = {
+                                                        subscription_type: 'NEW_SUBSCRIBER',
+                                                        payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                                      }
+                                                      needle.post(webhook.webhook_url, data,
+                                                        (error, response) => {
+                                                          if (error) logger.serverLog(TAG, err)
+                                                        })
+                                                    }
+                                                  } else {
+                                                    webhookUtility.saveNotification(webhook)
+                                                  }
+                                                })
                                               }
                                             })
-                                          }
-                                        })
-                                      }
-                                      if (subscriberSource === 'customer_matching') {
-                                        updateList(phoneNumber, sender, page)
-                                      }
-                                      if (!(event.postback &&
-                                        event.postback.title === 'Get Started')) {
-                                        createSession(page, subscriberCreated,
-                                          event)
-                                      }
-                                      logger.serverLog(TAG, `Subscriber Joins Sequence Trigger ${JSON.stringify(subscriberCreated)}`)
-                                      sequenceController.setSequenceTrigger(subscriberCreated.companyId, subscriberCreated._id, { event: 'subscriber_joins', value: null })
-                                      require('./../../config/socketio')
-                                        .sendMessageToClient({
-                                          room_id: page.companyId,
-                                          body: {
-                                            action: 'dashboard_updated',
-                                            payload: {
-                                              subscriber_id: subscriberCreated._id,
-                                              company_id: page.companyId
+                                            if (subscriberSource === 'customer_matching') {
+                                              updateList(phoneNumber, sender, page)
                                             }
-                                          }
-                                        })
+                                            if (!(event.postback &&
+                                              event.postback.title === 'Get Started')) {
+                                              createSession(page, subscriberCreated,
+                                                event)
+                                            }
+                                            require('./../../config/socketio')
+                                              .sendMessageToClient({
+                                                room_id: page.companyId,
+                                                body: {
+                                                  action: 'dashboard_updated',
+                                                  payload: {
+                                                    subscriber_id: subscriberCreated._id,
+                                                    company_id: page.companyId
+                                                  }
+                                                }
+                                              })
+                                          })
+                                      }
                                     })
-                                } else {
-                                  if (subscriberSource === 'customer_matching') {
-                                    // Subscribers.update({senderId: sender}, {
-                                    //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                    //   source: 'customer_matching',
-                                    //   isSubscribed: true,
-                                    //   isEnabledByPage: true
-                                    // }, (err, subscriber) => {
-                                    //   if (err) return logger.serverLog(TAG, err)
-                                    //   logger.serverLog(TAG, subscriber)
-                                    // })
-                                  } else if (!subscriber.isSubscribed) {
-                                    // subscribing the subscriber again in case he
-                                    // or she unsubscribed and removed chat
-                                    Subscribers.update({ senderId: sender }, {
-                                      isSubscribed: true,
-                                      isEnabledByPage: true
-                                    }, (err, subscriber) => {
-                                      if (err) return logger.serverLog(TAG, err)
-                                      logger.serverLog(TAG, subscriber)
-                                    })
-                                  }
-                                  if (!(event.postback &&
-                                    event.postback.title === 'Get Started')) {
-                                    createSession(page, subscriber, event)
-                                  }
-                                }
-                              })
+                                  })
+                                })
+                            } else {
+                              if (subscriberSource === 'customer_matching') {
+                                // Subscribers.update({senderId: sender}, {
+                                //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
+                                //   source: 'customer_matching',
+                                //   isSubscribed: true,
+                                //   isEnabledByPage: true
+                                // }, (err, subscriber) => {
+                                //   if (err) return logger.serverLog(TAG, err)
+                                //   logger.serverLog(TAG, subscriber)
+                                // })
+                              } else if (!subsriber.isSubscribed) {
+                                // subscribing the subscriber again in case he
+                                // or she unsubscribed and removed chat
+                                Subscribers.update({ senderId: sender }, {
+                                  isSubscribed: true,
+                                  isEnabledByPage: true
+                                }, (err, subscriber) => {
+                                  if (err) return logger.serverLog(TAG, err)
+                                  logger.serverLog(TAG, subscriber)
+                                })
+                              }
+                              if (!(event.postback &&
+                                event.postback.title === 'Get Started')) {
+                                createSession(page, subsriber, event)
+                              }
+                            }
                           })
                       } else {
                         if (error) {
@@ -485,8 +498,6 @@ exports.getfbMessage = function (req, res) {
                 subscribeToSequence(resp.sequenceId, event)
               } else if (resp.action === 'unsubscribe') {
                 unsubscribeFromSequence(resp.sequenceId, event)
-              } else if (resp.action === 'waitingSubscriber') {   // This is for waiting bot subscriber
-                saveToWaitingSubscribers(resp, event)
               } else {
                 sendMenuReply(event)
               }
@@ -1101,26 +1112,49 @@ function handleMessageFromSomeOtherApp (event) {
               if (err) logger.serverLog(TAG, err)
               if (subscriber === null) {
                 // subsriber not found, create subscriber
-                Subscribers.create(payload, (err2, subscriberCreated) => {
-                  if (err2) {
-                    logger.serverLog(TAG, err2)
-                  }
-                  if (!(event.postback &&
-                    event.postback.title === 'Get Started')) {
-                    createSession(page, subscriberCreated, event)
-                  }
-                  require('./../../config/socketio').sendMessageToClient({
-                    room_id: page.companyId,
-                    body: {
-                      action: 'new_subscriber',
-                      payload: {
-                        name: subscriberCreated.firstName + ' ' +
-                          subscriberCreated.lastName,
-                        subscriber: subscriberCreated
-                      }
+                CompanyProfile.findOne({ _id: page.companyId },
+                  function (err, company) {
+                    if (err) {
                     }
+                    PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
+                      if (err) {
+                      }
+                      CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
+                        if (err) {
+                        }
+                        if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
+                          webhookUtility.limitReachedNotification('subscribers', company)
+                        } else {
+                          Subscribers.create(payload, (err2, subscriberCreated) => {
+                            if (err2) {
+                              logger.serverLog(TAG, err2)
+                            }
+                            CompanyUsage.update({companyId: page.companyId},
+                              { $inc: { subscribers: 1 } }, (err, updated) => {
+                                if (err) {
+                                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                }
+                              })
+                            if (!(event.postback &&
+                              event.postback.title === 'Get Started')) {
+                              createSession(page, subscriberCreated, event)
+                            }
+                            require('./../../config/socketio').sendMessageToClient({
+                              room_id: page.companyId,
+                              body: {
+                                action: 'new_subscriber',
+                                payload: {
+                                  name: subscriberCreated.firstName + ' ' +
+                                    subscriberCreated.lastName,
+                                  subscriber: subscriberCreated
+                                }
+                              }
+                            })
+                          })
+                        }
+                      })
+                    })
                   })
-                })
               } else {
                 if (!(event.postback &&
                   event.postback.title === 'Get Started')) {
@@ -1148,15 +1182,33 @@ function createSession (page, subscriber, event) {
           (err, session) => {
             if (err) logger.serverLog(TAG, err)
             if (session === null) {
-              let newSession = new Sessions({
-                subscriber_id: subscriber._id,
-                page_id: page._id,
-                company_id: page.companyId
-              })
-              newSession.save((err, sessionSaved) => {
-                if (err) logger.serverLog(TAG, err)
-                logger.serverLog(TAG, 'new session created')
-                saveLiveChat(page, subscriber, sessionSaved, event)
+              PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
+                if (err) {
+                }
+                CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
+                  if (err) {
+                  }
+                  if (planUsage.sessions !== -1 && companyUsage.sessions >= planUsage.sessions) {
+                    webhookUtility.limitReachedNotification('sessions', company)
+                  } else {
+                    let newSession = new Sessions({
+                      subscriber_id: subscriber._id,
+                      page_id: page._id,
+                      company_id: page.companyId
+                    })
+                    newSession.save((err, sessionSaved) => {
+                      if (err) logger.serverLog(TAG, err)
+                      logger.serverLog(TAG, 'new session created')
+                      CompanyUsage.update({companyId: page.companyId},
+                        { $inc: { sessions: 1 } }, (err, updated) => {
+                          if (err) {
+                            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                          }
+                        })
+                      saveLiveChat(page, subscriber, sessionSaved, event)
+                    })
+                  }
+                })
               })
             } else {
               session.last_activity_time = Date.now()
@@ -1414,6 +1466,19 @@ function handleUnsubscribe (resp, req) {
             `Subscribers update subscription: ${JSON.stringify(
               err)}`)
         }
+        Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
+          if (err) {
+            logger.serverLog(TAG,
+              `Subscribers update subscription: ${JSON.stringify(
+                err)}`)
+          }
+          CompanyUsage.update({companyId: subscriber.companyId},
+            { $inc: { subscribers: -1 } }, (err, updated) => {
+              if (err) {
+                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              }
+            })
+        })
       })
   } else {
     messageData = {

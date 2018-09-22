@@ -47,6 +47,13 @@ class createSurvey extends React.Component {
       }
       this.initializeCategorySelect(options)
     }
+    if (nextprops.warning) {
+      this.msg.error(nextprops.warning)
+    } else if (nextprops.surveyCreated) {
+      this.props.history.push({
+        pathname: '/templates'
+      })
+    }
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -177,9 +184,6 @@ class createSurvey extends React.Component {
           questions: this.state.surveyQuestions
         }
         this.props.createsurvey(surveybody)
-        this.props.history.push({
-          pathname: '/templates'
-        })
       }
     }
   }
@@ -538,7 +542,9 @@ class createSurvey extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    categories: (state.templatesInfo.categories)
+    categories: (state.templatesInfo.categories),
+    surveyCreated: (state.templatesInfo.surveyCreated),
+    warning: (state.templatesInfo.warning)
   }
 }
 

@@ -6,8 +6,11 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const SequenceMessageQueue = require('./../SequenceMessageQueue/SequenceMessageQueue.model')
 const logger = require('../../components/logger')
 const TAG = 'api/sequenceMessaging/sequence.controller.js'
-const Subscribers = require('./../subscribers/Subscribers.model')
 const _ = require('lodash')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
+const Subscribers = require('./../subscribers/Subscribers.model')
 const utility = require('./utility')
 const mongoose = require('mongoose')
 
@@ -38,40 +41,76 @@ exports.createMessage = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let messagePayload = {
-      schedule: req.body.schedule,
-      sequenceId: req.body.sequenceId,
-      payload: req.body.payload,
-      title: req.body.title
-    }
-    const message = new Messages(messagePayload)
-
-    // save model to MongoDB
-    message.save((err, messageCreated) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
-        res.status(500).json({
-          status: 'Failed',
-          description: 'Failed to insert record'
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
-      } else {
-        if (message.trigger.event === 'none') {
-          let utcDate = utility.setScheduleDate(message.schedule)
-          utility.addToMessageQueue(req.body.sequenceId, utcDate, messageCreated._id)
-        } else if (['does_not_see', 'does_not_click'].indexOf(message.trigger.event) > -1) {
-          // check dependent message trigger and add to queu if necessary
-          utility.checkParentMessageTrigger(messageCreated)
-        }
-        require('./../../config/socketio').sendMessageToClient({
-          room_id: companyUser.companyId,
-          body: {
-            action: 'sequence_update',
-            payload: {
-              sequence_id: req.body.sequenceId
-            }
-          }
-        })
-        res.status(201).json({ status: 'success', payload: messageCreated })
       }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.messages_per_sequence !== -1 && companyUsage.messages_per_sequence >= planUsage.messages_per_sequence) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your sequence messages limit has reached. Please upgrade your plan to premium in order to create more messages.`
+            })
+          }
+          let messagePayload = {
+            schedule: req.body.schedule,
+            sequenceId: req.body.sequenceId,
+            payload: req.body.payload,
+            title: req.body.title
+          }
+          const message = new Messages(messagePayload)
+
+          // save model to MongoDB
+          message.save((err, messageCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record'
+              })
+            } else {
+              CompanyUsage.update({companyId: companyUser.companyId},
+              { $inc: { messages_per_sequence: 1 } }, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
+              })
+              if (message.trigger.event === 'none') {
+                let utcDate = utility.setScheduleDate(message.schedule)
+                utility.addToMessageQueue(req.body.sequenceId, utcDate, messageCreated._id)
+              } else if (['does_not_see', 'does_not_click'].indexOf(message.trigger.event) > -1) {
+                // check dependent message trigger and add to queu if necessary
+                utility.checkParentMessageTrigger(messageCreated)
+              }
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: companyUser.companyId,
+                body: {
+                  action: 'sequence_update',
+                  payload: {
+                    sequence_id: req.body.sequenceId
+                  }
+                }
+              })
+              res.status(201).json({ status: 'success', payload: messageCreated })
+            }
+          })
+        })
+      })
     })
   })
 }
@@ -315,32 +354,68 @@ exports.createSequence = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let sequencePayload = {
-      name: req.body.name,
-      companyId: companyUser.companyId,
-      userId: req.user._id
-    }
-    const sequence = new Sequences(sequencePayload)
-
-    // save model to MongoDB
-    sequence.save((err, sequenceCreated) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
-        res.status(500).json({
-          status: 'Failed',
-          description: 'Failed to insert record'
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
-      } else {
-        require('./../../config/socketio').sendMessageToClient({
-          room_id: companyUser.companyId,
-          body: {
-            action: 'sequence_create',
-            payload: {
-              sequence_id: sequenceCreated._id
-            }
-          }
-        })
-        res.status(201).json({ status: 'success', payload: sequenceCreated })
       }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.broadcast_sequences !== -1 && companyUsage.broadcast_sequences >= planUsage.broadcast_sequences) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your sequences limit has reached. Please upgrade your plan to premium in order to create more sequences.`
+            })
+          }
+          let sequencePayload = {
+            name: req.body.name,
+            companyId: companyUser.companyId,
+            userId: req.user._id
+          }
+          const sequence = new Sequences(sequencePayload)
+
+          // save model to MongoDB
+          sequence.save((err, sequenceCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record'
+              })
+            } else {
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { broadcast_sequences: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
+              require('./../../config/socketio').sendMessageToClient({
+                room_id: companyUser.companyId,
+                body: {
+                  action: 'sequence_create',
+                  payload: {
+                    sequence_id: sequenceCreated._id
+                  }
+                }
+              })
+              res.status(201).json({status: 'success', payload: sequenceCreated})
+            }
+          })
+        })
+      })
     })
   })
 }

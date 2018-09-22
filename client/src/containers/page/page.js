@@ -35,9 +35,7 @@ class Page extends React.Component {
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
-    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
-    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPages = this.searchPages.bind(this)
@@ -70,9 +68,9 @@ class Page extends React.Component {
     if (data.selected === 0) {
       this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadMyPagesListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
     } else {
-      this.props.loadMyPagesListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.pages)
@@ -131,10 +129,6 @@ class Page extends React.Component {
       isShowingModal: true,
       page: page
     })
-  }
-
-  showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
   }
 
   closeDialog () {
@@ -393,11 +387,10 @@ class Page extends React.Component {
                     <p> No data to display </p>
                   </span>
                 }
-
                   </div>
+
                 </div>
               </div>
-
             </div>
 
           </div>

@@ -24,6 +24,7 @@ const request = require('request')
 const logger = require('../../components/logger')
 const TAG = 'api/thing/index'
 const needle = require('needle')
+const config = require('./../../config/environment/index')
 
 router.get('/', (req, res) => {
   res.status(200).json({status: 'success', payload: []})

@@ -373,7 +373,6 @@ exports.getAll = function (req, res) {
         }
       } else if (req.body.first_page === 'next') {
         let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-
         if (!req.body.filter) {
           Subscribers.aggregate([
             { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), isEnabledByPage: true} },
@@ -461,7 +460,7 @@ exports.getAll = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Subscribers.find(Object.assign(subscribersFindCriteria, {_id: {$gt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
+            Subscribers.find(Object.assign(subscribersFindCriteria, {_id: {$gt: req.body.last_id}})).limit(req.body.number_of_records)
             .populate('pageId').exec((err, subscribers) => {
               if (err) {
                 logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)
@@ -533,7 +532,6 @@ exports.getAll = function (req, res) {
         }
       } else if (req.body.first_page === 'previous') {
         let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-
         if (!req.body.filter) {
           Subscribers.aggregate([
             { $match: {companyId: mongoose.Types.ObjectId(companyUser.companyId), isEnabledByPage: true} },
@@ -621,7 +619,7 @@ exports.getAll = function (req, res) {
               return res.status(404)
                 .json({status: 'failed', description: 'BroadcastsCount not found'})
             }
-            Subscribers.find(Object.assign(subscribersFindCriteria, {_id: {$lt: req.body.last_id}})).skip(recordsToSkip).limit(req.body.number_of_records)
+            Subscribers.find(Object.assign(subscribersFindCriteria, {_id: {$lt: req.body.last_id}})).limit(req.body.number_of_records)
             .populate('pageId').exec((err, subscribers) => {
               if (err) {
                 logger.serverLog(TAG, `Error on fetching subscribers: ${err}`)

@@ -84,4 +84,6 @@ router.post('/stripe/events',
   stripeEvents
 )
 
+router.get('/addPlanID', controller.addPlanID)
+
 module.exports = router

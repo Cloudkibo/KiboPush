@@ -631,7 +631,7 @@ class Menu extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
@@ -732,159 +732,157 @@ class Menu extends React.Component {
             }
           </PopoverBody>
         </Popover>
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Persistent Menu</h3>
-              </div>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Persistent Menu</h3>
             </div>
           </div>
-          <div className='m-content'>
-            {
-              this.props.pages && this.props.pages.length === 0 &&
-              <AlertMessage type='page' />
-            }
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-technology m--font-accent' />
-              </div>
-              <div className='m-alert__text'>
-                Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
-                Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+        </div>
+        <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0 &&
+            <AlertMessage type='page' />
+          }
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+            </div>
+          </div>
+          <div className='m-portlet m-portlet--full-height '>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption' style={{width: '400px'}}>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>Edit Menu</h3>
+                </div>
               </div>
             </div>
-            <div className='m-portlet m-portlet--full-height '>
-              <div className='m-portlet__head'>
-                <div className='m-portlet__head-caption' style={{width: '400px'}}>
-                  <div className='m-portlet__head-title'>
-                    <h3 className='m-portlet__head-text'>Edit Menu</h3>
-                  </div>
+            <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+            <div className='m-portlet__body' >
+              <div className='row align-items-center'>
+                <div className='col-xl-8 order-2 order-xl-1' />
+                <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                  {
+                    this.state.showPreview &&
+                    <ModalContainer style={{top: '100px'}}
+                      onClose={this.closeDialog}>
+                      <ModalDialog style={{top: '100px'}}
+                        onClose={this.closeDialog}>
+                        <h3>Persistent Menu Preview</h3>
+                        <div>
+                          <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
+                        </div>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
                 </div>
               </div>
-              <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-              <div className='m-portlet__body' >
-                <div className='row align-items-center'>
-                  <div className='col-xl-8 order-2 order-xl-1' />
-                  <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+              <div className='row'>
+                <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select a page</label>
+                <div className='col-8 input-group'>
+                  <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.pageChange}>
                     {
-                      this.state.showPreview &&
-                      <ModalContainer style={{top: '100px'}}
-                        onClose={this.closeDialog}>
-                        <ModalDialog style={{top: '100px'}}
-                          onClose={this.closeDialog}>
-                          <h3>Persistent Menu Preview</h3>
-                          <div>
-                            <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
-                          </div>
-                        </ModalDialog>
-                      </ModalContainer>
+                      this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                        page.connected &&
+                        <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectPage.pageId}>{page.pageName}</option>
+                      ))
                     }
-                  </div>
+                  </select>
                 </div>
-                <div className='row'>
-                  <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select a page</label>
-                  <div className='col-8 input-group'>
-                    <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.pageChange}>
-                      {
-                        this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                          page.connected &&
-                          <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectPage.pageId}>{page.pageName}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-                </div>
-                <div className='row' style={{display: 'block', marginTop: '40px', padding: '20px'}}>
-                  <div className='container'>
-                    {
-                      this.state.menuItems.map((item, index) => {
-                        return (
-                          <div key={index}>
-                            <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
-                              <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
-                              { this.state.menuItems.length > 1 &&
-                                <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
-                                  <span>
-                                    <i className='fa fa-times-circle' />
-                                  </span>
+              </div>
+              <div className='row' style={{display: 'block', marginTop: '40px', padding: '20px'}}>
+                <div className='container'>
+                  {
+                    this.state.menuItems.map((item, index) => {
+                      return (
+                        <div key={index}>
+                          <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
+                            <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
+                            { this.state.menuItems.length > 1 &&
+                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
+                                <span>
+                                  <i className='fa fa-times-circle' />
                                 </span>
-                              }
-                            </div>
-                            {item.submenu.map((subItem, subindex) => {
-                              return (
-                                <div key={subindex}>
-                                  <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px'}}>
-                                    <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} onChange={(e) => this.changeLabel(e)} type='text' className='form-control m-input menuInput' value={subItem.title} />
-                                    <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
-                                      <span>
-                                        <i className='fa fa-times-circle' />
-                                      </span>
-                                    </span>
-                                  </div>
-                                  <div>
-                                    {
-                                      subItem.submenu.map((nestedItem, nestedIndex) => {
-                                        return (
-                                          <div key={nestedIndex} className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
-                                            <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onChange={(e) => this.changeLabel(e)} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
-                                            <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
-                                              <span>
-                                                <i className='fa fa-times-circle' />
-                                              </span>
-                                            </span>
-                                          </div>
-                                        )
-                                      })
-                                    }
-                                    { subItem.submenu.length < 5 &&
-                                      <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
-                                        <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
-                                      </div>
-                                    }
-                                  </div>
-                                </div>
-                              )
-                            })
-                          }
-                            { item.submenu.length < 5 &&
-                              <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
-                                <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
-                              </div>
+                              </span>
                             }
                           </div>
-                        )
-                      })
-                   }
-                    { this.state.menuItems.length === 1 &&
-                      <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                        <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
-                      </div>
-                    }
+                          {item.submenu.map((subItem, subindex) => {
+                            return (
+                              <div key={subindex}>
+                                <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px'}}>
+                                  <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} onChange={(e) => this.changeLabel(e)} type='text' className='form-control m-input menuInput' value={subItem.title} />
+                                  <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
+                                    <span>
+                                      <i className='fa fa-times-circle' />
+                                    </span>
+                                  </span>
+                                </div>
+                                <div>
+                                  {
+                                    subItem.submenu.map((nestedItem, nestedIndex) => {
+                                      return (
+                                        <div key={nestedIndex} className='col-6 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px'}}>
+                                          <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onChange={(e) => this.changeLabel(e)} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
+                                          <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
+                                            <span>
+                                              <i className='fa fa-times-circle' />
+                                            </span>
+                                          </span>
+                                        </div>
+                                      )
+                                    })
+                                  }
+                                  { subItem.submenu.length < 5 &&
+                                    <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
+                                      <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            )
+                          })
+                        }
+                          { item.submenu.length < 5 &&
+                            <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
+                              <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
+                            </div>
+                          }
+                        </div>
+                      )
+                    })
+                 }
+                  { this.state.menuItems.length === 1 &&
                     <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                      <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
+                      <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
                     </div>
-                    <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
-                      <i className='flaticon-exclamation m--font-brand' />
-                      <span style={{marginLeft: '5px'}}>
-                        Only two more main menus can be added. Submenus are limited to 5.
-                      </span>
-                    </div>
+                  }
+                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                    <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
+                  </div>
+                  <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
+                    <i className='flaticon-exclamation m--font-brand' />
+                    <span style={{marginLeft: '5px'}}>
+                      Only two more main menus can be added. Submenus are limited to 5.
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className='m-portlet__foot m-portlet__foot--fit'>
-                <div style={{paddingTop: '20px', paddingBottom: '20px', marginLeft: '50px'}}>
-                  <button className='btn btn-sm btn-primary' onClick={this.saveMenu} disabled={this.props.pages && this.props.pages.length < 1}>
-                    Save Menu
-                  </button>
-                  <button className='btn btn-sm btn-primary' onClick={this.showPreview} style={{marginLeft: '15px'}}>
-                    Preview
-                  </button>
-                  <button style={{marginLeft: '15px'}} className='btn btn-sm btn-secondary' onClick={this.removeMainMenu}>
-                    Remove Main Menu
-                  </button>
-                </div>
+            </div>
+            <div className='m-portlet__foot m-portlet__foot--fit'>
+              <div style={{paddingTop: '20px', paddingBottom: '20px', marginLeft: '50px'}}>
+                <button className='btn btn-sm btn-primary' onClick={this.saveMenu} disabled={this.props.pages && this.props.pages.length < 1}>
+                  Save Menu
+                </button>
+                <button className='btn btn-sm btn-primary' onClick={this.showPreview} style={{marginLeft: '15px'}}>
+                  Preview
+                </button>
+                <button style={{marginLeft: '15px'}} className='btn btn-sm btn-secondary' onClick={this.removeMainMenu}>
+                  Remove Main Menu
+                </button>
               </div>
             </div>
           </div>

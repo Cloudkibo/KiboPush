@@ -53,13 +53,6 @@ export function showWaitingReplyList (data) {
     data
   }
 }
-
-export function showUnansweredQueries (data) {
-  return {
-    type: ActionTypes.SHOW_UNANSWERED_QUERIES,
-    data
-  }
-}
 export function loadBotsList () {
   return (dispatch) => {
     callApi('bots')
@@ -111,7 +104,7 @@ export function loadBotsListNew (data) {
   }
 }
 
-export function createBot (data) {
+export function createBot (data, msg) {
   console.log('createBot data', data)
   return (dispatch) => {
     callApi('bots/create', 'post', data)
@@ -119,6 +112,8 @@ export function createBot (data) {
         console.log('response from createBot', res)
         if (res.status === 'success') {
           dispatch(showCreatedBot(res.payload))
+        } else {
+          msg.error(res.description)
         }
       })
   }

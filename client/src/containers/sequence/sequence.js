@@ -173,13 +173,13 @@ class Sequence extends React.Component {
     //   })
     // }
     if (seqEvent === 'responds_to_poll') {
-       this.setState({isShowPollsDropdown: true})
-       this.props.polls.map((poll) => {
+      this.setState({isShowPollsDropdown: true})
+      this.props.polls.map((poll) => {
         if (sequence.sequence.trigger.value === poll._id) {
           this.setState({selectDropdownName: poll.statement})
         }
       })
-     }
+    }
     this.setState({
       isShowModalTrigger: true,
       selectedSequenceId: sequence.sequence._id,
@@ -432,7 +432,7 @@ class Sequence extends React.Component {
                       style={{backgroundColor: this.state.seqTriggerVal === 'subscriber_joins' ? 'rgb(194, 202, 214,0.7)' : 'rgb(255, 255, 255)'}}>
                        When subscriber joins
                        <br /> <br />
-                      <span style={{fontWeight: 'bold', fontSize:'11px'}}> Note: Messages of this sequence will be sent after welcome message</span>
+                      <span style={{fontWeight: 'bold', fontSize: '11px'}}> Note: Messages of this sequence will be sent after welcome message</span>
 
                     </div>
                   </div>

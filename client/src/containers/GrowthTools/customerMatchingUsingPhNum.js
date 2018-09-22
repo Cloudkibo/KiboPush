@@ -472,7 +472,7 @@ class CustomerMatching extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
@@ -585,21 +585,39 @@ class CustomerMatching extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Invite using
-                  Phone Number (Experimental Feature)</h3>
-              </div>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Invite using
+                Phone Number (Experimental Feature)</h3>
+            </div>
+          </div>
+        </div>
+        <div className='m-content'>
+          {
+              this.props.pages &&
+              this.props.pages.length === 0 &&
+              <AlertMessage type='page' />
+          }
+
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+            Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank'>documentation</a>&nbsp;
+            Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='m-content'>
             {
                 this.props.pages &&
                 this.props.pages.length === 0 &&
-                <AlertMessage type='page' />
-            }
+                <div className='alert alert-success'>
+                  <h4 className='block'>0 Pages Connected</h4>
+                  You have no pages connected. Please connect your facebook pages to invite customers using phone numbers. <Link to='/addPages' >Add Pages</Link>
+                </div>
+          }
 
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>

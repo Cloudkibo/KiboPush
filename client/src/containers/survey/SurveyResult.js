@@ -5,23 +5,43 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import { loadsurveyresponses } from '../../redux/actions/surveys.actions'
 import Response from './Response'
 import json2csv from 'json2csv'
 import fileDownload from 'js-file-download'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { browserHistory } from 'react-router'
 
 var responseData = []
 class SurveyResult extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      show: false
+      show: false,
+      isShowingModalPro: false
     }
     this.getFile = this.getFile.bind(this)
     this.sortData = this.sortData.bind(this)
     this.exists = this.exists.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
   }
 
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
+  }
   componentDidMount () {
     this.props.loadsurveyresponses(this.props.location.state)
   }
@@ -94,65 +114,99 @@ class SurveyResult extends React.Component {
   render () {
     console.log('SurveyResult props', this.props)
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div>
-          {this.props.survey &&
-          <div className='m-subheader '>
-            <div className='d-flex align-items-center'>
-              <div className='mr-auto'>
-                <h3 className='m-subheader__title'>{this.props.survey.title}</h3>
-                <p><b>Description: </b>{this.props.survey.description}</p>
+      <div>
+        <Header />
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            {this.props.survey &&
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>{this.props.survey.title}</h3>
+                  <p><b>Description: </b>{this.props.survey.description}</p>
+                </div>
               </div>
             </div>
-          </div>
-        }
-          <div className='m-content'>
-            <div className='row'>
-              <div
-                className='col-xl-12 col-lg-12 col-md-12 col-sm-8 col-xs-12'>
-                <div className='m-portlet m-portlet--mobile'>
-                  <div className='m-portlet__body'>
-                    <div className='col-xl-12'>
-                      {this.state.show &&
-                      <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
-                        <span>
-                          <i className='fa fa-download' />
-                          <span>
-                            Download File
-                          </span>
-                        </span>
+            }
+            {
+              this.state.isShowingModalPro &&
+              <ModalContainer style={{width: '500px'}}
+                onClose={this.closeProDialog}>
+                <ModalDialog style={{width: '500px'}}
+                  onClose={this.closeProDialog}>
+                  <h3>Upgrade to Pro</h3>
+                  <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                  <div style={{width: '100%', textAlign: 'center'}}>
+                    <div style={{display: 'inline-block', padding: '5px'}}>
+                      <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                        Upgrade to Pro
                       </button>
-                    }
-                      <h4>Survey Questions</h4>
-                      <br /><br />
-                      <ul className='list-group'>
-                        {
-                        this.props.questions &&
-                        this.props.questions.map((c) => (
-                          <div className='card'>
-                            <li
-                              className='list-group-item'
-                              style={{cursor: 'pointer'}}
-                              key={c._id}
-                            >
-                              <strong>Q. {c.statement}</strong>
-                            </li>
-                            {this.props.responses &&
-                            <Response responses={this.props.responses.filter(
-                              (d) => d.questionId._id === c._id)}
-                              question={c} />
-                            }
-                          </div>
-                        ))
-                      }
-                      </ul>
-                      <br />
-                      <div className='add-options-message'>
-                        <button className='btn btn-primary btn-sm pull-right'
-                          onClick={() => this.gotoView()}>Back
+                    </div>
+                  </div>
+                </ModalDialog>
+              </ModalContainer>
+            }
+            <div className='m-content'>
+              <div className='row'>
+                <div
+                  className='col-xl-12 col-lg-12 col-md-12 col-sm-8 col-xs-12'>
+                  <div className='m-portlet m-portlet--mobile'>
+                    <div className='m-portlet__body'>
+                      <div className='col-xl-12'>
+                        {this.state.show && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C')
+                        ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>
+                          </span>
                         </button>
+                        : this.state.show &&
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>&nbsp;&nbsp;
+                            <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#f4516c'}}>PRO</span>
+                            </span>
+                          </span>
+                        </button>
+                      }
+                        <h4>Survey Questions</h4>
+                        <br /><br />
+                        <ul className='list-group'>
+                          {
+                          this.props.questions &&
+                          this.props.questions.map((c) => (
+                            <div className='card'>
+                              <li
+                                className='list-group-item'
+                                style={{cursor: 'pointer'}}
+                                key={c._id}
+                              >
+                                <strong>Q. {c.statement}</strong>
+                              </li>
+                              {this.props.responses &&
+                              <Response responses={this.props.responses.filter(
+                                (d) => d.questionId._id === c._id)}
+                                question={c} />
+                              }
+                            </div>
+                          ))
+                        }
+                        </ul>
+                        <br />
+                        <div className='add-options-message'>
+                          <button className='btn btn-primary btn-sm pull-right'
+                            onClick={() => this.gotoView()}>Back
+                          </button>
+                        </div>
+                        <br />
                       </div>
-                      <br />
                     </div>
                   </div>
                 </div>
@@ -170,7 +224,7 @@ function mapStateToProps (state) {
   const {responses, survey, questions} = state.surveysInfo
   const {pages} = state.pagesInfo
   return {
-    responses, survey, questions, pages
+    responses, survey, questions, pages, user: (state.basicInfo.user)
   }
 }
 

@@ -250,15 +250,13 @@ class CreateSequence extends React.Component {
           return true
         }
       }
-    }
-    else if (this.state.eventNameSelected !== '') {
+    } else if (this.state.eventNameSelected !== '') {
       if (this.state.selectedMessageClickId === '') {
         return false
       } else {
         return true
       }
-    }
-    else {
+    } else {
       return false
     }
   }
@@ -266,16 +264,13 @@ class CreateSequence extends React.Component {
     console.log('the  is', message._id)
     if (message.trigger.event === 'none') {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger.event})
-    }
-    else {
+    } else {
       this.setState({ShowTrigger: true, selectedSequenceId: message.sequenceId, selectedMessageId: message._id, triggerEvent: message.trigger[0].event, eventNameSelected: message.trigger[0].event, selectedTriggerMsgId: message.trigger[0].value, selectedMessageClickId: message.trigger[0].value, selectedTriggerBtnTitle: message.trigger[0].buttonTitle, selectedButton: message.trigger[0].buttonTitle})
     }
     if (message.trigger.event !== 'none' && message.trigger[0].event === 'clicks') {
-
       console.log('Display action set true')
       this.setState({displayAction: true})
-    }
-    else if (message.trigger.event !== 'none' && message.trigger[0].event !== 'clicks') {
+    } else if (message.trigger.event !== 'none' && message.trigger[0].event !== 'clicks') {
       console.log('Display action set false')
       this.setState({displayAction: false})
     }
@@ -668,7 +663,7 @@ class CreateSequence extends React.Component {
                                             <option value='contains'>contains</option>
                                             <option value='begins_with'>begins with</option>
                                           </select>
-                                          : 
+                                          :
                                           <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                           value={condition.criteria}>
                                              <option value=''>Select Criteria</option>
@@ -747,38 +742,38 @@ class CreateSequence extends React.Component {
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
 
-                         subscriber 
-                      
+                         subscriber
+
                         <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
                         <option disabled selected value>Select Event </option>
                          <option value='sees'>sees</option>
                           <option value='clicks'>clicks</option>
                           <option value='receive'>receive</option>
-                      </select>    
+                      </select>
                         <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
                         <option disabled selected value>Select Message </option>
                         {
-                          
+
                           this.props.messages.map((message, i) => {
                             if (this.state.selectedMessageId != message._id) {
-                            return <option value={message._id}>{message.title}</option> 
+                            return <option value={message._id}>{message.title}</option>
                           }
                         })}
-                       
+
                        </select>
-                       { 
-                         this.state.displayAction && 
+                       {
+                         this.state.displayAction &&
                       <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
                         <option disabled selected value>Select Button </option>
                        {
                           this.state.buttonList.map((button, i) => {
-                            return <option value={button.buttonId}>{button.title}</option> 
+                            return <option value={button.buttonId}>{button.title}</option>
                         })}
-                      </select> 
+                      </select>
                        }
-                      
+
                   </div>
-                  
+
                     <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this. validateTrigger()}> Save </button>
                     <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
@@ -793,34 +788,34 @@ class CreateSequence extends React.Component {
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
 
-                         subscriber 
-                      
+                         subscriber
+
                          <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
                         <option  selected={this.state.triggerEvent === 'clicks' ? true : null} value='clicks'>clicks</option>
                          <option selected={this.state.triggerEvent === 'sees' ? true : null} value='sees'>sees</option>
 
                           <option selected={this.state.triggerEvent === 'receive' ? true : null} value='receive'>receive</option>
-                      </select>   
-                          
+                      </select>
+
                       <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
                       {
 
                       this.props.messages.map((message, i) => {
                         if (this.state.selectedTriggerMsgId == message._id) {
-                        return <option  selected value>{message.title} </option> 
+                        return <option  selected value>{message.title} </option>
                       }
                       })
                       }
                       {
                       this.props.messages.map((message, i) => {
                       if (this.state.selectedMessageId != message._id && this.state.selectedTriggerMsgId != message._id) {
-                      return <option value={message._id}>{message.title}</option> 
+                      return <option value={message._id}>{message.title}</option>
                       }
                       })}
-                      
+
                        </select>
-                       { 
-                         this.state.displayAction && 
+                       {
+                         this.state.displayAction &&
                       <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
                        { this.state.selectedTriggerBtnTitle !==''?
                         <option  selected value>{this.state.selectedTriggerBtnTitle} </option>
@@ -830,13 +825,13 @@ class CreateSequence extends React.Component {
                        {
                           this.state.buttonList.map((button, i) => {
                             if(button.title!=this.state.selectedTriggerBtnTitle) {
-                            return <option value={button.title}>{button.title}</option> 
+                            return <option value={button.title}>{button.title}</option>
                         } })}
-                      </select> 
+                      </select>
                        }
-                      
+
                   </div>
-                  
+
                     <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
                     <button onClick={() => this.CloseDialogTrigger()} style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} className='btn pull-right'> Cancel </button>
                 </ModalDialog>
@@ -888,14 +883,14 @@ class CreateSequence extends React.Component {
 
             <div className='m-content'>
               <div className='m-portlet  m-portlet--full-height '>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text' style={{position: 'relative', right: '4.5em'}}>
-                         {this.props.location.state.name}
-                      </h3>
-                    </div>
-                  </div>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text' style={{position: 'relative', right: '4.5em'}}>
+                         {this.props.location.state.name}
+                      </h3>
+                    </div>
+                  </div>
                   <div className='m-portlet__head-tools'>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createMessage}>
                         <span>
@@ -906,8 +901,8 @@ class CreateSequence extends React.Component {
                         </span>
                       </button>
                   </div>
-                </div>
-                <div className='m-portlet__body'>
+                </div>
+                <div className='m-portlet__body'>
                   {this.props.messages && this.props.messages.length > 0
                   ? <div className='row'>
                     <div className='col-12'>
@@ -961,7 +956,7 @@ class CreateSequence extends React.Component {
                       <div className='m-list-timeline'>
                         <div className='m-list-timeline__items'>
                           {
-                          <div> 
+                          <div>
                             {this.props.messages.map((message, i) => (
                             <div key={i} className='m-list-timeline__item'>
                                     <span className='m-list-timeline__badge m-list-timeline__badge--success' style={{position: 'initial'}}></span>
@@ -978,9 +973,9 @@ class CreateSequence extends React.Component {
                                       <span>Trigger</span>:
                                         <span className='sequence-trigger' style={{marginLeft: '10px'}}>
                                          {
-                                           
-                                           message.trigger.event === 'none' ? 'None' : this.updateMessageTitle(message)  
-                                            
+
+                                           message.trigger.event === 'none' ? 'None' : this.updateMessageTitle(message)
+
                                          }
                                         </span>
                                         <span onClick={() => this.ShowDialogTrigger(message)} className='sequence-link'> -- Edit</span>
@@ -1000,7 +995,7 @@ class CreateSequence extends React.Component {
                                         {message.schedule.condition === 'immediately' ? 'Immediately' : 'After ' + message.schedule.days + ' ' + message.schedule.condition   }
                                         </span>
                                       <span onClick={() => this.showDialogSchedule(message)} className='sequence-link'> -- Edit</span>
-                                    </span> 
+                                    </span>
 
                                     <span style={{display: 'inlineblock'}}>
                                       <span>Segment</span>:
@@ -1042,7 +1037,7 @@ class CreateSequence extends React.Component {
             </div>
             : <div> No data to display</div>
           }
-          
+
           </div>
           <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
             <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
@@ -1061,7 +1056,7 @@ class CreateSequence extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state) 
+  console.log(state)
   return {
     sequences: (state.sequenceInfo.sequences),
     createdSequence: (state.sequenceInfo.createdSequence),
@@ -1089,4 +1084,3 @@ function mapDispatchToProps (dispatch) {
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSequence)
-

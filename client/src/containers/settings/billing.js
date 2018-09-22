@@ -14,8 +14,8 @@ class Billing extends React.Component {
     super(props, context)
     props.getuserdetails()
     this.state = {
-      selectedRadio: 'free',
-      change: false
+      selectedRadio: props.pro === 'true' ? 'premium' : 'free',
+      change: props.pro ? props.pro : false
     }
     this.change = this.change.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
@@ -34,9 +34,11 @@ class Billing extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextProps.user', nextProps.user)
     if (nextProps.user) {
-      if (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_C') {
+      if (this.props.pro === true) {
         this.setState({selectedRadio: 'premium'})
-      } else if (nextProps.user.currentPlan === 'plan_B' || nextProps.user.currentPlan === 'plan_D') {
+      } else if (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_C') {
+        this.setState({selectedRadio: 'premium'})
+      } else if (nextProps.user.currentPlan.unique_ID === 'plan_B' || nextProps.user.currentPlan.unique_ID === 'plan_D') {
         this.setState({selectedRadio: 'free'})
       }
     }
@@ -60,15 +62,15 @@ class Billing extends React.Component {
   save () {
     console.log('change', this.state.change)
     if (this.state.selectedRadio === 'free') {
-      if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
+      if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
-      } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+      } else if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_D'}, this.msg)
       }
     } else if (this.state.selectedRadio === 'premium') {
-      if (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_B') {
+      if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A'}, this.msg)
-      } else if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+      } else if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
         this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C'}, this.msg)
       }
     }
@@ -112,7 +114,7 @@ class Billing extends React.Component {
                         Billing Plan
                       </h4>
                       <br />
-                      {this.props.user && (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_A') && this.props.user.last4 &&
+                      {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_A') && this.props.user.last4 &&
                       <div>
                         <span style={{marginLeft: '1.8rem'}}>
                           <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
@@ -124,7 +126,7 @@ class Billing extends React.Component {
                       <a className='m-widget24__desc' style={{color: 'blue', cursor: 'pointer'}}>
                         <u>Learn more about pricing</u>
                       </a>
-                      {this.props.user && (this.props.user.currentPlan === 'plan_B' || this.props.user.currentPlan === 'plan_D')
+                      {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D')
                       ? <span className='m-widget24__stats m--font-brand'>
                         FREE
                       </span>
@@ -136,7 +138,7 @@ class Billing extends React.Component {
                     </div>
                     <center style={{marginTop: '15px', marginBottom: '15px'}}>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={() => this.change(true)} data-toggle='modal' data-target='#m_modal_1_2'>
-                        {this.props.user && (this.props.user.currentPlan === 'plan_B' || this.props.user.currentPlan === 'plan_D')
+                        {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D')
                         ? <span>
                           Upgrade to Pro
                         </span>

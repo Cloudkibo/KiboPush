@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { getAllPollResults } from '../../redux/actions/poll.actions'
-import { allLocales } from '../../redux/actions/subscribers.actions'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Targeting extends React.Component {
   constructor (props, context) {
@@ -18,7 +18,12 @@ class Targeting extends React.Component {
         ]
       },
       Locale: {
-        options: []
+        options: [{id: 'en_US', text: 'en_US'},
+          {id: 'af_ZA', text: 'af_ZA'},
+          {id: 'ar_AR', text: 'ar_AR'},
+          {id: 'az_AZ', text: 'az_AZ'},
+          {id: 'pa_IN', text: 'pa_IN'}
+        ]
       },
       page: {
         options: []
@@ -38,6 +43,7 @@ class Targeting extends React.Component {
       showDropDownPoll: false,
       pollValue: [],
       surveyValue: [],
+      isShowingModalPro: false,
       showSubscriptionMsg: false
     }
     this.initializePageSelect = this.initializePageSelect.bind(this)
@@ -50,12 +56,26 @@ class Targeting extends React.Component {
     this.resetTargeting = this.resetTargeting.bind(this)
     this.showDropDownSurvey = this.showDropDownSurvey.bind(this)
     this.showDropDownPoll = this.showDropDownPoll.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
     this.showSubscriptionMsg = this.showSubscriptionMsg.bind(this)
     props.loadTags()
     props.loadCustomerLists()
-    props.allLocales()
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
   }
 
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
+  }
   componentDidMount () {
     let options = []
   //  this.props.onRef(this)
@@ -86,7 +106,7 @@ class Targeting extends React.Component {
     this.props.getAllPollResults()
     this.setState({page: {options: options}})
     this.initializeGenderSelect(this.state.Gender.options)
-    //  this.initializeLocaleSelect(this.state.Locale.options)
+    this.initializeLocaleSelect(this.state.Locale.options)
     this.initializePageSelect(options)
     this.initializePollSelect(pollOptions)
     this.initializeSurveySelect(surveyOptions)
@@ -465,19 +485,45 @@ class Targeting extends React.Component {
     if (this.props.tags) {
       this.initializeTagSelect(this.props.tags)
     }
-    if (nextProps.locales && nextProps.locales.length) {
-      let options = []
-      for (var a = 0; a < nextProps.locales.length; a++) {
-        options.push({id: nextProps.locales[a], text: nextProps.locales[a]})
-      }
-      this.setState({Locale: {options: options}})
-      this.initializeLocaleSelect(options)
-    }
   }
 
   render () {
     return (
       <div className='row'>
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+          <i className='flaticon-exclamation m--font-brand' />
+          { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
+            If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
+            <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive this broadcast after 30 mins of ending the conversation.</p>
+          </span>
+          }
+          { this.props.component === 'poll' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+            If you do not select any targeting, poll will be sent to all the subscribers from the connected pages.
+          </span>
+          }
+          { this.props.component === 'survey' && <span style={{marginLeft: '10px', fontSize: '0.9rem'}}>
+            If you do not select any targeting, survey will be sent to all the subscribers from the connected pages.
+          </span>
+          }
+        </div>
         <div className='col-12' style={{paddingLeft: '20px'}}>
           <label>Select Page:</label>
           <div className='form-group m-form__group'>
@@ -529,12 +575,22 @@ class Targeting extends React.Component {
                 </div>
                 <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
                   <div className='col-lg-8 col-md-8 col-sm-8'>
-                    <select id='selectPoll' style={{minWidth: 75 + '%'}} />
+                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                    ? <select id='selectPoll' style={{minWidth: 75 + '%'}} />
+                  : <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
+                    }
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
-                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                    ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                       <i className='la la-info-circle' />
                     </a>
+                    : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                      <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                        <span style={{color: '#34bfa3'}}>PRO</span>
+                      </span>
+                    </a>
+                  }
                     {
                       this.state.showDropDownPoll &&
                       <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -552,12 +608,22 @@ class Targeting extends React.Component {
                 </div>
                 <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
                   <div className='col-lg-8 col-md-8 col-sm-8'>
-                    <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                    ? <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                    : <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
+                  }
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
-                    <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                      <i className='la la-info-circle' />
-                    </a>
+                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                      ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                        <i className='la la-info-circle' />
+                      </a>
+                      : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                        <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                          <span style={{color: '#34bfa3'}}>PRO</span>
+                        </span>
+                      </a>
+                    }
                     {
                      this.state.showDropDownSurvey &&
                      <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -589,9 +655,16 @@ class Targeting extends React.Component {
                   <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
                 </div>
                 <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
-                  <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                  {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                  ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                     <i className='la la-info-circle' />
                   </a>
+                  : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                      <span style={{color: '#34bfa3'}}>PRO</span>
+                    </span>
+                  </a>
+                  }
                   {
                     this.state.showDropDownPoll &&
                     <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -612,9 +685,16 @@ class Targeting extends React.Component {
                   <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
                 </div>
                 <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
-                  <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                  {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                  ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
                     <i className='la la-info-circle' />
                   </a>
+                  : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                      <span style={{color: '#34bfa3'}}>PRO</span>
+                    </span>
+                  </a>
+                  }
                   {
                     this.state.showDropDownSurvey &&
                     <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -679,7 +759,7 @@ function mapStateToProps (state) {
     tags: (state.tagsInfo.tags),
     polls: (state.pollsInfo.polls),
     surveys: (state.surveysInfo.surveys),
-    locales: (state.subscribersInfo.locales)
+    user: (state.basicInfo.user)
   }
 }
 
@@ -687,8 +767,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getAllPollResults: getAllPollResults,
     loadCustomerLists: loadCustomerLists,
-    loadTags: loadTags,
-    allLocales: allLocales
+    loadTags: loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Targeting)

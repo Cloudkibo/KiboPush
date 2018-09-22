@@ -7,7 +7,9 @@ const SurveyQuestions = require('./surveyQuestion.model')
 const Category = require('./category.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const mongoose = require('mongoose')
-
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const TAG = 'api/templates/templates.controller.js'
 
 exports.allPolls = function (req, res) {
@@ -68,8 +70,6 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
-    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -83,7 +83,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -99,8 +99,6 @@ exports.getAllPolls = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
-    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -114,7 +112,7 @@ exports.getAllPolls = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+      TemplatePolls.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
       .exec((err, polls) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -174,8 +172,6 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
-    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -189,7 +185,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -205,8 +201,6 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'previous') {
-    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -220,7 +214,7 @@ exports.getAllSurveys = function (req, res) {
         return res.status(404)
           .json({status: 'failed', description: 'PollsCount not found'})
       }
-      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+      TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
       .exec((err, surveys) => {
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
@@ -265,59 +259,163 @@ exports.allSurveys = function (req, res) {
 }
 
 exports.createPoll = function (req, res) {
-  let pollPayload = {
-    title: req.body.title,
-    statement: req.body.statement,
-    options: req.body.options,
-    category: req.body.category
-  }
-  const poll = new TemplatePolls(pollPayload)
-
-  // save model to MongoDB
-  poll.save((err, pollCreated) => {
-    if (err) {
-      res.status(500).json({
-        status: 'Failed',
-        description: 'Failed to insert record'
-      })
-    } else {
-      res.status(201).json({status: 'success', payload: pollCreated})
-    }
-  })
-}
-
-exports.createSurvey = function (req, res) {
-  let surveyPayload = {
-    title: req.body.survey.title,
-    description: req.body.survey.description,
-    category: req.body.survey.category
-  }
-  const survey = new TemplateSurveys(surveyPayload)
-
-  TemplateSurveys.create(survey, (err, survey) => {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    // after survey is created, create survey questions
-    for (let question in req.body.questions) {
-      let options = []
-      options = req.body.questions[question].options
-      const surveyQuestion = new SurveyQuestions({
-        statement: req.body.questions[question].statement, // question statement
-        options, // array of question options
-        surveyId: survey._id
-      })
-
-      surveyQuestion.save((err2, question1) => {
-        if (err2) {
-          return res.status(404).json({ status: 'failed', description: 'Survey Question not created' })
-        }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    return res.status(201).json({status: 'success', payload: survey})
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyUser.companyId}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.polls_templates !== -1 && companyUsage.polls_templates >= planUsage.polls_templates) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your templates limit has reached. Please upgrade your plan to premium in order to create more templates`
+            })
+          }
+          let pollPayload = {
+            title: req.body.title,
+            statement: req.body.statement,
+            options: req.body.options,
+            category: req.body.category
+          }
+          const poll = new TemplatePolls(pollPayload)
+
+          // save model to MongoDB
+          poll.save((err, pollCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record'
+              })
+            } else {
+              if (!req.user.isSuperUser) {
+                CompanyUsage.update({companyId: companyUser.companyId},
+                  { $inc: { polls_templates: 1 } }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                  })
+              }
+              res.status(201).json({status: 'success', payload: pollCreated})
+            }
+          })
+        })
+      })
+    })
+  })
+}
+
+exports.createSurvey = function (req, res) {
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
+        })
+      }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyUser.companyId}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.survey_templates !== -1 && companyUsage.survey_templates >= planUsage.survey_templates) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your templates limit has reached. Please upgrade your plan to premium in order to create more templates`
+            })
+          }
+          let surveyPayload = {
+            title: req.body.survey.title,
+            description: req.body.survey.description,
+            category: req.body.survey.category
+          }
+          const survey = new TemplateSurveys(surveyPayload)
+
+          TemplateSurveys.create(survey, (err, survey) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (!req.user.isSuperUser) {
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { survey_templates: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
+            }
+            // after survey is created, create survey questions
+            for (let question in req.body.questions) {
+              let options = []
+              options = req.body.questions[question].options
+              const surveyQuestion = new SurveyQuestions({
+                statement: req.body.questions[question].statement, // question statement
+                options, // array of question options
+                surveyId: survey._id
+              })
+
+              surveyQuestion.save((err2, question1) => {
+                if (err2) {
+                  return res.status(404).json({ status: 'failed', description: 'Survey Question not created' })
+                }
+              })
+            }
+            return res.status(201).json({status: 'success', payload: survey})
+          })
+        })
+      })
+    })
   })
 }
 
@@ -609,28 +707,66 @@ exports.createBroadcast = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    let broadcastPayload = {
-      title: req.body.title,
-      category: req.body.category,
-      payload: req.body.payload,
-      userId: req.user._id,
-      companyId: companyUser.companyId
-    }
-    if (req.user.isSuperUser) {
-      broadcastPayload.createdBySuperUser = true
-    }
-    const broadcast = new TemplateBroadcasts(broadcastPayload)
-
-    // save model to MongoDB
-    broadcast.save((err, broadcastCreated) => {
+    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
       if (err) {
-        res.status(500).json({
-          status: 'Failed',
-          description: 'Failed to insert record'
+        return res.status(500).json({
+          status: 'failed',
+          description: `Internal Server Error ${JSON.stringify(err)}`
         })
-      } else {
-        res.status(201).json({status: 'success', payload: broadcastCreated})
       }
+      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: `Internal Server Error ${JSON.stringify(err)}`
+          })
+        }
+        CompanyUsage.findOne({companyId: companyUser.companyId}, (err, companyUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          if (planUsage.broadcast_templates !== -1 && companyUsage.broadcast_templates >= planUsage.broadcast_templates) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Your templates limit has reached. Please upgrade your plan to premium in order to create more templates`
+            })
+          }
+          let broadcastPayload = {
+            title: req.body.title,
+            category: req.body.category,
+            payload: req.body.payload,
+            userId: req.user._id,
+            companyId: companyUser.companyId
+          }
+          if (req.user.isSuperUser) {
+            broadcastPayload.createdBySuperUser = true
+          }
+          const broadcast = new TemplateBroadcasts(broadcastPayload)
+
+          // save model to MongoDB
+          broadcast.save((err, broadcastCreated) => {
+            if (err) {
+              res.status(500).json({
+                status: 'Failed',
+                description: 'Failed to insert record'
+              })
+            } else {
+              if (!req.user.isSuperUser) {
+                CompanyUsage.update({companyId: companyUser.companyId},
+                  { $inc: { broadcast_templates: 1 } }, (err, updated) => {
+                    if (err) {
+                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                    }
+                  })
+              }
+              res.status(201).json({status: 'success', payload: broadcastCreated})
+            }
+          })
+        })
+      })
     })
   })
 }
@@ -723,8 +859,6 @@ exports.getAllBroadcasts = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'next') {
-      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -739,7 +873,7 @@ exports.getAllBroadcasts = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
         .exec((err, broadcasts) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)
@@ -755,8 +889,6 @@ exports.getAllBroadcasts = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'previous') {
-      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],
@@ -771,7 +903,7 @@ exports.getAllBroadcasts = function (req, res) {
           return res.status(404)
             .json({status: 'failed', description: 'BroadcastsCount not found'})
         }
-        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+        TemplateBroadcasts.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).limit(req.body.number_of_records)
         .exec((err, broadcasts) => {
           if (err) {
             logger.serverLog(TAG, `Error: ${err}`)

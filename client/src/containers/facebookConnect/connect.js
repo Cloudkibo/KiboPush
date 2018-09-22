@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link, browserHistory } from 'react-router'
 import auth from '../../utility/auth.service'
-import $ from 'jquery'
 import { skip } from '../../redux/actions/signup.actions'
 
 class Connect extends React.Component {
@@ -31,21 +30,13 @@ class Connect extends React.Component {
     }
   }
   componentDidMount () {
-    /* eslint-disable */
-    if ($('#sidebarDiv')) {
-      $('#sidebarDiv').addClass('hideSideBar')
-    }
-    if ($('#headerDiv')) {
-      $('#headerDiv').addClass('hideHeader')
-    }
-    /* eslint-enable */
   }
   skip () {
     this.props.skip()
   }
   render () {
     return (
-      <div style={{height: 100 + 'vh', marginTop: '-70px'}}>
+      <div style={{height: 100 + 'vh'}}>
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin' id='m_login' style={{height: 100 + 'vh'}}>
           <div className='m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside'>
             <div className='m-stack m-stack--hor m-stack--desktop'>

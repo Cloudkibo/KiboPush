@@ -11,7 +11,9 @@ const Surveys = require('./../surveys/surveys.model')
 const PollResponses = require('./../polls/pollresponse.model')
 const SurveyResponses = require('./../surveys/surveyresponse.model')
 const mongoose = require('mongoose')
-
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
+const PlanUsage = require('./../featureUsage/planUsage.model')
+const CompanyProfile = require('./../companyprofile/companyprofile.model')
 let _ = require('lodash')
 exports.allLists = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email},
@@ -267,24 +269,60 @@ exports.createList = function (req, res) {
           description: 'The user account does not belong to any company. Please contact support'
         })
       }
-      let listPayload = {
-        companyId: companyUser.companyId,
-        userId: req.user._id,
-        listName: req.body.listName,
-        conditions: req.body.conditions,
-        content: req.body.content,
-        parentList: req.body.parentListId,
-        parentListName: req.body.parentListName
-      }
-      const newlist = new Lists(listPayload)
-      newlist.save((err, listCreated) => {
+      CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
         if (err) {
           return res.status(500).json({
             status: 'failed',
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        return res.status(201).json({status: 'success', payload: listCreated})
+        PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: `Internal Server Error ${JSON.stringify(err)}`
+            })
+          }
+          CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            if (planUsage.segmentation_lists !== -1 && companyUsage.segmentation_lists >= planUsage.segmentation_lists) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Your lists limit has reached. Please upgrade your plan to premium in order to create more lists.`
+              })
+            }
+            let listPayload = {
+              companyId: companyUser.companyId,
+              userId: req.user._id,
+              listName: req.body.listName,
+              conditions: req.body.conditions,
+              content: req.body.content,
+              parentList: req.body.parentListId,
+              parentListName: req.body.parentListName
+            }
+            const newlist = new Lists(listPayload)
+            newlist.save((err, listCreated) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              CompanyUsage.update({companyId: companyUser.companyId},
+                { $inc: { segmentation_lists: 1 } }, (err, updated) => {
+                  if (err) {
+                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                  }
+                })
+              return res.status(201).json({status: 'success', payload: listCreated})
+            })
+          })
+        })
       })
     })
 }

@@ -65,7 +65,7 @@ exports.sentVsSeen = function (req, res) {
       }
       pageBroadcast.aggregate(
         [
-            {$match: {seen: true, companyId: companyUser.companyId, pagedId: pageId} },
+            {$match: {seen: true, companyId: companyUser.companyId, pagedId: pageId}},
             {$group: {_id: null, count: {$sum: 1}}}
         ], (err, broadcastSeenCount) => {
         if (err) {
@@ -356,7 +356,6 @@ exports.stats = function (req, res) {
               }
               let allPagesWithoutDuplicates = removeDuplicates(allPages, 'pageId')
               payload.totalPages = allPagesWithoutDuplicates.length
-
               if (err) {
                 return res.status(500)
                   .json({status: 'failed', description: JSON.stringify(err)})

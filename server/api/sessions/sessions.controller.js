@@ -184,9 +184,14 @@ exports.getNewSessions = function (req, res) {
               return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
             }
+            logger.serverLog(TAG, `gotUnreadCount: ${JSON.stringify(gotUnreadCount)}`)
             for (let i = 0; i < gotUnreadCount.length; i++) {
               for (let j = 0; j < sessions.length; j++) {
                 if (sessions[j]._id.toString() === gotUnreadCount[i].session_id.toString()) {
+<<<<<<< HEAD
+                  console.log('inside if unread')
+=======
+>>>>>>> origin/staging
                   sessions[j].set('unreadCount',
                     gotUnreadCount[i].count,
                     {strict: false})
@@ -217,6 +222,7 @@ exports.getNewSessions = function (req, res) {
                   }
                 }
               }
+              logger.serverLog(TAG, `openSessions: ${JSON.stringify(sessions)}`)
               return res.status(200).json({
                 status: 'success',
                 payload: {openSessions: sessions, count: sessionsData.length}
@@ -308,7 +314,11 @@ exports.getResolvedSessions = function (req, res) {
         sessions = tempSessions
         if (sessions.length > 0) {
           LiveChat.aggregate([
+<<<<<<< HEAD
+            {$match: {company_id: companyUser.companyId, status: 'unseen', format: 'facebook'}},
+=======
             {$match: {company_id: companyUser.companyId.toString(), status: 'unseen', format: 'facebook'}},
+>>>>>>> origin/staging
             {$sort: { datetime: 1 }}
           ], (err2, gotUnreadCount) => {
             if (err2) {

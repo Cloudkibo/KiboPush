@@ -46,6 +46,13 @@ class createPoll extends React.Component {
       }
       this.initializeCategorySelect(options)
     }
+    if (nextprops.warning) {
+      this.msg.error(nextprops.warning)
+    } else if (nextprops.pollCreated) {
+      this.props.history.push({
+        pathname: '/templates'
+      })
+    }
   }
   showDialog () {
     this.setState({isShowingModal: true})
@@ -126,9 +133,6 @@ class createPoll extends React.Component {
         category: this.state.categoryValue,
         statement: this.state.statement,
         options: options
-      })
-      this.props.history.push({
-        pathname: '/templates'
       })
     }
   }
@@ -294,7 +298,9 @@ class createPoll extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    categories: (state.templatesInfo.categories)
+    categories: (state.templatesInfo.categories),
+    pollCreated: (state.templatesInfo.pollCreated),
+    warning: (state.templatesInfo.warning)
   }
 }
 

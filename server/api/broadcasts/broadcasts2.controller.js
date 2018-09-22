@@ -13,6 +13,7 @@ const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const PageAdminSubscriptions = require('./../pageadminsubscriptions/pageadminsubscriptions.model')
 let _ = require('lodash')
+const needle = require('needle')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
@@ -20,6 +21,7 @@ const utility = require('./broadcasts.utility')
 let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const uniqid = require('uniqid')
 const needle = require('needle')
 
 function exists (list, content) {
@@ -358,17 +360,68 @@ exports.upload = function (req, res) {
       let writeData = fs.createWriteStream(dir + '/userfiles/' + req.files.file.name)
       readData.pipe(writeData)
       logger.serverLog(TAG,
-        `file uploaded on KiboPush, sending response ${JSON.stringify({
+        `file uploaded on KiboPush, uploading it on Facebook: ${JSON.stringify({
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      return res.status(201).json({
-        status: 'success',
-        payload: {
-          id: serverPath,
-          name: req.files.file.name,
-          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
+      .populate('userId').exec((err, page) => {
+        if (err) {
+          return res.status(500).json({
+            status: 'failed',
+            description: 'internal server error' + JSON.stringify(err)
+          })
         }
+        needle.get(
+          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+          (err, resp2) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: 'unable to get page access_token: ' + JSON.stringify(err)
+              })
+            }
+            let pageAccessToken = resp2.body.access_token
+            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
+            const messageData = {
+              'message': JSON.stringify({
+                'attachment': {
+                  'type': req.body.componentType,
+                  'payload': {
+                    'is_reusable': true
+                  }
+                }
+              }),
+              'filedata': fileReaderStream
+            }
+            request(
+              {
+                'method': 'POST',
+                'json': true,
+                'formData': messageData,
+                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+              },
+              function (err, resp) {
+                if (err) {
+                  return res.status(500).json({
+                    status: 'failed',
+                    description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
+                  })
+                } else {
+                  logger.serverLog(TAG,
+                    `file uploaded on Facebook, sending response now: ${JSON.stringify(resp.body)}`)
+                  return res.status(201).json({
+                    status: 'success',
+                    payload: {
+                      id: serverPath,
+                      attachment_id: resp.body.attachment_id,
+                      name: req.files.file.name,
+                      url: `${config.domain}/api/broadcasts/download/${serverPath}`
+                    }
+                  })
+                }
+              })
+          })
       })
     }
   )
@@ -445,7 +498,6 @@ exports.addButton = function (req, res) {
     title: req.body.title,
     type: req.body.type,
     buttonId: Math.random().toString(13).replace('0.', '')
-   
   }
   if (req.body.type === 'web_url') {
     // TODO save module id when sending broadcast

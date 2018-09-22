@@ -91,7 +91,7 @@ class Button extends React.Component {
         title: this.state.title, // User defined label
         module: {
           type: this.props.module,
-          id: ''//messageId
+          id: ''// messageId
         }
       }
       this.props.addButton(data, this.props.onAdd)
@@ -140,7 +140,7 @@ class Button extends React.Component {
 
   changeUrl (event) {
     console.log('event', event.target.value)
-    if (isWebURL(event.target.value) && this.state.title !== '') {
+    if (isWebURL(this.state.url) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -149,7 +149,6 @@ class Button extends React.Component {
   }
 
   render () {
-    console.log('Button state', this.state)
     return (
       <div className='ui-block hoverborder' style={this.props.styling} onClick={this.handleClick}>
         <div>

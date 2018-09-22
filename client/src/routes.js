@@ -107,7 +107,10 @@ import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
-import UnansweredQueries from './containers/smart_replies/unansweredQueries'
+import Plans from './containers/billingPricing/plans'
+import Permissions from './containers/permissions/permissions'
+import Features from './containers/features/features'
+import Usage from './containers/usage/usage'
 import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 import ConnectFBPages from './containers/signup/connectFbPages'
 
@@ -247,8 +250,11 @@ const routes = (
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
-    <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
+    <Route path='/plans' component={Plans} onEnter={requireAuth} />
+    <Route path='/permissions' component={Permissions} onEnter={requireAuth} />
+    <Route path='/features' component={Features} onEnter={requireAuth} />
+    <Route path='/usage' component={Usage} onEnter={requireAuth} />
     <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
   </Route>
 

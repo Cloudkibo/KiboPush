@@ -29,9 +29,7 @@ class Login extends React.Component {
     this.onSubmit = this.onSubmit.bind(this)
   }
   onSubmit (event) {
-    console.log('onSubmit')
     event.preventDefault()
-    console.log('onSubmit')
     var data = {}
     if (this.state.account_type === 'team') {
       data = {
@@ -45,7 +43,7 @@ class Login extends React.Component {
         password: this.refs.password.value.trim()
       }
     }
-    console.log('data', data)
+
     this.props.logIn(data, this.msg)
   }
   check () {

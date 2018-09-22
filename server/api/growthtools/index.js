@@ -26,8 +26,8 @@ router.post('/sendMessage',
 
 router.post('/sendNumbers',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('customer_matching'),
-  auth.doesRolePermitsThisAction('customerMatchingPermission'),
+  // auth.doesPlanPermitsThisAction('customer_matching'),
+  // auth.doesRolePermitsThisAction('customerMatchingPermission'),
   controller.sendNumbers)
 
 router.get('/retrievePhoneNumbers',

@@ -41,8 +41,7 @@ class Sidebar extends Component {
       smartReplies: true,
       templates: true,
       sequenceMessaging: true,
-      waitingResponse: false,
-      abandonedCarts: true
+      waitingResponse: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
