@@ -39,10 +39,21 @@ export function loadMembersList () {
   }
 }
 
-export function deleteMember (data) {
+export function deleteMember (data, msg) {
   return (dispatch) => {
     callApi('company/removeMember', 'post', data)
-    .then(res => dispatch(loadMembersList()))
+    .then(res => {
+      if (res.status === 'success') {
+        msg.success('Member deleted successfully!')
+        dispatch(loadMembersList())
+      } else {
+        if (res.status === 'failed' && res.description) {
+          msg.error(`Failed to delete member. ${res.description}`)
+        } else {
+          msg.error('Failed to delete member')
+        }
+      }
+    })
   }
 }
 

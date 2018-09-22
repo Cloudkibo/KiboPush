@@ -3,8 +3,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Image from '../convo/Image'
@@ -15,12 +13,14 @@ import Text from '../convo/Text'
 import Card from '../convo/Card'
 import Gallery from '../convo/Gallery'
 import List from '../convo/List'
+import Media from '../convo/Media'
 import { validateFields } from '../convo/utility'
 import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import StickyDiv from 'react-stickydiv'
+import { onClickText, onImageClick, onCardClick, onGalleryClick, onAudioClick, onVideoClick, onFileClick, onListClick, onMediaClick } from '../menu/utility'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateMessage extends React.Component {
@@ -44,6 +44,7 @@ class CreateMessage extends React.Component {
     this.handleImage = this.handleImage.bind(this)
     this.handleList = this.handleList.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleMedia = this.handleMedia.bind(this)
     this.removeComponent = this.removeComponent.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
@@ -109,34 +110,33 @@ class CreateMessage extends React.Component {
     var temp = []
     var message = []
     for (var i = 0; i < payload.length; i++) {
-      payload[i].id = temp.length
       if (payload[i].componentType === 'text') {
-        temp.push({content: (<Text id={temp.length} key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
+        temp.push({content: (<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'image') {
-        temp.push({content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
+        temp.push({content: (<Image id={payload[i].id} key={payload[i].id} handleImage={this.handleImage} onRemove={this.removeComponent} image={payload[i].image_url} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'audio') {
-        temp.push({content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
+        temp.push({content: (<Audio id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'video') {
-        temp.push({content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
+        temp.push({content: (<Video id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'file') {
-        temp.push({content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
+        temp.push({content: (<File id={payload[i].id} key={payload[i].id} handleFile={this.handleFile} onRemove={this.removeComponent} file={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
+        temp.push({content: (<Card id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
@@ -146,10 +146,20 @@ class CreateMessage extends React.Component {
             payload[i].cards[m].id = m
           }
         }
-        temp.push({content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        temp.push({content: (<Gallery id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({message: message})
+      } else if (payload[i].componentType === 'list') {
+        temp.push({content: (<List id={payload[i].id} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({message: message})
+      } else if (payload[i].componentType === 'media') {
+        temp.push({content: (<Media id={payload[i].id} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
+        this.setState({list: temp})
+        message.push(payload[i])
+        this.setState({broadcast: message})
       }
     }
   }
@@ -179,6 +189,8 @@ class CreateMessage extends React.Component {
         temp[i].text = obj.text
         if (obj.button.length > 0) {
           temp[i].buttons = obj.button
+        } else {
+          delete temp[i].buttons
         }
         isPresent = true
       }
@@ -192,7 +204,39 @@ class CreateMessage extends React.Component {
     }
     this.setState({ message: temp })
   }
-
+  handleMedia (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      if (obj.error === 'file size error') {
+        this.msg.error('File size cannot exceed 25MB')
+        return
+      }
+      if (obj.error === 'invalid file') {
+        this.msg.error('File is not valid')
+        return
+      }
+    }
+    var temp = this.state.message
+    var isPresent = false
+    temp.map((data, i) => {
+      if (data.id === obj.id) {
+        temp[i].fileName = obj.fileName
+        temp[i].mediaType = obj.mediaType
+        temp[i].fileurl = obj.fileurl
+        temp[i].size = obj.size
+        temp[i].type = obj.type
+        temp[i].buttons = obj.buttons
+        isPresent = true
+      }
+    })
+    if (!isPresent) {
+      temp.push(obj)
+    }
+    this.setState({broadcast: temp})
+  }
   handleCard (obj) {
     if (obj.error) {
       if (obj.error === 'invalid image') {
@@ -277,9 +321,9 @@ class CreateMessage extends React.Component {
     obj.listItems.forEach((d) => {
       delete d.id
     })
-    temp.map((data) => {
+    temp.map((data, i) => {
       if (data.id === obj.id) {
-        data.listItems = obj.listItems
+        temp[i].listItems = obj.listItems
         isPresent = true
       }
     })
@@ -390,136 +434,141 @@ class CreateMessage extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    let timeStamp = new Date().getTime()
 
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='row'>
+        <div className='m-content'>
+          <div className='row'>
 
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <div>
-                    <div className='row' >
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, {content: (<Text id={temp.length} component='text' key={temp.length} handleText={this.handleText} onRemove={this.removeComponent} removeState />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
-                            <h6>Text</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Image Component Added'); this.setState({list: [...temp, {content: (<Image id={temp.length} key={temp.length} handleImage={this.handleImage} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
-                            <h6>Image</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, {content: (<Card id={temp.length} key={temp.length} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
-                            <h6>Card</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, {content: (<Gallery id={temp.length} key={temp.length} handleGallery={this.handleGallery} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
-                            <h6>Gallery</h6>
-                          </div>
-                        </div>
+            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+              <div style={{padding: '25px'}} className='row' />
+              <div>
+                <div className='row' >
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                        <h6>Text</h6>
                       </div>
                     </div>
-                    <div className='row'>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Audio Component Added'); this.setState({list: [...temp, {content: (<Audio id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
-                            <h6>Audio</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Video Component Added'); this.setState({list: [...temp, {content: (<Video id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
-                            <h6>Video</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<File id={temp.length} key={temp.length} handleFile={this.handleFile} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
-                            <h6>File</h6>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-3'>
-                        <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New File Component Added'); this.setState({list: [...temp, {content: (<List id={temp.length} key={temp.length} handleList={this.handleList} onRemove={this.removeComponent} />)}]}) }}>
-                          <div className='align-center'>
-                            <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
-                            <h6>List</h6>
-                          </div>
-                        </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onImageClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                        <h6>Image</h6>
                       </div>
                     </div>
-                    <br />
-                    <div className='row'>
-                      <br />
-                      <br />
-                      <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
-                      <button onClick={this.gotoMenu} style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                        <h6>Card</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                        <h6>Gallery</h6>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                  <div style={{padding: '25px'}} className='row' />
-                  <StickyDiv offsetTop={70} zIndex={1}>
-                    <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
-                      <div style={{padding: '5px'}}>
-                        <h3>Message</h3>
+                <div className='row'>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onAudioClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                        <h6>Audio</h6>
                       </div>
-                      {
-                        JSON.stringify(this.props.currentMenuItem.menuitems)
-                      }
                     </div>
-                  </StickyDiv>
-
-                  {
-                this.state.showMessengerModal &&
-                <ModalContainer style={{width: '500px'}}
-                  onClose={() => { this.setState({showMessengerModal: false}) }}>
-                  <ModalDialog style={{width: '500px'}}
-                    onClose={() => { this.setState({showMessengerModal: false}) }}>
-                    <h3>Connect to Messenger:</h3>
-                    <MessengerPlugin
-                      appId='1429073230510150'
-                      pageId={this.state.pageValue}
-                      passthroughParams={this.props.user._id}
-                      onClick={() => { this.setState({showMessengerModal: false}) }}
-                    />
-                  </ModalDialog>
-                </ModalContainer>
-              }
-                  <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
-                    {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
-                    <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
-
                   </div>
-
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onVideoClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                        <h6>Video</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
+                        <h6>File</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
+                        <h6>List</h6>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
+                <div className='row'>
+                  <div className='col-3'>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
+                      <div className='align-center'>
+                        <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                        <h6>Media</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br />
+                <div className='row'>
+                  <br />
+                  <br />
+                  <button style={{float: 'left', marginLeft: 20}} id='save' onClick={() => this.saveMessage()} className='btn btn-primary' disabled={(this.state.message.length === 0)}> Save </button>
+                  <button onClick={this.gotoMenu} style={{float: 'left', marginLeft: 20}} id='send1' className='btn btn-primary'> Back </button>
+                </div>
               </div>
             </div>
+            <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
+              <div style={{padding: '25px'}} className='row' />
+              <StickyDiv zIndex={1}>
+                <div style={{border: '1px solid #ccc', borderRadius: '0px', backgroundColor: '#e1e3ea'}} className='ui-block'>
+                  <div style={{padding: '5px'}}>
+                    <h3>Message</h3>
+                  </div>
+                  {
+                    JSON.stringify(this.props.currentMenuItem.menuitems)
+                  }
+                </div>
+              </StickyDiv>
+
+              {
+            this.state.showMessengerModal &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={() => { this.setState({showMessengerModal: false}) }}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={() => { this.setState({showMessengerModal: false}) }}>
+                <h3>Connect to Messenger:</h3>
+                <MessengerPlugin
+                  appId='1429073230510150'
+                  pageId={this.state.pageValue}
+                  passthroughParams={this.props.user._id}
+                  onClick={() => { this.setState({showMessengerModal: false}) }}
+                />
+              </ModalDialog>
+            </ModalContainer>
+          }
+              <div className='ui-block' style={{height: 90 + 'vh', overflowY: 'scroll', marginTop: '-15px', paddingLeft: 75, paddingRight: 75, paddingTop: 30, borderRadius: '0px', border: '1px solid #ccc'}}>
+                {/* <h4  className="align-center" style={{color: '#FF5E3A', marginTop: 100}}> Add a component to get started </h4> */}
+                <DragSortableList items={this.state.list} dropBackTransitionDuration={0.3} type='vertical' />
+
+              </div>
+
+            </div>
+
           </div>
         </div>
       </div>

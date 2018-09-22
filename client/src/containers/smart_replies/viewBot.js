@@ -250,6 +250,39 @@ class ViewBot extends React.Component {
                       </div>
                     </div>
                   </div>
+                  <br />
+                  <div className='col-xl-12'>
+                    <label>Assigned to Page:</label>&nbsp;&nbsp;
+                    {this.props.showBotDetails && this.props.showBotDetails.pageId &&
+                    <span>
+                      <img alt='pic' style={{height: '30px'}} src={(this.props.showBotDetails.pageId.pagePic) ? this.props.showBotDetails.pageId.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                      <span>{this.props.showBotDetails.pageId.pageName}</span>
+                    </span>
+                  }
+                  </div>
+                  <br />
+                  <div className='col-xl-12'>
+                    <label className='control-label'>Status:</label>&nbsp;&nbsp;&nbsp;
+                    <select className='custom-select' id='m_form_type' value={this.state.isActive} disabled onChange={this.changeStatus} style={{width: '500px'}}>
+                      <option key='2' value='true'>Active</option>
+                      <option key='3' value='false'>Disabled</option>
+                    </select>
+                  </div>
+                  <br />
+                  <div className='col-xl-12'>
+                    <h5> Questions </h5>
+                    {this.createUI()}
+                  </div>
+                  <br />
+                </div>
+                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                  <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
+                    <Link
+                      to='/bots'
+                      className='btn btn-secondary' style={{'marginLeft': '10px'}}>
+                      Back
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

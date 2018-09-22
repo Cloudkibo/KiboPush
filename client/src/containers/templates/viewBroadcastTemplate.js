@@ -1,6 +1,4 @@
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import { Link } from 'react-router'
 
@@ -29,23 +27,18 @@ class ViewBroadcastTemplate extends React.Component {
 
   render () {
     return (
-      <div>
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              <div className='row'>
-                <div className='col-xl-6'>
-                  <h3>Title: {this.props.location.state.title}</h3>
-                  <p>Category: {this.props.location.state.category.join(',')}</p>
-                  <Link to='/templates' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
-                </div>
-                <div className='col-xl-6'>
-                  <ViewMessage payload={this.props.location.state.payload} />
-                </div>
-              </div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-4'>
+              <h3>Title: {this.props.location.state.title}</h3>
+              <p>Category: {this.props.location.state.category.join(',')}</p>
+              <Link to='/templates' style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </Link>
             </div>
+            <div className='col-xl-6'>
+              <ViewMessage payload={this.props.location.state.payload} />
+            </div>
+            <div className='col-xl-2' />
           </div>
         </div>
       </div>

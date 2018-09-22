@@ -169,8 +169,9 @@ exports.create = function (req, res) {
                     }
                     logger.serverLog(TAG,
                     `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    let postId = resp.body.post_id ? resp.body.post_id : resp.body.id
                     FacebookPosts.update(
-                      {_id: postCreated._id}, {post_id: resp.body.id}, (err2, updated) => {
+                      {_id: postCreated._id}, {post_id: postId}, (err2, updated) => {
                         if (err) {
                         }
                         res.status(201).json({status: 'success', payload: postCreated})
@@ -185,8 +186,9 @@ exports.create = function (req, res) {
                     }
                     logger.serverLog(TAG,
                     `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    let postId = resp.body.post_id ? resp.body.post_id : resp.body.id
                     FacebookPosts.update(
-                      {_id: postCreated._id}, {post_id: resp.body.id}, (err2, updated) => {
+                      {_id: postCreated._id}, {post_id: postId}, (err2, updated) => {
                         if (err) {
                         }
                         res.status(201).json({status: 'success', payload: postCreated})
@@ -201,8 +203,9 @@ exports.create = function (req, res) {
                     }
                     logger.serverLog(TAG,
                     `response from post on facebook ${JSON.stringify(resp.body)}`)
+                    let postId = resp.body.post_id ? resp.body.post_id : resp.body.id
                     FacebookPosts.update(
-                      {_id: postCreated._id}, {post_id: resp.body.id}, (err2, updated) => {
+                      {_id: postCreated._id}, {post_id: postId}, (err2, updated) => {
                         if (err) {
                         }
                         res.status(201).json({status: 'success', payload: postCreated})

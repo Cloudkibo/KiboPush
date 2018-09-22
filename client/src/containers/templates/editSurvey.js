@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -401,14 +399,44 @@ class createSurvey extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
-        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Edit Template Survey</h3>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Edit Template Survey</h3>
+            </div>
+          </div>
+        </div>
+        <div className='m-content'>
+
+          <div className='row'>
+            <div
+              className='m-form m-form--label-align-right'>
+              <div className='row align-items-center'>
+                <div className='col-xl-8 order-2 order-xl-1' />
+                <div
+                  className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                  {
+                    this.state.isShowingModal &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeDialog}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <h3>Add Category</h3>
+                        <input className='form-control'
+                          placeholder='Enter category' ref='newCategory' />
+                        <br />
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => {
+                            this.closeDialog()
+                            this.saveCategory()
+                          }}>Save
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                  <div
+                    className='m-separator m-separator--dashed d-xl-none' />
                 </div>
               </div>
             </div>

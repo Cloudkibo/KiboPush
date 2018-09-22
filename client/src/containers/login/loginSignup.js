@@ -8,6 +8,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 class LoginSignup extends React.Component {
+  componentWillMount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
+  componentWillUnmount () {
+    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
+  }
+
   render () {
     return (
       <div>
@@ -23,7 +31,7 @@ class LoginSignup extends React.Component {
                 <div className='m-login__wrapper'>
                   <div style={{margin: 0, marginTop: 30}} className='m-login__logo'>
                     <a href='#'>
-                      <img src='img/logo.png' style={{maxWidth: 250}} />
+                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <br />
@@ -37,9 +45,9 @@ class LoginSignup extends React.Component {
                         </Link>
                         <br />
                         <br />
-                        <Link to='/signup' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                        {/* <Link to='/signup' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                           Signup
-                        </Link>
+                        </Link> */}
                       </center>
                     </div>
                   </div>
@@ -55,9 +63,9 @@ class LoginSignup extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
             <div className='m-grid__item m-grid__item--middle'>
-              <Link to='/signup' className='m-login__welcome'>Join KiboPush</Link>
+              <Link to='/' className='m-login__welcome'>Join KiboPush</Link>
               <p className='m-login__msg'>Get connected with your facebook audience through push messages.
               Push surveys, polls, instant broadcasts to your Facebook subscribers.</p>
             </div>

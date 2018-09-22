@@ -14,12 +14,8 @@ const TagsSubscribers = require('./../tags_subscribers/tags_subscribers.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 let utility = require('./../broadcasts/broadcasts.utility')
-const Sessions = require('./../sessions/sessions.model')
 const _ = require('lodash')
-const mongoose = require('mongoose')
-const CompanyUsage = require('./../featureUsage/companyUsage.model')
-const PlanUsage = require('./../featureUsage/planUsage.model')
-const CompanyProfile = require('./../companyprofile/companyprofile.model')
+
 function transformPayload (payload) {
   var transformed = []
   for (var i = 0; i < payload.length; i++) {
@@ -62,7 +58,28 @@ function getWitResponse (message, token, bot, pageId, senderId) {
           if (err) {
             throw err
           } else {
-            console.log(db_res)
+            // Will only run when the entities are not zero i.e. confidence is low
+            let unansweredQuestion = {}
+            if (!(Object.keys(JSON.parse(witres.body).entities).length === 0)) {
+              console.log(dbRes)
+              let temp = JSON.parse(witres.body)
+              console.log({temp})
+
+              unansweredQuestion.botId = bot._id
+              unansweredQuestion.intentId = temp.entities.intent[0].value
+              unansweredQuestion.Question = temp._text
+              unansweredQuestion.Confidence = temp.entities.intent[0].confidence
+            } else {
+              unansweredQuestion.botId = bot._id
+              unansweredQuestion.Question = temp._text
+            }
+            let obj = new UnAnsweredQuestions(unansweredQuestion)
+            obj.save((err, result) => {
+              if (err) {
+                logger.serverLog(TAG, 'unable to insert record into Unanswered questions')
+              }
+              logger.serverLog(TAG, result)
+            })
           }
         })
         return {found: false, intent_name: 'Not Found'}
@@ -70,18 +87,45 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       var intent = JSON.parse(witres.body).entities.intent[0]
       if (intent.confidence > 0.55) {
         logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
-        Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'hitCount': 1}}).exec((err, db_res) => {
+        Subscribers.findOne({'senderId': senderId}, (err, subscriber) => {
           if (err) {
-            throw err
-          } else {
-            console.log(db_res)
+            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
+          // Bot will not respond if a subscriber is waiting subscriber
+          WaitingSubscribers.findOne({'subscriberId': subscriber._id}, (err, sub) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            logger.serverLog(TAG, 'bot is ' + JSON.stringify(sub))
+            // If sub not found, reply the answer
+            if (!sub) {
+              for (let i = 0; i < bot.payload.length; i++) {
+                if (bot.payload[i].intent_name === intent.value) {
+                  let postbackPayload = {
+                    'action': 'waitingSubscriber',
+                    'botId': bot._id,
+                    'subscriberId': subscriber._id,
+                    'pageId': pageId,
+                    'intentId': intent.value,
+                    'Question': temp._text
+                  }
+                  // Increase the hit count
+                  Bots.findOneAndUpdate({_id: bot._id}, {$inc: {'hitCount': 1}}).exec((err, dbRes) => {
+                    if (err) {
+                      throw err
+                    } else {
+                      console.log(dbRes)
+                    }
+                  })
+                  // send the message to sub
+                  sendMessenger(bot.payload[i].answer, pageId, senderId, postbackPayload)
+                }
+              }
+            } else {
+              logger.serverLog(TAG, 'reply will no tbe send for waiting subscriber')
+            }
+          })
         })
-        for (let i = 0; i < bot.payload.length; i++) {
-          if (bot.payload[i].intent_name === intent.value) {
-            sendMessenger(bot.payload[i].answer, pageId, senderId)
-          }
-        }
       }
     })
 }
@@ -218,22 +262,6 @@ function trainBot (payload, token) {
 }
 
 exports.index = function (req, res) {
-  Bots
-    .find({
-      userId: req.user._id
-    }).populate('pageId').exec((err, bots) => {
-      if (err) {
-        return res.status(500).json({
-          status: 'failed',
-          description: `Internal Server Error ${JSON.stringify(err)}`
-        })
-      }
-      return res.status(200).json({ status: 'success', payload: bots })
-    })
-}
-
-exports.create = function (req, res) {
-  logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -241,105 +269,104 @@ exports.create = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
+
     if (!companyUser) {
       return res.status(404).json({
         status: 'failed',
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+
+    Bots.find({companyId: companyUser.companyId})
+    .populate('pageId')
+    .exec((err, bots) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      PlanUsage.findOne({planId: companyProfile.planId}, (err, planUsage) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: `Internal Server Error ${JSON.stringify(err)}`
-          })
-        }
-        CompanyUsage.findOne({companyId: companyProfile._id}, (err, companyUsage) => {
+
+      return res.status(200).json({ status: 'success', payload: bots })
+    })
+  })
+}
+
+exports.create = function (req, res) {
+  logger.serverLog(TAG, `Create bot payload receieved: ${JSON.stringify(req.body)}`)
+  var uniquebotName = req.body.botName + req.user._id + Date.now()
+  CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (!companyUser) {
+      return res.status(404).json({
+        status: 'failed',
+        description: 'The user account does not belong to any company. Please contact support'
+      })
+    }
+
+    request(
+      {
+        'method': 'POST',
+        'uri': 'https://api.wit.ai/apps?v=20170307',
+        headers: {
+          'Authorization': 'Bearer ' + WIT_AI_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: {
+          'name': uniquebotName,
+          'lang': 'en',
+          'private': 'false'
+        },
+        json: true
+      },
+        (err, witres) => {
           if (err) {
-            return res.status(500).json({
-              status: 'failed',
-              description: `Internal Server Error ${JSON.stringify(err)}`
-            })
-          }
-          if (planUsage.bots !== -1 && companyUsage.bots >= planUsage.bots) {
-            return res.status(500).json({
-              status: 'failed',
-              description: `Your bots limit has reached. Please upgrade your plan to premium in order to create more bots.`
-            })
-          }
-          var uniquebotName = req.body.botName + req.user._id + Date.now()
-          request(
-            {
-              'method': 'POST',
-              'uri': 'https://api.wit.ai/apps?v=20170307',
-              headers: {
-                'Authorization': 'Bearer ' + WIT_AI_TOKEN,
-                'Content-Type': 'application/json'
-              },
-              body: {
-                'name': uniquebotName,
-                'lang': 'en',
-                'private': 'false'
-              },
-              json: true
-            },
-              (err, witres) => {
+            return logger.serverLog(TAG,
+              'Error Occured In Creating WIT.AI app')
+            // return res.status(500).json({status: 'failed', payload: {error: err}})
+          } else {
+            if (witres.statusCode !== 200) {
+              logger.serverLog(TAG,
+                `Error occurred in creating Wit ai app ${JSON.stringify(
+                  witres.body.errors)}`)
+              return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
+            } else {
+              logger.serverLog(TAG,
+                'Wit.ai app created successfully', witres.body)
+
+              const bot = new Bots({
+                pageId: req.body.pageId, // TODO ENUMS
+                userId: req.user._id,
+                botName: req.body.botName,
+                companyId: companyUser.companyId,  // Must be send from client
+                witAppId: witres.body.app_id,
+                witToken: witres.body.access_token,
+                witAppName: uniquebotName,
+                isActive: req.body.isActive,
+                hitCount: 0,
+                missCount: 0
+              })
+
+              bot.save((err, newbot) => {
                 if (err) {
-                  return logger.serverLog(TAG,
-                    'Error Occured In Creating WIT.AI app')
-                  // return res.status(500).json({status: 'failed', payload: {error: err}})
+                  res.status(500).json({
+                    status: 'Failed',
+                    error: err,
+                    description: 'Failed to insert record'
+                  })
                 } else {
-                  if (witres.statusCode !== 200) {
-                    logger.serverLog(TAG,
-                      `Error occurred in creating Wit ai app ${JSON.stringify(
-                        witres.body.errors)}`)
-                    return res.status(500).json({status: 'failed', payload: {error: witres.body.errors}})
-                  } else {
-                    logger.serverLog(TAG,
-                      'Wit.ai app created successfully', witres.body)
-
-                    const bot = new Bots({
-                      pageId: req.body.pageId, // TODO ENUMS
-                      userId: req.user._id,
-                      botName: req.body.botName,
-                      witAppId: witres.body.app_id,
-                      witToken: witres.body.access_token,
-                      witAppName: uniquebotName,
-                      isActive: req.body.isActive,
-                      hitCount: 0,
-                      missCount: 0
-                    })
-
-                    bot.save((err, newbot) => {
-                      if (err) {
-                        res.status(500).json({
-                          status: 'Failed',
-                          error: err,
-                          description: 'Failed to insert record'
-                        })
-                      } else {
-                        CompanyUsage.update({companyId: companyUser.companyId},
-                          { $inc: { bots: 1 } }, (err, updated) => {
-                            if (err) {
-                              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                            }
-                          })
-                        return res.status(200).json({status: 'success', payload: newbot})
-                      }
-                    })
-                  }
+                  return res.status(200).json({status: 'success', payload: newbot})
                 }
               })
+            }
+          }
         })
-      })
-    })
   })
 }
 
@@ -347,7 +374,10 @@ exports.edit = function (req, res) {
   logger.serverLog(TAG,
               `Adding questions in edit bot ${JSON.stringify(req.body)}`)
   Bots.update({_id: req.body.botId}, {payload: req.body.payload}, (err, affected) => {
-    console.log('affected rows %d', affected)
+    if (err) {
+      return logger.serverLog(TAG, 'Error Occured In editing the bot')
+    }
+    logger.serverLog(TAG, 'affected rows %d: ' + JSON.stringify(affected))
     Bots
     .find({
       _id: req.body.botId
@@ -523,4 +553,64 @@ exports.waitingReply = function (req, res) {
           })
       })
     })
+}
+
+exports.unAnsweredQueries = function (req, res) {
+  logger.serverLog(TAG, `Fetching unanswered queries ${JSON.stringify(req.body)}`)
+  UnAnsweredQuestions.find({botId: req.body.botId})
+  .populate('botId')
+  .exec((err, queries) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (queries) {
+      return res.status(200).json({ status: 'success', payload: queries })
+    }
+  })
+}
+
+exports.waitSubscribers = function (req, res) {
+  logger.serverLog(TAG, `Fetching waiting subscribers ${JSON.stringify(req.body)}`)
+  WaitingSubscribers.find({botId: req.body.botId})
+  .populate('botId pageId subscriberId')
+  .exec((err, subscribers) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (subscribers) {
+      return res.status(200).json({ status: 'success', payload: subscribers })
+    }
+  })
+}
+
+exports.removeWaitSubscribers = function (req, res) {
+  let parametersMissing = false
+
+  if (!_.has(req.body, '_id')) parametersMissing = true
+
+  if (parametersMissing) {
+    return res.status(400)
+      .json({status: 'failed', description: 'Parameters are missing'})
+  }
+  logger.serverLog(TAG, `going to delete waiting subscribers ${JSON.stringify(req.body)}`)
+  WaitingSubscribers.deleteOne({_id: req.body._id}, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: `Internal Server Error ${JSON.stringify(err)}`
+      })
+    }
+
+    if (result) {
+      return res.status(200).json({ status: 'success', payload: result })
+    }
+  })
 }

@@ -19,7 +19,7 @@ class Stats extends React.Component {
 
   componentDidMount () {
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/selectize.min.js')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/selectize.min.js')
     document.body.appendChild(addScript)
   }
 

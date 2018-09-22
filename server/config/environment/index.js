@@ -37,6 +37,8 @@ const all = {
 
   domain: `${process.env.DOMAIN || 'https://staging.kibopush.com'}`,
 
+  kibodashdomain: `${process.env.KIBODASH || 'http://localhost:5050'}`,
+
   // List of user roles, NOTE: don't change the order
   userRoles: ['buyer', 'admin', 'supervisor', 'agent'],
 
@@ -59,6 +61,12 @@ const all = {
     consumer_token: process.env.TWITTER_TOKEN || '2616186000-dAaH7yuQsBGNcbvnCiHweB8rFm54pF2YOC0hOtP',
     consumer_token_secret: process.env.TWITTER_TOKEN_SECRET || '6hWNxP6qwjPEjEfLwT8uK9JpPVFzwA3BxBeCSU7J6rylT',
     callbackUrl: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/api/autoposting/twitter`
+  },
+
+  shopify: {
+    app_key: '98fdce87050f053f7f9c89ee5f7a9064',
+    app_host: 'https://kibopush-dayem.ngrok.io',
+    app_secret: '716777a88dc4a2d16819d8aabe82ab11'
   },
 
   permissions: {
@@ -240,6 +248,93 @@ const all = {
         name: 'plan_D',
         price: 0
       }
+    }
+  },
+
+  uiModes: {
+    kiboengage: {
+      mode: 'kiboengage',
+      broadcasts: true,
+      polls: true,
+      surveys: true,
+      sequenceMessaging: true,
+      templates: true,
+      livechat: false,
+      smartReplies: false,
+      abandonedCarts: false,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: true,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    },
+    kibochat: {
+      mode: 'kibochat',
+      broadcasts: false,
+      polls: false,
+      surveys: false,
+      sequenceMessaging: false,
+      templates: false,
+      livechat: true,
+      smartReplies: true,
+      abandonedCarts: false,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: false,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    },
+    kibocommerce: {
+      mode: 'kibocommerce',
+      broadcasts: false,
+      polls: false,
+      surveys: false,
+      sequenceMessaging: false,
+      templates: false,
+      livechat: false,
+      smartReplies: false,
+      abandonedCarts: true,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: false,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
+    },
+    all: {
+      mode: 'all',
+      broadcasts: true,
+      polls: true,
+      surveys: true,
+      sequenceMessaging: true,
+      templates: true,
+      livechat: true,
+      smartReplies: true,
+      abandonedCarts: true,
+      subscribers: true,
+      segmentSubscribers: true,
+      autoposting: true,
+      persistentMenu: true,
+      pages: true,
+      phoneNumber: true,
+      inviteMembers: true,
+      members: true,
+      welcomeMessage: true,
+      commentCapture: true
     }
   }
 }

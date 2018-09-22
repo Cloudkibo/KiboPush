@@ -80,7 +80,7 @@ class PollResult extends React.Component {
 
   componentDidMount () {
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/Chart.min.js')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/Chart.min.js')
     document.body.appendChild(addScript)
   }
 

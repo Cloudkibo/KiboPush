@@ -1,7 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
@@ -16,12 +14,15 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
-
+import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 class SegmentedList extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       isShowingModalDelete: false,
+      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
+      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       deleteid: '',
       customerLists: [],
       totalLength: 0,
@@ -30,6 +31,8 @@ class SegmentedList extends React.Component {
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.saveCurrentList = this.saveCurrentList.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -50,6 +53,14 @@ class SegmentedList extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
 
+  showZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: true})
+  }
+
+  closeZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+  }
+
   updateListName (e) {
     this.setState({editName: e.target.value})
   }
@@ -67,9 +78,9 @@ class SegmentedList extends React.Component {
     if (data.selected === 0) {
       this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next'})
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', current_page: this.state.pageNumber, requested_page: data.selected})
     } else {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous'})
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous', current_page: this.state.pageNumber, requested_page: data.selected})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.customerLists)
@@ -120,9 +131,8 @@ class SegmentedList extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
@@ -146,173 +156,190 @@ class SegmentedList extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-content'>
-              {
-                this.props.subscribers && this.props.subscribers.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Subscribers</h4>
-                    Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to create segmented subscribers lists and broadcast message, polls and surveys.
-                    To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
-                </div>
-              }
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
-                </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segment-subscribers/' target='_blank'>Click Here </a>
-                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-xl-12 col-md-12 col-sm-12'>
-                  <div className='m-portlet m-portlet-mobile '>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Subscribers Segmentation Lists
-                          </h3>
-                        </div>
-                      </div>
-                      <div className='m-portlet__head-tools'>
-                        {
-                        this.props.subscribers && this.props.subscribers.length > 0
-                        ? <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
-                              Create Segmented Subscribers List
-                            </span>
-                          </span>
-                        </Link>
-                      : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create Segmented Subscribers List
-                          </span>
-                        </span>
-                      </Link>
-                      }
-                      </div>
-                    </div>
-                    <div className='m-portlet__body'>
-                      <div className='row align-items-center'>
-                        <div className='col-xl-8 order-2 order-xl-1' />
-                        <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                          {
-                            this.state.isShowingModalDelete &&
-                            <ModalContainer style={{width: '500px'}}
-                              onClose={this.closeDialogDelete}>
-                              <ModalDialog style={{width: '500px'}}
-                                onClose={this.closeDialogDelete}>
-                                <h3>Delete List</h3>
-                                <p>Are you sure you want to delete this List?</p>
-                                <button style={{float: 'right'}}
-                                  className='btn btn-primary btn-sm'
-                                  onClick={() => {
-                                    this.props.deleteList(this.state.deleteid, this.msg)
-                                    this.closeDialogDelete()
-                                  }}>Delete
-                                </button>
-                              </ModalDialog>
-                            </ModalContainer>
-                          }
-                        </div>
-                      </div>
-                      { this.state.customerLists && this.state.customerLists.length > 0
-                      ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
-                        <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                          <table className='m-datatable__table'
-                            id='m-datatable--27866229129' style={{
-                              display: 'block',
-                              height: 'auto',
-                              overflowX: 'auto'
-                            }}>
-                            <thead className='m-datatable__head'>
-                              <tr className='m-datatable__row'
-                                style={{height: '53px'}}>
-                                <th data-field='title'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '150px'}}>List Name</span>
-                                </th>
-                                <th data-field='options'
-                                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                  <span style={{width: '250px'}} />
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                              {
-                                this.state.customerLists.map((list, i) => (
-                                  <tr data-row={i}
-                                    className='m-datatable__row m-datatable__row--even'
-                                    style={{height: '55px'}} key={i}>
-                                    <td data-field='title'
-                                      className='m-datatable__cell'>
-                                      <span style={{width: '150px'}}>{list.listName}</span>
-                                    </td>
-                                    <td data-field='seemore'
-                                      className='m-datatable__cell'>
-                                      <span className='pull-right'
-                                        style={{width: '250px'}}>
-                                        <button to='/listDetails' className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
-                                          View
-                                        </button>
-                                        {list.initialList
-                                        ? <div>
-                                          <Link to='/createSubList' className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}} disabled>
-                                            Edit
-                                          </Link>
-                                        </div>
-                                        : <div>
-                                          <Link to='/createSubList' className='btn btn-primary btn-sm'
-                                            style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
-                                            Edit
-                                          </Link>
-                                        </div>
-                                      }
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{float: 'left', margin: 2}}
-                                          onClick={() => this.showDialogDelete(list._id)}>
-                                        Delete
-                                        </button>
-                                      </span>
-                                    </td>
-                                  </tr>
-                                ))
-                              }
-                            </tbody>
-                          </table>
-                          <div className='pagination'>
-                            <ReactPaginate previousLabel={'previous'}
-                              nextLabel={'next'}
-                              breakLabel={<a>...</a>}
-                              breakClassName={'break-me'}
-                              pageCount={Math.ceil(this.state.totalLength / 10)}
-                              marginPagesDisplayed={2}
-                              pageRangeDisplayed={3}
-                              onPageChange={this.handlePageClick}
-                              containerClassName={'pagination'}
-                              subContainerClassName={'pages pagination'}
-                              activeClassName={'active'}
-                              forcePage={this.state.pageNumber} />
-                          </div>
-                        </div>
-                      </div>
-                    : <div className='table-responsive'>
-                      <p> No data to display </p>
-                    </div>
+        {
+          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeZeroSubDialog}>
+            <ModalDialog style={{width: '700px', top: '75px'}}
+              onClose={this.closeZeroSubDialog}>
+              {this.state.isShowingZeroPageModal
+              ? <AlertMessageModal type='page' />
+            : <AlertMessageModal type='subscriber' />
+            }
+              <div>
+                <YouTube
+                  videoId='9kY3Fmj_tbM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                      autoplay: 0
                     }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0
+            ? <AlertMessage type='page' />
+          : this.props.subscribers && this.props.subscribers.length === 0 &&
+            <AlertMessage type='subscriber' />
+          }
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segment-subscribers/' target='_blank'>Click Here </a>
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-xl-12 col-md-12 col-sm-12'>
+              <div className='m-portlet m-portlet-mobile '>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Subscribers Segmentation Lists
+                      </h3>
                     </div>
                   </div>
+                  <div className='m-portlet__head-tools'>
+                    {
+                    this.props.subscribers && this.props.subscribers.length > 0
+                    ? <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
+                          Create Segmented Subscribers List
+                        </span>
+                      </span>
+                    </Link>
+                  : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                    <span>
+                      <i className='la la-plus' />
+                      <span>
+                        Create Segmented Subscribers List
+                      </span>
+                    </span>
+                  </Link>
+                  }
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      {
+                        this.state.isShowingModalDelete &&
+                        <ModalContainer style={{width: '500px'}}
+                          onClose={this.closeDialogDelete}>
+                          <ModalDialog style={{width: '500px'}}
+                            onClose={this.closeDialogDelete}>
+                            <h3>Delete List</h3>
+                            <p>Are you sure you want to delete this List?</p>
+                            <button style={{float: 'right'}}
+                              className='btn btn-primary btn-sm'
+                              onClick={() => {
+                                this.props.deleteList(this.state.deleteid, this.msg)
+                                this.closeDialogDelete()
+                              }}>Delete
+                            </button>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                    </div>
+                  </div>
+                  { this.state.customerLists && this.state.customerLists.length > 0
+                  ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
+                    <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table'
+                        id='m-datatable--27866229129' style={{
+                          display: 'block',
+                          height: 'auto',
+                          overflowX: 'auto'
+                        }}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{height: '53px'}}>
+                            <th data-field='title'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>List Name</span>
+                            </th>
+                            <th data-field='options'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '250px'}} />
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
+                          {
+                            this.state.customerLists.map((list, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{height: '55px'}} key={i}>
+                                <td data-field='title'
+                                  className='m-datatable__cell'>
+                                  <span style={{width: '150px'}}>{list.listName}</span>
+                                </td>
+                                <td data-field='seemore'
+                                  className='m-datatable__cell'>
+                                  <span className='pull-right'
+                                    style={{width: '250px'}}>
+                                    <button to='/listDetails' className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
+                                      View
+                                    </button>
+                                    {list.initialList
+                                    ? <div>
+                                      <Link to='/createSubList' className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}} disabled>
+                                        Edit
+                                      </Link>
+                                    </div>
+                                    : <div>
+                                      <Link to='/createSubList' className='btn btn-primary btn-sm'
+                                        style={{float: 'left', margin: 2}} onClick={() => this.saveCurrentList(list)}>
+                                        Edit
+                                      </Link>
+                                    </div>
+                                  }
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.showDialogDelete(list._id)}>
+                                    Delete
+                                    </button>
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                      <div className='pagination'>
+                        <ReactPaginate previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'}
+                          forcePage={this.state.pageNumber} />
+                      </div>
+                    </div>
+                  </div>
+                : <div className='table-responsive'>
+                  <p> No data to display </p>
+                </div>
+                }
                 </div>
               </div>
             </div>

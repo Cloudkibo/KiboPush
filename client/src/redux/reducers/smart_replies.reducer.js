@@ -5,7 +5,7 @@ export function botsInfo (state = {}, action) {
     case ActionTypes.SHOW_BOTS:
       return Object.assign({}, state, {
         bots: action.data,
-        createdBot: ''
+        botTemplate: ''
       })
     case ActionTypes.SHOW_ANALYTICS:
       return Object.assign({}, state, {
@@ -15,7 +15,7 @@ export function botsInfo (state = {}, action) {
       return Object.assign({}, state, {
         bots: action.bots,
         count: action.count,
-        createdBot: ''
+        botTemplate: ''
       })
     case ActionTypes.SHOW_CREATED_BOT:
       return Object.assign({}, state, {

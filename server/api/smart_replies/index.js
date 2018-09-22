@@ -55,6 +55,12 @@ router.post('/delete',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.delete)
 
+router.post('/removeWaitingSubscribers',
+  auth.isAuthenticated(),
+  // auth.doesPlanPermitsThisAction('workflows'),
+  // auth.doesRolePermitsThisAction('workflowPermission'),
+  controller.removeWaitSubscribers)
+
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);
 

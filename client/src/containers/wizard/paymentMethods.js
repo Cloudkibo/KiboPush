@@ -89,6 +89,7 @@ class PaymentMethods extends React.Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
+<<<<<<< HEAD
         <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-content'>
@@ -105,6 +106,45 @@ class PaymentMethods extends React.Component {
                                 Step 8: Choose Plan
                               </h3>
                             </div>
+=======
+        <div className='m-content'>
+          <div className='m-portlet m-portlet--full-height'>
+            <div className='m-portlet__body m-portlet__body--no-padding'>
+              <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
+                <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
+                  <Sidebar step='8' user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 6 : (this.props.user.uiMode.mode === 'kibochat') ? 5 : 5} />
+                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', boxShadow: 'none'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Step {this.props.user.uiMode && (this.props.user.uiMode.mode === 'all') ? 8 : (this.props.user.uiMode.mode === 'kibocommerce') ? 6 : 7}: Choose Plan
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__body'>
+                      <div className='tab-pane active m-scrollable' role='tabpanel'>
+                        <label>Billing Plan:</label>
+                        <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                          <div className='radio'>
+                            <input id='segmentAll'
+                              type='radio'
+                              value='free'
+                              name='segmentationType'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'free'} />
+                            <label>Free</label>
+                          </div>
+                          <div className='radio'>
+                            <input id='segmentList'
+                              type='radio'
+                              value='premium'
+                              name='segmentationType'
+                              onChange={this.handleRadioButton}
+                              checked={this.state.selectedRadio === 'premium'} />
+                            <label>Premium</label>
+>>>>>>> origin/staging
                           </div>
                         </div>
                         <div className='m-portlet__body'>
@@ -199,6 +239,31 @@ class PaymentMethods extends React.Component {
                                 </Link>
                               </div>
                             </div>
+<<<<<<< HEAD
+=======
+                          </ModalDialog>
+                        </ModalContainer>
+                    }
+                    </div>
+                    <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                      <div className='m-form__actions'>
+                        <div className='row'>
+                          <div className='col-lg-6 m--align-left' >
+                            <Link to={this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'kibocommerce' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <i className='la la-arrow-left' />
+                                <span>Back</span>&nbsp;&nbsp;
+                              </span>
+                            </Link>
+                          </div>
+                          <div className='col-lg-6 m--align-right'>
+                            <Link to='/finish' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <span>
+                                <span>Next</span>&nbsp;&nbsp;
+                                <i className='la la-arrow-right' />
+                              </span>
+                            </Link>
+>>>>>>> origin/staging
                           </div>
                         </div>
                       </div>
