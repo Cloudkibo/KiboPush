@@ -22,6 +22,7 @@ let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const uniqid = require('uniqid')
+const needle = require('needle')
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {
@@ -496,7 +497,7 @@ exports.addButton = function (req, res) {
   let buttonPayload = {
     title: req.body.title,
     type: req.body.type,
-    buttonId: uniqid()
+    buttonId: Math.random().toString(13).replace('0.', '')
   }
   if (req.body.type === 'web_url') {
     // TODO save module id when sending broadcast
