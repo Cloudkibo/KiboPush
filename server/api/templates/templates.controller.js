@@ -69,7 +69,6 @@ exports.getAllPolls = function (req, res) {
     })
   } else if (req.body.first_page === 'next') {
     let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -100,7 +99,6 @@ exports.getAllPolls = function (req, res) {
     })
   } else if (req.body.first_page === 'previous') {
     let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -174,8 +172,7 @@ exports.getAllSurveys = function (req, res) {
       })
     })
   } else if (req.body.first_page === 'next') {
-    let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    
+    let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -191,6 +188,7 @@ exports.getAllSurveys = function (req, res) {
       }
       TemplateSurveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
       .exec((err, surveys) => {
+        console.log('surveyss', JSON.stringify(surveys))
         if (err) {
           logger.serverLog(TAG, `Error: ${err}`)
           return res.status(500).json({
@@ -206,7 +204,6 @@ exports.getAllSurveys = function (req, res) {
     })
   } else if (req.body.first_page === 'previous') {
     let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-    
     let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
@@ -723,8 +720,7 @@ exports.getAllBroadcasts = function (req, res) {
         })
       })
     } else if (req.body.first_page === 'next') {
-      let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
-      
+      let recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
       let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
       let findCriteria = {
         '$or': [{companyId: companyUser.companyId}, {createdBySuperUser: true}],

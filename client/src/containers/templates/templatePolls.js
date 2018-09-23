@@ -296,7 +296,7 @@ class templatePolls extends React.Component {
                       nextLabel={'next'}
                       breakLabel={<a>...</a>}
                       breakClassName={'break-me'}
-                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      pageCount={Math.ceil(this.state.totalLength / 5)}
                       marginPagesDisplayed={1}
                       pageRangeDisplayed={3}
                       onPageChange={this.handlePageClick}
