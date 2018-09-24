@@ -60,5 +60,7 @@ router.delete('/deletePoll/:id',
     auth.doesPlanPermitsThisAction('polls'),
     auth.doesRolePermitsThisAction('pollsPermission'),
     controller.deletePoll)
+// below endpoint is for testing only
+// router.get('/submitresponse/', controller.submitresponses)
 
 module.exports = router
