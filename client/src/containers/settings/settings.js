@@ -51,7 +51,9 @@ class Settings extends React.Component {
       show: true,
       openTab: 'showAPI',
       pro: false,
-      isShowingModal: false
+      isShowingModal: false,
+      isDisableInput: false,
+      isDisableButton: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -117,9 +119,18 @@ class Settings extends React.Component {
   }
   handleNGPKeyChange (event) {
     this.setState({NGPKey: event.target.value})
+    if(event.target.value!='' && this.state.NGPSecret!='')
+    {
+          this.setState({isDisableButton:false})
+    }
   }
   handleNGPSecretChange (event) {
     this.setState({NGPSecret: event.target.value})
+
+    if(event.target.value!='' && this.state.NGPKey!='')
+    {
+          this.setState({isDisableButton:false})
+    }
   }
   getPlanInfo (plan) {
     this.setState({show: false})
@@ -352,19 +363,20 @@ class Settings extends React.Component {
     */
     if (nextProps.apiEnableNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret})
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,isDisableInput:false,isDisableButton:false})
       }
+      
     }
     if (nextProps.apiDisableNGP) {
       if (this.state.ngpDisable === true) {
-        this.setState({NGPKey: '', NGPSecret: ''})
+        this.setState({NGPKey: '', NGPSecret: '',isDisableButton:true,isDisableInput:true})
       }
     }
     if (nextProps.resetDataNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret})
+        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret,isDisableInput:false,isDisableButton:false})
       } else {
-        this.setState({NGPKey: '', NGPSecret: ''})
+        this.setState({NGPKey: '', NGPSecret: '',isDisableButton:true,isDisableInput:true})
       }
     }
     if (nextProps.apiSuccessNGP) {
@@ -734,7 +746,7 @@ class Settings extends React.Component {
                             <div className='form-group m-form__group row'>
                               <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
                               <div className='col-7 input-group'>
-                                <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
@@ -742,14 +754,14 @@ class Settings extends React.Component {
                                   NGP API Key
                                 </label>
                               <div className='col-7 input-group'>
-                                <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
                               </div>
                             </div>
                           </div>
                         }
                         <br />
                         {
-                          <button disabled={!this.state.NGPKey} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
+                          <button disabled={this.state.isDisableButton} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
                         }
                         <br />
                       </div>
