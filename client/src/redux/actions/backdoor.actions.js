@@ -414,3 +414,10 @@ export function saveSurveyInformation (survey) {
     data: survey
   }
 }
+
+export function saveCurrentPoll (poll) {
+  return {
+    type: ActionTypes.SAVE_CURRENT_POLL,
+    data: poll
+  }
+}
