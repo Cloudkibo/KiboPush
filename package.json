@@ -186,6 +186,7 @@
     "uglify-js": "^3.3.16",
     "uglifycss": "0.0.29",
     "underscore": "^1.8.3",
+    "uniqid": "^5.0.3",
     "valid-url": "^1.0.9",
     "watch": "^1.0.2",
     "watchify": "^3.9.0",

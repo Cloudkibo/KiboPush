@@ -157,8 +157,9 @@ class ResetPassword extends React.Component {
                     { this.state.password && this.state.ismatch === false &&
                       <div className='col-7 input-group' style={{color: 'red'}}>Passwords do not match</div>
                     }
+                    {console.log('this.refs', this.refs.current)}
                     <div className='col-11 input-group pull-right'>
-                      <button className='btn btn-primary pull-right' onClick={this.save}>Save</button>
+                      <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === ''} onClick={this.save}>Save</button>
                     </div>
                   </div>
                 </div>
