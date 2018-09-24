@@ -22,7 +22,6 @@ let request = require('request')
 let config = require('./../../config/environment')
 const CompanyUsers = require('./../companyuser/companyuser.model')
 const uniqid = require('uniqid')
-const needle = require('needle')
 
 function exists (list, content) {
   for (let i = 0; i < list.length; i++) {

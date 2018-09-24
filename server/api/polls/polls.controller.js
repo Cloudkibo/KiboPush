@@ -1539,3 +1539,6 @@ exports.sendPoll = function (req, res) {
     })
   })
 }
+exports.savePoll = function (req, res) {
+  console.log('req', req.body)
+}
