@@ -61,9 +61,4 @@ router.delete('/deletePoll/:id',
     auth.doesRolePermitsThisAction('pollsPermission'),
     controller.deletePoll)
 
-router.get('/savePoll',
-    controller.savePoll)
-// below endpoint is for testing only
-// router.get('/submitresponse/', controller.submitresponses)
-
 module.exports = router
