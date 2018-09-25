@@ -38,7 +38,9 @@ exports.update = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
+
     permissions = utility.prepareUpdatePayload(permissions, req.body.permissions, 'role')
+
     permissions.save((err2) => {
       if (err2) {
         return res.status(500)

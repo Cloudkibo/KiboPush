@@ -80,6 +80,7 @@ exports.create = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
+
     CompanyUsage.aggregate([{$addFields: queryCompany}, {$out: 'company_usages'}], (err, updatedcompany) => {
       if (err) {
         return res.status(500).json({

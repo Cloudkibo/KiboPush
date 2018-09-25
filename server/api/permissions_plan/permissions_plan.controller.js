@@ -35,7 +35,9 @@ exports.update = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
+
     features = utility.prepareUpdatePayload(features, req.body.features, 'plan_id')
+
     features.save((err2) => {
       if (err2) {
         return res.status(500)

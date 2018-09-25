@@ -612,7 +612,7 @@ router.get('/addDefaultUIMode', (req, res) => {
   })
 })
 
-router.get('/refeshUserAccount', (req, res) => {
+router.get('/refreshUsersAccount', (req, res) => {
   const options = {
     headers: {
       'X-Custom-Header': 'CloudKibo Web Application'
@@ -627,36 +627,40 @@ router.get('/refeshUserAccount', (req, res) => {
       res.status(500).json({status: 'success', description: err})
     }
 
-    users.forEach((user) => {
-      // get the code
-      needle.get(`https://graph.facebook.com/oauth/client_code?access_token=${user.facebookInfo.fbToken}&client_secret=${config.facebook.clientSecret}&redirect_uri=${config.facebook.callbackURL}&client_id=${config.facebook.clientID}`, options, (err, resp) => {
-        if (err !== null) {
-          logger.serverLog(TAG, 'Line 637: ERROR! from graph api to get the code: ')
-          logger.serverLog(TAG, JSON.stringify(err))
-          res.status(500).json({status: 'success', description: err})
-        }
-        let code = resp.code
-        // redeemed the code for access token
-        needle.get(`https://graph.facebook.com/oauth/access_token?code=${code}&client_id=${config.facebook.clientID}&redirect_uri=${config.facebook.callbackURL}`, options, (err, respp) => {
+    users.forEach((user, index) => {
+      if (user.facebookInfo) {
+        // get the code
+        needle.get(`https://graph.facebook.com/oauth/client_code?access_token=${user.facebookInfo.fbToken}&client_secret=${config.facebook.clientSecret}&redirect_uri=${config.facebook.callbackURL}&client_id=${config.facebook.clientID}`, options, (err, resp) => {
           if (err !== null) {
-            logger.serverLog(TAG, 'Line 649: ERROR! from graph api to get the access_token: ')
+            logger.serverLog(TAG, 'Line 637: ERROR! from graph api to get the code: ')
             logger.serverLog(TAG, JSON.stringify(err))
             res.status(500).json({status: 'success', description: err})
           }
-          let accessToken = respp.access_token
-          // update user
-          user['facebookInfo']['fbToken'] = accessToken
-          user.save((err, updatedUser) => {
-            if (err) {
-              logger.serverLog(TAG, `Line 658: ERROR! at updating the user: ${JSON.stringify(err)}`)
+          let code = resp.code
+          // redeemed the code for access token
+          needle.get(`https://graph.facebook.com/oauth/access_token?code=${code}&client_id=${config.facebook.clientID}&redirect_uri=${config.facebook.callbackURL}`, options, (err, respp) => {
+            if (err !== null) {
+              logger.serverLog(TAG, 'Line 649: ERROR! from graph api to get the access_token: ')
+              logger.serverLog(TAG, JSON.stringify(err))
               res.status(500).json({status: 'success', description: err})
             }
-            // fetch pages
-            fetchPages(`https://graph.facebook.com/v2.10/${user.facebookInfo.fbId}/accounts?access_token=${user.facebookInfo.fbToken}`, updatedUser, disconnectPages)
-            res.status(200).json({status: 'success', description: 'Successfully refreshed!'})
+            let accessToken = respp.access_token
+            // update user
+            user['facebookInfo']['fbToken'] = accessToken
+            user.save((err, updatedUser) => {
+              if (err) {
+                logger.serverLog(TAG, `Line 658: ERROR! at updating the user: ${JSON.stringify(err)}`)
+                res.status(500).json({status: 'success', description: err})
+              }
+              // fetch pages
+              fetchPages(`https://graph.facebook.com/v2.10/${user.facebookInfo.fbId}/accounts?access_token=${user.facebookInfo.fbToken}`, updatedUser, disconnectPages)
+              if (index === (users.length - 1)) {
+                res.status(200).json({status: 'success', description: 'Successfully refreshed!'})
+              }
+            })
           })
         })
-      })
+      }
     })
   })
 })

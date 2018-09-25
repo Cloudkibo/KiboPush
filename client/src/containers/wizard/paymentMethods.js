@@ -179,7 +179,7 @@ class PaymentMethods extends React.Component {
                             </ModalContainer>
                         }
                         </div>
-                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
+                        <div className='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                           <div className='m-form__actions'>
                             <div className='row'>
                               <div className='col-lg-6 m--align-left' >

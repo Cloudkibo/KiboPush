@@ -508,7 +508,7 @@ class Targeting extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+        <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px'}}>
           <i className='flaticon-exclamation m--font-brand' />
           { this.props.component === 'broadcast' && <span style={{marginLeft: '10px'}}>
             If you do not select any targeting, broadcast message will be sent to all the subscribers from the connected pages.
@@ -525,10 +525,6 @@ class Targeting extends React.Component {
           }
         </div>
         <div className='col-12' style={{paddingLeft: '20px'}}>
-          <label>Select Page:</label>
-          <div className='form-group m-form__group'>
-            <select id='selectPage' style={{width: 200 + '%'}} />
-          </div>
           {this.state.showSubscriptionMsg &&
           <div style={{paddingBottom: '10px'}}>
             <span style={{fontSize: '0.9rem', fontWeight: 'bold'}} >Note:</span>&nbsp;

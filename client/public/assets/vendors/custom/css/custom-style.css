@@ -170,11 +170,11 @@ a.broadcastTabs.active {
 }
 .popover.show.buttonPopover {
   left: -110px !important;
-  height: auto !important
+  height: auto !important;
 }
 .popover.show.buttonPopoverPlan {
   width: 264px !important;
-  height: auto !important
+  height: auto !important;
 }
 .popover.show.buttonPopoverList {
   height: auto !important

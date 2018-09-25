@@ -25,12 +25,10 @@ exports.index = function (req, res) {
             description: `Error in getting companies count ${JSON.stringify(err2)}`
           })
         }
-        console.log('inside else')
         plan = plan.toObject()
         plan.companyCount = companyCount.length > 0 ? companyCount[0].count : 0
         plans.push(plan)
         if (plans.length === plansTemp.length) {
-          console.log(plans)
           res.status(200).json({
             status: 'success',
             payload: plans

@@ -37,7 +37,8 @@ class Convo extends React.Component {
       searchValue: '',
       filter: false,
       pageNumber: 0,
-      isShowingModalPro: false
+      isShowingModalPro: false,
+      pageValue: ''
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     props.loadSubscribersList()
@@ -55,6 +56,7 @@ class Convo extends React.Component {
     this.showProDialog = this.showProDialog.bind(this)
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -69,11 +71,6 @@ class Convo extends React.Component {
     })
   }
   onDaysChange (e) {
-    // this.setState({
-    //   filterValue: '',
-    //   searchValue: ''
-    // })
-    //  var defaultVal = 0
     var value = e.target.value
     this.setState({selectedDays: value})
     if (value && value !== '') {
@@ -87,7 +84,6 @@ class Convo extends React.Component {
       }
       this.setState({filter: true, pageNumber: 0})
       this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: value}})
-      //  this.props.loadBroadcastsList(value)
     } else if (value === '') {
       this.setState({selectedDays: '0', filter: false})
       this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: '0'}})
@@ -113,7 +109,6 @@ class Convo extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
-
     document.title = 'KiboPush | Broadcast'
   }
 
@@ -157,7 +152,7 @@ class Convo extends React.Component {
   gotoCreate (broadcast) {
     browserHistory.push({
       pathname: `/createBroadcast`,
-      state: {module: 'convo', subscribers: this.props.subscribers}
+      state: {module: 'convo', subscribers: this.props.subscribers, pages: this.state.pageValue}
     })
   }
 
@@ -172,10 +167,21 @@ class Convo extends React.Component {
     }
   }
 
+  componentDidUpdate (nextProps) {
+    if (this.props.pages && this.state.isShowingModal && this.state.pageValue === '') {
+      let options = []
+      if (this.props.pages) {
+        for (var i = 0; i < this.props.pages.length; i++) {
+          options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+        }
+        this.initializePageSelect(options)
+      }
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
-      //  this.setState({ totalLength: nextProps.broadcasts.length })
     }
     if (nextProps.count) {
       this.setState({ totalLength: nextProps.count })
@@ -198,52 +204,58 @@ class Convo extends React.Component {
       })
     }
   }
+  initializePageSelect (pageOptions) {
+    console.log('pageOptions: ', pageOptions)
+    var self = this
+    /* eslint-disable */
+    $('#selectPages').select2({
+      /* eslint-enable */
+      data: pageOptions,
+      placeholder: 'Select page(s)',
+      allowClear: true,
+      multiple: true
+    })
+
+    // this.setState({pageValue: pageOptions[0].id})
+
+    /* eslint-disable */
+    $('#selectPages').on('change', function (e) {
+      /* eslint-enable */
+      // var selectedIndex = e.target.selectedIndex
+      // if (selectedIndex !== '-1') {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+    })
+  }
   searchBroadcast (event) {
     this.setState({
       searchValue: event.target.value
     })
-    //  var filtered = []
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
-      // for (let i = 0; i < this.props.broadcasts.length; i++) {
-      //   if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-      //     filtered.push(this.props.broadcasts[i])
-      //   }
-      // }
     } else {
-      //  this.setState({filter: false})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
-      //  filtered = this.props.broadcasts
     }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
     this.setState({filterValue: e.target.value})
-    // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
-      // for (let i = 0; i < this.props.broadcasts.length; i++) {
-      //   if (e.target.value === 'miscellaneous') {
-      //     if (this.props.broadcasts[i].payload.length > 1) {
-      //       filtered.push(this.props.broadcasts[i])
-      //     }
-      //   } else {
-      //     if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
-      //       filtered.push(this.props.broadcasts[i])
-      //     }
-      //   }
-      // }
     } else {
       this.setState({filter: false})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
-      // filtered = this.props.broadcasts
     }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -361,18 +373,22 @@ class Convo extends React.Component {
                             <h3>Create Broadcast</h3>
                             <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
                             <div style={{width: '100%', textAlign: 'center'}}>
+                              <div className='form-group m-form__group'>
+                                <select id='selectPages' style={{minWidth: '100%'}} />
+                              </div>
+                              <br />
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
+                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
                                   Create New Broadcast
                                 </Link>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
                                 {
                                   this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to='/showTemplateBroadcasts' className='btn btn-primary'>
+                                  ? <Link to={{pathname: '/showTemplateBroadcasts', state: {pages: this.state.pageValue}}} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
                                     Use Template
                                   </Link>
-                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                  : <button onClick={this.showProDialog} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                       <span style={{color: '#34bfa3'}}>PRO</span>

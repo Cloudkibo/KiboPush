@@ -120,6 +120,7 @@ exports.setCard = function (req, res) {
 exports.updatePlan = function (req, res) {
   var plan = req.body.plan
   var stripeToken = null
+
   if (req.user.plan.unique_ID === plan) {
     return res.status(500).json({
       status: 'failed',
