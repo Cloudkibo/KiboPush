@@ -118,7 +118,7 @@ class Settings extends React.Component {
     })
   }
   handleNGPKeyChange (event) {
-    console.log('event.target.value.toString().length', event.target.value.toString().length)
+    
     this.setState({NGPKey: event.target.value})
     if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
       this.setState({isDisableButton: false})
@@ -371,7 +371,6 @@ class Settings extends React.Component {
     NGP Work Starts
     */
     if (nextProps.apiEnableNGP) {
-      console.log('this.state.ngpDisable', this.state.ngpDisable)
       if (this.state.ngpDisable === false) {
         this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,  isDisableInput: false, isDisableButton: false})
       }
