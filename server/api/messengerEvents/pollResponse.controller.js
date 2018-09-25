@@ -7,15 +7,31 @@ const Webhooks = require(
 const PollResponse = require('../polls/pollresponse.model')
 const needle = require('needle')
 const webhookUtility = require('./../webhooks/webhooks.utility')
+const sequenceController = require('./../sequenceMessaging/sequence.controller')
 
 var array = []
 
 exports.pollResponse = function (req, res) {
-  var temp = true
-  let request = req.body.entry[0].messaging[0]
   let resp = JSON.parse(
     req.body.entry[0].messaging[0].message.quick_reply.payload)
-  Subscribers.findOne({ senderId: request.sender.id }, (err, subscriber) => {
+  savepoll(req.body.entry[0].messaging[0], resp)
+  Subscribers.findOne({ senderId: req.body.entry[0].messaging[0].sender.id }, (err, subscriber) => {
+    if (err) {
+      logger.serverLog(TAG,
+        `Error occurred in finding subscriber ${JSON.stringify(
+          err)}`)
+    }
+    if (subscriber) {
+      logger.serverLog(TAG, `Subscriber Responeds to Poll ${JSON.stringify(subscriber)} ${resp.poll_id}`)
+      sequenceController.setSequenceTrigger(subscriber.companyId, subscriber._id, { event: 'responds_to_poll', value: resp.poll_id })
+    }
+  })
+}
+function savepoll (req, resp) {
+  // find subscriber from sender id
+  // var resp = JSON.parse(req.postback.payload)
+  var temp = true
+  Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG,
         `Error occurred in finding subscriber ${JSON.stringify(
@@ -41,7 +57,7 @@ exports.pollResponse = function (req, res) {
       subscriberId: subscriber._id
 
     }
-    Webhooks.findOne({ pageId: request.recipient.id }).populate('userId').exec((err, webhook) => {
+    Webhooks.findOne({ pageId: req.recipient.id }).populate('userId').exec((err, webhook) => {
       logger.serverLog(TAG, `webhook ${webhook}`)
       if (err) logger.serverLog(TAG, err)
       if (webhook && webhook.isEnabled) {
@@ -53,7 +69,7 @@ exports.pollResponse = function (req, res) {
             if (webhook && webhook.optIn.POLL_RESPONSE) {
               var data = {
                 subscription_type: 'POLL_RESPONSE',
-                payload: JSON.stringify({ sender: request.sender, recipient: request.recipient, timestamp: request.timestamp, message: request.message })
+                payload: JSON.stringify({ sender: req.sender, recipient: req.recipient, timestamp: req.timestamp, message: req.message })
               }
               logger.serverLog(TAG, `data for poll response ${data}`)
               needle.post(webhook.webhook_url, data,

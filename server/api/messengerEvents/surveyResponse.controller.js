@@ -14,7 +14,19 @@ const Sessions = require('../sessions/sessions.model')
 exports.surveyResponse = function (req, res) {
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
     const event = req.body.entry[0].messaging[i]
+    let resp = JSON.parse(event.postback.payload)
     savesurvey(event)
+    Subscribers.findOne({ senderId: req.body.entry[0].messaging[0].sender.id }, (err, subscriber) => {
+      if (err) {
+        logger.serverLog(TAG,
+          `Error occurred in finding subscriber ${JSON.stringify(
+            err)}`)
+      }
+      if (subscriber) {
+        logger.serverLog(TAG, `Subscriber Responeds to Survey ${JSON.stringify(subscriber)} ${resp.survey_id}`)
+        // sequenceController.setSequenceTrigger(subscriber.companyId, subscriber._id, { event: 'responds_to_survey', value: resp.poll_id })
+      }
+    })
   }
 }
 function savesurvey (req) {
