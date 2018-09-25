@@ -117,8 +117,7 @@ exports.reset = function (req, res) {
             description: 'User does not exist'
           })
         }
-        logger.serverLog(TAG,
-        `New password cannot be same ${JSON.stringify(user.authenticate(req.body.new_password))}`)
+
         if (user.authenticate(req.body.new_password)) {
           return res.status(404).json({
             status: 'failed',
