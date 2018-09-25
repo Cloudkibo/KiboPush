@@ -3,8 +3,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { addMenuItem, fetchMenu, saveMenu, getIndexBypage, saveCurrentMenuItem, removeMenu } from '../../redux/actions/menu.actions'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl, removeMenuPayload } from './utility'
 import { Link } from 'react-router'
@@ -540,9 +538,8 @@ class Menu extends React.Component {
       </div>
     </Popover>
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -564,99 +561,180 @@ class Menu extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            <div className='m-subheader '>
-              <div className='d-flex align-items-center'>
-                <div className='mr-auto'>
-                  <h3 className='m-subheader__title'>Persistent Menu</h3>
-                </div>
-              </div>
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Persistent Menu</h3>
             </div>
-            <div className='m-content'>
-              {
-                this.props.pages && this.props.pages.length === 0 &&
-                <AlertMessage type='page' />
-              }
-              <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-                <div className='m-alert__icon'>
-                  <i className='flaticon-technology m--font-accent' />
+          </div>
+        </div>
+        <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0 &&
+            <AlertMessage type='page' />
+          }
+          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div className='m-alert__icon'>
+              <i className='flaticon-technology m--font-accent' />
+            </div>
+            <div className='m-alert__text'>
+              Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+            </div>
+          </div>
+          <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>
+            <div className='m-portlet m-portlet--full-height '>
+              <div className='m-portlet__head'>
+                <div className='m-portlet__head-caption' style={{width: '400px'}}>
+                  <div className='m-portlet__head-title'>
+                    <h3 className='m-portlet__head-text'>Select a page to setup its Menu </h3>
+                  </div>
                 </div>
-                <div className='m-alert__text'>
-                  Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank'>documentation</a>.
-                  Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+                <div className='m-portlet__head-tools'>
+                  <ul className='nav nav-pills nav-pills--brand m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                    <li className='nav-item m-tabs__item'>
+                      <select
+                        className='custom-select'
+                        placeholder='Select a page...'
+                        onChange={this.pageChange}>
+                        { this.props.pages.map((page, i) => (
+                        (
+                          page.connected &&
+                          <option
+                            value={page.pageId} name={page.pageName} key={page.pageId} selected={page.pageId === this.state.pageValue}>{page.pageName}</option>
+                        )
+                      ))
+                      }
+                      </select>
+                    </li>
+                    <li className='nav-item m-tabs__item' />
+                    <li className='nav-item m-tabs__item' />
+                  </ul>
                 </div>
               </div>
-              <div className='col-xl-12 col-md-12 col-lg-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height '>
-                  <div className='m-portlet__head'>
-                    <div className='m-portlet__head-caption' style={{width: '400px'}}>
-                      <div className='m-portlet__head-title'>
-                        <h3 className='m-portlet__head-text'>Select a page to setup its Menu </h3>
-                      </div>
-                    </div>
-                    <div className='m-portlet__head-tools'>
-                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                        <li className='nav-item m-tabs__item'>
-                          <select
-                            className='custom-select'
-                            placeholder='Select a page...'
-                            onChange={this.pageChange}>
-                            { this.props.pages.map((page, i) => (
-                            (
-                              page.connected &&
-                              <option
-                                value={page.pageId} name={page.pageName} key={page.pageId} selected={page.pageId === this.state.pageValue}>{page.pageName}</option>
-                            )
-                          ))
+              <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+              <div className='m-portlet__body'>
+                <div className='row align-items-center'>
+                  <div className='col-xl-8 order-2 order-xl-1' />
+                  <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                    {
+                      this.state.isShowingModal &&
+                      <ModalContainer style={{top: '100px'}}
+                        onClose={this.closeDialog}>
+                        <ModalDialog style={{top: '100px'}}
+                          onClose={this.closeDialog}>
+                          <h3>Persistent Menu Preview</h3>
+                          { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
+                              ? <div><ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
+                            : <div><ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
                           }
-                          </select>
-                        </li>
-                        <li className='nav-item m-tabs__item' />
-                        <li className='nav-item m-tabs__item' />
-                      </ul>
-                    </div>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
                   </div>
-                  <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-                  <div className='m-portlet__body'>
-                    <div className='row align-items-center'>
-                      <div className='col-xl-8 order-2 order-xl-1' />
-                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
-                        {
-                          this.state.isShowingModal &&
-                          <ModalContainer style={{top: '100px'}}
-                            onClose={this.closeDialog}>
-                            <ModalDialog style={{top: '100px'}}
-                              onClose={this.closeDialog}>
-                              <h3>Persistent Menu Preview</h3>
-                              { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && this.props.pages && this.state.itemMenus
-                                  ? <div><ViewScreen data={this.state.itemMenus} page={this.state.pageName} /></div>
-                                : <div><ViewScreen data={this.props.currentMenuItem.itemMenus} page={this.state.pageName} /></div>
-                              }
-                            </ModalDialog>
-                          </ModalContainer>
-                        }
+                </div>
+                <div className='tab-content'>
+                  <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
+                  <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
+                    {
+            this.state.itemMenus && this.state.itemMenus.map((itm, index) => {
+              // This condition limits the number of main menu to three items only
+              if (this.state.itemMenus[index + 1] || index === 1) {
+                return (<li className='nav-item m-tabs__item'>
+                  <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
+                    <form className='m-form m-form--fit m-form--label-align-right'>
+                      <div className='m-portlet__body'>
+                        <div className='form-group m-form__group'>
+                          <div className='input-group m-input-group'>
+                            <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                              value={itm.title} className='form-control m-input'
+                              onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(e, index) }} style={{width: '350px'}} />
+                            <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
+                              <i className='fa fa-times' aria-hidden='true' />
+                            </span>
+                          </div>
+                        </div>
                       </div>
+                    </form>
+                    {popup}
+                  </div>
+                  {itm.submenu.map((sub, subindex) => {
+                    return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
+                      <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group'>
+                              <div className='input-group m-input-group'>
+                                <input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} value={sub.title}
+                                  onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(e, index) }}
+                                  className='form-control m-input' style={{width: '350px'}} />
+                                <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
+                                  <i className='fa fa-times' aria-hidden='true' />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                        {popup}
+                      </div>
+
+                      { sub.submenu.map((nested, nestedindex) => {
+                        return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
+                          <div ref={'nested-' + index + '-' + subindex + '-' + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
+                            <form className='m-form m-form--fit m-form--label-align-right'>
+                              <div className='m-portlet__body'>
+                                <div className='form-group m-form__group'>
+                                  <div className='input-group m-input-group'>
+                                    <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title} className='form-control m-input'
+                                      onClick={(e) => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(e, index) }} style={{width: '350px'}} />
+                                    <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
+                                      <i className='fa fa-times' aria-hidden='true' />
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            {popup}
+                          </div>
+                        </div>
+                      })}
                     </div>
-                    <div className='tab-content'>
-                      <h4 style={{paddingLeft: '22px'}}>Edit Menu</h4> <br /><br />
-                      <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' style={{width: '30%'}}>
-                        {
-                this.state.itemMenus && this.state.itemMenus.map((itm, index) => {
-                  // This condition limits the number of main menu to three items only
-                  if (this.state.itemMenus[index + 1] || index === 1) {
-                    return (<li className='nav-item m-tabs__item'>
-                      <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
+                  })}
+
+                </li>)
+              } else {
+                return <li className='nav-item m-tabs__item'>
+                  <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
+                    <form className='m-form m-form--fit m-form--label-align-right'>
+                      <div className='m-portlet__body'>
+                        <div className='form-group m-form__group'>
+                          <div className='input-group m-input-group'>
+                            <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
+                              value={itm.title} onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(e, index) }} style={{width: '350px'}} />
+                            <span className='input-group-addon' id='basic-addon1' onClick={this.addItem.bind(this)}>
+                              <i className='fa fa-plus' aria-hidden='true' />
+                            </span>
+                            <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
+                              <i className='fa fa-times' aria-hidden='true' />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    {popup}
+                  </div>
+                  { itm.submenu.map((sub, subindex) => {
+                    return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
+                      <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
                         <form className='m-form m-form--fit m-form--label-align-right'>
                           <div className='m-portlet__body'>
                             <div className='form-group m-form__group'>
                               <div className='input-group m-input-group'>
-                                <input type='text' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                                  value={itm.title} className='form-control m-input'
-                                  onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(e, index) }} style={{width: '350px'}} />
-                                <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
+                                <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
+                                  value={sub.title}
+                                  onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(e, index) }}
+                                  style={{width: '350px'}} />
+                                <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
                                   <i className='fa fa-times' aria-hidden='true' />
                                 </span>
                               </div>
@@ -665,17 +743,16 @@ class Menu extends React.Component {
                         </form>
                         {popup}
                       </div>
-                      {itm.submenu.map((sub, subindex) => {
+                      { sub.submenu.map((nested, nestedindex) => {
                         return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
-                          <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
+                          <div ref={'nested-' + index + '-' + subindex + '-' + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
                             <form className='m-form m-form--fit m-form--label-align-right'>
                               <div className='m-portlet__body'>
                                 <div className='form-group m-form__group'>
                                   <div className='input-group m-input-group'>
-                                    <input type='text' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})} value={sub.title}
-                                      onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(e, index) }}
-                                      className='form-control m-input' style={{width: '350px'}} />
-                                    <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
+                                    <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title}
+                                      className='form-control m-input' onClick={(e) => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(e, index) }} style={{width: '350px'}} />
+                                    <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
                                       <i className='fa fa-times' aria-hidden='true' />
                                     </span>
                                   </div>
@@ -684,133 +761,47 @@ class Menu extends React.Component {
                             </form>
                             {popup}
                           </div>
-
-                          { sub.submenu.map((nested, nestedindex) => {
-                            return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
-                              <div ref={'nested-' + index + '-' + subindex + '-' + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
-                                <form className='m-form m-form--fit m-form--label-align-right'>
-                                  <div className='m-portlet__body'>
-                                    <div className='form-group m-form__group'>
-                                      <div className='input-group m-input-group'>
-                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title} className='form-control m-input'
-                                          onClick={(e) => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(e, index) }} style={{width: '350px'}} />
-                                        <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
-                                          <i className='fa fa-times' aria-hidden='true' />
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </form>
-                                {popup}
-                              </div>
-                            </div>
-                          })}
                         </div>
                       })}
-
-                    </li>)
-                  } else {
-                    return <li className='nav-item m-tabs__item'>
-                      <div ref={'item-' + index} className='align-center' style={{marginTop: '-50px', marginLeft: '-11px'}}>
-                        <form className='m-form m-form--fit m-form--label-align-right'>
-                          <div className='m-portlet__body'>
-                            <div className='form-group m-form__group'>
-                              <div className='input-group m-input-group'>
-                                <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'item', {itemIndex: index})}
-                                  value={itm.title} onClick={(e) => { this.target = index + '-item'; this.clickIndex = 'item-' + index; this.onSelectItem(e, index) }} style={{width: '350px'}} />
-                                <span className='input-group-addon' id='basic-addon1' onClick={this.addItem.bind(this)}>
-                                  <i className='fa fa-plus' aria-hidden='true' />
-                                </span>
-                                <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('item', {itemIndex: index})}>
-                                  <i className='fa fa-times' aria-hidden='true' />
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </form>
-                        {popup}
-                      </div>
-                      { itm.submenu.map((sub, subindex) => {
-                        return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
-                          <div ref={'submenu-' + index + '-' + subindex} style={{paddingTop: '5px'}} className='align-center' >
-                            <form className='m-form m-form--fit m-form--label-align-right'>
-                              <div className='m-portlet__body'>
-                                <div className='form-group m-form__group'>
-                                  <div className='input-group m-input-group'>
-                                    <input type='text' className='form-control m-input' onChange={(e) => this.changeLabel(e, 'submenu', {itemIndex: index, subIndex: subindex})}
-                                      value={sub.title}
-                                      onClick={(e) => { this.target = subindex + '-sub-item'; this.clickIndex = 'submenu-' + index + '-' + subindex; this.subIndex = subindex; this.onSelectItem(e, index) }}
-                                      style={{width: '350px'}} />
-                                    <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('submenu', {itemIndex: index, subIndex: subindex})}>
-                                      <i className='fa fa-times' aria-hidden='true' />
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </form>
-                            {popup}
-                          </div>
-                          { sub.submenu.map((nested, nestedindex) => {
-                            return <div style={{marginLeft: '50px', marginTop: '-50px'}}>
-                              <div ref={'nested-' + index + '-' + subindex + '-' + nestedindex} style={{paddingTop: '5px'}} className='align-center' >
-                                <form className='m-form m-form--fit m-form--label-align-right'>
-                                  <div className='m-portlet__body'>
-                                    <div className='form-group m-form__group'>
-                                      <div className='input-group m-input-group'>
-                                        <input type='text' onChange={(e) => this.changeLabel(e, 'nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})} value={nested.title}
-                                          className='form-control m-input' onClick={(e) => { this.target = nestedindex + '-nested-item'; this.clickIndex = 'nested-' + index + '-' + subindex + '-' + nestedindex; this.subIndex = subindex; this.onSelectItem(e, index) }} style={{width: '350px'}} />
-                                        <span className='input-group-addon' id='basic-addon1' onClick={() => this.removeItem('nested', {itemIndex: index, subIndex: subindex, nestedIndex: nestedindex})}>
-                                          <i className='fa fa-times' aria-hidden='true' />
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </form>
-                                {popup}
-                              </div>
-                            </div>
-                          })}
-                        </div>
-                      })}
-                    </li>
-                  }
-                })
+                    </div>
+                  })}
+                </li>
               }
-                        <li className='nav-item m-tabs__item'>
-                          <div className='align-center' style={{marginTop: '-30px', marginLeft: '-13px'}}>
-                            <form className='m-form m-form--fit m-form--label-align-right'>
-                              <div className='m-portlet__body'>
-                                <div className='form-group m-form__group'>
-                                  <div className='input-group m-input-group'>
-                                    <input type='text' readOnly value='Powered by KiboPush'
-                                      className='form-control m-input' style={{width: '350px'}} />
-                                  </div>
-                                </div>
+            })
+          }
+                    <li className='nav-item m-tabs__item'>
+                      <div className='align-center' style={{marginTop: '-30px', marginLeft: '-13px'}}>
+                        <form className='m-form m-form--fit m-form--label-align-right'>
+                          <div className='m-portlet__body'>
+                            <div className='form-group m-form__group'>
+                              <div className='input-group m-input-group'>
+                                <input type='text' readOnly value='Powered by KiboPush'
+                                  className='form-control m-input' style={{width: '350px'}} />
                               </div>
-                            </form>
+                            </div>
                           </div>
-                        </li>
-                        <p><b>Note: </b>Only two menu items can be added.</p>
-                      </ul>
-                    </div>
-                    <div className='row' style={{marginLeft: '5px'}}>
-                      <div className='col-lg-6 m--align-left' >
-                        <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary'>
-                          Save Menu
-                        </button>
-                        { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
-                          ? <button onClick={this.showDialog} className='btn btn-sm btn-primary' disabled style={{marginLeft: '15px'}}>
-                            Preview
-                          </button>
-                          : <button onClick={this.showDialog} className='btn btn-sm btn-primary' style={{marginLeft: '15px'}}>
-                            Preview
-                          </button>
-                        }
-                        <button style={{marginLeft: '15px'}} onClick={this.reset.bind(this)} className='btn btn-sm btn-secondary'>
-                          Reset Menu
-                        </button>
+                        </form>
                       </div>
-                    </div>
+                    </li>
+                    <p><b>Note: </b>Only two menu items can be added.</p>
+                  </ul>
+                </div>
+                <div className='row' style={{marginLeft: '5px'}}>
+                  <div className='col-lg-6 m--align-left' >
+                    <button onClick={this.save.bind(this)} className='btn btn-sm btn-primary'>
+                      Save Menu
+                    </button>
+                    { !(this.props.currentMenuItem && this.props.currentMenuItem.itemMenus) && (!this.props.indexByPage)
+                      ? <button onClick={this.showDialog} className='btn btn-sm btn-primary' disabled style={{marginLeft: '15px'}}>
+                        Preview
+                      </button>
+                      : <button onClick={this.showDialog} className='btn btn-sm btn-primary' style={{marginLeft: '15px'}}>
+                        Preview
+                      </button>
+                    }
+                    <button style={{marginLeft: '15px'}} onClick={this.reset.bind(this)} className='btn btn-sm btn-secondary'>
+                      Reset Menu
+                    </button>
                   </div>
                 </div>
               </div>

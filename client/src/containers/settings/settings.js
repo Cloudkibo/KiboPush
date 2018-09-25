@@ -538,7 +538,6 @@ class Settings extends React.Component {
                           </a>
                         : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
                           <i className='m-nav__link-icon flaticon-list-2' />
-                          <span className='m-nav__link-text'> Live Chat Response Methods</span>
                           <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
                             <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                               <span style={{color: '#34bfa3'}}>PRO</span>
@@ -575,7 +574,6 @@ class Settings extends React.Component {
                         }
                       </li>
                     }
-                      }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
@@ -658,117 +656,6 @@ class Settings extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <ul className='m-nav m-nav--hover-bg m-portlet-fit--sides'>
-                        <li className='m-nav__separator m-nav__separator--fit' />
-                        <li className='m-nav__section m--hide'>
-                          <span className='m-nav__section-text'>Section</span>
-                        </li>
-                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C') &&
-                          <li className='m-nav__item'>
-                            <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                              <i className='m-nav__link-icon flaticon-share' />
-                              <span className='m-nav__link-text'>API</span>
-                            </a>
-                          </li>
-                        }
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
-                            <i className='m-nav__link-icon flaticon-lock-1' />
-                            <span className='m-nav__link-text'>Change Password</span>
-                          </a>
-                        </li>
-                        {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-share' />
-                            <span className='m-nav__link-text'>NGP Integration</span>
-                          </a>
-                        </li>
-                        }
-                        { this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-mark' />
-                            <span className='m-nav__link-text'>User Permissions</span>
-                          </a>
-                        </li>
-                        }
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setGreetingMessage} style={{cursor: 'pointer'}} >
-                            <i className='m-nav__link-icon flaticon-exclamation' />
-                            <span className='m-nav__link-text'>Greeting Text</span>
-                          </a>
-                        </li>
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setWelcomeMessage} style={{cursor: 'pointer'}} >
-                            <i className='m-nav__link-icon flaticon-menu-button' />
-                            <span className='m-nav__link-text'>Welcome Message</span>
-                          </a>
-                        </li>
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setSubscribeToMessenger} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-alarm' />
-                            <span className='m-nav__link-text'>HTML Widget</span>
-                          </a>
-                        </li>
-                        { this.props.user && this.props.user.role === 'buyer' &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-list-2' />
-                            <span className='m-nav__link-text'> Live Chat Response Methods</span>
-                          </a>
-                        </li>
-                        }
-                        { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon fa fa-facebook' />
-                            <span className='m-nav__link-text'>Connect with Facebook</span>
-                          </a>
-                        </li>
-                        }
-                        { this.props.user && this.props.user.isSuperUser &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon la la-plug' />
-                            <span className='m-nav__link-text'>Add KiboPush Widget</span>
-                          </a>
-                        </li>
-                      }
-                        { this.props.user && this.props.user.isSuperUser &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon fa fa-cc-mastercard' />
-                            <span className='m-nav__link-text'>Payment Methods</span>
-                          </a>
-                        </li>
-                        }
-                        { this.props.user && this.props.user.isSuperUser &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon fa fa-money' />
-                            <span className='m-nav__link-text'>Billing</span>
-                          </a>
-                        </li>
-                      }
-                        { this.props.user && this.props.user.isSuperUser &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon la la-link' />
-                            <span className='m-nav__link-text'>Webhooks</span>
-                          </a>
-                        </li>
-                        }
-                        { this.props.user && this.props.user.role === 'buyer' &&
-                        <li className='m-nav__item'>
-                          <a className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
-                            <i className='m-nav__link-icon flaticon-delete' />
-                            <span className='m-nav__link-text'>Delete Information</span>
-                          </a>
-                        </li>
-                        }
-                        <br />
-                      </ul>
                     </form>
                     <div className='form-group m-form__group'>
                       <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>

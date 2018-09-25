@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { fetchAllPermissions, updatePermissions } from '../../redux/actions/permissions.actions'
 import { bindActionCreators } from 'redux'
@@ -181,136 +179,129 @@ class Permissions extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            {
-              this.state.isShowingModal &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialog}>
-                  <AddPermission msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} permissionCheckboxes={this.state.permissionCheckboxes} />
-                </ModalDialog>
-              </ModalContainer>
-            }
-            <div className='m-content'>
-              <div className='row'>
-                <div className='col-xl-12'>
-                  <div className='m-portlet'>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Permissions
-                          </h3>
-                        </div>
-                      </div>
-                      <div className='m-portlet__head-tools'>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
-                              Add Permission
-                            </span>
-                          </span>
-                        </button>
-                      </div>
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <AddPermission msg={this.msg} closeDialog={this.closeDialog} openTab={this.state.openTab} permissionCheckboxes={this.state.permissionCheckboxes} />
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Permissions
+                      </h3>
                     </div>
-                    <div className='m-portlet__body'>
-                      <div className='tab-content'>
-                        <div className='tab-pane active m-scrollable' role='tabpanel'>
-                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                            <div style={{height: '550px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                              <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                                <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                                  <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
-                                    <div className='panel-group accordion' id='accordion1'>
-                                      <div className='panel panel-default'>
-                                        <div className='panel-heading guidelines-heading'>
-                                          <h4 className='panel-title'>
-                                            <a onClick={() => this.fetchPermissions('buyer')} className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Buyer Permissions
-                                              {this.state.showPlusBuyer
-                                              ? <i className='fa fa-plus' style={{float: 'right', fontSize: '1.5rem'}} />
-                                              : <i className='fa fa-minus' style={{float: 'right', fontSize: '1.5rem'}} />
-                                              }
-                                            </a>
-                                          </h4>
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
+                          Add Permission
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='tab-content'>
+                    <div className='tab-pane active m-scrollable' role='tabpanel'>
+                      <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                        <div style={{height: '550px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                          <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                            <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                              <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
+                                <div className='panel-group accordion' id='accordion1'>
+                                  <div className='panel panel-default'>
+                                    <div className='panel-heading guidelines-heading'>
+                                      <h4 className='panel-title'>
+                                        <a onClick={() => this.fetchPermissions('buyer')} className='guidelines-link accordion-toggle accordion-toggle-styled collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_1' aria-expanded='false'>Buyer Permissions
+                                          {this.state.showPlusBuyer
+                                          ? <i className='fa fa-plus' style={{float: 'right', fontSize: '1.5rem'}} />
+                                          : <i className='fa fa-minus' style={{float: 'right', fontSize: '1.5rem'}} />
+                                          }
+                                        </a>
+                                      </h4>
+                                    </div>
+                                    <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                      <div className='panel-body'>
+                                        <div className='form-group m-form__group'>
+                                          <span style={{width: '30px', overflow: 'inherit'}}>
+                                            <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleCheckboxClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
+                                          <br />
+                                          {this.showPermissions()}
                                         </div>
-                                        <div id='collapse_1' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                                          <div className='panel-body'>
-                                            <div className='form-group m-form__group'>
-                                              <span style={{width: '30px', overflow: 'inherit'}}>
-                                                <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleCheckboxClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
-                                              <br />
-                                              {this.showPermissions()}
-                                            </div>
-                                            <br />
-                                            <div className='m-portlet__foot m-portlet__foot--fit'>
-                                              <button className='btn btn-primary' style={{float: 'right', marginTop: '10px'}} onClick={this.updatePermissions}> Save
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className='panel panel-default'>
-                                        <div className='panel-heading guidelines-heading'>
-                                          <h4 className='panel-title'>
-                                            <a onClick={() => this.fetchPermissions('admin')} className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Admin Permissions
-                                              {this.state.showPlusAdmin
-                                              ? <i className='fa fa-plus' style={{float: 'right', fontSize: '1.5rem'}} />
-                                              : <i className='fa fa-minus' style={{float: 'right', fontSize: '1.5rem'}} />
-                                              }
-                                            </a>
-                                          </h4>
-                                        </div>
-                                        <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                                          <div className='panel-body'>
-                                            <div className='form-group m-form__group'>
-                                              <span style={{width: '30px', overflow: 'inherit'}}>
-                                                <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleCheckboxClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
-                                              <br />
-                                              {this.showPermissions()}
-                                            </div>
-                                            <br />
-                                            <div className='m-portlet__foot m-portlet__foot--fit'>
-                                              <button className='btn btn-primary' style={{float: 'right', marginTop: '10px'}} onClick={this.updatePermissions}> Save
-                                              </button>
-                                            </div>
-                                          </div>
+                                        <br />
+                                        <div className='m-portlet__foot m-portlet__foot--fit'>
+                                          <button className='btn btn-primary' style={{float: 'right', marginTop: '10px'}} onClick={this.updatePermissions}> Save
+                                          </button>
                                         </div>
                                       </div>
-                                      <div className='panel panel-default'>
-                                        <div className='panel-heading guidelines-heading'>
-                                          <h4 className='panel-title'>
-                                            <a onClick={() => this.fetchPermissions('agent')} className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Agent Permissions
-                                              {this.state.showPlusAgent
-                                              ? <i className='fa fa-plus' style={{float: 'right', fontSize: '1.5rem'}} />
-                                              : <i className='fa fa-minus' style={{float: 'right', fontSize: '1.5rem'}} />
-                                              }
-                                            </a>
-                                          </h4>
+                                    </div>
+                                  </div>
+                                  <div className='panel panel-default'>
+                                    <div className='panel-heading guidelines-heading'>
+                                      <h4 className='panel-title'>
+                                        <a onClick={() => this.fetchPermissions('admin')} className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_2' aria-expanded='false'>Admin Permissions
+                                          {this.state.showPlusAdmin
+                                          ? <i className='fa fa-plus' style={{float: 'right', fontSize: '1.5rem'}} />
+                                          : <i className='fa fa-minus' style={{float: 'right', fontSize: '1.5rem'}} />
+                                          }
+                                        </a>
+                                      </h4>
+                                    </div>
+                                    <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                      <div className='panel-body'>
+                                        <div className='form-group m-form__group'>
+                                          <span style={{width: '30px', overflow: 'inherit'}}>
+                                            <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleCheckboxClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
+                                          <br />
+                                          {this.showPermissions()}
                                         </div>
-                                        <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
-                                          <div className='panel-body'>
-                                            <div className='form-group m-form__group'>
-                                              <span style={{width: '30px', overflow: 'inherit'}}>
-                                                <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleCheckboxClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
-                                              <br />
-                                              {this.showPermissions()}
-                                            </div>
-                                            <br />
-                                            <div className='m-portlet__foot m-portlet__foot--fit'>
-                                              <button className='btn btn-primary' style={{float: 'right', marginTop: '10px'}} onClick={this.updatePermissions}> Save
-                                              </button>
-                                            </div>
-                                          </div>
+                                        <br />
+                                        <div className='m-portlet__foot m-portlet__foot--fit'>
+                                          <button className='btn btn-primary' style={{float: 'right', marginTop: '10px'}} onClick={this.updatePermissions}> Save
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className='panel panel-default'>
+                                    <div className='panel-heading guidelines-heading'>
+                                      <h4 className='panel-title'>
+                                        <a onClick={() => this.fetchPermissions('agent')} className='guidelines-link accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion1' href='#collapse_3' aria-expanded='false'>Agent Permissions
+                                          {this.state.showPlusAgent
+                                          ? <i className='fa fa-plus' style={{float: 'right', fontSize: '1.5rem'}} />
+                                          : <i className='fa fa-minus' style={{float: 'right', fontSize: '1.5rem'}} />
+                                          }
+                                        </a>
+                                      </h4>
+                                    </div>
+                                    <div id='collapse_3' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
+                                      <div className='panel-body'>
+                                        <div className='form-group m-form__group'>
+                                          <span style={{width: '30px', overflow: 'inherit'}}>
+                                            <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleCheckboxClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
+                                          <br />
+                                          {this.showPermissions()}
+                                        </div>
+                                        <br />
+                                        <div className='m-portlet__foot m-portlet__foot--fit'>
+                                          <button className='btn btn-primary' style={{float: 'right', marginTop: '10px'}} onClick={this.updatePermissions}> Save
+                                          </button>
                                         </div>
                                       </div>
                                     </div>
