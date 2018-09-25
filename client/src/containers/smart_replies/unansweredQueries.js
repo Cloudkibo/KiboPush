@@ -82,116 +82,114 @@ class UnansweredQueries extends React.Component {
 
   render () {
     return (
-      <div>
-        <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{ width: '150%' }}>
-          <div className='m-content'>
-            <div className='m-portlet m-portlet-mobile '>
-              <div className='m-portlet__head'>
-                <div className='m-portlet__head-caption'>
-                  <div className='m-portlet__head-title'>
-                    <h3 className='m-portlet__head-text'>
-                      Unanswered Questions
-                        </h3>
-                  </div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{ width: '150%' }}>
+        <div className='m-content'>
+          <div className='m-portlet m-portlet-mobile '>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
+                    Unanswered Questions
+                      </h3>
                 </div>
               </div>
-              <div className='m-portlet__body'>
+            </div>
+            <div className='m-portlet__body'>
 
-                {this.state.questionsList && this.state.questionsList.length > 0
-                  ? <div>
-                    <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                      <table className='m-datatable__table'
-                        id='m-datatable--27866229129' style={{
-                          display: 'block',
-                          height: 'auto',
-                          overflowX: 'auto'
-                        }}>
-                        <thead className='m-datatable__head'>
-                          <tr className='m-datatable__row'
-                            style={{ height: '53px' }}>
-                            <th data-field='Profile Picture'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{ width: '300px', overflow: 'inherit' }}>Questions</span>
-                            </th>
-                            <th data-field='Name'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{ width: '100px', overflow: 'inherit' }}>Bot Name</span>
-                            </th>
-                            <th data-field='Page'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{ width: '100px', overflow: 'inherit' }}>Confidence Score</span>
-                            </th>
-                            <th data-field='PhoneNumber'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{ width: '100px', overflow: 'inherit' }}>Date</span>
-                            </th>
-                          </tr>
-                        </thead>
+              {this.state.questionsList && this.state.questionsList.length > 0
+                ? <div>
+                  <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                    <table className='m-datatable__table'
+                      id='m-datatable--27866229129' style={{
+                        display: 'block',
+                        height: 'auto',
+                        overflowX: 'auto'
+                      }}>
+                      <thead className='m-datatable__head'>
+                        <tr className='m-datatable__row'
+                          style={{ height: '53px' }}>
+                          <th data-field='Profile Picture'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '300px', overflow: 'inherit' }}>Questions</span>
+                          </th>
+                          <th data-field='Name'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '100px', overflow: 'inherit' }}>Bot Name</span>
+                          </th>
+                          <th data-field='Page'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '100px', overflow: 'inherit' }}>Confidence Score</span>
+                          </th>
+                          <th data-field='PhoneNumber'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '100px', overflow: 'inherit' }}>Date</span>
+                          </th>
+                        </tr>
+                      </thead>
 
-                        <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
-                          {
-                            this.state.questionsList.map((question, i) => (
-                              <tr data-row={i}
-                                className='m-datatable__row m-datatable__row--even'
-                                style={{ height: '55px' }} key={i}>
+                      <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
+                        {
+                          this.state.questionsList.map((question, i) => (
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even'
+                              style={{ height: '55px' }} key={i}>
 
-                                <td data-field='Name'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{ width: '300px', overflow: 'inherit' }}>{question.Question ? question.Question : 'Question statement missing'}</span>
-                                </td>
+                              <td data-field='Name'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{ width: '300px', overflow: 'inherit' }}>{question.Question ? question.Question : 'Question statement missing'}</span>
+                              </td>
 
-                                <td data-field='Page'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{ width: '100px', overflow: 'inherit' }}>
-                                    {question.botId.botName ? question.botId.botName : 'Bot name not is missing'}
-                                  </span>
-                                </td>
-                                <td data-field='phoneNumber'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{ width: '100px', overflow: 'inherit' }}>
-                                    {question.Confidence ? Math.round(question.Confidence * 100) + '%' : 'No Answer Found'}
-                                  </span>
-                                </td>
-                                <td data-field='source'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{ width: '100px', overflow: 'inherit' }}>
-                                    {this.getDateAndTime(question.datetime)}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))
-                          }
-                        </tbody>
-                      </table>
-                      <ReactPaginate previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 4)}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                              <td data-field='Page'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{ width: '100px', overflow: 'inherit' }}>
+                                  {question.botId.botName ? question.botId.botName : 'Bot name not is missing'}
+                                </span>
+                              </td>
+                              <td data-field='phoneNumber'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{ width: '100px', overflow: 'inherit' }}>
+                                  {question.Confidence ? Math.round(question.Confidence * 100) + '%' : 'No Answer Found'}
+                                </span>
+                              </td>
+                              <td data-field='source'
+                                className='m-datatable__cell'>
+                                <span
+                                  style={{ width: '100px', overflow: 'inherit' }}>
+                                  {this.getDateAndTime(question.datetime)}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+                    <ReactPaginate previousLabel={'previous'}
+                      nextLabel={'next'}
+                      breakLabel={<a>...</a>}
+                      breakClassName={'break-me'}
+                      pageCount={Math.ceil(this.state.totalLength / 4)}
+                      marginPagesDisplayed={1}
+                      pageRangeDisplayed={3}
+                      onPageChange={this.handlePageClick}
+                      containerClassName={'pagination'}
+                      subContainerClassName={'pages pagination'}
+                      activeClassName={'active'} />
 
-                    </div>
                   </div>
-                  : <div className='table-responsive' style={{ width: '150%' }}>
-                    <p> No data to display </p>
-                  </div>
-                }
-              </div>
-              <div className='m-portlet__foot m-portlet__foot--fit'>
-                <div className='m-form__actions m-form__actions' style={{ padding: '30px' }}>
-                  <Link to='/bots' className='btn btn-primary'>
-                    Back
-                      </Link>
                 </div>
+                : <div className='table-responsive' style={{ width: '150%' }}>
+                  <p> No data to display </p>
+                </div>
+              }
+            </div>
+            <div className='m-portlet__foot m-portlet__foot--fit'>
+              <div className='m-form__actions m-form__actions' style={{ padding: '30px' }}>
+                <Link to='/bots' className='btn btn-primary'>
+                  Back
+                    </Link>
               </div>
             </div>
           </div>

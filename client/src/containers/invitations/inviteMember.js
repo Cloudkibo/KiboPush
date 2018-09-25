@@ -121,7 +121,6 @@ class InviteMembers extends React.Component {
       transition: 'scale'
     }
     return (
-
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>

@@ -4,8 +4,6 @@
  */
 
 import React from 'react'
-import Sidebar from '../../components/sidebar/sidebar'
-import Header from '../../components/header/header'
 import { connect } from 'react-redux'
 import { fetchAllUsage, updateUsage } from '../../redux/actions/usage.actions'
 import { fetchAllPlans } from '../../redux/actions/billingPricing.actions'
@@ -153,83 +151,76 @@ class Usage extends React.Component {
       transition: 'scale'
     }
     return (
-      <div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <Header />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-        <div
-          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-          <Sidebar />
-          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-            {
-              this.state.isShowingModal &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialog}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialog}>
-                  <AddUsage msg={this.msg} closeDialog={this.closeDialog} selectedPlan={this.state.selectedPlan} />
-                </ModalDialog>
-              </ModalContainer>
-            }
-            {
-              this.state.isShowingModalUpdate &&
-              <ModalContainer style={{width: '500px'}}
-                onClose={this.closeDialogUpdate}>
-                <ModalDialog style={{width: '500px'}}
-                  onClose={this.closeDialogUpdate}>
-                  <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} serverName={this.state.serverName} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
-                </ModalDialog>
-              </ModalContainer>
-            }
-            <div className='m-content'>
-              <div className='row'>
-                <div className='col-xl-12'>
-                  <div className='m-portlet'>
-                    <div className='m-portlet__head'>
-                      <div className='m-portlet__head-caption'>
-                        <div className='m-portlet__head-title'>
-                          <h3 className='m-portlet__head-text'>
-                            Features Usage
-                          </h3>
-                        </div>
-                      </div>
-                      <div className='m-portlet__head-tools'>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
-                              Add Usage Item
-                            </span>
-                          </span>
-                        </button>
-                      </div>
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <AddUsage msg={this.msg} closeDialog={this.closeDialog} selectedPlan={this.state.selectedPlan} />
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalUpdate &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialogUpdate}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialogUpdate}>
+              <AddUsage msg={this.msg} closeDialog={this.closeDialogUpdate} serverName={this.state.serverName} name={this.state.name} selectedPlan={this.state.selectedPlan} limitValue={this.state.limitValue} />
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Features Usage
+                      </h3>
                     </div>
-                    <div className='m-portlet__body'>
-                      <div className='tab-content'>
-                        <select className='custom-select' id='m_form_type' style={{width: '100%'}} tabIndex='-98' value={this.state.selectedPlan} onChange={(e) => this.updatePlan(e)}>
-                          {
-                            this.props.plans && this.props.plans.map((plan, i) => (
-                              <option key={i} value={plan._id}>{plan.name + ' - ' + plan.unique_ID}</option>
-                            ))
-                          }
-                        </select>
-                        <div className='tab-pane active m-scrollable' role='tabpanel'>
-                          <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-                            <div style={{height: '550px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                              <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                                <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
-                                  <br /><br />
-                                  <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
-                                    {
-                                      this.props.usage
-                                      ? <div className='m-widget5'>
-                                        {this.showData()}
-                                      </div>
-                                        : <div>No Data to display</div>
-                                        }
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
+                          Add Usage Item
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='tab-content'>
+                    <select className='custom-select' id='m_form_type' style={{width: '100%'}} tabIndex='-98' value={this.state.selectedPlan} onChange={(e) => this.updatePlan(e)}>
+                      {
+                        this.props.plans && this.props.plans.map((plan, i) => (
+                          <option key={i} value={plan._id}>{plan.name + ' - ' + plan.unique_ID}</option>
+                        ))
+                      }
+                    </select>
+                    <div className='tab-pane active m-scrollable' role='tabpanel'>
+                      <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                        <div style={{height: '550px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                          <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                            <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                              <br /><br />
+                              <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
+                                {
+                                  this.props.usage
+                                  ? <div className='m-widget5'>
+                                    {this.showData()}
                                   </div>
-                                </div>
+                                    : <div>No Data to display</div>
+                                    }
                               </div>
                             </div>
                           </div>
