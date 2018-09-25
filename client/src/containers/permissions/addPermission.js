@@ -25,14 +25,14 @@ class AddPermission extends React.Component {
     if (this.state.name === '') {
       this.props.msg.error('Please enter permission')
     } else {
-      var permissionCheckboxes = this.state.permissionCheckboxes
-      var temp = this.state.name.split(' ')
-      for (var i = 1; i < temp.length; i++) {
-        temp[i] = temp[i].charAt(0).toUpperCase() + temp[i].slice(1)
-      }
-      var permission = temp.toString().replace(new RegExp(',', 'g'), '')
-      permissionCheckboxes.push({name: this.state.name, nick: permission, selected: false})
-      this.setState({permissionCheckboxes: permissionCheckboxes})
+      // var permissionCheckboxes = this.state.name
+      // var temp = this.state.name.split(' ')
+      // for (var i = 1; i < temp.length; i++) {
+      //   temp[i] = temp[i].charAt(0).toUpperCase() + temp[i].slice(1)
+      // }
+      // var permission = temp.toString().replace(new RegExp(',', 'g'), '')
+      // permissionCheckboxes.push({name: this.state.name, nick: permission, selected: false})
+      // this.setState({permissionCheckboxes: permissionCheckboxes})
       this.props.closeDialog()
       this.props.addPermission({name: this.state.name}, this.props.msg, this.props.openTab)
     }

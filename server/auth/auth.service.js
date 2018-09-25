@@ -332,6 +332,12 @@ function isAuthorizedWebHookTrigger () {
   })
 }
 
+// Auth for kibodash service
+function isKiboDash (req, res, next) {
+  logger.serverLog(TAG, `Request header from KiboDash ${JSON.stringify(req.headers)}`)
+  next()
+}
+
 exports.isAuthenticated = isAuthenticated
 exports.signToken = signToken
 exports.setTokenCookie = setTokenCookie
@@ -342,6 +348,7 @@ exports.doesPlanPermitsThisAction = doesPlanPermitsThisAction
 exports.doesRolePermitsThisAction = doesRolePermitsThisAction
 exports.fbConnectDone = fbConnectDone
 exports.fetchPages = fetchPages
+exports.isKiboDash = isKiboDash
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;
 

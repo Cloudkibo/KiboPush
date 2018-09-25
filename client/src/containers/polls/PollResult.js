@@ -3,7 +3,10 @@
  */
 
 import React from 'react'
-import { Link } from 'react-router'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
+import { Link, browserHistory } from 'react-router'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import fileDownload from 'js-file-download'
 import { connect } from 'react-redux'
 import {
@@ -21,10 +24,26 @@ class PollResult extends React.Component {
       totalSent: 0,
       totalResponses: 0,
       show: false,
-      showMessage: false
+      isShowingModalPro: false
     }
     this.getFile = this.getFile.bind(this)
     this.props.getpollresults(this.props.location.state._id)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
   getFile () {
     let usersPayload = []
@@ -61,12 +80,12 @@ class PollResult extends React.Component {
 
   componentDidMount () {
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/Chart.min.js')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/Chart.min.js')
     document.body.appendChild(addScript)
   }
 
   componentWillReceiveProps (nextprops) {
-    this.setState({show: true, showMessage: true})
+    this.setState({show: true})
     var poll = this.props.location.state
     this.setState({totalSent: poll.sent})
     if (nextprops.responses) {
@@ -112,102 +131,133 @@ class PollResult extends React.Component {
   render () {
     console.log('PollResult props', this.props)
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Poll Report</h3>
-            </div>
-          </div>
-        </div>
-        <div className='m-content'>
-          <div className='row'>
-            <div className='col-xl-12'>
-              <div className='m-portlet'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Title: {this.props.location.state.statement}
-                      </h3>
-                    </div>
+      <div>
+        <Header />
+        <div
+          className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          <Sidebar />
+          {
+            this.state.isShowingModalPro &&
+            <ModalContainer style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <ModalDialog style={{width: '500px'}}
+                onClose={this.closeProDialog}>
+                <h3>Upgrade to Pro</h3>
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                      Upgrade to Pro
+                    </button>
                   </div>
                 </div>
-                <div className='m-portlet__body' style={{'display': 'flex'}}>
-                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
-                    <div className='m-widget26'>
-                      <div className='m-widget26__number'>
-                        {this.state.totalSent}
-                        <h5>
-                          Polls Sent So Far
-                        </h5>
+              </ModalDialog>
+            </ModalContainer>
+          }
+          <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+            <div className='m-subheader '>
+              <div className='d-flex align-items-center'>
+                <div className='mr-auto'>
+                  <h3 className='m-subheader__title'>Poll Report</h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-content'>
+              <div className='row'>
+                <div className='col-xl-12'>
+                  <div className='m-portlet'>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                            Title: {this.props.location.state.statement}
+                          </h3>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
-                    <div className='m-widget26'>
-                      <div className='m-widget26__number'>
-                        { this.props.responses
-                        ? <div className='count-stat'>{this.state.totalResponses}
+                    <div className='m-portlet__body' style={{'display': 'flex'}}>
+                      <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
+                        <div className='m-widget26'>
+                          <div className='m-widget26__number'>
+                            {this.state.totalSent}
+                            <h5>
+                              Polls Sent So Far
+                            </h5>
+                          </div>
                         </div>
-                        : <div className='count-stat'>{this.state.totalResponses}
+                      </div>
+                      <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
+                        <div className='m-widget26'>
+                          <div className='m-widget26__number'>
+                            { this.props.responses
+                            ? <div className='count-stat'>{this.state.totalResponses}
+                            </div>
+                            : <div className='count-stat'>{this.state.totalResponses}
+                            </div>
+                            }
+                            <h5>
+                              Polls Respones
+                            </h5>
+                          </div>
                         </div>
-                        }
-                        <h5>
-                          Polls Respones
-                        </h5>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className='row'>
-            <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet' style={{height: '100%'}}>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                      Poll Response Chart
-                      </h3>
-                    </div>
-                  </div>
-                  <div className='m-portlet__head-tools'>
-                    {this.state.show &&
-                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile} disabled={(this.state.totalResponses === 0)}>
-                      <span>
-                        <i className='fa fa-download' />
-                        <span>
-                          Download File
-                        </span>
-                      </span>
-                    </button>
-                    }
-                  </div>
-                </div>
-                {
-                  !(this.state.totalResponses === 0) ? <div className='m-portlet__body'>
-                    <div className='ui-block-content'>
-                      <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
-                      }}>
-                        <canvas id='radar-chart' width={250} height={170} />
+              <div className='row'>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                  <div className='m-portlet' style={{height: '100%'}}>
+                    <div className='m-portlet__head'>
+                      <div className='m-portlet__head-caption'>
+                        <div className='m-portlet__head-title'>
+                          <h3 className='m-portlet__head-text'>
+                          Poll Response Chart
+                          </h3>
+                        </div>
+                      </div>
+                      <div className='m-portlet__head-tools'>
+                        {this.state.show && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C')
+                        ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.getFile}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>
+                          </span>
+                        </button>
+                        : this.state.show &&
+                        <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Download File
+                            </span>&nbsp;&nbsp;
+                            <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#f4516c'}}>PRO</span>
+                            </span>
+                          </span>
+                        </button>
+                        }
                       </div>
                     </div>
-                  </div> : this.state.showMessage && <div className='m-portlet__body'>
-                    <div className='ui-block-content'>
-                      <center><label style={{ fontWeight: 'normal' }}>There are no responses for this Poll</label></center>
+                    <div className='m-portlet__body'>
+                      <div className='ui-block-content'>
+                        <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'
+                        }}>
+                          <canvas id='radar-chart' width={250} height={170} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <Link
+                        to='/poll'
+                        style={{ float: 'right', margin: '20px' }}
+                        className='btn btn-secondary'>
+                        Back
+                      </Link>
                     </div>
                   </div>
-                }
-                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                  <Link
-                    to='/poll'
-                    style={{ float: 'right', margin: '20px' }}
-                    className='btn btn-secondary'>
-                    Back
-                  </Link>
                 </div>
               </div>
             </div>
@@ -223,7 +273,8 @@ function mapStateToProps (state) {
     polls: (state.pollsInfo.polls),
     responses: (state.pollsInfo.responses),
     responsesfull: (state.pollsInfo.responsesfull),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 

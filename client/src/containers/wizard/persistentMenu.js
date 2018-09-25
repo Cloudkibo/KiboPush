@@ -520,7 +520,7 @@ class Menu extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div id='menuPopoverWizard' />
@@ -579,19 +579,18 @@ class Menu extends React.Component {
             }
           </PopoverBody>
         </Popover>
-
         <div className='m-content'>
           <div className='m-portlet m-portlet--full-height'>
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='6' user={this.props.user} />
+                  <Sidebar step='5' stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} user={this.props.user} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Step 6: Persistent Menu
+                            Step {this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4}: Persistent Menu
                           </h3>
                         </div>
                       </div>
@@ -630,81 +629,128 @@ class Menu extends React.Component {
                             }
                           </select>
                         </div>
-                      </div>
-                      <div className='row' style={{display: 'block', marginTop: '40px', padding: '20px'}}>
-                        <div className='container'>
-                          {
-                            this.state.menuItems.map((item, index) => {
-                              return (
-                                <div key={index}>
-                                  <div className='col-8 menuDiv m-input-icon m-input-icon--right' style={{width: '466px'}}>
-                                    <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
-                                    { this.state.menuItems.length > 1 &&
-                                      <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
-                                        <span>
-                                          <i className='fa fa-times-circle' />
-                                        </span>
-                                      </span>
-                                    }
-                                  </div>
-                                  {item.submenu.map((subItem, subindex) => {
-                                    return (
-                                      <div key={subindex}>
-                                        <div className='col-8 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px', width: '468px'}}>
-                                          <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} onChange={(e) => this.changeLabel(e)} type='text' className='form-control m-input menuInput' value={subItem.title} />
-                                          <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
+                        <div className='m-portlet__body'>
+                          <div className='row align-items-center'>
+                            <div className='col-xl-8 order-2 order-xl-1' />
+                            <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                              {
+                                this.state.showPreview &&
+                                <ModalContainer style={{top: '100px'}}
+                                  onClose={this.closeDialog}>
+                                  <ModalDialog style={{top: '100px'}}
+                                    onClose={this.closeDialog}>
+                                    <h3>Persistent Menu Preview</h3>
+                                    <div>
+                                      <ViewScreen data={this.state.menuItems} page={this.state.selectPage.pageName} />
+                                    </div>
+                                  </ModalDialog>
+                                </ModalContainer>
+                              }
+                            </div>
+                          </div>
+                          <div className='form-group m-form__group row'>
+                            <label style={{fontWeight: 'normal'}}>This page will help you setup persistent menu for your page. Persistent Menu will help people discover and more easily access your functionality throughout the conversation. Here you can add just the first level menu items but later using our Persistent Menu page, you can add submenu items as well.</label>
+                          </div>
+                          <div className='form-group m-form__group row'>
+                            <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select a page</label>
+                            <div className='col-8 input-group'>
+                              <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.pageChange}>
+                                {
+                                  this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                                    page.connected &&
+                                    <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectPage.pageId}>{page.pageName}</option>
+                                  ))
+                                }
+                              </select>
+                            </div>
+                          </div>
+                          <div className='row' style={{display: 'block', marginTop: '40px', padding: '20px'}}>
+                            <div className='container'>
+                              {
+                                this.state.menuItems.map((item, index) => {
+                                  return (
+                                    <div key={index}>
+                                      <div className='col-8 menuDiv m-input-icon m-input-icon--right' style={{width: '466px'}}>
+                                        <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
+                                        { this.state.menuItems.length > 1 &&
+                                          <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
                                             <span>
                                               <i className='fa fa-times-circle' />
                                             </span>
                                           </span>
-                                        </div>
-                                        <div>
-                                          {
-                                            subItem.submenu.map((nestedItem, nestedIndex) => {
-                                              return (
-                                                <div key={nestedIndex} className='col-8 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px', width: '468px'}}>
-                                                  <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onChange={(e) => this.changeLabel(e)} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
-                                                  <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
-                                                    <span>
-                                                      <i className='fa fa-times-circle' />
-                                                    </span>
-                                                  </span>
-                                                </div>
-                                              )
-                                            })
-                                          }
-                                          { subItem.submenu.length < 5 &&
-                                            <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
-                                              <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
-                                            </div>
-                                          }
-                                        </div>
+                                        }
                                       </div>
-                                    )
-                                  })
-                                }
-                                  { item.submenu.length < 5 &&
-                                    <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
-                                      <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
+                                      {item.submenu.map((subItem, subindex) => {
+                                        return (
+                                          <div key={subindex}>
+                                            <div className='col-8 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '30px', width: '468px'}}>
+                                              <input id={'item-' + index + '-' + subindex} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex); this.handleToggle() }} onChange={(e) => this.changeLabel(e)} type='text' className='form-control m-input menuInput' value={subItem.title} />
+                                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeSubMenu(index, subindex)}>
+                                                <span>
+                                                  <i className='fa fa-times-circle' />
+                                                </span>
+                                              </span>
+                                            </div>
+                                            <div>
+                                              {
+                                                subItem.submenu.map((nestedItem, nestedIndex) => {
+                                                  return (
+                                                    <div key={nestedIndex} className='col-8 menuDiv m-input-icon m-input-icon--right' style={{paddingLeft: '60px', width: '468px'}}>
+                                                      <input id={'item-' + index + '-' + subindex + '-' + nestedIndex} onChange={(e) => this.changeLabel(e)} onClick={(e) => { this.selectIndex(e, 'item-' + index + '-' + subindex + '-' + nestedIndex); this.handleToggle() }} type='text' className='form-control m-input menuInput' value={nestedItem.title} />
+                                                      <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeNestedMenu(index, subindex, nestedIndex)}>
+                                                        <span>
+                                                          <i className='fa fa-times-circle' />
+                                                        </span>
+                                                      </span>
+                                                    </div>
+                                                  )
+                                                })
+                                              }
+                                              { subItem.submenu.length < 5 &&
+                                                <div className='col-8 menuDiv' style={{paddingLeft: '60px', width: '482px'}}>
+                                                  <button className='addMenu'onClick={() => this.addNestedMenu(index, subindex)}>+ Add Nested Menu </button>
+                                                </div>
+                                              }
+                                            </div>
+                                          </div>
+                                        )
+                                      })
+                                    }
+                                      { item.submenu.length < 5 &&
+                                        <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
+                                          <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
+                                        </div>
+                                      }
                                     </div>
-                                  }
+                                  )
+                                })
+                             }
+                              { this.state.menuItems.length === 1 &&
+                                <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                                  <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
                                 </div>
-                              )
-                            })
-                         }
-                          { this.state.menuItems.length === 1 &&
-                            <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                              <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
+                              }
+                              <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                                <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
+                              </div>
+                              <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
+                                <i className='flaticon-exclamation m--font-brand' />
+                                <span style={{marginLeft: '5px'}}>
+                                  Only two more main menus can be added. Submenus are limited to 5.
+                                </span>
+                              </div>
                             </div>
-                          }
-                          <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                            <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                           </div>
-                          <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
-                            <i className='flaticon-exclamation m--font-brand' />
-                            <span style={{marginLeft: '5px'}}>
-                              Only two more main menus can be added. Submenus are limited to 5.
-                            </span>
+                          <div className='row'>
+                            <div className='col-lg-6 m--align-left' />
+                            <div className='col-lg-6 m--align-right'>
+                              <button className='btn btn-sm btn-primary' onClick={this.saveMenu} disabled={this.props.pages && this.props.pages.length < 1}>
+                                Save Menu
+                              </button>
+                              <button className='btn btn-sm btn-primary' onClick={this.showPreview} style={{marginLeft: '15px'}}>
+                                Preview
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -724,7 +770,7 @@ class Menu extends React.Component {
                       <div className='m-form__actions'>
                         <div className='row'>
                           <div className='col-lg-6 m--align-left' >
-                            <Link to='/autopostingWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'kibocommerce' ? '/welcomeMessageWizard' : '/autopostingWizard'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <i className='la la-arrow-left' />
                                 <span>Back</span>&nbsp;&nbsp;
@@ -732,7 +778,7 @@ class Menu extends React.Component {
                             </Link>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <Link to='/responseMethods' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'kibocommerce' ? '/finish' : '/responseMethods'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <span>Next</span>&nbsp;&nbsp;
                                 <i className='la la-arrow-right' />

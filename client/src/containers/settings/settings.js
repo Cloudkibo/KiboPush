@@ -49,7 +49,9 @@ class Settings extends React.Component {
       saveStateNGP: null,
       planInfo: '',
       show: true,
-      openTab: 'showAPI'
+      openTab: 'showAPI',
+      pro: false,
+      isShowingModal: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -72,6 +74,9 @@ class Settings extends React.Component {
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
     this.setResponseMethods = this.setResponseMethods.bind(this)
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
   }
   componentWillMount () {
     console.log('this.props.location', this.props.location)
@@ -90,9 +95,25 @@ class Settings extends React.Component {
         openTab: 'webhook', show: false
       })
     }
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'pro') {
+      this.setState({
+        openTab: 'billing', show: false, pro: true
+      })
+    }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
     this.props.getNGP({company_id: this.props.user.companyId})
+  }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
+  goToSettings () {
+    this.setState({
+      isShowingModal: false, openTab: 'billing', show: false, pro: true
+    })
   }
   handleNGPKeyChange (event) {
     this.setState({NGPKey: event.target.value})
@@ -150,7 +171,7 @@ class Settings extends React.Component {
   }
   setBilling () {
     this.setState({
-      openTab: 'billing'
+      openTab: 'billing', show: false
     })
   }
   setWebhook () {
@@ -392,7 +413,24 @@ class Settings extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -431,12 +469,23 @@ class Settings extends React.Component {
                     <li className='m-nav__section m--hide'>
                       <span className='m-nav__section-text'>Section</span>
                     </li>
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
+                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                       <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-share' />
-                          <span className='m-nav__link-text'>API</span>
-                        </a>
+                        {
+                         this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                          ? <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-share' />
+                            <span className='m-nav__link-text'>API</span>
+                          </a>
+                          : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-share' />
+                            <span className='m-nav__link-text'>API&nbsp;&nbsp;&nbsp;
+                              <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                <span style={{color: '#34bfa3'}}>PRO</span>
+                              </span>
+                            </span>
+                          </a>
+                        }
                       </li>
                     }
                     <li className='m-nav__item'>
@@ -479,12 +528,24 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>HTML Widget</span>
                       </a>
                     </li>
-                    { this.props.user && this.props.user.role === 'buyer' &&
+                    { this.props.user && this.props.user.role === 'buyer' && (this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'all') &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-list-2' />
-                        <span className='m-nav__link-text'> Live Chat Response Methods</span>
-                      </a>
+                      {
+                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                          ? <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-list-2' />
+                            <span className='m-nav__link-text'> Live Chat Response Methods</span>
+                          </a>
+                        : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon flaticon-list-2' />
+                          <span className='m-nav__link-text'> Live Chat Response Methods</span>
+                          <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
+                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#34bfa3'}}>PRO</span>
+                            </span>
+                          </span>
+                        </a>
+                      }
                     </li>
                     }
                     { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
@@ -497,12 +558,24 @@ class Settings extends React.Component {
                     }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon la la-plug' />
-                        <span className='m-nav__link-text'>Add KiboPush Widget</span>
-                      </a>
-                    </li>
-                  }
+                      {
+                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                        ? <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon la la-plug' />
+                          <span className='m-nav__link-text'>Add KiboPush Widget</span>
+                        </a>
+                        : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon la la-plug' />
+                          <span className='m-nav__link-text'>Add KiboPush Widget&nbsp;&nbsp;&nbsp;
+                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#34bfa3'}}>PRO</span>
+                            </span>
+                          </span>
+                        </a>
+                        }
+                      </li>
+                    }
+                      }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
@@ -521,10 +594,21 @@ class Settings extends React.Component {
                   }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon la la-link' />
-                        <span className='m-nav__link-text'>Webhooks</span>
-                      </a>
+                      {
+                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                         ? <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                           <i className='m-nav__link-icon la la-link' />
+                           <span className='m-nav__link-text'>Webhooks</span>
+                         </a>
+                         : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                           <i className='m-nav__link-icon la la-link' />
+                           <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
+                             <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                               <span style={{color: '#34bfa3'}}>PRO</span>
+                             </span>
+                           </span>
+                         </a>
+                       }
                     </li>
                     }
                     { this.props.user && this.props.user.role === 'buyer' &&
@@ -684,7 +768,7 @@ class Settings extends React.Component {
                         </li>
                         }
                         <br />
-                      </div>
+                      </ul>
                     </form>
                     <div className='form-group m-form__group'>
                       <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
@@ -785,7 +869,7 @@ class Settings extends React.Component {
               <ChatWidget />
             }
             { this.state.openTab === 'billing' &&
-              <Billing showPaymentMethods={this.setPayementMethods} />
+              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} />
             }
             { this.state.openTab === 'paymentMethods' &&
               <PaymentMethods />

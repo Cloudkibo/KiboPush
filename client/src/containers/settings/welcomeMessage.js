@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class WelcomeMessage extends React.Component {
   constructor (props, context) {
@@ -173,10 +174,7 @@ class WelcomeMessage extends React.Component {
                                          </div>
                                       ))}
                                     </div>
-                                      : <div className='alert alert-success'>
-                                        <h4 className='block'>0 Connected Pages</h4>
-                                          You do not have any connected pages. You need to connect facebook pages to set the welcome message for them. Please click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages
-                                        </div>
+                                      : <AlertMessage type='page' />
                                     }
                                   </div>
                                 </div>

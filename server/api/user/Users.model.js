@@ -22,9 +22,12 @@ const UserSchema = new Schema({
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date, default: Date.now},
   accountType: String,
+  wizardSeen: {type: Boolean, default: false},
+  uiMode: String,
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
   permissionsRevoked: {type: Boolean, default: false},
+  skippedFacebookConnect: {type: Boolean, default: false},
   deleteInformation: Schema.Types.Mixed
 })
 

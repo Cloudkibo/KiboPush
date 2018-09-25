@@ -3,6 +3,7 @@ const UserPermissions = require('./permissions.model')
 const RolePermissions = require('./rolePermissions.model')
 const TAG = 'api/permissions/permissions.controller.js'
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const utility = require('./../plans/billing.utility')
 const _ = require('lodash')
 
 exports.index = function (req, res) {
@@ -37,7 +38,9 @@ exports.update = function (req, res) {
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    permissions = req.body.permissions
+
+    permissions = utility.prepareUpdatePayload(permissions, req.body.permissions, 'role')
+
     permissions.save((err2) => {
       if (err2) {
         return res.status(500)
@@ -69,14 +72,14 @@ exports.create = function (req, res) {
   let query = {}
   query[permission] = false
 
-  RolePermissions.update({}, {$set: query}, {multi: true}, (err, updated) => {
+  RolePermissions.aggregate([{$addFields: query}, {$out: 'role_permissions'}], (err, updated) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    UserPermissions.update({}, {$set: query}, {multi: true}, (err, updated) => {
+    UserPermissions.aggregate([{$addFields: query}, {$out: 'permissions'}], (err, updated) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',

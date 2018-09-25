@@ -34,7 +34,8 @@ class Card extends React.Component {
       type: '',
       size: '',
       image_url: '',
-      loading: false
+      loading: false,
+      styling: {minHeight: 30, maxWidth: 400}
     }
   }
 
@@ -85,6 +86,9 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
+      if (this.props.setLoading) {
+        this.props.setLoading(true)
+      }
       this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
@@ -140,6 +144,7 @@ class Card extends React.Component {
         title: this.state.title,
         description: this.state.subtitle,
         buttons: temp})
+      console.log('after add button: ', temp)
     })
   }
 
@@ -150,18 +155,17 @@ class Card extends React.Component {
       }
       return elm
     })
-    this.setState({button: temp}, () => {
-      this.props.handleCard({id: this.props.id,
-        componentType: 'card',
-        fileurl: this.state.fileurl,
-        image_url: this.state.image_url,
-        fileName: this.state.fileName,
-        type: this.state.type,
-        size: this.state.size,
-        title: this.state.title,
-        description: this.state.subtitle,
-        buttons: this.state.button})
-    })
+    this.setState({button: temp})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button})
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
@@ -180,6 +184,9 @@ class Card extends React.Component {
 
   setLoading () {
     this.setState({loading: false})
+    if (this.props.setLoading) {
+      this.props.setLoading(false)
+    }
   }
   updateImageUrl (data) {
     this.setState({ fileurl: data.fileurl,
@@ -211,7 +218,7 @@ class Card extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        { this.props.singleCard &&
+        { this.props.singleCard && !this.state.loading &&
           <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
@@ -235,7 +242,7 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
             : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
            }
           </div>
@@ -246,11 +253,9 @@ class Card extends React.Component {
           </div>
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        <div className='ui-block hoverborder' style={{minHeight: 30, maxWidth: 400}}>
-          <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} />
-        </div>
+        <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
       </div>
     )
   }

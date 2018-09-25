@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { editautoposting, clearAlertMessages } from '../../redux/actions/autoposting.actions'
 import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
+import AlertContainer from 'react-alert'
 
 class ItemSettings extends React.Component {
   constructor (props, context) {
@@ -54,6 +55,7 @@ class ItemSettings extends React.Component {
   }
 
   componentDidMount () {
+    console.log(this.props.location)
     this.props.loadTags()
     let options = []
     for (let i = 0; i < this.props.pages.length; i++) {
@@ -266,6 +268,9 @@ class ItemSettings extends React.Component {
   }
 
   editAutoposting () {
+    if (this.accountTitleValue.value === '') {
+      return this.msg.error('Please add Account Title')
+    }
     var isSegmented = false
     var isActive = false
     if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
@@ -298,8 +303,16 @@ class ItemSettings extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -318,113 +331,126 @@ class ItemSettings extends React.Component {
                 </div>
               </div>
             </div>
-            <form className='m-form m-form--label-align-right'>
-              <div className='m-portlet__body'>
-                <div className='m-form__section m-form__section--first'>
-                  <div className='m-form__heading'>
-                    <h3 className='m-form__heading-title'>
-                      Info
-                    </h3>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Account Title
-                    </label>
-                    <div className='col-lg-6'>
-                      <input className='form-control m-input'
-                        ref={(c) => { this.accountTitleValue = c }}
-                        defaultValue={this.props.location.state.title} />
-                    </div>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Status
-                    </label>
-                    <div className='col-lg-6' id='rules'>
-                      <select className='form-control m-input' onChange={this.handleSelectChange} value={this.state.isActive}>
-                        <option value='Active'>Active</option>
-                        <option value='Disabled'>Disabled</option>
-                      </select>
+            <div className='m-content'>
+              <div className='m-portlet m-portlet--mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        <i style={{color: this.props.location.state.iconColor}} className={this.props.location.state.icon} aria-hidden='true' /> {this.props.location.state.title}
+                      </h3>
                     </div>
                   </div>
                 </div>
-                <div className='m-form__seperator m-form__seperator--dashed' />
-                <div className='m-form__section m-form__section--last'>
-                  <div className='m-form__heading'>
-                    <h3 className='m-form__heading-title'>
-                      Set Segmentation
-                    </h3>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Pages
-                    </label>
-                    <div className='col-lg-6'>
-                      <select id='selectPage' />
+                <form className='m-form m-form--label-align-right'>
+                  <div className='m-portlet__body'>
+                    <div className='m-form__section m-form__section--first'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Info
+                        </h3>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Account Title
+                        </label>
+                        <div className='col-lg-6'>
+                          <input className='form-control m-input'
+                            ref={(c) => { this.accountTitleValue = c }}
+                            defaultValue={this.props.location.state.title} />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Status
+                        </label>
+                        <div className='col-lg-6' id='rules'>
+                          <select className='form-control m-input' onChange={this.handleSelectChange} value={this.state.isActive}>
+                            <option value='Active'>Active</option>
+                            <option value='Disabled'>Disabled</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Gender
-                    </label>
-                    <div className='col-lg-6'>
-                      <select id='genderSelect' />
-                    </div>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Locale
-                    </label>
-                    <div className='col-lg-6'>
-                      <select id='localeSelect' />
-                    </div>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Tags
-                    </label>
-                    <div className='col-lg-6'>
-                      <select id='tagSelect' />
-                    </div>
-                  </div>
+                    <div className='m-form__seperator m-form__seperator--dashed' />
+                    <div className='m-form__section m-form__section--last'>
+                      <div className='m-form__heading'>
+                        <h3 className='m-form__heading-title'>
+                          Set Segmentation
+                        </h3>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Pages
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='selectPage' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Gender
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='genderSelect' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Locale
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='localeSelect' />
+                        </div>
+                      </div>
+                      <div className='form-group m-form__group row'>
+                        <label className='col-lg-2 col-form-label'>
+                          Tags
+                        </label>
+                        <div className='col-lg-6'>
+                          <select id='tagSelect' />
+                        </div>
+                      </div>
 
-                </div>
-              </div>
-              <div className='m-portlet__foot m-portlet__foot--fit'>
-                <div className='m-form__actions m-form__actions'>
-                  <div className='row'>
-                    <div className='col-lg-2' />
-                    <div className='col-lg-6'>
-                      <button className='btn btn-primary' type='button' onClick={this.editAutoposting} >
-                        Save Changes
-                      </button>
-                      <span>&nbsp;&nbsp;</span>
-                      <Link to='/autoposting'>
-                        <button className='btn btn-secondary'>
-                          Back
-                        </button>
-                      </Link>
                     </div>
                   </div>
-                  <div className='row'>
-                    <span>&nbsp;&nbsp;</span>
-                  </div>
-                  <div className='row'>
-                    <div className='col-lg-2' />
-                    <div className='col-lg-6'>
-                      {
-                        this.state.alertMessage !== '' &&
-                        <center>
-                          <Alert type={this.state.alertType}>
-                            {this.state.alertMessage}
-                          </Alert>
-                        </center>
-                      }
+                  <div className='m-portlet__foot m-portlet__foot--fit'>
+                    <div className='m-form__actions m-form__actions'>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          <button className='btn btn-primary' type='button' onClick={this.editAutoposting} >
+                            Save Changes
+                          </button>
+                          <span>&nbsp;&nbsp;</span>
+                          <Link to='/autoposting'>
+                            <button className='btn btn-secondary'>
+                              Back
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <span>&nbsp;&nbsp;</span>
+                      </div>
+                      <div className='row'>
+                        <div className='col-lg-2' />
+                        <div className='col-lg-6'>
+                          {
+                            this.state.alertMessage !== '' &&
+                            <center>
+                              <Alert type={this.state.alertType}>
+                                {this.state.alertMessage}
+                              </Alert>
+                            </center>
+                          }
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </form>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

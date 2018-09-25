@@ -20,6 +20,7 @@ class AutomationControls extends React.Component {
     this.saveResponseMethod = this.saveResponseMethod.bind(this)
     this.updateResponseMethod = this.updateResponseMethod.bind(this)
   }
+
   componentDidMount () {
     this.updateResponseMethod(this.props.responseMethod)
   }
@@ -75,7 +76,7 @@ class AutomationControls extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-content'>
@@ -83,13 +84,13 @@ class AutomationControls extends React.Component {
             <div className='m-portlet__body m-portlet__body--no-padding'>
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
-                  <Sidebar step='7' isBuyer={this.props.user.role === 'buyer'} user={this.props.user} />
+                  <Sidebar step='6' isBuyer={this.props.user.role === 'buyer'} user={this.props.user} stepNumber={this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 5 : (this.props.user.uiMode.mode === 'kibochat') ? 4 : 4} />
                   <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Step 7: Live Chat Response Methods
+                            Step {this.props.user.uiMode && (this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'all') ? 6 : (this.props.user.uiMode.mode === 'kibochat') ? 5 : 5}: Live Chat Response Methods
                           </h3>
                         </div>
                       </div>
@@ -106,32 +107,50 @@ class AutomationControls extends React.Component {
                               checked={this.state.selectedRadio === 'autoResponse'} />
                             <p>All responses are automated (only chatbot would respond to subscribers)</p>
                           </div>
-                          <div className='radio'>
-                            <input id='humanResponse'
-                              type='radio'
-                              value='humanResponse'
-                              name='humanResponse'
-                              onChange={this.handleRadioChange}
-                              checked={this.state.selectedRadio === 'humanResponse'} />
-                            <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
+                        </div>
+                        <div className='m-portlet__body'>
+                          <div className='row align-items-center'>
+                            <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                              <div className='radio'>
+                                <input id='autoResponse'
+                                  type='radio'
+                                  value='autoResponse'
+                                  name='autoResponse'
+                                  onChange={this.handleRadioChange}
+                                  checked={this.state.selectedRadio === 'autoResponse'} />
+                                <p>All responses are automated (only chatbot would respond to subscribers)</p>
+                              </div>
+                              <div className='radio'>
+                                <input id='humanResponse'
+                                  type='radio'
+                                  value='humanResponse'
+                                  name='humanResponse'
+                                  onChange={this.handleRadioChange}
+                                  checked={this.state.selectedRadio === 'humanResponse'} />
+                                <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
+                              </div>
+                              <div className='radio'>
+                                <input id='mixResponse'
+                                  type='radio'
+                                  value='mixResponse'
+                                  name='mixResponse'
+                                  onChange={this.handleRadioChange}
+                                  checked={this.state.selectedRadio === 'mixResponse'} />
+                                <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
+                              </div>
+                              <div className='radio'>
+                                <input id='disableChat'
+                                  type='radio'
+                                  value='disableChat'
+                                  name='disableChat'
+                                  onChange={this.handleRadioChange}
+                                  checked={this.state.selectedRadio === 'disableChat'} />
+                                <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
+                              </div>
+                            </div>
                           </div>
-                          <div className='radio'>
-                            <input id='mixResponse'
-                              type='radio'
-                              value='mixResponse'
-                              name='mixResponse'
-                              onChange={this.handleRadioChange}
-                              checked={this.state.selectedRadio === 'mixResponse'} />
-                            <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
-                          </div>
-                          <div className='radio'>
-                            <input id='disableChat'
-                              type='radio'
-                              value='disableChat'
-                              name='disableChat'
-                              onChange={this.handleRadioChange}
-                              checked={this.state.selectedRadio === 'disableChat'} />
-                            <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
+                          <div className='row'>
+                            <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
                           </div>
                         </div>
                       </div>
@@ -151,8 +170,8 @@ class AutomationControls extends React.Component {
                             </Link>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            {this.props.user && this.props.isSuper
-                            ? <Link to='/paymentMethodsWizard' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            {this.props.user && this.props.user.isSuperUser
+                            ? <Link to='/finish' className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <span>Next</span>&nbsp;&nbsp;
                                 <i className='la la-arrow-right' />

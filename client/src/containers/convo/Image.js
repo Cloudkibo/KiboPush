@@ -87,16 +87,18 @@ class Image extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {!this.state.loading &&
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
+        }
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
           this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div style={{position: 'relative'}}>
+          : <div>
             <input
               ref='file'
               type='file'
@@ -104,14 +106,14 @@ class Image extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', minHeight: 150, opacity: 0, margin: -25, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
             {
               (this.state.imgSrc === '')
               ? <div className='align-center'>
-                <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
-              : <img style={{maxWidth: '100%', height: 'auto'}} src={this.state.imgSrc} />
+              : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
           }
           </div>
           }

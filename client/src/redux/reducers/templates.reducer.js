@@ -12,7 +12,7 @@ export function templatesInfo (state = {}, action) {
       })
     case ActionTypes.ADD_TEMPLATE_SURVEY:
       return Object.assign({}, state, {
-        surveys: [...state.surveys, action.data.payload],
+        surveyCreated: [...state.surveys, action.data.payload],
         createwarning: action.data.status
 
       })
@@ -22,26 +22,33 @@ export function templatesInfo (state = {}, action) {
       })
     case ActionTypes.ADD_TEMPLATE_POLL:
       return Object.assign({}, state, {
-        surveys: [...state.polls, action.data.payload],
+        pollCreated: [...state.polls, action.data.payload],
         createwarning: action.data.status
       })
     case ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST:
       return Object.assign({}, state, {
-        surveys: action.data
+        surveys: action.data,
+        surveyCreated: '',
+        warning: ''
       })
     case ActionTypes.LOAD_TEMPLATE_SURVEYS_LIST_NEW:
       return Object.assign({}, state, {
         surveys: action.surveys,
-        surveysCount: action.count
+        surveysCount: action.count,
+        surveyCreated: '',
+        pollCreated: ''
       })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST:
       return Object.assign({}, state, {
-        polls: action.data
+        polls: action.data,
+        pollCreated: '',
+        warning: ''
       })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST_NEW:
       return Object.assign({}, state, {
         polls: action.polls,
-        pollsCount: action.count
+        pollsCount: action.count,
+        pollCreated: ''
       })
     case ActionTypes.LOAD_TEMPLATE_SURVEY_DETAILS:
       return Object.assign({}, state, {
@@ -69,6 +76,10 @@ export function templatesInfo (state = {}, action) {
       console.log('getCurrentBroadcast', action.data)
       return Object.assign({}, state, {
         currentBroadcast: action.data
+      })
+    case ActionTypes.TEMPLATES_WARNING:
+      return Object.assign({}, state, {
+        warning: action.data
       })
     default:
       return state

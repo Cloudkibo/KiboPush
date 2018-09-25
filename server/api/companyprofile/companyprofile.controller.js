@@ -127,7 +127,6 @@ exports.updatePlan = function (req, res) {
       description: `The selected plan is the same as the current plan.`
     })
   }
-
   if (req.body.stripeToken) {
     stripeToken = req.body.stripeToken
   }
@@ -138,7 +137,20 @@ exports.updatePlan = function (req, res) {
       description: `Please add a card to your account before choosing a plan.`
     })
   }
-
+  Plans.findOne({unique_ID: req.body.plan}, (err, plan) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    Companyprofile.update({_id: req.body.companyId}, {planId: plan._id, 'stripe.plan': req.body.plan}, (err2, updated) => {
+      if (err2) {
+        logger.serverLog(TAG, err2)
+      }
+      console.log('updated', updated)
+    })
+  })
   Companyprofile.findOne({_id: req.body.companyId}, (err, company) => {
     if (err) {
       return res.status(500).json({
@@ -150,7 +162,6 @@ exports.updatePlan = function (req, res) {
       return res.status(404)
         .json({status: 'failed', description: 'Company not found'})
     }
-
     company.setPlan(plan, stripeToken, function (err) {
       if (err) {
         if (err.code && err.code === 'card_declined') {
@@ -454,8 +465,7 @@ exports.members = function (req, res) {
               description: `Internal Server Error ${JSON.stringify(err)}`
             })
           }
-          var data = _.reject(members, ['userId', null])
-          res.status(200).json({status: 'success', payload: data})
+          res.status(200).json({status: 'success', payload: members})
         })
     })
 }

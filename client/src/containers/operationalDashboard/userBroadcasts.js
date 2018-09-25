@@ -44,9 +44,9 @@ class BroadcastsInfo extends React.Component {
     if (data.selected === 0) {
       this.props.loadBroadcastsList(this.props.userID, {first_page: 'first', last_id: 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadBroadcastsList(this.props.userID, {first_page: 'next', last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
+      this.props.loadBroadcastsList(this.props.userID, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'next', last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
     } else {
-      this.props.loadBroadcastsList(this.props.userID, {first_page: 'previous', last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
+      this.props.loadBroadcastsList(this.props.userID, {current_page: this.state.pageNumber, requested_page: data.selected, first_page: 'previous', last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[0]._id : 'none', number_of_records: 10, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.state.broadcastsDataAll)

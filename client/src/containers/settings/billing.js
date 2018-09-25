@@ -14,8 +14,8 @@ class Billing extends React.Component {
     super(props, context)
     props.getuserdetails()
     this.state = {
-      selectedRadio: 'free',
-      change: false
+      selectedRadio: props.pro === 'true' ? 'premium' : 'free',
+      change: props.pro ? props.pro : false
     }
     this.change = this.change.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
@@ -34,7 +34,9 @@ class Billing extends React.Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextProps.user', nextProps.user)
     if (nextProps.user) {
-      if (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_C') {
+      if (this.props.pro === true) {
+        this.setState({selectedRadio: 'premium'})
+      } else if (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_C') {
         this.setState({selectedRadio: 'premium'})
       } else if (nextProps.user.currentPlan.unique_ID === 'plan_B' || nextProps.user.currentPlan.unique_ID === 'plan_D') {
         this.setState({selectedRadio: 'free'})

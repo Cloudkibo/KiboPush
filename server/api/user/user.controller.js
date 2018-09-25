@@ -5,6 +5,7 @@
 const Users = require('./Users.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const CompanyUsers = require('./../companyuser/companyuser.model')
+const CompanyUsage = require('./../featureUsage/companyUsage.model')
 const VerificationToken = require(
   './../verificationtoken/verificationtoken.model')
 const inviteagenttoken = require('./../inviteagenttoken/inviteagenttoken.model')
@@ -153,6 +154,7 @@ exports.index = function (req, res) {
             user.currentPlan = company.planId
             user.last4 = company.stripe.last4
             user.plan = plan
+            user.uiMode = config.uiModes[user.uiMode]
             res.status(200).json({status: 'success', payload: user})
           })
         })
@@ -161,10 +163,35 @@ exports.index = function (req, res) {
   })
 }
 
+exports.changeMode = function (req, res) {
+  Users.update({_id: req.user._id}, {uiMode: req.body.mode}, (err, updatedUser) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    res.status(200).json({
+      status: 'success',
+      payload: config.uiModes[req.body.mode]
+    })
+  })
+}
+
 exports.fbAppId = function (req, res) {
   res.status(200).json({status: 'success', payload: config.facebook.clientID})
 }
-
+exports.updateSkipConnect = function (req, res) {
+  Users.update({_id: req.user._id}, {skippedFacebookConnect: true}, (err, user) => {
+    if (err) {
+      return res.status(500).json({
+        status: 'failed',
+        description: 'internal server error' + JSON.stringify(err)
+      })
+    }
+    return res.status(200).json({status: 'success', payload: user})
+  })
+}
 exports.updateChecks = function (req, res) {
   Users.findOne({_id: req.user._id}, (err, user) => {
     if (err) {
@@ -292,6 +319,7 @@ exports.create = function (req, res) {
   if (!_.has(req.body, 'email')) parametersMissing = true
   if (!_.has(req.body, 'password')) parametersMissing = true
   if (!_.has(req.body, 'name')) parametersMissing = true
+  if (!_.has(req.body, 'uiMode')) parametersMissing = true
   // if (!_.has(req.body, 'domain')) parametersMissing = true
   // if (!_.has(req.body, 'company_description')) parametersMissing = true
   // if (!_.has(req.body, 'company_name')) parametersMissing = true
@@ -337,7 +365,8 @@ exports.create = function (req, res) {
               password: req.body.password,
               domain_email: req.body.domain.toLowerCase() + '' + req.body.email.toLowerCase(),
               accountType: 'team',
-              role: 'buyer'
+              role: 'buyer',
+              uiMode: req.body.uiMode
             })
 
             accountData.save(function (err, user) {
@@ -370,6 +399,37 @@ exports.create = function (req, res) {
                       description: 'profile save error: ' + JSON.stringify(err)
                     })
                   }
+
+                  // Populate company usage
+                  let companyUsageData = {
+                    companyId: companySaved._id,
+                    broadcasts: 0,
+                    surveys: 0,
+                    polls: 0,
+                    broadcast_templates: 0,
+                    survey_templates: 0,
+                    polls_templates: 0,
+                    sessions: 0,
+                    chat_messages: 0,
+                    facebook_pages: 0,
+                    bots: 0,
+                    subscribers: 0,
+                    labels: 0,
+                    phone_invitation: 0,
+                    facebook_autoposting: 0,
+                    twitter_autoposting: 0,
+                    wordpress_autoposting: 0,
+                    broadcast_sequences: 0,
+                    messages_per_sequence: 0,
+                    segmentation_lists: 0
+                  }
+                  let companyUsage = new CompanyUsage(companyUsageData)
+                  companyUsage.save((err) => {
+                    if (err) {
+                      return res.status(500)
+                        .json({status: 'failed', description: 'Failed to insert record'})
+                    }
+                  })
 
                   // Create customer on stripe
                   companySaved.createCustomer(req.body.email, req.body.name, function (err) {
@@ -555,7 +615,8 @@ exports.create = function (req, res) {
           password: req.body.password,
           domain_email: domain + '' + req.body.email.toLowerCase(),
           accountType: 'individual',
-          role: 'buyer'
+          role: 'buyer',
+          uiMode: req.body.uiMode
         })
 
         accountData.save(function (err, user) {
@@ -588,6 +649,37 @@ exports.create = function (req, res) {
                   description: 'profile save error: ' + JSON.stringify(err)
                 })
               }
+
+              // Populate company usage
+              let companyUsageData = {
+                companyId: companySaved._id,
+                broadcasts: 0,
+                surveys: 0,
+                polls: 0,
+                broadcast_templates: 0,
+                survey_templates: 0,
+                polls_templates: 0,
+                sessions: 0,
+                chat_messages: 0,
+                facebook_pages: 0,
+                bots: 0,
+                subscribers: 0,
+                labels: 0,
+                phone_invitation: 0,
+                facebook_autoposting: 0,
+                twitter_autoposting: 0,
+                wordpress_autoposting: 0,
+                broadcast_sequences: 0,
+                messages_per_sequence: 0,
+                segmentation_lists: 0
+              }
+              let companyUsage = new CompanyUsage(companyUsageData)
+              companyUsage.save((err) => {
+                if (err) {
+                  return res.status(500)
+                    .json({status: 'failed', description: 'Failed to insert record'})
+                }
+              })
 
               // Create customer on stripe
               companySaved.createCustomer(req.body.email, req.body.name, function (err) {

@@ -117,11 +117,13 @@ class Audio extends React.Component {
     return (
       <div className='broadcast-component'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        {!this.state.loading &&
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', margin: -15 + 'px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
         </div>
+        }
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
             this.state.loading
@@ -136,7 +138,7 @@ class Audio extends React.Component {
               clickable
             >
               <div className='align-center'>
-                <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
+                <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
                 <h4 style={{wordBreak: 'break-word', overflowWrap: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>

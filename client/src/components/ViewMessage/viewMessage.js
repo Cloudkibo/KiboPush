@@ -39,7 +39,7 @@ class ViewMessage extends React.Component {
       prevArrow: <LeftArrow />
     }
     return (
-      <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: '317px', height: '635px', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
+      <div style={{position: 'relative', display: 'inline-block', boxSizing: 'content-box', width: '500px', height: 'auto', padding: '85px 18px', borderRadius: '48px', background: 'white', border: '5px solid #f9fafc'}}>
         <div style={{border: '1px solid #f2f2f2', borderRadius: '2px', display: 'block', height: '100%', position: 'relative', width: '100%', textAlign: 'center', zIndex: 2, overflow: 'hidden'}}>
           <div style={{background: '#f7f7f8', borderBottom: '1px solid #c8c7cc', zIndex: 10, position: 'relative'}}>
             <div style={{display: 'inline-block', margin: '5px'}}>
@@ -63,11 +63,11 @@ class ViewMessage extends React.Component {
                         <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                           <div className='m-messenger__message m-messenger__message--in'>
                             <div className='m-messenger__message-pic'>
-                              <img src='icons/user.png' alt='' />
+                              <img src='https://cdn.cloudkibo.com/public/icons/user.png' alt='' />
                             </div>
-                            <div style={{maxWidth: '235px', minWidth: '235px'}} className='m-messenger__message-body'>
+                            <div style={{maxWidth: '250px', minWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
-                              <div className='m-messenger__message-content'>
+                              <div className='m-messenger__message-content' style={{width: '250px'}}>
                                 {
                                   this.props.payload.map((b, index) => (
                                     b.componentType === 'video'
@@ -81,13 +81,14 @@ class ViewMessage extends React.Component {
                                       />
                                     </div>
                                     : b.componentType === 'audio'
-                                    ? <div style={{marginTop: '20px', marginBottom: '60px'}}>
+                                    ? <div style={{marginTop: '20px', marginBottom: '60px', marginLeft: '-15px'}}>
                                       <ReactPlayer
                                         url={b.fileurl.url}
                                         controls
+                                        onPlay={this.onTestURLAudio(b.fileurl.url)}
                                         width='100%'
                                         height='auto'
-                                        onPlay={this.onTestURLAudio(b.fileurl.url)}
+                                        style={{width: '100%', height: 'auto'}}
                                       />
                                     </div>
                                     : b.componentType === 'image'
@@ -112,35 +113,6 @@ class ViewMessage extends React.Component {
                                         <div style={{marginTop: '10px', padding: '5px'}}>
                                           <div style={{textAlign: 'left', fontWeight: 'bold'}}>{b.title}</div>
                                           <div style={{textAlign: 'left', color: '#ccc'}}>{b.description}</div>
-                                        </div>
-                                      </div>
-                                      {
-                                        b.buttons && b.buttons.length > 0 &&
-                                        b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                            <span>{button.title}</span>
-                                          </a>
-                                        ))
-                                      }
-                                    </div>
-                                    : b.componentType === 'media'
-                                    ? <div>
-                                      <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
-                                        <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                          { b.mediaType === 'image' &&
-                                            <a href={b.fileurl.url} target='_blank'>
-                                              <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
-                                            </a>
-                                           }
-                                          { b.mediaType === 'video' &&
-                                            <ReactPlayer
-                                              url={b.fileurl.url}
-                                              controls
-                                              width='100%'
-                                              height='140px'
-                                              onPlay={this.onTestURLVideo(b.fileurl.url)}
-                                            />
-                                          }
                                         </div>
                                       </div>
                                       {

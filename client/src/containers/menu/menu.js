@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { addMenuItem, fetchMenu, saveMenu, getIndexBypage, saveCurrentMenuItem, removeMenu } from '../../redux/actions/menu.actions'
+import Sidebar from '../../components/sidebar/sidebar'
+import Header from '../../components/header/header'
 import Popover from 'react-simple-popover'
 import { transformData, getUrl, removeMenuPayload } from './utility'
 import { Link } from 'react-router'
@@ -12,6 +14,7 @@ import YouTube from 'react-youtube'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import ViewScreen from './viewScreen'
 import { registerAction } from '../../utility/socketio'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -539,6 +542,7 @@ class Menu extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <Header />
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
@@ -562,7 +566,7 @@ class Menu extends React.Component {
         }
         <div
           className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-
+          <Sidebar />
           <div className='m-grid__item m-grid__item--fluid m-wrapper'>
             <div className='m-subheader '>
               <div className='d-flex align-items-center'>
@@ -574,10 +578,7 @@ class Menu extends React.Component {
             <div className='m-content'>
               {
                 this.props.pages && this.props.pages.length === 0 &&
-                <div className='alert alert-success'>
-                  <h4 className='block'>0 Connected Pages</h4>
-                    You do not have any connected pages. Unless you do not connect any pages, you won't be able to set Persistent Menu. PLease click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect your Facebook Page.
-                  </div>
+                <AlertMessage type='page' />
               }
               <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
                 <div className='m-alert__icon'>

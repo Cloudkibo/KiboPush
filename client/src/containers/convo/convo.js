@@ -18,6 +18,8 @@ import { handleDate } from '../../utility/utils'
 import ReactPaginate from 'react-paginate'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import YouTube from 'react-youtube'
+import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertMessage from '../../components/alertMessages/alertMessage'
 
 class Convo extends React.Component {
   constructor (props, context) {
@@ -30,10 +32,13 @@ class Convo extends React.Component {
       filterValue: '',
       isShowingModal: false,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
+      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       selectedDays: '0',
       searchValue: '',
       filter: false,
-      pageNumber: 0
+      pageNumber: 0,
+      isShowingModalPro: false,
+      pageValue: ''
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
     props.loadSubscribersList()
@@ -48,13 +53,24 @@ class Convo extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+    this.initializePageSelect = this.initializePageSelect.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
   onDaysChange (e) {
-    // this.setState({
-    //   filterValue: '',
-    //   searchValue: ''
-    // })
-    //  var defaultVal = 0
     var value = e.target.value
     this.setState({selectedDays: value})
     if (value && value !== '') {
@@ -68,7 +84,6 @@ class Convo extends React.Component {
       }
       this.setState({filter: true, pageNumber: 0})
       this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: value}})
-      //  this.props.loadBroadcastsList(value)
     } else if (value === '') {
       this.setState({selectedDays: '0', filter: false})
       this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: '0'}})
@@ -86,7 +101,7 @@ class Convo extends React.Component {
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false})
+    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
   }
 
   closeDialog () {
@@ -94,7 +109,6 @@ class Convo extends React.Component {
   }
   componentDidMount () {
     this.scrollToTop()
-
     document.title = 'KiboPush | Broadcast'
   }
 
@@ -138,7 +152,7 @@ class Convo extends React.Component {
   gotoCreate (broadcast) {
     browserHistory.push({
       pathname: `/createBroadcast`,
-      state: {module: 'convo', subscribers: this.props.subscribers}
+      state: {module: 'convo', subscribers: this.props.subscribers, pages: this.state.pageValue}
     })
   }
 
@@ -153,10 +167,21 @@ class Convo extends React.Component {
     }
   }
 
+  componentDidUpdate (nextProps) {
+    if (this.props.pages && this.state.isShowingModal && this.state.pageValue === '') {
+      let options = []
+      if (this.props.pages) {
+        for (var i = 0; i < this.props.pages.length; i++) {
+          options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+        }
+        this.initializePageSelect(options)
+      }
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts) {
       this.displayData(0, nextProps.broadcasts)
-      //  this.setState({ totalLength: nextProps.broadcasts.length })
     }
     if (nextProps.count) {
       this.setState({ totalLength: nextProps.count })
@@ -179,52 +204,58 @@ class Convo extends React.Component {
       })
     }
   }
+  initializePageSelect (pageOptions) {
+    console.log('pageOptions: ', pageOptions)
+    var self = this
+    /* eslint-disable */
+    $('#selectPages').select2({
+      /* eslint-enable */
+      data: pageOptions,
+      placeholder: 'Select page(s)',
+      allowClear: true,
+      multiple: true
+    })
+
+    // this.setState({pageValue: pageOptions[0].id})
+
+    /* eslint-disable */
+    $('#selectPages').on('change', function (e) {
+      /* eslint-enable */
+      // var selectedIndex = e.target.selectedIndex
+      // if (selectedIndex !== '-1') {
+      var selectedIndex = e.target.selectedIndex
+      if (selectedIndex !== '-1') {
+        var selectedOptions = e.target.selectedOptions
+        var selected = []
+        for (var i = 0; i < selectedOptions.length; i++) {
+          var selectedOption = selectedOptions[i].value
+          selected.push(selectedOption)
+        }
+        self.setState({ pageValue: selected })
+      }
+    })
+  }
   searchBroadcast (event) {
     this.setState({
       searchValue: event.target.value
     })
-    //  var filtered = []
     if (event.target.value !== '') {
       this.setState({filter: true})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
-      // for (let i = 0; i < this.props.broadcasts.length; i++) {
-      //   if (this.props.broadcasts[i].title && this.props.broadcasts[i].title.toLowerCase().includes(event.target.value.toLowerCase())) {
-      //     filtered.push(this.props.broadcasts[i])
-      //   }
-      // }
     } else {
-      //  this.setState({filter: false})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
-      //  filtered = this.props.broadcasts
     }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
 
   onFilter (e) {
     this.setState({filterValue: e.target.value})
-    // var filtered = []
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
       this.props.allBroadcasts({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
-      // for (let i = 0; i < this.props.broadcasts.length; i++) {
-      //   if (e.target.value === 'miscellaneous') {
-      //     if (this.props.broadcasts[i].payload.length > 1) {
-      //       filtered.push(this.props.broadcasts[i])
-      //     }
-      //   } else {
-      //     if (this.props.broadcasts[i].payload.length === 1 && this.props.broadcasts[i].payload[0].componentType === e.target.value) {
-      //       filtered.push(this.props.broadcasts[i])
-      //     }
-      //   }
-      // }
     } else {
       this.setState({filter: false})
       this.props.allBroadcasts({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
-      // filtered = this.props.broadcasts
     }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
   }
 
   render () {
@@ -253,6 +284,24 @@ class Convo extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -262,17 +311,10 @@ class Convo extends React.Component {
         </div>
         <div className='m-content'>
           {
-              this.props.pages && this.props.pages.length === 0
-              ? <div className='alert alert-success'>
-                <h4 className='block'>0 Pages Connected</h4>
-                You have no pages connected. Please connect your facebook page to use this feature.&nbsp; <Link style={{color: 'blue', cursor: 'pointer'}} to='/addPages' >Add Pages</Link>
-              </div>
-            : this.props.subscribers && this.props.subscribers.length === 0 &&
-              <div className='alert alert-success'>
-                <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here </Link>
-              </div>
+            this.props.pages && this.props.pages.length === 0
+            ? <AlertMessage type='page' />
+          : this.props.subscribers && this.props.subscribers.length === 0 &&
+            <AlertMessage type='subscriber' />
           }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -302,7 +344,7 @@ class Convo extends React.Component {
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                Create New Broadcast
+                                Create New
                               </span>
                             </span>
                           </button>
@@ -311,7 +353,7 @@ class Convo extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create New Broadcast
+                              Create New
                             </span>
                           </span>
                         </button>
@@ -331,15 +373,29 @@ class Convo extends React.Component {
                             <h3>Create Broadcast</h3>
                             <p>To create a new broadcast from scratch, click on Create New Broadcast. To use a template broadcast and modify it, click on Use Template</p>
                             <div style={{width: '100%', textAlign: 'center'}}>
+                              <div className='form-group m-form__group'>
+                                <select id='selectPages' style={{minWidth: '100%'}} />
+                              </div>
+                              <br />
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
+                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
                                   Create New Broadcast
                                 </Link>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link to='/showTemplateBroadcasts' className='btn btn-primary'>
-                                  Use Template
-                                </Link>
+                                {
+                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                                  ? <Link to={{pathname: '/showTemplateBroadcasts', state: {pages: this.state.pageValue}}} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                    Use Template
+                                  </Link>
+                                  : <button onClick={this.showProDialog} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                    Use Template&nbsp;&nbsp;&nbsp;
+                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                      <span style={{color: '#34bfa3'}}>PRO</span>
+                                    </span>
+                                  </button>
+                                }
+
                               </div>
                             </div>
                           </ModalDialog>
@@ -348,32 +404,30 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   {
-                        this.state.isShowingZeroSubModal &&
-                        <ModalContainer style={{width: '500px'}}
-                          onClose={this.closeZeroSubDialog}>
-                          <ModalDialog style={{width: '700px', top: '75px'}}
-                            onClose={this.closeZeroSubDialog}>
-                            <div className='alert alert-success'>
-                              <h4 className='block'>0 Subscribers</h4>
-                  Your connected pages have zero subscribers. Unless you do not have any subscriber, you will not be able to broadcast message, polls and surveys.
-                  To invite subscribers click <Link to='/invitesubscribers' style={{color: 'blue', cursor: 'pointer'}}> here</Link>. You can also watch the video
-                  below on how to get started.
-                            </div>
-                            <div>
-                              <YouTube
-                                videoId='9kY3Fmj_tbM'
-                                opts={{
-                                  height: '390',
-                                  width: '640',
-                                  playerVars: {
-                                    autoplay: 0
-                                  }
-                                }}
-                              />
-                            </div>
-                          </ModalDialog>
-                        </ModalContainer>
-                      }
+                    (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeZeroSubDialog}>
+                      <ModalDialog style={{width: '700px', top: '75px'}}
+                        onClose={this.closeZeroSubDialog}>
+                        {this.state.isShowingZeroPageModal
+                        ? <AlertMessageModal type='page' />
+                      : <AlertMessageModal type='subscriber' />
+                        }
+                        <div>
+                          <YouTube
+                            videoId='9kY3Fmj_tbM'
+                            opts={{
+                              height: '390',
+                              width: '640',
+                              playerVars: {
+                                autoplay: 0
+                              }
+                            }}
+                          />
+                        </div>
+                      </ModalDialog>
+                    </ModalContainer>
+                    }
                   <div className='form-row'>
                     <div style={{display: 'inline-block'}} className='form-group col-md-3'>
                       <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
@@ -389,8 +443,9 @@ class Convo extends React.Component {
                         <option value='video'>video</option>
                         <option value='file'>file</option>
                         <option value='list'>list</option>
+                        <option value='media'>media</option>
                         <option value='miscellaneous'>miscellaneous</option>
-                        <option value=''>all</option>
+                        <option value='all'>all</option>
                       </select>
                     </div>
                     <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
@@ -413,29 +468,29 @@ class Convo extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='platform' style={{width: 100}}
+                          <th data-field='platform'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span >Title</span>
+                            <span style={{width: '100px'}}>Title</span>
                           </th>
-                          <th data-field='statement' style={{width: 120}}
+                          <th data-field='statement'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Type</span>
+                            <span style={{width: '120px'}}>Type</span>
                           </th>
-                          <th data-field='datetime' style={{width: 100}}
+                          <th data-field='datetime'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Created At</span>
+                            <span style={{width: '100px'}}>Created At</span>
                           </th>
-                          <th data-field='sent' style={{width: 100}}
+                          <th data-field='sent'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span >Sent</span>
+                            <span style={{width: '100px'}}>Sent</span>
                           </th>
-                          <th data-field='seen' style={{width: 100}}
+                          <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Seen</span>
+                            <span style={{width: '100px'}}>Seen</span>
                           </th>
-                          <th data-field='clicks' style={{width: 100}}
+                          <th data-field='clicks'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Clicks</span>
+                            <span style={{width: '100px'}}>Clicks</span>
                           </th>
                         </tr>
                       </thead>
@@ -445,17 +500,12 @@ class Convo extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{broadcast.title}</span></td>
-                            <td data-field='type' style={{width: 120, textAlign: 'center'}} className='m-datatable__cell'><span >{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
-                            <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{handleDate(broadcast.datetime)}</span></td>
-                            <td data-field='sent' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.sent}</span></td>
-                            <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
-                              <span >
-                                {broadcast.seen}
-
-                              </span>
-                            </td>
-                            <td data-field='clicks' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span >{broadcast.clicks ? broadcast.clicks : 0}</span></td>
+                            <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
+                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '120px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                            <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
+                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>
+                            <td data-field='clicks' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.clicks ? broadcast.clicks : 0}</span></td>
                           </tr>
                         ))
                       }
@@ -501,7 +551,8 @@ function mapStateToProps (state) {
     count: (state.broadcastsInfo.count),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    user: (state.basicInfo.user)
   }
 }
 

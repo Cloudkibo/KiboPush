@@ -48,6 +48,7 @@ We need to set the following variables: (Just copy paste and then change the val
     NODE_PATH =<NODE INSTALLATION PATH>
     CRON_SCRIPT_PATH =<PATH TO SCHEDULER SCRIPT>
     CRON_SEQ_SCRIPT_PATH =<PATH TO SEQ_SCHEDULER SCRIPT>
+    CRON_PICTURE_SCRIPT_PATH <=PATH TO PROFILE UPDATE SCRIPT >
 
     instructions for NODE_PATH and CRON_SCRIPT_PATH are given below in CRON_JOB guide
 
@@ -62,7 +63,7 @@ Now, we need to run npm script to add cron job into crontab of server.
 We can check if the service is added correctly or not by following command.
 
     crontab -l                 
-        
+
         if the output is of the following form
             * * * * * /some/path/to/node /root/KiboPush/scripts/mongodb_script.js
         then the service has been added, otherwise service is not added correctly.
@@ -147,7 +148,7 @@ The decided time frame can be added in cronjob_script file.
 
 In order to add cronjob manually, run the following script
 
-    crontab -e 
+    crontab -e
 
     this opens a secure copy of original crontab file in the default editor
 
@@ -162,7 +163,7 @@ In order to add cronjob manually, run the following script
 
 User crontab files are stored by the login names in different locations in different Unix and Linux flavors. These files are useful for backing up, viewing and restoring but should be edited only with crontab command by the users.
 
-    BSD Unix 
+    BSD Unix
     /var/cron/tabs/
 
     Solaris, HP-UX, Debian, Ubuntu
@@ -170,5 +171,3 @@ User crontab files are stored by the login names in different locations in diffe
 
     AIX, Red Hat Linux, CentOS, Ferdora
     /var/spool/cron/
-
-

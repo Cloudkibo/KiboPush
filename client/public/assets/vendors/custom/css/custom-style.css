@@ -173,7 +173,11 @@ a.broadcastTabs.active {
   height: auto !important
 }
 .popover.show.buttonPopoverPlan {
+<<<<<<< HEAD
   width: 200px !important;
+=======
+  width: 264px !important;
+>>>>>>> 0b90070fd16489a02d001d6108d4a9cf8385aee6
   height: auto !important
 }
 .popover.show.buttonPopoverList {
@@ -273,10 +277,4 @@ a.broadcastTabs.active {
   padding: 20px;
   background-color: #34bfa3;
   color: white;
-}
-.hideSideBar {
-  display: none
-}
-.hideHeader {
-  display: none
 }

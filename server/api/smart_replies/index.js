@@ -37,6 +37,12 @@ router.post('/updateStatus',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.status)
 
+router.post('/updateStatus',
+  auth.isAuthenticated(),
+  // auth.doesPlanPermitsThisAction('workflows'),
+  // auth.doesRolePermitsThisAction('workflowPermission'),
+  controller.status)
+
 router.post('/botDetails',
   auth.isAuthenticated(),
   // auth.doesPlanPermitsThisAction('workflows'),
@@ -49,17 +55,11 @@ router.post('/delete',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.delete)
 
-router.post('/fetchUnansweredQueries',
+router.post('/removeWaitingSubscribers',
   auth.isAuthenticated(),
   // auth.doesPlanPermitsThisAction('workflows'),
   // auth.doesRolePermitsThisAction('workflowPermission'),
-  controller.unAnsweredQueries)
-
-router.post('/fetchWaitingSubscribers',
-  auth.isAuthenticated(),
-  // auth.doesPlanPermitsThisAction('workflows'),
-  // auth.doesRolePermitsThisAction('workflowPermission'),
-  controller.waitSubscribers)
+  controller.removeWaitSubscribers)
 
 // router.post('/report', controller.report);
 // router.post('/send', controller.send);

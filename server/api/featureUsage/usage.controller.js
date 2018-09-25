@@ -48,7 +48,7 @@ exports.update = function (req, res) {
       }
       res.status(200).json({
         status: 'success',
-        description: 'Feature has been updated successfully!'
+        description: 'Usage item has been updated successfully!'
       })
     })
   })
@@ -66,21 +66,22 @@ exports.create = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  let name = req.body.item_name
+  let name = req.body.item_name.toLowerCase().replace(' ', '_')
   let value = req.body.item_value
   let queryPlan = {}
   queryPlan[name] = value
   let queryCompany = {}
   queryCompany[name] = 0
 
-  PlanUsage.update({}, {$set: queryPlan}, {multi: true}, (err, updatedplan) => {
+  PlanUsage.aggregate([{$addFields: queryPlan}, {$out: 'plan_usages'}], (err, updatedplan) => {
     if (err) {
       return res.status(500).json({
         status: 'failed',
         description: `Internal Server Error ${JSON.stringify(err)}`
       })
     }
-    CompanyUsage.update({}, {$set: queryCompany}, {multi: true}, (err, updatedcompany) => {
+
+    CompanyUsage.aggregate([{$addFields: queryCompany}, {$out: 'company_usages'}], (err, updatedcompany) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',

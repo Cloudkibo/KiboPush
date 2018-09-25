@@ -61,9 +61,9 @@ class SurveysInfo extends React.Component {
     if (data.selected === 0) {
       this.props.loadSurveysByDays({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadSurveysByDays({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     } else {
-      this.props.loadSurveysByDays({last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
+      this.props.loadSurveysByDays({lcurrent_page: this.state.pageNumber, requested_page: data.selected, ast_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, days: this.state.selectedDays}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
@@ -249,7 +249,7 @@ class SurveysInfo extends React.Component {
                                   className='m-datatable__cell'>
                                   <span
                                     style={{width: '120px'}}>{survey.title}</span></td>
-                                { survey.user[0] && (survey.user[0].plan === 'plan_A' || survey.user[0].plan === 'plan_B')
+                                { survey.company[0] && survey.company[0].stripe && survey.company[0].stripe.plan && (survey.company[0].stripe.plan === 'plan_A' || survey.company[0].stripe.plan === 'plan_B')
                                 ? <td data-field='user' className='m-datatable__cell'>
                                   <span style={{width: '120px'}}>{survey.user[0].name}</span></td>
                                   : <td data-field='user' className='m-datatable__cell'>

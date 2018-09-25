@@ -23,7 +23,12 @@ export function appendSentSeenResponsesData (data) {
   console.log('appendSentSeenResponsesData', polls)
   return polls
 }
-
+export function showWarning (data) {
+  return {
+    type: ActionTypes.POLLS_WARNING,
+    data: data
+  }
+}
 export function updatePollsList (data) {
   return {
     type: ActionTypes.FETCH_POLLS_LIST,
@@ -93,7 +98,7 @@ export function getAllResponses (data) {
 
 export function loadPollsList (days) {
   return (dispatch) => {
-    callApi(`polls/all/${days}`).then(res => dispatch(updatePollsList(res.payload)))
+    callApi(`polls/all/0`).then(res => dispatch(updatePollsList(res.payload)))
   }
 }
 export function loadPollsListNew (data) {
@@ -115,7 +120,7 @@ export function sendpoll (poll, msg) {
           msg.success('Poll sent successfully')
           dispatch(sendPollSuccess())
         } else {
-          msg.success('Poll not sent!')
+          msg.error(res.description)
           dispatch(sendPollFailure())
         }
       }
@@ -130,7 +135,8 @@ export function sendPollDirectly (poll, msg) {
         if (res.status === 'success') {
           msg.success('Poll sent successfully')
         } else {
-          msg.error('Poll not sent!')
+          msg.error(res.description)
+          dispatch(showWarning())
         }
       }
     )
@@ -139,7 +145,13 @@ export function sendPollDirectly (poll, msg) {
 export function addPoll (token, data) {
   return (dispatch) => {
     callApi('polls/create', 'post', data)
-      .then(res => dispatch(createPoll(res.payload)))
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(createPoll(res.payload))
+        } else {
+          dispatch(showWarning(res.description))
+        }
+      })
   }
 }
 function rank (items, prop) {

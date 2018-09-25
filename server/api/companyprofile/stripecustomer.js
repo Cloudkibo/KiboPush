@@ -38,7 +38,6 @@ module.exports = exports = function stripeCustomer (schema, options) {
 
   schema.methods.setCard = function (stripeToken, cb) {
     var company = this
-
     var cardHandler = function (err, customer) {
       if (err) return cb(err)
 
