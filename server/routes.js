@@ -68,6 +68,10 @@ module.exports = function (app) {
   app.use('/api/shopify', require('./api/shopify'))
   app.use('/api/cronScheduler', require('./api/cron_scheduler'))
   app.use('/api/operational', require('./api/operational_dashboard'))
+  app.use('/api/messengerEvents', require('./api/messengerEvents'))
+  app.use('/api/facebookEvents', require('./api/facebookEvents'))
+  app.use('/api/wordpressEvents', require('./api/wordpressEvents'))
+  app.use('/api/twitterEvents', require('./api/twitterEvents'))
   app.use('/auth', require('./auth'))
 
   app.get('/', (req, res) => {
