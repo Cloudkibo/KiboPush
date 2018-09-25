@@ -9,7 +9,7 @@ const router = express.Router()
 
 // const logger = require('../components/logger')
 const config = require('../config/environment')
-const Users = require('../api/user/Users.model')
+const Users = require('../api/v1/user/Users.model')
 
 // const TAG = 'auth/index.js'
 
