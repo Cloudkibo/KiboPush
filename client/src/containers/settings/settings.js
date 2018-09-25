@@ -118,18 +118,21 @@ class Settings extends React.Component {
     })
   }
   handleNGPKeyChange (event) {
+    console.log('event.target.value.toString().length', event.target.value.toString().length)
     this.setState({NGPKey: event.target.value})
-    if(event.target.value!='' && this.state.NGPSecret!='')
-    {
-          this.setState({isDisableButton:false})
+    if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
+      this.setState({isDisableButton: false})
+    } else {
+      this.setState({isDisableButton: true})
     }
   }
   handleNGPSecretChange (event) {
     this.setState({NGPSecret: event.target.value})
 
-    if(event.target.value!='' && this.state.NGPKey!='')
-    {
-          this.setState({isDisableButton:false})
+    if (event.target.value.toString().trim() !== '' && this.state.NGPKey.toString().trim() !== '') {
+      this.setState({isDisableButton: false})
+    } else {
+      this.setState({isDisableButton: true})
     }
   }
   getPlanInfo (plan) {
@@ -239,6 +242,12 @@ class Settings extends React.Component {
     }
     this.initializeSwitch(this.state.buttonState)
     this.initializeSwitchNGP(this.state.ngpButtonState)
+
+    if (this.state.ngpButtonState) {
+      this.setState({ isDisableInput: false, isDisableButton: false })
+    } else {
+      this.setState({ isDisableInput: true, isDisableButton: true })
+    }
   }
   componentDidUpdate () {
     console.log('in componentDidUpdate')
@@ -362,21 +371,21 @@ class Settings extends React.Component {
     NGP Work Starts
     */
     if (nextProps.apiEnableNGP) {
+      console.log('this.state.ngpDisable', this.state.ngpDisable)
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,isDisableInput:false,isDisableButton:false})
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,  isDisableInput: false, isDisableButton: false})
       }
-      
     }
     if (nextProps.apiDisableNGP) {
       if (this.state.ngpDisable === true) {
-        this.setState({NGPKey: '', NGPSecret: '',isDisableButton:true,isDisableInput:true})
+        this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
       }
     }
     if (nextProps.resetDataNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret,isDisableInput:false,isDisableButton:false})
+        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret, isDisableInput: false, isDisableButton: false})
       } else {
-        this.setState({NGPKey: '', NGPSecret: '',isDisableButton:true,isDisableInput:true})
+        this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
       }
     }
     if (nextProps.apiSuccessNGP) {
@@ -384,7 +393,7 @@ class Settings extends React.Component {
         this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
         if (this.state.count1_ngp !== 1) {
           this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
-          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
+          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})     
         }
         this.setState({count_ngp: 2})
       }
