@@ -170,15 +170,11 @@ a.broadcastTabs.active {
 }
 .popover.show.buttonPopover {
   left: -110px !important;
-  height: auto !important
+  height: auto !important;
 }
 .popover.show.buttonPopoverPlan {
-<<<<<<< HEAD
-  width: 200px !important;
-=======
   width: 264px !important;
->>>>>>> 0b90070fd16489a02d001d6108d4a9cf8385aee6
-  height: auto !important
+  height: auto !important;
 }
 .popover.show.buttonPopoverList {
   height: auto !important
