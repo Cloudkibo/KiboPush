@@ -332,6 +332,19 @@ function isAuthorizedWebHookTrigger () {
   })
 }
 
+function isItWebhookServer () {
+  return compose().use((req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress ||
+      req.socket.remoteAddress || req.connection.socket.remoteAddress
+    logger.serverLog(TAG, req.ip)
+    logger.serverLog(TAG, ip)
+    logger.serverLog(TAG, 'This is middleware')
+    logger.serverLog(TAG, req.body)
+    if (ip === config.webhook_ip) next()
+    else res.send(403)
+  })
+}
+
 // Auth for kibodash service
 function isKiboDash (req, res, next) {
   logger.serverLog(TAG, `Request header from KiboDash ${JSON.stringify(req.headers)}`)
@@ -349,6 +362,7 @@ exports.doesRolePermitsThisAction = doesRolePermitsThisAction
 exports.fbConnectDone = fbConnectDone
 exports.fetchPages = fetchPages
 exports.isKiboDash = isKiboDash
+exports.isItWebhookServer = isItWebhookServer
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;
 

@@ -42,6 +42,8 @@ const all = {
   // List of user roles, NOTE: don't change the order
   userRoles: ['buyer', 'admin', 'supervisor', 'agent'],
 
+  webhook_ip: process.env.WEBHOOK_IP_ADDRESS || 'localhost',
+
   mongo: {
     options: {
       db: {
