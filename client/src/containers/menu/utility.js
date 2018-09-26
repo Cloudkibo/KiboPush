@@ -130,52 +130,52 @@ export function onClickText (timeStamp, refObj, module) {
 export function onImageClick (timeStamp, refObj) {
   let temp = refObj.state.list
   refObj.msg.info('New Image Component Added')
-  refObj.setState({list: [...temp, {content: (<Image id={timeStamp} key={timeStamp} handleImage={refObj.handleImage} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<Image id={timeStamp} pages={refObj.props.location.state.pages} key={timeStamp} handleImage={refObj.handleImage} onRemove={refObj.removeComponent} />)}]})
   refObj.handleImage({id: timeStamp, componentType: 'image', image_url: '', fileurl: ''})
 }
 
 export function onAudioClick (timeStamp, refObj) {
   let temp = refObj.state.list
   refObj.msg.info('New Audio Component Added')
-  refObj.setState({list: [...temp, {content: (<Audio id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<Audio id={timeStamp} pages={refObj.props.location.state.pages} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
   refObj.handleFile({id: timeStamp, componentType: 'audio', fileurl: ''})
 }
 export function onVideoClick (timeStamp, refObj) {
   let temp = refObj.state.list
   refObj.msg.info('New Video Component Added')
-  refObj.setState({list: [...temp, {content: (<Video id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<Video id={timeStamp} pages={refObj.props.location.state.pages} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
   refObj.handleFile({id: timeStamp, componentType: 'video', fileurl: ''})
 }
 
 export function onFileClick (timeStamp, refObj) {
   let temp = refObj.state.list
   refObj.msg.info('New File Component Added')
-  refObj.setState({list: [...temp, {content: (<File id={timeStamp} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<File id={timeStamp} pages={refObj.props.location.state.pages} key={timeStamp} handleFile={refObj.handleFile} onRemove={refObj.removeComponent} />)}]})
   refObj.handleFile({id: timeStamp, componentType: 'file', fileurl: ''})
 }
 export function onListClick (timeStamp, refObj, module) {
   let temp = refObj.state.list
   refObj.msg.info('New List Component Added')
-  refObj.setState({list: [...temp, {content: (<List id={timeStamp} module={module} key={timeStamp} handleList={refObj.handleList} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<List id={timeStamp} pages={refObj.props.location.state.pages} module={module} key={timeStamp} handleList={refObj.handleList} onRemove={refObj.removeComponent} />)}]})
   refObj.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'})
 }
 export function onMediaClick (timeStamp, refObj, module) {
   let temp = refObj.state.list
   refObj.msg.info('New Media Component Added')
-  refObj.setState({list: [...temp, {content: (<Media id={timeStamp} module={module} key={timeStamp} handleMedia={refObj.handleMedia} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<Media id={timeStamp} pages={refObj.props.location.state.pages} module={module} key={timeStamp} handleMedia={refObj.handleMedia} onRemove={refObj.removeComponent} />)}]})
   refObj.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []})
 }
 
 export function onCardClick (timeStamp, refObj, module) {
   let temp = refObj.state.list
   refObj.msg.info('New Card Component Added')
-  refObj.setState({list: [...temp, {content: (<Card id={timeStamp} module={module} key={timeStamp} handleCard={refObj.handleCard} onRemove={refObj.removeComponent} singleCard />)}]})
+  refObj.setState({list: [...temp, {content: (<Card id={timeStamp} pages={refObj.props.location.state.pages} module={module} key={timeStamp} handleCard={refObj.handleCard} onRemove={refObj.removeComponent} singleCard />)}]})
   refObj.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []})
 }
 
 export function onGalleryClick (timeStamp, refObj, module) {
   let temp = refObj.state.list
   refObj.msg.info('New Gallery Component Added')
-  refObj.setState({list: [...temp, {content: (<Gallery id={timeStamp} module={module} key={timeStamp} handleGallery={refObj.handleGallery} onRemove={refObj.removeComponent} />)}]})
+  refObj.setState({list: [...temp, {content: (<Gallery id={timeStamp} pages={refObj.props.location.state.pages} module={module} key={timeStamp} handleGallery={refObj.handleGallery} onRemove={refObj.removeComponent} />)}]})
   refObj.handleGallery({id: timeStamp, componentType: 'gallery', cards: []})
 }
