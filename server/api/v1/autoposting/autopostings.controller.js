@@ -186,7 +186,7 @@ exports.create = function (req, res) {
                               TwitterUtility.restart()
                               res.status(201)
                               .json({status: 'success', payload: createdRecord})
-                              require('./../../config/socketio').sendMessageToClient({
+                              require('./../../../config/socketio').sendMessageToClient({
                                 room_id: companyUser.companyId,
                                 body: {
                                   action: 'autoposting_created',

@@ -97,7 +97,7 @@ exports.createMessage = function (req, res) {
                 // check dependent message trigger and add to queu if necessary
                 utility.checkParentMessageTrigger(messageCreated)
               }
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: companyUser.companyId,
                 body: {
                   action: 'sequence_update',
@@ -145,7 +145,7 @@ exports.editMessage = function (req, res) {
           return res.status(500)
             .json({ status: 'failed', description: 'Poll update failed' })
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'sequence_update',
@@ -198,7 +198,7 @@ exports.setSchedule = function (req, res) {
           return res.status(500)
             .json({ status: 'failed', description: 'Poll update failed' })
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'sequence_update',
@@ -316,7 +316,7 @@ exports.setSchedule = function (req, res) {
 //           return res.status(500)
 //             .json({status: 'failed', description: 'Poll update failed'})
 //         }
-//         require('./../../config/socketio').sendMessageToClient({
+//         require('./../../../config/socketio').sendMessageToClient({
 //           room_id: companyUser.companyId,
 //           body: {
 //             action: 'sequence_update',
@@ -402,7 +402,7 @@ exports.createSequence = function (req, res) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
                 })
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: companyUser.companyId,
                 body: {
                   action: 'sequence_create',
@@ -461,7 +461,7 @@ exports.editSequence = function (req, res) {
           return res.status(500)
             .json({ status: 'failed', description: 'Sequence update failed' })
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'sequence_update',
@@ -727,7 +727,7 @@ exports.subscribeToSequence = function (req, res) {
             utility.addToMessageQueue(req.body.sequenceId, utcDate, message._id)
           })
           if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'sequence_update',
@@ -792,7 +792,7 @@ exports.unsubscribeToSequence = function (req, res) {
               }
             })
             if (subscriberId === req.body.subscriberIds[req.body.subscriberIds.length - 1]) {
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: companyUser.companyId,
                 body: {
                   action: 'sequence_update',
@@ -848,7 +848,7 @@ exports.deleteSequence = function (req, res) {
                 .json({ status: 'failed', description: 'Internal Server Error' })
             }
 
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'sequence_delete',
@@ -892,7 +892,7 @@ exports.deleteMessage = function (req, res) {
             .json({ status: 'failed', description: 'Internal Server Error' })
         }
 
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'sequence_delete',

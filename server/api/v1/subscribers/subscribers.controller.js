@@ -713,7 +713,7 @@ exports.subscribeBack = function (req, res) {
       res.status(200).json({status: 'success', payload: subscriber})
 
         // If the code below required?
-        // require('./../../config/socketio').sendMessageToClient({
+        // require('./../../../config/socketio').sendMessageToClient({
         //   room_id: companyUser.companyId,
         //   body: {
         //     action: 'subscriber_updated',

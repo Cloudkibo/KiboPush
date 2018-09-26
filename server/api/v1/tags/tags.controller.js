@@ -109,7 +109,7 @@ exports.create = function (req, res) {
                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                   }
                 })
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: companyUser.companyId,
                 body: {
                   action: 'new_tag',
@@ -159,7 +159,7 @@ exports.rename = function (req, res) {
           description: `Internal Server Error ${JSON.stringify(err)}`
         })
       }
-      require('./../../config/socketio').sendMessageToClient({
+      require('./../../../config/socketio').sendMessageToClient({
         room_id: newTag.companyId,
         body: {
           action: 'tag_rename',
@@ -210,7 +210,7 @@ exports.delete = function (req, res) {
             description: `Internal Server Error ${JSON.stringify(err)}`
           })
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: tagPayload.companyId,
           body: {
             action: 'tag_remove',
@@ -272,7 +272,7 @@ exports.assign = function (req, res) {
         })
       })
     })
-    require('./../../config/socketio').sendMessageToClient({
+    require('./../../../config/socketio').sendMessageToClient({
       room_id: tagPayload.companyId,
       body: {
         action: 'tag_assign',
@@ -319,7 +319,7 @@ exports.unassign = function (req, res) {
           return res.status(400)
           .json({status: 'failed', description: 'Parameters are missing'})
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: tagPayload.companyId,
           body: {
             action: 'tag_unassign',

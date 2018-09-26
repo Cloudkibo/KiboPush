@@ -53,7 +53,7 @@ exports.enable = function (req, res) {
                                   description: JSON.stringify(error)
                                 })
                               }
-                              require('./../../config/socketio').sendMessageToClient({
+                              require('./../../../config/socketio').sendMessageToClient({
                                 room_id: company._id,
                                 body: {
                                   action: 'page_connect',

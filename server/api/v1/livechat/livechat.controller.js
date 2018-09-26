@@ -259,7 +259,7 @@ exports.create = function (req, res) {
                 }
               })
               if (session.is_assigned && session.assigned_to.type === 'team') {
-                require('./../../config/socketio').sendMessageToClient({
+                require('./../../../config/socketio').sendMessageToClient({
                   room_id: companyUser.companyId,
                   body: {
                     action: 'agent_replied',
@@ -271,7 +271,7 @@ exports.create = function (req, res) {
                   }
                 })
               } else if (!session.is_assigned) {
-                require('./../../config/socketio').sendMessageToClient({
+                require('./../../../config/socketio').sendMessageToClient({
                   room_id: companyUser.companyId,
                   body: {
                     action: 'agent_replied',
