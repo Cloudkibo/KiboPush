@@ -339,7 +339,8 @@ const all = {
       commentCapture: true
     }
   },
-  API_URL_ACCOUNTS: ''
+  API_URL_ACCOUNTS: '',
+  API_URL_WEBHOOK: process.env.NODE_ENV === 'production' ? 'https://webhook.cloudkibo.com/api' : process.env.NODE_ENV === 'staging' ? 'https://swebhook.cloudkibo.com/api' : 'http://localhost:3000/api'
 }
 
 module.exports = _.merge(
