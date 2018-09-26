@@ -338,7 +338,8 @@ const all = {
       welcomeMessage: true,
       commentCapture: true
     }
-  }
+  },
+  API_URL_ACCOUNTS: ''
 }
 
 module.exports = _.merge(
