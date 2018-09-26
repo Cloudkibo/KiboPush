@@ -19,16 +19,11 @@ class ResetPassword extends React.Component {
       pwdBar: 0,
       pwd_color: 'red',
       ismatch: false,
-      pwdlength: true,
-      currentPassword: ''
+      pwdlength: true
     }
     this.save = this.save.bind(this)
     this.equal = this.equal.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
-    this.currentPassword = this.currentPassword.bind(this)
-  }
-  currentPassword () {
-    this.setState({currentPassword: this.refs.current.value})
   }
   equal () {
     if (this.refs.new.value === this.refs.retype.value) {
@@ -131,7 +126,7 @@ class ResetPassword extends React.Component {
                   <div className='form-group m-form__group row'>
                     <label className='col-4 col-form-label' style={{textAlign: 'left'}}>Current Password</label>
                     <div className='col-7 input-group'>
-                      <input className='form-control m-input' required type='password' ref='current' onChange={this.currentPassword} />
+                      <input className='form-control m-input' required type='password' ref='current' />
                     </div>
                   </div>
                   <div className='form-group m-form__group row'>
@@ -162,9 +157,7 @@ class ResetPassword extends React.Component {
                     { this.state.password && this.state.ismatch === false &&
                       <div className='col-7 input-group' style={{color: 'red'}}>Passwords do not match</div>
                     }
-                    {this.refs.current && console.log('this.refs.current', this.refs.current.value)}
-                    {this.refs.new && console.log('this.refs.new', this.refs.new.value)}
-                    {this.refs.retype && console.log('this.refs.retype', this.refs.retype.value)}
+                    {console.log('this.refs', this.refs.current)}
                     <div className='col-11 input-group pull-right'>
                       <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === ''} onClick={this.save}>Save</button>
                     </div>
