@@ -1,5 +1,5 @@
 const SequenceUtility = require('../sequenceMessaging/utility')
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/seen.controller.js'
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const PollPage = require('../page_poll/page_poll.model')

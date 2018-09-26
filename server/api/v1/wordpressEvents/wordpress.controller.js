@@ -1,4 +1,4 @@
-const config = require('../../config/environment/index')
+const config = require('../../../config/environment/index')
 const AutoPosting = require('../../api/autoposting/autopostings.model')
 const Pages = require('../../api/pages/Pages.model')
 const URL = require('../../api/URLforClickedCount/URL.model')

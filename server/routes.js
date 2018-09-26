@@ -71,7 +71,7 @@ module.exports = function (app) {
   app.use('/auth', require('./auth'))
   // v2 routes
   app.use('/api/v2/pages', require('./api/v2/pages'))
-
+  app.use('/api/v2/commentCapture', require('./api/v2/commentCapture'))
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
       {expires: new Date(Date.now() + 900000)})

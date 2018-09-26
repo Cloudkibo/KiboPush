@@ -1,4 +1,4 @@
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const Pages = require('../pages/Pages.model')
 const AutomationQueue = require('./../automation_queue/automation_queue.model')
 const Subscribers = require('../subscribers/Subscribers.model')
@@ -14,7 +14,7 @@ const og = require('open-graph')
 let _ = require('lodash')
 const request = require('request')
 const TAG = 'api/facebookEvents/autoposting.controller.js'
-let config = require('./../../config/environment')
+let config = require('./../../../config/environment')
 
 exports.autoposting = function (req, res) {
   for (let i = 0; i < req.body.entry[0].changes.length; i++) {
