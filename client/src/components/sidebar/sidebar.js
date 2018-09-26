@@ -181,7 +181,7 @@ class Sidebar extends Component {
 
   showLiveChatItem () {
     if (this.props.user && this.props.automated_options) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.live_chat &&
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
           (this.props.automated_options.automated_options === 'MIX_CHAT' ||
            this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
@@ -440,7 +440,7 @@ class Sidebar extends Component {
 
   showSmartRespliesItem () {
     if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-     this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+     this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/bots' className='m-menu__link'>
