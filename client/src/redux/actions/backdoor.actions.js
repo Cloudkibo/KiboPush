@@ -421,3 +421,10 @@ export function saveCurrentPoll (poll) {
     data: poll
   }
 }
+
+export function savePageInformation (page) {
+  return {
+    type: ActionTypes.SAVE_PAGE_INFORMATION,
+    data: page
+  }
+}

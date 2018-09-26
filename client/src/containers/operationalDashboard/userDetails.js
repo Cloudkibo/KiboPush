@@ -24,7 +24,8 @@ class UserDetails extends React.Component {
       isShowingModalAccount: false,
       isShowingModalSubscribers: false,
       isShowingModalLiveChat: false,
-      id: ''
+      id: '',
+      searchValue: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)

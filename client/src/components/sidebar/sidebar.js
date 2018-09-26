@@ -281,7 +281,7 @@ class Sidebar extends Component {
   }
 
   showOrganizationItems () {
-    if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <a className='m-menu__link m-menu__toggle'>
@@ -716,7 +716,7 @@ class Sidebar extends Component {
 
   showTeams () {
     if (this.props.user) {
-      if (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') {
+      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/teams' className='m-menu__link'>
