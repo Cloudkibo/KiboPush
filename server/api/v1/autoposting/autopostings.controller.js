@@ -16,6 +16,8 @@ const _ = require('lodash')
 const CompanyUsage = require('./../featureUsage/companyUsage.model')
 const PlanUsage = require('./../featureUsage/planUsage.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
+const callApi = require('./../api.caller.service.js')
+
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
@@ -183,7 +185,8 @@ exports.create = function (req, res) {
                                     logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                   }
                                 })
-                              TwitterUtility.restart()
+                              //  TwitterUtility.restart()
+                              callApi.callApi('twitter/restart')
                               res.status(201)
                               .json({status: 'success', payload: createdRecord})
                               require('./../../../config/socketio').sendMessageToClient({
@@ -471,7 +474,8 @@ exports.destroy = function (req, res) {
         return res.status(500)
           .json({status: 'failed', description: 'AutoPosting update failed'})
       }
-      TwitterUtility.restart()
+      //  TwitterUtility.restart()
+      callApi.callApi('twitter/restart')
       require('./../../../config/socketio').sendMessageToClient({
         room_id: autoposting.companyId,
         body: {
