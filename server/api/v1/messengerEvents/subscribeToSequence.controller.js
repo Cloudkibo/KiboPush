@@ -1,4 +1,4 @@
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/subscribeToSequence.controller.js'
 const Subscribers = require('../subscribers/Subscribers.model')
 const Sequences = require('../sequenceMessaging/sequence.model')
