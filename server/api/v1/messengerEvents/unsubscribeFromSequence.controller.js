@@ -1,4 +1,4 @@
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/unsubscribeFromSequence.controller.js'
 const Subscribers = require('../subscribers/Subscribers.model')
 const Sequences = require('../sequenceMessaging/sequence.model')
@@ -38,7 +38,7 @@ function unsubscribeFromSequence (sequenceId, req) {
               return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
 
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: sequence.companyId,
               body: {
                 action: 'sequence_update',

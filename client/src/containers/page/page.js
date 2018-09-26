@@ -39,6 +39,7 @@ class Page extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPages = this.searchPages.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
   }
 
   componentWillMount () {

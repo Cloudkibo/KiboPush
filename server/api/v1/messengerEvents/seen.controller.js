@@ -1,5 +1,5 @@
 const SequenceUtility = require('../sequenceMessaging/utility')
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/seen.controller.js'
 const BroadcastPage = require('../page_broadcast/page_broadcast.model')
 const PollPage = require('../page_poll/page_poll.model')
@@ -61,7 +61,7 @@ function updateLivechatSeen (req) {
       }
       logger.serverLog(TAG, `CHAT with updated seen ${req.recipient.id} ${req.sender.id} ${JSON.stringify(chat)}`)
       if (chat) {
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: chat.company_id,
           body: {
             action: 'message_seen',

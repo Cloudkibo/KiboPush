@@ -1,4 +1,4 @@
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/subscriber.controller.js'
 const Subscribers = require('../subscribers/Subscribers.model')
 const Webhooks = require(
@@ -162,7 +162,7 @@ exports.subscriber = function (req, res) {
                                         createSession(page, subscriberCreated,
                                           event)
                                       }
-                                      require('./../../config/socketio')
+                                      require('./../../../config/socketio')
                                         .sendMessageToClient({
                                           room_id: page.companyId,
                                           body: {
@@ -372,7 +372,7 @@ function saveChatInDb (page, session, chatPayload, subscriber, event) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
-    require('./../../config/socketio').sendMessageToClient({
+    require('./../../../config/socketio').sendMessageToClient({
       room_id: page.companyId,
       body: {
         action: 'new_chat',
@@ -571,7 +571,7 @@ function sendautomatedmsg (req, page) {
                   })
               }
             })
-          require('./../../config/socketio').sendMessageToClient({
+          require('./../../../config/socketio').sendMessageToClient({
             room_id: page.companyId,
             body: {
               action: 'dashboard_updated',

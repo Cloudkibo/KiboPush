@@ -416,7 +416,7 @@ exports.getfbMessage = function (req, res) {
                                               createSession(page, subscriberCreated,
                                                 event)
                                             }
-                                            require('./../../config/socketio')
+                                            require('./../../../config/socketio')
                                               .sendMessageToClient({
                                                 room_id: page.companyId,
                                                 body: {
@@ -1139,7 +1139,7 @@ function handleMessageFromSomeOtherApp (event) {
                               event.postback.title === 'Get Started')) {
                               createSession(page, subscriberCreated, event)
                             }
-                            require('./../../config/socketio').sendMessageToClient({
+                            require('./../../../config/socketio').sendMessageToClient({
                               room_id: page.companyId,
                               body: {
                                 action: 'new_subscriber',
@@ -1300,7 +1300,7 @@ function saveChatInDb (page, session, chatPayload, subscriber, event) {
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
-    require('./../../config/socketio').sendMessageToClient({
+    require('./../../../config/socketio').sendMessageToClient({
       room_id: page.companyId,
       body: {
         action: 'new_chat',
@@ -1343,7 +1343,7 @@ function addAdminAsSubscriber (payload) {
               if (err) {
                 logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
               } else {
-                require('./../../config/socketio').sendMessageToClient({
+                require('./../../../config/socketio').sendMessageToClient({
                   room_id: page.companyId,
                   body: {
                     action: 'admin_subscriber',
@@ -1689,7 +1689,7 @@ function sendautomatedmsg (req, page) {
                   })
               }
             })
-          require('./../../config/socketio').sendMessageToClient({
+          require('./../../../config/socketio').sendMessageToClient({
             room_id: page.companyId,
             body: {
               action: 'dashboard_updated',
@@ -2031,7 +2031,7 @@ function subscribeToSequence (sequenceId, req) {
                 logger.serverLog(TAG,
                   `Failed to insert record`)
               }
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: sequence.companyId,
                 body: {
                   action: 'sequence_update',
@@ -2073,7 +2073,7 @@ function unsubscribeFromSequence (sequenceId, req) {
               return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
 
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: sequence.companyId,
               body: {
                 action: 'sequence_update',

@@ -787,7 +787,7 @@ function updateLivechatSeen (req) {
       }
       logger.serverLog(TAG, `CHAT with updated seen ${req.recipient.id} ${req.sender.id} ${JSON.stringify(chat)}`)
       if (chat) {
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: chat.company_id,
           body: {
             action: 'message_seen',

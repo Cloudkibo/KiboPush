@@ -230,7 +230,7 @@ exports.sendConversation = function (req, res) {
               return res.status(500)
               .json({status: 'failed', description: 'Broadcasts not created'})
             }
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'new_broadcast',

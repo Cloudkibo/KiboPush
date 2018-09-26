@@ -186,7 +186,7 @@ exports.create = function (req, res) {
                               TwitterUtility.restart()
                               res.status(201)
                               .json({status: 'success', payload: createdRecord})
-                              require('./../../config/socketio').sendMessageToClient({
+                              require('./../../../config/socketio').sendMessageToClient({
                                 room_id: companyUser.companyId,
                                 body: {
                                   action: 'autoposting_created',
@@ -270,7 +270,7 @@ exports.create = function (req, res) {
                                 })
                               res.status(201)
                               .json({status: 'success', payload: createdRecord})
-                              require('./../../config/socketio').sendMessageToClient({
+                              require('./../../../config/socketio').sendMessageToClient({
                                 room_id: companyUser.companyId,
                                 body: {
                                   action: 'autoposting_created',
@@ -376,7 +376,7 @@ exports.create = function (req, res) {
                               })
                             res.status(201)
                             .json({status: 'success', payload: createdRecord})
-                            require('./../../config/socketio').sendMessageToClient({
+                            require('./../../../config/socketio').sendMessageToClient({
                               room_id: companyUser.companyId,
                               body: {
                                 action: 'autoposting_created',
@@ -439,7 +439,7 @@ exports.edit = function (req, res) {
             .json({status: 'failed', description: 'AutoPosting update failed'})
         }
         res.status(200).json({status: 'success', payload: autoposting})
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'autoposting_updated',
@@ -472,7 +472,7 @@ exports.destroy = function (req, res) {
           .json({status: 'failed', description: 'AutoPosting update failed'})
       }
       TwitterUtility.restart()
-      require('./../../config/socketio').sendMessageToClient({
+      require('./../../../config/socketio').sendMessageToClient({
         room_id: autoposting.companyId,
         body: {
           action: 'autoposting_removed',

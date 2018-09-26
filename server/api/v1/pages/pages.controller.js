@@ -916,7 +916,7 @@ exports.enable = function (req, res) {
                                                         description: JSON.stringify(error)
                                                       })
                                                   }
-                                                  require('./../../config/socketio')
+                                                  require('./../../../config/socketio')
                                                     .sendMessageToClient({
                                                       room_id: companyUser.companyId,
                                                       body: {
@@ -1062,7 +1062,7 @@ exports.disable = function (req, res) {
                             description: JSON.stringify(error)
                           })
                       }
-                      require('./../../config/socketio').sendMessageToClient({
+                      require('./../../../config/socketio').sendMessageToClient({
                         room_id: companyUser.companyId,
                         body: {
                           action: 'page_disconnect',

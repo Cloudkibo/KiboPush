@@ -100,7 +100,7 @@ exports.enable = function (req, res) {
                         payload: JSON.stringify(error)
                       })
                     }
-                    require('./../../config/socketio').sendMessageToClient({
+                    require('./../../../config/socketio').sendMessageToClient({
                       room_id: req.body.companyId,
                       body: {
                         action: 'page_connect',
@@ -172,7 +172,7 @@ exports.disable = function (req, res) {
             payload: JSON.stringify(error)
           })
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: req.body.companyId,
           body: {
             action: 'page_disconnect',

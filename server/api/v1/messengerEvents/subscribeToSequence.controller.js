@@ -1,4 +1,4 @@
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/subscribeToSequence.controller.js'
 const Subscribers = require('../subscribers/Subscribers.model')
 const Sequences = require('../sequenceMessaging/sequence.model')
@@ -90,7 +90,7 @@ function subscribeToSequence (sequenceId, req) {
                 logger.serverLog(TAG,
                   `Failed to insert record`)
               }
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: sequence.companyId,
                 body: {
                   action: 'sequence_update',
