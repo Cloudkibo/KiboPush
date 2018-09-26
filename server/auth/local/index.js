@@ -3,9 +3,9 @@
 let express = require('express')
 let passport = require('passport')
 let auth = require('../auth.service')
-let User = require('./../../api/user/Users.model.js')
-let CompanyProfile = require('./../../api/companyprofile/companyprofile.model')
-let CompanyUsers = require('./../../api/companyuser/companyuser.model')
+let User = require('./../../api/v1/user/Users.model.js')
+let CompanyProfile = require('./../../api/v1/companyprofile/companyprofile.model')
+let CompanyUsers = require('./../../api/v1/companyuser/companyuser.model')
 
 const config = require('./../../config/environment/index')
 const logger = require('../../components/logger')

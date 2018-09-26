@@ -73,7 +73,7 @@ class ShowTemplates extends React.Component {
   gotoCreate (broadcast) {
     browserHistory.push({
       pathname: `/createBroadcast`,
-      state: {module: 'convo'}
+      state: {module: 'convo', pages: this.props.location.state.pages}
     })
   }
 

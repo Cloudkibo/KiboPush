@@ -172,7 +172,7 @@ class Convo extends React.Component {
       let options = []
       if (this.props.pages) {
         for (var i = 0; i < this.props.pages.length; i++) {
-          options[i] = {id: this.props.pages[i].pageId, text: this.props.pages[i].pageName}
+          options[i] = {id: this.props.pages[i]._id, text: this.props.pages[i].pageName}
         }
         this.initializePageSelect(options)
       }
