@@ -23,7 +23,7 @@ const UserSchema = new Schema({
   updatedAt: {type: Date, default: Date.now},
   accountType: String,
   wizardSeen: {type: Boolean, default: false},
-  uiMode: {type: String, default: 'all'},
+  uiMode: String,
   advancedMode: {type: Boolean, default: false},
   eulaAccepted: {type: Boolean, default: true},
   permissionsRevoked: {type: Boolean, default: false},
