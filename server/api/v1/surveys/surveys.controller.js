@@ -339,7 +339,7 @@ exports.create = function (req, res) {
                 }
               })
             }
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'survey_created',
@@ -1093,7 +1093,7 @@ exports.sendSurvey = function (req, res) {
                 }
               })
             }
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'survey_created',
