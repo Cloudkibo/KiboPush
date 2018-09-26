@@ -65,7 +65,7 @@ class ProgressBox extends React.Component {
                               {
                                 this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a onClick={() => this.props.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
