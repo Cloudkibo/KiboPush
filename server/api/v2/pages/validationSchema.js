@@ -61,3 +61,36 @@ exports.pagePayload = {
     }
   }
 }
+
+exports.welcomeMessagePayload = {
+  type: 'object',
+  properties: {
+    _id: {
+      type: 'string',
+      required: true
+    },
+    welcomeMessage: {
+      type: 'array',
+      items: [
+        {
+          type: 'object'
+        }
+      ],
+      required: true
+    }
+  }
+}
+
+exports.enableDisableWelcomeMessagePayload = {
+  type: 'object',
+  properties: {
+    _id: {
+      type: 'string',
+      required: true
+    },
+    isWelcomeMessageEnabled: {
+      type: 'boolean',
+      required: true
+    }
+  }
+}
