@@ -7,9 +7,8 @@
 import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
-import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
+import ProgressBox from '../../components/Dashboard/ProgressBox'
 import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -445,57 +444,6 @@ class Dashboard extends React.Component {
             </div>
           </div>
         </div>
-        <div className='row'>
-          <div className='col-sm-3 col-md-3 col-lg-3' />
-          <div className='col-sm-4 col-md-4 col-lg-4'>
-            <div className='m-portlet__head-tools'>
-              <ul className='m-portlet__nav'>
-                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                  <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                    Change Page
-                  </a>
-                  {
-                    this.state.showDropDown &&
-                    <div className='m-dropdown__wrapper'>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
-                            <ul className='m-nav'>
-                              <li className='m-nav__section m-nav__section--first'>
-                                <span className='m-nav__section-text'>
-                                  Connected Pages
-                                </span>
-                              </li>
-                              {
-                                this.props.pages.map((page, i) => (
-                                  <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                      <span className='m-nav__link-text'>
-                                        {page.pageName}
-                                      </span>
-                                    </a>
-                                  </li>
-                                ))
-                              }
-                              <li className='m-nav__separator m-nav__separator--fit' />
-                              <li className='m-nav__item'>
-                                <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                  Cancel
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0 &&
@@ -527,18 +475,16 @@ class Dashboard extends React.Component {
           : <div>
             <div className='row'>
               {
-                this.props.pages && this.props.pages.length > 0 &&
-                <PageLikesSubscribers firstPage={this.props.pages[0]} pageLikesSubscribes={this.state.pageLikesSubscribes} />
-              }
-              {
                 this.props.dashboard &&
                 <CardBoxes data={this.props.dashboard} />
               }
             </div>
-            {
-              this.props.sentseendata &&
-              <CardsWithProgress data={this.props.sentseendata} />
+            <div className='row'>
+              {
+              this.props.pages && this.props.sentseendata &&
+              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} />
             }
+            </div>
             {
              this.props.topPages && this.props.topPages.length > 1 &&
                <div className='row'>
