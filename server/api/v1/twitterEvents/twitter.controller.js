@@ -14,6 +14,22 @@ const compUtility = require('../../components/utility')
 let request = require('request')
 
 exports.twitterAutoposting = function (req, res) {
+  AutoPosting.find({subscriptionType: 'twitter', isActive: true},
+    (err, autoposting) => {
+      if (err) {
+        return res.status(500).json({
+          status: 'failed',
+          description: 'error'
+        })
+      }
+      return res.status(200).json({
+        status: 'success',
+        payload: autoposting
+      })
+    })
+}
+
+exports.twitterAutoposting = function (req, res) {
   AutoPosting.find({accountUniqueName: req.body.user.screen_name, isActive: true})
     .populate('userId companyId')
     .exec((err, autopostings) => {
