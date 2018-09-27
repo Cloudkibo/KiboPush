@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import auth from '../../utility/auth.service'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import $ from 'jquery'
 
 class ResendEmail extends React.Component {
   constructor (props) {
@@ -28,11 +29,14 @@ class ResendEmail extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
+    /* eslint-disable */
+     $('#sidebarDiv').addClass('hideSideBar')
+     /* eslint-enable */
   }
 
   render () {
     return (
-      <div>
+      <div style={{width: '100%'}}>
         <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
           <div className='m-container m-container--fluid m-container--full-height'>
             <div className='m-stack m-stack--ver m-stack--desktop'>

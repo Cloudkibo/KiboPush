@@ -154,9 +154,6 @@ class AutomationControls extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div className='row'>
-                        <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
-                      </div>
                     </div>
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                       <div className='m-form__actions'>

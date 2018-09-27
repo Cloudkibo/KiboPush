@@ -13,6 +13,7 @@ import {
   removePageInAddPage
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
+import $ from 'jquery'
 
 class AddPage extends React.Component {
   constructor (props) {
@@ -37,6 +38,9 @@ class AddPage extends React.Component {
 
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
+    /* eslint-disable */
+     $('#sidebarDiv').addClass('hideSideBar')
+     /* eslint-enable */
   }
 
   closeDialog () {
