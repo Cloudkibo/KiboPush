@@ -14,6 +14,7 @@ class ProgressBox extends React.Component {
     }
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
+    this.calculateProgressRates = this.calculateProgressRates.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -24,14 +25,24 @@ class ProgressBox extends React.Component {
   hideDropDown () {
     this.setState({showDropDown: false})
   }
+  calculateProgressRates () {
+    var progressRates = {}
+    if (this.props.pageLikesSubscribes.selectedPage) {
+      progressRates.unsubscribeRate = (this.props.pageLikesSubscribes.unsubscribes && this.props.pageLikesSubscribes.subscribers) ? (this.props.pageLikesSubscribes.unsubscribes / (this.props.pageLikesSubscribes.unsubscribes + this.props.pageLikesSubscribes.subscribers) * 100).toFixed(1) + '%' : '0%'
+    } else {
+      progressRates.unsubscribeRate = (this.props.firstPage.unsubscribes && this.props.firstPage.subscribers) ? (this.props.firstPage.unsubscribes / (this.props.firstPage.unsubscribes + this.props.firstPage.subscribers) * 100).toFixed(1) + '%' : '0%'
+    }
+
+    progressRates.broadcastSeenConvertRate = this.props.data.broadcast.broadcastSentCount !== 0 ? ((this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100).toFixed(1) + '%' : '0%'
+    progressRates.pollSeenConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
+    progressRates.pollResponseConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
+    progressRates.surveySeenConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
+    progressRates.surveyResponseConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
+    return progressRates
+  }
 
   render () {
-    var unsubscribeRate = (this.props.pageLikesSubscribes.unsubscribes && this.props.pageLikesSubscribes.subscribers) ? (this.props.pageLikesSubscribes.unsubscribes / (this.props.pageLikesSubscribes.unsubscribes + this.props.pageLikesSubscribes.subscribers) * 100).toFixed(1) + '%' : '0%'
-    var broadcastSeenConvertRate = this.props.data.broadcast.broadcastSentCount !== 0 ? ((this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100).toFixed(1) + '%' : '0%'
-    var pollSeenConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
-    var pollResponseConvertRate = this.props.data.poll.pollSentCount !== 0 ? ((this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100).toFixed(1) + '%' : '0%'
-    var surveySeenConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
-    var surveyResponseConvertRate = this.props.data.survey.surveySentCount !== 0 ? ((this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100).toFixed(1) + '%' : '0%'
+    var rates = this.calculateProgressRates()
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
         <div className='m-portlet m-portlet--full-height '>
@@ -104,7 +115,7 @@ class ProgressBox extends React.Component {
                           </span>
                           <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                             <span className='m-widget21__title'>
-                              {this.props.pageLikesSubscribes.subscribers ? this.props.pageLikesSubscribes.subscribers : this.props.firstPage.subscribers }
+                              {this.props.pageLikesSubscribes.subscribers !== null ? this.props.pageLikesSubscribes.subscribers : this.props.firstPage.subscribers }
                             </span>
                             <br />
                             <span className='m-widget21__sub'>
@@ -124,7 +135,7 @@ class ProgressBox extends React.Component {
                           </span>
                           <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                             <span className='m-widget21__title'>
-                              {this.props.pageLikesSubscribes.unsubscribes ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
+                              {this.props.pageLikesSubscribes.unsubscribes !== null ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
                             </span>
                             <br />
                             <span className='m-widget21__sub'>
@@ -140,14 +151,14 @@ class ProgressBox extends React.Component {
                     <div className='m-widget15'>
                       <div className='m-widget15__item'>
                         <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                          {unsubscribeRate}
+                          {rates.unsubscribeRate}
                         </span>
                         <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                           Unsubscribe rate
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '300px'}}>
-                          <div className='progress-bar bg-brand' role='progressbar' style={{width: unsubscribeRate}} aria-valuenow={(this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-brand' role='progressbar' style={{width: rates.unsubscribeRate}} aria-valuenow={(this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>
@@ -163,7 +174,7 @@ class ProgressBox extends React.Component {
                       </span>
                       <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                         <span className='m-widget21__title'>
-                          {this.props.data.broadcast.broadcastSentCount ? this.props.data.broadcast.broadcastSentCount : 0}
+                          {this.props.data.broadcast.broadcastSentCount !== null ? this.props.data.broadcast.broadcastSentCount : 0}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -177,14 +188,14 @@ class ProgressBox extends React.Component {
                     <div className='m-widget15'>
                       <div className='m-widget15__item'>
                         <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                          {broadcastSeenConvertRate}
+                          {rates.broadcastSeenConvertRate}
                         </span>
                         <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                           Seen rate
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '150px'}}>
-                          <div className='progress-bar bg-success' role='progressbar' style={{width: broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-success' role='progressbar' style={{width: rates.broadcastSeenConvertRate}} aria-valuenow={(this.props.data.broadcast.broadcastSeenCount / this.props.data.broadcast.broadcastSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>
@@ -200,7 +211,7 @@ class ProgressBox extends React.Component {
                       </span>
                       <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                         <span className='m-widget21__title'>
-                          {this.props.data.poll.pollSentCount ? this.props.data.poll.pollSentCount : 0}
+                          {this.props.data.poll.pollSentCount !== null ? this.props.data.poll.pollSentCount : 0}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -214,14 +225,14 @@ class ProgressBox extends React.Component {
                     <div className='m-widget15'>
                       <div className='m-widget15__item'>
                         <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                          {pollSeenConvertRate}
+                          {rates.pollSeenConvertRate}
                         </span>
                         <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                           Seen rate
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '150px'}}>
-                          <div className='progress-bar bg-danger' role='progressbar' style={{width: pollSeenConvertRate}} aria-valuenow={(this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-danger' role='progressbar' style={{width: rates.pollSeenConvertRate}} aria-valuenow={(this.props.data.poll.pollSeenCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>
@@ -231,14 +242,14 @@ class ProgressBox extends React.Component {
                     <div className='m-widget15'>
                       <div className='m-widget15__item'>
                         <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                          {pollResponseConvertRate}
+                          {rates.pollResponseConvertRate}
                         </span>
                         <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                           Response rate
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '150px'}}>
-                          <div className='progress-bar bg-danger' role='progressbar' style={{width: pollResponseConvertRate}} aria-valuenow={(this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-danger' role='progressbar' style={{width: rates.pollResponseConvertRate}} aria-valuenow={(this.props.data.poll.pollResponseCount / this.props.data.poll.pollSentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>
@@ -254,7 +265,7 @@ class ProgressBox extends React.Component {
                       </span>
                       <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                         <span className='m-widget21__title'>
-                          {this.props.data.survey.surveySentCount ? this.props.data.survey.surveySentCount : 0}
+                          {this.props.data.survey.surveySentCount !== null ? this.props.data.survey.surveySentCount : 0}
                         </span>
                         <br />
                         <span className='m-widget21__sub'>
@@ -268,14 +279,14 @@ class ProgressBox extends React.Component {
                     <div className='m-widget15'>
                       <div className='m-widget15__item'>
                         <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                          {surveySeenConvertRate}
+                          {rates.surveySeenConvertRate}
                         </span>
                         <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                           Seen rate
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '150px'}}>
-                          <div className='progress-bar bg-accent' role='progressbar' style={{width: surveySeenConvertRate}} aria-valuenow={(this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-accent' role='progressbar' style={{width: rates.surveySeenConvertRate}} aria-valuenow={(this.props.data.survey.surveySeenCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>
@@ -285,14 +296,14 @@ class ProgressBox extends React.Component {
                     <div className='m-widget15'>
                       <div className='m-widget15__item'>
                         <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
-                          {surveyResponseConvertRate}
+                          {rates.surveyResponseConvertRate}
                         </span>
                         <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                           Response rate
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '150px'}}>
-                          <div className='progress-bar bg-accent' role='progressbar' style={{width: surveyResponseConvertRate}} aria-valuenow={(this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-accent' role='progressbar' style={{width: rates.surveyResponseConvertRate}} aria-valuenow={(this.props.data.survey.surveyResponseCount / this.props.data.survey.surveySentCount) * 100} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>
