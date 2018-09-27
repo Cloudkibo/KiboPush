@@ -1,17 +1,17 @@
 const config = require('../../../config/environment/index')
-const AutoPosting = require('../../api/autoposting/autopostings.model')
-const Pages = require('../../api/pages/Pages.model')
-const URL = require('../../api/URLforClickedCount/URL.model')
-const Subscribers = require('../../api/subscribers/Subscribers.model')
-const AutomationQueue = require('../../api/automation_queue/automation_queue.model')
-const AutopostingMessages = require('../../api/autoposting_messages/autoposting_messages.model')
-const AutopostingSubscriberMessages = require('../../api/autoposting_messages/autoposting_subscriber_messages.model')
+const AutoPosting = require('../autoposting/autopostings.model')
+const Pages = require('../pages/Pages.model')
+const URL = require('../URLforClickedCount/URL.model')
+const Subscribers = require('../subscribers/Subscribers.model')
+const AutomationQueue = require('../automation_queue/automation_queue.model')
+const AutopostingMessages = require('../autoposting_messages/autoposting_messages.model')
+const AutopostingSubscriberMessages = require('../autoposting_messages/autoposting_subscriber_messages.model')
 const request = require('request')
 const _ = require('lodash')
-const utility = require('../../api/broadcasts/broadcasts.utility')
-const compUtility = require('../../components/utility')
+const utility = require('../broadcasts/broadcasts.utility')
+const compUtility = require('../../../components/utility')
 
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/wordpressEvents/wordpress.controller.js'
 
 exports.postPublish = function (req, res) {

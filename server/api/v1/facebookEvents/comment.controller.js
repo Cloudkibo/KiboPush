@@ -1,4 +1,4 @@
-const logger = require('../../components/logger')
+const logger = require('../../../components/logger')
 const TAG = 'api/facebookEvents/comment.controller.js'
 const needle = require('needle')
 const FacebookPosts = require('./../facebook_posts/facebook_posts.model')

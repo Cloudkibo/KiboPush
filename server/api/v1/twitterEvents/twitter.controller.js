@@ -1,19 +1,19 @@
 const config = require('../../../config/environment/index')
 const logger = require('../../../components/logger')
 const TAG = 'api/twitterEvents/twitter.controller.js'
-let AutoPosting = require('../../api/v1/autoposting/autopostings.model')
-let Pages = require('../../api/v1/pages/Pages.model')
-const URL = require('../../api/v1/URLforClickedCount/URL.model')
-let Subscribers = require('../../api/v1/subscribers/Subscribers.model')
-const AutomationQueue = require('../../api/v1/automation_queue/automation_queue.model')
-const AutopostingMessages = require('../../api/v1/autoposting_messages/autoposting_messages.model')
-const AutopostingSubscriberMessages = require('../../api/v1/autoposting_messages/autoposting_subscriber_messages.model')
+let AutoPosting = require('../autoposting/autopostings.model')
+let Pages = require('../pages/Pages.model')
+const URL = require('../URLforClickedCount/URL.model')
+let Subscribers = require('../subscribers/Subscribers.model')
+const AutomationQueue = require('../automation_queue/automation_queue.model')
+const AutopostingMessages = require('../autoposting_messages/autoposting_messages.model')
+const AutopostingSubscriberMessages = require('../autoposting_messages/autoposting_subscriber_messages.model')
 let _ = require('lodash')
-let utility = require('../../api/v1/broadcasts/broadcasts.utility')
-const compUtility = require('../../components/utility')
+let utility = require('../broadcasts/broadcasts.utility')
+const compUtility = require('../../../components/utility')
 let request = require('request')
 
-exports.twitterAutoposting = function (req, res) {
+exports.findAutoposting = function (req, res) {
   AutoPosting.find({subscriptionType: 'twitter', isActive: true},
     (err, autoposting) => {
       if (err) {
@@ -29,7 +29,7 @@ exports.twitterAutoposting = function (req, res) {
     })
 }
 
-exports.twitterAutoposting = function (req, res) {
+exports.twitterwebhook = function (req, res) {
   AutoPosting.find({accountUniqueName: req.body.user.screen_name, isActive: true})
     .populate('userId companyId')
     .exec((err, autopostings) => {
