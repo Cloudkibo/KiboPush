@@ -135,7 +135,7 @@ class ProgressBox extends React.Component {
                           </span>
                           <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                             <span className='m-widget21__title'>
-                              {this.props.pageLikesSubscribes.unsubscribes || this.props.pageLikesSubscribes.subscribers === 0 ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
+                              {this.props.pageLikesSubscribes.unsubscribes || this.props.pageLikesSubscribes.unsubscribes === 0 ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
                             </span>
                             <br />
                             <span className='m-widget21__sub'>
