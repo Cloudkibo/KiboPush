@@ -340,7 +340,7 @@ function isItWebhookServer () {
     logger.serverLog(TAG, ip)
     logger.serverLog(TAG, 'This is middleware')
     logger.serverLog(TAG, req.body)
-    if (ip === config.webhook_ip) next()
+    if (ip === '::ffff:' + config.webhook_ip) next()
     else res.send(403)
   })
 }
