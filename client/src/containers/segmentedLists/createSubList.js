@@ -6,13 +6,14 @@ import {
 import {
   loadCustomerLists, createSubList, editList, loadListDetails, getParentList, getRepliedPollSubscribers, getRepliedSurveySubscribers
 } from '../../redux/actions/customerLists.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersList, allLocales } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { loadTags } from '../../redux/actions/tags.actions'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -30,7 +31,8 @@ class CreateSubList extends React.Component {
       allSubscribers: [],
       lists: [],
       dropdownConditionOpen: false,
-      joiningCondition: 'AND'
+      joiningCondition: 'AND',
+      genders: ['male', 'female', 'other']
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -53,11 +55,13 @@ class CreateSubList extends React.Component {
     this.toggleCondition = this.toggleCondition.bind(this)
     this.changeConditionToAnd = this.changeConditionToAnd.bind(this)
     this.changeConditionToOr = this.changeConditionToOr.bind(this)
+    this.updateTextBox = this.updateTextBox.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
     props.loadSubscribersList()
     props.getRepliedPollSubscribers()
     props.getRepliedSurveySubscribers()
+    props.loadTags()
   }
   componentDidMount () {
     if (this.props.customerLists) {
@@ -134,6 +138,7 @@ class CreateSubList extends React.Component {
         let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
         console.log('Responses: ', responses)
         var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
+
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -216,7 +221,7 @@ class CreateSubList extends React.Component {
 
   resetPage () {
     this.setState({
-      selectedRadio: '',
+      selectedRadio: 'segmentAll',
       listSelected: '',
       conditions: [{condition: '', criteria: '', text: ''}],
       newListName: '',
@@ -375,6 +380,64 @@ class CreateSubList extends React.Component {
     /* eslint-enable */
   }
 
+  updateTextBox (i, condition) {
+    console.log('textbox condition', condition)
+    if (condition.condition === 'page') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value}>
+          <option disabled selected value>Select a Page</option>
+          {
+                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                  <option key={page.pageId} value={page.pageId}>{page.pageName}</option>
+                ))
+            }
+        </select>
+      )
+    } else if (condition.condition === 'gender') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value} >
+          <option disabled selected value>Select a Gender</option>
+          {
+                this.state.genders && this.state.genders.length > 0 && this.state.genders.map((gender, i) => (
+                  <option key={i} value={gender}>{gender}</option>
+                ))
+            }
+        </select>
+      )
+    } else if (condition.condition === 'tag') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value}>
+          <option disabled selected value>Select a Tag</option>
+          {
+            this.props.tags && this.props.tags.length > 0 && this.props.tags.map((tag, i) => (
+              <option key={i} value={tag._id}>{tag.tag}</option>
+            ))
+        }
+        </select>
+      )
+    } else if (condition.condition === 'locale') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.value}>
+          <option disabled selected value>Select a Locale</option>
+          {
+            this.props.locales && this.props.locales.map((locale, i) => (
+              <option key={i} value={locale}>{locale}</option>
+            ))
+          }
+        </select>
+      )
+    } else {
+      return (
+        <input className='form-control m-input'
+          onChange={(e) => this.changeText(e, i)}
+          value={condition.value}
+          id='text'
+          placeholder='Value'
+          type={condition.condition === 'subscription_date' ? 'date' : 'text'} />
+      )
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -415,7 +478,8 @@ class CreateSubList extends React.Component {
                             value='segmentAll'
                             name='segmentationType'
                             onChange={this.handleRadioChange}
-                            checked={this.state.selectedRadio === 'segmentAll'} />
+                            checked={this.state.selectedRadio === 'segmentAll'}
+                             />
                           <label>Segment all subscribers</label>
                         </div>
                         { this.state.lists.length === 0
@@ -424,7 +488,7 @@ class CreateSubList extends React.Component {
                               type='radio'
                               value='segmentList'
                               name='segmentationType'
-                              disabled />
+                              disabled  />
                             <label>Segment an existing List</label>
                           </div>
                         : <div className='radio'>
@@ -590,13 +654,23 @@ class CreateSubList extends React.Component {
                                        <option value='before'>Before</option>
                                        <option value='after'>After</option>
                                      </select>
-                                     : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                       value={condition.criteria}>
-                                       <option value=''>Select Criteria</option>
-                                       <option value='is'>is</option>
-                                       <option value='contains'>Contains</option>
-                                       <option value='begins'>Begins with</option>
-                                     </select>
+                                     : <div>
+                                       {
+                                          this.state.conditions[i].condition === 'firstName' || this.state.conditions[i].condition === 'lastName'
+                                          ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                            value={condition.criteria}>
+                                            <option value=''>Select Criteria</option>
+                                            <option value='is'>is</option>
+                                            <option value='contains'>contains</option>
+                                            <option value='begins_with'>begins with</option>
+                                          </select>
+                                          : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                            value={condition.criteria}>
+                                            <option value=''>Select Criteria</option>
+                                            <option value='is'>is</option>
+                                          </select>
+                                        }
+                                     </div>
                                     }
 
                                    <span className='m-form__help'>
@@ -611,7 +685,7 @@ class CreateSubList extends React.Component {
                                      }
                                    </span>
                                  </td>
-                                 <td data-field='title'
+                                 {/* <td data-field='title'
                                    className='m-datatable__cell' style={{width: '25%'}}>
                                    <input className='form-control m-input'
                                      onChange={(e) => this.changeText(e, i)}
@@ -629,6 +703,24 @@ class CreateSubList extends React.Component {
                                          })
                                        ))
                                      }
+                                   </span>
+                                 </td> */}
+                                 <td data-field='title'
+                                   className='m-datatable__cell' style={{width: '25%'}}>
+                                   {
+                                       this.updateTextBox(i, this.state.conditions[i])
+                                     }
+
+                                   <span className='m-form__help'>
+                                     {
+                                         this.state.errorMessages.map((m) => (
+                                           m.error === 'conditions' && m.message.map((msg) => {
+                                             return (msg.field === 'text' && msg.index === i &&
+                                             <span style={{color: 'red'}}>{msg.message}</span>
+                                             )
+                                           })
+                                         ))
+                                       }
                                    </span>
                                  </td>
                                  <td data-field='title'
@@ -698,7 +790,9 @@ function mapStateToProps (state) {
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
     pollSubscribers: (state.listsInfo.pollSubscribers),
-    surveySubscribers: (state.listsInfo.surveySubscribers)
+    surveySubscribers: (state.listsInfo.surveySubscribers),
+    tags: (state.tagsInfo.tags),
+    locales: (state.subscribersInfo.locales)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -711,7 +805,9 @@ function mapDispatchToProps (dispatch) {
     getParentList: getParentList,
     loadSubscribersList: loadSubscribersList,
     getRepliedPollSubscribers: getRepliedPollSubscribers,
-    getRepliedSurveySubscribers: getRepliedSurveySubscribers
+    getRepliedSurveySubscribers: getRepliedSurveySubscribers,
+    loadTags: loadTags,
+    allLocales: allLocales
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)
