@@ -655,7 +655,7 @@ class CreateSequence extends React.Component {
                                        :
                                        <div>
                                         {
-                                          this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'first_name' ?
+                                          this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'last_name' ?
                                           <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                          value={condition.criteria}>
                                             <option value=''>Select Criteria</option>
