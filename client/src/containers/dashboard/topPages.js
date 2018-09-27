@@ -69,7 +69,7 @@ class TopPages extends React.Component {
                                    </div>
                                  </div>
                                  <div className='m-widget4__ext'>
-                                   <Link style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/subscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                   <Link style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                     See Subscribers
                                   </Link>
                                  </div>
