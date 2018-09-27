@@ -76,6 +76,10 @@ module.exports = function (app) {
   // v2 routes
   app.use('/api/v2/pages', require('./api/v2/pages'))
   app.use('/api/v2/commentCapture', require('./api/v2/commentCapture'))
+  app.use('/api/v2/lists', require('./api/v2/lists'))
+  app.use('/api/v2/menu', require('./api/v2/menu'))
+  //  app.use('/api/v2/phoneNumber', require('./api/v2/phoneNumber'))
+
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
       {expires: new Date(Date.now() + 900000)})
