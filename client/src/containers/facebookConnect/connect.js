@@ -33,6 +33,7 @@ class Connect extends React.Component {
   componentDidMount () {
     /* eslint-disable */
      $('#sidebarDiv').addClass('hideSideBar')
+     $('#headerDiv').addClass('hideHeader')
      /* eslint-enable */
   }
   skip () {
