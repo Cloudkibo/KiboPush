@@ -478,8 +478,7 @@ class CreateSubList extends React.Component {
                             value='segmentAll'
                             name='segmentationType'
                             onChange={this.handleRadioChange}
-                            checked={this.state.selectedRadio === 'segmentAll'}
-                             />
+                            checked={this.state.selectedRadio === 'segmentAll'}/>
                           <label>Segment all subscribers</label>
                         </div>
                         { this.state.lists.length === 0
@@ -488,7 +487,7 @@ class CreateSubList extends React.Component {
                               type='radio'
                               value='segmentList'
                               name='segmentationType'
-                              disabled  />
+                              disabled />
                             <label>Segment an existing List</label>
                           </div>
                         : <div className='radio'>
