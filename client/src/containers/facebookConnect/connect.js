@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import { Link, browserHistory } from 'react-router'
 import auth from '../../utility/auth.service'
 import { skip } from '../../redux/actions/signup.actions'
+import $ from 'jquery'
 
 class Connect extends React.Component {
   constructor (props, context) {
@@ -30,6 +31,9 @@ class Connect extends React.Component {
     }
   }
   componentDidMount () {
+    /* eslint-disable */
+     $('#sidebarDiv').addClass('hideSideBar')
+     /* eslint-enable */
   }
   skip () {
     this.props.skip()

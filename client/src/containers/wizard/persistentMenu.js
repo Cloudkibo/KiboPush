@@ -754,17 +754,6 @@ class Menu extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div className='row'>
-                        <div className='col-lg-6 m--align-left' />
-                        <div className='col-lg-6 m--align-right'>
-                          <button className='btn btn-sm btn-primary' onClick={this.saveMenu} disabled={this.props.pages && this.props.pages.length < 1}>
-                            Save Menu
-                          </button>
-                          <button className='btn btn-sm btn-primary' onClick={this.showPreview} style={{marginLeft: '15px'}}>
-                            Preview
-                          </button>
-                        </div>
-                      </div>
                     </div>
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                       <div className='m-form__actions'>
