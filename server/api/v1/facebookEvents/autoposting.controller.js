@@ -9,7 +9,7 @@ const AutopostingMessages = require(
 const AutopostingSubscriberMessages = require(
   './../autoposting_messages/autoposting_subscriber_messages.model')
 const utility = require('../broadcasts/broadcasts.utility')
-const compUtility = require('../../components/utility')
+const compUtility = require('../../../components/utility')
 const og = require('open-graph')
 let _ = require('lodash')
 const request = require('request')
