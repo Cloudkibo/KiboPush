@@ -91,6 +91,12 @@ class ResetPassword extends React.Component {
     this.setState({strength: text})
     this.setState({pwdBar: bar})
     this.setState({pwd_color: color})
+
+    if (this.refs.new.value === this.refs.retype.value) {
+      this.setState({ismatch: true})
+    } else {
+      this.setState({ismatch: false})
+    }
   }
   save (event) {
     event.preventDefault()
@@ -176,7 +182,7 @@ class ResetPassword extends React.Component {
                     }
                     {console.log('this.refs', this.refs.current)}
                     <div className='col-11 input-group pull-right'>
-                      <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === '' || this.state.changePassword} onClick={this.save}>Save</button>
+                      <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === '' || this.state.changePassword || !this.state.ismatch || !this.state.pwdlength} onClick={this.save}>Save</button>
                     </div>
                   </div>
                 </div>
