@@ -149,7 +149,7 @@ class CustomerLists extends React.Component {
                       }
                     </div>
                   </div>
-                  { this.state.customerLists && this.state.customerLists.length > 0
+                  { this.props.customerLists && this.props.customerLists.length > 0
                   ? <div className='col-lg-12 col-md-12 order-2 order-xl-1'>
                     <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                       <table className='m-datatable__table'
@@ -173,7 +173,7 @@ class CustomerLists extends React.Component {
                         </thead>
                         <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
                           {
-                            this.state.customerLists.map((list, i) => (
+                            this.props.customerLists.map((list, i) => (
                               <tr data-row={i}
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{height: '55px'}} key={i}>
