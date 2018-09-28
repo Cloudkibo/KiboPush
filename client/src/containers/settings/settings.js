@@ -21,6 +21,7 @@ import ResponseMethods from './responseMethods'
 import DeleteUserData from './deleteUserData'
 import Webhook from './webhooks'
 import YouTube from 'react-youtube'
+import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Settings extends React.Component {
@@ -317,7 +318,7 @@ class Settings extends React.Component {
       company_id: this.props.user.companyId,
       app_id: this.state.NGPKey,
       app_secret: this.state.NGPSecret
-    })
+    }, this.msg)
   }
   componentWillReceiveProps (nextProps) {
     console.log('iin componentWillReceiveProps', nextProps)
@@ -408,8 +409,16 @@ class Settings extends React.Component {
      */
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
