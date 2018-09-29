@@ -297,11 +297,11 @@ class Card extends React.Component {
 
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
+      fileurl: data.fileurll,
+      image_url: data.image_url,
+      fileName: data.fileName,
+      type: data.type,
+      size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button})
