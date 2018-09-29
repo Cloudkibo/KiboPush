@@ -216,7 +216,7 @@ class Convo extends React.Component {
       multiple: false
     })
 
-    this.setState({pageValue: pageOptions[0].id})
+    this.setState({pageValue: [pageOptions[0].id]})
 
     /* eslint-disable */
     $('#selectPages').on('change', function (e) {
