@@ -100,7 +100,7 @@ class Media extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
+      this.props.uploadImage(file, this.props.pages, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -113,7 +113,7 @@ class Media extends React.Component {
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      fileData.append('pageId', this.props.pages[0]._id)
+      fileData.append('pages', JSON.stringify(this.props.pages))
       fileData.append('componentType', 'video')
       var fileInfo = {
         id: this.props.id,
@@ -303,7 +303,6 @@ class Media extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
   }
 }
 

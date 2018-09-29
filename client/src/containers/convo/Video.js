@@ -96,7 +96,7 @@ class Video extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
-        fileData.append('pageId', this.props.pages[0]._id)
+        fileData.append('pages', JSON.stringify(this.props.pages))
         fileData.append('componentType', 'video')
         var fileInfo = {
           id: this.props.id,
@@ -185,8 +185,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
-    pages: (state.pagesInfo.pages)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 
