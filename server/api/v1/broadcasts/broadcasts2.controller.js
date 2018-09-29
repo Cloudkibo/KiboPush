@@ -286,6 +286,7 @@ exports.sendConversation = function (req, res) {
 }
 
 exports.upload = function (req, res) {
+  let pages = JSON.parse(req.body.pages)
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -331,7 +332,7 @@ exports.upload = function (req, res) {
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
+      Pages.findOne({_id: mongoose.Types.ObjectId(pages[0])})
       .populate('userId').exec((err, page) => {
         if (err) {
           return res.status(500).json({
