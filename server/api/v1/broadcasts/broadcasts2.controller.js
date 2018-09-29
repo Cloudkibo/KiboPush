@@ -318,6 +318,8 @@ exports.sendConversation = function (req, res) {
 }
 
 exports.upload = function (req, res) {
+  let pages = JSON.parse(req.body.pages)
+  let attachmentIds = []
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +
@@ -363,64 +365,69 @@ exports.upload = function (req, res) {
           id: serverPath,
           url: `${config.domain}/api/broadcasts/download/${serverPath}`
         })}`)
-      Pages.findOne({_id: mongoose.Types.ObjectId(req.body.pageId)})
-      .populate('userId').exec((err, page) => {
-        if (err) {
-          return res.status(500).json({
-            status: 'failed',
-            description: 'internal server error' + JSON.stringify(err)
-          })
-        }
-        needle.get(
-          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
-          (err, resp2) => {
-            if (err) {
-              return res.status(500).json({
-                status: 'failed',
-                description: 'unable to get page access_token: ' + JSON.stringify(err)
-              })
-            }
-            let pageAccessToken = resp2.body.access_token
-            let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
-            const messageData = {
-              'message': JSON.stringify({
-                'attachment': {
-                  'type': req.body.componentType,
-                  'payload': {
-                    'is_reusable': true
-                  }
-                }
-              }),
-              'filedata': fileReaderStream
-            }
-            request(
-              {
-                'method': 'POST',
-                'json': true,
-                'formData': messageData,
-                'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
-              },
-              function (err, resp) {
-                if (err) {
-                  return res.status(500).json({
-                    status: 'failed',
-                    description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
-                  })
-                } else {
-                  logger.serverLog(TAG,
-                    `file uploaded on Facebook, sending response now: ${JSON.stringify(resp.body)}`)
-                  return res.status(201).json({
-                    status: 'success',
-                    payload: {
-                      id: serverPath,
-                      attachment_id: resp.body.attachment_id,
-                      name: req.files.file.name,
-                      url: `${config.domain}/api/broadcasts/download/${serverPath}`
+      pages.forEach((page, index) => {
+        Pages.findOne({_id: mongoose.Types.ObjectId(page)})
+        .populate('userId').exec((err, page) => {
+          if (err) {
+            return res.status(500).json({
+              status: 'failed',
+              description: 'internal server error' + JSON.stringify(err)
+            })
+          }
+          needle.get(
+            `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+            (err, resp2) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: 'unable to get page access_token: ' + JSON.stringify(err)
+                })
+              }
+              let pageAccessToken = resp2.body.access_token
+              let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + req.files.file.name)
+              const messageData = {
+                'message': JSON.stringify({
+                  'attachment': {
+                    'type': req.body.componentType,
+                    'payload': {
+                      'is_reusable': true
                     }
-                  })
-                }
-              })
-          })
+                  }
+                }),
+                'filedata': fileReaderStream
+              }
+              request(
+                {
+                  'method': 'POST',
+                  'json': true,
+                  'formData': messageData,
+                  'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+                },
+                function (err, resp) {
+                  if (err) {
+                    return res.status(500).json({
+                      status: 'failed',
+                      description: 'unable to upload attachment on Facebook: ' + JSON.stringify(err)
+                    })
+                  } else {
+                    attachmentIds.push({page_id: page, attachment_id: resp.body.attachment_id})
+                    logger.serverLog(TAG,
+                      `file uploaded on Facebook ${JSON.stringify(resp.body)}`)
+                    if ((pages.length - 1) === index) {
+                      return res.status(201).json({
+                        status: 'success',
+                        payload: {
+                          id: serverPath,
+                          attachmentIds: attachmentIds,
+                          name: req.files.file.name,
+                          url: `${config.domain}/api/broadcasts/download/${serverPath}`
+                        }
+                      })
+                    }
+                  }
+                })
+            })
+        })
       })
     }
   )
