@@ -6,6 +6,7 @@ const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.mo
 const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
 
 exports.unsubscribeFromSequence = function (req, res) {
+  logger.serverLog(TAG, `in unsubscribeFromSequence ${JSON.stringify(req.body)}`)
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
     const event = req.body.entry[0].messaging[i]
     let resp = JSON.parse(event.postback.payload)

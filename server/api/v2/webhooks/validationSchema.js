@@ -1,49 +1,55 @@
-exports.uploadPayload = {
+exports.createSchema = {
   type: 'object',
   properties: {
-    phoneColumn: {
-      type: 'string',
-      required: true
-    },
-    nameColumn: {
-      type: 'string',
-      required: true
-    },
-    text: {
-      type: 'string',
-      required: true
-    },
     pageId: {
       type: 'string',
       required: true
     },
-    _id: {
+    webhook_url: {
       type: 'string',
+      required: true
+    },
+    token: {
+      type: 'string',
+      required: true
+    },
+    optIn: {
+      type: 'object',
       required: true
     }
   }
 }
 
-exports.sendNumbersPayload = {
+exports.editSchema = {
   type: 'object',
   properties: {
-    numbers: {
-      type: 'array',
-      items: {
-        type: 'string',
-        required: true
-      }
-    },
-    text: {
-      type: 'string',
-      required: true
-    },
-    pageId: {
-      type: 'string',
-      required: true
-    },
     _id: {
       type: 'string',
+      required: true
+    },
+    webhook_url: {
+      type: 'string',
+      required: true
+    },
+    token: {
+      type: 'string',
+      required: true
+    },
+    optIn: {
+      type: 'object',
+      required: true
+    }
+  }
+}
+exports.enabledSchema = {
+  type: 'object',
+  properties: {
+    _id: {
+      type: 'string',
+      required: true
+    },
+    isEnabled: {
+      type: 'boolean',
       required: true
     }
   }

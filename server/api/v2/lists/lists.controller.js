@@ -24,14 +24,14 @@ exports.getAll = function (req, res) {
       .catch(error => {
         return res.status(500).json({
           status: 'failed',
-          payload: `Failed to fetch connected pages ${JSON.stringify(error)}`
+          payload: `Failed to fetch lists ${JSON.stringify(error)}`
         })
       })
     })
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        payload: `Failed to fetch connected pages count ${JSON.stringify(error)}`
+        payload: `Failed to fetch list count ${JSON.stringify(error)}`
       })
     })
   })
@@ -60,7 +60,7 @@ exports.createList = function (req, res) {
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        payload: `Failed to fetch company user ${JSON.stringify(error)}`
+        payload: `Failed to create list ${JSON.stringify(error)}`
       })
     })
   })
@@ -83,7 +83,7 @@ exports.editList = function (req, res) {
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      payload: `Failed to fetch company user ${JSON.stringify(error)}`
+      payload: `Failed to edit ${JSON.stringify(error)}`
     })
   })
 }
@@ -113,14 +113,14 @@ exports.viewList = function (req, res) {
               .catch(error => {
                 return res.status(500).json({
                   status: 'failed',
-                  payload: `Failed to fetch company user ${JSON.stringify(error)}`
+                  payload: `Failed to fetch list content ${JSON.stringify(error)}`
                 })
               })
             })
             .catch(error => {
               return res.status(500).json({
                 status: 'failed',
-                payload: `Failed to fetch company user ${JSON.stringify(error)}`
+                payload: `Failed to fetch subscribers ${JSON.stringify(error)}`
               })
             })
           } else {
@@ -133,7 +133,7 @@ exports.viewList = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            payload: `Failed to fetch company user ${JSON.stringify(error)}`
+            payload: `Failed to fetch numbers ${JSON.stringify(error)}`
           })
         })
       } else {
@@ -146,7 +146,7 @@ exports.viewList = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            payload: `Failed to fetch company user ${JSON.stringify(error)}`
+            payload: `Failed to fetch subscribers ${JSON.stringify(error)}`
           })
         })
       }
@@ -154,7 +154,7 @@ exports.viewList = function (req, res) {
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        payload: `Failed to fetch company user ${JSON.stringify(error)}`
+        payload: `Failed to fetch list ${JSON.stringify(error)}`
       })
     })
   })
@@ -173,7 +173,7 @@ exports.deleteList = function (req, res) {
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to delete list ${JSON.stringify(error)}`
     })
   })
 }
@@ -194,28 +194,28 @@ exports.repliedPollSubscribers = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            description: error
+            payload: `Failed to fetch subscribers ${JSON.stringify(error)}`
           })
         })
       })
       .catch(error => {
         return res.status(500).json({
           status: 'failed',
-          description: error
+          payload: `Failed to fetch poll responses ${JSON.stringify(error)}`
         })
       })
     })
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to fetch polls ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }
@@ -236,28 +236,28 @@ exports.repliedSurveySubscribers = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            description: error
+            payload: `Failed to fetch subscribers ${JSON.stringify(error)}`
           })
         })
       })
       .catch(error => {
         return res.status(500).json({
           status: 'failed',
-          description: error
+          payload: `Failed to fetch survey responses ${JSON.stringify(error)}`
         })
       })
     })
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to fetch surveys ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }

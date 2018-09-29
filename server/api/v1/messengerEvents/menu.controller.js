@@ -6,6 +6,7 @@ const Pages = require('../pages/Pages.model')
 const { sendBroadcast } = require('../broadcasts/broadcasts2.controller')
 
 exports.menu = function (req, res) {
+  logger.serverLog(TAG, `in menu ${JSON.stringify(req.body)}`)
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
     const event = req.body.entry[0].messaging[i]
     sendMenuReply(event)
