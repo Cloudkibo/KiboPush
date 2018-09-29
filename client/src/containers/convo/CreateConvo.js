@@ -262,6 +262,7 @@ class CreateConvo extends React.Component {
       if (data.id === obj.id) {
         temp[i].fileName = obj.fileName
         temp[i].fileurl = obj.fileurl
+        temp[i].image_url = obj.image_url
         temp[i].size = obj.size
         temp[i].type = obj.type
         temp[i].title = obj.title
@@ -298,6 +299,7 @@ class CreateConvo extends React.Component {
         temp[i].fileName = obj.fileName
         temp[i].mediaType = obj.mediaType
         temp[i].fileurl = obj.fileurl
+        temp[i].image_url = obj.image_url
         temp[i].size = obj.size
         temp[i].type = obj.type
         temp[i].buttons = obj.buttons

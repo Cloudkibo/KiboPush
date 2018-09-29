@@ -464,8 +464,7 @@ exports.addButton = function (req, res) {
   }
   let buttonPayload = {
     title: req.body.title,
-    type: req.body.type,
-    buttonId: Math.random().toString(13).replace('0.', '')
+    type: req.body.type
   }
   if (req.body.type === 'web_url') {
     // TODO save module id when sending broadcast
