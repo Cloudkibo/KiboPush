@@ -213,7 +213,7 @@ class Convo extends React.Component {
       data: pageOptions,
       placeholder: 'Select page(s)',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
     // this.setState({pageValue: pageOptions[0].id})
@@ -378,17 +378,17 @@ class Convo extends React.Component {
                               </div>
                               <br />
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary'>
                                   Create New Broadcast
                                 </Link>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
                                 {
                                   this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to={{pathname: '/showTemplateBroadcasts', state: {pages: this.state.pageValue}}} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                  ? <Link to={{pathname: '/showTemplateBroadcasts', state: {pages: this.state.pageValue}}} className='btn btn-primary'>
                                     Use Template
                                   </Link>
-                                  : <button onClick={this.showProDialog} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                       <span style={{color: '#34bfa3'}}>PRO</span>
