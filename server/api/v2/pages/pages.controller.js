@@ -236,3 +236,58 @@ exports.enableDisableWelcomeMessage = function (req, res) {
     })
   })
 }
+
+exports.saveGreetingText = function (req, res) {
+  const pageId = req.body.pageId
+  const greetingText = req.body.greetingText
+
+  utility.callApi(`page/${pageId}/greetingText`, 'put', {greetingText: greetingText})
+  .then(res => {
+    utility.callApi(`page/query`, 'post', {_id: pageId})
+    .then(res => {
+      if (res.status === 'success') {
+        const pageToken = res.payload && res.payload.length && res.payload[0].accessToken
+        if (pageToken) {
+          const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`
+          var valueForMenu = {
+            'greeting': [
+              {
+                'locale': 'default',
+                'text': greetingText
+              }]
+          }
+
+          needle.request('post', requesturl, valueForMenu, {json: true},
+            function (err, resp) {
+              if (!err) {
+                return res.status(200).json({
+                  status: 'success',
+                  payload: 'Operation completed successfully!'
+                })
+              }
+              if (err) {
+                logger.serverLog(TAG,
+                  `Internal Server Error ${JSON.stringify(err)}`)
+              }
+            })
+        } else {
+          return res.status(500).json({
+            status: 'failed',
+            payload: `Failed to find page access token to update greeting text message`
+          })
+        }
+      } else {
+        return res.status(500).json({
+          status: 'failed',
+          payload: `Failed to update greeting text message`
+        })
+      }
+    })
+  })
+  .catch(error => {
+    return res.status(500).json({
+      status: 'failed',
+      payload: `Failed to update greeting text message ${JSON.stringify(error)}`
+    })
+  })
+}
