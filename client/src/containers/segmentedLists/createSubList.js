@@ -447,7 +447,6 @@ class CreateSubList extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('for edit--')
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
