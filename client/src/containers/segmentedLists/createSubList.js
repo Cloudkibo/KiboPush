@@ -187,7 +187,8 @@ class CreateSubList extends React.Component {
         this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
+        let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
+        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -662,7 +663,7 @@ class CreateSubList extends React.Component {
                                             <option value=''>Select Criteria</option>
                                             <option value='is'>is</option>
                                             <option value='contains'>contains</option>
-                                            <option value='begins_with'>begins with</option>
+                                            <option value='begins'>begins with</option>
                                           </select>
                                           : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                             value={condition.criteria}>
