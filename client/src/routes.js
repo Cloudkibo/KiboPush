@@ -8,6 +8,7 @@ import LoginSignup from './containers/login/loginSignup'
 import Signup from './containers/signup/signup'
 import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
+import ForgotNamespace from './containers/login/forgotWorkspaceName.js'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
@@ -151,6 +152,7 @@ const routes = (
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
+    <Route path='/forgotWorkspaceName' component={ForgotNamespace} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Convo} onEnter={requireAuth} />
