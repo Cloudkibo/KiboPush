@@ -1596,7 +1596,9 @@ exports.getAllBroadcasts = function (req, res) {
                     let pageSend = []
                     if (broadcasts[j].segmentationPageIds && broadcasts[j].segmentationPageIds.length > 0) {
                       for (let k = 0; k < broadcasts[j].segmentationPageIds.length; k++) {
-                        let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
+                        // segmentationPageIds are actually local Ids, so we should compare using _id 
+                        // in place of pageId
+                        let page = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
                         pageSend.push(page[0].pageName)
                       }
                     } else {
