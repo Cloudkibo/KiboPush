@@ -768,7 +768,7 @@ exports.send = function (req, res) {
                                         return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                       }
                                       if (isLastMessage) {
-                                        logger.serverLog(TAG, 'inside poll send')
+                                        logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
                                         needle.post(
                                           `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                   data, (err, resp) => {
@@ -896,7 +896,7 @@ exports.send = function (req, res) {
                                           return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                         }
                                         if (isLastMessage) {
-                                          logger.serverLog(TAG, 'inside poll send')
+                                          logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
                                           needle.post(
                                             `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                             data, (err, resp) => {
