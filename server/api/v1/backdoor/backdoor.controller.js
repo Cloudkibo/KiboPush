@@ -1604,7 +1604,7 @@ exports.getAllBroadcasts = function (req, res) {
                         locale: subscriber[0].locale,
                         gender: subscriber[0].gender,
                         profilePic: subscriber[0].profilePic,
-                        page: subscriberPage[0].pageName,
+                        page: subscriberPage[0].pageName ? subscriberPage[0].pageName : 'No Name Found',
                         seen: pagebroadcast[n].seen})
                     }
                     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
