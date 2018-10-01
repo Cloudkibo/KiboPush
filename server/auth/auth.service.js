@@ -12,6 +12,7 @@ const CompanyProfile = require('../api/v1/companyprofile/companyprofile.model')
 const PlanFeatures = require('../api/v1/permissions_plan/permissions_plan.model')
 const Permissions = require('../api/v1/permissions/permissions.model')
 const ApiSettings = require('../api/v1/api_settings/api_settings.model')
+const apiCaller = require('../api/v2/utility')
 const validateJwt = expressJwt({secret: config.secrets.session})
 const needle = require('needle')
 const Pages = require('../api/v1/pages/Pages.model')
@@ -38,67 +39,27 @@ function isAuthenticated () {
         if (req.query && req.query.hasOwnProperty('access_token')) {
           req.headers.authorization = `Bearer ${req.query.access_token}`
         }
-        validateJwt(req, res, next)
-      }
-    })
-    // Attach user to request
-    .use((req, res, next) => {
-      Users.findOne({_id: req.user._id}, (err, user) => {
-        if (err) {
-          return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
+        // validateJwt(req, res, next)
+        let headers = {
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${req.headers.Authorization}`
         }
-        if (!user) {
-          return res.status(401)
+
+        apiCaller.callApi('auth/verify', 'get', {}, headers)
+        .then(result => {
+          if (result.status === 'success') {
+            req.user = result.user
+            next()
+          } else {
+            return res.status(401)
             .json({status: 'failed', description: 'Unauthorized'})
-        }
-        // logger.serverLog(TAG, `User authenticated: ${JSON.stringify(user)}`)
-        req.user = user
-        next()
-
-        // if (user.facebookInfo && user.facebookInfo.fbId && user.facebookInfo.fbToken) {
-        //   let FBExtension = new PassportFacebookExtension(config.facebook.clientID,
-        //     config.facebook.clientSecret)
-
-        //   // todo do this for permissions error
-        //   FBExtension.permissionsGiven(user.facebookInfo.fbId, user.facebookInfo.fbToken)
-        //     .then(permissions => {
-        //       req.user = user
-        //       next()
-        //     })
-        //     .fail(e => {
-        //       logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-        //       user.permissionsRevoked = true
-        //       req.user = user
-        //       next()
-        //     })
-        // } else {
-        //   req.user = user
-        //   next()
-        // }
-      })
-    })
-    .use((req, res, next) => {
-      CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyuser) => {
-        if (err) {
-          return res.status(500)
-            .json({status: 'failed', description: 'Internal Server Error'})
-        }
-        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
-          if (err) {
-            return res.status(500)
-              .json({status: 'failed', description: 'Internal Server Error'})
           }
-          if (!company) {
-            return res.status(404)
-              .json({status: 'failed', description: 'Company Not Found. Contact support for more information.'})
-          }
-
-          req.user.plan = company.planId
-          req.user.last4 = company.stripe.last4
-          next()
         })
-      })
+        .catch(err => {
+          return res.status(500)
+            .json({status: 'failed', description: `Internal Server Error: ${err}`})
+        })
+      }
     })
 }
 
