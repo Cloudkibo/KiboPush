@@ -41,7 +41,6 @@ class ForgotWorkspaceName extends React.Component {
     log(TAG, 'Login Container Mounted')
   }
   onSubmit (event) {
-    console.log('in submit')
     event.preventDefault()
     this.props.forgotWorkspaceName({email: this.refs.email.value}, this.msg)
   }
