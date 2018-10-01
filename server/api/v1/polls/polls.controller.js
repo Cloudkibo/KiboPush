@@ -754,7 +754,7 @@ exports.send = function (req, res) {
                                       abort = true
                                     }
                                     const data = {
-                                      messaging_type: 'MESSAGE_TAG',
+                                      messaging_type: 'UPDATE',
                                       recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                       message: messageData,
                                       tag: req.body.fbMessageTag
@@ -883,7 +883,7 @@ exports.send = function (req, res) {
                                         abort = true
                                       }
                                       const data = {
-                                        messaging_type: 'MESSAGE_TAG',
+                                        messaging_type: 'UPDATE',
                                         recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                         message: messageData,
                                         tag: req.body.fbMessageTag
@@ -1321,7 +1321,7 @@ exports.sendPoll = function (req, res) {
                                         abort = true
                                       }
                                       const data = {
-                                        messaging_type: 'MESSAGE_TAG',
+                                        messaging_type: 'UPDATE',
                                         recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                         message: messageData,
                                         tag: req.body.fbMessageTag
@@ -1451,7 +1451,7 @@ exports.sendPoll = function (req, res) {
                                           abort = true
                                         }
                                         const data = {
-                                          messaging_type: 'MESSAGE_TAG',
+                                          messaging_type: 'UPDATE',
                                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                           message: messageData
                                         }
