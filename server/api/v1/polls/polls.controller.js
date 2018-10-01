@@ -1451,7 +1451,7 @@ exports.sendPoll = function (req, res) {
                                           abort = true
                                         }
                                         const data = {
-                                          messaging_type: 'UPDATE',
+                                          messaging_type: 'MESSAGE_TAG',
                                           recipient: {id: subscribers[j].senderId}, // this is the subscriber id
                                           message: messageData
                                         }
@@ -1465,7 +1465,7 @@ exports.sendPoll = function (req, res) {
                                           }
 
                                           if (isLastMessage) {
-                                            logger.serverLog(TAG, 'inside direct poll sendd' + JSON.stringify(data))
+                                            logger.serverLog(TAG, 'inside direct poll sendd', JSON.stringify(data))
                                             needle.post(
                                               `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                               data, (err, resp) => {

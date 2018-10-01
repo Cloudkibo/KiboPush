@@ -743,7 +743,7 @@ exports.send = function (req, res) {
                                                 return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                               }
                                               if (isLastMessage) {
-                                                logger.serverLog(TAG, 'inside suvery send')
+                                                logger.serverLog(TAG, 'inside suvery send' + JSON.stringify(data))
                                                 needle.post(
                                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                 data, (err, resp) => {
@@ -883,6 +883,7 @@ exports.send = function (req, res) {
                                               return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                             }
                                             if (isLastMessage) {
+                                              logger.serverLog(TAG, 'inside send survey' + JSON.stringify(data))
                                               needle.post(
                                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                 data, (err, resp) => {
@@ -1316,7 +1317,7 @@ exports.sendSurvey = function (req, res) {
                                                 }
 
                                                 if (isLastMessage) {
-                                                  logger.serverLog(TAG, 'inside direct survey send')
+                                                  logger.serverLog(TAG, 'inside direct survey send' + JSON.stringify(data))
                                                   needle.post(
                                                     `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                     data, (err, resp) => {
@@ -1457,7 +1458,7 @@ exports.sendSurvey = function (req, res) {
                                               }
 
                                               if (isLastMessage) {
-                                                logger.serverLog(TAG, 'inside direct survey sendd')
+                                                logger.serverLog(TAG, 'inside direct survey sendd' + JSON.stringify(data))
                                                 needle.post(
                                                   `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                   data, (err, resp) => {
