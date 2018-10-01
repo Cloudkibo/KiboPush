@@ -1598,8 +1598,10 @@ exports.getAllBroadcasts = function (req, res) {
                     for (let n = 0; n < pagebroadcast.length; n++) {
                       let subscriber = subscribers.filter((c) => c.senderId === pagebroadcast[n].subscriberId)
                       let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
-                      logger.serverLog(TAG, subscriber[0].pageId)
-                      logger.serverLog(TAG, `subscriber Page: ${subscriberPage}`)
+                      if (!subscriberPage) {
+                        logger.serverLog(TAG, subscriber[0].pageId)
+                        logger.serverLog(TAG, `subscriber Page: ${subscriberPage}`)
+                      }
                       subscriberData.push({_id: subscriber[0]._id,
                         firstName: subscriber[0].firstName,
                         lastName: subscriber[0].lastName,
