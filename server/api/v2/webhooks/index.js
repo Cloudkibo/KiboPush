@@ -21,6 +21,6 @@ router.post('/edit',
 router.post('/enabled',
   validate({body: validationSchema.enabledSchema}),
   auth.isAuthenticated(),
-  controller.enabled)
+  controller.isEnabled)
 
 module.exports = router
