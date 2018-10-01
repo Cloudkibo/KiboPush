@@ -222,14 +222,17 @@ export function disableNGP (API) {
   }
 }
 
-export function saveNGP (API) {
+export function saveNGP (API, msg) {
   console.log(API)
   return (dispatch) => {
     callApi('api_ngp/save', 'post', API)
     .then(res => {
       if (res.status === 'success') {
         console.log('reset', res.payload)
+        msg.success('Saved successfully')
         dispatch(saveSuccessNGP(res.payload))
+      } else {
+        msg.error(res.description)
       }
     })
   }
