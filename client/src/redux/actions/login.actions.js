@@ -69,3 +69,19 @@ export function forgotPass (data, msg) {
       })
   }
 }
+
+export function forgotWorkspaceName (data, msg) {
+  return (dispatch) => {
+    callApi('reset_password/forgotWorkspaceName', 'post', data)
+      .then(res => {
+        console.log('response from server', res)
+        if (res.status === 'success') {
+          msg.success('An email has been sent to you on the given address.')
+          dispatch(forgotSuccess())
+        } else {
+          msg.error(res.description)
+          dispatch(forgotFailure(res.description))
+        }
+      })
+  }
+}
