@@ -12,6 +12,7 @@ const sequenceController = require('./../sequenceMessaging/sequence.controller')
 var array = []
 
 exports.pollResponse = function (req, res) {
+  logger.serverLog(TAG, `in pollResponse ${JSON.stringify(req.body)}`)
   let resp = JSON.parse(
     req.body.entry[0].messaging[0].message.quick_reply.payload)
   savepoll(req.body.entry[0].messaging[0], resp)

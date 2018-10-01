@@ -16,14 +16,14 @@ exports.index = function (req, res) {
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to fetch menu ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }
@@ -44,14 +44,14 @@ exports.indexByPage = function (req, res) {
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to fetch menu by page ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }
@@ -110,7 +110,7 @@ exports.create = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            description: error
+            payload: `Failed to save menu ${JSON.stringify(error)}`
           })
         })
         } else {
@@ -152,7 +152,7 @@ exports.create = function (req, res) {
                     .catch(error => {
                       return res.status(500).json({
                         status: 'failed',
-                        description: error
+                        payload: `Failed to save menu ${JSON.stringify(error)}`
                       })
                     })
                 }
@@ -161,7 +161,7 @@ exports.create = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            description: error
+            payload: `Failed to update menu ${JSON.stringify(error)}`
           })
         })
         }
@@ -169,21 +169,21 @@ exports.create = function (req, res) {
       .catch(error => {
         return res.status(500).json({
           status: 'failed',
-          description: error
+          payload: `Failed to update menu ${JSON.stringify(error)}`
         })
       })
     })
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to update menu ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }

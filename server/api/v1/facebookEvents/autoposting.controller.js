@@ -17,6 +17,7 @@ const TAG = 'api/facebookEvents/autoposting.controller.js'
 let config = require('./../../../config/environment')
 
 exports.autoposting = function (req, res) {
+  logger.serverLog(TAG, `in autoposting ${JSON.stringify(req.body)}`)
   for (let i = 0; i < req.body.entry[0].changes.length; i++) {
     const event = req.body.entry[0].changes[i]
     if (event.value.verb === 'add' &&

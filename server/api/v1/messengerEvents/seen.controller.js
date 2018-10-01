@@ -14,6 +14,7 @@ const Subscribers = require('../subscribers/Subscribers.model')
 const SequenceSubscriberMessages = require('./../sequenceMessaging/sequenceSubscribersMessages.model')
 
 exports.seen = function (req, res) {
+  logger.serverLog(TAG, `in seen ${JSON.stringify(req.body)}`)
   updateBroadcastSeen(req.body.entry[0].messaging[0])
   updatePollSeen(req.body.entry[0].messaging[0])
   updateSurveySeen(req.body.entry[0].messaging[0])

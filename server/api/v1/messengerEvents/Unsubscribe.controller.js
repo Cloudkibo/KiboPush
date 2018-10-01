@@ -5,6 +5,7 @@ const needle = require('needle')
 const CompanyUsage = require('./../featureUsage/companyUsage.model')
 
 exports.unsubscribe = function (req, res) {
+  logger.serverLog(TAG, `in unsubscribe ${JSON.stringify(req.body)}`)
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
     const event = req.body.entry[0].messaging[i]
     let resp = JSON.parse(event.postback.payload)

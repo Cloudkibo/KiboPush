@@ -14,6 +14,7 @@ const compUtility = require('../../../components/utility')
 let request = require('request')
 
 exports.findAutoposting = function (req, res) {
+  logger.serverLog(TAG, `in findAutoposting ${JSON.stringify(req.body)}`)
   AutoPosting.find({subscriptionType: 'twitter', isActive: true},
     (err, autoposting) => {
       if (err) {
@@ -30,6 +31,7 @@ exports.findAutoposting = function (req, res) {
 }
 
 exports.twitterwebhook = function (req, res) {
+  logger.serverLog(TAG, `in twitterwebhook ${JSON.stringify(req.body)}`)
   AutoPosting.find({accountUniqueName: req.body.user.screen_name, isActive: true})
     .populate('userId companyId')
     .exec((err, autopostings) => {

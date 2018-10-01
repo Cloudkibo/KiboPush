@@ -4,6 +4,7 @@ const needle = require('needle')
 const FacebookPosts = require('./../facebook_posts/facebook_posts.model')
 
 exports.sendCommentReply = function (req, res) {
+  logger.serverLog(TAG, `in comment capture ${JSON.stringify(req.body)}`)
   let send = true
   let postId = req.body.entry[0].changes[0].value.post_id
   FacebookPosts.findOne({

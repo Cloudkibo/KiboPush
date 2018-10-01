@@ -21,7 +21,7 @@ const og = require('open-graph')
 const Bots = require('./../smart_replies/Bots.model')
 
 exports.subscriber = function (req, res) {
-  logger.serverLog(TAG, `body ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG, `in subscriber ${JSON.stringify(req.body)}`)
   let phoneNumber = ''
   let subscriberSource = 'direct_message'
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
