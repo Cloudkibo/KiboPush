@@ -363,12 +363,12 @@ class GreetingMessage extends React.Component {
                           </div>
                           <br />
                           <div className='col-9' />
-                          <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
-                            <div>
+                          {/* <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
+                             <div>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
                               <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                            </div>
-                          </div>
+                            </div> 
+                          </div> */}
                         </div>
                       </div>
                       <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
