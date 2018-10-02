@@ -14,6 +14,7 @@ import { Link } from 'react-router'
 import { handleDate } from '../../utility/utils'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 
 class FacebookPosts extends React.Component {
   constructor (props, context) {
@@ -23,7 +24,8 @@ class FacebookPosts extends React.Component {
       totalLength: 0,
       searchValue: '',
       isShowingModalDelete: false,
-      deleteid: ''
+      deleteid: '',
+      showVideo: false
     }
     props.fetchAllPosts()
     props.saveCurrentPost(null)
@@ -157,6 +159,27 @@ class FacebookPosts extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='H7McTv_1Dk0'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
           this.state.isShowingModalDelete &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeDialogDelete}>
@@ -188,6 +211,7 @@ class FacebookPosts extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank'>documentation</a>.
+              Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
