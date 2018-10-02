@@ -1027,7 +1027,7 @@ class Subscriber extends React.Component {
                                 <div className='m-form__control'>
                                   <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
                                     <option key='' value='' disabled>Filter by Tags...</option>
-                                    <option key='ALL' value='All'>ALL</option>
+                                    <option key='ALL' value='all'>ALL</option>
                                     {
                                       this.state.options.map((tag, i) => (
                                         <option key={i} value={tag.value}>{tag.label}</option>
