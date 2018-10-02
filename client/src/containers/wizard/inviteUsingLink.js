@@ -30,7 +30,7 @@ class InviteSubscribers extends React.Component {
       selectPage: {},
       selectedTab: 'becomeSubscriber',
       sendTestMessage: false,
-      isShowingModal: (props.location && props.location.state)
+      isShowingModal: (props.location && !props.location.state)
     }
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
