@@ -93,7 +93,7 @@ class Convo extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   showDialog () {
-    this.setState({isShowingModal: true})
+    this.setState({isShowingModal: true, pageValue: ''})
   }
 
   showZeroSubDialog () {
