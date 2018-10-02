@@ -77,7 +77,7 @@ exports.index = function (req, res) {
       startDate.setSeconds(0)
       let finalCriteria = {}
       let recordsToSkip = 0
-      if (!req.body.filter) {
+      if (req.body.filter_criteria.search_value === '' && req.body.filter_criteria.type_value === '') {
         findCriteria = {
           companyId: companyUser.companyId,
           'datetime': req.body.filter_criteria.days !== '0' ? {
