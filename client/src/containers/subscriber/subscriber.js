@@ -34,6 +34,7 @@ class Subscriber extends React.Component {
       filterByTag: '',
       searchValue: '',
       statusValue: '',
+      tagValue: '',
       selectedSubscribers: [],
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
@@ -731,6 +732,7 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByTag (e) {
+    this.setState({tagValue: e.target.value})
     //  this.setState({searchValue: ''})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackGenderFilter(filteredData)
@@ -1023,9 +1025,9 @@ class Subscriber extends React.Component {
                                   <label style={{width: '60px'}}>Tags:</label>
                                 </div>
                                 <div className='m-form__control'>
-                                  <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByTag} onChange={this.handleFilterByTag}>
+                                  <select className='custom-select'style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
                                     <option key='' value='' disabled>Filter by Tags...</option>
-                                    <option key='ALL' value='all'>ALL</option>
+                                    <option key='ALL' value='All'>ALL</option>
                                     {
                                       this.state.options.map((tag, i) => (
                                         <option key={i} value={tag.value}>{tag.label}</option>
