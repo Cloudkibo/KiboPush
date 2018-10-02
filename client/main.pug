@@ -20,6 +20,13 @@ html(lang="en")
     //-     wa.src = 'http://staging.kibopush.com/scripts/widgetAppSrc.js';
     //-     var s = document.getElementsByTagName('script')[0];
     //-     s.parentNode.insertBefore(wa, s);
+    //-     setTimeout(function() {
+    //-       console.log(window.__infoPayload)
+    //-       let plugin = document.getElementsByClassName('fb-customerchat')[0]
+    //-       //plugin.setAttribute('ref', JSON.stringify(window.__infoPayload))
+    //-       console.log(plugin)
+    //-       //- document.body.appendChild(plugin);
+    //-     }, 5000)
     //-   });
     // script(src="https://kibopush-sojharo.ngrok.io/scripts/widgetAppSrc.js" type="text/javascript")
     // begin::Web font
@@ -189,3 +196,4 @@ html(lang="en")
     // begin::Page Snippets
     script(src="https://cdn.cloudkibo.com/public/assets/app/js/dashboard.js" type="text/javascript")
     // end::Page Snippets
+
