@@ -731,7 +731,6 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByTag (e) {
-    this.setState({filterByTag: e.target.value})
     //  this.setState({searchValue: ''})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackGenderFilter(filteredData)
@@ -741,7 +740,7 @@ class Subscriber extends React.Component {
     //  var filtered = []
     console.log('e.target.value', e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true})
+      this.setState({filter: true, filterByTag: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: e.target.value, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].tags) {

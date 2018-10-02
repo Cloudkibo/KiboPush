@@ -22,6 +22,7 @@ import NonSubscribersList from './containers/GrowthTools/nonSubscribersList'
 import Stats from './containers/stats/stats'
 import Convo from './containers/convo/convo'
 import Page from './containers/page/page'
+import GreetingMessage from './containers/page/greetingMessage'
 import AddPage from './containers/page/addPage'
 import InviteSubscribers from './containers/page/InviteSubscribers'
 import CreateConvo from './containers/convo/CreateConvo'
@@ -258,6 +259,7 @@ const routes = (
     <Route path='/features' component={Features} onEnter={requireAuth} />
     <Route path='/usage' component={Usage} onEnter={requireAuth} />
     <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
+    <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
   </Route>
 
 )

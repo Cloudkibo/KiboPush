@@ -660,14 +660,14 @@ class Sidebar extends Component {
   showGreetingText () {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
-        <a href='' className='m-menu__link'>
-          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+        <Link to='/greetingMessage' className='m-menu__link'>
+          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
             <span />
           </i>
           <span className='m-menu__link-text'>
             Greeting Text
           </span>
-        </a>
+        </Link>
       </li>
     )
   }
