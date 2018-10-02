@@ -12,6 +12,7 @@ class PageSubscribers extends React.Component {
     let pageName = ''
     props.allLocales()
     if (this.props.currentPage) {
+      console.log('cuurrent page', this.props.currentPage)
       pageName = this.props.currentPage.pageName
       const id = this.props.currentPage._id
       props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
