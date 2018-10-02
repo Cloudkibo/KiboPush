@@ -273,7 +273,7 @@ class CreateSubList extends React.Component {
       if (this.state.conditions[i].text === '') {
         isErrorInCondition = true
         errors = true
-        conditionError = {field: 'text', index: i, message: 'Please choose a valid text'}
+        conditionError = {field: 'text', index: i, message: 'Please choose a valid value'}
         conditionErrors.push(conditionError)
       }
     }
@@ -300,6 +300,7 @@ class CreateSubList extends React.Component {
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].condition = e.target.value
+        conditions[i].text = ''
       }
     }
     this.setState({conditions: conditions})
@@ -386,7 +387,7 @@ class CreateSubList extends React.Component {
     if (condition.condition === 'page') {
       return (
         <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text}>
-          <option disabled selected value>Select a Page</option>
+          <option disabled selected value=''>Select a Page</option>
           {
                 this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                   <option key={page.pageId} value={page.pageName}>{page.pageName}</option>
@@ -397,7 +398,7 @@ class CreateSubList extends React.Component {
     } else if (condition.condition === 'gender') {
       return (
         <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text} >
-          <option disabled selected value>Select a Gender</option>
+          <option disabled selected value=''>Select a Gender</option>
           {
                 this.state.genders && this.state.genders.length > 0 && this.state.genders.map((gender, i) => (
                   <option key={i} value={gender}>{gender}</option>
@@ -408,7 +409,7 @@ class CreateSubList extends React.Component {
     } else if (condition.condition === 'tag') {
       return (
         <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text}>
-          <option disabled selected value>Select a Tag</option>
+          <option disabled selected value=''>Select a Tag</option>
           {
             this.props.tags && this.props.tags.length > 0 && this.props.tags.map((tag, i) => (
               <option key={i} value={tag._id}>{tag.tag}</option>
@@ -419,7 +420,7 @@ class CreateSubList extends React.Component {
     } else if (condition.condition === 'locale') {
       return (
         <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text}>
-          <option disabled selected value>Select a Locale</option>
+          <option disabled selected value=''>Select a Locale</option>
           {
             this.props.locales && this.props.locales.map((locale, i) => (
               <option key={i} value={locale}>{locale}</option>
