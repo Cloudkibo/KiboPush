@@ -463,7 +463,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this, this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                         <h6>Card</h6>
@@ -471,7 +471,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this, this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                         <h6>Gallery</h6>
@@ -505,7 +505,7 @@ class CreateMessage extends React.Component {
                     </div>
                   </div>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this, this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                         <h6>List</h6>
@@ -515,7 +515,7 @@ class CreateMessage extends React.Component {
                 </div>
                 <div className='row'>
                   <div className='col-3'>
-                    <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this, this.props.currentMenuItem.currentPage) }}>
+                    <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this, 'menu', this.props.currentMenuItem.currentPage) }}>
                       <div className='align-center'>
                         <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                         <h6>Media</h6>
