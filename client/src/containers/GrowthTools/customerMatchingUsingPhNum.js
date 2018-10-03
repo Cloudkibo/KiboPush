@@ -478,9 +478,9 @@ class CustomerMatching extends React.Component {
           ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube

@@ -246,15 +246,16 @@ class Poll extends React.Component {
       theme: 'dark',
       time: 5000,
       transition: 'scale'
+      
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
