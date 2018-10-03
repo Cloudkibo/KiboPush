@@ -387,15 +387,16 @@ class Dashboard extends React.Component {
         break
       }
     }
+    console.log('')
     this.props.sentVsSeen(this.props.pages[index].pageId)
     this.setState({
       pageLikesSubscribes: {
-        selectedPage: this.props.pages[index].pageName,
+        selectedPageName: this.props.pages[index].pageName,
         likes: this.props.pages[index].likes,
         subscribers: this.props.pages[index].subscribers,
-        unsubscribes: this.props.pages[index].unsubscribes,
-        selectedPageId: this.props.pages[index].pageId
-      }
+        unsubscribes: this.props.pages[index].unsubscribes
+      },
+      selectedPage: this.props.pages[index]
     }
       )
   }
@@ -482,7 +483,7 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
               this.props.pages && this.props.sentseendata &&
-              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} />
+              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.state.selectedPage} />
             }
             </div>
             {
