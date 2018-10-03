@@ -117,8 +117,12 @@ export function sendpoll (poll, msg) {
         dispatch(sendpollresp(res.payload))
         console.log('sendpollresp', res)
         if (res.status === 'success') {
-          msg.success('Poll sent successfully')
-          dispatch(sendPollSuccess())
+          callApi(`polls/allPolls`, 'post', {last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}).then(response => {
+            console.log('After updating data', response)
+            dispatch(updatePollsListNew(response.payload))
+            msg.success('Poll sent successfully')
+            dispatch(sendPollSuccess())
+          })
         } else {
           msg.error(res.description)
           dispatch(sendPollFailure())

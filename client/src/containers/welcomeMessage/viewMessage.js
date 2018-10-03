@@ -10,7 +10,7 @@ class ViewWelcomeMessage extends React.Component {
 
   goBack () {
     browserHistory.push({
-      pathname: `/settings`,
+      pathname: `/welcomeMessage`,
       state: {module: 'welcome'}
     })
   }

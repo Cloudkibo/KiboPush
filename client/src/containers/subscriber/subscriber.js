@@ -35,6 +35,9 @@ class Subscriber extends React.Component {
       searchValue: '',
       statusValue: '',
       tagValue: '',
+      filterPage: '',
+      filterGender: '',
+      filterLocale: '',
       selectedSubscribers: [],
       dropdownActionOpen: false,
       popoverAddTagOpen: false,
@@ -764,7 +767,7 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
   handleFilterByPage (e) {
-    this.setState({filterByPage: e.target.value})
+    this.setState({filterPage: e.target.value})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackGenderFilter(filteredData)
     // filteredData = this.stackLocaleFilter(filteredData)
@@ -772,7 +775,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true})
+      this.setState({filter: true, filterByPage: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: e.target.value, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].pageId && (filteredData[k].pageId.pageId === e.target.value)) {
@@ -790,7 +793,7 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByGender (e) {
-    this.setState({filterByGender: e.target.value})
+    this.setState({filterGender: e.target.value})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackPageFilter(filteredData)
     // filteredData = this.stackLocaleFilter(filteredData)
@@ -798,7 +801,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true})
+      this.setState({filter: true, filterByGender: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].gender && (filteredData[k].gender === e.target.value)) {
@@ -816,7 +819,7 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByLocale (e) {
-    this.setState({filterByLocale: e.target.value})
+    this.setState({filterLocale: e.target.value})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackPageFilter(filteredData)
     // filteredData = this.stackGenderFilter(filteredData)
@@ -824,7 +827,7 @@ class Subscriber extends React.Component {
     // filteredData = this.stackStatusFilter(filteredData)
     // var filtered = []
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true})
+      this.setState({filter: true, filterByLocale: e.target.value})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: e.target.value, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
       // for (var k = 0; k < filteredData.length; k++) {
       //   if (filteredData[k].locale && (filteredData[k].locale === e.target.value)) {
@@ -848,8 +851,9 @@ class Subscriber extends React.Component {
     // filteredData = this.stackTagFilter(filteredData)
     // filteredData = this.stackLocaleFilter(filteredData)
     // var filtered = []
+    this.setState({statusValue: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({filter: true, statusValue: e.target.value})
+      this.setState({filter: true})
       if (e.target.value === 'subscribed') {
         this.setState({status_value: true})
         this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: true}})
@@ -968,7 +972,7 @@ class Subscriber extends React.Component {
                               <div className='btn-group bootstrap-select form-control m-bootstrap-select m-bootstrap-select--solid dropup'><button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_status' title='All' aria-expanded='false'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button><div className='dropdown-menu open' role='combobox'><ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Male</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Female</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>Other</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul>
                               </div> */}
                                 <div className='m-form__control'>
-                                  <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByGender} onChange={this.handleFilterByGender}>
+                                  <select className='custom-select' id='m_form_status' style={{width: '250px'}} tabIndex='-98' value={this.state.filterGender} onChange={this.handleFilterByGender}>
                                     <option key='' value='' disabled>Filter by Gender...</option>
                                     <option key='ALL' value='all'>All</option>
                                     <option key='male' value='male'>Male</option>
@@ -985,7 +989,7 @@ class Subscriber extends React.Component {
                                   <label style={{width: '60px'}}>Page:</label>
                                 </div>
                                 <div className='m-form__control'>
-                                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.handleFilterByPage}>
+                                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.filterPage} onChange={this.handleFilterByPage}>
                                     <option key='' value='' disabled>Filter by Page...</option>
                                     <option key='ALL' value='all'>ALL</option>
                                     {
@@ -1007,7 +1011,7 @@ class Subscriber extends React.Component {
                                 <button type='button' className='btn dropdown-toggle bs-placeholder btn-default' data-toggle='dropdown' role='button' data-id='m_form_type' title='All'><span className='filter-option pull-left'>All</span>&nbsp;<span className='bs-caret'><span className='caret' /></span></button>
                                 <div className='dropdown-menu open' role='combobox'>
                                   <ul className='dropdown-menu inner' role='listbox' aria-expanded='false'><li data-original-index='0' className='selected'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='true'><span className='text'>All</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='1'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_US</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='2'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_GB</span><span className='glyphicon glyphicon-ok check-mark' /></a></li><li data-original-index='3'><a tabIndex='0' className='' data-tokens='null' role='option' aria-disabled='false' aria-selected='false'><span className='text'>en_AZ</span><span className='glyphicon glyphicon-ok check-mark' /></a></li></ul></div>
-                                */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterByLocale} onChange={this.handleFilterByLocale}>
+                                */}<select className='custom-select' style={{width: '250px'}} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
                                   <option key='' value='' disabled>Filter by Locale...</option>
                                   <option key='ALL' value='all'>ALL</option>
                                   {
