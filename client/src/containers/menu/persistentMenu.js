@@ -113,7 +113,7 @@ class Menu extends React.Component {
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageId === this.props.currentMenuItem.currentPage) {
+        if (this.props.pages[i]._id === this.props.currentMenuItem.currentPage) {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
@@ -228,7 +228,7 @@ class Menu extends React.Component {
         menuItems: res.payload[0].jsonStructure
       })
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageId === res.payload.pageId) {
+        if (this.props.pages[i]._id === res.payload.pageId) {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
