@@ -119,6 +119,7 @@ export function sendpoll (poll, msg) {
         if (res.status === 'success') {
           msg.success('Poll sent successfully')
           dispatch(sendPollSuccess())
+          loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
         } else {
           msg.error(res.description)
           dispatch(sendPollFailure())

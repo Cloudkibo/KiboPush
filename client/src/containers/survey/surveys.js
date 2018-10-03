@@ -217,7 +217,7 @@ class Survey extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendsurvey(survey, this.msg)
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
+      this.setState({ pageNumber: 0 })
     }
   }
   render () {
