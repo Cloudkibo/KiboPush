@@ -5,21 +5,17 @@
 
 import React from 'react'
 import { Link } from 'react-router'
-import { savePageInformation } from '../../redux/actions/backdoor.actions'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 
 class ProgressBox extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       showDropDown: false
-      
+
     }
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.calculateProgressRates = this.calculateProgressRates.bind(this)
-    this.onSubscribersClick = this.onSubscribersClick.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -29,10 +25,6 @@ class ProgressBox extends React.Component {
   }
   hideDropDown () {
     this.setState({showDropDown: false})
-  }
-  onSubscribersClick (e, page) {
-    console.log('page data--', page)
-    this.props.savePageInformation(page)
   }
   calculateProgressRates () {
     var progressRates = {}
@@ -84,7 +76,7 @@ class ProgressBox extends React.Component {
                                   Connected Pages
                                 </span>
                               </li>
-                              { 
+                              {
                                 this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
                                     <a onClick={() => this.props.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
@@ -117,7 +109,7 @@ class ProgressBox extends React.Component {
                 <div className='col-4' style={{margin: '10px'}}>
                   <div className='row'>
                     <div className='col-2' style={{minWidth: '150px'}}>
-                      <Link onClick={(e) => { let pageSelected = this.props.selectedPage  ? this.props.selectedPage : this.props.firstPage; this.onSubscribersClick(e, pageSelected) }} to={'/pageSubscribers'}>
+                      <Link to={{pathname: '/subscribers', state: {page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'subscribed'}}}>
                         <div className='m-widget21__item' style={{display: 'flex'}}>
                           <span className='m-widget21__icon'>
                             <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
@@ -137,7 +129,7 @@ class ProgressBox extends React.Component {
                       </Link>
                     </div>
                     <div className='col-2' style={{minWidth: '150px'}}>
-                      <Link onClick={(e) => { let pageSelected = this.props.pageLikesSubscribes.selectedPage; this.onSubscribersClick(e, pageSelected) }} to='/pageSubscribers' >
+                      <Link to={{pathname: '/subscribers', state: {page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'unsubscribed'}}}>
                         <div className='m-widget21__item' style={{display: 'flex'}}>
                           <span className='m-widget21__icon'>
                             <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
@@ -329,10 +321,4 @@ class ProgressBox extends React.Component {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    savePageInformation: savePageInformation
-  }, dispatch)
-}
-
-export default connect(null, mapDispatchToProps)(ProgressBox)
+export default ProgressBox

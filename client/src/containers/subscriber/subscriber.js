@@ -120,6 +120,7 @@ class Subscriber extends React.Component {
     this.addSeqInd = this.addSeqInd.bind(this)
     this.handleSequenceInd = this.handleSequenceInd.bind(this)
     this.handleSeqResponse = this.handleSeqResponse.bind(this)
+    this.handleFilterByPageInitial = this.handleFilterByPageInitial.bind(this)
   }
 
   getDate (datetime) {
@@ -382,6 +383,14 @@ class Subscriber extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
+    let filterStatusValue = ''
+    let pageId = this.props.location.state.page._id
+    if (this.props.location.state.filterStatus === 'subscribed') {
+      filterStatusValue = true
+    } else {
+      filterStatusValue = false
+    }
+    this.handleFilterByPageInitial(pageId, filterStatusValue)
   }
   componentDidUpdate () {
   }
@@ -792,6 +801,15 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
 
+  handleFilterByPageInitial (pageId, isSubscribed) {
+    this.setState({filterByPage: pageId, status_value: isSubscribed})
+    if (pageId !== '' && pageId !== 'all') {
+      this.setState({filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed}})
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: '', locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed}})
+    }
+  }
   handleFilterByGender (e) {
     this.setState({filterGender: e.target.value})
     // var filteredData = this.props.subscribers
