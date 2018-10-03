@@ -572,7 +572,7 @@ class EditTemplate extends React.Component {
   }
   goBack () {
     this.props.history.push({
-      pathname: `/settings`,
+      pathname: `/welcomeMessage`,
       state: {module: 'welcome'}
     })
   }
