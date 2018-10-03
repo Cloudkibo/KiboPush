@@ -5,9 +5,6 @@
 
 import React from 'react'
 import { Link } from 'react-router'
-import { savePageInformation } from '../../redux/actions/backdoor.actions'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 
 class ProgressBox extends React.Component {
   constructor (props, context) {
@@ -19,7 +16,6 @@ class ProgressBox extends React.Component {
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.calculateProgressRates = this.calculateProgressRates.bind(this)
-    this.onSubscribersClick = this.onSubscribersClick.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -29,10 +25,6 @@ class ProgressBox extends React.Component {
   }
   hideDropDown () {
     this.setState({showDropDown: false})
-  }
-  onSubscribersClick (e, page) {
-    console.log('page data--', page)
-    this.props.savePageInformation(page)
   }
   calculateProgressRates () {
     var progressRates = {}
@@ -329,10 +321,4 @@ class ProgressBox extends React.Component {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    savePageInformation: savePageInformation
-  }, dispatch)
-}
-
-export default connect(null, mapDispatchToProps)(ProgressBox)
+export default ProgressBox
