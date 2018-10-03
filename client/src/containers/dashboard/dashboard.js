@@ -49,8 +49,7 @@ class Dashboard extends React.Component {
       loading: true,
       showDropDown: false,
       pageLikesSubscribes: {},
-      isShowingModalPro: false,
-      selectedPage: {}
+      isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)

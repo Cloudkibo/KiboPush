@@ -51,7 +51,7 @@ class ProgressBox extends React.Component {
   }
 
   render () {
-    console.log('selecetdPage--', this.props.selectedPage)
+    console.log('selecetdPage', this.props.selectedPage)
     console.log('first page', this.props.firstPage)
     var rates = this.calculateProgressRates()
     return (
@@ -117,7 +117,7 @@ class ProgressBox extends React.Component {
                 <div className='col-4' style={{margin: '10px'}}>
                   <div className='row'>
                     <div className='col-2' style={{minWidth: '150px'}}>
-                      <Link onClick={(e) => { let pageSelected = this.props.selectedPage !== {} ? this.props.selectedPage : this.props.firstPage; this.onSubscribersClick(e, pageSelected) }} to={'/pageSubscribers'}>
+                      <Link onClick={(e) => { let pageSelected = this.props.selectedPage  ? this.props.selectedPage : this.props.firstPage; this.onSubscribersClick(e, pageSelected) }} to={'/pageSubscribers'}>
                         <div className='m-widget21__item' style={{display: 'flex'}}>
                           <span className='m-widget21__icon'>
                             <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
