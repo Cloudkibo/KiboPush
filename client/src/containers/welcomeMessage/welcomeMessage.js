@@ -8,6 +8,9 @@ import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.action
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import YouTube from 'react-youtube'
 
 class WelcomeMessage extends React.Component {
   constructor (props, context) {
@@ -16,15 +19,21 @@ class WelcomeMessage extends React.Component {
       showDropDown: false,
       surveysData: [],
       totalLength: 0,
-      filterValue: ''
+      filterValue: '',
+      showVideo: false,
+      isShowingModal: false,
+      isShowingZeroPageModal: props.pages && props.pages.length === 0
     }
     props.loadMyPagesList()
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
     this.gotoView = this.gotoView.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
   }
-
+  closeZeroSubDialog () {
+    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+  }
   initializeSwitch (state, id) {
     var self = this
     var temp = '#' + id
@@ -77,13 +86,61 @@ class WelcomeMessage extends React.Component {
             </div>
           </div>
         </div>
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px'}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px'}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='7AEdAMXW6gE'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          (this.state.isShowingZeroPageModal) &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeZeroSubDialog}>
+            <ModalDialog style={{width: '700px', top: '75px'}}
+              onClose={this.closeZeroSubDialog}>
+              <AlertMessageModal type='page' />
+              <div>
+                <YouTube
+                  videoId='9kY3Fmj_tbM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                      autoplay: 0
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-content'>
+          {
+            this.props.pages && this.props.pages.length === 0 &&
+              <AlertMessage type='page' />
+          }
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
               Need help in understanding Welcome Message? <a href='http://kibopush.com/welcome-message/' target='_blank'>Click Here </a>
+              Or Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
             </div>
           </div>
           <div className='row'>
@@ -99,8 +156,8 @@ class WelcomeMessage extends React.Component {
 
                               <div className='tab-pane active' id='m_widget4_tab1_content'>
                                 {
-                                  this.props.pages && this.props.pages.length > 0
-                                ? <div className='m-widget4' >
+                                  this.props.pages && this.props.pages.length > 0 &&
+                                  <div className='m-widget4' >
                                   {
                                    this.props.pages.map((page, i) => (
                                      <div className='m-widget4__item' key={i}>
@@ -113,7 +170,7 @@ class WelcomeMessage extends React.Component {
                                          </span>
                                          <br />
                                          <span className='m-widget4__sub'>
-                                           <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                                           <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on'>
                                              <div className='bootstrap-switch-container'>
                                                <input data-switch='true' type='checkbox' name='switch' id={page._id} data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                                              </div>
@@ -134,14 +191,8 @@ class WelcomeMessage extends React.Component {
                                      </div>
                                   ))}
                                 </div>
-                                  : <div className='alert alert-success'>
-                                    <h4 className='block'>0 Connected Pages</h4>
-                                      You do not have any connected pages. You need to connect facebook pages to set the welcome message for them. Please click <Link to='/addPages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect pages
-                                    </div>
                                 }
                               </div>
-                                : <AlertMessage type='page' />
-                              }
                             </div>
                           </div>
                         </div>
