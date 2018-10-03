@@ -31,8 +31,7 @@ class Convo extends React.Component {
       totalLength: 0,
       filterValue: '',
       isShowingModal: false,
-      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
-      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
+      isShowingZeroModal: true,
       selectedDays: '0',
       searchValue: '',
       filter: false,
@@ -97,11 +96,11 @@ class Convo extends React.Component {
   }
 
   showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
+    this.setState({isShowingZeroModal: true})
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+    this.setState({isShowingZeroModal: false})
   }
 
   closeDialog () {
@@ -404,12 +403,12 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   {
-                    (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+                    this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeZeroSubDialog}>
                       <ModalDialog style={{width: '700px', top: '75px'}}
                         onClose={this.closeZeroSubDialog}>
-                        {this.state.isShowingZeroPageModal
+                        {(this.props.pages && this.props.pages.length === 0)
                         ? <AlertMessageModal type='page' />
                       : <AlertMessageModal type='subscriber' />
                         }
