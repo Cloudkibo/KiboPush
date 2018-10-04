@@ -35,6 +35,7 @@ class Survey extends React.Component {
       totalLength: 0,
       sent: false,
       isShowingModal: false,
+      isShowingZeroModal: true,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       isShowingModalDelete: false,
@@ -75,11 +76,11 @@ class Survey extends React.Component {
   }
 
   showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
+    this.setState({isShowingZeroModal: true})
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+    this.setState({isShowingZeroModal: false})
   }
 
   showProDialog () {
@@ -272,12 +273,12 @@ class Survey extends React.Component {
           </ModalContainer>
         }
         {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
               onClose={this.closeZeroSubDialog}>
-              {this.state.isShowingZeroPageModal
+              {(this.props.pages && this.props.pages.length === 0)
               ? <AlertMessageModal type='page' />
             : <AlertMessageModal type='subscriber' />
             }
