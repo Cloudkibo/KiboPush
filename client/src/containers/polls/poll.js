@@ -235,6 +235,7 @@ class Poll extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendpoll(poll, this.msg)
+      this.props.loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'})
       this.setState({ pageNumber: 0 })
     }
   }
