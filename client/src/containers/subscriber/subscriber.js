@@ -386,7 +386,7 @@ class Subscriber extends React.Component {
     let filterStatusValue = ''
     if (this.props.location.state) {
       let pageId = this.props.location.state.page._id
-      this.setState({filterPage: this.props.location.state.page.pageName})
+      this.setState({filterPage: pageId})
       if (this.props.location.state.filterStatus === 'subscribed') {
         filterStatusValue = true
         this.setState({statusValue: 'subscribed'})
@@ -781,7 +781,6 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
   handleFilterByPage (e) {
-    console.log('target', e.target.value)
     this.setState({filterPage: e.target.value})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackGenderFilter(filteredData)
