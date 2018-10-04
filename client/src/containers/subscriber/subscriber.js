@@ -384,13 +384,18 @@ class Subscriber extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
     let filterStatusValue = ''
-    let pageId = this.props.location.state.page._id
-    if (this.props.location.state.filterStatus === 'subscribed') {
-      filterStatusValue = true
-    } else {
-      filterStatusValue = false
+    if (this.props.location.state) {
+      let pageId = this.props.location.state.page._id
+      this.setState({filterPage: this.props.location.state.page.pageName})
+      if (this.props.location.state.filterStatus === 'subscribed') {
+        filterStatusValue = true
+        this.setState({statusValue: 'subscribed'})
+      } else {
+        filterStatusValue = false
+        this.setState({statusValue: 'unsubscribed'})
+      }
+      this.handleFilterByPageInitial(pageId, filterStatusValue)
     }
-    this.handleFilterByPageInitial(pageId, filterStatusValue)
   }
   componentDidUpdate () {
   }
@@ -776,6 +781,7 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
   handleFilterByPage (e) {
+    console.log('target', e.target.value)
     this.setState({filterPage: e.target.value})
     // var filteredData = this.props.subscribers
     // filteredData = this.stackGenderFilter(filteredData)
