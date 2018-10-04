@@ -87,9 +87,9 @@ class WelcomeMessage extends React.Component {
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
+            onClose={() => { this.setState({showVideo: false }) }}>
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube

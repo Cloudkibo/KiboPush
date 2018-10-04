@@ -206,6 +206,7 @@ export function addButton (data, handleFunction) {
   return (dispatch) => {
     callApi(`broadcasts/addButton`, 'post', data).then(res => {
       if (res.status === 'success') {
+        console.log('Response: ', res.payload)
         handleFunction(res.payload)
       } else {
         console.log(res.description)

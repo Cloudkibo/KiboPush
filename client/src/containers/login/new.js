@@ -29,9 +29,7 @@ class Login extends React.Component {
     this.onSubmit = this.onSubmit.bind(this)
   }
   onSubmit (event) {
-    console.log('onSubmit')
     event.preventDefault()
-    console.log('onSubmit')
     var data = {}
     if (this.state.account_type === 'team') {
       data = {
@@ -45,7 +43,7 @@ class Login extends React.Component {
         password: this.refs.password.value.trim()
       }
     }
-    console.log('data', data)
+
     this.props.logIn(data, this.msg)
   }
   check () {
@@ -104,7 +102,7 @@ class Login extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#'>
-                      <img src='img/logo.png' style={{maxWidth: 250}} />
+                      <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signin'>
@@ -175,6 +173,12 @@ class Login extends React.Component {
                   <Link to='/forgotPassword' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
                 </div>
                 <br />
+                {(this.state.account_type === 'team') && 
+                <div className='m-login__account'>
+                  <span className='m-login__account-msg'>Forgot Workspace Name ?</span>&nbsp;&nbsp;
+                  <Link to='/forgotWorkspaceName' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Click here</Link>
+                </div>
+                  }
                 {/* <div className='m-login__account'>
                   <span className='m-login__account-msg'>Don't have an account yet ?</span>&nbsp;&nbsp;
                   <Link to='/signup' id='m_login_signup' className='m-link m-link--focus m-login__account-link'>Sign Up</Link>
@@ -187,7 +191,7 @@ class Login extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('assets/app/media/img//bg/bg-4.jpg')"}}>
+          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
             <div className='m-grid__item m-grid__item--middle'>
               <Link to='' className='m-login__welcome'>Join KiboPush</Link>
               <p className='m-login__msg'>Get connected with your facebook audience through push messages.

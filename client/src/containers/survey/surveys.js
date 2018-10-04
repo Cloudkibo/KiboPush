@@ -40,7 +40,8 @@ class Survey extends React.Component {
       isShowingModalDelete: false,
       deleteid: '',
       selectedDays: '0',
-      pageNumber: 0
+      pageNumber: 0,
+      isShowingModalPro: false
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -53,6 +54,9 @@ class Survey extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
     this.sendSurvey = this.sendSurvey.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
   }
 
   componentDidMount () {
@@ -76,6 +80,21 @@ class Survey extends React.Component {
 
   closeZeroSubDialog () {
     this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+  }
+
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
 
   onDaysChange (e) {
@@ -116,11 +135,11 @@ class Survey extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
+      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays})
     } else {
-      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
+      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays })
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
@@ -198,6 +217,7 @@ class Survey extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendsurvey(survey, this.msg)
+      this.setState({ pageNumber: 0 })
     }
   }
   render () {
@@ -213,9 +233,9 @@ class Survey extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -228,6 +248,24 @@ class Survey extends React.Component {
                     }
                   }}
               />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -301,7 +339,7 @@ class Survey extends React.Component {
                           <span>
                             <i className='la la-plus' />
                             <span>
-                              Create Survey
+                              Create New
                             </span>
                           </span>
                         </button>
@@ -310,7 +348,7 @@ class Survey extends React.Component {
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create Survey
+                            Create New
                           </span>
                         </span>
                       </button>
@@ -337,9 +375,18 @@ class Survey extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link to='/showTemplateSurveys' className='btn btn-primary'>
-                                  Use Template
-                                </Link>
+                                {
+                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                                  ? <Link to='/showTemplateSurveys' className='btn btn-primary'>
+                                    Use Template
+                                  </Link>
+                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                    Use Template&nbsp;&nbsp;&nbsp;
+                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                      <span style={{color: '#34bfa3'}}>PRO</span>
+                                    </span>
+                                  </button>
+                                }
                               </div>
                             </div>
                           </ModalDialog>

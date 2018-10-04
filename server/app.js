@@ -42,8 +42,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   require('./config/express')(appObj)
   require('./config/setup')(app, httpApp, config)
-  require('./components/utility').setupPlans()
+  // require('./components/utility').setupPlans()
   // require('./config/integrations/pubsubhubbub')()
   require('./config/integrations/twitter').connect()
+  require('./config/shopify')(appObj)
   require('./routes')(appObj)
 })

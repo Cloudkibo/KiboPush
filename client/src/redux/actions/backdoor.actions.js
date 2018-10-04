@@ -407,3 +407,24 @@ export function downloadSubscribersData (pageId) {
         }
       })
 }
+
+export function saveSurveyInformation (survey) {
+  return {
+    type: ActionTypes.SAVE_SURVEY_INFORMATION,
+    data: survey
+  }
+}
+
+export function saveCurrentPoll (poll) {
+  return {
+    type: ActionTypes.SAVE_CURRENT_POLL,
+    data: poll
+  }
+}
+
+export function savePageInformation (page) {
+  return {
+    type: ActionTypes.SAVE_PAGE_INFORMATION,
+    data: page
+  }
+}

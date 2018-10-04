@@ -23,7 +23,7 @@ class TopPages extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-portlet__body'>
+          <div style={{padding: '1rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active m-scrollable' role='tabpanel'>
                 <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -55,16 +55,21 @@ class TopPages extends React.Component {
                                     <b>Page Id: </b>{page.pageId}
                                   </span>
                                   }
-                                   <br />
-                                   <span className='m-widget4__sub'>
-                                  Likes: {page.likes}
-                                   </span>
-                                   <span className='m-widget4__sub' style={{marginLeft: '50px'}}>
-                                  Subscribers: {page.subscribers}
-                                   </span>
+                                   <div style={{padding: '0px'}} className='row m-widget4__info'>
+                                     <div style={{display: 'inline-block', padding: '0px', maxWidth: 'none'}} className='col-md-6'>
+                                       <span style={{fontSize: '0.85rem', color: '#7b7e8a'}}>
+                                        Likes: <strong>{page.likes}</strong>
+                                       </span>
+                                     </div>
+                                     <div style={{display: 'inline-block', padding: '0px', maxWidth: 'none'}} className='col-md-6'>
+                                       <span style={{fontSize: '0.85rem', color: '#7b7e8a'}}>
+                                        Subscribers: <strong>{page.subscribers}</strong>
+                                       </span>
+                                     </div>
+                                   </div>
                                  </div>
                                  <div className='m-widget4__ext'>
-                                   <Link style={{marginRight: '20px'}} onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/viewPageSubscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                   <Link style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                     See Subscribers
                                   </Link>
                                  </div>

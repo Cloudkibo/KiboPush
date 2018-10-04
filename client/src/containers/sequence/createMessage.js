@@ -147,7 +147,7 @@ class CreateMessage extends React.Component {
       if (payload[i].componentType === 'text') {
         console.log('paload[i].text', payload[i].text)
         console.log('paload[i].buttons', payload[i].buttons)
-        temp.push({content: (<Text id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
+        temp.push({content: (<Text module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleText={this.handleText} onRemove={this.removeComponent} message={payload[i].text} buttons={payload[i].buttons} removeState />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -172,22 +172,22 @@ class CreateMessage extends React.Component {
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'card') {
-        temp.push({content: (<Card id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
+        temp.push({content: (<Card module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleCard={this.handleCard} onRemove={this.removeComponent} cardDetails={payload[i]} singleCard />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'gallery') {
-        temp.push({content: (<Gallery id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
+        temp.push({content: (<Gallery module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleGallery={this.handleGallery} onRemove={this.removeComponent} galleryDetails={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'list') {
-        temp.push({content: (<List id={payload[i].id} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
+        temp.push({content: (<List module='sequenceMessaging' id={payload[i].id} key={payload[i].id} list={payload[i]} cards={payload[i].listItems} handleList={this.handleList} onRemove={this.removeComponent} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
       } else if (payload[i].componentType === 'media') {
-        temp.push({content: (<Media id={payload[i].id} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
+        temp.push({content: (<Media module='sequenceMessaging' id={payload[i].id} key={payload[i].id} handleMedia={this.handleMedia} onRemove={this.removeComponent} media={payload[i]} />)})
         this.setState({list: temp})
         message.push(payload[i])
         this.setState({broadcast: message})
@@ -495,9 +495,9 @@ class CreateMessage extends React.Component {
                             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                               <div className='row' >
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this) }}>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { onClickText(timeStamp, this, 'sequenceMessaging') }}>
                                     <div className='align-center'>
-                                      <img src='icons/text.png' alt='Text' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
                                     </div>
                                   </div>
@@ -505,23 +505,23 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onImageClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/picture.png' alt='Image' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Image' style={{maxHeight: 25}} />
                                       <h6>Image</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onCardClick(timeStamp, this, 'sequenceMessaging') }}>
                                     <div className='align-center'>
-                                      <img src='icons/card.png' alt='Card' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onGalleryClick(timeStamp, this, 'sequenceMessaging') }}>
                                     <div className='align-center'>
-                                      <img src='icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                       <h6>Gallery</h6>
                                     </div>
                                   </div>
@@ -531,7 +531,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onAudioClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: 25}} />
                                       <h6>Audio</h6>
                                     </div>
                                   </div>
@@ -539,7 +539,7 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onVideoClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/video.png' alt='Video' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: 25}} />
                                       <h6>Video</h6>
                                     </div>
                                   </div>
@@ -547,15 +547,15 @@ class CreateMessage extends React.Component {
                                 <div className='col-3'>
                                   <div className='ui-block hoverbordercomponent' onClick={() => { onFileClick(timeStamp, this) }}>
                                     <div className='align-center'>
-                                      <img src='icons/file.png' alt='File' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                                       <h6>File</h6>
                                     </div>
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onListClick(timeStamp, this, 'sequenceMessaging') }}>
                                     <div className='align-center'>
-                                      <img src='icons/list.png' alt='List' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                       <h6>List</h6>
                                     </div>
                                   </div>
@@ -563,9 +563,9 @@ class CreateMessage extends React.Component {
                               </div>
                               <div className='row'>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { onMediaClick(timeStamp, this, 'sequenceMessaging') }}>
                                     <div className='align-center'>
-                                      <img src='icons/media.png' alt='Media' style={{maxHeight: 25}} />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                       <h6>Media</h6>
                                     </div>
                                   </div>

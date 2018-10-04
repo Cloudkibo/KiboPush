@@ -107,23 +107,17 @@ class Text extends React.Component {
     var temp = this.state.button
     temp.push(obj)
 
-    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons}, () => {
-      this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
-    })
+    this.setState({button: temp, count: 1, numOfButtons: ++this.state.numOfButtons})
+    this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
   }
   editButton (obj) {
-    console.log(this.state)
     var temp = this.state.button.map((elm, index) => {
       if (index === obj.id) {
         elm = obj.button
       }
       return elm
     })
-    console.log(temp)
-    this.setState({button: temp}, () => {
-      console.log(this.state.button)
-      this.props.handleText({id: this.props.id, text: this.state.text, button: this.state.button})
-    })
+    this.setState({button: temp})
   }
   removeButton (obj) {
     // var temp = this.state.button.filter((elm, index) => {
@@ -136,7 +130,6 @@ class Text extends React.Component {
     })
     var temp = this.state.button
     this.setState({button: temp, numOfButtons: --this.state.numOfButtons})
-    this.props.handleText({id: this.props.id, text: this.state.text, button: temp})
   }
 
   render () {
@@ -199,15 +192,15 @@ class Text extends React.Component {
         </div>
 
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton index={index} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton index={index} module={this.props.module} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         {this.props.removeState
         ? <div>
-          <Button button_id={this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button button_id={this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+            <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }

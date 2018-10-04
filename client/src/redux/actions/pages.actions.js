@@ -65,7 +65,7 @@ export function enablePage (page) {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
         console.log('res.status', res)
-        if (res.status === 'failed' && res.description === 'not published') {
+        if (res.status === 'failed') {
           dispatch(pageNotPublished(res.description))
         } else if (res.payload && res.payload.msg) {
           // the page is already connected by some other user

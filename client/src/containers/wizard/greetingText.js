@@ -199,7 +199,7 @@ class GreetingMessage extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div>
         <Header />
         <div id='target'>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -264,14 +264,14 @@ class GreetingMessage extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div className='m-portlet__body' style={{height: 'auto'}}>
+                      <div className='m-portlet__body' style={{ height: 'auto' }}>
                         <br />
                         <div className='form-group m-form__group row'>
-                          <label style={{fontWeight: 'normal'}}>This page will help you setup greeting text for your page. We have set the default text for you. Click on "See how it looks" to see how it would be shown on the welcome screen of your Facebook Page. Modify it and create your desired greeting text for your messenger audience.</label>
+                          <label style={{ fontWeight: 'normal' }}>This page will help you setup greeting text for your page. We have set the default text for you. Click on "See how it looks" to see how it would be shown on the welcome screen of your Facebook Page. Modify it and create your desired greeting text for your messenger audience.</label>
                         </div>
                         <br />
                         <div className='form-group m-form__group row'>
-                          <label className='col-3 col-form-label' style={{textAlign: 'left'}}>  Change Page</label>
+                          <label className='col-3 col-form-label' style={{ textAlign: 'left' }}>  Change Page</label>
                           <div className='col-8 input-group'>
                             <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onChangeValue}>
                               {
@@ -291,12 +291,12 @@ class GreetingMessage extends React.Component {
                                   className='form-control m-input m-input--solid'
                                   id='exampleTextarea' rows='3'
                                   placeholder='Enter Invitation Message'
-                                  style={{minHeight: '200px', resize: 'none', maxLength: '160'}}
+                                  style={{ minHeight: '200px', resize: 'none', maxLength: '160' }}
                                   value={this.state.greetingMessage}
                                   onChange={this.onGreetingMessageChange} />
                               </div>
                               <div className='m-messenger__form-tools pull-right messengerTools'>
-                                <div ref={(c) => { this.target = c }} style={{display: 'inline-block'}} data-tip='emoticons'>
+                                <div ref={(c) => { this.target = c }} style={{ display: 'inline-block' }} data-tip='emoticons'>
                                   <i onClick={this.showEmojiPicker} style={styles.iconclass}>
                                     <i style={{
                                       fontSize: '20px',
@@ -310,7 +310,7 @@ class GreetingMessage extends React.Component {
                                     }} className='greetingMessage fa fa-smile-o' />
                                   </i>
                                 </div>
-                                <div ref={(c) => { this.userOptions = c }} style={{display: 'inline-block'}} data-tip='options'>
+                                <div ref={(c) => { this.userOptions = c }} style={{ display: 'inline-block' }} data-tip='options'>
                                   <i onClick={this.showUserOptions} style={styles.iconclass}>
                                     <i style={{
                                       fontSize: '20px',
@@ -324,22 +324,34 @@ class GreetingMessage extends React.Component {
                                     }} className='greetingMessage fa fa-user' />
                                   </i>
                                 </div>
-                                <div style={{display: 'inline-block', margin: '5px'}} data-tip='Text Count'>
-                                  <span style={{fontWeight: 'bold', color: 'blue'}}>{this.state.textCount}</span>
+                                <div style={{ display: 'inline-block', margin: '5px' }} data-tip='Text Count'>
+                                  <span style={{ fontWeight: 'bold', color: 'blue' }}>{this.state.textCount}</span>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <br />
                           <div className='col-9' />
-                          <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
+                          <div className='col-3 form-group m-form__group row' style={{ marginLeft: '-45px' }}>
                             <div>
-                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
-                              <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
+                              <Link className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              {
+                                this.state.greetingMessage.length > 0
+                                  ? <button style={{ display: 'inline-block' }} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
+                                  : <button style={{ display: 'inline-block' }} className='btn btn-primary' disabled>Save</button>
+                              }
                             </div>
                           </div>
                         </div>
                       </div>
+                      <br />
+                      <div className='col-9' />
+                          {/* <div className='col-3 form-group m-form__group row' style={{marginLeft: '-45px'}}>
+                             <div>
+                              <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
+                              <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
+                            </div> 
+                          </div> */}
                       <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                         <div className='m-form__actions'>
                           <div className='row'>

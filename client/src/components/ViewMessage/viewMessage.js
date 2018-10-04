@@ -63,7 +63,7 @@ class ViewMessage extends React.Component {
                         <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                           <div className='m-messenger__message m-messenger__message--in'>
                             <div className='m-messenger__message-pic'>
-                              <img src='icons/user.png' alt='' />
+                              <img src='https://cdn.cloudkibo.com/public/icons/user.png' alt='' />
                             </div>
                             <div style={{maxWidth: '250px', minWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
@@ -113,35 +113,6 @@ class ViewMessage extends React.Component {
                                         <div style={{marginTop: '10px', padding: '5px'}}>
                                           <div style={{textAlign: 'left', fontWeight: 'bold'}}>{b.title}</div>
                                           <div style={{textAlign: 'left', color: '#ccc'}}>{b.description}</div>
-                                        </div>
-                                      </div>
-                                      {
-                                        b.buttons && b.buttons.length > 0 &&
-                                        b.buttons.map((button, i) => (
-                                          <a key={i} href={'//' + button.url} target='_blank' style={{width: '175px', whiteSpace: 'inherit', marginTop: '5px'}} className='btn btn-secondary btn-sm'>
-                                            <span>{button.title}</span>
-                                          </a>
-                                        ))
-                                      }
-                                    </div>
-                                    : b.componentType === 'media'
-                                    ? <div>
-                                      <div style={{maxWidth: '175px', borderRadius: '10px'}} className='ui-block hoverbordersolid'>
-                                        <div style={{backgroundColor: '#F2F3F8', padding: '5px'}} className='cardimageblock'>
-                                          { b.mediaType === 'image' &&
-                                            <a href={b.fileurl.url} target='_blank'>
-                                              <img style={{maxWidth: '160px', borderRadius: '5px'}} src={b.fileurl.url} />
-                                            </a>
-                                           }
-                                          { b.mediaType === 'video' &&
-                                            <ReactPlayer
-                                              url={b.fileurl.url}
-                                              controls
-                                              width='100%'
-                                              height='140px'
-                                              onPlay={this.onTestURLVideo(b.fileurl.url)}
-                                            />
-                                          }
                                         </div>
                                       </div>
                                       {

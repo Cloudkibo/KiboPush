@@ -51,33 +51,22 @@ class Card extends React.Component {
   handleCheckbox (e) {
     this.setState({checkbox: !this.state.checkbox})
     console.log('value', e.target.value)
-    if (this.state.elementUrl !== '') {
-      this.props.handleCard({id: this.props.id,
-        componentType: 'card',
-        fileurl: this.state.fileurl,
-        image_url: this.state.image_url,
-        fileName: this.state.fileName,
-        type: this.state.type,
-        size: this.state.size,
-        title: this.state.title,
-        description: this.state.subtitle,
-        buttons: this.state.button,
-        default_action: {type: 'web_url', url: this.state.elementUrl}
-      })
-    } else {
-      this.props.handleCard({id: this.props.id,
-        componentType: 'card',
-        fileurl: this.state.fileurl,
-        image_url: this.state.image_url,
-        fileName: this.state.fileName,
-        type: this.state.type,
-        size: this.state.size,
-        title: this.state.title,
-        description: this.state.subtitle,
-        buttons: this.state.button
-      })
+    if (e.target.value) {
+      this.setState({disabled: false})
     }
-    if (e.target.value === 'true') {
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button,
+      default_action: {type: 'web_url', url: this.state.elementUrl}
+    })
+    if (e.target.value) {
       this.props.topElementStyle('LARGE')
     } else {
       this.props.topElementStyle('compact')
@@ -110,24 +99,18 @@ class Card extends React.Component {
     this.setState({
       openPopover: false
     })
+    if (this.state.checkbox) {
+      this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('compact')
+    }
   }
   handleClick (e) {
     this.setState({disabled: true})
     this.setState({openPopover: !this.state.openPopover})
   }
   handleClose (e) {
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: this.state.button
-    })
-    this.setState({openPopover: false, elementUrl: ''})
+    this.setState({openPopover: false, elementUrl: '', checkbox: false})
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
@@ -158,10 +141,7 @@ class Card extends React.Component {
       } else if (cardProps.cardDetails.description) {
         this.setState({ subtitle: cardProps.cardDetails.description })
       }
-      if (cardProps.cardDetails.default_action) {
-        this.setState({elementUrl: cardProps.cardDetails.default_action.url})
-      }
-      if (cardProps.id === 0 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
+      if (cardProps.id === 1 && cardProps.topStyle && cardProps.topStyle === 'LARGE') {
         this.setState({ checkbox: true })
       }
     }
@@ -203,8 +183,7 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      console.log('page', this.props.pages[0]._id)
-      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
+      this.props.uploadImage(file, this.props.pages, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
         image_url: '',
@@ -318,24 +297,19 @@ class Card extends React.Component {
 
     this.props.handleCard({id: this.props.id,
       componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
+      fileurl: data.fileurll,
+      image_url: data.image_url,
+      fileName: data.fileName,
+      type: data.type,
+      size: data.size,
       title: this.state.title,
       description: this.state.subtitle,
       buttons: this.state.button})
   }
 
   render () {
-    console.log('this.state.imgSrc', this.state.imgSrc)
-    console.log('this.state.checkbox', this.state.checkbox)
-    if (this.props.cardDetails) {
-      console.log('this.props.cardDetails', this.props.cardDetails)
-    }
     return (
-      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
+      <div style={{minHeight: 250, maxWidth: 400, marginBottom: '-7px', backgroundImage: this.state.checkbox && this.state.imgSrc === '' ? 'url(https://cdn.cloudkibo.com/public/icons/list.jpg)' : this.state.checkbox && this.state.imgSrc ? 'url(' + this.state.imgSrc + ')' : '', backgroundRepeat: 'no-repeat', backgroundPosition: 'center', height: this.state.checkbox ? '350px' : ''}} className='ui-block hoverbordersolid'>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopoverList' target={'buttonTarget-' + this.props.id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit List Element</strong></PopoverHeader>
           <PopoverBody>
@@ -362,7 +336,7 @@ class Card extends React.Component {
               <br />This can be used to open a web page on a list item click
               <hr style={{color: '#ccc'}} />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
-              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> {this.state.elementUrl === '' ? 'Cancel' : 'Remove' }</button>
+              <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
               <br />
               <br />
             </div>
@@ -384,7 +358,7 @@ class Card extends React.Component {
               accept='image/*'
               title=' '
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer'}} />
-            <img style={{maxHeight: 40, margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
           </div>
           <br />
         </center>
@@ -397,7 +371,7 @@ class Card extends React.Component {
               <textarea onChange={this.handleSubtitle} value={this.state.subtitle} className='form-control' style={{borderStyle: 'none', height: '90px', width: this.state.checkbox ? '90%' : '100%'}} rows='5' placeholder='Enter subtitle...' maxLength='80' />
             </center>
           </div>
-          
+
           {!this.state.checkbox &&
           <div style={{display: 'inline-grid', backgroundColor: '#F2F3F8'}} className='cardimageblock col-md-4'>
             <input
@@ -410,7 +384,7 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', opacity: 0, maxWidth: 370, minHeight: 170, zIndex: 5, cursor: 'pointer', width: '80%', marginLeft: '-10px'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: '40px', margin: 'auto'}} src='icons/picture.png' alt='Text' />
+            ? <img style={{maxHeight: '40px', margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
           : <img style={{maxHeight: '140px', maxWidth: '85px', marginLeft: '-11px', marginTop: '3px', height: '140px'}} src={this.state.imgSrc} />
            }
           </div>
@@ -425,11 +399,11 @@ class Card extends React.Component {
         <div className='row'>
           <div className='col-md-6'>
             {(!this.state.button || !this.state.button.length > 0) &&
-              <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
+              <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
             }
             {(this.state.button) ? this.state.button.map((obj, index) => {
               return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
-                <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+                <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
               </div>)
             }) : ''}
           </div>
@@ -453,7 +427,6 @@ class Card extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
   }
 }
 

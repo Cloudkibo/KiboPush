@@ -33,7 +33,6 @@ export function forgotSuccess () {
 }
 
 export function logIn (data, msg) {
-  console.log('data in login', data)
   let headers1 = {
     'content-type': 'application/json'
   }
@@ -44,7 +43,6 @@ export function logIn (data, msg) {
       // eslint-disable-next-line no-undef
       headers: headers1
     }).then((res) => res.json()).then((res) => res).then((res) => {
-      console.log('res in login', res)
       if (res.token) {
         auth.putCookie(res.token)
         dispatch(Success())
@@ -63,6 +61,22 @@ export function forgotPass (data, msg) {
         console.log('response from server', res)
         if (res.status === 'success') {
           msg.success('A password reset link has been sent to your email.')
+          dispatch(forgotSuccess())
+        } else {
+          msg.error(res.description)
+          dispatch(forgotFailure(res.description))
+        }
+      })
+  }
+}
+
+export function forgotWorkspaceName (data, msg) {
+  return (dispatch) => {
+    callApi('reset_password/forgotWorkspaceName', 'post', data)
+      .then(res => {
+        console.log('response from server', res)
+        if (res.status === 'success') {
+          msg.success('An email has been sent to you on the given address.')
           dispatch(forgotSuccess())
         } else {
           msg.error(res.description)

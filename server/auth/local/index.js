@@ -3,9 +3,9 @@
 let express = require('express')
 let passport = require('passport')
 let auth = require('../auth.service')
-let User = require('./../../api/user/Users.model.js')
-let CompanyProfile = require('./../../api/companyprofile/companyprofile.model')
-let CompanyUsers = require('./../../api/companyuser/companyuser.model')
+let User = require('./../../api/v1/user/Users.model.js')
+let CompanyProfile = require('./../../api/v1/companyprofile/companyprofile.model')
+let CompanyUsers = require('./../../api/v1/companyuser/companyuser.model')
 
 const config = require('./../../config/environment/index')
 const logger = require('../../components/logger')
@@ -52,13 +52,12 @@ router.post('/', function (req, res, next) {
           .json({status: 'failed', description: 'Internal Server Error'})
         }
 
-        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(501)
             .json({status: 'failed', description: 'Internal Server Error'})
           }
-          logger.serverLog(TAG, `company in login: ${JSON.stringify(company)}`)
-          if (['plan_C', 'plan_D'].indexOf(company.stripe.plan) < 0) {
+          if (['plan_C', 'plan_D'].indexOf(company.planId.unique_ID) < 0) {
             return res.status(401)
             .json({
               status: 'failed',
@@ -91,27 +90,27 @@ router.post('/', function (req, res, next) {
           })
           .fail(e => {
             logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-            User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
-              if (err) {
-                logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+            // User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
+            //   if (err) {
+            //     logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+            //   }
+            passport.authenticate('local', function (err, user, info) {
+              let error = err || info
+              if (error) return res.status(401).json(error)
+              if (!user) {
+                return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
               }
-              passport.authenticate('local', function (err, user, info) {
-                let error = err || info
-                if (error) return res.status(401).json(error)
-                if (!user) {
-                  return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
-                }
 
-                let token = auth.signToken(user._id)
-                res.json({token: token})
-                if (user.facebookInfo) {
-                  auth.fetchPages(`https://graph.facebook.com/v2.10/${
+              let token = auth.signToken(user._id)
+              res.json({token: token})
+              if (user.facebookInfo) {
+                auth.fetchPages(`https://graph.facebook.com/v2.10/${
                     user.facebookInfo.fbId}/accounts?access_token=${
                     user.facebookInfo.fbToken}`, user)
-                }
-              })(req, res, next)
-            })
+              }
+            })(req, res, next)
           })
+          // })
           } else {
             passport.authenticate('local', function (err, user, info) {
               let error = err || info
@@ -153,12 +152,12 @@ router.post('/', function (req, res, next) {
           .json({status: 'failed', description: 'Internal Server Error'})
         }
 
-        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(501)
             .json({status: 'failed', description: 'Internal Server Error'})
           }
-          if (['plan_A', 'plan_B'].indexOf(company.stripe.plan) < 0) {
+          if (['plan_A', 'plan_B'].indexOf(company.planId.unique_ID) < 0) {
             return res.status(401).json({
               status: 'failed',
               description: 'Given account information does not match any individual account in our records'
@@ -189,27 +188,27 @@ router.post('/', function (req, res, next) {
             })
             .fail(e => {
               logger.serverLog(TAG, `Permissions check error: ${JSON.stringify(e)}`)
-              User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
-                if (err) {
-                  logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+              // User.update({'facebookInfo.fbId': user.facebookInfo.fbId}, {permissionsRevoked: true}, {multi: true}, (err, resp) => {
+              //   if (err) {
+              //     logger.serverLog(TAG, `Error in updated permsissionsRevoked field ${JSON.stringify(err)}`)
+              //   }
+              passport.authenticate('local', function (err, user, info) {
+                let error = err || info
+                if (error) return res.status(401).json(error)
+                if (!user) {
+                  return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
                 }
-                passport.authenticate('local', function (err, user, info) {
-                  let error = err || info
-                  if (error) return res.status(401).json(error)
-                  if (!user) {
-                    return res.status(404).json({status: 'failed', description: 'Something went wrong, please try again.'})
-                  }
 
-                  let token = auth.signToken(user._id)
-                  res.json({token: token})
-                  if (user.facebookInfo) {
-                    auth.fetchPages(`https://graph.facebook.com/v2.10/${
+                let token = auth.signToken(user._id)
+                res.json({token: token})
+                if (user.facebookInfo) {
+                  auth.fetchPages(`https://graph.facebook.com/v2.10/${
                       user.facebookInfo.fbId}/accounts?access_token=${
                       user.facebookInfo.fbToken}`, user)
-                  }
-                })(req, res, next)
-              })
+                }
+              })(req, res, next)
             })
+            // })
           } else {
             passport.authenticate('local', function (err, user, info) {
               let error = err || info

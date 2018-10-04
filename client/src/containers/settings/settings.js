@@ -21,6 +21,7 @@ import ResponseMethods from './responseMethods'
 import DeleteUserData from './deleteUserData'
 import Webhook from './webhooks'
 import YouTube from 'react-youtube'
+import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Settings extends React.Component {
@@ -49,7 +50,11 @@ class Settings extends React.Component {
       saveStateNGP: null,
       planInfo: '',
       show: true,
-      openTab: 'showAPI'
+      openTab: 'showAPI',
+      pro: false,
+      isShowingModal: false,
+      isDisableInput: false,
+      isDisableButton: false
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitch = this.initializeSwitch.bind(this)
@@ -72,6 +77,9 @@ class Settings extends React.Component {
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
     this.setResponseMethods = this.setResponseMethods.bind(this)
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
+    this.showDialog = this.showDialog.bind(this)
+    this.closeDialog = this.closeDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
   }
   componentWillMount () {
     console.log('this.props.location', this.props.location)
@@ -90,15 +98,43 @@ class Settings extends React.Component {
         openTab: 'webhook', show: false
       })
     }
+    if (this.props.location && this.props.location.state && this.props.location.state.module === 'pro') {
+      this.setState({
+        openTab: 'billing', show: false, pro: true
+      })
+    }
     this.props.getuserdetails()
     this.props.getAPI({company_id: this.props.user._id})
     this.props.getNGP({company_id: this.props.user.companyId})
   }
+  showDialog () {
+    this.setState({isShowingModal: true})
+  }
+  closeDialog () {
+    this.setState({isShowingModal: false})
+  }
+  goToSettings () {
+    this.setState({
+      isShowingModal: false, openTab: 'billing', show: false, pro: true
+    })
+  }
   handleNGPKeyChange (event) {
+    
     this.setState({NGPKey: event.target.value})
+    if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
+      this.setState({isDisableButton: false})
+    } else {
+      this.setState({isDisableButton: true})
+    }
   }
   handleNGPSecretChange (event) {
     this.setState({NGPSecret: event.target.value})
+
+    if (event.target.value.toString().trim() !== '' && this.state.NGPKey.toString().trim() !== '') {
+      this.setState({isDisableButton: false})
+    } else {
+      this.setState({isDisableButton: true})
+    }
   }
   getPlanInfo (plan) {
     this.setState({show: false})
@@ -207,6 +243,12 @@ class Settings extends React.Component {
     }
     this.initializeSwitch(this.state.buttonState)
     this.initializeSwitchNGP(this.state.ngpButtonState)
+
+    if (this.state.ngpButtonState) {
+      this.setState({ isDisableInput: false, isDisableButton: false })
+    } else {
+      this.setState({ isDisableInput: true, isDisableButton: true })
+    }
   }
   componentDidUpdate () {
     console.log('in componentDidUpdate')
@@ -276,18 +318,18 @@ class Settings extends React.Component {
       company_id: this.props.user.companyId,
       app_id: this.state.NGPKey,
       app_secret: this.state.NGPSecret
-    })
+    }, this.msg)
   }
   componentWillReceiveProps (nextProps) {
     console.log('iin componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
-      (nextProps.user.currentPlan === 'plan_A' || nextProps.user.currentPlan === 'plan_B')) {
+      (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_B')) {
       browserHistory.push({
         pathname: '/resendVerificationEmail'
       })
     }
     if (nextProps.user && this.state.show) {
-      var plan = nextProps.user.currentPlan
+      var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
     }
     if (nextProps.user && (nextProps.user.role === 'admin' || nextProps.user.role === 'agent')) {
@@ -331,19 +373,19 @@ class Settings extends React.Component {
     */
     if (nextProps.apiEnableNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret})
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,  isDisableInput: false, isDisableButton: false})
       }
     }
     if (nextProps.apiDisableNGP) {
       if (this.state.ngpDisable === true) {
-        this.setState({NGPKey: '', NGPSecret: ''})
+        this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
       }
     }
     if (nextProps.resetDataNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret})
+        this.setState({NGPKey: nextProps.resetDataNGP.app_id, NGPSecret: nextProps.resetDataNGP.app_secret, isDisableInput: false, isDisableButton: false})
       } else {
-        this.setState({NGPKey: '', NGPSecret: ''})
+        this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
       }
     }
     if (nextProps.apiSuccessNGP) {
@@ -351,7 +393,7 @@ class Settings extends React.Component {
         this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
         if (this.state.count1_ngp !== 1) {
           this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
-          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
+          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})     
         }
         this.setState({count_ngp: 2})
       }
@@ -367,8 +409,16 @@ class Settings extends React.Component {
      */
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
@@ -392,7 +442,24 @@ class Settings extends React.Component {
             </ModalDialog>
           </ModalContainer>
         }
-
+        {
+          this.state.isShowingModal &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -431,12 +498,23 @@ class Settings extends React.Component {
                     <li className='m-nav__section m--hide'>
                       <span className='m-nav__section-text'>Section</span>
                     </li>
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_C') &&
+                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                       <li className='m-nav__item'>
-                        <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
-                          <i className='m-nav__link-icon flaticon-share' />
-                          <span className='m-nav__link-text'>API</span>
-                        </a>
+                        {
+                         this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                          ? <a className='m-nav__link' onClick={this.setAPI} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-share' />
+                            <span className='m-nav__link-text'>API</span>
+                          </a>
+                          : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-share' />
+                            <span className='m-nav__link-text'>API&nbsp;&nbsp;&nbsp;
+                              <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                <span style={{color: '#34bfa3'}}>PRO</span>
+                              </span>
+                            </span>
+                          </a>
+                        }
                       </li>
                     }
                     <li className='m-nav__item'>
@@ -481,10 +559,21 @@ class Settings extends React.Component {
                     </li>
                     { this.props.user && this.props.user.role === 'buyer' && (this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'all') &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-list-2' />
-                        <span className='m-nav__link-text'> Live Chat Response Methods</span>
-                      </a>
+                      {
+                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                          ? <a className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
+                            <i className='m-nav__link-icon flaticon-list-2' />
+                            <span className='m-nav__link-text'> Live Chat Response Methods</span>
+                          </a>
+                        : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon flaticon-list-2' />
+                          <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
+                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#34bfa3'}}>PRO</span>
+                            </span>
+                          </span>
+                        </a>
+                      }
                     </li>
                     }
                     { this.props.user && !this.props.user.facebookInfo && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
@@ -497,12 +586,23 @@ class Settings extends React.Component {
                     }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon la la-plug' />
-                        <span className='m-nav__link-text'>Add KiboPush Widget</span>
-                      </a>
-                    </li>
-                  }
+                      {
+                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                        ? <a className='m-nav__link' onClick={this.setChatWidget} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon la la-plug' />
+                          <span className='m-nav__link-text'>Add KiboPush Widget</span>
+                        </a>
+                        : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon la la-plug' />
+                          <span className='m-nav__link-text'>Add KiboPush Widget&nbsp;&nbsp;&nbsp;
+                            <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                              <span style={{color: '#34bfa3'}}>PRO</span>
+                            </span>
+                          </span>
+                        </a>
+                        }
+                      </li>
+                    }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
@@ -521,10 +621,21 @@ class Settings extends React.Component {
                   }
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon la la-link' />
-                        <span className='m-nav__link-text'>Webhooks</span>
-                      </a>
+                      {
+                        this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                         ? <a className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                           <i className='m-nav__link-icon la la-link' />
+                           <span className='m-nav__link-text'>Webhooks</span>
+                         </a>
+                         : <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                           <i className='m-nav__link-icon la la-link' />
+                           <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
+                             <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                               <span style={{color: '#34bfa3'}}>PRO</span>
+                             </span>
+                           </span>
+                         </a>
+                       }
                     </li>
                     }
                     { this.props.user && this.props.user.role === 'buyer' &&
@@ -573,30 +684,6 @@ class Settings extends React.Component {
                             </div>
                           </div>
                         </div>
-                        <br /><br />
-                        <div className='form-group m-form__group row'>
-                          <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
-                          <div className='col-7 input-group'>
-                            <input className='form-control m-input' type='text' readOnly value={this.state.buttonState ? this.state.APIKey : ''} />
-                          </div>
-                        </div>
-                        <div className='form-group m-form__group row'>
-                          <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
-                            API Secret
-                          </label>
-                          <div className='col-7 input-group'>
-                            <input className='form-control m-input' type={this.state.type} readOnly value={this.state.buttonState ? this.state.APISecret : ''} />
-                            <span className='input-group-btn'>
-                              <button className='btn btn-primary btn-sm' style={{height: '34px', width: '70px'}} onClick={(e) => this.changeType(e)}>{this.state.buttonText}</button>
-                            </span>
-                          </div>
-                        </div>
-                        <br />
-                        {
-                          this.state.APIKey &&
-                          <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
-                        }
-                        <br />
                       </div>
                     </form>
                     <div className='form-group m-form__group'>
@@ -650,7 +737,7 @@ class Settings extends React.Component {
                             <div className='form-group m-form__group row'>
                               <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
                               <div className='col-7 input-group'>
-                                <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
                               </div>
                             </div>
                             <div className='form-group m-form__group row'>
@@ -658,14 +745,14 @@ class Settings extends React.Component {
                                   NGP API Key
                                 </label>
                               <div className='col-7 input-group'>
-                                <input disabled={!this.state.NGPKey} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
                               </div>
                             </div>
                           </div>
                         }
                         <br />
                         {
-                          <button disabled={!this.state.NGPKey} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
+                          <button disabled={this.state.isDisableButton} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
                         }
                         <br />
                       </div>
@@ -698,7 +785,7 @@ class Settings extends React.Component {
               <ChatWidget />
             }
             { this.state.openTab === 'billing' &&
-              <Billing showPaymentMethods={this.setPayementMethods} />
+              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} />
             }
             { this.state.openTab === 'paymentMethods' &&
               <PaymentMethods />

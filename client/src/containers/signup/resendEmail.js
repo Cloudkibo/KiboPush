@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import auth from '../../utility/auth.service'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import $ from 'jquery'
 
 class ResendEmail extends React.Component {
   constructor (props) {
@@ -29,15 +30,13 @@ class ResendEmail extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Add Pages'
     /* eslint-disable */
-    if ($('#sidebarDiv')) {
-      $('#sidebarDiv').addClass('hideSideBar')
-    }
-    /* eslint-enable */
+     $('#sidebarDiv').addClass('hideSideBar')
+     /* eslint-enable */
   }
 
   render () {
     return (
-      <div>
+      <div style={{width: '100%'}}>
         <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
           <div className='m-container m-container--fluid m-container--full-height'>
             <div className='m-stack m-stack--ver m-stack--desktop'>
@@ -65,7 +64,7 @@ class ResendEmail extends React.Component {
           <center>
             <div className='m-login__logo'>
               <a href='#'>
-                <img src='img/logo.png' style={{maxWidth: 250}} />
+                <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
               </a>
             </div>
           </center>
@@ -89,7 +88,7 @@ class ResendEmail extends React.Component {
                   <button type='submit' id='m_login_signup_submit' className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={this.resend}>
                     Resend Verification Email
                   </button>
-                  {this.props.user && (this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') &&
+                  {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_ B') &&
                   <Link id='m_login_signup_cancel' to='/dashboard' className='btn btn-outline-focus  m-btn m-btn--pill m-btn--custom'>
                     Cancel
                   </Link>

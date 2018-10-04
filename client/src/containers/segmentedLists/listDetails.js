@@ -66,7 +66,7 @@ class ListDetails extends React.Component {
         'Page': subscriber.pageId.pageName,
         'PhoneNumber': subscriber.phoneNumber,
         'Email': subscriber.email,
-        'Source': subscriber.subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
+        'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
         'Locale': subscriber.locale,
         'Gender': subscriber.gender
       }
@@ -213,7 +213,7 @@ class ListDetails extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.pageId.pageName}
+                                  {subscriber.pageName}
                                 </span>
                               </td>
                               <td data-field='phoneNumber'

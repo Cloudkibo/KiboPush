@@ -35,12 +35,11 @@ class Page extends React.Component {
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
-    this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
-    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPages = this.searchPages.bind(this)
+    this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
   }
 
   componentWillMount () {
@@ -70,25 +69,25 @@ class Page extends React.Component {
     if (data.selected === 0) {
       this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadMyPagesListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
     } else {
-      this.props.loadMyPagesListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
+      this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue}})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.pages)
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/theme-plugins.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
   }
 
@@ -131,10 +130,6 @@ class Page extends React.Component {
       isShowingModal: true,
       page: page
     })
-  }
-
-  showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
   }
 
   closeDialog () {
@@ -183,9 +178,9 @@ class Page extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -262,10 +257,9 @@ class Page extends React.Component {
                           <i className='flaticon-calendar' />
                         </span>
                         <h3 className='m-portlet__head-text m--font-primary'>
-                        Pages
-                      </h3>
+                          Pages
+                        </h3>
                       </div>
-
                     </div>
                     <div className='m-portlet__head-tools'>
                       <ul className='m-portlet__nav'>
@@ -274,37 +268,34 @@ class Page extends React.Component {
                             <span>
                               <i className='la la-plus' />
                               <span>
-                                Connect Facebook Pages
+                                Connect New
                               </span>
                             </span>
                           </button>
                         </li>
-
                       </ul>
                     </div>
-
                   </div>
                   {
-                this.state.isShowingModal &&
-                <ModalContainer style={{width: '500px'}}
-                  onClose={this.closeDialog}>
-                  <ModalDialog style={{width: '500px'}}
-                    onClose={this.closeDialog}>
-                    <h3>Remove Page</h3>
-                    <p>If you remove this page you will loose all of its
-                      subscribers and you will not be able to send messages,
-                      polls, and surveys to them. Are you sure to remove
-                      this page?</p>
-                    <button style={{float: 'right'}}
-                      className='btn btn-primary btn-sm'
-                      onClick={() => this.removePage(
-                              this.state.page)}>Remove
-                    </button>
-                  </ModalDialog>
-                </ModalContainer>
-              }
+                    this.state.isShowingModal &&
+                    <ModalContainer style={{width: '500px'}}
+                      onClose={this.closeDialog}>
+                      <ModalDialog style={{width: '500px'}}
+                        onClose={this.closeDialog}>
+                        <h3>Remove Page</h3>
+                        <p>If you remove this page you will loose all of its
+                          subscribers and you will not be able to send messages,
+                          polls, and surveys to them. Are you sure to remove
+                          this page?</p>
+                        <button style={{float: 'right'}}
+                          className='btn btn-primary btn-sm'
+                          onClick={() => this.removePage(
+                                  this.state.page)}>Remove
+                        </button>
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
                   <div className='m-portlet__body'>
-
                     <div className='row align-items-center'>
                       <div className='col-xl-4 col-lg-4 col-md-4'>
                         <div className='m-input-icon m-input-icon--left'>
@@ -318,32 +309,31 @@ class Page extends React.Component {
                     <br />
                     <br />
                     <br />
-
                     { this.state.pagesData && this.state.pagesData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='platform' style={{width: 100}}
+                          <th data-field='platform'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span >Page Pic</span>
+                            <span style={{width: '100px'}}>Page Pic</span>
                           </th>
-                          <th data-field='statement' style={{width: 100}}
+                          <th data-field='statement'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Page Name</span>
+                            <span style={{width: '100px'}}>Page Name</span>
                           </th>
-                          <th data-field='datetime' style={{width: 100}}
+                          <th data-field='datetime'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Likes</span>
+                            <span style={{width: '100px'}}>Likes</span>
                           </th>
-                          <th data-field='sent' style={{width: 100}}
+                          <th data-field='sent'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span >Subscribers</span>
+                            <span style={{width: '100px'}}>Subscribers</span>
                           </th>
-                          <th data-field='seen' style={{width: 100}}
+                          <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span>Actions</span>
+                            <span style={{width: '150px'}}>Actions</span>
                           </th>
                         </tr>
                       </thead>
@@ -353,12 +343,12 @@ class Page extends React.Component {
                           (page.connected) ? <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='platform' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span><img src={page.pagePic} /></span></td>
-                            <td data-field='statement' style={{width: 150, textAlign: 'center'}} className='m-datatable__cell'><span >{page.pageName}</span></td>
-                            <td data-field='datetime' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'><span>{page.likes}</span></td>
-                            <td data-field='sent' style={{width: 100, paddingLeft: 75 + 'px', textAlign: 'center'}} className='m-datatable__cell'><span >{page.subscribers}</span></td>
-                            <td data-field='seen' style={{width: 100, textAlign: 'center'}} className='m-datatable__cell'>
-                              <span >
+                            <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img src={page.pagePic} /></span></td>
+                            <td data-field='statement' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{page.pageName}</span></td>
+                            <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{page.likes}</span></td>
+                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{page.subscribers}</span></td>
+                            <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'>
+                              <span style={{width: '150px'}}>
                                 <button className='btn btn-primary btn-sm'
                                   style={{float: 'right', margin: 2}}
                                   onClick={() => this.showDialog(page)}>
@@ -398,11 +388,10 @@ class Page extends React.Component {
                     <p> No data to display </p>
                   </span>
                 }
-
                   </div>
+
                 </div>
               </div>
-
             </div>
 
           </div>

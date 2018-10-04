@@ -1,3 +1,4 @@
+
 /* eslint-disable no-return-assign */
 /**
  * Created by sojharo on 20/07/2017.
@@ -6,9 +7,8 @@
 import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
-import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
+import ProgressBox from '../../components/Dashboard/ProgressBox'
 import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
@@ -22,10 +22,11 @@ import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import Reports from '../operationalDashboard/reports'
+import Reports from './reports'
 import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')
@@ -36,18 +37,19 @@ class Dashboard extends React.Component {
     props.getuserdetails()
     props.loadMyPagesList()
     props.loadDashboardData()
-    props.sentVsSeen()
     props.loadSubscribersList()
     props.loadGraphData(0)
     props.loadTopPages()
-
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
       chartData: [],
       selectedDays: 10,
       topPages: [],
-      loading: true
+      loading: true,
+      showDropDown: false,
+      pageLikesSubscribes: {},
+      isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -56,6 +58,25 @@ class Dashboard extends React.Component {
     this.exportDashboardInformation = this.exportDashboardInformation.bind(this)
     this.prepareExportData = this.prepareExportData.bind(this)
     this.formatDate = this.formatDate.bind(this)
+    this.showDropDown = this.showDropDown.bind(this)
+    this.hideDropDown = this.hideDropDown.bind(this)
+    this.changePage = this.changePage.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
 
   scrollToTop () {
@@ -142,12 +163,12 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
+      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
+      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
         if (nextprops.pages && nextprops.pages.length === 0) {
           console.log('going to push')
           browserHistory.push({
@@ -184,6 +205,10 @@ class Dashboard extends React.Component {
       if (nextprops.graphData) {
         this.setChartData(nextprops.graphData)
       }
+    }
+
+    if (!this.props.pages && nextprops.pages) {
+      this.props.sentVsSeen(nextprops.pages[0].pageId)
     }
   }
   setChartData (graphData) {
@@ -335,11 +360,11 @@ class Dashboard extends React.Component {
     console.log('location', this.props.location)
     if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
       console.log('in loadScript')
-      let addScript = document.createElement('script')
-      addScript.setAttribute('src', 'assets/vendors/base/vendors.bundle.js')
-      document.body.appendChild(addScript)
+      // let addScript = document.createElement('script')
+      // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
+      // document.body.appendChild(addScript)
       let addScript1 = document.createElement('script')
-      addScript1.setAttribute('src', 'assets/demo/default/base/scripts.bundle.js')
+      addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       document.body.appendChild(addScript1)
     }
     document.title = 'KiboPush | Dashboard'
@@ -353,6 +378,37 @@ class Dashboard extends React.Component {
     })
   }
 
+  changePage (page) {
+    let index = 0
+    for (let i = 0; i < this.props.pages.length; i++) {
+      if (page === this.props.pages[i].pageName) {
+        console.log('in if change page')
+        index = i
+        break
+      }
+    }
+    console.log('')
+    this.props.sentVsSeen(this.props.pages[index].pageId)
+    this.setState({
+      pageLikesSubscribes: {
+        selectedPageName: this.props.pages[index].pageName,
+        likes: this.props.pages[index].likes,
+        subscribers: this.props.pages[index].subscribers,
+        unsubscribes: this.props.pages[index].unsubscribes
+      },
+      selectedPage: this.props.pages[index]
+    }
+      )
+  }
+
+  showDropDown () {
+    this.setState({showDropDown: true})
+  }
+
+  hideDropDown () {
+    this.setState({showDropDown: false})
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -364,6 +420,24 @@ class Dashboard extends React.Component {
     console.log('this.props.dashboard', this.props.dashboard)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -402,18 +476,16 @@ class Dashboard extends React.Component {
           : <div>
             <div className='row'>
               {
-                this.props.pages && this.props.pages.length > 0 &&
-                <PageLikesSubscribers connectedPages={this.props.pages} />
-              }
-              {
                 this.props.dashboard &&
                 <CardBoxes data={this.props.dashboard} />
               }
             </div>
-            {
-              this.props.sentseendata &&
-              <CardsWithProgress data={this.props.sentseendata} />
+            <div className='row'>
+              {
+              this.props.pages && this.props.sentseendata &&
+              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.state.selectedPage} />
             }
+            </div>
             {
              this.props.topPages && this.props.topPages.length > 1 &&
                <div className='row'>
@@ -431,14 +503,28 @@ class Dashboard extends React.Component {
             </div>
             <div className='row'>
               <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                {
+                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+              ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                <span>
+                  <i className='fa fa-download' />
                   <span>
-                    <i className='fa fa-download' />
-                    <span>
-                      Export Records in CSV File
-                    </span>
+                    Export Records in CSV File
                   </span>
-                </button>
+                </span>
+              </button>
+              : <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.showProDialog}>
+                <span>
+                  <i className='fa fa-download' />
+                  <span>
+                    Export Records in CSV File
+                  </span>&nbsp;&nbsp;
+                  <span style={{border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                    <span style={{color: '#f4516c'}}>PRO</span>
+                  </span>
+                </span>
+              </button>
+            }
               </div>
             </div>
           </div>

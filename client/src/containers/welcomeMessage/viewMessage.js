@@ -10,24 +10,22 @@ class ViewWelcomeMessage extends React.Component {
 
   goBack () {
     browserHistory.push({
-      pathname: `/settings`,
+      pathname: `/welcomeMessage`,
       state: {module: 'welcome'}
     })
   }
   render () {
     return (
-      <div>
-        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-          <div className='m-content'>
-            <div className='row'>
-              <div className='col-xl-6'>
-                <h3>View Welcome Message</h3>
-                <p>Page: {this.props.location.state.payload.pageName}</p>
-                <button onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </button>
-              </div>
-              <div className='col-xl-6'>
-                <ViewMessage payload={this.props.location.state.payload.welcomeMessage} />
-              </div>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-content'>
+          <div className='row'>
+            <div className='col-xl-6'>
+              <h3>View Welcome Message</h3>
+              <p>Page: {this.props.location.state.payload.pageName}</p>
+              <button onClick={() => this.goBack()} style={{float: 'left', lineHeight: 2.5}} className='btn btn-secondary btn-sm'> Back </button>
+            </div>
+            <div className='col-xl-6'>
+              <ViewMessage payload={this.props.location.state.payload.welcomeMessage} />
             </div>
           </div>
         </div>

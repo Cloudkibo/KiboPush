@@ -31,25 +31,29 @@ export function showCreatedSequence (data) {
   }
 }
 
-export function createSequence (data) {
+export function createSequence (data, msg) {
   return (dispatch) => {
     callApi('sequenceMessaging/createSequence', 'post', data)
       .then(res => {
         console.log('response from createBot', res)
         if (res.status === 'success') {
           dispatch(showCreatedSequence(res.payload))
+        } else {
+          msg.error(res.description)
         }
       })
   }
 }
 
-export function updateSegmentation (data) {
+export function updateSegmentation (data, msg) {
   console.log('updateSegmentation data', data)
   return (dispatch) => {
     callApi('sequenceMessaging/updateSegmentation', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          fetchAllMessages(data.segmentationId)
+          dispatch(fetchAllMessages(data.sequenceId))
+        } else {
+          msg.error(res.description)
         }
       })
   }
@@ -78,17 +82,17 @@ export function setSchedule (data, sequenceId) {
   }
 }
 
-export function setStatus (data, sequenceId) {
-  console.log('data', data)
-  return (dispatch) => {
-    callApi('sequenceMessaging/setStatus', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(fetchAllMessages(sequenceId))
-        }
-      })
-  }
-}
+// export function setStatus (data, sequenceId) {
+//   console.log('data', data)
+//   return (dispatch) => {
+//     callApi('sequenceMessaging/setStatus', 'post', data)
+//       .then(res => {
+//         if (res.status === 'success') {
+//           dispatch(fetchAllMessages(sequenceId))
+//         }
+//       })
+//   }
+// }
 
 export function editMessage (data, msg) {
   console.log('data', data)
@@ -211,6 +215,7 @@ export function saveMessageSeq (data, msg) {
 }
 
 export function deleteSequence (id, msg) {
+  console.log('id', id)
   return (dispatch) => {
     callApi(`sequenceMessaging/deleteSequence/${id}`, 'delete')
       .then(res => {

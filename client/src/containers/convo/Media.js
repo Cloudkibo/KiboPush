@@ -27,29 +27,22 @@ class Media extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
-    this.onTestURLVideo = this.onTestURLVideo.bind(this)
     this.state = {
       errorMsg: '',
       showErrorDialogue: false,
-      imgSrc: '',
+      imgSrc: props.img ? props.img : '',
       button: props.buttons ? props.buttons : [],
       fileurl: '',
       fileName: '',
       type: '',
       size: '',
+      image_url: '',
       loading: false,
       showPreview: false,
       file: '',
       previewUrl: '',
       mediaType: '',
       styling: {minHeight: 30, maxWidth: 400}
-    }
-  }
-  onTestURLVideo (url) {
-    var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
-    var truef = videoEXTENSIONS.test(url)
-
-    if (truef === false) {
     }
   }
   showDialog (page) {
@@ -70,35 +63,9 @@ class Media extends React.Component {
       this.setState({
         //  id: cardProps.id,
         componentType: 'media',
-        button: mediaProps.media.buttons,
-        showPreview: true
+        imgSrc: mediaProps.media.image_url,
+        button: mediaProps.media.buttons
       })
-      if (mediaProps.media.buttons) {
-        this.setState({
-          button: mediaProps.media.buttons
-        })
-      }
-      if (mediaProps.media.fileurl && mediaProps.media.fileurl.url) {
-        this.setState({
-          previewUrl: mediaProps.media.fileurl.url,
-          fileurl: mediaProps.media.fileurl,
-          fileName: mediaProps.media.fileName,
-          type: mediaProps.media.type,
-          size: mediaProps.media.size
-        })
-      }
-      if (mediaProps.media.mediaType) {
-        var mediaType = mediaProps.media.mediaType
-        if (mediaType === 'video') {
-          this.setState({
-            mediaType: 'video'
-          })
-        } else if (mediaType === 'image') {
-          this.setState({
-            mediaType: 'image'
-          })
-        }
-      }
     }
   }
   _onChange () {
@@ -115,8 +82,7 @@ class Media extends React.Component {
     }
     if (file && image) {
       this.setState({
-        mediaType: 'image',
-        showPreview: false
+        mediaType: 'image'
       })
       if (file.type && file.type && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         if (this.props.handleMedia) {
@@ -134,19 +100,20 @@ class Media extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
-      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {fileurl: '',
+      this.props.uploadImage(file, this.props.pages, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
+        image_url: '',
         size: file.size}, this.updateImageUrl, this.setLoading)
     }
     if (file && video) {
-      this.setState({mediaType: 'video', showPreview: false})
+      this.setState({file: file, mediaType: 'video'})
       var fileData = new FormData()
       fileData.append('file', file)
       fileData.append('filename', file.name)
       fileData.append('filetype', file.type)
       fileData.append('filesize', file.size)
-      fileData.append('pageId', this.props.pages[0]._id)
+      fileData.append('pages', JSON.stringify(this.props.pages))
       fileData.append('componentType', 'video')
       var fileInfo = {
         id: this.props.id,
@@ -168,10 +135,11 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: temp})
+      buttons: this.state.button})
   }
 
   editButton (obj) {
@@ -186,10 +154,11 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: temp})
+      buttons: this.state.button})
   }
   removeButton (obj) {
     var temp = this.state.button.filter((elm, index) => { return index !== obj.id })
@@ -198,10 +167,11 @@ class Media extends React.Component {
       componentType: 'media',
       fileurl: this.state.fileurl,
       mediaType: this.state.mediaType,
+      image_url: this.state.image_url,
       fileName: this.state.fileName,
       type: this.state.type,
       size: this.state.size,
-      buttons: temp})
+      buttons: this.state.button})
   }
 
   setLoading () {
@@ -210,6 +180,7 @@ class Media extends React.Component {
   updateImageUrl (data) {
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
+      image_url: data.image_url,
       type: data.type,
       size: data.size })
 
@@ -217,6 +188,7 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: data.fileurl,
+      image_url: data.image_url,
       fileName: data.fileName,
       type: data.type,
       size: data.size,
@@ -225,6 +197,7 @@ class Media extends React.Component {
   updateFileUrl (data) {
     this.setState({ fileurl: data.fileurl,
       fileName: data.fileName,
+      image_url: '',
       type: data.type,
       size: data.size })
 
@@ -232,6 +205,7 @@ class Media extends React.Component {
       componentType: 'media',
       mediaType: this.state.mediaType,
       fileurl: data.fileurl,
+      image_url: '',
       fileName: data.fileName,
       type: data.type,
       size: data.size,
@@ -278,7 +252,7 @@ class Media extends React.Component {
               {
                 (!this.state.showPreview && this.state.fileName === '') &&
                 <div className='align-center' style={{marginTop: '50px'}}>
-                  <img style={{maxHeight: 40, margin: 'auto'}} src='icons/media.png' alt='Text' />
+                  <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Text' />
                   <h4 style={{pointerEvents: 'none', zIndex: -1}}> Media </h4>
                 </div>
               }
@@ -290,7 +264,7 @@ class Media extends React.Component {
                   }
                     { this.state.mediaType === 'video' &&
                     <div style={{marginTop: '50px'}}>
-                      <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
                       <h4 style={{wordBreak: 'break-word'}}>{this.state.fileName !== '' ? this.state.fileName : 'Video'}</h4>
                     </div>
                   }
@@ -316,10 +290,10 @@ class Media extends React.Component {
           }
         </div>
         {(this.state.button) ? this.state.button.map((obj, index) => {
-          return <EditButton button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+          return <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
         { this.state.button.length < 3 &&
-          <Button button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
+          <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={this.state.styling} />
         }
       </div>
     )
@@ -329,7 +303,6 @@ class Media extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
   }
 }
 

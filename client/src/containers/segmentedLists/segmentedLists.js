@@ -78,9 +78,9 @@ class SegmentedList extends React.Component {
     if (data.selected === 0) {
       this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next'})
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', current_page: this.state.pageNumber, requested_page: data.selected})
     } else {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous'})
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous', current_page: this.state.pageNumber, requested_page: data.selected})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.customerLists)
@@ -137,9 +137,9 @@ class SegmentedList extends React.Component {
           ref={(el) => { this.top = el }} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube

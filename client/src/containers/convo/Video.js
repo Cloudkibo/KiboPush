@@ -96,7 +96,7 @@ class Video extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
-        fileData.append('pageId', this.props.pages[0]._id)
+        fileData.append('pages', JSON.stringify(this.props.pages))
         fileData.append('componentType', 'video')
         var fileInfo = {
           id: this.props.id,
@@ -147,7 +147,7 @@ class Video extends React.Component {
               clickable
             >
               <div className='align-center'>
-                <img src='icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
                 <h4 style={{wordBreak: 'break-word', overflowWrap: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
               </div>
             </Files>
@@ -185,8 +185,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
-    pages: (state.pagesInfo.pages)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 

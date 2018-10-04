@@ -15,6 +15,7 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
     }).then((res) => res.json()).then((res) => res).then(res => {
       if (res.status === 'success') {
         fileInfo.fileurl = res.payload
+        console.log('fileInfo: ', fileInfo)
         setLoading()
         handleFunction(fileInfo)
       } else {
@@ -24,14 +25,14 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   }
 }
 
-export function uploadImage (file, pageId, componentType, data, handleUpload, setLoading) {
+export function uploadImage (file, pages, componentType, data, handleUpload, setLoading) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()
   fileData.append('file', file)
   fileData.append('filename', file.name)
   fileData.append('filetype', file.type)
   fileData.append('filesize', file.size)
-  fileData.append('pageId', pageId)
+  fileData.append('pages', JSON.stringify(pages))
   fileData.append('componentType', componentType)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
@@ -46,6 +47,7 @@ export function uploadImage (file, pageId, componentType, data, handleUpload, se
       if (res.status === 'success') {
         data.fileurl = res.payload
         data.image_url = res.payload.url
+        console.log('fileInfo: ', data)
         setLoading()
         handleUpload(data)
       } else {

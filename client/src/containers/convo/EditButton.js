@@ -17,7 +17,7 @@ class EditButton extends React.Component {
     this.state = {
       openPopover: false,
       title: this.props.data.button.title,
-      url: this.props.data.button.url,
+      url: '',
       disabled: false,
       sequenceValue: this.props.data.button.sequenceValue,
       openWebsite: this.props.data.button.openWebsite,
@@ -41,7 +41,6 @@ class EditButton extends React.Component {
 
   componentDidMount () {
     if (this.props.data.button.type === 'postback') {
-      console.log('this.props.data', this.props.data)
       if (this.props.data.button.payload.action === 'subscribe') {
         this.setState({sequenceValue: this.props.data.button.payload.sequenceId})
       } else if (this.props.data.button.payload.action === 'unsubscribe') {
@@ -134,8 +133,6 @@ class EditButton extends React.Component {
       this.setState({disabled: true})
     }
     this.setState({title: event.target.value})
-    console.log('The title value is ' + this.state.title)
-    console.log('The event.target.value value is ' + event.target.value)
   }
 
   changeUrl (event) {
@@ -168,8 +165,6 @@ class EditButton extends React.Component {
   }
 
   render () {
-    console.log('EditButton state', this.state)
-    console.log('EditButton state', this.props.data)
     return (
       <div>
         <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center' onClick={this.handleClick}>
@@ -189,13 +184,13 @@ class EditButton extends React.Component {
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
                   </div>
                   {
-                    this.props.sequences && this.props.sequences.length > 0 &&
+                    this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showSubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
                     </div>
                   }
                   {
-                    this.props.sequences && this.props.sequences.length > 0 &&
+                    this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                     <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showUnsubscribe}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
                     </div>
@@ -220,7 +215,8 @@ class EditButton extends React.Component {
                       <option key='' value='' disabled>Select Sequence...</option>
                       {
                         this.props.sequences.map((seq, i) => (
-                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                        seq.sequence.trigger.event === 'subcribes_to_sequence'
+                        ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                         ))
                       }
                     </select>
@@ -236,7 +232,8 @@ class EditButton extends React.Component {
                       <option key='' value='' disabled>Select Sequence...</option>
                       {
                         this.props.sequences.map((seq, i) => (
-                          <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                        seq.sequence.trigger.event === 'subscribes_to_sequence'
+                         ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                         ))
                       }
                     </select>

@@ -42,6 +42,8 @@ const all = {
   // List of user roles, NOTE: don't change the order
   userRoles: ['buyer', 'admin', 'supervisor', 'agent'],
 
+  webhook_ip: process.env.WEBHOOK_IP_ADDRESS || 'localhost',
+
   mongo: {
     options: {
       db: {
@@ -61,6 +63,12 @@ const all = {
     consumer_token: process.env.TWITTER_TOKEN || '2616186000-dAaH7yuQsBGNcbvnCiHweB8rFm54pF2YOC0hOtP',
     consumer_token_secret: process.env.TWITTER_TOKEN_SECRET || '6hWNxP6qwjPEjEfLwT8uK9JpPVFzwA3BxBeCSU7J6rylT',
     callbackUrl: `${process.env.DOMAIN || 'https://staging.kibopush.com'}/api/autoposting/twitter`
+  },
+
+  shopify: {
+    app_key: '98fdce87050f053f7f9c89ee5f7a9064',
+    app_host: 'https://kibopush-dayem.ngrok.io',
+    app_secret: '716777a88dc4a2d16819d8aabe82ab11'
   },
 
   permissions: {
@@ -222,6 +230,7 @@ const all = {
 
   stripeOptions: {
     apiKey: process.env.STRIPE_KEY || 'sk_test_gB8zWtkvbbYFbFFnuj3t4EZn',
+    product: 'prod_CxuUOUCZj9ZqwG',
     stripePubKey: process.env.STRIPE_PUB_KEY || 'pk_test_ozzmt2lgDgltSYx1pO4W2IE2',
     plans: ['plan_A', 'plan_B', 'plan_C', 'plan_D'],
     planData: {
@@ -329,7 +338,9 @@ const all = {
       welcomeMessage: true,
       commentCapture: true
     }
-  }
+  },
+  API_URL_ACCOUNTS: '',
+  API_URL_WEBHOOK: process.env.NODE_ENV === 'production' ? 'https://webhook.cloudkibo.com/api' : process.env.NODE_ENV === 'staging' ? 'https://swebhook.cloudkibo.com/api' : 'http://localhost:3000/api'
 }
 
 module.exports = _.merge(

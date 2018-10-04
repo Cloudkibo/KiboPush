@@ -88,7 +88,11 @@ class Button extends React.Component {
       let data = {
         type: 'web_url',
         url: this.state.url, // User defined link,
-        title: this.state.title // User defined label
+        title: this.state.title, // User defined label
+        module: {
+          type: this.props.module,
+          id: ''// messageId
+        }
       }
       this.props.addButton(data, this.props.onAdd)
     } else if (this.state.sequenceValue !== '') {
@@ -136,7 +140,7 @@ class Button extends React.Component {
 
   changeUrl (event) {
     console.log('event', event.target.value)
-    if (isWebURL(event.target.value) && this.state.title !== '') {
+    if (isWebURL(this.state.url) && this.state.title !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -145,7 +149,6 @@ class Button extends React.Component {
   }
 
   render () {
-    console.log('Button state', this.state)
     return (
       <div className='ui-block hoverborder' style={this.props.styling} onClick={this.handleClick}>
         <div>
@@ -166,13 +169,13 @@ class Button extends React.Component {
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
                     </div>
                     {
-                      this.props.sequences && this.props.sequences.length > 0 &&
+                      this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                       <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showSubscribe}>
                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-check-circle' />  Subscribe to Sequence</h7>
                       </div>
                     }
                     {
-                      this.props.sequences && this.props.sequences.length > 0 &&
+                      this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
                       <div style={{border: '1px dashed #ccc', padding: '10px', marginTop: '5px', cursor: 'pointer'}} onClick={this.showUnsubscribe}>
                         <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='la la-times-circle' />  Unsubscribe to Sequence</h7>
                       </div>
@@ -197,7 +200,8 @@ class Button extends React.Component {
                         <option key='' value='' disabled>Select Sequence...</option>
                         {
                           this.props.sequences.map((seq, i) => (
-                            <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                            seq.sequence.trigger.event === 'subscribes_to_sequence'
+                            ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                           ))
                         }
                       </select>
@@ -213,7 +217,8 @@ class Button extends React.Component {
                         <option key='' value='' disabled>Select Sequence...</option>
                         {
                           this.props.sequences.map((seq, i) => (
-                            <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option>
+                            seq.sequence.trigger.event === 'subscribes_to_sequence'
+                            ? <option key={i} value={seq.sequence._id}>{seq.sequence.name}</option> : ''
                           ))
                         }
                       </select>

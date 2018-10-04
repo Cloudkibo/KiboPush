@@ -19,11 +19,13 @@ class ResetPassword extends React.Component {
       pwdBar: 0,
       pwd_color: 'red',
       ismatch: false,
-      pwdlength: true
+      pwdlength: true,
+      changePassword: false
     }
     this.save = this.save.bind(this)
     this.equal = this.equal.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
+    this.onCurrentPassChange = this.onCurrentPassChange.bind(this)
   }
   equal () {
     if (this.refs.new.value === this.refs.retype.value) {
@@ -32,12 +34,24 @@ class ResetPassword extends React.Component {
       this.setState({ismatch: false})
     }
   }
+  onCurrentPassChange () {
+    if (this.refs.new && this.refs.current && this.refs.new.value === this.refs.current.value) {
+      this.setState({changePassword: true})
+    } else {
+      this.setState({changePassword: false})
+    }
+  }
   handlePwdChange (event) {
     this.setState({password: true})
     if (event.target.value.length <= 6) {
       this.setState({pwdlength: false})
     } else if (event.target.value.length > 6) {
       this.setState({pwdlength: true})
+    }
+    if (this.refs.new && this.refs.current && this.refs.new.value === this.refs.current.value) {
+      this.setState({changePassword: true})
+    } else {
+      this.setState({changePassword: false})
     }
     var result = strengthTester.check(event.target.value)
     var text = ''
@@ -77,6 +91,12 @@ class ResetPassword extends React.Component {
     this.setState({strength: text})
     this.setState({pwdBar: bar})
     this.setState({pwd_color: color})
+
+    if (this.refs.new.value === this.refs.retype.value) {
+      this.setState({ismatch: true})
+    } else {
+      this.setState({ismatch: false})
+    }
   }
   save (event) {
     event.preventDefault()
@@ -126,7 +146,7 @@ class ResetPassword extends React.Component {
                   <div className='form-group m-form__group row'>
                     <label className='col-4 col-form-label' style={{textAlign: 'left'}}>Current Password</label>
                     <div className='col-7 input-group'>
-                      <input className='form-control m-input' required type='password' ref='current' />
+                      <input className='form-control m-input' required type='password' ref='current' onChange={this.onCurrentPassChange} />
                     </div>
                   </div>
                   <div className='form-group m-form__group row'>
@@ -157,8 +177,12 @@ class ResetPassword extends React.Component {
                     { this.state.password && this.state.ismatch === false &&
                       <div className='col-7 input-group' style={{color: 'red'}}>Passwords do not match</div>
                     }
+                    { this.state.password && this.state.changePassword &&
+                      <div className='col-7 input-group' style={{color: 'red'}}>New password cannot be same as current password</div>
+                    }
+                    {console.log('this.refs', this.refs.current)}
                     <div className='col-11 input-group pull-right'>
-                      <button className='btn btn-primary pull-right' onClick={this.save}>Save</button>
+                      <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === '' || this.state.changePassword || !this.state.ismatch || !this.state.pwdlength} onClick={this.save}>Save</button>
                     </div>
                   </div>
                 </div>

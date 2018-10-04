@@ -8,6 +8,7 @@ import LoginSignup from './containers/login/loginSignup'
 import Signup from './containers/signup/signup'
 import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
+import ForgotNamespace from './containers/login/forgotWorkspaceName.js'
 import Subscriber from './containers/subscriber/subscriber'
 import OperationalDashboard from './containers/operationalDashboard/operationalDashboard'
 import StackedBar from './containers/dashboard/stackedBar'
@@ -21,6 +22,7 @@ import NonSubscribersList from './containers/GrowthTools/nonSubscribersList'
 import Stats from './containers/stats/stats'
 import Convo from './containers/convo/convo'
 import Page from './containers/page/page'
+import GreetingMessage from './containers/page/greetingMessage'
 import AddPage from './containers/page/addPage'
 import InviteSubscribers from './containers/page/InviteSubscribers'
 import CreateConvo from './containers/convo/CreateConvo'
@@ -107,7 +109,11 @@ import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
-import UnansweredQueries from './containers/smart_replies/unansweredQueries'
+import Plans from './containers/billingPricing/plans'
+import Permissions from './containers/permissions/permissions'
+import Features from './containers/features/features'
+import Usage from './containers/usage/usage'
+import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 import ConnectFBPages from './containers/signup/connectFbPages'
 
 import auth from './utility/auth.service'
@@ -147,6 +153,7 @@ const routes = (
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
+    <Route path='/forgotWorkspaceName' component={ForgotNamespace} />
     <Route path='/operationalDashboard' component={OperationalDashboard} onEnter={requireAuth} />
     <Route path='/subscribers' component={Subscriber} onEnter={requireAuth} />
     <Route path='/broadcasts' component={Convo} onEnter={requireAuth} />
@@ -246,8 +253,13 @@ const routes = (
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
-    <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
+    <Route path='/plans' component={Plans} onEnter={requireAuth} />
+    <Route path='/permissions' component={Permissions} onEnter={requireAuth} />
+    <Route path='/features' component={Features} onEnter={requireAuth} />
+    <Route path='/usage' component={Usage} onEnter={requireAuth} />
+    <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
+    <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
   </Route>
 
 )

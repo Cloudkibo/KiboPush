@@ -7,15 +7,15 @@ const config = require('../config/environment')
 const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 const compose = require('composable-middleware')
-const Users = require('../api/user/Users.model')
-const CompanyProfile = require('../api/companyprofile/companyprofile.model')
-const Plans = require('../api/permissions_plan/permissions_plan.model')
-const Permissions = require('../api/permissions/permissions.model')
-const ApiSettings = require('../api/api_settings/api_settings.model')
+const Users = require('../api/v1/user/Users.model')
+const CompanyProfile = require('../api/v1/companyprofile/companyprofile.model')
+const PlanFeatures = require('../api/v1/permissions_plan/permissions_plan.model')
+const Permissions = require('../api/v1/permissions/permissions.model')
+const ApiSettings = require('../api/v1/api_settings/api_settings.model')
 const validateJwt = expressJwt({secret: config.secrets.session})
 const needle = require('needle')
-const Pages = require('../api/pages/Pages.model')
-const CompanyUsers = require('../api/companyuser/companyuser.model')
+const Pages = require('../api/v1/pages/Pages.model')
+const CompanyUsers = require('../api/v1/companyuser/companyuser.model')
 const _ = require('lodash')
 
 // const PassportFacebookExtension = require('passport-facebook-extension')
@@ -84,7 +84,7 @@ function isAuthenticated () {
           return res.status(500)
             .json({status: 'failed', description: 'Internal Server Error'})
         }
-        CompanyProfile.findOne({_id: companyuser.companyId}, (err, company) => {
+        CompanyProfile.findOne({_id: companyuser.companyId}).populate('planId').exec((err, company) => {
           if (err) {
             return res.status(500)
               .json({status: 'failed', description: 'Internal Server Error'})
@@ -94,7 +94,7 @@ function isAuthenticated () {
               .json({status: 'failed', description: 'Company Not Found. Contact support for more information.'})
           }
 
-          req.user.plan = company.stripe.plan
+          req.user.plan = company.planId
           req.user.last4 = company.stripe.last4
           next()
         })
@@ -142,7 +142,7 @@ function hasRequiredPlan (planRequired) {
     planRequired.length)) throw new Error('Required plan must be of type array')
 
   return compose().use(function meetsRequirements (req, res, next) {
-    if (planRequired.indexOf(req.user.plan) > -1) {
+    if (planRequired.indexOf(req.user.plan.unique_ID) > -1) {
       next()
     } else {
       res.send(403)
@@ -154,7 +154,7 @@ function doesPlanPermitsThisAction (action) {
   if (!action) throw new Error('Action needs to be set')
 
   return compose().use(function meetsRequirements (req, res, next) {
-    Plans.findOne({}, (err, plan) => {
+    PlanFeatures.findOne({plan_id: req.user.plan._id}, (err, plan) => {
       if (err) {
         return res.status(500)
           .json({status: 'failed', description: 'Internal Server Error'})
@@ -166,7 +166,7 @@ function doesPlanPermitsThisAction (action) {
             description: 'Fatal Error. Plan not set. Please contact support.'
           })
       }
-      if (req.user && req.user.plan && plan[req.user.plan][action]) {
+      if (req.user && req.user.plan && plan[action]) {
         next()
       } else {
         res.status(403)
@@ -332,6 +332,19 @@ function isAuthorizedWebHookTrigger () {
   })
 }
 
+function isItWebhookServer () {
+  return compose().use((req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress ||
+      req.socket.remoteAddress || req.connection.socket.remoteAddress
+    logger.serverLog(TAG, req.ip)
+    logger.serverLog(TAG, ip)
+    logger.serverLog(TAG, 'This is middleware')
+    logger.serverLog(TAG, req.body)
+    if (ip === '::ffff:' + config.webhook_ip) next()
+    else res.send(403)
+  })
+}
+
 // Auth for kibodash service
 function isKiboDash (req, res, next) {
   logger.serverLog(TAG, `Request header from KiboDash ${JSON.stringify(req.headers)}`)
@@ -349,6 +362,7 @@ exports.doesRolePermitsThisAction = doesRolePermitsThisAction
 exports.fbConnectDone = fbConnectDone
 exports.fetchPages = fetchPages
 exports.isKiboDash = isKiboDash
+exports.isItWebhookServer = isItWebhookServer
 // This functionality will be exposed in later stages
 // exports.isAuthorizedWebHookTrigger = isAuthorizedWebHookTrigger;
 

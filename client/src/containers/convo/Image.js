@@ -62,7 +62,7 @@ class Image extends React.Component {
         showPreview: false,
         loading: true
       })
-      this.props.uploadImage(file, this.props.pages[0]._id, 'image', {
+      this.props.uploadImage(file, this.props.pages, 'image', {
         id: this.props.id,
         componentType: 'image',
         fileName: file.name,
@@ -98,7 +98,7 @@ class Image extends React.Component {
           {
           this.state.loading
           ? <div className='align-center'><center><Halogen.RingLoader color='#FF5E3A' /></center></div>
-          : <div style={{position: 'relative'}}>
+          : <div>
             <input
               ref='file'
               type='file'
@@ -106,14 +106,14 @@ class Image extends React.Component {
               multiple='true'
               accept='image/*'
               title=' '
-              onChange={this._onChange} style={{position: 'absolute', minHeight: 150, opacity: 0, margin: -25, zIndex: 5, cursor: 'pointer'}} />
+              onChange={this._onChange} style={{position: 'absolute', opacity: 0, minHeight: 150, margin: -25, zIndex: 5, cursor: 'pointer'}} />
             {
               (this.state.imgSrc === '')
               ? <div className='align-center'>
-                <img src='icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h4 style={{pointerEvents: 'none', zIndex: -1}}> Image </h4>
               </div>
-              : <img style={{maxWidth: '100%', height: 'auto'}} src={this.state.imgSrc} />
+              : <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.imgSrc} />
           }
           </div>
           }
@@ -135,8 +135,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
-    pages: (state.pagesInfo.pages)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 

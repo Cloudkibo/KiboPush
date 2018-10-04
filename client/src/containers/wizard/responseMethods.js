@@ -76,7 +76,7 @@ class AutomationControls extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <Header />
         <div className='m-content'>
@@ -97,7 +97,7 @@ class AutomationControls extends React.Component {
                     </div>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
-                        <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                        <div className='radio-buttons' style={{ marginLeft: '37px' }}>
                           <div className='radio'>
                             <input id='autoResponse'
                               type='radio'
@@ -137,7 +137,7 @@ class AutomationControls extends React.Component {
                         </div>
                       </div>
                       <div className='row'>
-                        <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
+                        <button className='btn btn-primary' style={{ marginLeft: '20px', marginTop: '20px' }} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
                       </div>
                     </div>
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>

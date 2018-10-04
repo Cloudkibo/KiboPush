@@ -73,7 +73,7 @@ class ShowTemplates extends React.Component {
   gotoCreate (broadcast) {
     browserHistory.push({
       pathname: `/createBroadcast`,
-      state: {module: 'convo'}
+      state: {module: 'convo', pages: this.props.location.state.pages}
     })
   }
 
@@ -138,7 +138,7 @@ class ShowTemplates extends React.Component {
                                          </span>
                                        </div>
                                        <div className='m-widget4__ext'>
-                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={'/editTemplateBroadcast'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                         <Link onClick={(e) => { let broadcastSelected = broadcast; this.onBroadcastClick(e, broadcastSelected) }} to={{pathname: '/editTemplateBroadcast', state: this.props.location.state.pages}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                           Edit Template
                                         </Link>
                                        </div>

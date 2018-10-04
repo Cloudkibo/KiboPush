@@ -48,7 +48,7 @@ class AddPage extends React.Component {
 
   componentWillReceiveProps (nextprops) {
     if (nextprops.message && nextprops.message !== '') {
-      this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
+      this.setState({showAlert: true, alertmsg: nextprops.message})
     } else if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
     } else {
@@ -179,7 +179,6 @@ class AddPage extends React.Component {
               </div>
             ))
           }
-
                   </div>
                 </div>
               </div>

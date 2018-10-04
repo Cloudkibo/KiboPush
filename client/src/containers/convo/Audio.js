@@ -87,7 +87,7 @@ class Audio extends React.Component {
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
-        fileData.append('pageId', this.props.pages[0]._id)
+        fileData.append('pages', JSON.stringify(this.props.pages))
         fileData.append('componentType', 'audio')
         var fileInfo = {
           id: this.props.id,
@@ -107,6 +107,7 @@ class Audio extends React.Component {
   }
 
   render () {
+    console.log('pages in audio: ', this.props.pages)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -138,7 +139,7 @@ class Audio extends React.Component {
               clickable
             >
               <div className='align-center'>
-                <img src='icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
+                <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Text' style={{maxHeight: 40}} />
                 <h4 style={{wordBreak: 'break-word', overflowWrap: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
@@ -177,8 +178,7 @@ function mapStateToProps (state) {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers),
-    pages: (state.pagesInfo.pages)
+    subscribers: (state.subscribersInfo.subscribers)
   }
 }
 

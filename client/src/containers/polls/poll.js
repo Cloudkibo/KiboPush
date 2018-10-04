@@ -36,6 +36,7 @@ class Poll extends React.Component {
       pollsData: [],
       totalLength: 0,
       isShowingModal: false,
+      isShowingModalPro: false,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       isShowingModalDelete: false,
@@ -48,6 +49,8 @@ class Poll extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.showProDialog = this.showProDialog.bind(this)
+    this.closeProDialog = this.closeProDialog.bind(this)
     this.showZeroSubDialog = this.showZeroSubDialog.bind(this)
     this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.props.clearAlertMessage()
@@ -55,6 +58,7 @@ class Poll extends React.Component {
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.sendPoll = this.sendPoll.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
     this.props.getAllPollResults()
   }
   showDialog () {
@@ -71,6 +75,19 @@ class Poll extends React.Component {
 
   closeZeroSubDialog () {
     this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+  }
+
+  showProDialog () {
+    this.setState({isShowingModalPro: true})
+  }
+  closeProDialog () {
+    this.setState({isShowingModalPro: false})
+  }
+  goToSettings () {
+    browserHistory.push({
+      pathname: `/settings`,
+      state: {module: 'pro'}
+    })
   }
 
   onDaysChange (e) {
@@ -164,16 +181,16 @@ class Poll extends React.Component {
   }
 
   componentDidMount () {
-    // require('../../../public/js/jquery-3.2.0.min.js')
-    // require('../../../public/js/jquery.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../js/theme-plugins.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/theme-plugins.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/demo/default/base/scripts.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', '../../../assets/vendors/base/vendors.bundle.js')
+    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
   }
 
@@ -218,6 +235,7 @@ class Poll extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendpoll(poll, this.msg)
+      this.setState({ pageNumber: 0 })
     }
   }
   render () {
@@ -228,15 +246,16 @@ class Poll extends React.Component {
       theme: 'dark',
       time: 5000,
       transition: 'scale'
+      
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -249,6 +268,24 @@ class Poll extends React.Component {
                     }
                   }}
                   />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingModalPro &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeProDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeProDialog}>
+              <h3>Upgrade to Pro</h3>
+              <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px'}}>
+                  <button className='btn btn-primary' onClick={() => this.goToSettings()}>
+                    Upgrade to Pro
+                  </button>
+                </div>
               </div>
             </ModalDialog>
           </ModalContainer>
@@ -315,12 +352,19 @@ class Poll extends React.Component {
                   <div className='m-portlet__head-tools'>
                     {
                       this.props.subscribers && this.props.subscribers.length === 0
-                      ? <span />
+                      ? <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} disabled>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Create New
+                          </span>
+                        </span>
+                      </button>
                       : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
                         <span>
                           <i className='la la-plus' />
                           <span>
-                            Create Poll
+                            Create New
                           </span>
                         </span>
                       </button>
@@ -346,9 +390,18 @@ class Poll extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link to='/showTemplatePolls' className='btn btn-primary'>
-                                  Use Template
-                                </Link>
+                                {
+                                  this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                                  ? <Link to='/showTemplatePolls' className='btn btn-primary'>
+                                    Use Template
+                                  </Link>
+                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
+                                    Use Template&nbsp;&nbsp;&nbsp;
+                                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                                      <span style={{color: '#34bfa3'}}>PRO</span>
+                                    </span>
+                                  </button>
+                                }
                               </div>
                             </div>
                           </ModalDialog>

@@ -27,7 +27,7 @@ function rank (items, prop) {
     if (results.hasOwnProperty(key)) {
       // add an object that looks like {value:"License ABC", count: 2}
       // to the output array
-      ranked.push({ value: key, count: results[key] })
+      ranked.push({value: key, count: results[key]})
     }
   }
 
@@ -40,20 +40,20 @@ class Response extends React.Component {
   constructor (props, context) {
     super(props, context)
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', '../../../js/Chart.min.js')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/Chart.min.js')
     document.body.appendChild(addScript)
 
     this.openPopover = this.openPopover.bind(this)
     this.closePopover = this.closePopover.bind(this)
-    this.state = { 'responseVal': [] }
+    this.state = {'responseVal': []}
   }
 
   openPopover () {
-    this.setState({ showPopover: true })
+    this.setState({showPopover: true})
   }
 
   closePopover () {
-    this.setState({ showPopover: false })
+    this.setState({showPopover: false})
   }
 
   createChart () {
@@ -104,48 +104,41 @@ class Response extends React.Component {
 
   render () {
     const response = this.props.responses
-
     return (
       (
         this.props.question.type === 'text'
           ? <ul className='list-group'>
             {
-              response.map((c) => (
-                <div>
-                  <li
-                    className='list-group-item'
-                    style={{ cursor: 'pointer' }}
-                    key={c._id}
-                    ref='target'
-                    onMouseOver={this.openPopover}
-                    onMouseOut={this.closePopover}
-                    data-toggle='tooltip' data-placement='right' title=''
-                    data-original-title={c.subscriberId.firstName + ' ' +
-                      c.subscriberId.lastName}
-                  >
-                    {c.response}
+            response.map((c) => (
+              <div>
+                <li
+                  className='list-group-item'
+                  style={{cursor: 'pointer'}}
+                  key={c._id}
+                  ref='target'
+                  onMouseOver={this.openPopover}
+                  onMouseOut={this.closePopover}
+                  data-toggle='tooltip' data-placement='right' title=''
+                  data-original-title={c.subscriberId.firstName + ' ' +
+                  c.subscriberId.lastName}
+                >
+                  {c.response}
 
-                  </li>
-                </div>
-              ))
-            }
+                </li>
+              </div>
+            ))
+          }
           </ul>
           : <div className='m-portlet__body'>
-            {
-              this.props.responses && this.props.responses.length
-                ? <div className='ui-block-content'>
-                  <div style={{
-                    'width': '600px',
-                    'height': '400px',
-                    'margin': '0 auto'
-                  }}>
-                    <canvas id={this.props.question._id} width={250} height={170} />
-                  </div>
-                </div>
-                : <div className='ui-block-content'>
-                  <center><label style={{ fontWeight: 'normal' }}>There are no responses for this question</label></center>
-                </div>
-            }
+            <div className='ui-block-content'>
+              <div style={{
+                'width': '600px',
+                'height': '400px',
+                'margin': '0 auto'
+              }}>
+                <canvas id={this.props.question._id} width={250} height={170} />
+              </div>
+            </div>
           </div>
       )
     )
