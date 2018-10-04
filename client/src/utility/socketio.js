@@ -84,6 +84,9 @@ socket.on('message', (data) => {
   } else if (data.action === 'poll_created') {
     store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
     store.dispatch(sentVsSeen())
+  } else if (data.action === 'poll_send') {
+    store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
+    store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
     store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
     store.dispatch(sentVsSeen())

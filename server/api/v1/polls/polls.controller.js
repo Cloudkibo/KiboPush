@@ -794,6 +794,15 @@ exports.send = function (req, res) {
                                                           description: 'PollBroadcast create failed',
                                                           err2
                                                         })
+                                                      } else {
+                                                        require('./../../../config/socketio').sendMessageToClient({
+                                                          room_id: companyUser.companyId,
+                                                          body: {
+                                                            action: 'poll_send'
+                                                           
+                                                          }
+                                                        }) 
+                                                 
                                                       }
                                                     })
                                                   })
@@ -922,6 +931,15 @@ exports.send = function (req, res) {
                                                     description: 'PollBroadcast create failed',
                                                     err2
                                                   })
+                                                } else {
+                                                   //return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
+                                                  require('./../../../config/socketio').sendMessageToClient({
+                                                    room_id: companyUser.companyId,
+                                                    body: {
+                                                      action: 'poll_send'
+                                                     
+                                                    }
+                                                  }) 
                                                 }
                                                 // not using now
                                                 // Sessions.findOne({
@@ -995,8 +1013,8 @@ exports.send = function (req, res) {
                     })
                   }
                 }
-                return res.status(200)
-                .json({status: 'success', payload: 'Polls sent successfully.'})
+               return res.status(200)
+               .json({status: 'success', payload: 'Polls sent successfully.'})
               })
             })
           })
