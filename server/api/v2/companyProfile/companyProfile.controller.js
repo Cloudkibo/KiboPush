@@ -253,4 +253,3 @@ exports.getAutomatedOptions = function (req, res) {
   })
 }
 
-
