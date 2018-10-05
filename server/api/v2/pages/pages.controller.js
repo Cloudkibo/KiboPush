@@ -7,7 +7,7 @@ const TAG = 'api/v2/pages/pages.controller.js'
 exports.index = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`page/generic`, 'post', {companyId: companyuser.companyId}) // fetch all pages of company
+    utility.callApi(`pages/query`, 'post', {companyId: companyuser.companyId}) // fetch all pages of company
     .then(pages => {
       let pagesToSend = logicLayer.removeDuplicates(pages)
       return res.status(200).json({
@@ -34,9 +34,9 @@ exports.connectedPages = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    utility.callApi(`page/pagination/`, 'post', criterias.countCriteria) // fetch connected pages count
+    utility.callApi(`pages/aggregate`, 'post', criterias.countCriteria) // fetch connected pages count
     .then(count => {
-      utility.callApi(`page/pagination`, 'post', criterias.fetchCriteria) // fetch connected pages
+      utility.callApi(`pages/aggregate`, 'post', criterias.fetchCriteria) // fetch connected pages
       .then(pages => {
         res.status(200).json({
           status: 'success',
@@ -66,7 +66,7 @@ exports.connectedPages = function (req, res) {
 }
 
 exports.enable = function (req, res) {
-  utility.callApi(`page/${req.body._id}`) // fetch page
+  utility.callApi(`pages/${req.body._id}`) // fetch page
   .then(page => {
     needle.get(
       `https://graph.facebook.com/v2.10/${page.pageId}?fields=is_published&access_token=${page.userId.facebookInfo.fbToken}`,
@@ -81,10 +81,10 @@ exports.enable = function (req, res) {
             payload: 'Page is not published.'
           })
         } else {
-          utility.callApi(`page/connect/${page.pageId}`) // fetch connected page
+          utility.callApi(`pages/${page.pageId}/connect`) // fetch connected page
           .then(pageConnected => {
             if (pageConnected !== {}) {
-              utility.callApi(`page/${req.body._id}`, 'put', {connected: true}) // connect page
+              utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}) // connect page
               .then(res => {
                 utility.callApi(`subscribers/${page._id}`, 'put', {isEnabledByPage: true}) // update subscribers
                 .then(res => {
@@ -156,7 +156,7 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
-  utility.callApi(`page/${req.body._id}`, 'put', {connected: false}) // disconnect page
+  utility.callApi(`pages/${req.body._id}`, 'put', {connected: false}) // disconnect page
   .then(res => {
     utility.callApi(`subscribers/${req.body._id}`, 'put', {isEnabledByPage: false}) // update subscribers
     .then(res => {
@@ -206,7 +206,7 @@ exports.disable = function (req, res) {
 }
 
 exports.createWelcomeMessage = function (req, res) {
-  utility.callApi(`page/${req.body._id}`, 'put', {welcomeMessage: req.body.welcomeMessage})
+  utility.callApi(`pages/${req.body._id}`, 'put', {welcomeMessage: req.body.welcomeMessage})
   .then(res => {
     return res.status(200).json({
       status: 'success',
@@ -222,7 +222,7 @@ exports.createWelcomeMessage = function (req, res) {
 }
 
 exports.enableDisableWelcomeMessage = function (req, res) {
-  utility.callApi(`page/${req.body._id}`, 'put', {isWelcomeMessageEnabled: req.body.isWelcomeMessageEnabled})
+  utility.callApi(`pages/${req.body._id}`, 'put', {isWelcomeMessageEnabled: req.body.isWelcomeMessageEnabled})
   .then(res => {
     return res.status(200).json({
       status: 'success',
@@ -241,9 +241,9 @@ exports.saveGreetingText = function (req, res) {
   const pageId = req.body.pageId
   const greetingText = req.body.greetingText
 
-  utility.callApi(`page/${pageId}/greetingText`, 'put', {greetingText: greetingText})
+  utility.callApi(`pages/${pageId}/greetingText`, 'put', {greetingText: greetingText})
   .then(res => {
-    utility.callApi(`page/query`, 'post', {_id: pageId})
+    utility.callApi(`pages/${pageId}`)
     .then(res => {
       if (res.status === 'success') {
         const pageToken = res.payload && res.payload.length && res.payload[0].accessToken
