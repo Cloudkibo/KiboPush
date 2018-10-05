@@ -330,8 +330,7 @@ exports.getfbMessage = function (req, res) {
                           if (page.welcomeMessage &&
                             page.isWelcomeMessageEnabled) {
                             logger.serverLog(TAG, `Going to send welcome message`)
-
-                            utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name)
+                            utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name, response, '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                           }
                         }
 
