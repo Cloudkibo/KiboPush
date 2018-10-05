@@ -193,7 +193,7 @@ exports.getfbMessage = function (req, res) {
   // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
   logger.serverLog(TAG,
     `something received from facebook FIRST ${JSON.stringify(req.body)}`)
-
+  logger.serverLog(TAG, `phone neumber ${req.body.entry[0].messaging[0].prior_message}`)
   let subscriberSource = 'direct_message'
   let phoneNumber = ''
   if (req.body.entry && req.body.entry[0].messaging &&
@@ -202,7 +202,7 @@ exports.getfbMessage = function (req, res) {
     req.body.entry[0].messaging[0].prior_message.source ===
     'customer_matching') {
     subscriberSource = 'customer_matching'
-    logger.serverLog(TAG, `phone neumber ${req.body.entry[0].messaging[0].prior_message}`)
+    
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({ pageId: req.body.entry[0].id }, (err, pages) => {
       if (err) {
@@ -262,6 +262,7 @@ exports.getfbMessage = function (req, res) {
   }
 
   if (req.body.object && req.body.object === 'page') {
+    logger.serverLog(`in if page--`)
     let payload = req.body.entry[0]
     if (payload.messaging) {
       if (payload.messaging[0].optin) {
@@ -303,7 +304,7 @@ exports.getfbMessage = function (req, res) {
             .populate('userId')
             .exec((err, pages) => {
               if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                logger.serverLog(TAG, `ERROR finding page ${JSON.stringify(err)}`)
               }
               pages.forEach((page) => {
                 needle.get(
@@ -334,7 +335,7 @@ exports.getfbMessage = function (req, res) {
                             utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name, res, '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                           }
                         }
-
+                        logger.serverLog('userid--', )
                         const payload = {
                           firstName: subsriber.first_name,
                           lastName: subsriber.last_name,
@@ -391,11 +392,11 @@ exports.getfbMessage = function (req, res) {
                                                 }
                                               })
                                             Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                              if (err) logger.serverLog(TAG, err)
+                                              if (err) logger.serverLog(TAG, `error wehooks find${JSON.stringify(err)}`)
                                               if (webhook && webhook.isEnabled) {
                                                 needle.get(webhook.webhook_url, (err, r) => {
                                                   if (err) {
-                                                    logger.serverLog(TAG, err)
+                                                    logger.serverLog(TAG, `error needle.get ${JSON.stringify(err)}`)
                                                   } else if (r.statusCode === 200) {
                                                     if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
                                                       var data = {
