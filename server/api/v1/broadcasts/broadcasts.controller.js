@@ -1219,7 +1219,7 @@ function createSession (page, subscriber, event) {
                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                           }
                         })
-                      logger.serverLog(`subscriber, ${JSON.stringify(subscriber)}`)
+                      logger.serverLog(TAG, `subscriber before save live chat, ${JSON.stringify(subscriber)}`)
                       saveLiveChat(page, subscriber, sessionSaved, event)
                     })
                   }
@@ -1232,7 +1232,7 @@ function createSession (page, subscriber, event) {
               }
               session.save((err) => {
                 if (err) logger.serverLog(TAG, err)
-                console.log('in else', JSON.stringify(subscriber))
+                logger.serverLog(TAG, `in else session${JSON.stringify(subscriber)}`)
                 saveLiveChat(page, subscriber, session, event)
               })
             }
