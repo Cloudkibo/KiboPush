@@ -15,6 +15,10 @@ const logger = require('../../../components/logger')
 const TAG = 'api/wordpressEvents/wordpress.controller.js'
 
 exports.postPublish = function (req, res) {
+  res.status(200).json({
+    status: 'success',
+    description: `received the payload`
+  })
   logger.serverLog(TAG, `Wordpress post received : ${JSON.stringify(req.body)}`)
   let wpUrl = req.body.guid
   let wordpressUniqueId = wpUrl.split('/')[0] + wpUrl.split('/')[1] + '//' + wpUrl.split('/')[2]

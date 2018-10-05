@@ -31,6 +31,10 @@ exports.findAutoposting = function (req, res) {
 }
 
 exports.twitterwebhook = function (req, res) {
+  res.status(200).json({
+    status: 'success',
+    description: `received the payload`
+  })
   logger.serverLog(TAG, `in twitterwebhook ${JSON.stringify(req.body)}`)
   AutoPosting.find({accountUniqueName: req.body.user.screen_name, isActive: true})
     .populate('userId companyId')

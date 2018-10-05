@@ -1,24 +1,23 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/subscriber.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
-const Webhooks = require(
-  './../webhooks/webhooks.model')
+const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const needle = require('needle')
-const webhookUtility = require('./../webhooks/webhooks.utility')
-const Lists = require('../lists/lists.model')
-const CompanyUsage = require('./../featureUsage/companyUsage.model')
-const PlanUsage = require('./../featureUsage/planUsage.model')
-const Pages = require('../pages/Pages.model')
-const PhoneNumber = require('../growthtools/growthtools.model')
-const CompanyProfile = require('../companyprofile/companyprofile.model')
-const { sendBroadcast } = require('../broadcasts/broadcasts2.controller')
-const broadcastUtility = require('../broadcasts/broadcasts.utility')
-const botController = require('./../smart_replies/bots.controller')
-const Sessions = require('../sessions/sessions.model')
-const LiveChat = require('../livechat/livechat.model')
-const utility = require('../broadcasts/broadcasts.utility')
+const webhookUtility = require('../../v1/webhooks/webhooks.utility')
+const Lists = require('../../v1/lists/lists.model')
+const CompanyUsage = require('../../v1/featureUsage/companyUsage.model')
+const PlanUsage = require('../../v1/featureUsage/planUsage.model')
+const Pages = require('../../v1/pages/Pages.model')
+const PhoneNumber = require('../../v1/growthtools/growthtools.model')
+const CompanyProfile = require('../../v1/companyprofile/companyprofile.model')
+const { sendBroadcast } = require('../../v1/broadcasts/broadcasts2.controller')
+const broadcastUtility = require('../../v1/broadcasts/broadcasts.utility')
+const botController = require('./../../v1/smart_replies/bots.controller')
+const Sessions = require('../../v1/sessions/sessions.model')
+const LiveChat = require('../../v1/livechat/livechat.model')
+const utility = require('../../v1/broadcasts/broadcasts.utility')
 const og = require('open-graph')
-const Bots = require('./../smart_replies/Bots.model')
+const Bots = require('../../v1/smart_replies/Bots.model')
+const callApi = require('../utility')
 
 exports.subscriber = function (req, res) {
   res.status(200).json({
@@ -135,8 +134,8 @@ exports.subscriber = function (req, res) {
                                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                           }
                                         })
-                                      Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                        if (err) logger.serverLog(TAG, err)
+                                      callApi.callApi(`webhooks/query`, 'post', { pageId: pageId })
+                                      .then(webhook => {
                                         if (webhook && webhook.isEnabled) {
                                           needle.get(webhook.webhook_url, (err, r) => {
                                             if (err) {
@@ -157,6 +156,9 @@ exports.subscriber = function (req, res) {
                                             }
                                           })
                                         }
+                                      })
+                                      .catch(err => {
+                                        logger.serverLog(TAG, err)
                                       })
                                       if (subscriberSource === 'customer_matching') {
                                         updateList(phoneNumber, sender, page)
@@ -325,9 +327,8 @@ function saveLiveChat (page, subscriber, session, event) {
       }
     }
   })
-
-  Webhooks.findOne({ pageId: page.pageId }).populate('userId').exec((err, webhook) => {
-    if (err) logger.serverLog(TAG, err)
+  callApi.callApi(`webhooks/query`, 'post', { pageId: page.pageId })
+  .then(webhook => {
     if (webhook && webhook.isEnabled) {
       logger.serverLog(TAG, `webhook in live chat ${webhook}`)
       needle.get(webhook.webhook_url, (err, r) => {
@@ -357,6 +358,9 @@ function saveLiveChat (page, subscriber, session, event) {
         }
       })
     }
+  })
+  .catch(err => {
+    logger.serverLog(TAG, err)
   })
   if (event.message) {
     let urlInText = utility.parseUrl(event.message.text)
@@ -528,8 +532,8 @@ function sendautomatedmsg (req, page) {
                         }, // this where message content will go
                         status: 'unseen' // seen or unseen
                       })
-                      Webhooks.findOne({ pageId: page.pageId }).populate('userId').exec((err, webhook) => {
-                        if (err) logger.serverLog(TAG, err)
+                      callApi.callApi(`webhooks/query`, 'post', { pageId: page.pageId })
+                      .then(webhook => {
                         if (webhook && webhook.isEnabled) {
                           logger.serverLog(TAG, `webhook in live chat ${webhook}`)
                           needle.get(webhook.webhook_url, (err, r) => {
@@ -560,6 +564,9 @@ function sendautomatedmsg (req, page) {
                             }
                           })
                         }
+                      })
+                      .catch(err => {
+                        logger.serverLog(TAG, err)
                       })
                       chatMessage.save((err, chatMessageSaved) => {
                         if (err) {

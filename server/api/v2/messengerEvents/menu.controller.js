@@ -1,9 +1,8 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/menu.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
-const utility = require('../broadcasts/broadcasts.utility')
-const Pages = require('../pages/Pages.model')
-const { sendBroadcast } = require('../broadcasts/broadcasts2.controller')
+const utility = require('../../v1/broadcasts/broadcasts.utility')
+const { sendBroadcast } = require('../../v1/broadcasts/broadcasts2.controller')
+const callApi = require('../utility')
 
 exports.menu = function (req, res) {
   res.status(200).json({
@@ -19,16 +18,17 @@ exports.menu = function (req, res) {
 
 function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
-  Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
-    if (err) {
-      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-    }
-    Pages.findOne({ pageId: req.recipient.id, connected: true }, (err, page) => {
-      if (err) {
-        return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-      }
-       // sending last parameter because to incorporate the changed getBatchData method
+  callApi.callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+  .then(subscriber => {
+    callApi.callApi(`pages/query`, 'post', { pageId: req.recipient.id, connected: true })
+    .then(page => {
       utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, 'menu')
     })
+    .catch(err => {
+      return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
+    })
+  })
+  .catch(err => {
+    return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
   })
 }

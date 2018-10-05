@@ -1,9 +1,9 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/unsubscribeFromSequence.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
-const Sequences = require('../sequenceMessaging/sequence.model')
-const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
-const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
+const Subscribers = require('../../v1/subscribers/Subscribers.model')
+const Sequences = require('../../v1/sequenceMessaging/sequence.model')
+const SequenceSubscribers = require('../../v1/sequenceMessaging/sequenceSubscribers.model')
+const SequenceMessageQueue = require('../../v1/SequenceMessageQueue/SequenceMessageQueue.model')
 
 exports.unsubscribeFromSequence = function (req, res) {
   res.status(200).json({

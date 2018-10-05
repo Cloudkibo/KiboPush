@@ -1,10 +1,10 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/subscribeToSequence.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
-const Sequences = require('../sequenceMessaging/sequence.model')
-const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.model')
-const SequenceMessages = require('../sequenceMessaging/message.model')
-const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
+const Subscribers = require('../../v1/subscribers/Subscribers.model')
+const Sequences = require('../../v1/sequenceMessaging/sequence.model')
+const SequenceSubscribers = require('../../v1/sequenceMessaging/sequenceSubscribers.model')
+const SequenceMessages = require('../../v1/sequenceMessaging/message.model')
+const SequenceMessageQueue = require('../../v1/SequenceMessageQueue/SequenceMessageQueue.model')
 
 exports.subscribeToSequence = function (req, res) {
   res.status(200).json({
