@@ -1137,6 +1137,7 @@ function handleMessageFromSomeOtherApp (event) {
                               })
                             if (!(event.postback &&
                               event.postback.title === 'Get Started')) {
+                              logger.serverLog(TAG, `calling create session  event postback${JSON.stringify(subscriberCreated)} `)
                               createSession(page, subscriberCreated, event)
                             }
                             require('./../../../config/socketio').sendMessageToClient({
@@ -1158,6 +1159,7 @@ function handleMessageFromSomeOtherApp (event) {
               } else {
                 if (!(event.postback &&
                   event.postback.title === 'Get Started')) {
+                  logger.serverLog(TAG, `calling create session not event postback`)
                   createSession(page, subscriber, event)
                 }
               }
