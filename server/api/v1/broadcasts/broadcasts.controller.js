@@ -1240,18 +1240,19 @@ function saveLiveChat (page, subscriber, session, event) {
     payload: event.message
   }
   console.log('in function save live chat',JSON.stringify(subscriber) )
-  Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
-    if (err) {
-      logger.serverLog(TAG, err)
-    }
-    if (bot) {
-      if (bot.blockedSubscribers.indexOf(subscriber._id) === -1) {
-        logger.serverLog(TAG, 'going to send bot reply')
-        botController.respond(page.pageId, subscriber.senderId, event.message.text)
+  if(subcriber){
+    Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
+      if (err) {
+        logger.serverLog(TAG, err)
       }
-    }
-  })
-
+      if (bot) {
+        if (bot.blockedSubscribers.indexOf(subscriber._id) === -1) {
+          logger.serverLog(TAG, 'going to send bot reply')
+          botController.respond(page.pageId, subscriber.senderId, event.message.text)
+        }
+      }
+    })
+  }
   Webhooks.findOne({ pageId: page.pageId }).populate('userId').exec((err, webhook) => {
     if (err) logger.serverLog(TAG, err)
     if (webhook && webhook.isEnabled) {
