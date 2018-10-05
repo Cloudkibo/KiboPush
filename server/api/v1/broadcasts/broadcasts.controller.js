@@ -1174,13 +1174,13 @@ function createSession (page, subscriber, event) {
   CompanyProfile.findOne({ _id: page.companyId },
     function (err, company) {
       if (err) {
-        return logger.serverLog(TAG, err)
+        return logger.serverLog(TAG, `ERROR find companyprofile ${JSON.stringify(err)}`)
       }
 
       if (!(company.automated_options === 'DISABLE_CHAT')) {
         Sessions.findOne({ page_id: page._id, subscriber_id: subscriber._id },
           (err, session) => {
-            if (err) logger.serverLog(TAG, err)
+            if (err) logger.serverLog(TAG, `ERROR find session ${JSON.stringify(err)}`)
             if (session === null) {
               PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
                 if (err) {
@@ -1197,7 +1197,7 @@ function createSession (page, subscriber, event) {
                       company_id: page.companyId
                     })
                     newSession.save((err, sessionSaved) => {
-                      if (err) logger.serverLog(TAG, err)
+                      if (err) logger.serverLog(TAG, `ERROR create session ${JSON.stringify(err)}`)
                       logger.serverLog(TAG, 'new session created')
                       CompanyUsage.update({companyId: page.companyId},
                         { $inc: { sessions: 1 } }, (err, updated) => {
