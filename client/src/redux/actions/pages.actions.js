@@ -40,6 +40,14 @@ export function pageNotPublished (data) {
   }
 }
 
+export function updateCurrentPage (data) {
+  console.log('in updateCurrentPage')
+  return {
+    type: ActionTypes.UPDATE_CURRENT_PAGE,
+    data
+  }
+}
+
 export function loadMyPagesList () {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
