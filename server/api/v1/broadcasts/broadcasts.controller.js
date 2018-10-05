@@ -463,7 +463,7 @@ exports.getfbMessage = function (req, res) {
                               }
                               if (!(event.postback &&
                                 event.postback.title === 'Get Started')) {
-                                  logger.log(TAG, `calling create session get started`)
+                                logger.serverLog(TAG, `calling create session get started`)
                                 createSession(page, subsriber, event)
                               }
                             }
