@@ -364,6 +364,7 @@ exports.getfbMessage = function (req, res) {
                             if (err) logger.serverLog(TAG, `error finding page ${JSON.stringify(err)}`)
                             if (subsriber === null) {
                               // subsriber not found, create subscriber
+                              logger.serverLog(TAG, `in if subcriber null`)
                               CompanyProfile.findOne({ _id: page.companyId },
                                 function (err, company) {
                                   if (err) {
@@ -462,6 +463,7 @@ exports.getfbMessage = function (req, res) {
                               }
                               if (!(event.postback &&
                                 event.postback.title === 'Get Started')) {
+                                  logger.log(TAG, `calling create session get started`)
                                 createSession(page, subsriber, event)
                               }
                             }
@@ -1179,7 +1181,7 @@ function handleMessageFromSomeOtherApp (event) {
 }
 
 function createSession (page, subscriber, event) {
-  logger.serverLog(`subscriber, ${JSON.stringify(subscriber)}`)
+  logger.serverLog(TAG, `subscriber ${JSON.stringify(subscriber)}`)
   CompanyProfile.findOne({ _id: page.companyId },
     function (err, company) {
       if (err) {
@@ -1189,8 +1191,9 @@ function createSession (page, subscriber, event) {
       if (!(company.automated_options === 'DISABLE_CHAT')) {
         Sessions.findOne({ page_id: page._id, subscriber_id: subscriber._id },
           (err, session) => {
-            if (err) logger.serverLog(TAG, `ERROR find session ${JSON.stringify(err)}`)
+            if (err) logger.serverLog(TAG, `ERROR finding session ${JSON.stringify(err)}`)
             if (session === null) {
+              logger.serverLog(TAG, 'in if session null')
               PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
                 if (err) {
                   logger.serverLog(TAG, `ERROR finding plan usage ${JSON.stringify(err)}`)
@@ -1250,7 +1253,7 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-  console.log('in function save live chat',JSON.stringify(subscriber) )
+  logger.serverLog('in function save live chat',JSON.stringify(subscriber) )
   if(subscriber){
     Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
       if (err) {
