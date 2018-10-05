@@ -1205,6 +1205,7 @@ function createSession (page, subscriber, event) {
                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                           }
                         })
+                      console.log('subscriber', JSON.stringify(subscriber))
                       saveLiveChat(page, subscriber, sessionSaved, event)
                     })
                   }
@@ -1217,6 +1218,7 @@ function createSession (page, subscriber, event) {
               }
               session.save((err) => {
                 if (err) logger.serverLog(TAG, err)
+                console.log('in else', JSON.stringify(subscriber))
                 saveLiveChat(page, subscriber, session, event)
               })
             }
@@ -1237,7 +1239,7 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-
+  console.log('in function save live chat',JSON.stringify(subscriber) )
   Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
     if (err) {
       logger.serverLog(TAG, err)
