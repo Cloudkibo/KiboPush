@@ -202,6 +202,7 @@ exports.getfbMessage = function (req, res) {
     req.body.entry[0].messaging[0].prior_message.source ===
     'customer_matching') {
     subscriberSource = 'customer_matching'
+    logger.serverLog(TAG, `phone neumber ${req.body.entry[0].messaging[0].prior_message}`)
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({ pageId: req.body.entry[0].id }, (err, pages) => {
       if (err) {
@@ -330,7 +331,7 @@ exports.getfbMessage = function (req, res) {
                           if (page.welcomeMessage &&
                             page.isWelcomeMessageEnabled) {
                             logger.serverLog(TAG, `Going to send welcome message`)
-                            utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name, response, '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
+                            utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name, res, '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                           }
                         }
 
