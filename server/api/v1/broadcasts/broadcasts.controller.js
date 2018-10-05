@@ -267,6 +267,7 @@ exports.getfbMessage = function (req, res) {
     if (payload.messaging) {
       if (payload.messaging[0].optin) {
         if (payload.messaging[0].optin.ref && payload.messaging[0].optin.ref === 'SHOPIFY') {
+          logger.serverLog('in if shopify')
           // TODO CALL OUR SHOPIFY FUNCTION
           logger.serverLog(TAG, `User Ref from SHOPIFY ${payload.messaging[0].optin.user_ref}`)
           shopifyWebhook.handleNewSubscriber(payload.messaging[0])
@@ -404,7 +405,7 @@ exports.getfbMessage = function (req, res) {
                                                       }
                                                       needle.post(webhook.webhook_url, data,
                                                         (error, response) => {
-                                                          if (error) logger.serverLog(TAG, err)
+                                                          if (error) logger.serverLog(TAG, `error needle post${JSON.stringify(error)}`)
                                                         })
                                                     }
                                                   } else {
@@ -1178,6 +1179,7 @@ function handleMessageFromSomeOtherApp (event) {
 }
 
 function createSession (page, subscriber, event) {
+  logger.serverLog(`subscriber, ${JSON.stringify(subscriber)}`)
   CompanyProfile.findOne({ _id: page.companyId },
     function (err, company) {
       if (err) {
@@ -1191,9 +1193,11 @@ function createSession (page, subscriber, event) {
             if (session === null) {
               PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
                 if (err) {
+                  logger.serverLog(TAG, `ERROR finding plan usage ${JSON.stringify(err)}`)
                 }
                 CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
                   if (err) {
+                    logger.serverLog(TAG, `ERROR finding company usage ${JSON.stringify(err)}`)
                   }
                   if (planUsage.sessions !== -1 && companyUsage.sessions >= planUsage.sessions) {
                     webhookUtility.limitReachedNotification('sessions', company)
@@ -1212,7 +1216,7 @@ function createSession (page, subscriber, event) {
                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                           }
                         })
-                      console.log('subscriber', JSON.stringify(subscriber))
+                      logger.serverLog(`subscriber, ${JSON.stringify(subscriber)}`)
                       saveLiveChat(page, subscriber, sessionSaved, event)
                     })
                   }
@@ -1247,7 +1251,7 @@ function saveLiveChat (page, subscriber, session, event) {
     payload: event.message
   }
   console.log('in function save live chat',JSON.stringify(subscriber) )
-  if(subcriber){
+  if(subscriber){
     Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
       if (err) {
         logger.serverLog(TAG, err)
