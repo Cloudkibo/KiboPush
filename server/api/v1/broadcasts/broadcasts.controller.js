@@ -335,7 +335,6 @@ exports.getfbMessage = function (req, res) {
                             utility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name, res, '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                           }
                         }
-                        logger.serverLog('userid--', )
                         const payload = {
                           firstName: subsriber.first_name,
                           lastName: subsriber.last_name,
