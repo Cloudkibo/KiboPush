@@ -360,18 +360,21 @@ exports.getfbMessage = function (req, res) {
                         }
                         Pages.findOne({ _id: page._id, connected: true },
                           (err, pageFound) => {
-                            if (err) logger.serverLog(TAG, err)
+                            if (err) logger.serverLog(TAG, `error finding page ${JSON.stringify(err)}`)
                             if (subsriber === null) {
                               // subsriber not found, create subscriber
                               CompanyProfile.findOne({ _id: page.companyId },
                                 function (err, company) {
                                   if (err) {
+                                    logger.serverLog(TAG, `error finding company profile ${JSON.stringify(err)}`)
                                   }
                                   PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
                                     if (err) {
+                                      logger.serverLog(TAG, `error finding plan usage ${JSON.stringify(err)}`)
                                     }
                                     CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
                                       if (err) {
+                                        logger.serverLog(TAG, `error finding compnay usage ${JSON.stringify(err)}`)
                                       }
                                       if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
                                         webhookUtility.limitReachedNotification('subscribers', company)
