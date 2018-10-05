@@ -318,10 +318,11 @@ exports.getfbMessage = function (req, res) {
                       method: 'GET'
 
                     }
+
                     needle.get(options.url, options, (error, response) => {
                       logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
                       const subsriber = response.body
-                      logger.serverLog(TAG, `after something received from facebook ${JSON.stringify(subscriber)}`)
+                      logger.serverLog(TAG, `after something received from facebook ${JSON.stringify(subsriber)}`)
                       if (!error && !response.error) {
                         if (event.sender && event.recipient && event.postback &&
                           event.postback.payload &&
@@ -378,7 +379,7 @@ exports.getfbMessage = function (req, res) {
                                         Subscribers.create(payload,
                                           (err2, subscriberCreated) => {
                                             if (err2) {
-                                              logger.serverLog(TAG, err2)
+                                              logger.serverLog(TAG, `Error subscriber created ${JSON.stringify(err2)}`)
                                             }
                                             CompanyUsage.update({companyId: page.companyId},
                                               { $inc: { subscribers: 1 } }, (err, updated) => {
