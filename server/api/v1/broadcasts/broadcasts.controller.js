@@ -359,114 +359,118 @@ exports.getfbMessage = function (req, res) {
                         } else if (subscriberSource === 'chat_plugin') {
                           payload.source = 'chat_plugin'
                         }
-                        Pages.findOne({ _id: page._id, connected: true },
-                          (err, pageFound) => {
-                            if (err) logger.serverLog(TAG, `error finding page ${JSON.stringify(err)}`)
-                            if (subsriber === null) {
-                              // subsriber not found, create subscriber
-                              logger.serverLog(TAG, `in if subcriber null`)
-                              CompanyProfile.findOne({ _id: page.companyId },
-                                function (err, company) {
-                                  if (err) {
-                                    logger.serverLog(TAG, `error finding company profile ${JSON.stringify(err)}`)
-                                  }
-                                  PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
-                                    if (err) {
-                                      logger.serverLog(TAG, `error finding plan usage ${JSON.stringify(err)}`)
-                                    }
-                                    CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
+                        Subscribers.findOne({senderId: sender, pageId: page._id},
+                          (err, subscriberFound) => {
+                            if (err) logger.serverLog(TAG, `error finding subscriber ${JSON.stringify(err)}`)
+                            Pages.findOne({ _id: page._id, connected: true },
+                              (err, pageFound) => {
+                                if (err) logger.serverLog(TAG, `error finding page ${JSON.stringify(err)}`)
+                                if (subscriberFound === null) {
+                                  // subsriber not found, create subscriber
+                                  logger.serverLog(TAG, `in if subcriber null`)
+                                  CompanyProfile.findOne({ _id: page.companyId },
+                                    function (err, company) {
                                       if (err) {
-                                        logger.serverLog(TAG, `error finding compnay usage ${JSON.stringify(err)}`)
+                                        logger.serverLog(TAG, `error finding company profile ${JSON.stringify(err)}`)
                                       }
-                                      if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
-                                        webhookUtility.limitReachedNotification('subscribers', company)
-                                      } else {
-                                        Subscribers.create(payload,
-                                          (err2, subscriberCreated) => {
-                                            if (err2) {
-                                              logger.serverLog(TAG, `Error subscriber created ${JSON.stringify(err2)}`)
-                                            }
-                                            CompanyUsage.update({companyId: page.companyId},
-                                              { $inc: { subscribers: 1 } }, (err, updated) => {
-                                                if (err) {
-                                                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                      PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
+                                        if (err) {
+                                          logger.serverLog(TAG, `error finding plan usage ${JSON.stringify(err)}`)
+                                        }
+                                        CompanyUsage.findOne({companyId: page.companyId}, (err, companyUsage) => {
+                                          if (err) {
+                                            logger.serverLog(TAG, `error finding compnay usage ${JSON.stringify(err)}`)
+                                          }
+                                          if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
+                                            webhookUtility.limitReachedNotification('subscribers', company)
+                                          } else {
+                                            Subscribers.create(payload,
+                                              (err2, subscriberCreated) => {
+                                                if (err2) {
+                                                  logger.serverLog(TAG, `Error subscriber created ${JSON.stringify(err2)}`)
                                                 }
-                                              })
-                                            Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
-                                              if (err) logger.serverLog(TAG, `error wehooks find${JSON.stringify(err)}`)
-                                              if (webhook && webhook.isEnabled) {
-                                                needle.get(webhook.webhook_url, (err, r) => {
-                                                  if (err) {
-                                                    logger.serverLog(TAG, `error needle.get ${JSON.stringify(err)}`)
-                                                  } else if (r.statusCode === 200) {
-                                                    if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                                      var data = {
-                                                        subscription_type: 'NEW_SUBSCRIBER',
-                                                        payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
-                                                      }
-                                                      needle.post(webhook.webhook_url, data,
-                                                        (error, response) => {
-                                                          if (error) logger.serverLog(TAG, `error needle post${JSON.stringify(error)}`)
-                                                        })
+                                                CompanyUsage.update({companyId: page.companyId},
+                                                  { $inc: { subscribers: 1 } }, (err, updated) => {
+                                                    if (err) {
+                                                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                                     }
-                                                  } else {
-                                                    webhookUtility.saveNotification(webhook)
+                                                  })
+                                                Webhooks.findOne({ pageId: pageId }).populate('userId').exec((err, webhook) => {
+                                                  if (err) logger.serverLog(TAG, `error wehooks find${JSON.stringify(err)}`)
+                                                  if (webhook && webhook.isEnabled) {
+                                                    needle.get(webhook.webhook_url, (err, r) => {
+                                                      if (err) {
+                                                        logger.serverLog(TAG, `error needle.get ${JSON.stringify(err)}`)
+                                                      } else if (r.statusCode === 200) {
+                                                        if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                                          var data = {
+                                                            subscription_type: 'NEW_SUBSCRIBER',
+                                                            payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                                          }
+                                                          needle.post(webhook.webhook_url, data,
+                                                            (error, response) => {
+                                                              if (error) logger.serverLog(TAG, `error needle post${JSON.stringify(error)}`)
+                                                            })
+                                                        }
+                                                      } else {
+                                                        webhookUtility.saveNotification(webhook)
+                                                      }
+                                                    })
                                                   }
                                                 })
-                                              }
-                                            })
-                                            if (subscriberSource === 'customer_matching') {
-                                              updateList(phoneNumber, sender, page)
-                                            }
-                                            if (!(event.postback &&
-                                              event.postback.title === 'Get Started')) {
-                                              createSession(page, subscriberCreated,
-                                                event)
-                                            }
-                                            require('./../../../config/socketio')
-                                              .sendMessageToClient({
-                                                room_id: page.companyId,
-                                                body: {
-                                                  action: 'dashboard_updated',
-                                                  payload: {
-                                                    subscriber_id: subscriberCreated._id,
-                                                    company_id: page.companyId
-                                                  }
+                                                if (subscriberSource === 'customer_matching') {
+                                                  updateList(phoneNumber, sender, page)
                                                 }
+                                                if (!(event.postback &&
+                                                  event.postback.title === 'Get Started')) {
+                                                  createSession(page, subscriberCreated,
+                                                    event)
+                                                }
+                                                require('./../../../config/socketio')
+                                                  .sendMessageToClient({
+                                                    room_id: page.companyId,
+                                                    body: {
+                                                      action: 'dashboard_updated',
+                                                      payload: {
+                                                        subscriber_id: subscriberCreated._id,
+                                                        company_id: page.companyId
+                                                      }
+                                                    }
+                                                  })
                                               })
-                                          })
-                                      }
+                                          }
+                                        })
+                                      })
                                     })
-                                  })
-                                })
-                            } else {
-                              if (subscriberSource === 'customer_matching') {
-                                // Subscribers.update({senderId: sender}, {
-                                //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
-                                //   source: 'customer_matching',
-                                //   isSubscribed: true,
-                                //   isEnabledByPage: true
-                                // }, (err, subscriber) => {
-                                //   if (err) return logger.serverLog(TAG, err)
-                                //   logger.serverLog(TAG, subscriber)
-                                // })
-                              } else if (!subsriber.isSubscribed) {
-                                // subscribing the subscriber again in case he
-                                // or she unsubscribed and removed chat
-                                Subscribers.update({ senderId: sender }, {
-                                  isSubscribed: true,
-                                  isEnabledByPage: true
-                                }, (err, subscriber) => {
-                                  if (err) return logger.serverLog(TAG, err)
-                                  logger.serverLog(TAG, subscriber)
-                                })
-                              }
-                              if (!(event.postback &&
-                                event.postback.title === 'Get Started')) {
-                                logger.serverLog(TAG, `calling create session get started`)
-                                createSession(page, subsriber, event)
-                              }
-                            }
+                                } else {
+                                  if (subscriberSource === 'customer_matching') {
+                                    // Subscribers.update({senderId: sender}, {
+                                    //   phoneNumber: req.body.entry[0].messaging[0].prior_message.identifier,
+                                    //   source: 'customer_matching',
+                                    //   isSubscribed: true,
+                                    //   isEnabledByPage: true
+                                    // }, (err, subscriber) => {
+                                    //   if (err) return logger.serverLog(TAG, err)
+                                    //   logger.serverLog(TAG, subscriber)
+                                    // })
+                                  } else if (!subsriber.isSubscribed) {
+                                    // subscribing the subscriber again in case he
+                                    // or she unsubscribed and removed chat
+                                    Subscribers.update({ senderId: sender }, {
+                                      isSubscribed: true,
+                                      isEnabledByPage: true
+                                    }, (err, subscriber) => {
+                                      if (err) return logger.serverLog(TAG, err)
+                                      logger.serverLog(TAG, subscriber)
+                                    })
+                                  }
+                                  if (!(event.postback &&
+                                    event.postback.title === 'Get Started')) {
+                                    logger.serverLog(TAG, `calling create session get started`)
+                                    createSession(page, subscriberFound, event)
+                                  }
+                                }
+                              })
                           })
                       } else {
                         if (error) {
