@@ -26,10 +26,6 @@ router.get('/:role',
         auth.isAuthenticated(),
         controller.index)
 
-router.get('/populateRolePermissions',
-    auth.isAuthenticated(),
-    controller.populateRolePermissions)
-
 router.get('/fetchPermissions',
     auth.isAuthenticated(),
     controller.fetchPermissions)
