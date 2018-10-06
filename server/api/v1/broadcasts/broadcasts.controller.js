@@ -193,7 +193,6 @@ exports.getfbMessage = function (req, res) {
   // {"sender":{"id":"1230406063754028"},"recipient":{"id":"272774036462658"},"timestamp":1504089493225,"read":{"watermark":1504089453074,"seq":0}}
   logger.serverLog(TAG,
     `something received from facebook FIRST ${JSON.stringify(req.body)}`)
-  logger.serverLog(TAG, `phone neumber ${req.body.entry[0].messaging[0].prior_message}`)
   let subscriberSource = 'direct_message'
   let phoneNumber = ''
   if (req.body.entry && req.body.entry[0].messaging &&
@@ -202,7 +201,6 @@ exports.getfbMessage = function (req, res) {
     req.body.entry[0].messaging[0].prior_message.source ===
     'customer_matching') {
     subscriberSource = 'customer_matching'
-    
     phoneNumber = req.body.entry[0].messaging[0].prior_message.identifier
     Pages.find({ pageId: req.body.entry[0].id }, (err, pages) => {
       if (err) {
@@ -262,12 +260,10 @@ exports.getfbMessage = function (req, res) {
   }
 
   if (req.body.object && req.body.object === 'page') {
-    logger.serverLog(`in if page--`)
     let payload = req.body.entry[0]
     if (payload.messaging) {
       if (payload.messaging[0].optin) {
         if (payload.messaging[0].optin.ref && payload.messaging[0].optin.ref === 'SHOPIFY') {
-          logger.serverLog('in if shopify')
           // TODO CALL OUR SHOPIFY FUNCTION
           logger.serverLog(TAG, `User Ref from SHOPIFY ${payload.messaging[0].optin.user_ref}`)
           shopifyWebhook.handleNewSubscriber(payload.messaging[0])
@@ -325,7 +321,6 @@ exports.getfbMessage = function (req, res) {
                     needle.get(options.url, options, (error, response) => {
                       logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
                       const subsriber = response.body
-                      logger.serverLog(TAG, `after something received from facebook ${JSON.stringify(subsriber)}`)
                       if (!error && !response.error) {
                         if (event.sender && event.recipient && event.postback &&
                           event.postback.payload &&
@@ -367,7 +362,6 @@ exports.getfbMessage = function (req, res) {
                                 if (err) logger.serverLog(TAG, `error finding page ${JSON.stringify(err)}`)
                                 if (subscriberFound === null) {
                                   // subsriber not found, create subscriber
-                                  logger.serverLog(TAG, `in if subcriber null`)
                                   CompanyProfile.findOne({ _id: page.companyId },
                                     function (err, company) {
                                       if (err) {
@@ -1149,7 +1143,6 @@ function handleMessageFromSomeOtherApp (event) {
                               })
                             if (!(event.postback &&
                               event.postback.title === 'Get Started')) {
-                              logger.serverLog(TAG, `calling create session  event postback${JSON.stringify(subscriberCreated)} `)
                               createSession(page, subscriberCreated, event)
                             }
                             require('./../../../config/socketio').sendMessageToClient({
@@ -1171,7 +1164,6 @@ function handleMessageFromSomeOtherApp (event) {
               } else {
                 if (!(event.postback &&
                   event.postback.title === 'Get Started')) {
-                  logger.serverLog(TAG, `calling create session not event postback`)
                   createSession(page, subscriber, event)
                 }
               }
@@ -1185,7 +1177,6 @@ function handleMessageFromSomeOtherApp (event) {
 }
 
 function createSession (page, subscriber, event) {
-  logger.serverLog(TAG, `subscriber ${JSON.stringify(subscriber)}`)
   CompanyProfile.findOne({ _id: page.companyId },
     function (err, company) {
       if (err) {
@@ -1197,7 +1188,6 @@ function createSession (page, subscriber, event) {
           (err, session) => {
             if (err) logger.serverLog(TAG, `ERROR finding session ${JSON.stringify(err)}`)
             if (session === null) {
-              logger.serverLog(TAG, 'in if session null')
               PlanUsage.findOne({planId: company.planId}, (err, planUsage) => {
                 if (err) {
                   logger.serverLog(TAG, `ERROR finding plan usage ${JSON.stringify(err)}`)
@@ -1216,14 +1206,12 @@ function createSession (page, subscriber, event) {
                     })
                     newSession.save((err, sessionSaved) => {
                       if (err) logger.serverLog(TAG, `ERROR create session ${JSON.stringify(err)}`)
-                      logger.serverLog(TAG, 'new session created')
                       CompanyUsage.update({companyId: page.companyId},
                         { $inc: { sessions: 1 } }, (err, updated) => {
                           if (err) {
                             logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                           }
                         })
-                      logger.serverLog(TAG, `subscriber before save live chat, ${JSON.stringify(subscriber)}`)
                       saveLiveChat(page, subscriber, sessionSaved, event)
                     })
                   }
@@ -1236,7 +1224,6 @@ function createSession (page, subscriber, event) {
               }
               session.save((err) => {
                 if (err) logger.serverLog(TAG, err)
-                logger.serverLog(TAG, `in else session${JSON.stringify(subscriber)}`)
                 saveLiveChat(page, subscriber, session, event)
               })
             }
@@ -1257,8 +1244,7 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-  logger.serverLog('in function save live chat',JSON.stringify(subscriber) )
-  if(subscriber){
+  if (subscriber) {
     Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
       if (err) {
         logger.serverLog(TAG, err)
