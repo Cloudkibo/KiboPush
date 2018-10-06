@@ -199,7 +199,7 @@ class Header extends React.Component {
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
                                 <li className='m-nav__item'>
-                                  <Link to='/live' className='m-nav__link'>
+                                  <Link to='/liveChat' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-chat-1' />
                                     <span className='m-nav__link-text'>Messages</span>
                                   </Link>

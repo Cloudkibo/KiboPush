@@ -6,15 +6,15 @@ const TAG = 'api/v2/pages/teams.controller.js'
 exports.index = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`team/query`, 'post', {companyId: companyuser.companyId}) // fetch all teams of company
+    utility.callApi(`teams/query`, 'post', {companyId: companyuser.companyId}) // fetch all teams of company
     .then(teams => {
-      utility.callApi(`team/agents/query/distinct`, 'post', {companyId: companyuser.companyId}) // fetch distinct team agents
+      utility.callApi(`teams/agents/distinct`, 'post', {companyId: companyuser.companyId}) // fetch distinct team agents
       .then(agentIds => {
         utility.callApi(`user/query`, 'post', {_id: {$in: agentIds}}) // fetch unique agents info
         .then(uniqueAgents => {
-          utility.callApi(`team/pages/query/distinct`, 'post', {companyId: companyuser.companyId}) // fetch distinct team pages
+          utility.callApi(`team/pages/distinct`, 'post', {companyId: companyuser.companyId}) // fetch distinct team pages
           .then(pageIds => {
-            utility.callApi(`page/query`, 'post', {_id: {$in: pageIds}}) // fetch unique pages info
+            utility.callApi(`pages/query`, 'post', {_id: {$in: pageIds}}) // fetch unique pages info
             .then(uniquePages => {
               return res.status(200).json({
                 status: 'success',
@@ -64,11 +64,11 @@ exports.createTeam = function (req, res) {
     let teamPayload = logicLayer.getTeamPayload(req, companyuser)
     let agentIds = req.body.agentIds
     let pageIds = req.body.pageIds
-    utility.callApi(`team`, 'post', teamPayload) // create team
+    utility.callApi(`teams`, 'post', teamPayload) // create team
     .then(createdTeam => {
       agentIds.forEach(agentId => {
         let teamAgentsPayload = logicLayer.getTeamAgentsPayload(createdTeam, companyuser, agentId)
-        utility.callApi(`team/agents`, 'post', teamAgentsPayload) // create team agent
+        utility.callApi(`teams/agents`, 'post', teamAgentsPayload) // create team agent
         .then(createdAgent => {
           logger.serverLog(TAG, 'Team agent created successfully!')
         })
@@ -78,7 +78,7 @@ exports.createTeam = function (req, res) {
       })
       pageIds.forEach(pageId => {
         let teamPagesPayload = logicLayer.getTeamPagesPayload(createdTeam, companyuser, pageId)
-        utility.callApi(`team/pages`, 'post', teamPagesPayload) // create team page
+        utility.callApi(`teams/pages`, 'post', teamPagesPayload) // create team page
         .then(createdPage => {
           logger.serverLog(TAG, 'Team page created successfully!')
         })
@@ -108,7 +108,7 @@ exports.createTeam = function (req, res) {
 
 exports.updateTeam = function (req, res) {
   let teamPayload = logicLayer.getUpdateTeamPayload(req.body)
-  utility.callApi(`team/${req.body._id}`, 'put', teamPayload) // update team
+  utility.callApi(`teams/${req.body._id}`, 'put', teamPayload) // update team
   .then(team => {
     return res.status(200).json({
       status: 'success',
@@ -124,7 +124,7 @@ exports.updateTeam = function (req, res) {
 }
 
 exports.deleteTeam = function (req, res) {
-  utility.callApi(`team/${req.params.id}`, 'delete') // delete team
+  utility.callApi(`teams/${req.params.id}`, 'delete') // delete team
   .then(deletedTeam => {
     return res.status(200).json({
       status: 'success',
@@ -143,7 +143,7 @@ exports.addAgent = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let agentPayload = logicLayer.getTeamAgentsPayload({_id: req.body.teamId}, companyuser, req.body.agentId)
-    utility.callApi(`team/agents`, 'post', agentPayload) // add agent
+    utility.callApi(`teams/agents`, 'post', agentPayload) // add agent
     .then(craetedAgent => {
       return res.status(200).json({
         status: 'success',
@@ -169,7 +169,7 @@ exports.addPage = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let pagePayload = logicLayer.getTeamPagesPayload({_id: req.body.teamId}, companyuser, req.body.pageId)
-    utility.callApi(`team/pages`, 'post', pagePayload) // add page
+    utility.callApi(`teams/pages`, 'post', pagePayload) // add page
     .then(craetedPage => {
       return res.status(200).json({
         status: 'success',
@@ -195,7 +195,7 @@ exports.removeAgent = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let agentPayload = logicLayer.getTeamAgentsPayload({_id: req.body.teamId}, companyuser, req.body.agentId)
-    utility.callApi(`team/agents`, 'delete', agentPayload) // delete agent
+    utility.callApi(`teams/agents`, 'delete', agentPayload) // delete agent
     .then(deletedAgent => {
       return res.status(200).json({
         status: 'success',
@@ -221,7 +221,7 @@ exports.removePage = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let pagePayload = logicLayer.getTeamPagesPayload({_id: req.body.teamId}, companyuser, req.body.pageId)
-    utility.callApi(`team/pages`, 'delete', pagePayload) // delete page
+    utility.callApi(`teams/pages`, 'delete', pagePayload) // delete page
     .then(craetedPage => {
       return res.status(200).json({
         status: 'success',
@@ -246,7 +246,7 @@ exports.removePage = function (req, res) {
 exports.fetchAgents = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`team/agents/query`, 'post', {teamId: req.params.id, companyId: companyuser.companyId}) // fetch agents
+    utility.callApi(`teams/agents/query`, 'post', {teamId: req.params.id, companyId: companyuser.companyId}) // fetch agents
     .then(agents => {
       return res.status(200).json({
         status: 'success',
@@ -271,7 +271,7 @@ exports.fetchAgents = function (req, res) {
 exports.fetchPages = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`team/pages/query`, 'post', {teamId: req.params.id, companyId: companyuser.companyId}) // fetch pages
+    utility.callApi(`teams/pages/query`, 'post', {teamId: req.params.id, companyId: companyuser.companyId}) // fetch pages
     .then(agents => {
       return res.status(200).json({
         status: 'success',
