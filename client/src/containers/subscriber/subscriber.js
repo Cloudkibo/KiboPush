@@ -384,13 +384,18 @@ class Subscriber extends React.Component {
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
     let filterStatusValue = ''
-    let pageId = this.props.location.state.page._id
-    if (this.props.location.state.filterStatus === 'subscribed') {
-      filterStatusValue = true
-    } else {
-      filterStatusValue = false
+    if (this.props.location.state) {
+      let pageId = this.props.location.state.page._id
+      this.setState({filterPage: pageId})
+      if (this.props.location.state.filterStatus === 'subscribed') {
+        filterStatusValue = true
+        this.setState({statusValue: 'subscribed'})
+      } else {
+        filterStatusValue = false
+        this.setState({statusValue: 'unsubscribed'})
+      }
+      this.handleFilterByPageInitial(pageId, filterStatusValue)
     }
-    this.handleFilterByPageInitial(pageId, filterStatusValue)
   }
   componentDidUpdate () {
   }

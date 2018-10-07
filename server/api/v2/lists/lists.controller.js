@@ -5,9 +5,9 @@ exports.getAll = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    utility.callApi(`list/pagination/`, 'post', criterias.countCriteria) // fetch lists count
+    utility.callApi(`lists/aggregate/`, 'post', criterias.countCriteria) // fetch lists count
     .then(count => {
-      utility.callApi(`list/pagination`, 'post', criterias.fetchCriteria) // fetch lists
+      utility.callApi(`lists/aggregate/`, 'post', criterias.fetchCriteria) // fetch lists
       .then(lists => {
         if (req.body.first_page === 'previous') {
           res.status(200).json({
@@ -57,7 +57,7 @@ exports.createList = function (req, res) {
         }
         utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
         .then(companyUser => {
-          utility.callApi(`list`, 'post', {
+          utility.callApi(`lists`, 'post', {
             companyId: companyUser.companyId,
             userId: req.user._id,
             listName: req.body.listName,
@@ -117,7 +117,7 @@ exports.createList = function (req, res) {
   })
 }
 exports.editList = function (req, res) {
-  utility.callApi(`list/${req.body._id}`, 'put', {
+  utility.callApi(`lists/${req.body._id}`, 'put', {
     listName: req.body.listName,
     conditions: req.body.conditions,
     content: req.body.content
@@ -135,10 +135,10 @@ exports.editList = function (req, res) {
 exports.viewList = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`list/${req.params.id}`)
+    utility.callApi(`lists/${req.params.id}`)
     .then(list => {
       if (list.initialList === true) {
-        utility.callApi(`phoneNumber/aggregate`, 'post', {
+        utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
           hasSubscribed: true,
           fileName: list[0].listName
@@ -146,10 +146,10 @@ exports.viewList = function (req, res) {
         .then(number => {
           if (number.length > 0) {
             let criterias = logicLayer.getSubscriberCriteria(number, companyUser)
-            utility.callApi(`subscriber/aggregate`, 'post', criterias)
+            utility.callApi(`subscribers/query`, 'post', criterias)
             .then(subscribers => {
               let content = logicLayer.getContent(subscribers)
-              utility.callApi(`list/${req.params.id}`, 'put', {
+              utility.callApi(`lists/${req.params.id}`, 'put', {
                 content: content
               })
               .then(savedList => {
@@ -182,7 +182,7 @@ exports.viewList = function (req, res) {
           })
         })
       } else {
-        utility.callApi(`subscriber/aggregate`, 'post', {
+        utility.callApi(`subscribers/find`, 'post', {
           isSubscribed: true, _id: {$in: list[0].content}})
         .then(subscribers => {
           return res.status(201)
@@ -213,7 +213,7 @@ exports.viewList = function (req, res) {
 exports.deleteList = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`list/${req.params.id}`, 'delete')
+    utility.callApi(`lists/${req.params.id}`, 'delete')
     .then(result => {
       utility.callApi(`updateCompany/`, 'put', {
         query: {companyId: companyUser.companyId},
@@ -246,13 +246,13 @@ exports.deleteList = function (req, res) {
 exports.repliedPollSubscribers = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`poll/aggregate`, 'post', {companyId: companyUser.companyId})
+    utility.callApi(`poll/query`, 'post', {companyId: companyUser.companyId})
     .then(polls => {
       let criteria = logicLayer.pollResponseCriteria(polls)
       utility.callApi(`pollResponse/aggregate`, 'post', criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscriber/aggregate`, 'post', subscriberCriteria)
+        utility.callApi(`subscribers/find`, 'post', subscriberCriteria)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})
@@ -294,7 +294,7 @@ exports.repliedSurveySubscribers = function (req, res) {
       utility.callApi(`surveyResponse/aggregate`, 'post', criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscriber/aggregate`, 'post', subscriberCriteria)
+        utility.callApi(`subscribers/find`, 'post', subscriberCriteria)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})

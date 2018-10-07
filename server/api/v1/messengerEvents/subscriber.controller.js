@@ -81,7 +81,7 @@ exports.subscriber = function (req, res) {
                     if (page.welcomeMessage &&
                       page.isWelcomeMessageEnabled) {
                       logger.serverLog(TAG, `Going to send welcome message`)
-                      broadcastUtility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name)
+                      broadcastUtility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name, res, '', '', 'NON_PROMOTIONAL_SUBSCRIPTION')
                     }
                   }
                   const payload = {
@@ -106,10 +106,10 @@ exports.subscriber = function (req, res) {
                   } else if (subscriberSource === 'chat_plugin') {
                     payload.source = 'chat_plugin'
                   }
-                  Pages.findOne({ _id: page._id, connected: true },
-                    (err, pageFound) => {
+                  Subscribers.findOne({ _id: page._id, connected: true },
+                    (err, subscriberFound) => {
                       if (err) logger.serverLog(TAG, err)
-                      if (subsriber === null) {
+                      if (subscriberFound === null) {
                         // subsriber not found, create subscriber
                         CompanyProfile.findOne({ _id: page.companyId },
                           function (err, company) {
@@ -196,7 +196,7 @@ exports.subscriber = function (req, res) {
                         }
                         if (!(event.postback &&
                           event.postback.title === 'Get Started')) {
-                          createSession(page, subsriber, event)
+                          createSession(page, subscriberFound, event)
                         }
                       }
                     })

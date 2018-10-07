@@ -37,7 +37,7 @@ exports.upload = function (req, res) {
             conditions: 'initial_list',
             initialList: true
           }
-          utility.callApi(`list/update`, 'put', {query: query, update: update, upsert: true})
+          utility.callApi(`lists/update`, 'put', {query: query, update: update, options: {upsert: true}})
           .then(savedList => {
             fs.rename(req.files.file.path, directory.dir + '/userfiles' + directory.serverPath, err => {
               if (err) {
@@ -54,7 +54,7 @@ exports.upload = function (req, res) {
                 .on('data', function (data) {
                   if (data[`${phoneColumn}`] && data[`${nameColumn}`]) {
                     var result = data[`${phoneColumn}`].replace(/[- )(]+_/g, '')
-                    utility.callApi(`phoneNumber/aggregate`, 'post', {
+                    utility.callApi(`phone/query`, 'post', {
                       number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id})
                   .then(phone => {
                     if (phone.length === 0) {
@@ -65,7 +65,7 @@ exports.upload = function (req, res) {
                           // webhookUtility.limitReachedNotification('invitations', companyProfile)
                         }
                       } else {
-                        utility.callApi(`phoneNumber`, 'post', {
+                        utility.callApi(`phone`, 'post', {
                           name: data[`${nameColumn}`],
                           number: result,
                           userId: req.user._id,
@@ -104,18 +104,18 @@ exports.upload = function (req, res) {
                         pageId: req.body._id,
                         fileName: filename
                       }
-                      utility.callApi(`phoneNumber/update`, 'put', {query: query, update: update, upsert: true})
+                      utility.callApi(`phone/update`, 'put', {query: query, update: update, options: {upsert: true}})
                       .then(phonenumbersaved => {
-                        utility.callApi(`phoneNumber/aggregate`, 'post', {companyId: companyUser.companyId, hasSubscribed: true, fileName: newFileName})
+                        utility.callApi(`phone/query`, 'post', {companyId: companyUser.companyId, hasSubscribed: true, fileName: newFileName})
                         .then(number => {
                           if (number.length > 0) {
                             let subscriberFindCriteria = logicLayer.subscriberFindCriteria(number, companyUser)
-                            utility.callApi(`subscriber/aggregate`, 'post', subscriberFindCriteria)
+                            utility.callApi(`subscribers/query`, 'post', subscriberFindCriteria)
                             .then(subscribers => {
                               let content = logicLayer.getContent(subscribers)
                               let query = {listName: newFileName, userId: req.user._id, companyId: companyUser.companyId}
                               let update = { content: content }
-                              utility.callApi(`list/update`, 'put', {query: query, update: update})
+                              utility.callApi(`lists/update`, 'put', {query: query, update: update, options: {}})
                               .then(savedList => {
                               })
                               .catch(error => {
@@ -154,7 +154,7 @@ exports.upload = function (req, res) {
                       payload: `Failed to update number ${JSON.stringify(error)}`
                     })
                   })
-                    utility.callApi(`page/generic`, 'post', {userId: req.user._id, connected: true, pageId: req.body.pageId})
+                    utility.callApi(`pages/query`, 'post', {userId: req.user._id, connected: true, pageId: req.body.pageId})
                   .then(pages => {
                     pages.forEach(page => {
                       let messageData = {
@@ -266,7 +266,7 @@ exports.sendNumbers = function (req, res) {
             conditions: 'initial_list',
             initialList: true
           }
-          utility.callApi(`list/update`, 'put', {query: query, update: update, upsert: true})
+          utility.callApi(`lists/update`, 'put', {query: query, update: update, options: {upsert: true}})
           .then(savedList => {
           })
           .catch(error => {
@@ -277,16 +277,16 @@ exports.sendNumbers = function (req, res) {
           })
           for (let i = 0; i < req.body.numbers.length && !abort; i++) {
             let result = req.body.numbers[i].replace(/[- )(]+_/g, '')
-            utility.callApi(`page/generic`, 'post', {userId: req.user._id, connected: true, pageId: req.body.pageId})
+            utility.callApi(`pages/query`, 'post', {userId: req.user._id, connected: true, pageId: req.body.pageId})
             .then(pages => {
-              utility.callApi(`phoneNumber/aggregate`, 'post', {number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id})
+              utility.callApi(`phone/query`, 'post', {number: result, userId: req.user._id, companyId: companyUser.companyId, pageId: req.body._id})
               .then(found => {
                 if (found.length === 0) {
                   if (planUsage.phone_invitation !== -1 && companyUsage.phone_invitation >= planUsage.phone_invitation) {
                     abort = true
                     //  webhookUtility.limitReachedNotification('invitations', companyProfile)
                   } else {
-                    utility.callApi(`phoneNumber`, 'post', { name: '',
+                    utility.callApi(`phone`, 'post', { name: '',
                       number: result,
                       userId: req.user._id,
                       companyId: companyUser.companyId,
@@ -324,18 +324,18 @@ exports.sendNumbers = function (req, res) {
                     pageId: req.body._id,
                     fileName: filename
                   }
-                  utility.callApi(`phoneNumber/update`, 'put', {query: query, update: update, upsert: true})
+                  utility.callApi(`phone/update`, 'put', {query: query, update: update, options: {upsert: true}})
                   .then(phonenumbersaved => {
-                    utility.callApi(`phoneNumber/aggregate`, 'post', {companyId: companyUser.companyId, hasSubscribed: true, fileName: 'Other'})
+                    utility.callApi(`phone/query`, 'post', {companyId: companyUser.companyId, hasSubscribed: true, fileName: 'Other'})
                     .then(number => {
                       if (number.length > 0) {
                         let subscriberFindCriteria = logicLayer.subscriberFindCriteria(number, companyUser)
-                        utility.callApi(`subscriber/aggregate`, 'post', subscriberFindCriteria)
+                        utility.callApi(`subscribers/query`, 'post', subscriberFindCriteria)
                         .then(subscribers => {
                           let content = logicLayer.getContent(subscribers)
                           let query = {listName: 'Other', userId: req.user._id, companyId: companyUser.companyId}
                           let update = { content: content }
-                          utility.callApi(`list/update`, 'put', {query: query, update: update})
+                          utility.callApi(`lists/update`, 'put', {query: query, update: update, options: {}})
                           .then(savedList => {
                           })
                           .catch(error => {
@@ -446,7 +446,7 @@ exports.sendNumbers = function (req, res) {
 exports.pendingSubscription = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`phoneNumber/aggregate`, 'post', {
+    utility.callApi(`phone/query`, 'post', {
       companyId: companyUser.companyId, hasSubscribed: false, fileName: req.params.name})
     .then(phonenumbers => {
       return res.status(200)

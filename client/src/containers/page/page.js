@@ -31,7 +31,8 @@ class Page extends React.Component {
       filter: false,
       search_value: '',
       connectedPages: false,
-      pageNumber: 0
+      pageNumber: 0,
+      showingSearchResult: true
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -46,6 +47,10 @@ class Page extends React.Component {
     this.props.getuserdetails()
     this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
     this.props.loadSubscribersList()
+  }
+
+  componentWillUnmount () {
+    this.props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
   }
 
   displayData (n, pages) {
@@ -150,7 +155,7 @@ class Page extends React.Component {
   searchPages (event) {
     // var filtered = []
     if (event.target.value !== '') {
-      this.setState({searchValue: event.target.value, filter: true})
+      this.setState({searchValue: event.target.value, filter: true, showingSearchResult: true})
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value}})
 
       // for (let i = 0; i < this.props.pages.length; i++) {
@@ -159,7 +164,7 @@ class Page extends React.Component {
       //   }
       // }
     } else {
-      this.setState({filter: false, search_value: ''})
+      this.setState({filter: false, search_value: '', showingSearchResult: false})
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
 
       // filtered = this.props.pages
@@ -178,9 +183,9 @@ class Page extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -231,7 +236,7 @@ class Page extends React.Component {
         </div>
         <div className='m-content'>
           {
-            this.props.pages && this.props.pages.length === 0
+            this.props.pages && this.props.pages.length === 0 && !this.state.showingSearchResult
             ? <AlertMessage type='page' />
           : this.props.subscribers && this.props.subscribers.length === 0 &&
             <AlertMessage type='subscriber' />
