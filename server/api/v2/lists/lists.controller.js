@@ -1,5 +1,6 @@
 const utility = require('../utility')
 const logicLayer = require('./lists.logiclayer')
+const dataLayer = require('./lists.datalayer')
 
 exports.getAll = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
@@ -180,10 +181,10 @@ exports.deleteList = function (req, res) {
 exports.repliedPollSubscribers = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`poll/query`, 'post', {companyId: companyUser.companyId})
+    dataLayer.findPolls({companyId: companyUser.companyId})
     .then(polls => {
       let criteria = logicLayer.pollResponseCriteria(polls)
-      utility.callApi(`pollResponse/aggregate`, 'post', criteria)
+      dataLayer.findPollResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
         utility.callApi(`subscribers/find`, 'post', subscriberCriteria)
@@ -222,10 +223,10 @@ exports.repliedPollSubscribers = function (req, res) {
 exports.repliedSurveySubscribers = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`survey/aggregate`, 'post', {companyId: companyUser.companyId})
+    dataLayer.findSurveys({companyId: companyUser.companyId})
     .then(surveys => {
       let criteria = logicLayer.pollResponseCriteria(surveys)
-      utility.callApi(`surveyResponse/aggregate`, 'post', criteria)
+      dataLayer.findSurveyResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
         utility.callApi(`subscribers/find`, 'post', subscriberCriteria)
