@@ -48,7 +48,6 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      pageLikesSubscribes: {},
       isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
@@ -393,15 +392,6 @@ class Dashboard extends React.Component {
       }
     }
     this.props.sentVsSeen(this.props.pages[index].pageId)
-    this.setState({
-      pageLikesSubscribes: {
-        selectedPageName: this.props.pages[index].pageName,
-        likes: this.props.pages[index].likes,
-        subscribers: this.props.pages[index].subscribers,
-        unsubscribes: this.props.pages[index].unsubscribes
-      },
-      selectedPage: this.props.pages[index]
-    })
   }
 
   showDropDown () {
@@ -486,7 +476,7 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
               this.props.pages && this.props.sentseendata &&
-              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
+              <ProgressBox pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
             }
             </div>
             {
