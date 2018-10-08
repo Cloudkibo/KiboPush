@@ -5,6 +5,8 @@ const IpCountry = require('./ipcountry.model')
 const Company = require('./../companyprofile/companyprofile.model')
 const mongoose = require('mongoose')
 const _ = require('lodash')
+const logger = require('../../../components/logger')
+const TAG = 'api/ipcountry/ipcountry.controller.js'
 
 exports.findIp = function (req, res) {
   if (!_.has(req.body, 'company_id')) {
