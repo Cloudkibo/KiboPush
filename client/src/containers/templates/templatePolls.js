@@ -329,7 +329,7 @@ function mapDispatchToProps (dispatch) {
     {loadPollsListNew: loadPollsListNew,
       loadCategoriesList: loadCategoriesList,
       deletePoll: deletePoll,
-      saveCurrentPoll
+      saveCurrentPoll: saveCurrentPoll
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(templatePolls)
