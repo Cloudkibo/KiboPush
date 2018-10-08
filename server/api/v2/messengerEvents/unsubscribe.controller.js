@@ -1,8 +1,7 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/unsubscribe.controller.js'
-const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const needle = require('needle')
-const CompanyUsage = require('../../v1/featureUsage/companyUsage.model')
+const {callApi} = require('../utility')
 
 exports.unsubscribe = function (req, res) {
   res.status(200).json({
@@ -22,26 +21,25 @@ function handleUnsubscribe (resp, req) {
     messageData = {
       text: 'You have unsubscribed from our broadcasts. Send "start" to subscribe again.'
     }
-    Subscribers.update({ senderId: req.sender.id },
-      { isSubscribed: false }, (err) => {
-        if (err) {
-          logger.serverLog(TAG,
-            `Subscribers update subscription: ${JSON.stringify(
-              err)}`)
-        }
-        Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
-          if (err) {
-            logger.serverLog(TAG,
-              `Subscribers update subscription: ${JSON.stringify(
-                err)}`)
-          }
-          CompanyUsage.update({companyId: subscriber.companyId},
-            { $inc: { subscribers: -1 } }, (err, updated) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
-            })
-        })
+    callApi(`subscribers/update`, 'put', {query: { senderId: req.sender.id }, newPayload: { isSubscribed: false }, options: {}})
+      .then(updated => {
+        callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+          .then(subscribers => {
+            let subscriber = subscribers[0]
+            callApi('featureUsage/updatePlanUsage', 'put', {query: {companyId: subscriber.companyId}, newPayload: { $inc: { subscribers: -1 } }, options: {}})
+              .then(updated => {
+                logger.serverLog(TAG, `company usage incremented succssfully ${JSON.stringify(updated)}`)
+              })
+              .catch(err => {
+                logger.serverLog(TAG, `Failed to update company usage ${JSON.stringify(err)}`)
+              })
+          })
+          .catch(err => {
+            logger.serverLog(TAG, `Failed to fetch subscriber ${JSON.stringify(err)}`)
+          })
+      })
+      .catch(err => {
+        logger.serverLog(TAG, `Failed to update subscriber ${JSON.stringify(err)}`)
       })
   } else {
     messageData = {
