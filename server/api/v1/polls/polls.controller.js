@@ -942,8 +942,6 @@ exports.send = function (req, res) {
                                                   } else {
   
                                                    //return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
-                                                    logger.serverLog(TAG, 'called one times')
-                                                    console.log('call one time')
                                                     // return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     require('./../../../config/socketio').sendMessageToClient({
                                                       room_id: companyUser.companyId,
