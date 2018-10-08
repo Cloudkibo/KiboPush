@@ -1501,8 +1501,10 @@ exports.broadcastsByDays = function (req, res) {
 }
 
 exports.getAllBroadcasts = function (req, res) {
+  logger.serverLog(TAG, `Get All Broadcast hit`)
   let search = new RegExp('.*' + req.body.filter_criteria.search_value + '.*', 'i')
   if (req.body.first_page === 'first') {
+    logger.serverLog(TAG, `Inside first page condition`)
     let findCriteria = {
       title: req.body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true},
       'datetime': req.body.filter_criteria.days !== '' ? {
@@ -1517,16 +1519,21 @@ exports.getAllBroadcasts = function (req, res) {
       { $group: { _id: null, count: { $sum: 1 } } }
     ], (err, broadcastsCount) => {
       if (err) {
+        logger.serverLog(TAG, `Broadcast not found: ${JSON.stringify(err)}`)
         return res.status(404)
           .json({status: 'failed', description: 'BroadcastsCount not found'})
       }
+
+      logger.serverLog(TAG, `Callback of Broadcast aggregate count`)
       Broadcasts.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records).exec((err, broadcasts) => {
         if (err) {
+          logger.serverLog(TAG, `Error in getting surveys count: ${JSON.stringify(err)}`)
           return res.status(404).json({
             status: 'failed',
             description: `Error in getting surveys count ${JSON.stringify(err)}`
           })
         }
+        logger.serverLog(TAG, `Callback of Broadcast aggregate`)
         let temp = []
         let tempUser = []
         let tempCompany = []
@@ -1539,41 +1546,51 @@ exports.getAllBroadcasts = function (req, res) {
           $in: temp
         }}, (err, broadcastpages) => {
           if (err) {
+            logger.serverLog(TAG, `Broadcast pages not found: ${JSON.stringify(err)}`)
             return res.status(404)
             .json({status: 'failed', description: 'Broadcasts not found'})
           }
+          logger.serverLog(TAG, `Callback of Broadcast pages`)
           Users.find({_id: {
             $in: tempUser
           }}, (err, users) => {
             if (err) {
+              logger.serverLog(TAG, `internal server error ${JSON.stringify(err)}`)
               return res.status(500).json({
                 status: 'failed',
                 description: 'internal server error' + JSON.stringify(err)
               })
             }
+            logger.serverLog(TAG, `Callback of users find`)
             CompanyProfile.find({_id: {
               $in: tempCompany
             }}, (err, companies) => {
               if (err) {
+                logger.serverLog(TAG, `internal server error ${JSON.stringify(err)}`)
                 return res.status(500).json({
                   status: 'failed',
                   description: 'internal server error' + JSON.stringify(err)
                 })
               }
+              logger.serverLog(TAG, `Callback of Company profile find`)
               Pages.find({}, (err, pages) => {
                 if (err) {
+                  logger.serverLog(TAG, `Error in getting subscribers ${JSON.stringify(err)}`)
                   return res.status(500).json({
                     status: 'failed',
                     description: 'internal server error' + JSON.stringify(err)
                   })
                 }
+                logger.serverLog(TAG, `Callback of pages find`)
                 Subscribers.find({}, (err, subscribers) => {
                   if (err) {
+                    logger.serverLog(TAG, `internal server error ${JSON.stringify(err)}`)
                     return res.status(404).json({
                       status: 'failed',
                       description: `Error in getting subscribers ${JSON.stringify(err)}`
                     })
                   }
+                  logger.serverLog(TAG, `Callback of Subscribers find`)
                   let data = []
                   for (let j = 0; j < broadcasts.length; j++) {
                     let pagebroadcast = broadcastpages.filter((c) => JSON.stringify(c.broadcastId) === JSON.stringify(broadcasts[j]._id))
@@ -1581,13 +1598,17 @@ exports.getAllBroadcasts = function (req, res) {
                     for (let n = 0; n < pagebroadcast.length; n++) {
                       let subscriber = subscribers.filter((c) => c.senderId === pagebroadcast[n].subscriberId)
                       let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                      if (!subscriberPage) {
+                        logger.serverLog(TAG, subscriber[0].pageId)
+                        logger.serverLog(TAG, `subscriber Page: ${subscriberPage}`)
+                      }
                       subscriberData.push({_id: subscriber[0]._id,
                         firstName: subscriber[0].firstName,
                         lastName: subscriber[0].lastName,
                         locale: subscriber[0].locale,
                         gender: subscriber[0].gender,
                         profilePic: subscriber[0].profilePic,
-                        page: subscriberPage[0].pageName,
+                        page: subscriberPage[0] && subscriberPage[0].pageName ? subscriberPage[0].pageName : 'No Name Found',
                         seen: pagebroadcast[n].seen})
                     }
                     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
@@ -1596,7 +1617,9 @@ exports.getAllBroadcasts = function (req, res) {
                     let pageSend = []
                     if (broadcasts[j].segmentationPageIds && broadcasts[j].segmentationPageIds.length > 0) {
                       for (let k = 0; k < broadcasts[j].segmentationPageIds.length; k++) {
-                        let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
+                        // segmentationPageIds are actually local Ids, so we should compare using _id
+                        // in place of pageId
+                        let page = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
                         pageSend.push(page[0].pageName)
                       }
                     } else {
@@ -1618,6 +1641,7 @@ exports.getAllBroadcasts = function (req, res) {
                       subscriber: subscriberData}) // total tapped
                   }
                   //  var newBroadcast = data.reverse()
+                  logger.serverLog(TAG, `going to send response`)
                   return res.status(200)
                   .json({
                     status: 'success',

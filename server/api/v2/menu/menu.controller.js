@@ -6,7 +6,7 @@ const utility = require('../utility')
 exports.index = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`)
   .then(companyUser => {
-    utility.callApi(`menu/${companyUser.companyId}`)
+    utility.callApi(`menu/query`, 'post', {companyId: companyUser.companyId})
     .then(menus => {
       res.status(200).json({
         status: 'success',
@@ -16,14 +16,14 @@ exports.index = function (req, res) {
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to fetch menu ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }
@@ -31,7 +31,7 @@ exports.index = function (req, res) {
 exports.indexByPage = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`)
   .then(companyUser => {
-    utility.callApi(`menu/indexByPage`, 'post', {
+    utility.callApi(`menu/query`, 'post', {
       pageId: req.body.pageId,
       companyId: companyUser.companyId
     })
@@ -44,14 +44,14 @@ exports.indexByPage = function (req, res) {
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to fetch menu by page ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }
@@ -59,12 +59,12 @@ exports.indexByPage = function (req, res) {
 exports.create = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`)
   .then(companyUser => {
-    utility.callApi(`page/general/indexByPage`, 'post', {
+    utility.callApi(`pages/query`, 'post', {
       pageId: req.body.pageId,
       companyId: companyUser.companyId
     })
     .then(page => {
-      utility.callApi(`menu/indexByPage`, 'post', {
+      utility.callApi(`menu/query`, 'post', {
         pageId: req.body.pageId,
         companyId: companyUser.companyId
       })
@@ -110,11 +110,11 @@ exports.create = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            description: error
+            payload: `Failed to save menu ${JSON.stringify(error)}`
           })
         })
         } else {
-          utility.callApi(`menu/${info._id}`, 'post', {jsonStructure: req.body.jsonStructure})
+          utility.callApi(`menu/${info._id}`, 'put', {jsonStructure: req.body.jsonStructure})
           .then(updated => {
             const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
 
@@ -142,7 +142,7 @@ exports.create = function (req, res) {
                     description: JSON.stringify(resp.body.error)
                   })
                 } else {
-                  utility.callApi(`menu/indexByPage`, 'post', {
+                  utility.callApi(`menu/query`, 'post', {
                     pageId: req.body.pageId,
                     companyId: companyUser.companyId
                   })
@@ -152,7 +152,7 @@ exports.create = function (req, res) {
                     .catch(error => {
                       return res.status(500).json({
                         status: 'failed',
-                        description: error
+                        payload: `Failed to save menu ${JSON.stringify(error)}`
                       })
                     })
                 }
@@ -161,7 +161,7 @@ exports.create = function (req, res) {
         .catch(error => {
           return res.status(500).json({
             status: 'failed',
-            description: error
+            payload: `Failed to update menu ${JSON.stringify(error)}`
           })
         })
         }
@@ -169,21 +169,21 @@ exports.create = function (req, res) {
       .catch(error => {
         return res.status(500).json({
           status: 'failed',
-          description: error
+          payload: `Failed to update menu ${JSON.stringify(error)}`
         })
       })
     })
     .catch(error => {
       return res.status(500).json({
         status: 'failed',
-        description: error
+        payload: `Failed to update menu ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
       status: 'failed',
-      description: error
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })
 }

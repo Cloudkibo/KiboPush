@@ -12,6 +12,11 @@ const SurveyQuestions = require('../surveys/surveyquestions.model')
 const Sessions = require('../sessions/sessions.model')
 
 exports.surveyResponse = function (req, res) {
+  res.status(200).json({
+    status: 'success',
+    description: `received the payload`
+  })
+  logger.serverLog(TAG, `in surveyResponse ${JSON.stringify(req.body)}`)
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
     const event = req.body.entry[0].messaging[i]
     let resp = JSON.parse(event.postback.payload)

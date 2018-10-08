@@ -287,6 +287,7 @@ exports.sendConversation = function (req, res) {
 
 exports.upload = function (req, res) {
   let pages = JSON.parse(req.body.pages)
+  logger.serverLog(TAG, `Pages in upload file ${pages}`)
   var today = new Date()
   var uid = crypto.randomBytes(5).toString('hex')
   var serverPath = 'f' + uid + '' + today.getFullYear() + '' +

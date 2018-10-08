@@ -104,6 +104,10 @@ export function sendsurvey (survey, msg) {
         if (res.status === 'success') {
           msg.success('Survey sent successfully')
           dispatch(sendSurveySuccess())
+          callApi(`surveys/allSurveys`, 'post', data).then(response => {
+            console.log('response from surveys', response)
+            dispatch(showSurveysNew(response.payload))
+          })
         } else {
           msg.error(res.description)
           dispatch(sendSurveyFailure())

@@ -160,9 +160,9 @@ class FacebookPosts extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100 }}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube

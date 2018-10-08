@@ -11,6 +11,7 @@ class ProgressBox extends React.Component {
     super(props, context)
     this.state = {
       showDropDown: false
+
     }
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
@@ -27,7 +28,7 @@ class ProgressBox extends React.Component {
   }
   calculateProgressRates () {
     var progressRates = {}
-    if (this.props.pageLikesSubscribes.selectedPage) {
+    if (this.props.pageLikesSubscribes.selectedPageName) {
       progressRates.unsubscribeRate = (this.props.pageLikesSubscribes.unsubscribes && this.props.pageLikesSubscribes.subscribers) ? (this.props.pageLikesSubscribes.unsubscribes / (this.props.pageLikesSubscribes.unsubscribes + this.props.pageLikesSubscribes.subscribers) * 100).toFixed(1) + '%' : '0%'
     } else {
       progressRates.unsubscribeRate = (this.props.firstPage.unsubscribes && this.props.firstPage.subscribers) ? (this.props.firstPage.unsubscribes / (this.props.firstPage.unsubscribes + this.props.firstPage.subscribers) * 100).toFixed(1) + '%' : '0%'
@@ -42,6 +43,8 @@ class ProgressBox extends React.Component {
   }
 
   render () {
+    console.log('selecetdPage', this.props.selectedPage)
+    console.log('first page', this.props.firstPage)
     var rates = this.calculateProgressRates()
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
@@ -50,7 +53,7 @@ class ProgressBox extends React.Component {
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
                 <h3 className='m-portlet__head-text'>
-                  {this.props.pageLikesSubscribes.selectedPage ? this.props.pageLikesSubscribes.selectedPage : this.props.firstPage.pageName}
+                  {this.props.pageLikesSubscribes.selectedPageName ? this.props.pageLikesSubscribes.selectedPageName : this.props.firstPage.pageName}
                 </h3>
               </div>
             </div>
@@ -106,7 +109,7 @@ class ProgressBox extends React.Component {
                 <div className='col-4' style={{margin: '10px'}}>
                   <div className='row'>
                     <div className='col-2' style={{minWidth: '150px'}}>
-                      <Link to='/subscribers' >
+                      <Link to={{pathname: '/subscribers', state: {page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'subscribed'}}}>
                         <div className='m-widget21__item' style={{display: 'flex'}}>
                           <span className='m-widget21__icon'>
                             <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
@@ -126,7 +129,7 @@ class ProgressBox extends React.Component {
                       </Link>
                     </div>
                     <div className='col-2' style={{minWidth: '150px'}}>
-                      <Link to='/subscribers' >
+                      <Link to={{pathname: '/subscribers', state: {page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'unsubscribed'}}}>
                         <div className='m-widget21__item' style={{display: 'flex'}}>
                           <span className='m-widget21__icon'>
                             <a className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>

@@ -34,4 +34,10 @@ router.get('/isWelcomeMessageEnabled',
   validate({body: validationSchema.enableDisableWelcomeMessagePayload}),
   controller.createWelcomeMessage)
 
+router.post('/saveGreetingText',
+  auth.isAuthenticated(),
+  auth.doesPlanPermitsThisAction('manage_pages'),
+  auth.doesRolePermitsThisAction('pagesPermission'),
+  controller.saveGreetingText)
+
 module.exports = router

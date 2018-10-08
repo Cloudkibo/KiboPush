@@ -222,6 +222,14 @@ class Finish extends React.Component {
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                       <div className='m-form__actions'>
                         <div className='row'>
+                          {/* <div className='col-lg-6 m--align-left' >
+                                <Link to='/paymentMethodsWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                  <span>
+                                    <i className='la la-arrow-left' />
+                                    <span>Back</span>&nbsp;&nbsp;
+                                  </span>
+                                </Link>
+                              </div> */}
                           <div className='col-lg-6 m--align-left' >
                             <Link to={this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'kibocommerce' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
@@ -230,27 +238,13 @@ class Finish extends React.Component {
                               </span>
                             </Link>
                           </div>
-                        </div>
-                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                          <div className='m-form__actions'>
-                            <div className='row'>
-                              <div className='col-lg-6 m--align-left' >
-                                <Link to='/paymentMethodsWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <i className='la la-arrow-left' />
-                                    <span>Back</span>&nbsp;&nbsp;
-                                  </span>
-                                </Link>
-                              </div>
-                              <div className='col-lg-6 m--align-right'>
-                                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
-                                  <span>
-                                    <span>Finish</span>&nbsp;&nbsp;
+                          <div className='col-lg-6 m--align-right'>
+                            <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
+                              <span>
+                                <span>Finish</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
-                                  </span>
-                                </button>
-                              </div>
-                            </div>
+                              </span>
+                            </button>
                           </div>
                         </div>
                       </div>

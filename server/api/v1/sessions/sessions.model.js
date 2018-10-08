@@ -15,7 +15,7 @@ let FacebookSessionSchema = new Schema({
   assigned_to: Schema.Types.Mixed,
   request_time: {type: Date, default: Date.now},
   last_activity_time: {type: Date, default: Date.now},
-  agent_activity_time: {type: Date, default: Date.now}
+  agent_activity_time: Date
 })
 
 module.exports = mongoose.model('sessions', FacebookSessionSchema)

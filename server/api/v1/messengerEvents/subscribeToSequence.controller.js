@@ -7,6 +7,11 @@ const SequenceMessages = require('../sequenceMessaging/message.model')
 const SequenceMessageQueue = require('../SequenceMessageQueue/SequenceMessageQueue.model')
 
 exports.subscribeToSequence = function (req, res) {
+  res.status(200).json({
+    status: 'success',
+    description: `received the payload`
+  })
+  logger.serverLog(TAG, `in subscribeToSequence ${JSON.stringify(req.body)}`)
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
     const event = req.body.entry[0].messaging[i]
     let resp = JSON.parse(event.postback.payload)

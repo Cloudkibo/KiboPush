@@ -121,22 +121,24 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
         }
       }
       if (field === 'reply') {
-        for (let i = 0; i < responses.length; i++) {
-          let alreadyAdded = false
-          let responseSubscriber = responses[i]
-          let responseDate = new Date(responseSubscriber.dateReplied)
-          responseDate.setHours(0, 0, 0, 0)
-          let compareDate = new Date(text)
-          compareDate.setHours(0, 0, 0, 0)
-          if (responseDate.getTime() === compareDate.getTime()) {
-            for (let j = 0; j < filteredData.length; j++) {
-              if (filteredData[j]._id === responseSubscriber._id) {
-                alreadyAdded = true
-                break
+        if (responses && responses.length > 0) {
+          for (let i = 0; i < responses.length; i++) {
+            let alreadyAdded = false
+            let responseSubscriber = responses[i]
+            let responseDate = new Date(responseSubscriber.dateReplied)
+            responseDate.setHours(0, 0, 0, 0)
+            let compareDate = new Date(text)
+            compareDate.setHours(0, 0, 0, 0)
+            if (responseDate.getTime() === compareDate.getTime()) {
+              for (let j = 0; j < filteredData.length; j++) {
+                if (filteredData[j]._id === responseSubscriber._id) {
+                  alreadyAdded = true
+                  break
+                }
               }
-            }
-            if (!alreadyAdded) {
-              filteredData.push(responseSubscriber)
+              if (!alreadyAdded) {
+                filteredData.push(responseSubscriber)
+              }
             }
           }
         }
@@ -162,23 +164,25 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
         }
       }
       if (field === 'reply') {
-        for (let i = 0; i < responses.length; i++) {
-          let alreadyAdded = false
-          let responseSubscriber = responses[i]
-          let responseDate = new Date(responseSubscriber.dateReplied)
-          responseDate.setHours(0, 0, 0, 0)
-          let compareDate = new Date(text)
-          compareDate.setHours(0, 0, 0, 0)
-          if (responseDate.getTime() < compareDate.getTime()) {
-            for (let j = 0; j < filteredData.length; j++) {
-              if (filteredData[j]._id === responseSubscriber._id) {
-                console.log('already added', filteredData[j])
-                alreadyAdded = true
-                break
+        if (responses && responses.length > 0) {
+          for (let i = 0; i < responses.length; i++) {
+            let alreadyAdded = false
+            let responseSubscriber = responses[i]
+            let responseDate = new Date(responseSubscriber.dateReplied)
+            responseDate.setHours(0, 0, 0, 0)
+            let compareDate = new Date(text)
+            compareDate.setHours(0, 0, 0, 0)
+            if (responseDate.getTime() < compareDate.getTime()) {
+              for (let j = 0; j < filteredData.length; j++) {
+                if (filteredData[j]._id === responseSubscriber._id) {
+                  console.log('already added', filteredData[j])
+                  alreadyAdded = true
+                  break
+                }
               }
-            }
-            if (!alreadyAdded) {
-              filteredData.push(responseSubscriber)
+              if (!alreadyAdded) {
+                filteredData.push(responseSubscriber)
+              }
             }
           }
         }
@@ -205,22 +209,24 @@ export function getSubList (data, conditions, pages, joiningCondition, responses
         }
       }
       if (field === 'reply') {
-        for (let i = 0; i < responses.length; i++) {
-          let alreadyAdded = false
-          let responseSubscriber = responses[i]
-          let responseDate = new Date(responseSubscriber.dateReplied)
-          responseDate.setHours(0, 0, 0, 0)
-          let compareDate = new Date(text)
-          compareDate.setHours(0, 0, 0, 0)
-          if (responseDate.getTime() > compareDate.getTime()) {
-            for (let j = 0; j < filteredData.length; j++) {
-              if (filteredData[j]._id === responseSubscriber._id) {
-                alreadyAdded = true
-                break
+        if (responses && responses.length > 0) {
+          for (let i = 0; i < responses.length; i++) {
+            let alreadyAdded = false
+            let responseSubscriber = responses[i]
+            let responseDate = new Date(responseSubscriber.dateReplied)
+            responseDate.setHours(0, 0, 0, 0)
+            let compareDate = new Date(text)
+            compareDate.setHours(0, 0, 0, 0)
+            if (responseDate.getTime() > compareDate.getTime()) {
+              for (let j = 0; j < filteredData.length; j++) {
+                if (filteredData[j]._id === responseSubscriber._id) {
+                  alreadyAdded = true
+                  break
+                }
               }
-            }
-            if (!alreadyAdded) {
-              filteredData.push(responseSubscriber)
+              if (!alreadyAdded) {
+                filteredData.push(responseSubscriber)
+              }
             }
           }
         }

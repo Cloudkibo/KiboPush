@@ -213,7 +213,7 @@ class ListDetails extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.pageId.pageName}
+                                  {subscriber.pageName}
                                 </span>
                               </td>
                               <td data-field='phoneNumber'
