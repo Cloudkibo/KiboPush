@@ -183,6 +183,8 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
+      console.log('id:', this.props.id)
+      console.log('this.props.pages', this.props.pages)
       this.props.uploadImage(file, this.props.pages, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,
