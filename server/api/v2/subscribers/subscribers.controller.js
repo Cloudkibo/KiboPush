@@ -1,5 +1,6 @@
 const logicLayer = require('./subscribers.logiclayer')
 const utility = require('../utility')
+const dataLayer = require('./subscribers.datalayer')
 // const logger = require('../../../components/logger')
 // const TAG = 'api/v2/subscribers/subscribers.controller.js'
 
@@ -9,7 +10,7 @@ exports.index = function (req, res) {
     utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true, isSubscribed: true}) // fetch subscribers of company
     .then(subscribers => {
       let subscriberIds = logicLayer.getSubscriberIds(subscribers)
-      utility.callApi(`tagsSubscribers/generic`, 'post', {subscriberId: {$in: subscriberIds}}) // use this from own database (KiboEngage)
+      dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
       .then(tags => {
         let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
         return res.status(200).json({
@@ -45,7 +46,7 @@ exports.allSubscribers = function (req, res) {
     utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true}) // fetch subscribers of company
     .then(subscribers => {
       let subscriberIds = logicLayer.getSubscriberIds(subscribers)
-      utility.callApi(`tagsSubscribers/generic`, 'post', {subscriberId: {$in: subscriberIds}}) // use this from own database (KiboEngage)
+      dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
       .then(tags => {
         let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
         return res.status(200).json({
@@ -110,7 +111,7 @@ exports.getAll = function (req, res) {
       utility.callApi(`subscribers/aggregate`, 'post', criterias.fetchCriteria) // fetch subscribers
       .then(subscribers => {
         let subscriberIds = logicLayer.getSubscriberIds(subscribers)
-        utility.callApi(`tagsSubscribers/generic`, 'post', {subscriberId: {$in: subscriberIds}})// use this from own database (KiboEngage)
+        dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
         .then(tags => {
           let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
           return res.status(200).json({
