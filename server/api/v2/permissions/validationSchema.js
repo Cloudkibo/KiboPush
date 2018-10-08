@@ -78,21 +78,3 @@ exports.updatePermissions = {
     }
   }
 }
-exports.update = {
-  type: 'object',
-  properties: {
-    permissions: {
-      type: 'object',
-      required: true
-    }
-  }
-}
-exports.create = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-      required: true
-    }
-  }
-}
