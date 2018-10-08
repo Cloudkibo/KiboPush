@@ -1,15 +1,16 @@
 const logicLayer = require('./subscribers.logiclayer')
 const utility = require('../utility')
+const dataLayer = require('./subscribers.datalayer')
 // const logger = require('../../../components/logger')
 // const TAG = 'api/v2/subscribers/subscribers.controller.js'
 
 exports.index = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`subscribers/generic`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true, isSubscribed: true}) // fetch subscribers of company
+    utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true, isSubscribed: true}) // fetch subscribers of company
     .then(subscribers => {
       let subscriberIds = logicLayer.getSubscriberIds(subscribers)
-      utility.callApi(`tagsSubscribers/generic`, 'post', {subscriberId: {$in: subscriberIds}})
+      dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
       .then(tags => {
         let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
         return res.status(200).json({
@@ -42,10 +43,10 @@ exports.index = function (req, res) {
 exports.allSubscribers = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`subscribers/generic`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true}) // fetch subscribers of company
+    utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true}) // fetch subscribers of company
     .then(subscribers => {
       let subscriberIds = logicLayer.getSubscriberIds(subscribers)
-      utility.callApi(`tagsSubscribers/generic`, 'post', {subscriberId: {$in: subscriberIds}})
+      dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
       .then(tags => {
         let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
         return res.status(200).json({
@@ -78,11 +79,12 @@ exports.allSubscribers = function (req, res) {
 exports.allLocales = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
-    utility.callApi(`subscribers/locale`) // fetch subscribers locales
+    let aggregateObject = [{$group: {_id: null, locales: {$addToSet: '$locale'}}}]
+    utility.callApi(`subscribers/aggregate`, 'post', aggregateObject) // fetch subscribers locales
     .then(locales => {
       return res.status(200).json({
         status: 'success',
-        payload: locales
+        payload: locales[0].locales
       })
     })
     .catch(error => {
@@ -104,12 +106,12 @@ exports.getAll = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    utility.callApi(`subscribers/pagination/`, 'post', criterias.countCriteria) // fetch subscribers count
+    utility.callApi(`subscribers/aggregate`, 'post', criterias.countCriteria) // fetch subscribers count
     .then(count => {
-      utility.callApi(`subscribers/pagination`, 'post', criterias.fetchCriteria) // fetch subscribers
+      utility.callApi(`subscribers/aggregate`, 'post', criterias.fetchCriteria) // fetch subscribers
       .then(subscribers => {
         let subscriberIds = logicLayer.getSubscriberIds(subscribers)
-        utility.callApi(`tagsSubscribers/generic`, 'post', {subscriberId: {$in: subscriberIds}}) // fetch tags
+        dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
         .then(tags => {
           let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
           return res.status(200).json({
@@ -147,7 +149,7 @@ exports.getAll = function (req, res) {
 }
 
 exports.subscribeBack = function (req, res) {
-  utility.callApi(`subscribers/subscribeBack`, 'post', {_id: req.params.id, unSubscribedBy: 'agent'}) // fetch single subscriber
+  utility.callApi(`subscribers/update`, 'put', {query: {_id: req.params.id, unSubscribedBy: 'agent'}, newPayload: {isSubscribed: true, unSubscribedBy: 'subscriber'}, options: {}}) // fetch single subscriber
   .then(subscriber => {
     return res.status(200).json({
       status: 'success',

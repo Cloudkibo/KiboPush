@@ -81,6 +81,7 @@ module.exports = function (app) {
   app.use('/api/v2/phoneNumber', require('./api/v2/phoneNumber'))
   app.use('/api/v2/reset_password', require('./api/v2/passwordresettoken'))
   app.use('/api/v2/webhooks', require('./api/v2/webhooks'))
+  app.use('/api/v2/messengerEvents', require('./api/v2/messengerEvents'))
 
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,

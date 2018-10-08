@@ -4,7 +4,7 @@ const needle = require('needle')
 exports.index = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`webhooks/generic`, 'post', {companyId: companyUser.companyId})
+    utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId})
     .then(webhooks => {
       return res.status(201).json({status: 'success', payload: webhooks})
     })
@@ -26,7 +26,7 @@ exports.index = function (req, res) {
 exports.create = function (req, res) {
   utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
   .then(companyUser => {
-    utility.callApi(`webhooks/genric`, 'post', {companyId: companyUser.companyId, pageId: req.body.pageId})
+    utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId, pageId: req.body.pageId})
     .then(webhooks => {
       if (webhooks && webhooks.length > 0) {
         return res.status(403).json({status: 'failed', description: 'Webhook for this page is already set'})
