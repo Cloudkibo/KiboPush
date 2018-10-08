@@ -1,8 +1,8 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/unsubscribe.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
+const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const needle = require('needle')
-const CompanyUsage = require('./../featureUsage/companyUsage.model')
+const CompanyUsage = require('../../v1/featureUsage/companyUsage.model')
 
 exports.unsubscribe = function (req, res) {
   res.status(200).json({

@@ -1,13 +1,12 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/pollResponse.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
+const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const mongoose = require('mongoose')
-const Webhooks = require(
-  './../webhooks/webhooks.model')
-const PollResponse = require('../polls/pollresponse.model')
+const PollResponse = require('../../v1/polls/pollresponse.model')
 const needle = require('needle')
-const webhookUtility = require('./../webhooks/webhooks.utility')
-const sequenceController = require('./../sequenceMessaging/sequence.controller')
+const webhookUtility = require('../../v1/webhooks/webhooks.utility')
+const sequenceController = require('../../v1/sequenceMessaging/sequence.controller')
+const callApi = require('../utility')
 
 var array = []
 
@@ -62,9 +61,9 @@ function savepoll (req, resp) {
       subscriberId: subscriber._id
 
     }
-    Webhooks.findOne({ pageId: req.recipient.id }).populate('userId').exec((err, webhook) => {
+    callApi.callApi(`webhooks/query`, 'post', { pageId: req.recipient.id })
+    .then(webhook => {
       logger.serverLog(TAG, `webhook ${webhook}`)
-      if (err) logger.serverLog(TAG, err)
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
           if (err) {
@@ -87,6 +86,9 @@ function savepoll (req, resp) {
           }
         })
       }
+    })
+    .catch(err => {
+      logger.serverLog(TAG, err)
     })
     if (temp === true) {
       PollResponse.create(pollbody, (err, pollresponse) => {

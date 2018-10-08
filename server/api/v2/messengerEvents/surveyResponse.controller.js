@@ -1,15 +1,14 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/surveyResponse.controller.js'
-const Subscribers = require('../subscribers/Subscribers.model')
+const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const mongoose = require('mongoose')
-const Webhooks = require(
-  './../webhooks/webhooks.model')
 const needle = require('needle')
-const webhookUtility = require('./../webhooks/webhooks.utility')
-const SurveyResponse = require('../surveys/surveyresponse.model')
-const Surveys = require('../surveys/surveys.model')
-const SurveyQuestions = require('../surveys/surveyquestions.model')
-const Sessions = require('../sessions/sessions.model')
+const webhookUtility = require('../../v1/webhooks/webhooks.utility')
+const SurveyResponse = require('../../v1/surveys/surveyresponse.model')
+const Surveys = require('../../v1/surveys/surveys.model')
+const SurveyQuestions = require('../../v1/surveys/surveyquestions.model')
+const Sessions = require('../../v1/sessions/sessions.model')
+const callApi = require('../utility')
 
 exports.surveyResponse = function (req, res) {
   res.status(200).json({
@@ -54,8 +53,8 @@ function savesurvey (req) {
       questionId: resp.question_id,
       subscriberId: subscriber._id
     }
-    Webhooks.findOne({ pageId: req.recipient.id }).populate('userId').exec((err, webhook) => {
-      if (err) logger.serverLog(TAG, err)
+    callApi.callApi(`webhooks/query`, 'post', { pageId: req.recipient.id })
+    .then(webhook => {
       if (webhook && webhook.isEnabled) {
         needle.get(webhook.webhook_url, (err, r) => {
           if (err) {
@@ -76,6 +75,9 @@ function savesurvey (req) {
           }
         })
       }
+    })
+    .catch(err => {
+      logger.serverLog(TAG, err)
     })
     SurveyResponse.update({
       surveyId: resp.survey_id,
