@@ -16,6 +16,7 @@ class ProgressBox extends React.Component {
     this.showDropDown = this.showDropDown.bind(this)
     this.hideDropDown = this.hideDropDown.bind(this)
     this.calculateProgressRates = this.calculateProgressRates.bind(this)
+    this.getUnsubscribeRate = this.getUnsubscribeRate.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
@@ -28,8 +29,8 @@ class ProgressBox extends React.Component {
   }
   calculateProgressRates () {
     var progressRates = {}
-    if (this.props.pageLikesSubscribes.selectedPageName) {
-      progressRates.unsubscribeRate = (this.props.pageLikesSubscribes.unsubscribes && this.props.pageLikesSubscribes.subscribers) ? (this.props.pageLikesSubscribes.unsubscribes / (this.props.pageLikesSubscribes.unsubscribes + this.props.pageLikesSubscribes.subscribers) * 100).toFixed(1) + '%' : '0%'
+    if (this.props.selectedPage) {
+      progressRates.unsubscribeRate = (this.props.selectedPage.unsubscribes && this.props.selectedPage.subscribers) ? (this.props.selectedPage.unsubscribes / (this.props.selectedPage.unsubscribes + this.props.selectedPage.subscribers) * 100).toFixed(1) + '%' : '0%'
     } else {
       progressRates.unsubscribeRate = (this.props.firstPage.unsubscribes && this.props.firstPage.subscribers) ? (this.props.firstPage.unsubscribes / (this.props.firstPage.unsubscribes + this.props.firstPage.subscribers) * 100).toFixed(1) + '%' : '0%'
     }
@@ -42,8 +43,16 @@ class ProgressBox extends React.Component {
     return progressRates
   }
 
+  getUnsubscribeRate () {
+    if (this.props.selectedPage) {
+      return (this.props.selectedPage.subscribers / this.props.selectedPage.likes) * 100
+    } else {
+      return (this.props.firstPage.subscribers / this.props.firstPage.likes) * 100
+    }
+  }
+
   render () {
-    console.log('selecetdPage', this.props.selectedPage)
+    console.log('selecetedPage', this.props.selectedPage)
     console.log('first page', this.props.firstPage)
     var rates = this.calculateProgressRates()
     return (
@@ -53,7 +62,7 @@ class ProgressBox extends React.Component {
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
                 <h3 className='m-portlet__head-text'>
-                  {this.props.pageLikesSubscribes.selectedPageName ? this.props.pageLikesSubscribes.selectedPageName : this.props.firstPage.pageName}
+                  {this.props.selectedPage ? this.props.selectedPage.pageName : this.props.firstPage.pageName}
                 </h3>
               </div>
             </div>
@@ -79,7 +88,7 @@ class ProgressBox extends React.Component {
                               {
                                 this.props.pages.map((page, i) => (
                                   <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.props.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <a onClick={() => this.props.changePage(page.pageId)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <span className='m-nav__link-text'>
                                         {page.pageName}
                                       </span>
@@ -118,7 +127,7 @@ class ProgressBox extends React.Component {
                           </span>
                           <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                             <span className='m-widget21__title'>
-                              {this.props.pageLikesSubscribes.subscribers || this.props.pageLikesSubscribes.subscribers === 0 ? this.props.pageLikesSubscribes.subscribers : this.props.firstPage.subscribers }
+                              {this.props.selectedPage ? this.props.selectedPage.subscribers : this.props.firstPage.subscribers }
                             </span>
                             <br />
                             <span className='m-widget21__sub'>
@@ -138,7 +147,7 @@ class ProgressBox extends React.Component {
                           </span>
                           <div className='m-widget21__info' style={{marginLeft: '10px'}}>
                             <span className='m-widget21__title'>
-                              {this.props.pageLikesSubscribes.unsubscribes || this.props.pageLikesSubscribes.unsubscribes === 0 ? this.props.pageLikesSubscribes.unsubscribes : this.props.firstPage.unsubscribes}
+                              {this.props.selectedPage ? this.props.selectedPage.unsubscribes : this.props.firstPage.unsubscribes}
                             </span>
                             <br />
                             <span className='m-widget21__sub'>
@@ -161,7 +170,7 @@ class ProgressBox extends React.Component {
                         </span>
                         <div className='m--space-10' />
                         <div className='progress m-progress--sm' style={{height: '6px', minWidth: '300px'}}>
-                          <div className='progress-bar bg-brand' role='progressbar' style={{width: rates.unsubscribeRate}} aria-valuenow={(this.props.pageLikesSubscribes.subscribers / this.props.pageLikesSubscribes.likes) * 100} aria-valuemin='0' aria-valuemax='100' />
+                          <div className='progress-bar bg-brand' role='progressbar' style={{width: rates.unsubscribeRate}} aria-valuenow={this.getUnsubscribeRate()} aria-valuemin='0' aria-valuemax='100' />
                         </div>
                       </div>
                     </div>

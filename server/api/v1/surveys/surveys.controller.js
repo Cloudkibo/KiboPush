@@ -769,6 +769,19 @@ exports.send = function (req, res) {
                                                         description: 'PollBroadcast create failed',
                                                         err2
                                                       })
+                                                    } else {
+                                                      require('./../../../config/socketio').sendMessageToClient({
+                                                        room_id: companyUser.companyId,
+                                                        body: {
+                                                          action: 'survey_send',
+                                                          payload: {
+                                                            survey_id: survey._id,
+                                                            user_id: req.user._id,
+                                                            user_name: req.user.name,
+                                                            company_id: companyUser.companyId
+                                                          }
+                                                        }
+                                                      })
                                                     }
                                                   })
                                                 })
@@ -908,6 +921,19 @@ exports.send = function (req, res) {
                                                         status: 'failed',
                                                         description: 'PollBroadcast create failed',
                                                         err2
+                                                      })
+                                                    } else {
+                                                      require('./../../../config/socketio').sendMessageToClient({
+                                                        room_id: companyUser.companyId,
+                                                        body: {
+                                                          action: 'survey_send',
+                                                          payload: {
+                                                            survey_id: survey._id,
+                                                            user_id: req.user._id,
+                                                            user_name: req.user.name,
+                                                            company_id: companyUser.companyId
+                                                          }
+                                                        }
                                                       })
                                                     }
                                                   // not using now

@@ -5,6 +5,8 @@ const IpCountry = require('./ipcountry.model')
 const Company = require('./../companyprofile/companyprofile.model')
 const mongoose = require('mongoose')
 const _ = require('lodash')
+const logger = require('../../../components/logger')
+const TAG = 'api/ipcountry/ipcountry.controller.js'
 
 exports.findIp = function (req, res) {
   if (!_.has(req.body, 'company_id')) {
@@ -22,7 +24,11 @@ exports.findIp = function (req, res) {
       .json({status: 'failed', description: 'No registered company found.'})
     }
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress
-
+    logger.serverLog(TAG, `IP found: ${ip}`)
+    if (ip.includes('ffff')) {
+      let temp = ip.split(':')
+      ip = temp[temp.length - 1]
+    }
     let ip2number = (parseInt(ip.split('.')[0]) * 256 * 256 * 256) + (parseInt(ip.split('.')[1]) * 256 * 256) + (parseInt(ip.split('.')[2]) * 256) + (parseInt(ip.split('.')[3]))
 
     IpCountry.findOne({startipint: {$lte: ip2number}, endipint: {$gte: ip2number}}, function (err, gotLocation) {
