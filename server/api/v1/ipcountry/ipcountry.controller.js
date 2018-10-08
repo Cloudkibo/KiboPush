@@ -25,6 +25,10 @@ exports.findIp = function (req, res) {
     }
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress
     logger.serverLog(TAG, `IP found: ${ip}`)
+    if (ip.includes('ffff')) {
+      let temp = ip.split(':')
+      ip = temp[temp.length - 1]
+    }
     let ip2number = (parseInt(ip.split('.')[0]) * 256 * 256 * 256) + (parseInt(ip.split('.')[1]) * 256 * 256) + (parseInt(ip.split('.')[2]) * 256) + (parseInt(ip.split('.')[3]))
 
     IpCountry.findOne({startipint: {$lte: ip2number}, endipint: {$gte: ip2number}}, function (err, gotLocation) {
