@@ -1474,19 +1474,11 @@ class Subscriber extends React.Component {
                               }
                             </div>
                             <div className='col-md-4'>
-                              {
-                                this.state.subscriber.source === 'customer_matching'
-                                ? <div>
-                                  <span style={{fontWeight: 600}}>Source:</span>
-                                  <br />
-                                  <span>Phone Number</span>
-                                </div>
-                                : <div>
-                                  <span style={{fontWeight: 600}}>Source:</span>
-                                  <br />
-                                  <span>Direct Message</span>
-                                </div>
-                              }
+                              <div>
+                                <span style={{fontWeight: 600}}>Source:</span>
+                                <br />
+                                <span>{this.state.subscriber.source === 'customer_matching' ? 'Phone Number' : this.state.subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}</span>
+                              </div>
                             </div>
                           </div>
                           <br />
