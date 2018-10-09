@@ -54,18 +54,32 @@ class Card extends React.Component {
     if (e.target.value) {
       this.setState({disabled: false})
     }
-    this.props.handleCard({id: this.props.id,
-      componentType: 'card',
-      fileurl: this.state.fileurl,
-      image_url: this.state.image_url,
-      fileName: this.state.fileName,
-      type: this.state.type,
-      size: this.state.size,
-      title: this.state.title,
-      description: this.state.subtitle,
-      buttons: this.state.button,
-      default_action: {type: 'web_url', url: this.state.elementUrl}
-    })
+    if (this.state.elementUrl !== '') {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button,
+        default_action: {type: 'web_url', url: this.state.elementUrl}
+      })
+    } else {
+      this.props.handleCard({id: this.props.id,
+        componentType: 'card',
+        fileurl: this.state.fileurl,
+        image_url: this.state.image_url,
+        fileName: this.state.fileName,
+        type: this.state.type,
+        size: this.state.size,
+        title: this.state.title,
+        description: this.state.subtitle,
+        buttons: this.state.button
+      })
+    }
     if (e.target.value) {
       this.props.topElementStyle('LARGE')
     } else {
@@ -183,6 +197,8 @@ class Card extends React.Component {
         })
       }.bind(this)
       this.setState({loading: true})
+      console.log('id:', this.props.id)
+      console.log('this.props.pages', this.props.pages)
       this.props.uploadImage(file, this.props.pages, 'image', {fileurl: '',
         fileName: file.name,
         type: file.type,

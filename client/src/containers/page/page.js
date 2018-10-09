@@ -164,9 +164,8 @@ class Page extends React.Component {
       //   }
       // }
     } else {
-      this.setState({filter: false, search_value: '', showingSearchResult: false})
       this.props.loadMyPagesListNew({last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
-
+      this.setState({filter: false, search_value: '', showingSearchResult: false})
       // filtered = this.props.pages
     }
     // this.displayData(0, filtered)
