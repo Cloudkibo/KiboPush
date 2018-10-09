@@ -28,7 +28,7 @@ class CustomerLists extends React.Component {
     this.saveCurrentList = this.saveCurrentList.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     props.loadMyPagesList()
-    props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
+    props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.clearCurrentList()
   }
   scrollToTop () {
@@ -75,12 +75,14 @@ class CustomerLists extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({pageNumber: data.selected})
     if (data.selected === 0) {
-      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: true})
+      this.props.loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'})
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.loadCustomerListsNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next'})
     } else {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: false})
+      this.props.loadCustomerListsNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous'})
     }
+    this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.customerLists)
   }
   componentWillReceiveProps (nextProps) {
