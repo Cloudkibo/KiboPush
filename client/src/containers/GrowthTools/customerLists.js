@@ -84,6 +84,7 @@ class CustomerLists extends React.Component {
     this.displayData(data.selected, this.props.customerLists)
   }
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps.customerLists', nextProps.customerLists)
     if (nextProps.customerLists && nextProps.count) {
       // this.setState({broadcasts: nextProps.broadcasts});
       this.displayData(0, nextProps.customerLists)
