@@ -34,7 +34,6 @@ var json2csv = require('json2csv')
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    console.log('in constructor')
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
