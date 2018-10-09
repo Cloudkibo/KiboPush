@@ -11,7 +11,7 @@ import CardBoxes from '../../components/Dashboard/CardBoxes'
 import ProgressBox from '../../components/Dashboard/ProgressBox'
 import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -48,7 +48,6 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      pageLikesSubscribes: {},
       isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
@@ -367,6 +366,10 @@ class Dashboard extends React.Component {
       addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       document.body.appendChild(addScript1)
     }
+    if (this.props.currentPage) {
+      console.log('updating sentVsSeen currentPage')
+      this.props.sentVsSeen(this.props.currentPage)
+    }
     document.title = 'KiboPush | Dashboard'
     var compProp = this.props
     registerAction({
@@ -381,24 +384,14 @@ class Dashboard extends React.Component {
   changePage (page) {
     let index = 0
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (page === this.props.pages[i].pageName) {
+      if (page === this.props.pages[i].pageId) {
         console.log('in if change page')
         index = i
+        this.props.updateCurrentPage(this.props.pages[i])
         break
       }
     }
-    console.log('')
     this.props.sentVsSeen(this.props.pages[index].pageId)
-    this.setState({
-      pageLikesSubscribes: {
-        selectedPageName: this.props.pages[index].pageName,
-        likes: this.props.pages[index].likes,
-        subscribers: this.props.pages[index].subscribers,
-        unsubscribes: this.props.pages[index].unsubscribes
-      },
-      selectedPage: this.props.pages[index]
-    }
-      )
   }
 
   showDropDown () {
@@ -483,7 +476,7 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
               this.props.pages && this.props.sentseendata &&
-              <ProgressBox pages={this.props.pages} pageLikesSubscribes={this.state.pageLikesSubscribes} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.state.selectedPage} />
+              <ProgressBox pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
             }
             </div>
             {
@@ -542,6 +535,7 @@ function mapStateToProps (state) {
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
+    currentPage: (state.pagesInfo.currentPage),
     subscribers: (state.subscribersInfo.subscribers),
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages)
@@ -551,6 +545,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
+      updateCurrentPage: updateCurrentPage,
       loadDashboardData: loadDashboardData,
       loadMyPagesList: loadMyPagesList,
       loadSubscribersList: loadSubscribersList,

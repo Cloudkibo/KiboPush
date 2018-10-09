@@ -343,6 +343,6 @@ function mapDispatchToProps (dispatch) {
     {loadSurveysListNew: loadSurveysListNew,
       loadCategoriesList: loadCategoriesList,
       deleteSurvey: deleteSurvey,
-      saveSurveyInformation}, dispatch)
+      saveSurveyInformation: saveSurveyInformation }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(templateSurveys)

@@ -55,6 +55,18 @@ router.post('/delete',
   // auth.doesRolePermitsThisAction('workflowPermission'),
   controller.delete)
 
+router.post('/fetchUnansweredQueries',
+  auth.isAuthenticated(),
+  // auth.doesPlanPermitsThisAction('workflows'),
+  // auth.doesRolePermitsThisAction('workflowPermission'),
+  controller.unAnsweredQueries)
+
+router.post('/fetchWaitingSubscribers',
+  auth.isAuthenticated(),
+  // auth.doesPlanPermitsThisAction('workflows'),
+  // auth.doesRolePermitsThisAction('workflowPermission'),
+  controller.waitSubscribers)
+
 router.post('/removeWaitingSubscribers',
   auth.isAuthenticated(),
   // auth.doesPlanPermitsThisAction('workflows'),
