@@ -121,7 +121,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
                     }
                   })
                   // send the message to sub
-                  sendMessenger(bot.payload[i].answer, pageId, senderId, postbackPayload)
+                  sendMessenger(bot.payload[i], pageId, senderId, postbackPayload)
                 }
               }
             } else {
@@ -134,6 +134,9 @@ function getWitResponse (message, token, bot, pageId, senderId) {
 }
 
 function sendMessenger (message, pageId, senderId, postbackPayload) {
+  // Check if its text or video
+  message = (message.videoLink && message.videoLink !== 0) ? message.videoLink : message.answer
+  let isVideo = (message.videoLink && message.videoLink !== 0)
   Subscribers.findOne({ senderId: senderId }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -145,7 +148,15 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
     let messageData = utility.prepareSendAPIPayload(
       senderId,
-      { 'componentType': 'text', 'text': message + '  (Bot)', 'buttons': [{ 'type': 'postback', 'title': 'Talk to Agent', 'payload': JSON.stringify(postbackPayload) }] }, subscriber.firstName, subscriber.lastName, true)
+      { 'componentType': 'text',
+        'text': message + '  (Bot)',
+        'buttons': [{ 'type': 'postback',
+          'title': 'Talk to Agent',
+          'payload': JSON.stringify(postbackPayload)
+        }] },
+      subscriber.firstName,
+      subscriber.lastName,
+      true)
     Pages.findOne({ pageId: pageId }, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -376,6 +387,7 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
     `Adding questions in edit bot ${JSON.stringify(req.body)}`)
+
   Bots.update({ _id: req.body.botId }, { payload: req.body.payload }, (err, affected) => {
     if (err) {
       return logger.serverLog(TAG, 'Error Occured In editing the bot')
