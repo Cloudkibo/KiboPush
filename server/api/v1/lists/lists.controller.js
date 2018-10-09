@@ -135,7 +135,7 @@ exports.getAll = function (req, res) {
               })
             }
             // after survey is created, create survey questions
-            return res.status(201).json({status: 'success', payload: {lists: lists, count: lists.length > 0 ? listsCount[0].count : ''}})
+            return res.status(201).json({status: 'success', payload: {lists: lists.reverse(), count: lists.length > 0 ? listsCount[0].count : ''}})
           })
         })
       }
