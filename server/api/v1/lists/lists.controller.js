@@ -76,7 +76,7 @@ exports.getAll = function (req, res) {
             return res.status(404)
               .json({status: 'failed', description: 'BroadcastsCount not found'})
           }
-          Lists.aggregate([{$match: findCriteria}]).limit(req.body.number_of_records)
+          Lists.aggregate([{$match: findCriteria}, {$sort: {datetime: -1}}]).limit(req.body.number_of_records)
           .exec((err, lists) => {
             if (err) {
               return res.status(500).json({
@@ -93,7 +93,6 @@ exports.getAll = function (req, res) {
         let findCriteria = {
           companyId: mongoose.Types.ObjectId(companyUser.companyId)
         }
-        console.log('recordsToSkip', recordsToSkip)
         Lists.aggregate([
           { $match: findCriteria },
           { $group: { _id: null, count: { $sum: 1 } } }
@@ -102,7 +101,7 @@ exports.getAll = function (req, res) {
             return res.status(404)
               .json({status: 'failed', description: 'BroadcastsCount not found'})
           }
-          Lists.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+          Lists.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
           .exec((err, lists) => {
             if (err) {
               return res.status(500).json({
@@ -127,7 +126,7 @@ exports.getAll = function (req, res) {
             return res.status(404)
               .json({status: 'failed', description: 'BroadcastsCount not found'})
           }
-          Lists.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: mongoose.Types.ObjectId(req.body.last_id)}}]}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+          Lists.aggregate([{$match: {$and: [findCriteria, {_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}}]}}, {$sort: {datetime: 1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
           .exec((err, lists) => {
             if (err) {
               return res.status(500).json({
@@ -136,7 +135,7 @@ exports.getAll = function (req, res) {
               })
             }
             // after survey is created, create survey questions
-            return res.status(201).json({status: 'success', payload: {lists: lists, count: lists.length > 0 ? listsCount[0].count : ''}})
+            return res.status(201).json({status: 'success', payload: {lists: lists.reverse(), count: lists.length > 0 ? listsCount[0].count : ''}})
           })
         })
       }
