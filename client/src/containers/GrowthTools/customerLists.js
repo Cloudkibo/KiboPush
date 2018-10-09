@@ -81,7 +81,7 @@ class CustomerLists extends React.Component {
     } else {
       this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: false})
     }
-    this.displayData(data.selected, this.props.polls)
+    this.displayData(data.selected, this.props.customerLists)
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists && nextProps.count) {
