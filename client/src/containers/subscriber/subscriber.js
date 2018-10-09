@@ -67,7 +67,9 @@ class Subscriber extends React.Component {
     props.allLocales()
     props.fetchAllSequence()
     props.loadMyPagesList()
-    props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
+    if (!this.props.location.state) {
+      props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
+    }
     props.loadTags()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleAddIndividual = this.handleAddIndividual.bind(this)
@@ -1472,19 +1474,11 @@ class Subscriber extends React.Component {
                               }
                             </div>
                             <div className='col-md-4'>
-                              {
-                                this.state.subscriber.source === 'customer_matching'
-                                ? <div>
-                                  <span style={{fontWeight: 600}}>Source:</span>
-                                  <br />
-                                  <span>Phone Number</span>
-                                </div>
-                                : <div>
-                                  <span style={{fontWeight: 600}}>Source:</span>
-                                  <br />
-                                  <span>Direct Message</span>
-                                </div>
-                              }
+                              <div>
+                                <span style={{fontWeight: 600}}>Source:</span>
+                                <br />
+                                <span>{this.state.subscriber.source === 'customer_matching' ? 'Phone Number' : this.state.subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}</span>
+                              </div>
                             </div>
                           </div>
                           <br />

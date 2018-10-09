@@ -1,9 +1,9 @@
 const logger = require('../../../components/logger')
 const TAG = 'api/messengerEvents/unsubscribeFromSequence.controller.js'
-const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const Sequences = require('../../v1/sequenceMessaging/sequence.model')
 const SequenceSubscribers = require('../../v1/sequenceMessaging/sequenceSubscribers.model')
 const SequenceMessageQueue = require('../../v1/SequenceMessageQueue/SequenceMessageQueue.model')
+const {callApi} = require('../utility')
 
 exports.unsubscribeFromSequence = function (req, res) {
   res.status(200).json({
@@ -25,35 +25,36 @@ function unsubscribeFromSequence (sequenceId, req) {
         `Internal Server Error ${JSON.stringify(err)}`)
     }
 
-    Subscribers.findOne({ senderId: req.sender.id }, (err, subscriber) => {
-      if (err) {
-        logger.serverLog(TAG,
-          `Internal Server Error ${JSON.stringify(err)}`)
-      }
+    callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+      .then(subscribers => {
+        let subscriber = subscribers[0]
 
-      SequenceSubscribers.remove({ sequenceId: sequenceId })
-        .where('subscriberId').equals(subscriber._id)
-        .exec((err, updated) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-
-          SequenceMessageQueue.deleteMany({ sequenceId: sequenceId, subscriberId: subscriber._id }, (err, result) => {
+        SequenceSubscribers.remove({ sequenceId: sequenceId })
+          .where('subscriberId').equals(subscriber._id)
+          .exec((err, updated) => {
             if (err) {
-              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
             }
 
-            require('./../../../config/socketio').sendMessageToClient({
-              room_id: sequence.companyId,
-              body: {
-                action: 'sequence_update',
-                payload: {
-                  sequence_id: sequenceId
-                }
+            SequenceMessageQueue.deleteMany({ sequenceId: sequenceId, subscriberId: subscriber._id }, (err, result) => {
+              if (err) {
+                return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
               }
+
+              require('./../../../config/socketio').sendMessageToClient({
+                room_id: sequence.companyId,
+                body: {
+                  action: 'sequence_update',
+                  payload: {
+                    sequence_id: sequenceId
+                  }
+                }
+              })
             })
           })
-        })
-    })
+      })
+      .catch(err => {
+        logger.serverLog(TAG, `Failed to fetch subscriber ${JSON.stringify(err)}`)
+      })
   })
 }

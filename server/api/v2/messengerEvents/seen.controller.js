@@ -10,8 +10,8 @@ const AutopostingSubscriberMessages = require('../../v1/autoposting_messages/aut
 const Sequences = require('../../v1/sequenceMessaging/sequence.model')
 const SequenceSubscribers = require('../../v1/sequenceMessaging/sequenceSubscribers.model')
 const SequenceMessages = require('../../v1/sequenceMessaging/message.model')
-const Subscribers = require('../../v1/subscribers/Subscribers.model')
 const SequenceSubscriberMessages = require('./../../v1/sequenceMessaging/sequenceSubscribersMessages.model')
+const {callApi} = require('../utility')
 
 exports.seen = function (req, res) {
   res.status(200).json({
@@ -105,146 +105,148 @@ function updateAutopostingSeen (req) {
 }
 
 function updateSequenceSeen (req) {
-  Subscribers.findOne({ senderId: req.sender.id }).exec((err, subscriber) => {
-    if (err) {
-      return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-    }
-    if (subscriber) {
-      SequenceSubscriberMessages.distinct('messageId',
-        { subscriberId: subscriber._id, seen: false },
-        (err, sequenceMessagesIds) => {
-          if (err) {
-            return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          }
-          logger.serverLog('MessageIds', `${JSON.stringify(sequenceMessagesIds)}`)
-          logger.serverLog('DateTime', `${JSON.stringify(new Date(req.read.watermark))}`)
-          SequenceSubscriberMessages.update(
-            {
-              subscriberId: subscriber._id,
-              seen: false,
-              datetime: { $lte: new Date(req.read.watermark) }
-            },
-            { seen: true },
-            { multi: true }, (err, updated) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
+  callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+    .then(subscribers => {
+      let subscriber = subscribers[0]
+      if (subscriber) {
+        SequenceSubscriberMessages.distinct('messageId',
+          { subscriberId: subscriber._id, seen: false },
+          (err, sequenceMessagesIds) => {
+            if (err) {
+              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+            }
+            logger.serverLog('MessageIds', `${JSON.stringify(sequenceMessagesIds)}`)
+            logger.serverLog('DateTime', `${JSON.stringify(new Date(req.read.watermark))}`)
+            SequenceSubscriberMessages.update(
+              {
+                subscriberId: subscriber._id,
+                seen: false,
+                datetime: { $lte: new Date(req.read.watermark) }
+              },
+              { seen: true },
+              { multi: true }, (err, updated) => {
+                if (err) {
+                  logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                }
 
-              sequenceMessagesIds.forEach((sequenceMessagesId, sIndex) => {
-                SequenceMessages.update(
-                  { _id: sequenceMessagesId },
-                  { $inc: { seen: 1 } },
-                  { multi: true }, (err, updated) => {
-                    if (err) {
-                      logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                    }
-                    // Logic to capture all seen messages for a sequence
-                    let smIds = []   // Will contain the message ids against a specific sub AND sequnce
-                    let length = sequenceMessagesIds.length - 1
-                    // Checking if the last index and all seen have been inserted
-                    if (sIndex === length) {
-                      // Finding all the sequences of the subscriber
-                      SequenceSubscribers.find({ subscriberId: subscriber._id }, (err, seqsubs) => {
-                        if (err) {
-                          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                        }
+                sequenceMessagesIds.forEach((sequenceMessagesId, sIndex) => {
+                  SequenceMessages.update(
+                    { _id: sequenceMessagesId },
+                    { $inc: { seen: 1 } },
+                    { multi: true }, (err, updated) => {
+                      if (err) {
+                        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                      }
+                      // Logic to capture all seen messages for a sequence
+                      let smIds = []   // Will contain the message ids against a specific sub AND sequnce
+                      let length = sequenceMessagesIds.length - 1
+                      // Checking if the last index and all seen have been inserted
+                      if (sIndex === length) {
+                        // Finding all the sequences of the subscriber
+                        SequenceSubscribers.find({ subscriberId: subscriber._id }, (err, seqsubs) => {
+                          if (err) {
+                            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                          }
 
-                        if (seqsubs) {
-                          // Iterating for each sequence
-                          seqsubs.forEach((seqSub) => {
-                            // finding messages of all sequences one by one
-                            SequenceMessages.find({ sequenceId: seqSub.seqeunceId }, (err, sequenceMessages) => {
-                              if (err) {
-                                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-                              }
-                              // Inserting message ids against a specific subscriber and sequence
-                              for (let i = 0, length = sequenceMessages.length; i < length; i++) {
-                                smIds[i] = sequenceMessages[i]._id
-                              }
-                              // Finding all seen messages of that sequence
-                              SequenceSubscriberMessages.find({ subscriberId: subscriber._id, seen: true, messageId: { $in: smIds } }, (err, seqsubmessages) => {
+                          if (seqsubs) {
+                            // Iterating for each sequence
+                            seqsubs.forEach((seqSub) => {
+                              // finding messages of all sequences one by one
+                              SequenceMessages.find({ sequenceId: seqSub.seqeunceId }, (err, sequenceMessages) => {
                                 if (err) {
                                   logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
                                 }
-                                // Checking if all the message of sequence have been seen
-                                if (sequenceMessages.length === seqsubmessages.length) {
-                                  // It means that all of the messages of sequence have been seen
-                                  // Now we need to see if this sequence is added in trigger of any other sequences
-
-                                  Sequences.find({ companyId: subscriber.companyId },
-                                    (err, sequences) => {
-                                      if (err) {
-                                        return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
-                                      }
-                                      if (sequences) {
-                                        sequences.forEach(sequence => {
-                                          if (sequence.trigger && sequence.trigger.event) {
-                                            logger.serverLog(TAG, `seqSub ${JSON.stringify(seqSub)}`)
-                                            if (sequence.trigger.event === 'seen_all_sequence_messages' && (JSON.stringify(sequence.trigger.value) === JSON.stringify(seqSub.sequenceId))) {
-                                              SequenceSubscribers.find({ subscriberId: subscriber._id, sequenceId: sequence._id }, (err, sequenceSubscriber) => {
-                                                if (err) {
-                                                  logger.serverLog(TAG,
-                                                    `Internal Server Error ${JSON.stringify(err)}`)
-                                                }
-                                                if (sequenceSubscriber.length < 1) {
-                                                  logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(seqSub.sequenceId)}`)
-                                                  SequenceMessages.find({ sequenceId: sequence._id }, (err, messages) => {
-                                                    if (err) {
-                                                      logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
-                                                    }
-                                                    let sequenceSubscriberPayload = {
-                                                      sequenceId: sequence._id,
-                                                      subscriberId: subscriber._id,
-                                                      companyId: subscriber.companyId,
-                                                      status: 'subscribed'
-                                                    }
-                                                    const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
-
-                                                    sequenceSubcriber.save((err, subscriberCreated) => {
-                                                      if (err) {
-                                                        return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
-                                                      } else {
-                                                        // insert socket.io code here
-                                                        logger.serverLog(TAG, `Subscribed to sequence successfully`)
-                                                      }
-                                                      if (messages) {
-                                                        messages.forEach(message => {
-                                                          if (message.schedule.condition === 'immediately') {
-                                                            SequenceUtility.addToMessageQueue(sequence._id, new Date(), message._id)
-                                                          } else {
-                                                            let d1 = new Date()
-                                                            if (message.schedule.condition === 'hours') {
-                                                              d1.setHours(d1.getHours() + Number(message.schedule.days))
-                                                            } else if (message.schedule.condition === 'minutes') {
-                                                              d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
-                                                            } else if (message.schedule.condition === 'day(s)') {
-                                                              d1.setDate(d1.getDate() + Number(message.schedule.days))
-                                                            }
-                                                            let utcDate = new Date(d1)
-                                                            SequenceUtility.addToMessageQueue(sequence._id, utcDate, message._id)
-                                                          }
-                                                        })
-                                                      }
-                                                    })
-                                                  })
-                                                }
-                                              })
-                                            }
-                                          }
-                                        })
-                                      }
-                                    })
+                                // Inserting message ids against a specific subscriber and sequence
+                                for (let i = 0, length = sequenceMessages.length; i < length; i++) {
+                                  smIds[i] = sequenceMessages[i]._id
                                 }
-                              })  // seqsubmessages find ends here
-                            })   // sequence messages find ends here
-                          })   // seqsubs Foreach ends here
-                        }
-                      })   // Sequence Subscriber find ends here
-                    }
-                  })  // Sequence Message Update ends here
+                                // Finding all seen messages of that sequence
+                                SequenceSubscriberMessages.find({ subscriberId: subscriber._id, seen: true, messageId: { $in: smIds } }, (err, seqsubmessages) => {
+                                  if (err) {
+                                    logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+                                  }
+                                  // Checking if all the message of sequence have been seen
+                                  if (sequenceMessages.length === seqsubmessages.length) {
+                                    // It means that all of the messages of sequence have been seen
+                                    // Now we need to see if this sequence is added in trigger of any other sequences
+
+                                    Sequences.find({ companyId: subscriber.companyId },
+                                      (err, sequences) => {
+                                        if (err) {
+                                          return logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(err)}`)
+                                        }
+                                        if (sequences) {
+                                          sequences.forEach(sequence => {
+                                            if (sequence.trigger && sequence.trigger.event) {
+                                              logger.serverLog(TAG, `seqSub ${JSON.stringify(seqSub)}`)
+                                              if (sequence.trigger.event === 'seen_all_sequence_messages' && (JSON.stringify(sequence.trigger.value) === JSON.stringify(seqSub.sequenceId))) {
+                                                SequenceSubscribers.find({ subscriberId: subscriber._id, sequenceId: sequence._id }, (err, sequenceSubscriber) => {
+                                                  if (err) {
+                                                    logger.serverLog(TAG,
+                                                    `Internal Server Error ${JSON.stringify(err)}`)
+                                                  }
+                                                  if (sequenceSubscriber.length < 1) {
+                                                    logger.serverLog(TAG, `ERROR getting sequence ${JSON.stringify(seqSub.sequenceId)}`)
+                                                    SequenceMessages.find({ sequenceId: sequence._id }, (err, messages) => {
+                                                      if (err) {
+                                                        logger.serverLog(TAG, `ERROR getting sequence message${JSON.stringify(err)}`)
+                                                      }
+                                                      let sequenceSubscriberPayload = {
+                                                        sequenceId: sequence._id,
+                                                        subscriberId: subscriber._id,
+                                                        companyId: subscriber.companyId,
+                                                        status: 'subscribed'
+                                                      }
+                                                      const sequenceSubcriber = new SequenceSubscribers(sequenceSubscriberPayload)
+
+                                                      sequenceSubcriber.save((err, subscriberCreated) => {
+                                                        if (err) {
+                                                          return logger.serverLog(TAG, `ERROR saving sequence subscriber{JSON.stringify(err)}`)
+                                                        } else {
+                                                          // insert socket.io code here
+                                                          logger.serverLog(TAG, `Subscribed to sequence successfully`)
+                                                        }
+                                                        if (messages) {
+                                                          messages.forEach(message => {
+                                                            if (message.schedule.condition === 'immediately') {
+                                                              SequenceUtility.addToMessageQueue(sequence._id, new Date(), message._id)
+                                                            } else {
+                                                              let d1 = new Date()
+                                                              if (message.schedule.condition === 'hours') {
+                                                                d1.setHours(d1.getHours() + Number(message.schedule.days))
+                                                              } else if (message.schedule.condition === 'minutes') {
+                                                                d1.setMinutes(d1.getMinutes() + Number(message.schedule.days))
+                                                              } else if (message.schedule.condition === 'day(s)') {
+                                                                d1.setDate(d1.getDate() + Number(message.schedule.days))
+                                                              }
+                                                              let utcDate = new Date(d1)
+                                                              SequenceUtility.addToMessageQueue(sequence._id, utcDate, message._id)
+                                                            }
+                                                          })
+                                                        }
+                                                      })
+                                                    })
+                                                  }
+                                                })
+                                              }
+                                            }
+                                          })
+                                        }
+                                      })
+                                  }
+                                })  // seqsubmessages find ends here
+                              })   // sequence messages find ends here
+                            })   // seqsubs Foreach ends here
+                          }
+                        })   // Sequence Subscriber find ends here
+                      }
+                    })  // Sequence Message Update ends here
+                })
               })
-            })
-        })
-    }
-  })
+          })
+      }
+    })
+    .catch(err => {
+      logger.serverLog(TAG, `Failed to fetch subscriber ${JSON.stringify(err)}`)
+    })
 }
