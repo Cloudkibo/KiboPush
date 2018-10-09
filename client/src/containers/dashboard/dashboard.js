@@ -368,7 +368,7 @@ class Dashboard extends React.Component {
     }
     if (this.props.currentPage) {
       console.log('updating sentVsSeen currentPage')
-      this.props.sentVsSeen(this.props.currentPage)
+      this.props.sentVsSeen(this.props.currentPage.pageId)
     }
     document.title = 'KiboPush | Dashboard'
     var compProp = this.props
