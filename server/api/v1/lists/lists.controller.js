@@ -93,6 +93,7 @@ exports.getAll = function (req, res) {
         let findCriteria = {
           companyId: mongoose.Types.ObjectId(companyUser.companyId)
         }
+        console.log('recordsToSkip', recordsToSkip)
         Lists.aggregate([
           { $match: findCriteria },
           { $group: { _id: null, count: { $sum: 1 } } }
