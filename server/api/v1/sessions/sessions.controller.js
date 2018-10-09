@@ -689,7 +689,6 @@ function saveNotifications (subscriber, user) {
               err)}`)
           }
           members.forEach(member => {
-            console.log('member', member)
             let notification = new Notifications({
               message: `Subscriber ${subscriber.firstName + ' ' + subscriber.lastName} has been unsubscribed by ${user.name}`,
               category: {type: 'unsubscribe', id: subscriber._id},
