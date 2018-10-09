@@ -194,7 +194,7 @@ class Text extends React.Component {
         {(this.state.button) ? this.state.button.map((obj, index) => {
           return <EditButton index={index} module={this.props.module} button_id={this.props.id + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
         }) : ''}
-        {this.props.removeState
+        {this.props.removeState && this.state.button.length < 3
         ? <div>
           <Button button_id={this.props.id} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         </div>
