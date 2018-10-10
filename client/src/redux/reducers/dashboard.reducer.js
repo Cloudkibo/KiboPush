@@ -20,6 +20,11 @@ const initialState = {
     surveysgraphdata: [],
     sessionsgraphdata: []
   },
+  sentseendata: {
+    broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
+    poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0},
+    survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0}
+  },
   topPages: []
 }
 
