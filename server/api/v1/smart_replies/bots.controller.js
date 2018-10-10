@@ -146,17 +146,36 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
       return
     }
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
-    let messageData = utility.prepareSendAPIPayload(
-      senderId,
-      { 'componentType': 'text',
-        'text': message + '  (Bot)',
-        'buttons': [{ 'type': 'postback',
-          'title': 'Talk to Agent',
-          'payload': JSON.stringify(postbackPayload)
-        }] },
-      subscriber.firstName,
-      subscriber.lastName,
-      true)
+    let messageData = {}
+    if (!isVideo) {
+      messageData = utility.prepareSendAPIPayload(
+        senderId,
+        { 'componentType': 'text',
+          'text': message + '  (Bot)',
+          'buttons': [{ 'type': 'postback',
+            'title': 'Talk to Agent',
+            'payload': JSON.stringify(postbackPayload)
+          }] },
+        subscriber.firstName,
+        subscriber.lastName,
+        true)
+    } else {
+      messageData = {
+        'recipient': {
+          'id': senderId
+        },
+        'message': {
+          'attachment': {
+            'type': 'video',
+            'payload': {
+              'url': message,
+              'is_reusable': true
+            }
+          }
+        }
+      }
+    }
+
     Pages.findOne({ pageId: pageId }, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
