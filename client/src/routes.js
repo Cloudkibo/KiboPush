@@ -119,7 +119,12 @@ import ConnectFBPages from './containers/signup/connectFbPages'
 import auth from './utility/auth.service'
 
 function requireAuth (nextState, replace) {
-  auth.loggedIn()
+  if (!auth.loggedIn()) {
+    replace({
+      pathname: '/',
+      state: { nextPathname: nextState.location.pathname }
+    })
+  }
 }
 
 function redirectAuthUsers (nextState, replace) {
