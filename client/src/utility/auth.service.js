@@ -41,6 +41,7 @@ const auth = {
     const token = cookie.load('token')
     // first check from server if this token is expired or is still valid
     return !(typeof token === 'undefined' || token === '')
+  }
 }
 
 function redirectToLogoutAccounts () {
