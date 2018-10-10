@@ -3,6 +3,8 @@
  */
 
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import AlertContainer from 'react-alert'
 
@@ -10,7 +12,7 @@ class ChatWidget extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      scriptLine: '<script src=\'https://staging.kibopush.com/scripts/widgetApp.js\'></script>'
+      scriptLine: '<script type="text/javascript">\n window.__kibo_company_id = "5b59739612fa1c04af1f96be";\n document.addEventListener("DOMContentLoaded", function() {\n  var wa = document.createElement("script");\n  wa.type = "text/javascript";\n  wa.async = true;\n  wa.src ="https://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js";\n  var s = document.getElementsByTagName("script")[0];\n  s.parentNode.insertBefore(wa, s);\n });\n</script>'
     }
     this.save = this.save.bind(this)
   }
@@ -43,7 +45,7 @@ class ChatWidget extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Add KiboPush Widget
+                    How to add KiboPush widget?
                   </span>
                 </li>
               </ul>
@@ -56,10 +58,40 @@ class ChatWidget extends React.Component {
                   <div className='form-group m-form__group row'>
                     <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
                     <div className='uk-text-center' style={{color: 'black'}}>
-                      <img src='https://winnerweb.com.br/assets/images/home/icons/cpanel.png' alt='widget_intro_image' style={{maxWidth: 150, maxHeight: 150, padding: 0, margin: 0}} />
-                      <p>{"To embed the widget on your website, you need to put this line before </head> tag or before </body> tag of HTML of your website's each page."}</p>
+                      <h6>Prerequisite:</h6>
+                      <p>
+                        You should embed messenger chat plugin on your webiste. If not, please follow
+                        <a href='https://developers.facebook.com/docs/messenger-platform/discovery/customer-chat-plugin/' target='_blank'> this guide</a>
+                        &nbsp;to embed it.
+                      </p>
+                      <h6>Script Code:</h6>
+                      <p>
+                        {
+                          'Once you have embedded messenger chat plugin on you website, copy this script code and paste it before the </body> tag of every page of your website.'
+                        }
+                      </p>
                       <div className='alert alert-success'>
-                        <span>&lt;script src='https://staging.kibopush.com/scripts/widgetApp.js' &gt; &lt;/script&gt;</span>
+                        <span>{'<script type="text/javascript">'}</span>
+                        <br />
+                        <span>{`window.__kibo_company_id = "${this.props.user.companyId}";`}</span>
+                        <br />
+                        <span>{'document.addEventListener("DOMContentLoaded", function() {'}</span>
+                        <br />
+                        <span>{'var wa = document.createElement("script");'}</span>
+                        <br />
+                        <span>{'wa.type = "text/javascript";'}</span>
+                        <br />
+                        <span>{'wa.async = true;'}</span>
+                        <br />
+                        <span>{'wa.src ="https://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js";'}</span>
+                        <br />
+                        <span>{'var s = document.getElementsByTagName("script")[0];'}</span>
+                        <br />
+                        <span>{'s.parentNode.insertBefore(wa, s);'}</span>
+                        <br />
+                        <span>{'});'}</span>
+                        <br />
+                        <span>{'</script>'}</span>
                         <div>
                           <CopyToClipboard text={this.state.scriptLine}
                             onCopy={() => {
@@ -71,22 +103,6 @@ class ChatWidget extends React.Component {
                           </CopyToClipboard>
                         </div>
                       </div>
-                      <div className='alert alert-success'>
-                        <div>
-                          <p>{'Then you must add a button on your page with our onclick function. Example of button is given below.'}</p>
-                          <div>&lt;button onclick='loadKiboPushWidget()'&gt; Live Help &lt;/button&gt;</div>
-                        </div>
-                        <div>
-                          <CopyToClipboard text={"<button onclick='loadKiboPushWidget()'> Live Help </button>"}
-                            onCopy={() => this.setState({copied: true})}>
-                            <button type='button' className='btn btn-success widgetButton'>
-                              Copy Code
-                            </button>
-                          </CopyToClipboard>
-                        </div>
-                      </div>
-                      <p className='uk-align-center' style={{fontSize: 15}}>Note: You can use any css desgin for the button. You can also use &lt;a&gt; tag if you don't want button.
-                      Just remember to do the function call as shown above.<br />The&nbsp;<b>onclick='loadKiboPushWidget() &nbsp;</b>contains your unique client id. Never alter this function and its value.</p>
                     </div>
                   </div>
                 </div>
@@ -98,4 +114,16 @@ class ChatWidget extends React.Component {
     )
   }
 }
-export default ChatWidget
+
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    user: (state.basicInfo.user)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatWidget)

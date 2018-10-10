@@ -83,7 +83,7 @@ export function loadCustomerLists () {
 }
 
 export function loadCustomerListsNew (data) {
-  console.log('data', data)
+  console.log('data in loadCustomerListsNew', data)
   return (dispatch) => {
     callApi('lists/getAll', 'post', data)
       .then(res => {
