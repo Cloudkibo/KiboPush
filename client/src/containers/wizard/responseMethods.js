@@ -97,7 +97,7 @@ class AutomationControls extends React.Component {
                     </div>
                     <div className='m-portlet__body'>
                       <div className='row align-items-center'>
-                        <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                        <div className='radio-buttons' style={{ marginLeft: '37px' }}>
                           <div className='radio'>
                             <input id='autoResponse'
                               type='radio'
@@ -107,55 +107,37 @@ class AutomationControls extends React.Component {
                               checked={this.state.selectedRadio === 'autoResponse'} />
                             <p>All responses are automated (only chatbot would respond to subscribers)</p>
                           </div>
-                        </div>
-                        <div className='m-portlet__body'>
-                          <div className='row align-items-center'>
-                            <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                              <div className='radio'>
-                                <input id='autoResponse'
-                                  type='radio'
-                                  value='autoResponse'
-                                  name='autoResponse'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'autoResponse'} />
-                                <p>All responses are automated (only chatbot would respond to subscribers)</p>
-                              </div>
-                              <div className='radio'>
-                                <input id='humanResponse'
-                                  type='radio'
-                                  value='humanResponse'
-                                  name='humanResponse'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'humanResponse'} />
-                                <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
-                              </div>
-                              <div className='radio'>
-                                <input id='mixResponse'
-                                  type='radio'
-                                  value='mixResponse'
-                                  name='mixResponse'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'mixResponse'} />
-                                <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
-                              </div>
-                              <div className='radio'>
-                                <input id='disableChat'
-                                  type='radio'
-                                  value='disableChat'
-                                  name='disableChat'
-                                  onChange={this.handleRadioChange}
-                                  checked={this.state.selectedRadio === 'disableChat'} />
-                                <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
-                              </div>
-                            </div>
+                          <div className='radio'>
+                            <input id='humanResponse'
+                              type='radio'
+                              value='humanResponse'
+                              name='humanResponse'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'humanResponse'} />
+                            <p>All responses are from human agent (chatbot would be disabled and human agent would respond)</p>
                           </div>
-                          <div className='row'>
-                            <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
+                          <div className='radio'>
+                            <input id='mixResponse'
+                              type='radio'
+                              value='mixResponse'
+                              name='mixResponse'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'mixResponse'} />
+                            <p>Both Human And Chatbot give response (when agent responds to the subscriber, chatbot would be disabled for 30 minutes)</p>
+                          </div>
+                          <div className='radio'>
+                            <input id='disableChat'
+                              type='radio'
+                              value='disableChat'
+                              name='disableChat'
+                              onChange={this.handleRadioChange}
+                              checked={this.state.selectedRadio === 'disableChat'} />
+                            <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
                           </div>
                         </div>
                       </div>
                       <div className='row'>
-                        <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
+                        <button className='btn btn-primary' style={{ marginLeft: '20px', marginTop: '20px' }} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
                       </div>
                     </div>
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>

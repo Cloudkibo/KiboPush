@@ -21,6 +21,7 @@ import ResponseMethods from './responseMethods'
 import DeleteUserData from './deleteUserData'
 import Webhook from './webhooks'
 import YouTube from 'react-youtube'
+import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class Settings extends React.Component {
@@ -118,7 +119,6 @@ class Settings extends React.Component {
     })
   }
   handleNGPKeyChange (event) {
-    
     this.setState({NGPKey: event.target.value})
     if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
       this.setState({isDisableButton: false})
@@ -317,7 +317,7 @@ class Settings extends React.Component {
       company_id: this.props.user.companyId,
       app_id: this.state.NGPKey,
       app_secret: this.state.NGPSecret
-    })
+    }, this.msg)
   }
   componentWillReceiveProps (nextProps) {
     console.log('iin componentWillReceiveProps', nextProps)
@@ -372,7 +372,7 @@ class Settings extends React.Component {
     */
     if (nextProps.apiEnableNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,  isDisableInput: false, isDisableButton: false})
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false})
       }
     }
     if (nextProps.apiDisableNGP) {
@@ -392,7 +392,7 @@ class Settings extends React.Component {
         this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
         if (this.state.count1_ngp !== 1) {
           this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
-          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})     
+          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
         }
         this.setState({count_ngp: 2})
       }
@@ -408,8 +408,16 @@ class Settings extends React.Component {
      */
   }
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         {
@@ -675,6 +683,25 @@ class Settings extends React.Component {
                             </div>
                           </div>
                         </div>
+                        <br /><br />
+                        {
+                          <div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
+                              <div className='col-7 input-group'>
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APIKey : ''} onChange={this.handleNGPKeyChange} />
+                              </div>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                                  API Secret
+                                </label>
+                              <div className='col-7 input-group'>
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APISecret : ''} onChange={this.handleNGPSecretChange} />
+                              </div>
+                            </div>
+                          </div>
+                        }
                       </div>
                     </form>
                     <div className='form-group m-form__group'>

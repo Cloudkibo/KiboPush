@@ -132,7 +132,7 @@ exports.create = function (req, res) {
               })
               logger.serverLog(TAG, JSON.stringify(err))
             } else {
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: companyUser.companyId,
                 body: {
                   action: 'menu_updated',
@@ -174,7 +174,7 @@ exports.create = function (req, res) {
             } else {
               const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
 
-              require('./../../config/socketio').sendMessageToClient({
+              require('./../../../config/socketio').sendMessageToClient({
                 room_id: companyUser.companyId,
                 body: {
                   action: 'menu_updated',

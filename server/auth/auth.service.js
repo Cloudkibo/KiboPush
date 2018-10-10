@@ -54,6 +54,16 @@ function isAuthenticated () {
             return res.status(401)
             .json({status: 'failed', description: 'Unauthorized'})
           }
+
+//           req.user.plan = company.planId
+//           req.user.last4 = company.stripe.last4
+//           logger.serverLog(TAG, `req.user in isAuthenticated ${JSON.stringify(req.user)}`)
+//           if (!req.user.plan) {
+//             return res.status(404)
+//               .json({status: 'failed', description: 'No plan found. Contact support for more information.'})
+//           }
+          next()
+
         })
         .catch(err => {
           return res.status(500)
@@ -301,7 +311,7 @@ function isItWebhookServer () {
     logger.serverLog(TAG, ip)
     logger.serverLog(TAG, 'This is middleware')
     logger.serverLog(TAG, req.body)
-    if (ip === config.webhook_ip) next()
+    if (ip === '::ffff:' + config.webhook_ip) next()
     else res.send(403)
   })
 }

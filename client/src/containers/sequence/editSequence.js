@@ -69,7 +69,7 @@ class CreateSequence extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
-    this.changeCondition = this.changeCondition.bind(this)
+    this.changeConditions = this.changeConditions.bind(this)
     this.createMessage = this.createMessage.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.gotoView = this.gotoView.bind(this)
@@ -141,7 +141,7 @@ class CreateSequence extends React.Component {
     })
   }
 
-  changeCondition (e, index) {
+  changeConditions (e, index) {
     var conditions = this.state.conditions
     for (var i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -149,6 +149,9 @@ class CreateSequence extends React.Component {
       }
     }
     this.setState({conditions: conditions})
+  }
+  changeCondition (e, index) {
+    this.setState({condition: e.target.value})
   }
   changeCriteria (e, index) {
     var conditions = this.state.conditions
@@ -619,7 +622,7 @@ class CreateSequence extends React.Component {
                                    style={{height: '55px'}} key={i}>
                                    <td data-field='title'
                                      className='m-datatable__cell' style={{width: '25%'}}>
-                                     <select className='form-control m-input' onChange={(e) => this.changeCondition(e, i)}
+                                     <select className='form-control m-input' onChange={(e) => this.changeConditions(e, i)}
                                        value={condition.condition} >
                                        <option value=''>Select Condition</option>
                                        <option value='first_name'>First Name</option>
@@ -655,7 +658,7 @@ class CreateSequence extends React.Component {
                                        :
                                        <div>
                                         {
-                                          this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'first_name' ?
+                                          this.state.conditions[i].condition === 'first_name' || this.state.conditions[i].condition === 'last_name' ?
                                           <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
                                          value={condition.criteria}>
                                             <option value=''>Select Criteria</option>
@@ -741,16 +744,14 @@ class CreateSequence extends React.Component {
                   onClose={this.CloseDialogTrigger}>
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
-
-                         subscriber
-
-                        <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                  <div className='row'><p style={{marginLeft: '13px', marginTop: '7px'}}>Subscriber</p>
+                  <select className='form-control m-input' onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
                         <option disabled selected value>Select Event </option>
                          <option value='sees'>sees</option>
                           <option value='clicks'>clicks</option>
                           <option value='receive'>receive</option>
                       </select>
-                        <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
+                        <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px'}}>
                         <option disabled selected value>Select Message </option>
                         {
 
@@ -763,7 +764,7 @@ class CreateSequence extends React.Component {
                        </select>
                        {
                          this.state.displayAction &&
-                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                      <select className='form-control m-input' onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
                         <option disabled selected value>Select Button </option>
                        {
                           this.state.buttonList.map((button, i) => {
@@ -771,6 +772,7 @@ class CreateSequence extends React.Component {
                         })}
                       </select>
                        }
+                       </div>
 
                   </div>
 
@@ -787,17 +789,17 @@ class CreateSequence extends React.Component {
                   onClose={this.CloseDialogTrigger}>
                   <h3  style={{marginBottom: '20px'}}>Trigger Message</h3>
                   <div style={{marginBottom: '20px'}}>  <p>This message will be triggerred when: </p>
+                        <div className='row'>
+                         <p style={{marginTop: '7px', marginLeft: '13px'}}>Subscriber</p>
 
-                         subscriber
-
-                         <select onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                         <select className='form-control m-input' onChange={(e) => this.onSelectedOption(e.target.value)} style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
                         <option  selected={this.state.triggerEvent === 'clicks' ? true : null} value='clicks'>clicks</option>
                          <option selected={this.state.triggerEvent === 'sees' ? true : null} value='sees'>sees</option>
 
                           <option selected={this.state.triggerEvent === 'receive' ? true : null} value='receive'>receive</option>
                       </select>
 
-                      <select onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px'}}>
+                      <select className='form-control m-input' onChange={(e) => this.onSelectedMessage(e.target.value)} style={{marginLeft: '10px', marginRight: '10px', minWidth: '110px', width: '150px'}}>
                       {
 
                       this.props.messages.map((message, i) => {
@@ -816,7 +818,7 @@ class CreateSequence extends React.Component {
                        </select>
                        {
                          this.state.displayAction &&
-                      <select onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px'}}>
+                      <select className='form-control m-input' onChange={(e) => this.onSelectedDropDownButton(e.target.value)}  style={{marginLeft: '10px', marginRight: '10px' , minWidth: '110px', width: '150px'}}>
                        { this.state.selectedTriggerBtnTitle !==''?
                         <option  selected value>{this.state.selectedTriggerBtnTitle} </option>
                         :
@@ -829,7 +831,7 @@ class CreateSequence extends React.Component {
                         } })}
                       </select>
                        }
-
+                     </div>
                   </div>
 
                     <button onClick={() => this.saveTriggerMessage()} className='btn btn-primary btn-md pull-right' style={{marginLeft: '20px'}} disabled={!this.validateTrigger()}> Save </button>
@@ -886,7 +888,7 @@ class CreateSequence extends React.Component {
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text' style={{position: 'relative', right: '4.5em'}}>
+                      <h3 className='m-portlet__head-text'>
                          {this.props.location.state.name}
                       </h3>
                     </div>

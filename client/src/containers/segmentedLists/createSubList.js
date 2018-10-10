@@ -6,13 +6,14 @@ import {
 import {
   loadCustomerLists, createSubList, editList, loadListDetails, getParentList, getRepliedPollSubscribers, getRepliedSurveySubscribers
 } from '../../redux/actions/customerLists.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersList, allLocales } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import { getSubList } from './subList'
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { loadTags } from '../../redux/actions/tags.actions'
 
 class CreateSubList extends React.Component {
   constructor (props, context) {
@@ -30,7 +31,8 @@ class CreateSubList extends React.Component {
       allSubscribers: [],
       lists: [],
       dropdownConditionOpen: false,
-      joiningCondition: 'AND'
+      joiningCondition: 'AND',
+      genders: ['male', 'female', 'other']
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.initializeListSelect = this.initializeListSelect.bind(this)
@@ -53,16 +55,18 @@ class CreateSubList extends React.Component {
     this.toggleCondition = this.toggleCondition.bind(this)
     this.changeConditionToAnd = this.changeConditionToAnd.bind(this)
     this.changeConditionToOr = this.changeConditionToOr.bind(this)
+    this.updateTextBox = this.updateTextBox.bind(this)
     props.loadMyPagesList()
     props.loadCustomerLists()
     props.loadSubscribersList()
     props.getRepliedPollSubscribers()
     props.getRepliedSurveySubscribers()
+    props.loadTags()
   }
   componentDidMount () {
     if (this.props.customerLists) {
       let options = []
-      for (var i = 0; i < this.props.customerLists.length; i++) {
+      for (let i = 0; i < this.props.customerLists.length; i++) {
         if (!(this.props.customerLists[i].initialList)) {
           options.push({id: this.props.customerLists[i]._id, text: this.props.customerLists[i].listName})
         } else {
@@ -101,11 +105,11 @@ class CreateSubList extends React.Component {
     })
   }
   initializeList () {
-    var tempConditions = []
+    let tempConditions = []
     if (this.props.currentList.conditions) {
-      var editCondition = this.props.currentList.conditions
-      for (var i = 0; i < editCondition.length; i++) {
-        var obj = {}
+      let editCondition = this.props.currentList.conditions
+      for (let i = 0; i < editCondition.length; i++) {
+        let obj = {}
         obj.condition = editCondition[i].condition
         obj.criteria = editCondition[i].criteria
         obj.text = editCondition[i].text
@@ -122,10 +126,10 @@ class CreateSubList extends React.Component {
     // var id = this.props.currentList._id
   }
   onSave () {
-    var isValid = this.validateNewList()
+    let isValid = this.validateNewList()
     if (isValid) {
       this.setState({errorMessages: [], isSaveEnabled: false})
-      var parentListId = ''
+      let parentListId = ''
       if (this.state.listSelected !== '') {
         parentListId = this.state.listSelected._id
         this.props.getParentList(parentListId, this.handleGetParentList, this.msg)
@@ -133,7 +137,8 @@ class CreateSubList extends React.Component {
         this.setState({parentListData: this.props.subscribers})
         let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
         console.log('Responses: ', responses)
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
+        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
+
         if (subSetIds.length > 0) {
           this.createSubList(subSetIds)
         } else {
@@ -146,7 +151,7 @@ class CreateSubList extends React.Component {
   handleGetParentList (response) {
     if (response.payload) {
       this.setState({parentListData: response.payload})
-      var subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition)
+      let subSetIds = getSubList(response.payload, this.state.conditions, this.props.pages, this.state.joiningCondition)
       if (subSetIds.length > 0) {
         if (this.state.isEdit) {
           this.editSubList(subSetIds)
@@ -166,23 +171,24 @@ class CreateSubList extends React.Component {
   }
 
   createSubList (content) {
-    var listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, 'parentListId': this.state.listSelected._id, 'parentListName': this.state.listSelected.name}
+    let listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, 'parentListId': this.state.listSelected._id, 'parentListName': this.state.listSelected.name}
     this.props.createSubList(listPayload, this.msg, this.handleCreateSubList)
   }
 
   editSubList (content) {
-    var listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, '_id': this.props.currentList._id}
+    let listPayload = {'content': content, 'conditions': this.state.conditions, 'listName': this.state.newListName, '_id': this.props.currentList._id}
     this.props.editList(listPayload, this.msg, this.handleEditList)
   }
   onUpdate () {
-    var isValid = this.validateNewList()
+    let isValid = this.validateNewList()
     if (isValid) {
       this.setState({errorMessages: [], isSaveEnabled: false})
       if (this.props.currentList.parentList && this.props.currentList.parentList !== '') {
         this.props.getParentList(this.props.currentList.parentList, this.handleGetParentList, this.msg)
       } else {
         this.setState({parentListData: this.props.subscribers})
-        var subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, this.props.responses)
+        let responses = this.props.pollSubscribers.concat(this.props.surveySubscribers)
+        let subSetIds = getSubList(this.props.subscribers, this.state.conditions, this.props.pages, this.state.joiningCondition, responses)
         if (subSetIds.length > 0) {
           this.editSubList(subSetIds)
         } else {
@@ -216,7 +222,7 @@ class CreateSubList extends React.Component {
 
   resetPage () {
     this.setState({
-      selectedRadio: '',
+      selectedRadio: 'segmentAll',
       listSelected: '',
       conditions: [{condition: '', criteria: '', text: ''}],
       newListName: '',
@@ -225,9 +231,9 @@ class CreateSubList extends React.Component {
     })
   }
   validateNewList () {
-    var errors = false
-    var errorMessages = []
-    var errorMessage
+    let errors = false
+    let errorMessages = []
+    let errorMessage
     if (!this.state.isEdit && this.state.selectedRadio === '') {
       errors = true
       errorMessage = {error: 'radio', message: 'Please select an option'}
@@ -248,10 +254,10 @@ class CreateSubList extends React.Component {
       errorMessages.push(errorMessage)
       this.setState({errorMessages: errorMessages})
     }
-    var conditionErrors = []
-    var conditionError = {}
-    var isErrorInCondition = false
-    for (var i = 0; i < this.state.conditions.length; i++) {
+    let conditionErrors = []
+    let conditionError = {}
+    let isErrorInCondition = false
+    for (let i = 0; i < this.state.conditions.length; i++) {
       if (this.state.conditions[i].condition === '') {
         isErrorInCondition = true
         errors = true
@@ -267,7 +273,7 @@ class CreateSubList extends React.Component {
       if (this.state.conditions[i].text === '') {
         isErrorInCondition = true
         errors = true
-        conditionError = {field: 'text', index: i, message: 'Please choose a valid text'}
+        conditionError = {field: 'text', index: i, message: 'Please choose a valid value'}
         conditionErrors.push(conditionError)
       }
     }
@@ -278,8 +284,8 @@ class CreateSubList extends React.Component {
     return !errors
   }
   removeCondition (e, index) {
-    var tempConditions = this.state.conditions
-    for (var i = 0; i < tempConditions.length; i++) {
+    let tempConditions = this.state.conditions
+    for (let i = 0; i < tempConditions.length; i++) {
       if (i === index) {
         tempConditions.splice(i, 1)
       }
@@ -290,17 +296,18 @@ class CreateSubList extends React.Component {
   }
 
   changeCondition (e, index) {
-    var conditions = this.state.conditions
-    for (var i = 0; i < this.state.conditions.length; i++) {
+    let conditions = this.state.conditions
+    for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].condition = e.target.value
+        conditions[i].text = ''
       }
     }
     this.setState({conditions: conditions})
   }
   changeCriteria (e, index) {
-    var conditions = this.state.conditions
-    for (var i = 0; i < this.state.conditions.length; i++) {
+    let conditions = this.state.conditions
+    for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].criteria = e.target.value
       }
@@ -308,8 +315,8 @@ class CreateSubList extends React.Component {
     this.setState({conditions: conditions})
   }
   changeText (e, index) {
-    var conditions = this.state.conditions
-    for (var i = 0; i < this.state.conditions.length; i++) {
+    let conditions = this.state.conditions
+    for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
         conditions[i].text = (e.target.value).trim()
         console.log('text: ' + conditions[i].text)
@@ -319,7 +326,7 @@ class CreateSubList extends React.Component {
   }
   addCondition () {
     this.setState({errorMessages: []})
-    var conditions = this.state.conditions
+    let conditions = this.state.conditions
     conditions.push({condition: '', criteria: '', text: ''})
     this.setState({
       conditions: conditions
@@ -347,7 +354,7 @@ class CreateSubList extends React.Component {
   }
 
   initializeListSelect (lists) {
-    var self = this
+    let self = this
     /* eslint-disable */
     $('#selectLists').select2({
     /* eslint-enable */
@@ -359,9 +366,9 @@ class CreateSubList extends React.Component {
     /* eslint-disable */
     $('#selectLists').on('change', function (e) {
     /* eslint-enable */
-      var selectedIndex = e.target.selectedIndex
+      let selectedIndex = e.target.selectedIndex
       if (selectedIndex !== -1) {
-        var selectedOptions = e.target.selectedOptions
+        let selectedOptions = e.target.selectedOptions
         // var selected = []
         if (selectedOptions.length > 0) {
           self.setState({ listSelected: {'_id': selectedOptions[0].value, 'name': selectedOptions[0].label} })
@@ -373,6 +380,64 @@ class CreateSubList extends React.Component {
     /* eslint-disable */
     $('#selectLists').val('').trigger('change')
     /* eslint-enable */
+  }
+
+  updateTextBox (i, condition) {
+    console.log('textbox condition', condition)
+    if (condition.condition === 'page') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text}>
+          <option disabled selected value=''>Select a Page</option>
+          {
+                this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                  <option key={page.pageId} value={page.pageName}>{page.pageName}</option>
+                ))
+            }
+        </select>
+      )
+    } else if (condition.condition === 'gender') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text} >
+          <option disabled selected value=''>Select a Gender</option>
+          {
+                this.state.genders && this.state.genders.length > 0 && this.state.genders.map((gender, i) => (
+                  <option key={i} value={gender}>{gender}</option>
+                ))
+            }
+        </select>
+      )
+    } else if (condition.condition === 'tag') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text}>
+          <option disabled selected value=''>Select a Tag</option>
+          {
+            this.props.tags && this.props.tags.length > 0 && this.props.tags.map((tag, i) => (
+              <option key={i} value={tag._id}>{tag.tag}</option>
+            ))
+        }
+        </select>
+      )
+    } else if (condition.condition === 'locale') {
+      return (
+        <select className='form-control m-input' onChange={(e) => this.changeText(e, i)} value={condition.text}>
+          <option disabled selected value=''>Select a Locale</option>
+          {
+            this.props.locales && this.props.locales.map((locale, i) => (
+              <option key={i} value={locale}>{locale}</option>
+            ))
+          }
+        </select>
+      )
+    } else {
+      return (
+        <input className='form-control m-input'
+          onChange={(e) => this.changeText(e, i)}
+          value={condition.text}
+          id='text'
+          placeholder='Value'
+          type={condition.condition === 'subscriptionDate' || condition.condition === 'reply' ? 'date' : 'text'} />
+      )
+    }
   }
 
   render () {
@@ -415,7 +480,7 @@ class CreateSubList extends React.Component {
                             value='segmentAll'
                             name='segmentationType'
                             onChange={this.handleRadioChange}
-                            checked={this.state.selectedRadio === 'segmentAll'} />
+                            checked={this.state.selectedRadio === 'segmentAll'}/>
                           <label>Segment all subscribers</label>
                         </div>
                         { this.state.lists.length === 0
@@ -590,13 +655,23 @@ class CreateSubList extends React.Component {
                                        <option value='before'>Before</option>
                                        <option value='after'>After</option>
                                      </select>
-                                     : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
-                                       value={condition.criteria}>
-                                       <option value=''>Select Criteria</option>
-                                       <option value='is'>is</option>
-                                       <option value='contains'>Contains</option>
-                                       <option value='begins'>Begins with</option>
-                                     </select>
+                                     : <div>
+                                       {
+                                          this.state.conditions[i].condition === 'firstName' || this.state.conditions[i].condition === 'lastName'
+                                          ? <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                            value={condition.criteria}>
+                                            <option value=''>Select Criteria</option>
+                                            <option value='is'>is</option>
+                                            <option value='contains'>contains</option>
+                                            <option value='begins'>begins with</option>
+                                          </select>
+                                          : <select className='form-control m-input' onChange={(e) => this.changeCriteria(e, i)}
+                                            value={condition.criteria}>
+                                            <option value=''>Select Criteria</option>
+                                            <option value='is'>is</option>
+                                          </select>
+                                        }
+                                     </div>
                                     }
 
                                    <span className='m-form__help'>
@@ -611,7 +686,7 @@ class CreateSubList extends React.Component {
                                      }
                                    </span>
                                  </td>
-                                 <td data-field='title'
+                                 {/* <td data-field='title'
                                    className='m-datatable__cell' style={{width: '25%'}}>
                                    <input className='form-control m-input'
                                      onChange={(e) => this.changeText(e, i)}
@@ -629,6 +704,24 @@ class CreateSubList extends React.Component {
                                          })
                                        ))
                                      }
+                                   </span>
+                                 </td> */}
+                                 <td data-field='title'
+                                   className='m-datatable__cell' style={{width: '25%'}}>
+                                   {
+                                       this.updateTextBox(i, this.state.conditions[i])
+                                     }
+
+                                   <span className='m-form__help'>
+                                     {
+                                         this.state.errorMessages.map((m) => (
+                                           m.error === 'conditions' && m.message.map((msg) => {
+                                             return (msg.field === 'text' && msg.index === i &&
+                                             <span style={{color: 'red'}}>{msg.message}</span>
+                                             )
+                                           })
+                                         ))
+                                       }
                                    </span>
                                  </td>
                                  <td data-field='title'
@@ -698,7 +791,9 @@ function mapStateToProps (state) {
     currentList: (state.listsInfo.currentList),
     subscribers: (state.subscribersInfo.subscribers),
     pollSubscribers: (state.listsInfo.pollSubscribers),
-    surveySubscribers: (state.listsInfo.surveySubscribers)
+    surveySubscribers: (state.listsInfo.surveySubscribers),
+    tags: (state.tagsInfo.tags),
+    locales: (state.subscribersInfo.locales)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -711,7 +806,9 @@ function mapDispatchToProps (dispatch) {
     getParentList: getParentList,
     loadSubscribersList: loadSubscribersList,
     getRepliedPollSubscribers: getRepliedPollSubscribers,
-    getRepliedSurveySubscribers: getRepliedSurveySubscribers
+    getRepliedSurveySubscribers: getRepliedSurveySubscribers,
+    loadTags: loadTags,
+    allLocales: allLocales
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSubList)

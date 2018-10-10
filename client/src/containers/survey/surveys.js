@@ -35,6 +35,7 @@ class Survey extends React.Component {
       totalLength: 0,
       sent: false,
       isShowingModal: false,
+      isShowingZeroModal: true,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       isShowingModalDelete: false,
@@ -75,11 +76,11 @@ class Survey extends React.Component {
   }
 
   showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
+    this.setState({isShowingZeroModal: true})
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+    this.setState({isShowingZeroModal: false})
   }
 
   showProDialog () {
@@ -135,11 +136,11 @@ class Survey extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+      this.props.loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays})
+      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[this.props.surveys.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays})
     } else {
-      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays})
+      this.props.loadSurveysListNew({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'previous', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays })
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.surveys)
@@ -217,6 +218,7 @@ class Survey extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendsurvey(survey, this.msg)
+      this.setState({ pageNumber: 0 })       
     }
   }
   render () {
@@ -232,9 +234,9 @@ class Survey extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -270,12 +272,12 @@ class Survey extends React.Component {
           </ModalContainer>
         }
         {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
               onClose={this.closeZeroSubDialog}>
-              {this.state.isShowingZeroPageModal
+              {(this.props.pages && this.props.pages.length === 0)
               ? <AlertMessageModal type='page' />
             : <AlertMessageModal type='subscriber' />
             }

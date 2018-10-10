@@ -547,34 +547,118 @@ class Targeting extends React.Component {
             </span>
           </div>
           }
-          <label>Select Segmentation:</label>
-          <div className='radio-buttons' style={{marginLeft: '37px'}}>
-            <div className='radio'>
-              <input id='segmentAll'
-                type='radio'
-                value='segmentation'
-                name='segmentationType'
-                onChange={this.handleRadioButton}
-                checked={this.state.selectedRadio === 'segmentation'} />
-              <label>Apply Basic Segmentation</label>
-            </div>
-            { this.state.selectedRadio === 'segmentation'
-              ? <div className='m-form selectSegmentation '>
+          <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '30px'}}>
+            {
+              this.props.component !== 'broadcast' &&
+              <div>
+                <label>Select Page:</label>
                 <div className='form-group m-form__group'>
-                  <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                  <select id='selectPage' style={{width: 200 + '%'}} />
+                </div>
+              </div>
+            }
+            <label>Select Segmentation:</label>
+            <div className='radio-buttons' style={{marginLeft: '37px'}}>
+              <div className='radio'>
+                <input id='segmentAll'
+                  type='radio'
+                  value='segmentation'
+                  name='segmentationType'
+                  onChange={this.handleRadioButton}
+                  checked={this.state.selectedRadio === 'segmentation'} />
+                <label>Apply Basic Segmentation</label>
+              </div>
+              { this.state.selectedRadio === 'segmentation'
+                ? <div className='m-form selectSegmentation '>
+                  <div className='form-group m-form__group'>
+                    <select id='selectGender' style={{minWidth: 75 + '%'}} />
+                  </div>
+                  <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
+                    <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                  </div>
+                  <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
+                    <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                  </div>
+                  <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                    <div className='col-lg-8 col-md-8 col-sm-8'>
+                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                      ? <select id='selectPoll' style={{minWidth: 75 + '%'}} />
+                    : <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
+                      }
+                    </div>
+                    <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
+                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                      ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                        <i className='la la-info-circle' />
+                      </a>
+                      : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                        <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                          <span style={{color: '#34bfa3'}}>PRO</span>
+                        </span>
+                      </a>
+                    }
+                      {
+                        this.state.showDropDownPoll &&
+                        <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                          <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                          <div className='m-dropdown__inner'>
+                            <div className='m-dropdown__body'>
+                              <div className='m-dropdown__content'>
+                                <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
+                    <div className='col-lg-8 col-md-8 col-sm-8'>
+                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                      ? <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
+                      : <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
+                    }
+                    </div>
+                    <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
+                      {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
+                        ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                          <i className='la la-info-circle' />
+                        </a>
+                        : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                          <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                            <span style={{color: '#34bfa3'}}>PRO</span>
+                          </span>
+                        </a>
+                      }
+                      {
+                       this.state.showDropDownSurvey &&
+                       <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                         <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                         <div className='m-dropdown__inner'>
+                           <div className='m-dropdown__body'>
+                             <div className='m-dropdown__content'>
+                               <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     }
+                    </div>
+                  </div>
+                </div>
+              : <div className='m-form selectSegmentation hideSegmentation'>
+                <div className='form-group m-form__group'>
+                  <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
                 </div>
                 <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                  <select id='selectLocale' style={{minWidth: 75 + '%'}} />
+                  <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
                 </div>
                 <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
-                  <select id='selectTags' style={{minWidth: 75 + '%'}} />
+                  <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
                 </div>
                 <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
                   <div className='col-lg-8 col-md-8 col-sm-8'>
-                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                    ? <select id='selectPoll' style={{minWidth: 75 + '%'}} />
-                  : <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
-                    }
+                    <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
                     {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
@@ -586,7 +670,7 @@ class Targeting extends React.Component {
                         <span style={{color: '#34bfa3'}}>PRO</span>
                       </span>
                     </a>
-                  }
+                    }
                     {
                       this.state.showDropDownPoll &&
                       <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
@@ -604,142 +688,69 @@ class Targeting extends React.Component {
                 </div>
                 <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
                   <div className='col-lg-8 col-md-8 col-sm-8'>
-                    {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                    ? <select id='selectSurvey' style={{minWidth: 75 + '%'}} />
-                    : <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
-                  }
+                    <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
                   </div>
                   <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
                     {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                      ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                        <i className='la la-info-circle' />
-                      </a>
-                      : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
-                        <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                          <span style={{color: '#34bfa3'}}>PRO</span>
-                        </span>
-                      </a>
+                    ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
+                      <i className='la la-info-circle' />
+                    </a>
+                    : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
+                      <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
+                        <span style={{color: '#34bfa3'}}>PRO</span>
+                      </span>
+                    </a>
                     }
                     {
-                     this.state.showDropDownSurvey &&
-                     <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
-                       <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                       <div className='m-dropdown__inner'>
-                         <div className='m-dropdown__body'>
-                           <div className='m-dropdown__content'>
-                             <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   }
+                      this.state.showDropDownSurvey &&
+                      <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                        <div className='m-dropdown__inner'>
+                          <div className='m-dropdown__body'>
+                            <div className='m-dropdown__content'>
+                              <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
-            : <div className='m-form selectSegmentation hideSegmentation'>
-              <div className='form-group m-form__group'>
-                <select id='selectGender' style={{minWidth: 75 + '%'}} disabled />
+              }
+              { (this.state.lists.length === 0)
+              ? <div className='radio'>
+                <input id='segmentList'
+                  type='radio'
+                  value='list'
+                  name='segmentationType'
+                  disabled />
+                <label>Use Segmented Subscribers List</label>
+                <div style={{marginLeft: '20px'}}>
+                  <Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
               </div>
-              <div className='form-group m-form__group' style={{marginTop: '-10px'}}>
-                <select id='selectLocale' style={{minWidth: 75 + '%'}} disabled />
+              : <div className='radio'>
+                <input id='segmentList'
+                  type='radio'
+                  value='list'
+                  name='segmentationType'
+                  onChange={this.handleRadioButton}
+                  checked={this.state.selectedRadio === 'list'} />
+                <label>Use Segmented Subscribers List</label>
+                <div style={{marginLeft: '20px'}}>
+                  <Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
               </div>
-              <div className='form-group m-form__group' style={{marginTop: '-18px'}}>
-                <select id='selectTags' style={{minWidth: 75 + '%'}} disabled />
+              }
+              <div className='m-form'>
+                { this.state.selectedRadio === 'list'
+              ? <div className='selectList form-group m-form__group'>
+                <select id='selectLists' style={{minWidth: 75 + '%'}} />
               </div>
-              <div className='form-group m-form__group row pollFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                <div className='col-lg-8 col-md-8 col-sm-8'>
-                  <select id='selectPoll' style={{minWidth: 75 + '%'}} disabled />
-                </div>
-                <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownPoll}>
-                  {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                  ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                    <i className='la la-info-circle' />
-                  </a>
-                  : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
-                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                      <span style={{color: '#34bfa3'}}>PRO</span>
-                    </span>
-                  </a>
-                  }
-                  {
-                    this.state.showDropDownPoll &&
-                    <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
-                            <label>Select a poll to send this newly created poll to only those subscribers who responded to the selected polls.</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
+              : <div className='selectList form-group m-form__group'>
+                <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
               </div>
-              <div className='form-group m-form__group row surveyFilter' style={{marginTop: '-18px', marginBottom: '20px'}}>
-                <div className='col-lg-8 col-md-8 col-sm-8'>
-                  <select id='selectSurvey' style={{minWidth: 75 + '%'}} disabled />
-                </div>
-                <div className='m-dropdown m-dropdown--inline m-dropdown--arrow col-lg-4 col-md-4 col-sm-4' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDownSurvey}>
-                  {this.props.user.unique_ID === 'plan_A' || this.props.user.unique_ID === 'plan_C'
-                  ? <a href='#' className='m-portlet__nav-link m-dropdown__toggle btn m-btn m-btn--link'>
-                    <i className='la la-info-circle' />
-                  </a>
-                  : <a onClick={this.showProDialog} className='m-portlet__nav-link btn m-btn m-btn--link'>&nbsp;&nbsp;
-                    <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                      <span style={{color: '#34bfa3'}}>PRO</span>
-                    </span>
-                  </a>
-                  }
-                  {
-                    this.state.showDropDownSurvey &&
-                    <div className='m-dropdown__wrapper' style={{marginLeft: '-170px'}}>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
-                            <label>Select a survey to send this newly created survey to only those subscribers who responded to the selected survey.</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
+              }
               </div>
-            </div>
-            }
-            { (this.state.lists.length === 0)
-            ? <div className='radio'>
-              <input id='segmentList'
-                type='radio'
-                value='list'
-                name='segmentationType'
-                disabled />
-              <label>Use Segmented Subscribers List</label>
-              <div style={{marginLeft: '20px'}}>
-                <Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-            </div>
-            : <div className='radio'>
-              <input id='segmentList'
-                type='radio'
-                value='list'
-                name='segmentationType'
-                onChange={this.handleRadioButton}
-                checked={this.state.selectedRadio === 'list'} />
-              <label>Use Segmented Subscribers List</label>
-              <div style={{marginLeft: '20px'}}>
-                <Link to='/segmentedLists' style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}> See Segmentation Here</Link></div>
-            </div>
-            }
-            <div className='m-form'>
-              { this.state.selectedRadio === 'list'
-            ? <div className='selectList form-group m-form__group'>
-              <select id='selectLists' style={{minWidth: 75 + '%'}} />
-            </div>
-            : <div className='selectList form-group m-form__group'>
-              <select id='selectLists' style={{minWidth: 75 + '%'}} disabled />
-            </div>
-            }
             </div>
           </div>
         </div>

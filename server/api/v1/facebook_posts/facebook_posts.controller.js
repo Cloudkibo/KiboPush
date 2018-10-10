@@ -83,7 +83,7 @@ exports.create = function (req, res) {
           description: 'Failed to insert record'
         })
       } else {
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'post_created',

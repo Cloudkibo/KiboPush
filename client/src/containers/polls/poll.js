@@ -37,6 +37,7 @@ class Poll extends React.Component {
       totalLength: 0,
       isShowingModal: false,
       isShowingModalPro: false,
+      isShowingZeroModal: true,
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
       isShowingModalDelete: false,
@@ -70,11 +71,11 @@ class Poll extends React.Component {
   }
 
   showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
+    this.setState({isShowingZeroModal: true})
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+    this.setState({isShowingZeroModal: false})
   }
 
   showProDialog () {
@@ -235,6 +236,8 @@ class Poll extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendpoll(poll, this.msg)
+      console.log('data send')
+      this.setState({ pageNumber: 0 })        
     }
   }
   render () {
@@ -245,15 +248,16 @@ class Poll extends React.Component {
       theme: 'dark',
       time: 5000,
       transition: 'scale'
+      
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100 }}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
@@ -289,12 +293,12 @@ class Poll extends React.Component {
           </ModalContainer>
         }
         {
-          (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+          this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
           <ModalContainer style={{width: '500px'}}
             onClose={this.closeZeroSubDialog}>
             <ModalDialog style={{width: '700px', top: '75px'}}
               onClose={this.closeZeroSubDialog}>
-              {this.state.isShowingZeroPageModal
+              {(this.props.pages && this.props.pages.length === 0)
               ? <AlertMessageModal type='page' />
             : <AlertMessageModal type='subscriber' />
             }

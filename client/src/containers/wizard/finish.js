@@ -12,12 +12,14 @@ import { Link, browserHistory } from 'react-router'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import swal from 'sweetalert2'
 
 class Finish extends React.Component {
   constructor (props, context) {
     super(props, context)
+    props.getuserdetails()
     props.loadMyPagesList()
     this.getlink = this.getlink.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
@@ -177,6 +179,7 @@ class Finish extends React.Component {
     this.setState({selectedTab: 'becomeSubscriber'})
   }
   render () {
+    console.log('props in finish', this.props)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -219,6 +222,14 @@ class Finish extends React.Component {
                     <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                       <div className='m-form__actions'>
                         <div className='row'>
+                          {/* <div className='col-lg-6 m--align-left' >
+                                <Link to='/paymentMethodsWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                                  <span>
+                                    <i className='la la-arrow-left' />
+                                    <span>Back</span>&nbsp;&nbsp;
+                                  </span>
+                                </Link>
+                              </div> */}
                           <div className='col-lg-6 m--align-left' >
                             <Link to={this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'kibocommerce' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
@@ -227,27 +238,13 @@ class Finish extends React.Component {
                               </span>
                             </Link>
                           </div>
-                        </div>
-                        <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
-                          <div className='m-form__actions'>
-                            <div className='row'>
-                              <div className='col-lg-6 m--align-left' >
-                                <Link to='/paymentMethodsWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                                  <span>
-                                    <i className='la la-arrow-left' />
-                                    <span>Back</span>&nbsp;&nbsp;
-                                  </span>
-                                </Link>
-                              </div>
-                              <div className='col-lg-6 m--align-right'>
-                                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
-                                  <span>
-                                    <span>Finish</span>&nbsp;&nbsp;
+                          <div className='col-lg-6 m--align-right'>
+                            <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.show}>
+                              <span>
+                                <span>Finish</span>&nbsp;&nbsp;
                                     <i className='la la-arrow-right' />
-                                  </span>
-                                </button>
-                              </div>
-                            </div>
+                              </span>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -265,6 +262,7 @@ class Finish extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage)
@@ -272,7 +270,13 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({loadMyPagesList: loadMyPagesList, clearAlertMessage: clearAlertMessage, sendBroadcast: sendBroadcast}, dispatch)
+  return bindActionCreators({
+    getuserdetails: getuserdetails,
+    loadMyPagesList: loadMyPagesList,
+    clearAlertMessage: clearAlertMessage,
+    sendBroadcast: sendBroadcast
+  },
+    dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Finish)

@@ -31,8 +31,7 @@ class Convo extends React.Component {
       totalLength: 0,
       filterValue: '',
       isShowingModal: false,
-      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
-      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
+      isShowingZeroModal: true,
       selectedDays: '0',
       searchValue: '',
       filter: false,
@@ -52,6 +51,7 @@ class Convo extends React.Component {
     this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
+    this.gotoTemplates = this.gotoTemplates.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.showProDialog = this.showProDialog.bind(this)
     this.closeProDialog = this.closeProDialog.bind(this)
@@ -93,15 +93,15 @@ class Convo extends React.Component {
     this.top.scrollIntoView({behavior: 'instant'})
   }
   showDialog () {
-    this.setState({isShowingModal: true})
+    this.setState({isShowingModal: true, pageValue: ''})
   }
 
   showZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: true})
+    this.setState({isShowingZeroModal: true})
   }
 
   closeZeroSubDialog () {
-    this.setState({isShowingZeroSubModal: false, isShowingZeroPageModal: false})
+    this.setState({isShowingZeroModal: false})
   }
 
   closeDialog () {
@@ -154,6 +154,14 @@ class Convo extends React.Component {
       pathname: `/createBroadcast`,
       state: {module: 'convo', subscribers: this.props.subscribers, pages: this.state.pageValue}
     })
+  }
+
+  gotoTemplates () {
+    browserHistory.push(
+      {
+        pathname: '/showTemplateBroadcasts',
+        state: {pages: this.state.pageValue}
+      })
   }
 
   sendBroadcast (broadcast) {
@@ -213,10 +221,10 @@ class Convo extends React.Component {
       data: pageOptions,
       placeholder: 'Select page(s)',
       allowClear: true,
-      multiple: true
+      multiple: false
     })
 
-    // this.setState({pageValue: pageOptions[0].id})
+    this.setState({pageValue: [pageOptions[0].id]})
 
     /* eslint-disable */
     $('#selectPages').on('change', function (e) {
@@ -266,9 +274,9 @@ class Convo extends React.Component {
         {
           this.state.showVideo &&
           <ModalContainer style={{width: '680px'}}
-            onClose={() => { this.setState({showVideo: false}) }}>
+            onClose={() => { this.setState({showVideo: false, top: 100}) }}>
             <ModalDialog style={{width: '680px'}}
-              onClose={() => { this.setState({showVideo: false}) }}>
+              onClose={() => { this.setState({showVideo: false, top: 100}) }}>
               <div>
                 <YouTube
                   videoId='p3BPp3fHBBc'
@@ -337,27 +345,15 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {
-                      this.props.subscribers && this.props.subscribers.length === 0
-                        ? <a href='#'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create New
-                              </span>
-                            </span>
-                          </button>
-                        </a>
-                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
-                          <span>
-                            <i className='la la-plus' />
-                            <span>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onClick={this.showDialog}>
+                      <span>
+                        <i className='la la-plus' />
+                        <span>
                               Create New
                             </span>
-                          </span>
-                        </button>
-                  }
+                      </span>
+                    </button>
+
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -378,17 +374,17 @@ class Convo extends React.Component {
                               </div>
                               <br />
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <Link style={{color: 'white'}} onClick={this.gotoCreate} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                <button style={{color: 'white'}} disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onClick={this.gotoCreate} className='btn btn-primary'>
                                   Create New Broadcast
-                                </Link>
+                                </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
                                 {
                                   this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <Link to={{pathname: '/showTemplateBroadcasts', state: {pages: this.state.pageValue}}} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                  ? <button disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onCLick={this.gotoTemplates} className='btn btn-primary'>
                                     Use Template
-                                  </Link>
-                                  : <button onClick={this.showProDialog} className='btn btn-primary' disabled={this.state.pageValue === '' || this.state.pageValue.length === 0}>
+                                  </button>
+                                  : <button onClick={this.showProDialog} className='btn btn-primary'>
                                     Use Template&nbsp;&nbsp;&nbsp;
                                     <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
                                       <span style={{color: '#34bfa3'}}>PRO</span>
@@ -404,12 +400,12 @@ class Convo extends React.Component {
                     </div>
                   </div>
                   {
-                    (this.state.isShowingZeroSubModal || this.state.isShowingZeroPageModal) &&
+                    this.state.isShowingZeroModal && ((this.props.subscribers && this.props.subscribers.length === 0) || (this.props.pages && this.props.pages.length === 0)) &&
                     <ModalContainer style={{width: '500px'}}
                       onClose={this.closeZeroSubDialog}>
                       <ModalDialog style={{width: '700px', top: '75px'}}
                         onClose={this.closeZeroSubDialog}>
-                        {this.state.isShowingZeroPageModal
+                        {(this.props.pages && this.props.pages.length === 0)
                         ? <AlertMessageModal type='page' />
                       : <AlertMessageModal type='subscriber' />
                         }

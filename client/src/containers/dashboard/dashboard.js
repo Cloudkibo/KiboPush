@@ -7,12 +7,11 @@
 import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import PageLikesSubscribers from '../../components/Dashboard/PageLikesSubscribers'
 import CardBoxes from '../../components/Dashboard/CardBoxes'
-import CardsWithProgress from '../../components/Dashboard/CardsWithProgress'
+import ProgressBox from '../../components/Dashboard/ProgressBox'
 import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { fetchSessions } from '../../redux/actions/livechat.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
@@ -23,7 +22,7 @@ import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
-import Reports from '../operationalDashboard/reports'
+import Reports from './reports'
 import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
@@ -35,12 +34,6 @@ var json2csv = require('json2csv')
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
-    props.loadMyPagesList()
-    props.loadDashboardData()
-    props.loadSubscribersList()
-    props.loadGraphData(0)
-    props.loadTopPages()
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
@@ -49,7 +42,6 @@ class Dashboard extends React.Component {
       topPages: [],
       loading: true,
       showDropDown: false,
-      pageLikesSubscribes: {},
       isShowingModalPro: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
@@ -69,7 +61,14 @@ class Dashboard extends React.Component {
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
-
+  componentWillMount () {
+    this.props.getuserdetails()
+    this.props.loadMyPagesList()
+    this.props.loadDashboardData()
+    this.props.loadSubscribersList()
+    this.props.loadGraphData(0)
+    this.props.loadTopPages()
+  }
   closeProDialog () {
     this.setState({isShowingModalPro: false})
   }
@@ -164,12 +163,12 @@ class Dashboard extends React.Component {
         browserHistory.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if ((nextprops.user.currentPlan === 'plan_A' || nextprops.user.currentPlan === 'plan_B') && !nextprops.user.facebookInfo) {
+      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
         browserHistory.push({
           pathname: '/connectFb',
           state: { account_type: 'individual' }
         })
-      } else if ((nextprops.user.currentPlan === 'plan_C' || nextprops.user.currentPlan === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
+      } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
         if (nextprops.pages && nextprops.pages.length === 0) {
           console.log('going to push')
           browserHistory.push({
@@ -361,12 +360,16 @@ class Dashboard extends React.Component {
     console.log('location', this.props.location)
     if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
       console.log('in loadScript')
-      let addScript = document.createElement('script')
-      addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
-      document.body.appendChild(addScript)
+      // let addScript = document.createElement('script')
+      // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
+      // document.body.appendChild(addScript)
       let addScript1 = document.createElement('script')
       addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       document.body.appendChild(addScript1)
+    }
+    if (this.props.currentPage) {
+      console.log('updating sentVsSeen currentPage')
+      this.props.sentVsSeen(this.props.currentPage.pageId)
     }
     document.title = 'KiboPush | Dashboard'
     var compProp = this.props
@@ -382,23 +385,14 @@ class Dashboard extends React.Component {
   changePage (page) {
     let index = 0
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (page === this.props.pages[i].pageName) {
+      if (page === this.props.pages[i].pageId) {
         console.log('in if change page')
         index = i
+        this.props.updateCurrentPage(this.props.pages[i])
         break
       }
     }
     this.props.sentVsSeen(this.props.pages[index].pageId)
-    this.setState({
-      pageLikesSubscribes: {
-        selectedPage: this.props.pages[index].pageName,
-        likes: this.props.pages[index].likes,
-        subscribers: this.props.pages[index].subscribers,
-        unsubscribes: this.props.pages[index].unsubscribes,
-        selectedPageId: this.props.pages[index].pageId
-      }
-    }
-      )
   }
 
   showDropDown () {
@@ -445,57 +439,6 @@ class Dashboard extends React.Component {
             </div>
           </div>
         </div>
-        <div className='row'>
-          <div className='col-sm-3 col-md-3 col-lg-3' />
-          <div className='col-sm-4 col-md-4 col-lg-4'>
-            <div className='m-portlet__head-tools'>
-              <ul className='m-portlet__nav'>
-                <li onClick={this.showDropDown} className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                  <a className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                    Change Page
-                  </a>
-                  {
-                    this.state.showDropDown &&
-                    <div className='m-dropdown__wrapper'>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
-                            <ul className='m-nav'>
-                              <li className='m-nav__section m-nav__section--first'>
-                                <span className='m-nav__section-text'>
-                                  Connected Pages
-                                </span>
-                              </li>
-                              {
-                                this.props.pages.map((page, i) => (
-                                  <li key={page.pageId} className='m-nav__item'>
-                                    <a onClick={() => this.changePage(page.pageName)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                      <span className='m-nav__link-text'>
-                                        {page.pageName}
-                                      </span>
-                                    </a>
-                                  </li>
-                                ))
-                              }
-                              <li className='m-nav__separator m-nav__separator--fit' />
-                              <li className='m-nav__item'>
-                                <a onClick={() => this.hideDropDown} style={{borderColor: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                  Cancel
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         <div className='m-content'>
           {
             this.props.pages && this.props.pages.length === 0 &&
@@ -527,18 +470,16 @@ class Dashboard extends React.Component {
           : <div>
             <div className='row'>
               {
-                this.props.pages && this.props.pages.length > 0 &&
-                <PageLikesSubscribers firstPage={this.props.pages[0]} pageLikesSubscribes={this.state.pageLikesSubscribes} />
-              }
-              {
                 this.props.dashboard &&
                 <CardBoxes data={this.props.dashboard} />
               }
             </div>
-            {
-              this.props.sentseendata &&
-              <CardsWithProgress data={this.props.sentseendata} />
+            <div className='row'>
+              {
+              this.props.pages && this.props.sentseendata &&
+              <ProgressBox pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
             }
+            </div>
             {
              this.props.topPages && this.props.topPages.length > 1 &&
                <div className='row'>
@@ -595,6 +536,7 @@ function mapStateToProps (state) {
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
+    currentPage: (state.pagesInfo.currentPage),
     subscribers: (state.subscribersInfo.subscribers),
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages)
@@ -604,6 +546,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
+      updateCurrentPage: updateCurrentPage,
       loadDashboardData: loadDashboardData,
       loadMyPagesList: loadMyPagesList,
       loadSubscribersList: loadSubscribersList,

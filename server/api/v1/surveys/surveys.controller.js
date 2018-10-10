@@ -339,7 +339,7 @@ exports.create = function (req, res) {
                 }
               })
             }
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'survey_created',
@@ -743,7 +743,7 @@ exports.send = function (req, res) {
                                                 return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                               }
                                               if (isLastMessage) {
-                                                logger.serverLog(TAG, 'inside suvery send')
+                                                logger.serverLog(TAG, 'inside suvery send' + JSON.stringify(data))
                                                 needle.post(
                                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                 data, (err, resp) => {
@@ -768,6 +768,19 @@ exports.send = function (req, res) {
                                                         status: 'failed',
                                                         description: 'PollBroadcast create failed',
                                                         err2
+                                                      })
+                                                    } else {
+                                                      require('./../../../config/socketio').sendMessageToClient({
+                                                        room_id: companyUser.companyId,
+                                                        body: {
+                                                          action: 'survey_send',
+                                                          payload: {
+                                                            survey_id: survey._id,
+                                                            user_id: req.user._id,
+                                                            user_name: req.user.name,
+                                                            company_id: companyUser.companyId
+                                                          }
+                                                        }
                                                       })
                                                     }
                                                   })
@@ -883,6 +896,7 @@ exports.send = function (req, res) {
                                               return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                             }
                                             if (isLastMessage) {
+                                              logger.serverLog(TAG, 'inside send survey' + JSON.stringify(data))
                                               needle.post(
                                                 `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                 data, (err, resp) => {
@@ -907,6 +921,19 @@ exports.send = function (req, res) {
                                                         status: 'failed',
                                                         description: 'PollBroadcast create failed',
                                                         err2
+                                                      })
+                                                    } else {
+                                                      require('./../../../config/socketio').sendMessageToClient({
+                                                        room_id: companyUser.companyId,
+                                                        body: {
+                                                          action: 'survey_send',
+                                                          payload: {
+                                                            survey_id: survey._id,
+                                                            user_id: req.user._id,
+                                                            user_name: req.user.name,
+                                                            company_id: companyUser.companyId
+                                                          }
+                                                        }
                                                       })
                                                     }
                                                   // not using now
@@ -1093,7 +1120,7 @@ exports.sendSurvey = function (req, res) {
                 }
               })
             }
-            require('./../../config/socketio').sendMessageToClient({
+            require('./../../../config/socketio').sendMessageToClient({
               room_id: companyUser.companyId,
               body: {
                 action: 'survey_created',
@@ -1316,7 +1343,7 @@ exports.sendSurvey = function (req, res) {
                                                 }
 
                                                 if (isLastMessage) {
-                                                  logger.serverLog(TAG, 'inside direct survey send')
+                                                  logger.serverLog(TAG, 'inside direct survey send' + JSON.stringify(data))
                                                   needle.post(
                                                     `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                     data, (err, resp) => {
@@ -1457,7 +1484,7 @@ exports.sendSurvey = function (req, res) {
                                               }
 
                                               if (isLastMessage) {
-                                                logger.serverLog(TAG, 'inside direct survey sendd')
+                                                logger.serverLog(TAG, 'inside direct survey sendd' + JSON.stringify(data))
                                                 needle.post(
                                                   `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                   data, (err, resp) => {

@@ -470,7 +470,7 @@ exports.changeStatus = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'session_status',
@@ -646,7 +646,7 @@ exports.unSubscribe = function (req, res) {
                       description: JSON.stringify(err)
                     })
                   }
-                  require('./../../config/socketio').sendMessageToClient({
+                  require('./../../../config/socketio').sendMessageToClient({
                     room_id: companyUser.companyId,
                     body: {
                       action: 'unsubscribe',
@@ -745,7 +745,7 @@ exports.assignAgent = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'session_assign',
@@ -800,7 +800,7 @@ exports.assignTeam = function (req, res) {
         if (err) {
           logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
         }
-        require('./../../config/socketio').sendMessageToClient({
+        require('./../../../config/socketio').sendMessageToClient({
           room_id: companyUser.companyId,
           body: {
             action: 'session_assign',

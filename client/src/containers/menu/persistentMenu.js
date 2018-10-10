@@ -113,7 +113,7 @@ class Menu extends React.Component {
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageId === this.props.currentMenuItem.currentPage) {
+        if (this.props.pages[i]._id === this.props.currentMenuItem.currentPage) {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
@@ -206,7 +206,7 @@ class Menu extends React.Component {
     }
 
     this.setState({menuItems: temp})
-    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id] }
     this.props.saveCurrentMenuItem(currentState)
   }
   showPreview () {
@@ -228,7 +228,7 @@ class Menu extends React.Component {
         menuItems: res.payload[0].jsonStructure
       })
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i].pageId === res.payload.pageId) {
+        if (this.props.pages[i]._id === res.payload.pageId) {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
@@ -635,9 +635,9 @@ class Menu extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.state.showVideo &&
-          <ModalContainer style={{width: '680px'}}
+          <ModalContainer style={{width: '680px', top: 100}}
             onClose={() => { this.setState({showVideo: false}) }}>
-            <ModalDialog style={{width: '680px'}}
+            <ModalDialog style={{width: '680px', top: 100}}
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube

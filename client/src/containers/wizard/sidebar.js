@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
+import $ from 'jquery'
 
 class Sidebar extends React.Component {
   constructor (props) {
@@ -19,9 +20,14 @@ class Sidebar extends React.Component {
       state: 'history'
     })
   }
+  componentDidMount () {
+    /* eslint-disable */
+     $('#sidebarDiv').addClass('hideSideBar')
+     /* eslint-enable */
+  }
   render () {
     return (
-      <div className='col-xl-3 col-lg-12 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
+      <div id='sidebarDiv' className='col-xl-3 col-lg-12 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
         <div className='m-wizard__head' style={{padding: '0'}}>
           <div className='m-wizard__nav' style={{paddingBottom: '2rem', display: 'table', width: 'auto', margin: '2rem auto 0 auto'}}>
             <div className='m-wizard__steps' style={{display: 'block'}}>

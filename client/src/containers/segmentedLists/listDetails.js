@@ -213,7 +213,7 @@ class ListDetails extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.pageId.pageName}
+                                  {subscriber.pageName}
                                 </span>
                               </td>
                               <td data-field='phoneNumber'
@@ -234,7 +234,7 @@ class ListDetails extends React.Component {
                                 className='m-datatable__cell'>
                                 <span
                                   style={{width: '100px', overflow: 'inherit'}}>
-                                  {subscriber.subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
+                                  {subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}
                                 </span>
                               </td>
                               <td data-field='Locale' className='m-datatable__cell'><span style={{width: '100px', color: 'white'}} className='m-badge m-badge--brand'>{subscriber.locale}</span></td>
