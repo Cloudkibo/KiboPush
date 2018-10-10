@@ -1740,7 +1740,7 @@ exports.getAllBroadcasts = function (req, res) {
                         locale: subscriber[0].locale,
                         gender: subscriber[0].gender,
                         profilePic: subscriber[0].profilePic,
-                        page: subscriberPage[0].pageName,
+                        page: subscriberPage[0] && subscriberPage[0].pageName ? subscriberPage[0].pageName : 'Page no longer in database',
                         seen: pagebroadcast[n].seen})
                     }
                     let pagebroadcastTapped = pagebroadcast.filter((c) => c.seen === true)
@@ -1750,7 +1750,9 @@ exports.getAllBroadcasts = function (req, res) {
                     if (broadcasts[j].segmentationPageIds && broadcasts[j].segmentationPageIds.length > 0) {
                       for (let k = 0; k < broadcasts[j].segmentationPageIds.length; k++) {
                         let page = pages.filter((c) => JSON.stringify(c.pageId) === JSON.stringify(broadcasts[j].segmentationPageIds[k]))
-                        pageSend.push(page[0].pageName)
+                        if (page[0] && page[0].pageName) {
+                          pageSend.push(page[0].pageName)
+                        }
                       }
                     } else {
                       let page = pages.filter((c) => JSON.stringify(c.companyId) === JSON.stringify(company[0]._id) && c.connected === true)
@@ -2159,7 +2161,7 @@ exports.getAllSurveys = function (req, res) {
                       let responded = 0
                       for (let n = 0; n < pagesurvey.length; n++) {
                         let subscriber = subscribers.filter((c) => c.senderId === pagesurvey[n].subscriberId)
-                        let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0].pageId))
+                        let subscriberPage = pages.filter((c) => JSON.stringify(c._id) === JSON.stringify(subscriber[0] && subscriber[0].pageName ? subscriber[0].pageId : ''))
                         // if (responsesurvey[n]) {
                         //   let subscriberNew = subscribers.filter((c) => JSON.stringify(c._id) === JSON.stringify(responsesurvey[n].subscriberId))
                         //   if (subscriberNew.length > 0) {
@@ -2172,7 +2174,7 @@ exports.getAllSurveys = function (req, res) {
                           locale: subscriber[0].locale,
                           gender: subscriber[0].gender,
                           profilePic: subscriber[0].profilePic,
-                          page: subscriberPage[0].pageName,
+                          page: subscriberPage[0] ? subscriberPage[0].pageName : 'page not present in database',
                           seen: pagesurvey[n].seen,
                           responded: false})
                       }
