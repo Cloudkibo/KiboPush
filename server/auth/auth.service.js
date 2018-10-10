@@ -97,7 +97,7 @@ function isAuthenticated () {
           req.user.plan = company.planId
           req.user.last4 = company.stripe.last4
           logger.serverLog(TAG, `req.user in isAuthenticated ${JSON.stringify(req.user)}`)
-          if (!res.user.plan) {
+          if (!req.user.plan) {
             return res.status(404)
               .json({status: 'failed', description: 'No plan found. Contact support for more information.'})
           }
