@@ -32,14 +32,8 @@ const auth = {
   logout (cb) {
     cookie.remove('userid')
     cookie.remove('token')
-    this.redirectToLogoutAccounts()
+    redirectToLogoutAccounts()
     if (cb) cb()
-  },
-
-  redirectToLogoutAccounts () {
-    const environment = cookie.load('environment')
-    if (environment === 'staging') window.location.replace('http://Saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
-    if (environment === 'production') window.location.replace('http://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
   },
 
   loggedIn () {
@@ -60,9 +54,21 @@ const auth = {
   }
 }
 
+function redirectToLogoutAccounts () {
+  const environment = cookie.load('environment')
+  if (environment === 'staging') window.location.replace('http://Saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
+  if (environment === 'production') window.location.replace('http://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
+}
+
+function redirectToLoginAccounts () {
+  const environment = cookie.load('environment')
+  if (environment === 'staging') window.location.replace('http://Saccounts.cloudkibo.com/?continue=http://staging.kibopush.com')
+  if (environment === 'production') window.location.replace('http://accounts.cloudkibo.com/?continue=http://app.kibopush.com')
+}
+
 // eslint-disable-next-line
 function CloudKiboAuthFunction (token) {
-  if (token === 'undefined') this.redirectToLogoutAccounts()
+  if (token === 'undefined') redirectToLoginAccounts()
   else {
     this.putCookie(token)
     const environment = cookie.load('environment')
