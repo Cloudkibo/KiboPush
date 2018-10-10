@@ -201,15 +201,17 @@ class LiveChat extends React.Component {
       console.log('open sessions', nextProps.openSessions)
       console.log('close sessions', nextProps.closeSessions)
       console.log(nextProps.openCount + ' : ' + nextProps.closeCount)
-      this.setState({loading: false})
+      if (this.state.loading) {
+        this.setState({loading: false})
+      }
       if (this.props.location.state && this.state.activeSession === '') {
+        console.log('checking sessions')
         let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
         let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)
-        this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : oldSessions.length > 0 ? oldSessions[0] : ''})
         if (newSessions.length > 0 && newSessions[0].status === 'new') {
-          this.setState({tabValue: 'open'})
+          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : oldSessions.length > 0 ? oldSessions[0] : '', tabValue: 'open'})
         } else if (oldSessions.length > 0 && oldSessions[0].status === 'resolved') {
-          this.setState({tabValue: 'closed'})
+          this.setState({activeSession: newSessions.length > 0 ? newSessions[0] : oldSessions.length > 0 ? oldSessions[0] : '', tabValue: 'closed'})
         }
       } else if (this.state.activeSession === '') {
         if (this.state.tabValue === 'open') {
