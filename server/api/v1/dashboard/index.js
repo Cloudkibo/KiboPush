@@ -12,6 +12,7 @@ const auth = require('../../../auth/auth.service')
 const controller = require('./dashboard.controller')
 
 router.get('/sentVsSeen/:pageId',
+  auth.isAuthenticated(),
   controller.sentVsSeen)
 // todo this is also coded very badly
 //  router.get('/otherPages', auth.isAuthenticated(), controller.otherPages)
@@ -24,9 +25,11 @@ router.post('/enable',
 // todo remove this /disable, this is coded badly discuss with dayem
 // router.post('/disable', auth.isAuthenticated(), controller.disable);
 router.get('/stats',
+  auth.isAuthenticated(),
   controller.stats)
 
 router.get('/toppages',
+  auth.isAuthenticated(),
   controller.toppages)
 
 // todo remove this, after discuss - this id will be userid, this is bad code
@@ -37,6 +40,7 @@ router.get('/:id',
   controller.index)
 
 router.get('/graphData/:days',
+  auth.isAuthenticated(),
   controller.graphData)
 
 router.post('/getAllSubscribers/:pageid',

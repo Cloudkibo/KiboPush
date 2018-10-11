@@ -18,6 +18,7 @@ router.get('/',
   controller.index) // this id will be userid
 
 router.get('/allpages',
+  auth.isAuthenticated(),
   controller.allpages)
 
 router.post('/allConnectedPages',

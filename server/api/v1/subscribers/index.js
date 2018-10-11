@@ -8,6 +8,7 @@ const controller = require('./subscribers.controller')
 const auth = require('../../../auth/auth.service')
 
 router.get('/',
+  auth.isAuthenticated(),
   controller.index)
 
 router.post('/allSubscribers',
