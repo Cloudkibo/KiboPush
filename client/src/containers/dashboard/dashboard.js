@@ -360,6 +360,7 @@ class Dashboard extends React.Component {
     console.log('location', this.props.location)
     if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
       console.log('in loadScript')
+      // TODO We need to correct this in future.
       window.location.reload()
       // let addScript = document.createElement('script')
       // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
