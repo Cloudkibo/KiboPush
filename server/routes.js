@@ -17,7 +17,7 @@ module.exports = function (app) {
 
   app.use('/api/dashboard/', require('./api/v1/dashboard'))
   app.use('/api/things', require('./api/v1/thing'))
-  app.use('/api/users', require('./api/v1/user'))
+  app.use('/api/users', require('./api/v2/user'))
   app.use('/api/broadcasts', require('./api/v1/broadcasts'))
   app.use('/api/backdoor', require('./api/v1/backdoor'))
   app.use('/api/polls', require('./api/v1/polls'))

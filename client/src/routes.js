@@ -4,7 +4,7 @@ import React from 'react'
 import App from './sub.app.js'
 import Home from './containers/home'
 import Login from './containers/login/new'
-import LoginSignup from './containers/login/loginSignup'
+// import LoginSignup from './containers/login/loginSignup'
 import Signup from './containers/signup/signup'
 import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
@@ -145,7 +145,7 @@ function redirectAuthUsers (nextState, replace) {
 
 const routes = (
   <Route path='/' component={App}>
-    <IndexRoute component={LoginSignup} onEnter={redirectAuthUsers} />
+    <IndexRoute component={Home} onEnter={redirectAuthUsers} />
     <Route path='/login' component={Login} onEnter={redirectAuthUsers} />
     <Route path='/signup' component={Signup} />
     <Route path='/addfbpages' component={ConnectFBPages} onEnter={requireAuth} />
