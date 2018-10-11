@@ -2,7 +2,16 @@ const fetch = require('isomorphic-fetch')
 const config = require('../../../config/environment/index')
 
 exports.callApi = (endpoint, method = 'get', body, headers = {'content-type': 'application/json'}) => {
-  return fetch(`${config.API_URL_ACCOUNTS}/${endpoint}`, {
+  let path = ''
+  if (endpoint === 'auth/verify') {
+    path = config.env === 'production'
+      ? 'https://accounts.cloudkibo.com/'
+      : config.env === 'staging' ? 'https://saccounts.cloudkibo.com/'
+      : 'http://localhost:3000/api/v1/'
+  } else {
+    path = config.API_URL_ACCOUNTS
+  }
+  return fetch(`${path}/${endpoint}`, {
     headers,
     method,
     body: JSON.stringify(body)
