@@ -3,6 +3,22 @@ const logger = require('../../../components/logger')
 const TAG = 'api/v2/user/user.controller.js'
 const util = require('util')
 
+exports.index = function (req, res) {
+  utility.callApi(`users`)
+    .then(user => {
+      return res.status(200).json({
+        status: 'success',
+        payload: user
+      })
+    }).catch(error => {
+      logger.serverLog(TAG, `Error while fetching user details ${util.inspect(error)}`)
+      return res.status(500).json({
+        status: 'failed',
+        payload: `Failed to fetching user details ${JSON.stringify(error)}`
+      })
+    })
+}
+
 exports.updateChecks = function (req, res) {
   utility.callApi(`user/updateChecks`, 'post', req.body) // call updateChecks in accounts
         .then(user => {

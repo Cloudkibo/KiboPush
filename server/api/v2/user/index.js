@@ -6,6 +6,10 @@ const validate = require('express-jsonschema').validate
 const validationSchema = require('./validationSchema')
 const controller = require('./user.controller')
 
+router.get('/',
+  auth.isAuthenticated(),
+  controller.index)
+
 router.post('/updateChecks',
   auth.isAuthenticated(),
   validate({body: validationSchema.updateChecksPayload}),
