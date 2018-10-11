@@ -6,42 +6,40 @@ const validate = require('express-jsonschema').validate
 const validationSchema = require('./validationSchema')
 const controller = require('./user.controller')
 
-router.get('/updateChecks',
+router.post('/updateChecks',
   auth.isAuthenticated(),
-  validate({body: ''}),
+  validate({body: validationSchema.updateChecksPayload}),
   controller.updateChecks)
 
 router.get('/updateSkipConnect',
   auth.isAuthenticated(),
-  validate({body: ''}),
   controller.updateSkipConnect)
 
 router.post('/updateMode',
     auth.isAuthenticated(),
-    validate({body: ''}),
+    validate({body: validationSchema.updateMode}),
     controller.updateMode)
 
 router.get('/fbAppId',
     auth.isAuthenticated(),
-    validate({body: ''},
-    controller.fbAppId))
+    controller.fbAppId)
 
 router.post('/authenticatePassword',
     auth.isAuthenticated(),
-    validate({body: ''}),
+    validate({body: validationSchema.authenticatePassword}),
     controller.authenticatePassword)
 
 router.get('/addAccountType',
     auth.isAuthenticated(),
-    validate({body: ''}),
     controller.addAccountType)
 
-router.get('/enableDelete',
+router.post('/enableDelete',
     auth.isAuthenticated(),
-    validate({body: ''}),
+    validate({body: validationSchema.enableGDPRDelete}),
     controller.enableDelete)
 
 router.get('/cancelDeletion',
     auth.isAuthenticated(),
-    validate({body: ''}),
     controller.cancelDeletion)
+
+module.exports = router
