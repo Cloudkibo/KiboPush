@@ -18,9 +18,6 @@ router.get('/',
   controller.index) // this id will be userid
 
 router.get('/allpages',
-  auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('manage_pages'),
-  auth.doesRolePermitsThisAction('pagesAccessPermission'),
   controller.allpages)
 
 router.post('/allConnectedPages',
