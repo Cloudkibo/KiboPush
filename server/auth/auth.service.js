@@ -47,6 +47,7 @@ function isAuthenticated () {
 
         apiCaller.callApi('auth/verify', 'get', {}, headers)
         .then(result => {
+          logger.serverLog(TAG, `response got ${result}`)
           if (result.status === 'success') {
             req.user = result.user
             next()
@@ -63,7 +64,6 @@ function isAuthenticated () {
 //               .json({status: 'failed', description: 'No plan found. Contact support for more information.'})
 //           }
           next()
-
         })
         .catch(err => {
           return res.status(500)
