@@ -65,7 +65,7 @@ function isAuthenticated () {
 //             return res.status(404)
 //               .json({status: 'failed', description: 'No plan found. Contact support for more information.'})
 //           }
-          next()
+          // next()
         })
         .catch(err => {
           return res.status(500)
