@@ -18,6 +18,7 @@ const needle = require('needle')
 const Pages = require('../api/v1/pages/Pages.model')
 const CompanyUsers = require('../api/v1/companyuser/companyuser.model')
 const _ = require('lodash')
+const util = require('util')
 
 // const PassportFacebookExtension = require('passport-facebook-extension')
 const logger = require('../components/logger')
@@ -35,14 +36,15 @@ function isAuthenticated () {
       if (req.headers.hasOwnProperty('app_id')) {
         validateApiKeys(req, res, next)
       } else {
+        logger.serverLog(TAG, `request ${util.inspect(req.headers)}`)
         // allow access_token to be passed through query parameter as well
         if (req.query && req.query.hasOwnProperty('access_token')) {
-          req.headers.authorization = `Bearer ${req.query.access_token}`
+          req.headers.Authorization = `Bearer ${req.query.access_token}`
         }
         // validateJwt(req, res, next)
         let headers = {
           'content-type': 'application/json',
-          'Authorization': `Bearer ${req.headers.Authorization}`
+          'Authorization': req.headers.Authorization
         }
 
         apiCaller.callApi('auth/verify', 'get', {}, headers)
