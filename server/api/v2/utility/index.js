@@ -1,5 +1,7 @@
 const fetch = require('isomorphic-fetch')
 const config = require('../../../config/environment/index')
+const logger = require('../../../components/logger')
+const TAG = 'api/v2/utility/index.js'
 
 exports.callApi = (endpoint, method = 'get', body, headers = {'content-type': 'application/json'}) => {
   let path = ''
@@ -11,6 +13,7 @@ exports.callApi = (endpoint, method = 'get', body, headers = {'content-type': 'a
   } else {
     path = config.API_URL_ACCOUNTS
   }
+  logger.serverLog(TAG, `calling ${path}/${endpoint}`)
   return fetch(`${path}/${endpoint}`, {
     headers,
     method,
