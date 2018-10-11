@@ -10,6 +10,9 @@ html(lang="en")
     meta(name="description" content="Latest updates and statistic charts")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    script(type='text/javascript').
+      window.__url_production = "https://app.kibopush.com";
+      window.__url_staging = "https://staging.kibopush.com";
     script(src="https://cdn.cloudkibo.com/public/scripts/kiboAuth.js")
     //- script(type='text/javascript').
     //-   window.__kibo_company_id = "5a71705eae76a333430b9f15";
@@ -98,7 +101,7 @@ html(lang="en")
     link(rel="stylesheet" href="https://unpkg.com/react-select@1.2.0/dist/react-select.css")
     // Global site tag (gtag.js) - Google Analytics
     script(async="" src="https://www.googletagmanager.com/gtag/js?id=UA-104907011-1")
-    
+
     script.
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
