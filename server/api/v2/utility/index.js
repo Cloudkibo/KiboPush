@@ -48,6 +48,6 @@ exports.callApi = (endpoint, method = 'get', body, headers = {'content-type': 'a
     headers,
     json: true
   }
-  logger.serverLog(TAG, `requestPromise options ${options}`)
+  logger.serverLog(TAG, `requestPromise options ${JSON.stringify(options)}`)
   return requestPromise(options)
 }
