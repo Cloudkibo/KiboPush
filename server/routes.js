@@ -73,15 +73,6 @@ module.exports = function (app) {
   app.use('/api/messengerEvents', require('./api/v1/messengerEvents'))
   app.use('/api/wordpressEvents', require('./api/v1/wordpressEvents'))
   app.use('/auth', require('./auth'))
-  // v2 routes
-  app.use('/api/v2/pages', require('./api/v2/pages'))
-  app.use('/api/v2/commentCapture', require('./api/v2/commentCapture'))
-  app.use('/api/v2/lists', require('./api/v2/lists'))
-  app.use('/api/v2/menu', require('./api/v2/menu'))
-  app.use('/api/v2/phoneNumber', require('./api/v2/phoneNumber'))
-  app.use('/api/v2/reset_password', require('./api/v2/passwordresettoken'))
-  app.use('/api/v2/webhooks', require('./api/v2/webhooks'))
-  app.use('/api/v2/messengerEvents', require('./api/v2/messengerEvents'))
 
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,
