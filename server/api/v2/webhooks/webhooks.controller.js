@@ -2,9 +2,9 @@ const utility = require('../utility')
 const needle = require('needle')
 
 exports.index = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/${req.user.domain_email}`, 'get', {}, req.headers.authorization) // fetch company user
   .then(companyUser => {
-    utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId})
+    utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId}, req.headers.authorization)
     .then(webhooks => {
       return res.status(201).json({status: 'success', payload: webhooks})
     })
@@ -24,7 +24,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/${req.user.domain_email}`, 'get', {}, req.headers.authorization) // fetch company user
   .then(companyUser => {
     utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId, pageId: req.body.pageId})
     .then(webhooks => {
