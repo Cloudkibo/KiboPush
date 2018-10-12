@@ -12,7 +12,7 @@ exports.index = function (req, res) {
       .then(agentIds => {
         utility.callApi(`user/query`, 'post', {_id: {$in: agentIds}}, req.headers.authorization) // fetch unique agents info
         .then(uniqueAgents => {
-          utility.callApi(`team/pages/distinct`, 'post', {companyId: companyuser.companyId}, req.headers.authorization) // fetch distinct team pages
+          utility.callApi(`teams/pages/distinct`, 'post', {companyId: companyuser.companyId}, req.headers.authorization) // fetch distinct team pages
           .then(pageIds => {
             utility.callApi(`pages/query`, 'post', {_id: {$in: pageIds}}, req.headers.authorization) // fetch unique pages info
             .then(uniquePages => {
