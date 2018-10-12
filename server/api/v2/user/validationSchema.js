@@ -54,19 +54,6 @@ exports.updateChecksPayload = {
     }
   },
   'required': [
-    'user',
-    'getStartedSeen',
-    'dashboardTourSeen',
-    'surveyTourSeen',
-    'convoTourSeen',
-    'pollTourSeen',
-    'growthToolsTourSeen',
-    'subscriberTourSeen',
-    'liveChatTourSeen',
-    'autoPostingTourSeen',
-    'mainMenuTourSeen',
-    'subscribeToMessengerTourSeen',
-    'pagesTourSeen',
     'wizardSeen'
   ]
 }
