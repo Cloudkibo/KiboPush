@@ -31,13 +31,8 @@ function isAuthenticated () {
         if (req.query && req.query.hasOwnProperty('access_token')) {
           req.headers.authorization = `Bearer ${req.query.access_token}`
         }
-        // validateJwt(req, res, next)
-        let headers = {
-          'content-type': 'application/json',
-          'Authorization': req.headers.authorization
-        }
 
-        apiCaller.callApi('auth/verify', 'get', {}, headers)
+        apiCaller.callApi('auth/verify', 'get', {}, req.headers.authorization)
         .then(result => {
           logger.serverLog(TAG, `response got ${result}`)
           if (result.status === 'success') {
@@ -47,15 +42,6 @@ function isAuthenticated () {
             return res.status(401)
             .json({status: 'failed', description: 'Unauthorized'})
           }
-
-//           req.user.plan = company.planId
-//           req.user.last4 = company.stripe.last4
-//           logger.serverLog(TAG, `req.user in isAuthenticated ${JSON.stringify(req.user)}`)
-//           if (!req.user.plan) {
-//             return res.status(404)
-//               .json({status: 'failed', description: 'No plan found. Contact support for more information.'})
-//           }
-          // next()
         })
         .catch(err => {
           return res.status(500)

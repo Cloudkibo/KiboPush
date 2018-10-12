@@ -4,7 +4,7 @@ const TAG = 'api/v2/user/user.controller.js'
 const util = require('util')
 
 exports.index = function (req, res) {
-  utility.callApi(`user`)
+  utility.callApi(`user`, 'get', {}, req.headers.authorization)
     .then(user => {
       return res.status(200).json({
         status: 'success',
