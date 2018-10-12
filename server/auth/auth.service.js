@@ -37,7 +37,7 @@ function isAuthenticated () {
           'Authorization': req.headers.authorization
         }
 
-        let path = config.API_URL_ACCOUNTS.splice(0, config.API_URL_ACCOUNTS.length - 7)
+        let path = config.API_URL_ACCOUNTS.slice(0, config.API_URL_ACCOUNTS.length - 7)
 
         let options = {
           method: 'GET',
