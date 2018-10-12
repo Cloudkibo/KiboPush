@@ -40,7 +40,7 @@ module.exports = function (app) {
   app.use('/api/templates', require('./api/v1/templates'))
   app.use('/api/URL', require('./api/v1/URLforClickedCount'))
   app.use('/api/teams', require('./api/v2/teams'))
-  app.use('/api/company', require('./api/v1/companyprofile'))
+  app.use('/api/company', require('./api/v2/companyprofile'))
   app.use('/api/reset_password', require('./api/v1/passwordresettoken'))
   app.use('/api/email_verification', require('./api/v1/verificationtoken'))
   app.use('/api/invite_verification', require('./api/v1/inviteagenttoken'))
