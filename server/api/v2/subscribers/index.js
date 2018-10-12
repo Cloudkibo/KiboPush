@@ -16,7 +16,7 @@ router.get('/allLocales',
   auth.isAuthenticated(),
   controller.allLocales)
 
-router.get('/getAll',
+router.post('/getAll',
   auth.isAuthenticated(),
   controller.getAll)
 
