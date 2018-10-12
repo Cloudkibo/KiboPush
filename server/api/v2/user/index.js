@@ -34,7 +34,6 @@ router.post('/authenticatePassword',
     controller.authenticatePassword)
 
 router.get('/addAccountType',
-    auth.isAuthenticated(),
     controller.addAccountType)
 
 router.post('/enableDelete',
