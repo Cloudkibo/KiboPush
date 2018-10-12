@@ -84,6 +84,14 @@ class EditBot extends React.Component {
                       placeholder='Type the answer of your questions here...'
                       rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} />
                   </div>
+                  <br />
+                  <br />
+                  <br />
+                  <div className='m-input-icon m-input-icon--right'>
+                    <input className='form-control'
+                      placeholder='Video Link'
+                      rows='i' onChange={this.handleVideoLinkChange.bind(this, i)} value={this.state.payload[i].videoLink} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -162,6 +170,13 @@ class EditBot extends React.Component {
     this.setState({payload: payload})
   }
 
+  handleVideoLinkChange (i, event) {
+    let payload = this.state.payload
+    payload[i].videoLink = event.target.value
+    payload[i].intent_name = 'q' + (i + 1)
+    this.setState({payload: payload})
+  }
+
   createBot () {
     console.log('payload', this.state.payload)
     if (this.state.payload.length === 0) {
@@ -180,7 +195,7 @@ class EditBot extends React.Component {
             }
           }
         }
-        if (this.state.payload[i].answer === '') {
+        if (this.state.payload[i].answer === '' && this.state.payload[i].videoLink === '') {
           this.msg.error('You must enter answer of the questions')
           return
         }
