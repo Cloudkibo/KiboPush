@@ -9,24 +9,16 @@ exports.callApi = (endpoint, method = 'get', body, token) => {
     'content-type': 'application/json',
     'Authorization': token
   }
-  let path = ''
-  if (endpoint === 'auth/verify') {
-    path = config.env === 'production'
-      ? `https://accounts.cloudkibo.com/${endpoint}`
-      : config.env === 'staging' ? `https://saccounts.cloudkibo.com/${endpoint}`
-      : `http://localhost:3000/${endpoint}`
-  } else {
-    path = `${config.API_URL_ACCOUNTS}/${endpoint}`
-  }
+
   let options = {
     method: method.toUpperCase(),
-    uri: path,
+    uri: `${config.API_URL_ACCOUNTS}/${endpoint}`,
     headers,
     body,
     json: true
   }
   logger.serverLog(TAG, `requestPromise options ${util.inspect(options)}`)
-  requestPromise(options).then(response => {
+  return requestPromise(options).then(response => {
     logger.serverLog(TAG, `response from accounts ${util.inspect(response)}`)
     return new Promise((resolve, reject) => {
       if (response.status === 'success') {

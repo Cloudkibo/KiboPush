@@ -12,7 +12,7 @@ const needle = require('needle')
 const _ = require('lodash')
 const util = require('util')
 const logger = require('../components/logger')
-
+const requestPromise = require('request-promise')
 const TAG = 'auth/auth.service.js'
 
 /**
@@ -32,7 +32,21 @@ function isAuthenticated () {
           req.headers.authorization = `Bearer ${req.query.access_token}`
         }
 
-        apiCaller.callApi('auth/verify', 'get', {}, req.headers.authorization)
+        let headers = {
+          'content-type': 'application/json',
+          'Authorization': req.headers.authorization
+        }
+
+        let path = config.API_URL_ACCOUNTS.splice(0, config.API_URL_ACCOUNTS.length - 7)
+
+        let options = {
+          method: 'GET',
+          uri: `${path}/auth/verify`,
+          headers,
+          json: true
+        }
+
+        requestPromise(options)
         .then(result => {
           logger.serverLog(TAG, `response got ${result}`)
           if (result.status === 'success') {
