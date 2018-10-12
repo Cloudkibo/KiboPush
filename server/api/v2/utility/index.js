@@ -2,6 +2,7 @@ const requestPromise = require('request-promise')
 const config = require('../../../config/environment/index')
 const logger = require('../../../components/logger')
 const TAG = 'api/v2/utility/index.js'
+const util = require('util')
 
 exports.callApi = (endpoint, method = 'get', body, token) => {
   let headers = {
@@ -21,10 +22,12 @@ exports.callApi = (endpoint, method = 'get', body, token) => {
     method: method.toUpperCase(),
     uri: path,
     headers,
+    body,
     json: true
   }
-  logger.serverLog(TAG, `requestPromise options ${JSON.stringify(options)}`)
+  logger.serverLog(TAG, `requestPromise options ${util.inspect(options)}`)
   requestPromise(options).then(response => {
+    logger.serverLog(TAG, `response from accounts ${util.inspect(options)}`)
     return new Promise((resolve, reject) => {
       if (response.status === 'success') {
         resolve(response.payload)
@@ -34,8 +37,13 @@ exports.callApi = (endpoint, method = 'get', body, token) => {
     })
   })
   .catch(err => {
+    logger.serverLog(TAG, `response from accounts ${util.inspect(err)}`)
     return new Promise((resolve, reject) => {
-      reject(err)
+      if (err) {
+        reject(err)
+      } else {
+        resolve({})
+      }
     })
   })
 }
