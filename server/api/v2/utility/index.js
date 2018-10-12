@@ -24,5 +24,18 @@ exports.callApi = (endpoint, method = 'get', body, token) => {
     json: true
   }
   logger.serverLog(TAG, `requestPromise options ${JSON.stringify(options)}`)
-  return requestPromise(options)
+  requestPromise(options).then(response => {
+    return new Promise((resolve, reject) => {
+      if (response.status === 'success') {
+        resolve(response.payload)
+      } else {
+        reject(response.payload)
+      }
+    })
+  })
+  .catch(err => {
+    return new Promise((resolve, reject) => {
+      reject(err)
+    })
+  })
 }
