@@ -4,7 +4,7 @@ const utility = require('../utility')
 // const logicLayer = require('./commentCapture.logiclayer')
 
 exports.members = function (req, res) {
-  utility.callApi(`companyprofile/members`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
+  utility.callApi(`companyprofile/members`, 'get', {}, req.headers.authorization)
     .then(members => {
       res.status(200).json({status: 'success', payload: members})
     })
