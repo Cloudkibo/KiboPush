@@ -105,7 +105,7 @@ function updateAutopostingSeen (req) {
 }
 
 function updateSequenceSeen (req) {
-  callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+  callApi(`subscribers/query`, 'post', { senderId: req.sender.id }, req.headers.authorization)
     .then(subscribers => {
       let subscriber = subscribers[0]
       if (subscriber) {

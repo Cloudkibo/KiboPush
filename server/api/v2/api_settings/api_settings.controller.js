@@ -6,7 +6,7 @@ const util = require('util')
 const utility = require('../utility')
 
 exports.index = function (req, res) {
-  utility.callApi(`api_settings`, 'post', req.body)
+  utility.callApi(`api_settings`, 'post', req.body, req.headers.authorization)
     .then(settings => {
       res.status(200).json({
         status: 'success',
@@ -22,7 +22,7 @@ exports.index = function (req, res) {
 }
 
 exports.enable = function (req, res) {
-  utility.callApi(`api_settings/enable`, 'post', req.body)
+  utility.callApi(`api_settings/enable`, 'post', req.body, req.headers.authorization)
     .then(settings => {
       res.status(200).json({
         status: 'success',
@@ -38,7 +38,7 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
-  utility.callApi(`api_settings/disble`, 'post', req.body)
+  utility.callApi(`api_settings/disble`, 'post', req.body, req.headers.authorization)
     .then(settings => {
       res.status(200).json({
         status: 'success',
@@ -54,7 +54,7 @@ exports.disable = function (req, res) {
 }
 
 exports.reset = function (req, res) {
-  utility.callApi(`api_settings/reset`, 'post', req.body)
+  utility.callApi(`api_settings/reset`, 'post', req.body, req.headers.authorization)
     .then(settings => {
       res.status(200).json({
         status: 'success',

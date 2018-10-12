@@ -5,9 +5,9 @@ const dataLayer = require('./subscribers.datalayer')
 // const TAG = 'api/v2/subscribers/subscribers.controller.js'
 
 exports.index = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
-    utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true, isSubscribed: true}) // fetch subscribers of company
+    utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true, isSubscribed: true}, req.headers.authorization) // fetch subscribers of company
     .then(subscribers => {
       let subscriberIds = logicLayer.getSubscriberIds(subscribers)
       dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
@@ -41,9 +41,9 @@ exports.index = function (req, res) {
 }
 
 exports.allSubscribers = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
-    utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true}) // fetch subscribers of company
+    utility.callApi(`subscribers/query`, 'post', {companyId: companyuser.companyId, isEnabledByPage: true}, req.headers.authorization) // fetch subscribers of company
     .then(subscribers => {
       let subscriberIds = logicLayer.getSubscriberIds(subscribers)
       dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
@@ -77,10 +77,10 @@ exports.allSubscribers = function (req, res) {
 }
 
 exports.allLocales = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
     let aggregateObject = [{$group: {_id: null, locales: {$addToSet: '$locale'}}}]
-    utility.callApi(`subscribers/aggregate`, 'post', aggregateObject) // fetch subscribers locales
+    utility.callApi(`subscribers/aggregate`, 'post', aggregateObject, req.headers.authorization) // fetch subscribers locales
     .then(locales => {
       return res.status(200).json({
         status: 'success',
@@ -103,12 +103,12 @@ exports.allLocales = function (req, res) {
 }
 
 exports.getAll = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    utility.callApi(`subscribers/aggregate`, 'post', criterias.countCriteria) // fetch subscribers count
+    utility.callApi(`subscribers/aggregate`, 'post', criterias.countCriteria, req.headers.authorization) // fetch subscribers count
     .then(count => {
-      utility.callApi(`subscribers/aggregate`, 'post', criterias.fetchCriteria) // fetch subscribers
+      utility.callApi(`subscribers/aggregate`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch subscribers
       .then(subscribers => {
         let subscriberIds = logicLayer.getSubscriberIds(subscribers)
         dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
@@ -149,7 +149,7 @@ exports.getAll = function (req, res) {
 }
 
 exports.subscribeBack = function (req, res) {
-  utility.callApi(`subscribers/update`, 'put', {query: {_id: req.params.id, unSubscribedBy: 'agent'}, newPayload: {isSubscribed: true, unSubscribedBy: 'subscriber'}, options: {}}) // fetch single subscriber
+  utility.callApi(`subscribers/update`, 'put', {query: {_id: req.params.id, unSubscribedBy: 'agent'}, newPayload: {isSubscribed: true, unSubscribedBy: 'subscriber'}, options: {}}, req.headers.authorization) // fetch single subscriber
   .then(subscriber => {
     return res.status(200).json({
       status: 'success',

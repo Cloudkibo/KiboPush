@@ -18,7 +18,7 @@ exports.pollResponse = function (req, res) {
   let resp = JSON.parse(
     req.body.entry[0].messaging[0].message.quick_reply.payload)
   savepoll(req.body.entry[0].messaging[0], resp)
-  callApi(`subscribers/query`, 'post', { senderId: req.body.entry[0].messaging[0].sender.id })
+  callApi(`subscribers/query`, 'post', { senderId: req.body.entry[0].messaging[0].sender.id }, req.headers.authorization)
     .then(subscribers => {
       let subscriber = subscribers[0]
       if (subscriber) {
@@ -34,7 +34,7 @@ function savepoll (req, resp) {
   // find subscriber from sender id
   // var resp = JSON.parse(req.postback.payload)
   var temp = true
-  callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+  callApi(`subscribers/query`, 'post', { senderId: req.sender.id }, req.headers.authorization)
     .then(subscribers => {
       let subscriber = subscribers[0]
       if (!subscriber || subscriber._id === null) {
@@ -56,7 +56,7 @@ function savepoll (req, resp) {
         pollId: resp.poll_id,
         subscriberId: subscriber._id
       }
-      callApi(`webhooks/query`, 'post', { pageId: req.recipient.id })
+      callApi(`webhooks/query`, 'post', { pageId: req.recipient.id }, req.headers.authorization)
         .then(webhook => {
           logger.serverLog(TAG, `webhook ${webhook}`)
           if (webhook && webhook.isEnabled) {

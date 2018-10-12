@@ -2,7 +2,7 @@ const utility = require('../utility')
 const needle = require('needle')
 
 exports.index = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`, 'get', {}, req.headers.authorization) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
     utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId}, req.headers.authorization)
     .then(webhooks => {
@@ -24,7 +24,7 @@ exports.index = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`, 'get', {}, req.headers.authorization) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
     utility.callApi(`webhooks/query`, 'post', {companyId: companyUser.companyId, pageId: req.body.pageId})
     .then(webhooks => {
@@ -85,7 +85,7 @@ exports.edit = function (req, res) {
       utility.callApi(`webhooks/${req.body._id}`, 'put', {
         webhook_url: req.body.webhook_url,
         optIn: req.body.optIn,
-        userId: req.user._id})
+        userId: req.user._id}, req.headers.authorization)
       .then(edited => {
         res.status(201).json({status: 'success', payload: edited})
       })
@@ -102,7 +102,7 @@ exports.edit = function (req, res) {
 }
 
 exports.isEnabled = function (req, res) {
-  utility.callApi(`webhooks/${req.body._id}`, 'put', {isEnabled: req.body.isEnabled})
+  utility.callApi(`webhooks/${req.body._id}`, 'put', {isEnabled: req.body.isEnabled}, req.headers.authorization)
   .then(edited => {
     res.status(201).json({status: 'success', payload: edited})
   })

@@ -28,14 +28,4 @@ exports.callApi = (endpoint, method = 'get', body, token) => {
       }
     })
   })
-  .catch(err => {
-    logger.serverLog(TAG, `response from accounts ${util.inspect(err)}`)
-    return new Promise((resolve, reject) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve({})
-      }
-    })
-  })
 }
