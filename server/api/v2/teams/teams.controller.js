@@ -1,4 +1,4 @@
-const logicLayer = require('./teams.logiclayer')
+const logicLayer = require('./teams.logicLayer')
 const utility = require('../utility')
 const logger = require('../../../components/logger')
 const TAG = 'api/v2/pages/teams.controller.js'

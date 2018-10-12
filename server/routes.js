@@ -44,7 +44,7 @@ module.exports = function (app) {
   app.use('/api/reset_password', require('./api/v1/passwordresettoken'))
   app.use('/api/email_verification', require('./api/v1/verificationtoken'))
   app.use('/api/invite_verification', require('./api/v1/inviteagenttoken'))
-  app.use('/api/invitations', require('./api/v2/invitations'))
+  app.use('/api/invitations', require('./api/v1/invitations'))
   app.use('/api/company_user', require('./api/v1/companyuser'))
   app.use('/api/adminsubscriptions', require('./api/v1/pageadminsubscriptions'))
   app.use('/api/tags', require('./api/v1/tags'))
