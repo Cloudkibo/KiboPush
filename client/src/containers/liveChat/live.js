@@ -201,7 +201,9 @@ class LiveChat extends React.Component {
       console.log('open sessions', nextProps.openSessions)
       console.log('close sessions', nextProps.closeSessions)
       console.log(nextProps.openCount + ' : ' + nextProps.closeCount)
-      this.setState({loading: false})
+      if (this.state.loading) {
+        this.setState({loading: false})
+      }
       if (this.props.location.state && this.state.activeSession === '') {
         let newSessions = nextProps.openSessions.filter(session => session._id === this.props.location.state.id)
         let oldSessions = nextProps.closeSessions.filter(session => session._id === this.props.location.state.id)

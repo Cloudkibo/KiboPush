@@ -35,12 +35,6 @@ var json2csv = require('json2csv')
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
-    props.loadMyPagesList()
-    props.loadDashboardData()
-    props.loadSubscribersList()
-    props.loadGraphData(0)
-    props.loadTopPages()
     this.state = {
       isShowingModal: false,
       sentseendata1: [],
@@ -68,7 +62,14 @@ class Dashboard extends React.Component {
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
-
+  componentWillMount () {
+    this.props.getuserdetails()
+    this.props.loadMyPagesList()
+    this.props.loadDashboardData()
+    this.props.loadSubscribersList()
+    this.props.loadGraphData(0)
+    this.props.loadTopPages()
+  }
   closeProDialog () {
     this.setState({isShowingModalPro: false})
   }
@@ -360,12 +361,14 @@ class Dashboard extends React.Component {
     console.log('location', this.props.location)
     if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
       console.log('in loadScript')
+      // TODO We need to correct this in future.
+      window.location.reload()
       // let addScript = document.createElement('script')
       // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
       // document.body.appendChild(addScript)
-      let addScript1 = document.createElement('script')
-      addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
-      document.body.appendChild(addScript1)
+      // let addScript1 = document.createElement('script')
+      // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
+      // document.body.appendChild(addScript1)
     }
     if (this.props.currentPage) {
       console.log('updating sentVsSeen currentPage')

@@ -3,12 +3,12 @@ const logicLayer = require('./lists.logiclayer')
 const dataLayer = require('./lists.datalayer')
 
 exports.getAll = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    utility.callApi(`lists/aggregate/`, 'post', criterias.countCriteria) // fetch lists count
+    utility.callApi(`lists/aggregate/`, 'post', criterias.countCriteria, req.headers.authorization) // fetch lists count
     .then(count => {
-      utility.callApi(`lists/aggregate/`, 'post', criterias.fetchCriteria) // fetch lists
+      utility.callApi(`lists/aggregate/`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch lists
       .then(lists => {
         if (req.body.first_page === 'previous') {
           res.status(200).json({
@@ -44,11 +44,11 @@ exports.getAll = function (req, res) {
   })
 }
 exports.createList = function (req, res) {
-  utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id})
+  utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId})
+    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id})
+      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         if (planUsage.segmentation_lists !== -1 && companyUsage.segmentation_lists >= planUsage.segmentation_lists) {
           return res.status(500).json({
@@ -56,7 +56,7 @@ exports.createList = function (req, res) {
             description: `Your lists limit has reached. Please upgrade your plan to premium in order to create more lists.`
           })
         }
-        utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+        utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
         .then(companyUser => {
           utility.callApi(`lists`, 'post', {
             companyId: companyUser.companyId,
@@ -66,12 +66,12 @@ exports.createList = function (req, res) {
             content: req.body.content,
             parentList: req.body.parentListId,
             parentListName: req.body.parentListName
-          })
+          }, req.headers.authorization)
           .then(listCreated => {
             utility.callApi(`updateCompany/`, 'put', {
               query: {companyId: req.body.companyId},
               newPayload: { $inc: { segmentation_lists: 1 } }
-            })
+            }, req.headers.authorization)
             .then(updated => {
             })
             .catch(error => {
@@ -122,7 +122,7 @@ exports.editList = function (req, res) {
     listName: req.body.listName,
     conditions: req.body.conditions,
     content: req.body.content
-  })
+  }, req.headers.authorization)
   .then(savedList => {
     return res.status(200).json({status: 'success', payload: savedList})
   })
@@ -134,7 +134,7 @@ exports.editList = function (req, res) {
   })
 }
 exports.viewList = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
     utility.callApi(`lists/${req.params.id}`)
     .then(list => {
@@ -143,16 +143,16 @@ exports.viewList = function (req, res) {
           companyId: companyUser.companyId,
           hasSubscribed: true,
           fileName: list[0].listName
-        })
+        }, req.headers.authorization)
         .then(number => {
           if (number.length > 0) {
             let criterias = logicLayer.getSubscriberCriteria(number, companyUser)
-            utility.callApi(`subscribers/query`, 'post', criterias)
+            utility.callApi(`subscribers/query`, 'post', criterias, req.headers.authorization)
             .then(subscribers => {
               let content = logicLayer.getContent(subscribers)
               utility.callApi(`lists/${req.params.id}`, 'put', {
                 content: content
-              })
+              }, req.headers.authorization)
               .then(savedList => {
                 return res.status(201).json({status: 'success', payload: subscribers})
               })
@@ -184,7 +184,7 @@ exports.viewList = function (req, res) {
         })
       } else {
         utility.callApi(`subscribers/find`, 'post', {
-          isSubscribed: true, _id: {$in: list[0].content}})
+          isSubscribed: true, _id: {$in: list[0].content}}, req.headers.authorization)
         .then(subscribers => {
           return res.status(201)
             .json({status: 'success', payload: subscribers})
@@ -212,14 +212,14 @@ exports.viewList = function (req, res) {
   })
 }
 exports.deleteList = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
-    utility.callApi(`lists/${req.params.id}`, 'delete')
+    utility.callApi(`lists/${req.params.id}`, 'delete', {}, req.headers.authorization)
     .then(result => {
       utility.callApi(`updateCompany/`, 'put', {
         query: {companyId: companyUser.companyId},
         newPayload: { $inc: { segmentation_lists: -1 } }
-      })
+      }, req.headers.authorization)
       .then(updated => {
       })
       .catch(error => {
@@ -245,7 +245,7 @@ exports.deleteList = function (req, res) {
   })
 }
 exports.repliedPollSubscribers = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
     dataLayer.findPolls({companyId: companyUser.companyId})
     .then(polls => {
@@ -253,7 +253,7 @@ exports.repliedPollSubscribers = function (req, res) {
       dataLayer.findPollResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscribers/find`, 'post', subscriberCriteria)
+        utility.callApi(`subscribers/find`, 'post', subscriberCriteria, req.headers.authorization)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})
@@ -287,7 +287,7 @@ exports.repliedPollSubscribers = function (req, res) {
   })
 }
 exports.repliedSurveySubscribers = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
     dataLayer.findSurveys({companyId: companyUser.companyId})
     .then(surveys => {
@@ -295,7 +295,7 @@ exports.repliedSurveySubscribers = function (req, res) {
       dataLayer.findSurveyResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscribers/find`, 'post', subscriberCriteria)
+        utility.callApi(`subscribers/find`, 'post', subscriberCriteria, req.headers.authorization)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})

@@ -18,9 +18,9 @@ exports.menu = function (req, res) {
 
 function sendMenuReply (req) {
   let parsedData = JSON.parse(req.postback.payload)
-  callApi.callApi(`subscribers/query`, 'post', { senderId: req.sender.id })
+  callApi.callApi(`subscribers/query`, 'post', { senderId: req.sender.id }, req.headers.authorization)
   .then(subscriber => {
-    callApi.callApi(`pages/query`, 'post', { pageId: req.recipient.id, connected: true })
+    callApi.callApi(`pages/query`, 'post', { pageId: req.recipient.id, connected: true }, req.headers.authorization)
     .then(page => {
       utility.getBatchData(parsedData, subscriber.senderId, page, sendBroadcast, subscriber.firstName, subscriber.lastName, 'menu')
     })

@@ -31,11 +31,11 @@ exports.subscriber = function (req, res) {
       subscriberSource = 'customer_matching'
       phoneNumber = event.prior_message.identifier
     }
-    callApi(`pages/query`, 'post', { pageId: pageId, connected: true })
+    callApi(`pages/query`, 'post', { pageId: pageId, connected: true }, req.headers.authorization)
       .then(pages => {
         pages.forEach((page) => {
           if (subscriberSource === 'customer_matching') {
-            callApi(`phone/update`, 'put', {query: {number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: page._id, companyId: page.companyId}, newPayload: {hasSubscribed: true}, options: {}})
+            callApi(`phone/update`, 'put', {query: {number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: page._id, companyId: page.companyId}, newPayload: {hasSubscribed: true}, options: {}}, req.headers.authorization)
               .then(phonenumberupdated => {
                 logger.serverLog(TAG, `phone number updated successfully ${JSON.stringify(phonenumberupdated)}`)
               })
@@ -91,32 +91,32 @@ exports.subscriber = function (req, res) {
                   } else if (subscriberSource === 'chat_plugin') {
                     payload.source = 'chat_plugin'
                   }
-                  callApi(`pages/query`, 'post', { _id: page._id, connected: true })
+                  callApi(`pages/query`, 'post', { _id: page._id, connected: true }, req.headers.authorization)
                     .then(pageFound => {
                       pageFound = pageFound[0]
                       if (subsriber === null) {
                         // subsriber not found, create subscriber
-                        callApi(`company/${page.companyId}`)
+                        callApi(`company/${page.companyId}`, 'get', {}, req.headers.authorization)
                           .then(company => {
-                            callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId})
+                            callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId}, req.headers.authorization)
                               .then(planUsage => {
                                 planUsage = planUsage[0]
-                                callApi(`featureUsage/getCompanyUsage`, 'post', {companyId: page.companyId})
+                                callApi(`featureUsage/getCompanyUsage`, 'post', {companyId: page.companyId}, req.headers.authorization)
                                   .then(companyUsage => {
                                     companyUsage = companyUsage[0]
                                     if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
                                       webhookUtility.limitReachedNotification('subscribers', company)
                                     } else {
-                                      callApi(`subscribers`, 'post', payload)
+                                      callApi(`subscribers`, 'post', payload, req.headers.authorization)
                                         .then(subscriberCreated => {
-                                          callApi(`featureUsage/updateCompanyUsage`, 'post', {query: {companyId: page.companyId}, newPayload: { $inc: { subscribers: 1 } }, options: {}})
+                                          callApi(`featureUsage/updateCompanyUsage`, 'post', {query: {companyId: page.companyId}, newPayload: { $inc: { subscribers: 1 } }, options: {}}, req.headers.authorization)
                                             .then(updated => {
                                               logger.serverLog(TAG, `company usage incremented successfully ${JSON.stringify(err)}`)
                                             })
                                             .catch(err => {
                                               logger.serverLog(TAG, `Failed to update company usage ${JSON.stringify(err)}`)
                                             })
-                                          callApi(`webhooks/query`, 'post', { pageId: pageId })
+                                          callApi(`webhooks/query`, 'post', { pageId: pageId }, req.headers.authorization)
                                             .then(webhook => {
                                               if (webhook && webhook.isEnabled) {
                                                 needle.get(webhook.webhook_url, (err, r) => {
@@ -181,7 +181,7 @@ exports.subscriber = function (req, res) {
                         if (!subsriber.isSubscribed) {
                           // subscribing the subscriber again in case he
                           // or she unsubscribed and removed chat
-                          callApi(`subscribers/update`, 'put', {query: { senderId: sender }, newPayload: {isSubscribed: true, isEnabledByPage: true}, options: {}})
+                          callApi(`subscribers/update`, 'put', {query: { senderId: sender }, newPayload: {isSubscribed: true, isEnabledByPage: true}, options: {}}, req.headers.authorization)
                             .then(subscriber => {
                               logger.serverLog(TAG, subscriber)
                             })

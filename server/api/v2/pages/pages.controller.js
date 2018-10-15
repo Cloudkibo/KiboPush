@@ -5,9 +5,9 @@ const logger = require('../../../components/logger')
 const TAG = 'api/v2/pages/pages.controller.js'
 
 exports.index = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
-    utility.callApi(`pages/query`, 'post', {companyId: companyuser.companyId}) // fetch all pages of company
+    utility.callApi(`pages/query`, 'post', {companyId: companyuser.companyId}, req.headers.authorization) // fetch all pages of company
     .then(pages => {
       let pagesToSend = logicLayer.removeDuplicates(pages)
       return res.status(200).json({
@@ -31,12 +31,12 @@ exports.index = function (req, res) {
 }
 
 exports.connectedPages = function (req, res) {
-  utility.callApi(`companyUser/${req.user.domain_email}`) // fetch company user
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    utility.callApi(`pages/aggregate`, 'post', criterias.countCriteria) // fetch connected pages count
+    utility.callApi(`pages/aggregate`, 'post', criterias.countCriteria, req.headers.authorization) // fetch connected pages count
     .then(count => {
-      utility.callApi(`pages/aggregate`, 'post', criterias.fetchCriteria) // fetch connected pages
+      utility.callApi(`pages/aggregate`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch connected pages
       .then(pages => {
         res.status(200).json({
           status: 'success',
@@ -66,11 +66,11 @@ exports.connectedPages = function (req, res) {
 }
 
 exports.enable = function (req, res) {
-  utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id})
+  utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId})
+    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id})
+      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         if (planUsage.facebook_pages !== -1 && companyUsage.facebook_pages >= planUsage.facebook_pages) {
           return res.status(500).json({
@@ -78,7 +78,7 @@ exports.enable = function (req, res) {
             description: `Your pages limit has reached. Please upgrade your plan to premium in order to connect more pages.`
           })
         }
-        utility.callApi(`pages/${req.body._id}`) // fetch page
+        utility.callApi(`pages/${req.body._id}`, 'get', {}, req.headers.authorization) // fetch page
         .then(page => {
           needle.get(
             `https://graph.facebook.com/v2.10/${page.pageId}?fields=is_published&access_token=${page.userId.facebookInfo.fbToken}`,
@@ -93,15 +93,15 @@ exports.enable = function (req, res) {
                   payload: 'Page is not published.'
                 })
               } else {
-                utility.callApi(`pages/${page.pageId}/connect`) // fetch connected page
+                utility.callApi(`pages/${page.pageId}/connect`, 'get', {}, req.headers.authorization) // fetch connected page
                 .then(pageConnected => {
                   if (pageConnected !== {}) {
-                    utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}) // connect page
+                    utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(res => {
                       utility.callApi(`updateCompany/`, 'put', {
                         query: {companyId: req.body.companyId},
                         newPayload: { $inc: { facebook_pages: 1 } }
-                      })
+                      }, req.headers.authorization)
                       .then(updated => {
                       })
                       .catch(error => {
@@ -110,7 +110,7 @@ exports.enable = function (req, res) {
                           payload: `Failed to update company usage ${JSON.stringify(error)}`
                         })
                       })
-                      utility.callApi(`subscribers/${page._id}`, 'put', {isEnabledByPage: true}) // update subscribers
+                      utility.callApi(`subscribers/${page._id}`, 'put', {isEnabledByPage: true}, req.headers.authorization) // update subscribers
                       .then(res => {
                         const options = {
                           url: `https://graph.facebook.com/v2.6/${page.pageId}/subscribed_apps?access_token=${page.accessToken}`,
@@ -201,14 +201,14 @@ exports.enable = function (req, res) {
 }
 
 exports.disable = function (req, res) {
-  utility.callApi(`pages/${req.body._id}`, 'put', {connected: false}) // disconnect page
+  utility.callApi(`pages/${req.body._id}`, 'put', {connected: false}, req.headers.authorization) // disconnect page
   .then(res => {
-    utility.callApi(`subscribers/${req.body._id}`, 'put', {isEnabledByPage: false}) // update subscribers
+    utility.callApi(`subscribers/${req.body._id}`, 'put', {isEnabledByPage: false}, req.headers.authorization) // update subscribers
     .then(res => {
       utility.callApi(`updateCompany/`, 'put', {
         query: {companyId: req.body.companyId},
         newPayload: { $inc: { facebook_pages: -1 } }
-      })
+      }, req.headers.authorization)
       .then(updated => {
       })
       .catch(error => {
@@ -263,7 +263,7 @@ exports.disable = function (req, res) {
 }
 
 exports.createWelcomeMessage = function (req, res) {
-  utility.callApi(`pages/${req.body._id}`, 'put', {welcomeMessage: req.body.welcomeMessage})
+  utility.callApi(`pages/${req.body._id}`, 'put', {welcomeMessage: req.body.welcomeMessage}, req.headers.authorization)
   .then(res => {
     return res.status(200).json({
       status: 'success',
@@ -279,7 +279,7 @@ exports.createWelcomeMessage = function (req, res) {
 }
 
 exports.enableDisableWelcomeMessage = function (req, res) {
-  utility.callApi(`pages/${req.body._id}`, 'put', {isWelcomeMessageEnabled: req.body.isWelcomeMessageEnabled})
+  utility.callApi(`pages/${req.body._id}`, 'put', {isWelcomeMessageEnabled: req.body.isWelcomeMessageEnabled}, req.headers.authorization)
   .then(res => {
     return res.status(200).json({
       status: 'success',
@@ -298,9 +298,9 @@ exports.saveGreetingText = function (req, res) {
   const pageId = req.body.pageId
   const greetingText = req.body.greetingText
 
-  utility.callApi(`pages/${pageId}/greetingText`, 'put', {greetingText: greetingText})
+  utility.callApi(`pages/${pageId}/greetingText`, 'put', {greetingText: greetingText}, req.headers.authorization)
   .then(res => {
-    utility.callApi(`pages/${pageId}`)
+    utility.callApi(`pages/${pageId}`, 'get', {}, req.headers.authorization)
     .then(res => {
       if (res.status === 'success') {
         const pageToken = res.payload && res.payload.length && res.payload[0].accessToken

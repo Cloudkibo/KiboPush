@@ -31,18 +31,23 @@ const auth = {
 
   logout (cb) {
     cookie.remove('userid')
-    cookie.remove('token', { path: '/' })
+    cookie.remove('token')
+    console.log("THE LOGOUT IS BEING CALLED")
+    redirectToLogoutAccounts()
     if (cb) cb()
-    this.onChange(false)
   },
 
   loggedIn () {
     const token = cookie.load('token')
     // first check from server if this token is expired or is still valid
     return !(typeof token === 'undefined' || token === '')
-  },
+  }
+}
 
-  onChange () {}
+function redirectToLogoutAccounts () {
+  const environment = cookie.load('environment')
+  if (environment === 'staging') window.location.replace('https://saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
+  if (environment === 'production') window.location.replace('https://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
 }
 
 export default auth

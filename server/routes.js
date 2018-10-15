@@ -17,12 +17,12 @@ module.exports = function (app) {
 
   app.use('/api/dashboard/', require('./api/v1/dashboard'))
   app.use('/api/things', require('./api/v1/thing'))
-  app.use('/api/users', require('./api/v1/user'))
+  app.use('/api/users', require('./api/v2/user'))
   app.use('/api/broadcasts', require('./api/v1/broadcasts'))
   app.use('/api/backdoor', require('./api/v1/backdoor'))
   app.use('/api/polls', require('./api/v1/polls'))
   app.use('/api/bots', require('./api/v1/smart_replies'))
-  app.use('/api/subscribers', require('./api/v1/subscribers'))
+  app.use('/api/subscribers', require('./api/v2/subscribers'))
   app.use('/api/pages', require('./api/v1/pages'))
   app.use('/api/growthtools', require('./api/v1/growthtools'))
   app.use('/api/lists', require('./api/v1/lists'))
@@ -39,8 +39,8 @@ module.exports = function (app) {
   app.use('/api/api_ngp', require('./api/v1/api_ngp'))
   app.use('/api/templates', require('./api/v1/templates'))
   app.use('/api/URL', require('./api/v1/URLforClickedCount'))
-  app.use('/api/teams', require('./api/v1/teams'))
-  app.use('/api/company', require('./api/v1/companyprofile'))
+  app.use('/api/teams', require('./api/v2/teams'))
+  app.use('/api/company', require('./api/v2/companyprofile'))
   app.use('/api/reset_password', require('./api/v1/passwordresettoken'))
   app.use('/api/email_verification', require('./api/v1/verificationtoken'))
   app.use('/api/invite_verification', require('./api/v1/inviteagenttoken'))
@@ -73,15 +73,6 @@ module.exports = function (app) {
   app.use('/api/messengerEvents', require('./api/v1/messengerEvents'))
   app.use('/api/wordpressEvents', require('./api/v1/wordpressEvents'))
   app.use('/auth', require('./auth'))
-  // v2 routes
-  app.use('/api/v2/pages', require('./api/v2/pages'))
-  app.use('/api/v2/commentCapture', require('./api/v2/commentCapture'))
-  app.use('/api/v2/lists', require('./api/v2/lists'))
-  app.use('/api/v2/menu', require('./api/v2/menu'))
-  app.use('/api/v2/phoneNumber', require('./api/v2/phoneNumber'))
-  app.use('/api/v2/reset_password', require('./api/v2/passwordresettoken'))
-  app.use('/api/v2/webhooks', require('./api/v2/webhooks'))
-  app.use('/api/v2/messengerEvents', require('./api/v2/messengerEvents'))
 
   app.get('/', (req, res) => {
     res.cookie('environment', config.env,

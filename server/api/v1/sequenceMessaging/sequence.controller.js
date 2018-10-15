@@ -207,7 +207,7 @@ exports.setSchedule = function (req, res) {
             }
           }
         })
-        res.status(201).json({ status: 'success', payload: message })
+        return res.status(201).json({ status: 'success', payload: message })
       })
     })
   })
