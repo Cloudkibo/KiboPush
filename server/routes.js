@@ -22,7 +22,7 @@ module.exports = function (app) {
   app.use('/api/backdoor', require('./api/v1/backdoor'))
   app.use('/api/polls', require('./api/v1/polls'))
   app.use('/api/bots', require('./api/v1/smart_replies'))
-  app.use('/api/subscribers', require('./api/v2/subscribers'))
+  app.use('/api/subscribers', require('./api/v1/subscribers'))
   app.use('/api/pages', require('./api/v1/pages'))
   app.use('/api/growthtools', require('./api/v1/growthtools'))
   app.use('/api/lists', require('./api/v1/lists'))
