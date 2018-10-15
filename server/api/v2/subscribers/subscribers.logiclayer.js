@@ -50,23 +50,27 @@ exports.getCriterias = function (body, companyUser) {
   }
   if (body.first_page === 'first') {
     finalCriteria = [
-      { $lookup: {from: 'pages', localField: 'pageId', foreignField: '_id', as: 'pageId'} },
-      { $unwind: '$pageId' },
-      { $match: findCriteria }
+      { $match: findCriteria },
+      { $skip: recordsToSkip },
+      { $limit: body.number_of_records }
     ]
   } else if (body.first_page === 'next') {
     recordsToSkip = Math.abs(((body.requested_page - 1) - (body.current_page))) * body.number_of_records
     finalCriteria = [
       { $lookup: {from: 'pages', localField: 'pageId', foreignField: '_id', as: 'pageId'} },
       { $unwind: '$pageId' },
-      { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(body.last_id) } }] } }
+      { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(body.last_id) } }] } },
+      { $skip: recordsToSkip },
+      { $limit: body.number_of_records }
     ]
   } else if (body.first_page === 'previous') {
     recordsToSkip = Math.abs(((body.requested_page) - (body.current_page - 1))) * body.number_of_records
     finalCriteria = [
       { $lookup: {from: 'pages', localField: 'pageId', foreignField: '_id', as: 'pageId'} },
       { $unwind: '$pageId' },
-      { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(body.last_id) } }] } }
+      { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(body.last_id) } }] } },
+      { $skip: recordsToSkip },
+      { $limit: body.number_of_records }
     ]
   }
   let countCriteria = [
