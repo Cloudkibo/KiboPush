@@ -50,13 +50,7 @@ exports.getCriterias = function (body, companyUser) {
   }
   if (body.first_page === 'first') {
     finalCriteria = [
-      { $unwind: '$projects' },
-      { $unwind: '$projects.pageId' },
-      { $lookup: {from: 'pages', localField: 'projects.pageId', foreignField: '_id', as: 'pageId'} },
-      { $unwind: '$pageId' },
-      { $match: findCriteria },
-      { $skip: recordsToSkip },
-      { $limit: body.number_of_records }
+      { $lookup: {from: 'pages', localField: 'pageId', foreignField: '_id', as: 'pageId'} }
     ]
   } else if (body.first_page === 'next') {
     recordsToSkip = Math.abs(((body.requested_page - 1) - (body.current_page))) * body.number_of_records
