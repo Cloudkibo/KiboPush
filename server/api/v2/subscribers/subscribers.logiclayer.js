@@ -16,7 +16,7 @@ exports.getSubscriberIds = function (subscribers) {
 exports.getSusbscribersPayload = function (subscribers, tags) {
   let subscribersPayload = []
   for (let i = 0; i < subscribers.length; i++) {
-    subscribersPayload[i].tags = []
+    subscribersPayload.push({tags: []})
     for (let j = 0; j < tags.length; j++) {
       if (subscribers[i]._id.toString() === tags[j].subscriberId.toString()) {
         subscribersPayload[i].tags.push(tags[j].tagId.tag)
@@ -52,6 +52,8 @@ exports.getCriterias = function (body, companyUser) {
     finalCriteria = [
       { $lookup: {from: 'pages', localField: 'pageId', foreignField: '_id', as: 'pageId'} },
       { $unwind: '$pageId' },
+      { $match: findCriteria },
+      { $skip: recordsToSkip },
       { $limit: body.number_of_records }
     ]
   } else if (body.first_page === 'next') {
