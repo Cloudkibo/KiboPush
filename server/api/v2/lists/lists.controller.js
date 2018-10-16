@@ -46,9 +46,9 @@ exports.getAll = function (req, res) {
 exports.createList = function (req, res) {
   utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
+    utility.callApi(`featureUsage/planQuery`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
+      utility.callApi(`featureUsage/companyQuery`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         if (planUsage.segmentation_lists !== -1 && companyUsage.segmentation_lists >= planUsage.segmentation_lists) {
           return res.status(500).json({
@@ -68,7 +68,7 @@ exports.createList = function (req, res) {
             parentListName: req.body.parentListName
           }, req.headers.authorization)
           .then(listCreated => {
-            utility.callApi(`updateCompany/`, 'put', {
+            utility.callApi(`featureUsage/updateCompany`, 'put', {
               query: {companyId: req.body.companyId},
               newPayload: { $inc: { segmentation_lists: 1 } }
             }, req.headers.authorization)
@@ -216,7 +216,7 @@ exports.deleteList = function (req, res) {
   .then(companyUser => {
     utility.callApi(`lists/${req.params.id}`, 'delete', {}, req.headers.authorization)
     .then(result => {
-      utility.callApi(`updateCompany/`, 'put', {
+      utility.callApi(`featureUsage/updateCompany`, 'put', {
         query: {companyId: companyUser.companyId},
         newPayload: { $inc: { segmentation_lists: -1 } }
       }, req.headers.authorization)

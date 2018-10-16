@@ -25,7 +25,7 @@ module.exports = function (app) {
   app.use('/api/subscribers', require('./api/v2/subscribers'))
   app.use('/api/pages', require('./api/v2/pages'))
   app.use('/api/growthtools', require('./api/v2/phoneNumber'))
-  app.use('/api/lists', require('./api/v1/lists'))
+  app.use('/api/lists', require('./api/v2/lists'))
   app.use('/api/autoposting', require('./api/v1/autoposting'))
   app.use('/api/autoposting_messages', require('./api/v1/autoposting_messages'))
   app.use('/api/surveys', require('./api/v1/surveys'))
