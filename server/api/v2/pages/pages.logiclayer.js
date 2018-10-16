@@ -73,3 +73,52 @@ function exists (list, content) {
   }
   return false
 }
+
+exports.appendSubUnsub = (pages) => {
+  let pagesPayload = []
+  for (let i = 0; i < pages.length; i++) {
+    pagesPayload.push({
+      _id: pages[i]._id,
+      pageId: pages[i].pageId,
+      pageName: pages[i].pageName,
+      userId: pages[i].userId,
+      pagePic: pages[i].pagePic,
+      connected: pages[i].connected,
+      pageUserName: pages[i].pageUserName,
+      likes: pages[i].likes,
+      isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
+      welcomeMessage: pages[i].welcomeMessage,
+      subscribers: 0,
+      unsubscribes: 0,
+      greetingText: pages[i].greetingText,
+      gotPageSubscriptionPermission: pages[i].gotPageSubscriptionPermission
+    })
+  }
+  return pagesPayload
+}
+
+exports.appendSubscribersCount = (pages, gotSubscribersCount) => {
+  let pagesPayload = pages
+  for (let i = 0; i < pagesPayload.length; i++) {
+    for (let j = 0; j < gotSubscribersCount.length; j++) {
+      if (pagesPayload[i]._id.toString() ===
+        gotSubscribersCount[j]._id.pageId.toString()) {
+        pagesPayload[i].subscribers = gotSubscribersCount[j].count
+      }
+    }
+  }
+  return pagesPayload
+}
+
+exports.appendUnsubscribesCount = (pages, gotUnSubscribersCount) => {
+  let pagesPayload = pages
+  for (let i = 0; i < pagesPayload.length; i++) {
+    for (let j = 0; j < gotUnSubscribersCount.length; j++) {
+      if (pagesPayload[i]._id.toString() ===
+        gotUnSubscribersCount[j]._id.pageId.toString()) {
+        pagesPayload[i].unsubscribes = gotUnSubscribersCount[j].count
+      }
+    }
+  }
+  return pagesPayload
+}

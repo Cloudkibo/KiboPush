@@ -38,10 +38,49 @@ exports.connectedPages = function (req, res) {
     .then(count => {
       utility.callApi(`pages/aggregate`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch connected pages
       .then(pages => {
-        res.status(200).json({
-          status: 'success',
-          payload: {pages: pages, count: count.length > 0 ? count[0].count : 0}
-        })
+        let subscribeAggregate = [
+          {$match: {isSubscribed: true}},
+          {
+            $group: {
+              _id: {pageId: '$pageId'},
+              count: {$sum: 1}
+            }
+          }
+        ]
+        utility.callApi(`subscribers/aggregate`, 'post', subscribeAggregate, req.headers.authorization)
+          .then(subscribesCount => {
+            let unsubscribeAggregate = [
+              {$match: {isSubscribed: false}},
+              {
+                $group: {
+                  _id: {pageId: '$pageId'},
+                  count: {$sum: 1}
+                }
+              }
+            ]
+            utility.callApi(`subscribers/aggregate`, 'post', unsubscribeAggregate, req.headers.authorization)
+              .then(unsubscribesCount => {
+                let updatedPages = logicLayer.appendedSubUnsubPages(pages)
+                updatedPages = logicLayer.appendSubscribersCount(updatedPages, subscribesCount)
+                updatedPages = logicLayer.appendUnsubscribesCount(updatedPages, unsubscribesCount)
+                res.status(200).json({
+                  status: 'success',
+                  payload: {pages: updatedPages, count: count.length > 0 ? count[0].count : 0}
+                })
+              })
+              .catch(error => {
+                return res.status(500).json({
+                  status: 'failed',
+                  payload: `Failed to fetch unsubscribes ${JSON.stringify(error)}`
+                })
+              })
+          })
+          .catch(error => {
+            return res.status(500).json({
+              status: 'failed',
+              payload: `Failed to fetch subscribes ${JSON.stringify(error)}`
+            })
+          })
       })
       .catch(error => {
         return res.status(500).json({
