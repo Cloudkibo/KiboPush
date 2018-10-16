@@ -61,6 +61,7 @@ exports.connectedPages = function (req, res) {
             ]
             utility.callApi(`subscribers/aggregate`, 'post', unsubscribeAggregate, req.headers.authorization)
               .then(unsubscribesCount => {
+                logger.serverLog(TAG, `pages ${util.inspect(pages)}`)
                 let updatedPages = logicLayer.appendedSubUnsubPages(pages)
                 logger.serverLog(TAG, `appendedSubUnsubPages ${util.inspect(updatedPages)}`)
                 updatedPages = logicLayer.appendSubscribersCount(updatedPages, subscribesCount)
