@@ -50,7 +50,7 @@ module.exports = function (app) {
   app.use('/api/tags', require('./api/v1/tags'))
   app.use('/api/notifications', require('./api/v1/notifications'))
   app.use('/api/sequenceMessaging', require('./api/v1/sequenceMessaging'))
-  app.use('/api/post', require('./api/v1/facebook_posts'))
+  app.use('/api/post', require('./api/v2/commentCapture'))
   app.use('/api/ip2country', require('./api/v1/ipcountry'))
   app.use('/webhooks/messenger', require('./webhook_subscriptions/messenger'))
   app.use('/webhooks/wordpress', require('./webhook_subscriptions/wordpress'))
