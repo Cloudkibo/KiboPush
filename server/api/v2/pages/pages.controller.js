@@ -307,9 +307,9 @@ exports.enable = function (req, res) {
 exports.disable = function (req, res) {
   utility.callApi(`pages/${req.body._id}`, 'put', {connected: false}, req.headers.authorization) // disconnect page
   .then(res => {
-    utility.callApi(`subscribers/${req.body._id}`, 'put', {isEnabledByPage: false}, req.headers.authorization) // update subscribers
+    utility.callApi(`subscribers/update`, 'put', {query: {pageId: req.body._id}, newPayload: {isEnabledByPage: false}, options: {multi: true}}, req.headers.authorization) // update subscribers
     .then(res => {
-      utility.callApi(`updateCompany/`, 'put', {
+      utility.callApi(`featureUsage/updateCompany`, 'put', {
         query: {companyId: req.body.companyId},
         newPayload: { $inc: { facebook_pages: -1 } }
       }, req.headers.authorization)
