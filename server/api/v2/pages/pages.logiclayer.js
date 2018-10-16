@@ -12,15 +12,13 @@ exports.removeDuplicates = function (pages) {
     if (!exists(pagesToSend, pages[i].pageId)) {
       if (connectedPages.map((cp) => cp.pageId).indexOf(pages[i].pageId) !== -1) {
         pages[i].connected = true
-        pagesToSend.push(pages[0])
+        pagesToSend.push(pages[i])
       } else {
-        pagesToSend.push(pages[0])
+        pagesToSend.push(pages[i])
       }
     }
-    if ((pages.length - 1) === i) {
-      return pagesToSend
-    }
   }
+  return pagesToSend
 }
 
 exports.getCriterias = function (body, companyUser) {
