@@ -407,9 +407,9 @@ exports.saveGreetingText = function (req, res) {
   const greetingText = req.body.greetingText
 
   utility.callApi(`pages/${pageId}/greetingText`, 'put', {greetingText: greetingText}, req.headers.authorization)
-  .then(res => {
+  .then(updatedGreetingText => {
     utility.callApi(`pages/${pageId}`, 'get', {}, req.headers.authorization)
-    .then(res => {
+    .then(gotPage => {
       if (res.status === 'success') {
         const pageToken = res.payload && res.payload.length && res.payload[0].accessToken
         if (pageToken) {

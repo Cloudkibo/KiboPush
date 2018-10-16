@@ -46,8 +46,6 @@ router.get('/isWelcomeMessageEnabled',
 
 router.post('/saveGreetingText',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('manage_pages'),
-  auth.doesRolePermitsThisAction('pagesPermission'),
   controller.saveGreetingText)
 
 module.exports = router
