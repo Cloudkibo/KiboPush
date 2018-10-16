@@ -7,6 +7,7 @@ const validationSchema = require('./validationSchema')
 const controller = require('./commentCapture.controller')
 
 router.get('/',
+  auth.isAuthenticated(),
   controller.index)
 
 router.get('/:id',
@@ -14,6 +15,7 @@ router.get('/:id',
   controller.viewPost)
 
 router.post('/create',
+  auth.isAuthenticated(),
   validate({body: validationSchema.postPayload}),
   controller.create)
 
