@@ -28,12 +28,10 @@ router.get('/otherPages',
 
 router.post('/enable',
   auth.isAuthenticated(),
-  validate({body: validationSchema.pagePayload}),
   controller.enable)
 
 router.post('/disable',
   auth.isAuthenticated(),
-  validate({body: validationSchema.pagePayload}),
   controller.disable)
 
 router.get('/createWelcomeMessage',
