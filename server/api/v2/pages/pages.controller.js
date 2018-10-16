@@ -412,41 +412,34 @@ exports.saveGreetingText = function (req, res) {
       .then(companyuser => {
         utility.callApi(`pages/query`, 'post', {pageId: pageId, companyId: companyuser.companyId}, req.headers.authorization)
         .then(gotPage => {
-          if (res.status === 'success') {
-            const pageToken = res.payload && res.payload.length && res.payload[0].accessToken
-            if (pageToken) {
-              const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`
-              var valueForMenu = {
-                'greeting': [
-                  {
-                    'locale': 'default',
-                    'text': greetingText
-                  }]
-              }
-
-              needle.request('post', requesturl, valueForMenu, {json: true},
-                function (err, resp) {
-                  if (!err) {
-                    return res.status(200).json({
-                      status: 'success',
-                      payload: 'Operation completed successfully!'
-                    })
-                  }
-                  if (err) {
-                    logger.serverLog(TAG,
-                      `Internal Server Error ${JSON.stringify(err)}`)
-                  }
-                })
-            } else {
-              return res.status(500).json({
-                status: 'failed',
-                payload: `Failed to find page access token to update greeting text message`
-              })
+          const pageToken = gotPage && gotPage[0].accessToken
+          if (pageToken) {
+            const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`
+            var valueForMenu = {
+              'greeting': [
+                {
+                  'locale': 'default',
+                  'text': greetingText
+                }]
             }
+
+            needle.request('post', requesturl, valueForMenu, {json: true},
+              function (err, resp) {
+                if (!err) {
+                  return res.status(200).json({
+                    status: 'success',
+                    payload: 'Operation completed successfully!'
+                  })
+                }
+                if (err) {
+                  logger.serverLog(TAG,
+                    `Internal Server Error ${JSON.stringify(err)}`)
+                }
+              })
           } else {
             return res.status(500).json({
               status: 'failed',
-              payload: `Failed to update greeting text message`
+              payload: `Failed to find page access token to update greeting text message`
             })
           }
         })
