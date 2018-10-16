@@ -10,7 +10,7 @@ router.get('/',
   auth.isAuthenticated(),
   controller.index)
 
-router.get('/connectedPages',
+router.get('/allConnectedPages',
   auth.isAuthenticated(),
   controller.connectedPages)
 
