@@ -42,7 +42,7 @@ router.post('/createWelcomeMessage',
 router.post('/isWelcomeMessageEnabled',
   auth.isAuthenticated(),
   validate({body: validationSchema.enableDisableWelcomeMessagePayload}),
-  controller.createWelcomeMessage)
+  controller.enableDisableWelcomeMessage)
 
 router.post('/saveGreetingText',
   auth.isAuthenticated(),
