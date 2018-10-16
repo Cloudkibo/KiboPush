@@ -455,3 +455,54 @@ exports.saveGreetingText = function (req, res) {
     })
   })
 }
+
+exports.addPages = function (req, res) {
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
+  .then(companyuser => {
+    utility.callApi(`pages/query`, 'post', {companyId: companyuser.companyId}, req.headers.authorization) // fetch all pages of company
+    .then(pages => {
+      let pagesToSend = logicLayer.removeDuplicates(pages)
+      return res.status(200).json({
+        status: 'success',
+        payload: pagesToSend
+      })
+    })
+    .catch(error => {
+      return res.status(500).json({
+        status: 'failed',
+        payload: `Failed to fetch pages ${JSON.stringify(error)}`
+      })
+    })
+  })
+  .catch(error => {
+    return res.status(500).json({
+      status: 'failed',
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
+    })
+  })
+}
+
+exports.otherPages = function (req, res) {
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
+  .then(companyuser => {
+    utility.callApi(`pages/query`, 'post', {companyId: companyuser.companyId, connected: false, userId: req.user._id}, req.headers.authorization) // fetch all pages of company
+    .then(pages => {
+      return res.status(200).json({
+        status: 'success',
+        payload: pages
+      })
+    })
+    .catch(error => {
+      return res.status(500).json({
+        status: 'failed',
+        payload: `Failed to fetch pages ${JSON.stringify(error)}`
+      })
+    })
+  })
+  .catch(error => {
+    return res.status(500).json({
+      status: 'failed',
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
+    })
+  })
+}

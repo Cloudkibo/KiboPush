@@ -18,6 +18,14 @@ router.post('/allPages',
   auth.isAuthenticated(),
   controller.allPages)
 
+router.post('/addpages',
+  auth.isAuthenticated(),
+  controller.addPages)
+
+router.post('/otherPages',
+  auth.isAuthenticated(),
+  controller.otherPages)
+
 router.post('/enable',
   auth.isAuthenticated(),
   validate({body: validationSchema.pagePayload}),
