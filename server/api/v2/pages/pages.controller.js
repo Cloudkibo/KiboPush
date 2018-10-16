@@ -202,9 +202,10 @@ exports.enable = function (req, res) {
                   if (pageConnected !== {}) {
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(res => {
-                      utility.callApi(`updateCompany/`, 'put', {
+                      utility.callApi(`featureUsage/updateCompany`, 'put', {
                         query: {companyId: req.body.companyId},
-                        newPayload: { $inc: { facebook_pages: 1 } }
+                        newPayload: { $inc: { facebook_pages: 1 } },
+                        options: {}
                       }, req.headers.authorization)
                       .then(updated => {
                       })
@@ -214,7 +215,7 @@ exports.enable = function (req, res) {
                           payload: `Failed to update company usage ${JSON.stringify(error)}`
                         })
                       })
-                      utility.callApi(`subscribers/${page._id}`, 'put', {isEnabledByPage: true}, req.headers.authorization) // update subscribers
+                      utility.callApi(`subscribers/query`, 'put', {query: {pageId: page._id}, newPayload: {isEnabledByPage: true}, options: {}}, req.headers.authorization) // update subscribers
                       .then(res => {
                         const options = {
                           url: `https://graph.facebook.com/v2.6/${page.pageId}/subscribed_apps?access_token=${page.accessToken}`,
