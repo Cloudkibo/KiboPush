@@ -8,20 +8,14 @@ const controller = require('./menu.controller')
 
 router.get('/',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('menu'),
-  auth.doesRolePermitsThisAction('menuPermission'),
   controller.index)
 
 router.get('/indexByPage/:id',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('menu'),
-  auth.doesRolePermitsThisAction('menuPermission'),
   controller.indexByPage)
 
 router.post('/create',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('menu'),
-  auth.doesRolePermitsThisAction('menuPermission'),
   validate({body: validationSchema.menuPayload}),
   controller.create)
 
