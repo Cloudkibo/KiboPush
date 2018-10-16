@@ -372,7 +372,7 @@ exports.disable = function (req, res) {
 
 exports.createWelcomeMessage = function (req, res) {
   utility.callApi(`pages/${req.body._id}`, 'put', {welcomeMessage: req.body.welcomeMessage}, req.headers.authorization)
-  .then(res => {
+  .then(updatedWelcomeMessage => {
     return res.status(200).json({
       status: 'success',
       payload: 'Welcome Message updated successfully!'
