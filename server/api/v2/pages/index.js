@@ -18,11 +18,11 @@ router.post('/allPages',
   auth.isAuthenticated(),
   controller.allPages)
 
-router.post('/addpages',
+router.get('/addpages',
   auth.isAuthenticated(),
   controller.addPages)
 
-router.post('/otherPages',
+router.get('/otherPages',
   auth.isAuthenticated(),
   controller.otherPages)
 
