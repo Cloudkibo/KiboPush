@@ -136,7 +136,7 @@ exports.editList = function (req, res) {
 exports.viewList = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
-    utility.callApi(`lists/${req.params.id}`)
+    utility.callApi(`lists/${req.params.id}`, 'get', {}, req.headers.authorization)
     .then(list => {
       if (list.initialList === true) {
         utility.callApi(`phone/query`, 'post', {
