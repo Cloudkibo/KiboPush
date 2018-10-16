@@ -95,6 +95,7 @@ export function addPages () {
 }
 
 export function removePage (page) {
+  console.log('page data: ', page)
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
       .then(res => {
