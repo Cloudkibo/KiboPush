@@ -77,22 +77,9 @@ function exists (list, content) {
 exports.appendSubUnsub = (pages) => {
   let pagesPayload = []
   for (let i = 0; i < pages.length; i++) {
-    pagesPayload.push({
-      _id: pages[i]._id,
-      pageId: pages[i].pageId,
-      pageName: pages[i].pageName,
-      userId: pages[i].userId,
-      pagePic: pages[i].pagePic,
-      connected: pages[i].connected,
-      pageUserName: pages[i].pageUserName,
-      likes: pages[i].likes,
-      isWelcomeMessageEnabled: pages[i].isWelcomeMessageEnabled,
-      welcomeMessage: pages[i].welcomeMessage,
-      subscribers: 0,
-      unsubscribes: 0,
-      greetingText: pages[i].greetingText,
-      gotPageSubscriptionPermission: pages[i].gotPageSubscriptionPermission
-    })
+    pagesPayload.push(pages[i])
+    pagesPayload[i].subscribers = 0
+    pagesPayload[i].unsubscribes = 0
   }
   return pagesPayload
 }
