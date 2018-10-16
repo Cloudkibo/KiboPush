@@ -201,7 +201,7 @@ exports.enable = function (req, res) {
                 .then(pageConnected => {
                   if (pageConnected !== {}) {
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
-                    .then(res => {
+                    .then(connectPage => {
                       utility.callApi(`featureUsage/updateCompany`, 'put', {
                         query: {companyId: req.body.companyId},
                         newPayload: { $inc: { facebook_pages: 1 } },
