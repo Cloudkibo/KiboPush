@@ -79,7 +79,7 @@ export function enablePage (page) {
           // the page is already connected by some other user
           dispatch(userpageconnect(res.payload))
         } else {
-          dispatch(updateOtherPages(res.payload.pages))
+          dispatch(addPages())
           dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
         }
       })
