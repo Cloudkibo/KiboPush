@@ -215,7 +215,7 @@ exports.enable = function (req, res) {
                           payload: `Failed to update company usage ${JSON.stringify(error)}`
                         })
                       })
-                      utility.callApi(`subscribers/query`, 'put', {query: {pageId: page._id}, newPayload: {isEnabledByPage: true}, options: {}}, req.headers.authorization) // update subscribers
+                      utility.callApi(`subscribers/update`, 'put', {query: {pageId: page._id}, newPayload: {isEnabledByPage: true}, options: {}}, req.headers.authorization) // update subscribers
                       .then(res => {
                         const options = {
                           url: `https://graph.facebook.com/v2.6/${page.pageId}/subscribed_apps?access_token=${page.accessToken}`,
