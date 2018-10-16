@@ -10,7 +10,7 @@ router.get('/',
   auth.isAuthenticated(),
   controller.index)
 
-router.get('/allConnectedPages',
+router.post('/allConnectedPages',
   auth.isAuthenticated(),
   controller.connectedPages)
 
