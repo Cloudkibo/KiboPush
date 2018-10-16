@@ -17,7 +17,7 @@ exports.postPayload = {
     payload: {
       type: 'object'
     },
-    includeKeywords: {
+    includedKeywords: {
       type: 'array',
       items: {
         type: 'string',
