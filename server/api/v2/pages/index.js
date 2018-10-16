@@ -34,12 +34,12 @@ router.post('/disable',
   auth.isAuthenticated(),
   controller.disable)
 
-router.get('/createWelcomeMessage',
+router.post('/createWelcomeMessage',
   auth.isAuthenticated(),
   validate({body: validationSchema.welcomeMessagePayload}),
   controller.createWelcomeMessage)
 
-router.get('/isWelcomeMessageEnabled',
+router.post('/isWelcomeMessageEnabled',
   auth.isAuthenticated(),
   validate({body: validationSchema.enableDisableWelcomeMessagePayload}),
   controller.createWelcomeMessage)
