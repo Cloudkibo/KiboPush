@@ -3,7 +3,7 @@ const utility = require('../utility')
 const needle = require('needle')
 const logger = require('../../../components/logger')
 const TAG = 'api/v2/pages/pages.controller.js'
-// const util = require('util')
+const util = require('util')
 
 exports.index = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
@@ -224,10 +224,7 @@ exports.enable = function (req, res) {
                         }
                         needle.post(options.url, options, (error, response) => {
                           if (error) {
-                            return res.status(500).json({
-                              status: 'failed',
-                              payload: JSON.stringify(error)
-                            })
+                            logger.serverLog(TAG, `Failed to add app ${util.inspect(error)}`)
                           }
                           require('./../../../config/socketio').sendMessageToClient({
                             room_id: req.body.companyId,
@@ -332,10 +329,7 @@ exports.disable = function (req, res) {
       }
       needle.delete(options.url, options, (error, response) => {
         if (error) {
-          return res.status(500).json({
-            status: 'failed',
-            payload: JSON.stringify(error)
-          })
+          logger.serverLog(TAG, `Failed to remove app ${util.inspect(error)}`)
         }
         require('./../../../config/socketio').sendMessageToClient({
           room_id: req.body.companyId,
