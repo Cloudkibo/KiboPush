@@ -97,7 +97,10 @@ export function addPages () {
 export function removePage (page) {
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
-      .then(res => dispatch(updatePagesList(res.payload)))
+      .then(res => {
+        console.log('res.payload', res.payload)
+        dispatch(updatePagesList(res.payload))
+      })
   }
 }
 
@@ -105,6 +108,7 @@ export function removePageInAddPage (page) {
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
     .then(res => {
+      console.log('res.payload', res.payload)
       dispatch(updateOtherPages(res.payload))
       dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
     })
