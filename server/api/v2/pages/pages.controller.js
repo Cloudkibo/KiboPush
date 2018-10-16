@@ -3,7 +3,7 @@ const utility = require('../utility')
 const needle = require('needle')
 const logger = require('../../../components/logger')
 const TAG = 'api/v2/pages/pages.controller.js'
-const util = require('util')
+// const util = require('util')
 
 exports.index = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
@@ -216,7 +216,7 @@ exports.enable = function (req, res) {
                         })
                       })
                       utility.callApi(`subscribers/update`, 'put', {query: {pageId: page._id}, newPayload: {isEnabledByPage: true}, options: {}}, req.headers.authorization) // update subscribers
-                      .then(res => {
+                      .then(updatedSubscriber => {
                         const options = {
                           url: `https://graph.facebook.com/v2.6/${page.pageId}/subscribed_apps?access_token=${page.accessToken}`,
                           qs: {access_token: page.accessToken},
@@ -224,7 +224,10 @@ exports.enable = function (req, res) {
                         }
                         needle.post(options.url, options, (error, response) => {
                           if (error) {
-                            logger.serverLog(TAG, `Failed to add app ${util.inspect(error)}`)
+                            return res.status(500).json({
+                              status: 'failed',
+                              payload: JSON.stringify(error)
+                            })
                           }
                           require('./../../../config/socketio').sendMessageToClient({
                             room_id: req.body.companyId,
@@ -307,7 +310,7 @@ exports.disable = function (req, res) {
   .then(res => {
     logger.serverLog(TAG, 'updated page successfully')
     utility.callApi(`subscribers/update`, 'put', {query: {pageId: req.body._id}, newPayload: {isEnabledByPage: false}, options: {multi: true}}, req.headers.authorization) // update subscribers
-    .then(res => {
+    .then(updatedSubscriber => {
       utility.callApi(`featureUsage/updateCompany`, 'put', {
         query: {companyId: req.body.companyId},
         newPayload: { $inc: { facebook_pages: -1 } },
@@ -329,7 +332,10 @@ exports.disable = function (req, res) {
       }
       needle.delete(options.url, options, (error, response) => {
         if (error) {
-          logger.serverLog(TAG, `Failed to remove app ${util.inspect(error)}`)
+          return res.status(500).json({
+            status: 'failed',
+            payload: JSON.stringify(error)
+          })
         }
         require('./../../../config/socketio').sendMessageToClient({
           room_id: req.body.companyId,
