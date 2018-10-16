@@ -14,12 +14,16 @@ router.post('/allConnectedPages',
   auth.isAuthenticated(),
   controller.connectedPages)
 
-router.get('/enable',
+router.post('/allPages',
+  auth.isAuthenticated(),
+  controller.allPages)
+
+router.post('/enable',
   auth.isAuthenticated(),
   validate({body: validationSchema.pagePayload}),
   controller.enable)
 
-router.get('/disable',
+router.post('/disable',
   auth.isAuthenticated(),
   validate({body: validationSchema.pagePayload}),
   controller.disable)

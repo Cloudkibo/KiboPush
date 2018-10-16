@@ -31,6 +31,70 @@ exports.index = function (req, res) {
   })
 }
 
+exports.allPages = function (req, res) {
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
+  .then(companyuser => {
+    utility.callApi(`pages/query`, 'post', {connected: true, companyId: companyuser.companyId}, req.headers.authorization) // fetch connected pages
+    .then(pages => {
+      let subscribeAggregate = [
+        {$match: {isSubscribed: true}},
+        {
+          $group: {
+            _id: {pageId: '$pageId'},
+            count: {$sum: 1}
+          }
+        }
+      ]
+      utility.callApi(`subscribers/aggregate`, 'post', subscribeAggregate, req.headers.authorization)
+        .then(subscribesCount => {
+          let unsubscribeAggregate = [
+            {$match: {isSubscribed: false}},
+            {
+              $group: {
+                _id: {pageId: '$pageId'},
+                count: {$sum: 1}
+              }
+            }
+          ]
+          utility.callApi(`subscribers/aggregate`, 'post', unsubscribeAggregate, req.headers.authorization)
+            .then(unsubscribesCount => {
+              let updatedPages = logicLayer.appendSubUnsub(pages)
+              updatedPages = logicLayer.appendSubscribersCount(updatedPages, subscribesCount)
+              updatedPages = logicLayer.appendUnsubscribesCount(updatedPages, unsubscribesCount)
+              res.status(200).json({
+                status: 'success',
+                payload: updatedPages
+              })
+            })
+            .catch(error => {
+              return res.status(500).json({
+                status: 'failed',
+                payload: `Failed to fetch unsubscribes ${JSON.stringify(error)}`
+              })
+            })
+        })
+        .catch(error => {
+          return res.status(500).json({
+            status: 'failed',
+            payload: `Failed to fetch subscribes ${JSON.stringify(error)}`
+          })
+        })
+    })
+    .catch(error => {
+      return res.status(500).json({
+        status: 'failed',
+        payload: `Failed to fetch connected pages ${JSON.stringify(error)}`
+      })
+    })
+  })
+  .catch(error => {
+    return res.status(500).json({
+      status: 'failed',
+      payload: `Failed to fetch company user ${JSON.stringify(error)}`
+    })
+  })
+}
+
 exports.connectedPages = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
@@ -108,9 +172,9 @@ exports.connectedPages = function (req, res) {
 exports.enable = function (req, res) {
   utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
+    utility.callApi(`featureUsage/planQuery`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
+      utility.callApi(`featureUsage/companyQuery`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         if (planUsage.facebook_pages !== -1 && companyUsage.facebook_pages >= planUsage.facebook_pages) {
           return res.status(500).json({
