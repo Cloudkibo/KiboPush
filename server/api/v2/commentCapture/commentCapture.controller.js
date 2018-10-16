@@ -54,7 +54,7 @@ exports.create = function (req, res) {
       userId: req.user._id,
       reply: req.body.reply,
       payload: req.body.payload,
-      includedKeywords: req.body.includeKeywords,
+      includedKeywords: req.body.includedKeywords,
       excludedKeywords: req.body.excludedKeywords
     }, req.headers.authorization)
     .then(postCreated => {
