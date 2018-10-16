@@ -307,7 +307,7 @@ exports.enable = function (req, res) {
 
 exports.disable = function (req, res) {
   utility.callApi(`pages/${req.body._id}`, 'put', {connected: false}, req.headers.authorization) // disconnect page
-  .then(res => {
+  .then(disconnectPage => {
     logger.serverLog(TAG, 'updated page successfully')
     utility.callApi(`subscribers/update`, 'put', {query: {pageId: req.body._id}, newPayload: {isEnabledByPage: false}, options: {multi: true}}, req.headers.authorization) // update subscribers
     .then(updatedSubscriber => {
