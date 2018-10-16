@@ -3,7 +3,7 @@ const utility = require('../utility')
 const needle = require('needle')
 const logger = require('../../../components/logger')
 const TAG = 'api/v2/pages/pages.controller.js'
-const util = require('util')
+// const util = require('util')
 
 exports.index = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
@@ -61,13 +61,9 @@ exports.connectedPages = function (req, res) {
             ]
             utility.callApi(`subscribers/aggregate`, 'post', unsubscribeAggregate, req.headers.authorization)
               .then(unsubscribesCount => {
-                logger.serverLog(TAG, `pages ${util.inspect(pages)}`)
-                let updatedPages = logicLayer.appendedSubUnsubPages(pages)
-                logger.serverLog(TAG, `appendedSubUnsubPages ${util.inspect(updatedPages)}`)
+                let updatedPages = logicLayer.appendSubUnsub(pages)
                 updatedPages = logicLayer.appendSubscribersCount(updatedPages, subscribesCount)
-                logger.serverLog(TAG, `appendSubscribersCount ${util.inspect(updatedPages)}`)
                 updatedPages = logicLayer.appendUnsubscribesCount(updatedPages, unsubscribesCount)
-                logger.serverLog(TAG, `appendUnsubscribesCount ${util.inspect(updatedPages)}`)
                 res.status(200).json({
                   status: 'success',
                   payload: {pages: updatedPages, count: count.length > 0 ? count[0].count : 0}
