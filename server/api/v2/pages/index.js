@@ -14,7 +14,7 @@ router.post('/allConnectedPages',
   auth.isAuthenticated(),
   controller.connectedPages)
 
-router.get('/allPages',
+router.get('/allpages',
   auth.isAuthenticated(),
   controller.allPages)
 
