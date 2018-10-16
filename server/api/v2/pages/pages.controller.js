@@ -388,7 +388,7 @@ exports.createWelcomeMessage = function (req, res) {
 
 exports.enableDisableWelcomeMessage = function (req, res) {
   utility.callApi(`pages/${req.body._id}`, 'put', {isWelcomeMessageEnabled: req.body.isWelcomeMessageEnabled}, req.headers.authorization)
-  .then(res => {
+  .then(enabled => {
     return res.status(200).json({
       status: 'success',
       payload: 'Operation completed successfully!'
@@ -408,46 +408,55 @@ exports.saveGreetingText = function (req, res) {
 
   utility.callApi(`pages/${pageId}/greetingText`, 'put', {greetingText: greetingText}, req.headers.authorization)
   .then(updatedGreetingText => {
-    utility.callApi(`pages/${pageId}`, 'get', {}, req.headers.authorization)
-    .then(gotPage => {
-      if (res.status === 'success') {
-        const pageToken = res.payload && res.payload.length && res.payload[0].accessToken
-        if (pageToken) {
-          const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`
-          var valueForMenu = {
-            'greeting': [
-              {
-                'locale': 'default',
-                'text': greetingText
-              }]
-          }
+    utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
+      .then(companyuser => {
+        utility.callApi(`pages/query`, 'post', {pageId: pageId, companyId: companyuser.companyId}, req.headers.authorization)
+        .then(gotPage => {
+          if (res.status === 'success') {
+            const pageToken = res.payload && res.payload.length && res.payload[0].accessToken
+            if (pageToken) {
+              const requesturl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${pageToken}`
+              var valueForMenu = {
+                'greeting': [
+                  {
+                    'locale': 'default',
+                    'text': greetingText
+                  }]
+              }
 
-          needle.request('post', requesturl, valueForMenu, {json: true},
-            function (err, resp) {
-              if (!err) {
-                return res.status(200).json({
-                  status: 'success',
-                  payload: 'Operation completed successfully!'
+              needle.request('post', requesturl, valueForMenu, {json: true},
+                function (err, resp) {
+                  if (!err) {
+                    return res.status(200).json({
+                      status: 'success',
+                      payload: 'Operation completed successfully!'
+                    })
+                  }
+                  if (err) {
+                    logger.serverLog(TAG,
+                      `Internal Server Error ${JSON.stringify(err)}`)
+                  }
                 })
-              }
-              if (err) {
-                logger.serverLog(TAG,
-                  `Internal Server Error ${JSON.stringify(err)}`)
-              }
+            } else {
+              return res.status(500).json({
+                status: 'failed',
+                payload: `Failed to find page access token to update greeting text message`
+              })
+            }
+          } else {
+            return res.status(500).json({
+              status: 'failed',
+              payload: `Failed to update greeting text message`
             })
-        } else {
-          return res.status(500).json({
-            status: 'failed',
-            payload: `Failed to find page access token to update greeting text message`
-          })
-        }
-      } else {
+          }
+        })
+      })
+      .catch(error => {
         return res.status(500).json({
           status: 'failed',
-          payload: `Failed to update greeting text message`
+          payload: `Failed to fetch companyUser ${JSON.stringify(error)}`
         })
-      }
-    })
+      })
   })
   .catch(error => {
     return res.status(500).json({
