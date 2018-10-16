@@ -9,8 +9,6 @@ const multipartyMiddleware = multiparty()
 
 router.post('/upload',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('customer_matching'),
-  auth.doesRolePermitsThisAction('customerMatchingPermission'),
   multipartyMiddleware,
   validate({body: validationSchema.uploadPayload}),
   controller.upload)
@@ -22,8 +20,6 @@ router.post('/sendNumbers',
 
 router.get('/pendingSubscription/:name',
     auth.isAuthenticated(),
-    auth.doesPlanPermitsThisAction('customer_matching'),
-    auth.doesRolePermitsThisAction('customerMatchingPermission'),
     controller.pendingSubscription)
 
 module.exports = router
