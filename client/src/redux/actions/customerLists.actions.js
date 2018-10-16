@@ -126,6 +126,7 @@ export function loadListDetails (id) {
 }
 
 export function createSubList (list, msg, handleCreateSubList) {
+  console.log('createSubList data: ', list)
   return (dispatch) => {
     callApi('lists/createList', 'post', list)
       .then(res => {

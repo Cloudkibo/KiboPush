@@ -1,6 +1,9 @@
 const utility = require('../utility')
 const logicLayer = require('./lists.logiclayer')
 const dataLayer = require('./lists.datalayer')
+const logger = require('../../../components/logger')
+const TAG = 'api/lists/lists.controller.js'
+const util = require('util')
 
 exports.getAll = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
@@ -138,6 +141,7 @@ exports.viewList = function (req, res) {
   .then(companyUser => {
     utility.callApi(`lists/${req.params.id}`, 'get', {}, req.headers.authorization)
     .then(list => {
+      logger.serverLog(TAG, `found list ${util.inspect(list)}`)
       if (list.initialList === true) {
         utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
