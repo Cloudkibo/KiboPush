@@ -183,7 +183,7 @@ exports.viewList = function (req, res) {
           })
         })
       } else {
-        utility.callApi(`subscribers/find`, 'post', {
+        utility.callApi(`subscribers/query`, 'post', {
           isSubscribed: true, _id: {$in: list[0].content}}, req.headers.authorization)
         .then(subscribers => {
           return res.status(201)
@@ -253,7 +253,7 @@ exports.repliedPollSubscribers = function (req, res) {
       dataLayer.findPollResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscribers/find`, 'post', subscriberCriteria, req.headers.authorization)
+        utility.callApi(`subscribers/query`, 'post', subscriberCriteria, req.headers.authorization)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})
@@ -295,7 +295,7 @@ exports.repliedSurveySubscribers = function (req, res) {
       dataLayer.findSurveyResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscribers/find`, 'post', subscriberCriteria, req.headers.authorization)
+        utility.callApi(`subscribers/query`, 'post', subscriberCriteria, req.headers.authorization)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})
