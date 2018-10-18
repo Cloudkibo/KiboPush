@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import { uploadCustomerInfoFile } from '../../redux/actions/settings.actions'
 
 class ResetPassword extends React.Component {
   constructor (props, context) {
@@ -136,7 +137,7 @@ class ResetPassword extends React.Component {
       let index = temp[0].indexOf(this.state.mappedColumns[i].value)
       temp[0][index] = this.state.mappedColumns[i].key
     }
-    // call action
+    this.props.uploadCustomerInfoFile(this.state.fileData, this.msg)
   }
 
   render () {
@@ -269,6 +270,8 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators({
+    uploadCustomerInfoFile: uploadCustomerInfoFile
+  }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)
