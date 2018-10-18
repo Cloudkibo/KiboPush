@@ -10,34 +10,42 @@ router.get('/',
   auth.isAuthenticated(),
   controller.index)
 
-router.get('/connectedPages',
+router.post('/allConnectedPages',
   auth.isAuthenticated(),
   controller.connectedPages)
 
-router.get('/enable',
+router.get('/allpages',
   auth.isAuthenticated(),
-  validate({body: validationSchema.pagePayload}),
+  controller.allPages)
+
+router.get('/addpages',
+  auth.isAuthenticated(),
+  controller.addPages)
+
+router.get('/otherPages',
+  auth.isAuthenticated(),
+  controller.otherPages)
+
+router.post('/enable',
+  auth.isAuthenticated(),
   controller.enable)
 
-router.get('/disable',
+router.post('/disable',
   auth.isAuthenticated(),
-  validate({body: validationSchema.pagePayload}),
   controller.disable)
 
-router.get('/createWelcomeMessage',
+router.post('/createWelcomeMessage',
   auth.isAuthenticated(),
   validate({body: validationSchema.welcomeMessagePayload}),
   controller.createWelcomeMessage)
 
-router.get('/isWelcomeMessageEnabled',
+router.post('/isWelcomeMessageEnabled',
   auth.isAuthenticated(),
   validate({body: validationSchema.enableDisableWelcomeMessagePayload}),
-  controller.createWelcomeMessage)
+  controller.enableDisableWelcomeMessage)
 
 router.post('/saveGreetingText',
   auth.isAuthenticated(),
-  auth.doesPlanPermitsThisAction('manage_pages'),
-  auth.doesRolePermitsThisAction('pagesPermission'),
   controller.saveGreetingText)
 
 module.exports = router

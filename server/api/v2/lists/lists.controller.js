@@ -1,6 +1,9 @@
 const utility = require('../utility')
 const logicLayer = require('./lists.logiclayer')
 const dataLayer = require('./lists.datalayer')
+const logger = require('../../../components/logger')
+const TAG = 'api/lists/lists.controller.js'
+const util = require('util')
 
 exports.getAll = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
@@ -46,9 +49,9 @@ exports.getAll = function (req, res) {
 exports.createList = function (req, res) {
   utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
+    utility.callApi(`featureUsage/planQuery`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
+      utility.callApi(`featureUsage/companyQuery`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         if (planUsage.segmentation_lists !== -1 && companyUsage.segmentation_lists >= planUsage.segmentation_lists) {
           return res.status(500).json({
@@ -68,7 +71,7 @@ exports.createList = function (req, res) {
             parentListName: req.body.parentListName
           }, req.headers.authorization)
           .then(listCreated => {
-            utility.callApi(`updateCompany/`, 'put', {
+            utility.callApi(`featureUsage/updateCompany`, 'put', {
               query: {companyId: req.body.companyId},
               newPayload: { $inc: { segmentation_lists: 1 } }
             }, req.headers.authorization)
@@ -136,8 +139,9 @@ exports.editList = function (req, res) {
 exports.viewList = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyUser => {
-    utility.callApi(`lists/${req.params.id}`)
+    utility.callApi(`lists/${req.params.id}`, 'get', {}, req.headers.authorization)
     .then(list => {
+      logger.serverLog(TAG, `found list ${util.inspect(list)}`)
       if (list.initialList === true) {
         utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
@@ -183,7 +187,7 @@ exports.viewList = function (req, res) {
           })
         })
       } else {
-        utility.callApi(`subscribers/find`, 'post', {
+        utility.callApi(`subscribers/query`, 'post', {
           isSubscribed: true, _id: {$in: list[0].content}}, req.headers.authorization)
         .then(subscribers => {
           return res.status(201)
@@ -216,7 +220,7 @@ exports.deleteList = function (req, res) {
   .then(companyUser => {
     utility.callApi(`lists/${req.params.id}`, 'delete', {}, req.headers.authorization)
     .then(result => {
-      utility.callApi(`updateCompany/`, 'put', {
+      utility.callApi(`featureUsage/updateCompany`, 'put', {
         query: {companyId: companyUser.companyId},
         newPayload: { $inc: { segmentation_lists: -1 } }
       }, req.headers.authorization)
@@ -253,7 +257,7 @@ exports.repliedPollSubscribers = function (req, res) {
       dataLayer.findPollResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscribers/find`, 'post', subscriberCriteria, req.headers.authorization)
+        utility.callApi(`subscribers/query`, 'post', subscriberCriteria, req.headers.authorization)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})
@@ -295,7 +299,7 @@ exports.repliedSurveySubscribers = function (req, res) {
       dataLayer.findSurveyResponses(criteria)
       .then(responses => {
         let subscriberCriteria = logicLayer.respondedSubscribersCriteria(responses)
-        utility.callApi(`subscribers/find`, 'post', subscriberCriteria, req.headers.authorization)
+        utility.callApi(`subscribers/query`, 'post', subscriberCriteria, req.headers.authorization)
         .then(subscribers => {
           let subscribersPayload = logicLayer.preparePayload(subscribers, responses)
           return res.status(200).json({status: 'success', payload: subscribersPayload})

@@ -17,9 +17,9 @@ exports.upload = function (req, res) {
   }
   utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
+    utility.callApi(`featureUsage/planQuery`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
+      utility.callApi(`usage/companyQuery`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
         .then(companyUser => {
@@ -74,7 +74,7 @@ exports.upload = function (req, res) {
                           fileName: newFileName,
                           hasSubscribed: false }, req.headers.authorization)
                       .then(saved => {
-                        utility.callApi(`updateCompany/`, 'put', {
+                        utility.callApi(`featureUsage/updateCompany`, 'put', {
                           query: {companyId: companyUser.companyId},
                           newPayload: { $inc: { phone_invitation: 1 } }
                         }, req.headers.authorization)
@@ -247,9 +247,9 @@ exports.sendNumbers = function (req, res) {
   let abort = false
   utility.callApi(`companyprofile/query`, 'post', {ownerId: req.user._id}, req.headers.authorization)
   .then(companyProfile => {
-    utility.callApi(`usage/planGeneric`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
+    utility.callApi(`featureUsage/planQuery`, 'post', {planId: companyProfile.planId}, req.headers.authorization)
     .then(planUsage => {
-      utility.callApi(`usage/companyGeneric`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
+      utility.callApi(`featureUsage/companyQuery`, 'post', {companyId: companyProfile._id}, req.headers.authorization)
       .then(companyUsage => {
         if (planUsage.phone_invitation !== -1 && companyUsage.phone_invitation >= planUsage.phone_invitation) {
           return res.status(500).json({
@@ -294,7 +294,7 @@ exports.sendNumbers = function (req, res) {
                       fileName: 'Other',
                       hasSubscribed: false }, req.headers.authorization)
                     .then(saved => {
-                      utility.callApi(`updateCompany/`, 'put', {
+                      utility.callApi(`/featureUsage/updateCompany`, 'put', {
                         query: {companyId: req.body.companyId},
                         newPayload: { $inc: { phone_invitation: 1 } }
                       }, req.headers.authorization)

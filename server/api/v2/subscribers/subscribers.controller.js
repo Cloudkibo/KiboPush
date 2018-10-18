@@ -107,16 +107,17 @@ exports.getAll = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
-    logger.serverLog(TAG, `aggregate count criterias ${util.inspect(criterias.countCriteria[0].$match)}`)
     utility.callApi(`subscribers/aggregate`, 'post', criterias.countCriteria, req.headers.authorization) // fetch subscribers count
     .then(count => {
-      logger.serverLog(TAG, `aggregate fetch criterias ${util.inspect(criterias.fetchCriteria[0].$match)}`)
       utility.callApi(`subscribers/aggregate`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch subscribers
       .then(subscribers => {
         let subscriberIds = logicLayer.getSubscriberIds(subscribers)
+        logger.serverLog(TAG, `subscriberIds: ${util.inspect(subscriberIds)}`)
         dataLayer.findTaggedSubscribers({subscriberId: {$in: subscriberIds}})
         .then(tags => {
+          logger.serverLog(TAG, `tags: ${util.inspect(tags)}`)
           let subscribersPayload = logicLayer.getSusbscribersPayload(subscribers, tags)
+          logger.serverLog(TAG, `subscribersPayload: ${util.inspect(subscribersPayload)}`)
           return res.status(200).json({
             status: 'success',
             payload: {subscribers: subscribersPayload, count: count.length > 0 ? count[0].count : 0}
