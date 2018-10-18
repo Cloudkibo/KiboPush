@@ -23,6 +23,7 @@ import Webhook from './webhooks'
 import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import UploadCustomerInformation from './uploadCustomerInformation'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -80,6 +81,7 @@ class Settings extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
   }
   componentWillMount () {
     console.log('this.props.location', this.props.location)
@@ -181,6 +183,11 @@ class Settings extends React.Component {
   setGreetingMessage () {
     this.setState({
       openTab: 'greetingMessage'
+    })
+  }
+  setUploadCustomerFile () {
+    this.setState({
+      openTab: 'uploadCustomerInformation'
     })
   }
   setBilling () {
@@ -602,6 +609,12 @@ class Settings extends React.Component {
                         }
                       </li>
                     }
+                    <li className='m-nav__item'>
+                      <a className='m-nav__link' onClick={this.setUploadCustomerFile} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon la la-cloud-upload' />
+                        <span className='m-nav__link-text'>Upload Customer Information</span>
+                      </a>
+                    </li>
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
@@ -801,6 +814,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'chatWidget' &&
               <ChatWidget />
+            }
+            { this.state.openTab === 'uploadCustomerInformation' &&
+              <UploadCustomerInformation />
             }
             { this.state.openTab === 'billing' &&
               <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} />
