@@ -4,15 +4,20 @@ const logger = require('../../../components/logger')
 const TAG = 'api/v2/utility/index.js'
 const util = require('util')
 
-exports.callApi = (endpoint, method = 'get', body, token) => {
+exports.callApi = (endpoint, method = 'get', body, token, type = 'accounts') => {
   let headers = {
     'content-type': 'application/json',
     'Authorization': token
   }
-
+  let uri = ''
+  if (type === 'demoApp') {
+    uri = config.API_URL_DEMO_APP
+  } else {
+    uri = config.API_URL_ACCOUNTS
+  }
   let options = {
     method: method.toUpperCase(),
-    uri: `${config.API_URL_ACCOUNTS}/${endpoint}`,
+    uri: `${uri}/${endpoint}`,
     headers,
     body,
     json: true
