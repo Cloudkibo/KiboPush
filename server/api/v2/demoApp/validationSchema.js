@@ -11,3 +11,16 @@ exports.payload = {
     }
   ]
 }
+exports.appendSubscriberSchema = {
+  type: 'object',
+  properties: {
+    subscriberId: {
+      type: 'string',
+      required: true
+    },
+    customerId: {
+      type: 'string',
+      required: true
+    }
+  }
+}
