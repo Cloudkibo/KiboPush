@@ -11,6 +11,7 @@ exports.payload = {
     }
   ]
 }
+
 exports.appendSubscriberSchema = {
   type: 'object',
   properties: {
