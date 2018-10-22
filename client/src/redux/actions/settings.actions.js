@@ -409,3 +409,14 @@ export function cancelDeletion (msg, handleCancel) {
       })
   }
 }
+export function uploadCustomerInfoFile (data, msg) {
+  return (dispatch) => {
+    callApi('demoApp/uploadCustomerInfo', 'post', data)
+      .then(res => {
+        console.log('response from msg', res)
+        if (res.status === 'success') {
+          msg.success('File uploaded successfully!')
+        }
+      })
+  }
+}
