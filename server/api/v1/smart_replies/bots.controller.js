@@ -135,7 +135,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
 
 function sendMessenger (message, pageId, senderId, postbackPayload) {
   // Check if its text or video
-  message = (message.videoLink && message.videoLink !== 0) ? message.videoLink : message.answer
+  let answer = (message.videoLink && message.videoLink !== 0) ? message.videoLink : message.answer
   let isVideo = (message.videoLink && message.videoLink !== 0)
   Subscribers.findOne({ senderId: senderId }, (err, subscriber) => {
     if (err) {
@@ -151,7 +151,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
       messageData = utility.prepareSendAPIPayload(
         senderId,
         { 'componentType': 'text',
-          'text': message + '  (Bot)',
+          'text': answer + '  (Bot)',
           'buttons': [{ 'type': 'postback',
             'title': 'Talk to Agent',
             'payload': JSON.stringify(postbackPayload)
@@ -168,7 +168,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
           'attachment': {
             'type': 'video',
             'payload': {
-              'url': message,
+              'url': answer,
               'is_reusable': true
             }
           }
@@ -198,7 +198,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
                 `At send message live chat response ${JSON.stringify(
                   res.body.error)}`)
             } else {
-              logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
+              logger.serverLog(TAG, 'Response sent to Messenger: ' + answer)
             }
           }
         })
