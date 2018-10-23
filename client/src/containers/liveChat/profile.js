@@ -46,7 +46,8 @@ class Profile extends React.Component {
       Role: '',
       assignAdmin: false,
       assignAgent: false,
-      isAssigned: ''
+      isAssigned: '',
+      customerId: this.props.currentSession.customerId ? this.props.currentSession.customerId : ''
     }
     props.loadTags()
     this.toggleAdd = this.toggleAdd.bind(this)
@@ -67,6 +68,7 @@ class Profile extends React.Component {
     this.handleAgents = this.handleAgents.bind(this)
     this.unassignTeam = this.unassignTeam.bind(this)
     this.unassignAgent = this.unassignAgent.bind(this)
+    this.updateCustomerId = this.updateCustomerId.bind(this)
   }
 
   componentWillMount () {
@@ -85,6 +87,10 @@ class Profile extends React.Component {
         })
       }
     }
+  }
+
+  updateCustomerId (id) {
+    this.setState({customerId: id})
   }
 
   showAddTag () {
@@ -357,7 +363,14 @@ class Profile extends React.Component {
                 <a className='m-card-profile__email m-link'>
                   {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
                 </a>
-                <MapCustomer />
+                <br />
+                {
+                  this.state.customerId !== '' &&
+                  <a href={`http://demoapp.cloudkibo.com/${this.state.customerId}`} target='_blank' className='btn m-btn--pill    btn-primary'>
+                    <i className='fa fa-external-link' /> View Customer Details
+                  </a>
+                }
+                <MapCustomer updateCustomerId={this.updateCustomerId} currentSession={this.props.currentSession} msg={this.msg} />
                 {
                   (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                   <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>

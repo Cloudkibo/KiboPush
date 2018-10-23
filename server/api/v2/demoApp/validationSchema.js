@@ -13,15 +13,18 @@ exports.payload = {
 }
 
 exports.appendSubscriberSchema = {
-  type: 'object',
-  properties: {
-    subscriberId: {
-      type: 'string',
-      required: true
+  '$schema': 'http://json-schema.org/draft-04/schema#',
+  'type': 'object',
+  'properties': {
+    'customerId': {
+      'type': 'string'
     },
-    customerId: {
-      type: 'string',
-      required: true
+    'subscriberId': {
+      'type': 'string'
     }
-  }
+  },
+  'required': [
+    'customerId',
+    'subscriberId'
+  ]
 }

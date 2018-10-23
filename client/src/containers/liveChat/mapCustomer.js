@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'react-select'
-import { getCustomers } from '../../redux/actions/livechat.actions'
+import { getCustomers, appendSubscriber } from '../../redux/actions/livechat.actions'
 
 class MapCustomer extends React.Component {
   constructor (props, context) {
@@ -30,7 +30,7 @@ class MapCustomer extends React.Component {
     if (nextProps.customers) {
       let temp = []
       for (let i = 0; i < nextProps.customers.length; i++) {
-        temp.push({label: `${customers[i].firstName} ${customers[i].lastName}`, value: customer._id})
+        temp.push({label: `${nextProps.customers[i].firstName} ${nextProps.customers[i].lastName}`, value: nextProps.customers[i]._id})
       }
       this.setState({customers: temp})
     }
@@ -45,15 +45,18 @@ class MapCustomer extends React.Component {
   }
 
   attachCustomer () {
-    //
+    let data = {
+      subscriberId: this.props.currentSession.subscriber_id._id,
+      customerId: this.state.selectedCustomer.value
+    }
+    this.props.appendSubscriber(data, this.props.currentSession, this.props.msg)
+    this.props.updateCustomerId(this.state.selectedCustomer.value)
   }
 
   render () {
-    console.log('mapCustomer state: ', this.state)
-    console.log('customers: ', this.props.customers)
     return (
       <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
-        <div className='m-accordion__item'>
+        <div style={{overflow: 'visible'}} className='m-accordion__item'>
           {
             this.state.mappedCustomer
             ? <div className='m-accordion__item-head'>
@@ -104,7 +107,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getCustomers
+    getCustomers,
+    appendSubscriber
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MapCustomer)
