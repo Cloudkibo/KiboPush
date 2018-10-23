@@ -161,6 +161,8 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
         true)
     } else {
       messageData = {
+        'messaging_type': 'MESSAGE_TAG',
+        'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
         'recipient': {
           'id': senderId
         },
