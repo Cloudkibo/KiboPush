@@ -137,7 +137,7 @@ function redirectAuthUsers (nextState, replace) {
       })
     }
     replace({
-      pathname: '/subscribers',
+      pathname: '/dashboard',
       state: { nextPathname: nextState.location.pathname }
     })
   }
