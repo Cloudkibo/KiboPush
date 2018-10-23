@@ -116,7 +116,7 @@ function doesPlanPermitsThisAction (action) {
 
   return compose().use(function meetsRequirements (req, res, next) {
     console.log('user: ', JSON.stringify(req.user.plan))
-    apiCaller.callApi(`featureUsage/planQuery`, 'post', {planId: req.user.plan.plan_id._id}, req.headers.authorization)
+    apiCaller.callApi(`permissions_plan/query`, 'post', {plan_id: req.user.plan.plan_id._id}, req.headers.authorization)
       .then(plan => {
         plan = plan[0]
         if (!plan) {

@@ -11,4 +11,8 @@ router.post('/uploadCustomerInfo',
   validate({body: validationSchema.payload}),
   controller.uploadCustomerInfo)
 
+router.get('/getCustomers',
+  auth.isAuthenticated(),
+  controller.getCustomers)
+
 module.exports = router

@@ -23,3 +23,19 @@ exports.uploadCustomerInfo = function (req, res) {
       return res.status(500).json({status: 'failed', payload: `Failed to fetch company user ${JSON.stringify(err)}`})
     })
 }
+
+exports.getCustomers = function (req, res) {
+  utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization)
+    .then(companyUser => {
+      utility.callApi(`customers/company/${companyUser.companyId}`, 'get', {}, '', 'demoApp')
+        .then(customers => {
+          return res.status(200).json({status: 'success', payload: customers})
+        })
+        .catch(err => {
+          return res.status(500).json({status: 'failed', payload: `Failed to save data ${JSON.stringify(err)}`})
+        })
+    })
+    .catch(err => {
+      return res.status(500).json({status: 'failed', payload: `Failed to fetch company user ${JSON.stringify(err)}`})
+    })
+}
