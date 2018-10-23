@@ -39,3 +39,19 @@ exports.getCustomers = function (req, res) {
       return res.status(500).json({status: 'failed', payload: `Failed to fetch company user ${JSON.stringify(err)}`})
     })
 }
+
+exports.appendSubscriber = function (req, res) {
+  utility.callApi(`subscribers/${req.body.subscriberId}`, 'get', {}, req.headers.authorization)
+    .then(subscriber => {
+      utility.callApi(`customers/${req.body.customerId}`, 'put', {subscriber: subscriber}, '', 'demoApp')
+        .then(saved => {
+          return res.status(200).json({status: 'success', payload: 'subscriber added successfully'})
+        })
+        .catch(err => {
+          return res.status(500).json({status: 'failed', payload: `Failed to save subscriber ${JSON.stringify(err)}`})
+        })
+    })
+    .catch(err => {
+      return res.status(500).json({status: 'failed', payload: `Failed to fetch subscriber ${JSON.stringify(err)}`})
+    })
+}

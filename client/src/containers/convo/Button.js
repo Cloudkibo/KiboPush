@@ -156,9 +156,11 @@ class Button extends React.Component {
             <h6> + Add Button </h6>
           </div>
           <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'buttonTarget-' + this.props.button_id} toggle={this.handleToggle}>
-            <PopoverHeader><strong>Add Button</strong></PopoverHeader>
+            <PopoverHeader><strong>Add Button</strong>
+            </PopoverHeader>
             <PopoverBody>
               <div>
+                <div style={{marginBottom: '10px'}}>Add upto 3 buttons</div>
                 <h6>Button Title:</h6>
                 <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
