@@ -1,5 +1,5 @@
-// const logger = require('../../../components/logger')
-// const TAG = 'api/companyprofile/company.controller.js'
+const logger = require('../../../components/logger')
+const TAG = 'api/v2/companyprofile/company.controller.js'
 const utility = require('../utility')
 // const logicLayer = require('./commentCapture.logiclayer')
 const _ = require('lodash')
@@ -25,11 +25,15 @@ exports.invite = function (req, res) {
       .json({status: 'failed', description: 'Parameters are missing'})
   }
 
-  utility.callApi('/companyprofile/invite', 'post', {email: req.body.email, name: req.body.name}, req.headers.authorization)
+  utility.callApi('companyprofile/invite', 'post', {email: req.body.email, name: req.body.name}, req.headers.authorization)
   .then((result) => {
+    logger.serverLog(TAG, 'result from invite endpoint accounts')
+    logger.serverLog(TAG, result)
     res.status(200).json(result)
   })
   .catch((err) => {
+    logger.serverLog(TAG, 'result from invite endpoint accounts')
+    logger.serverLog(TAG, err)
     res.status(500).json(err)
   })
 }
