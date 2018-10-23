@@ -10,6 +10,7 @@ let FacebookSessionSchema = new Schema({
   subscriber_id: {type: Schema.ObjectId, ref: 'subscribers'},
   page_id: {type: Schema.ObjectId, ref: 'pages'},
   company_id: String,
+  customerId: String,
   status: {type: String, default: 'new'},
   is_assigned: {type: Boolean, default: false},
   assigned_to: Schema.Types.Mixed,

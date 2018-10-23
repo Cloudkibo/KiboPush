@@ -180,10 +180,8 @@ class Sidebar extends Component {
   }
 
   showLiveChatItem () {
-    if (this.props.user && this.props.automated_options) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
-          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+    if (this.props.user) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
@@ -439,8 +437,7 @@ class Sidebar extends Component {
   }
 
   showSmartRespliesItem () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-     this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
+    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/bots' className='m-menu__link'>

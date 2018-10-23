@@ -18,6 +18,6 @@ router.get('/getCustomers',
 router.post('/appendSubscriber',
   auth.isAuthenticated(),
   validate({body: validationSchema.appendSubscriberSchema}),
-  controller.uploadCustomerInfo)
+  controller.appendSubscriber)
 
 module.exports = router
