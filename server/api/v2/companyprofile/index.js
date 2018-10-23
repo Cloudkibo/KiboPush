@@ -10,4 +10,6 @@ router.get('/members',
   auth.isAuthenticated(),
   controller.members)
 
+router.post('/invite', auth.isAuthenticated(), controller.invite)
+
 module.exports = router
