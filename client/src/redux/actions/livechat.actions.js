@@ -5,6 +5,14 @@ import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 // import store from '../store/store'
 
+export function handleCustomers (customers) {
+  console.log('handleCustomers called: ', customers)
+  return {
+    type: ActionTypes.SHOW_CUSTOMERS,
+    data: customers
+  }
+}
+
 export function showChatSessions (sessions) {
   var sorted = sessions.sort(function (a, b) {
     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
@@ -342,6 +350,21 @@ export function fetchTeamAgents (id, handleAgents) {
       .then(res => {
         if (res.status === 'success') {
           handleAgents(res.payload)
+        }
+      })
+  }
+}
+
+export function getCustomers () {
+  console.log('getCustomers called')
+  return (dispatch) => {
+    callApi(`demoApp/getCustomers`)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log(res.payload)
+          handleCustomers(res.payload)
+        } else {
+          console.log('ERROR: ', res.payload)
         }
       })
   }
