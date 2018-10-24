@@ -230,7 +230,7 @@ function fbConnectDone (req, res) {
   console.log('req.cookies', req.cookies)
   console.log('req.headers', req.headers)
   console.log('req.headers.authorization', req.headers.authorization)
-  apiCaller.callApi(`user/update`, 'put', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, req.headers.authorization)
+  apiCaller.callApi(`user/update`, 'put', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, req.cookies.token)
     .then(user => {
       if (!user) {
         return res.status(401)
@@ -239,7 +239,7 @@ function fbConnectDone (req, res) {
       req.user = user
       // set permissionsRevoked to false to indicate that permissions were regranted
       if (user.permissionsRevoked) {
-        apiCaller.callApi('user/update', 'put', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, req.headers.authorization)
+        apiCaller.callApi('user/update', 'put', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, req.cookies.token)
           .then(resp => {
             logger.serverLog(TAG, `response for permissionsRevoked ${util.inspect(resp)}`)
           })
@@ -341,7 +341,7 @@ function fetchPages (url, user, req) {
           } else {
             // logger.serverLog(TAG, `Data by fb for page likes ${JSON.stringify(
             //   fanCount.body.fan_count)}`)
-            apiCaller.callApi(`companyUser/query`, 'post', {domain_email: user.domain_email}, req.headers.authorization)
+            apiCaller.callApi(`companyUser/query`, 'post', {domain_email: user.domain_email}, req.cookies.token)
               .then(companyUser => {
                 if (!companyUser) {
                   return logger.serverLog(TAG, {
@@ -349,7 +349,7 @@ function fetchPages (url, user, req) {
                     description: 'The user account does not belong to any company. Please contact support'
                   })
                 }
-                apiCaller.callApi(`page/query`, 'post', {pageId: item.id, userId: user._id, companyId: companyUser.companyId}, req.headers.authorization)
+                apiCaller.callApi(`page/query`, 'post', {pageId: item.id, userId: user._id, companyId: companyUser.companyId}, req.cookies.token)
                   .then(pages => {
                     let page = pages[0]
                     if (!page) {
@@ -387,7 +387,7 @@ function fetchPages (url, user, req) {
                         updatedPayload['pageUserName'] = fanCount.body.username
                       }
 
-                      apiCaller.callApi(`page/update`, 'put', {query: {_id: page._id}, newPayload: updatedPayload}, req.headers.authorization)
+                      apiCaller.callApi(`page/update`, 'put', {query: {_id: page._id}, newPayload: updatedPayload}, req.cookies.token)
                         .then(updated => {
                           logger.serverLog(TAG,
                           `page updated successfuly ${JSON.stringify(updated)}`)
