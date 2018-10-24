@@ -351,7 +351,7 @@ function fetchPages (url, user, req, token) {
                     description: 'The user account does not belong to any company. Please contact support'
                   })
                 }
-                apiCaller.callApi(`page/query`, 'post', {pageId: item.id, userId: user._id, companyId: companyUser.companyId}, token)
+                apiCaller.callApi(`pages/query`, 'post', {pageId: item.id, userId: user._id, companyId: companyUser.companyId}, token)
                   .then(pages => {
                     let page = pages[0]
                     if (!page) {
