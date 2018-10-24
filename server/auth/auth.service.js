@@ -70,7 +70,6 @@ function isAuthenticated () {
  */
 function isAuthorizedSuperUser () {
   return compose()
-    .use(isAuthenticated())
     .use(function meetsRequirements (req, res, next) {
       if (req.user.isSuperUser) {
         next()
@@ -234,28 +233,35 @@ function fbConnectDone (req, res) {
   let token = `Bearer ${req.cookies.token}`
   console.log('fbPayload', fbPayload)
   apiCaller.callApi(`user/update`, 'post', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, token)
-    .then(user => {
-      if (!user) {
-        return res.status(401)
-          .json({status: 'failed', description: 'Unauthorized'})
-      }
-      req.user = user
-      // set permissionsRevoked to false to indicate that permissions were regranted
-      if (user.permissionsRevoked) {
-        apiCaller.callApi('user/update', 'post', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, token)
-          .then(resp => {
-            logger.serverLog(TAG, `response for permissionsRevoked ${util.inspect(resp)}`)
-          })
-          .catch(err => {
-            return res.status(500)
-              .json({status: 'failed', description: `Internal Server Error: ${err}`})
-          })
-      }
-      fetchPages(`https://graph.facebook.com/v2.10/${
-        fbPayload.fbId}/accounts?access_token=${
-        fbPayload.fbToken}`, userid, req, token)
-      res.cookie('next', 'addPages', {expires: new Date(Date.now() + 60000)})
-      res.redirect('/')
+    .then(updated => {
+      apiCaller.callApi(`user/query`, 'post', {_id: userid})
+        .then(user => {
+          if (!user) {
+            return res.status(401)
+              .json({status: 'failed', description: 'Unauthorized'})
+          }
+          req.user = user[0]
+          // set permissionsRevoked to false to indicate that permissions were regranted
+          if (user.permissionsRevoked) {
+            apiCaller.callApi('user/update', 'post', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, token)
+              .then(resp => {
+                logger.serverLog(TAG, `response for permissionsRevoked ${util.inspect(resp)}`)
+              })
+              .catch(err => {
+                return res.status(500)
+                  .json({status: 'failed', description: `Internal Server Error: ${err}`})
+              })
+          }
+          fetchPages(`https://graph.facebook.com/v2.10/${
+            fbPayload.fbId}/accounts?access_token=${
+            fbPayload.fbToken}`, user[0], req, token)
+          res.cookie('next', 'addPages', {expires: new Date(Date.now() + 60000)})
+          res.redirect('/')
+        })
+      .catch(err => {
+        return res.status(500)
+          .json({status: 'failed', description: `Internal Server Error: ${err}`})
+      })
     })
     .catch(err => {
       return res.status(500)
@@ -317,6 +323,7 @@ function fetchPages (url, user, req, token) {
     json: true
 
   }
+  console.log('user', user)
   needle.get(url, options, (err, resp) => {
     if (err !== null) {
       logger.serverLog(TAG, 'error from graph api to get pages list data: ')
@@ -325,7 +332,6 @@ function fetchPages (url, user, req, token) {
     }
     // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
     // logger.serverLogF(TAG, JSON.stringify(resp.body))
-    console.log('userId in fetchPages', user)
     const data = resp.body.data
     const cursor = resp.body.paging
     if (data) {
@@ -352,7 +358,7 @@ function fetchPages (url, user, req, token) {
                     description: 'The user account does not belong to any company. Please contact support'
                   })
                 }
-                apiCaller.callApi(`pages/query`, 'post', {pageId: item.id, userId: user, companyId: companyUser.companyId}, token)
+                apiCaller.callApi(`pages/query`, 'post', {pageId: item.id, userId: user._id, companyId: companyUser.companyId}, token)
                   .then(pages => {
                     let page = pages[0]
                     if (!page) {
@@ -360,7 +366,7 @@ function fetchPages (url, user, req, token) {
                         pageId: item.id,
                         pageName: item.name,
                         accessToken: item.access_token,
-                        userId: user,
+                        userId: user._id,
                         companyId: companyUser.companyId,
                         likes: fanCount.body.fan_count,
                         pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
