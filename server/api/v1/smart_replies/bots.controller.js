@@ -163,13 +163,13 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
         true)
     } else {
       logger.serverLog(TAG, `video message`)
-      messageData = JSON.stringify({
+      messageData = {
         'messaging_type': 'MESSAGE_TAG',
         'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
-        'recipient': {
+        'recipient': JSON.stringify({
           'id': senderId
-        },
-        'message': {
+        }),
+        'message': JSON.stringify({
           'attachment': {
             'type': 'video',
             'payload': {
@@ -177,8 +177,8 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
               'is_reusable': true
             }
           }
-        }
-      })
+        })
+      }
     }
 
     Pages.findOne({ pageId: pageId }, (err, page) => {
