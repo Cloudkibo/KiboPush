@@ -115,7 +115,6 @@ function doesPlanPermitsThisAction (action) {
   if (!action) throw new Error('Action needs to be set')
 
   return compose().use(function meetsRequirements (req, res, next) {
-    console.log('user: ', JSON.stringify(req.user.plan))
     apiCaller.callApi(`permissions_plan/query`, 'post', {plan_id: req.user.plan.plan_id._id}, req.headers.authorization)
       .then(plan => {
         plan = plan[0]
@@ -227,11 +226,7 @@ function fbConnectDone (req, res) {
       description: 'Something went wrong, please try again.'
     })
   }
-  console.log('req.cookies', req.cookies)
-  console.log('req.headers', req.headers)
-  console.log('req.headers.authorization', req.headers.authorization)
   let token = `Bearer ${req.cookies.token}`
-  console.log('fbPayload', fbPayload)
   apiCaller.callApi(`user/update`, 'post', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, token)
     .then(updated => {
       apiCaller.callApi(`user/query`, 'post', {_id: userid}, token)
@@ -323,7 +318,6 @@ function fetchPages (url, user, req, token) {
     json: true
 
   }
-  console.log('user in fetchPages', user)
   needle.get(url, options, (err, resp) => {
     if (err !== null) {
       logger.serverLog(TAG, 'error from graph api to get pages list data: ')
@@ -377,7 +371,6 @@ function fetchPages (url, user, req, token) {
                           {pageUserName: fanCount.body.username})
                       }
                       // save model to MongoDB
-                      console.log('payloadPage', payloadPage)
                       apiCaller.callApi(`pages`, 'post', payloadPage, token)
                         .then(page => {
                           logger.serverLog(TAG,
