@@ -134,6 +134,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
 }
 
 function sendMessenger (message, pageId, senderId, postbackPayload) {
+  logger.serverLog(TAG, `sendMessenger message is ${JSON.stringify(message)}`)
   // Check if its text or video
   let answer = (message.videoLink && message.videoLink !== 0) ? message.videoLink : message.answer
   let isVideo = (message.videoLink && message.videoLink !== 0)
@@ -148,6 +149,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
     let messageData = {}
     if (!isVideo) {
+      logger.serverLog(TAG, `text message`)
       messageData = utility.prepareSendAPIPayload(
         senderId,
         { 'componentType': 'text',
@@ -160,6 +162,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
         subscriber.lastName,
         true)
     } else {
+      logger.serverLog(TAG, `video message`)
       messageData = {
         'messaging_type': 'MESSAGE_TAG',
         'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
