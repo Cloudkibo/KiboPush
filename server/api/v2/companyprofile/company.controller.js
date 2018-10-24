@@ -37,3 +37,13 @@ exports.invite = function (req, res) {
     res.status(500).json(err)
   })
 }
+
+exports.getAutomatedOptions = function (req, res) {
+  utility.callApi(`companyprofile/getAutomatedOptions`, 'get', {}, req.headers.authorization)
+    .then(payload => {
+      res.status(200).json({status: 'success', payload: payload})
+    })
+    .catch(err => {
+      res.status(500).json({status: 'failed', payload: `Failed to fetch automated options ${err}`})
+    })
+}
