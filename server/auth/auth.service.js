@@ -232,7 +232,7 @@ function fbConnectDone (req, res) {
   console.log('req.headers.authorization', req.headers.authorization)
   let token = `Bearer ${req.cookies.token}`
   console.log('fbPayload', fbPayload)
-  apiCaller.callApi(`user/update`, 'put', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, token)
+  apiCaller.callApi(`user/update`, 'post', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, token)
     .then(user => {
       if (!user) {
         return res.status(401)
@@ -241,7 +241,7 @@ function fbConnectDone (req, res) {
       req.user = user
       // set permissionsRevoked to false to indicate that permissions were regranted
       if (user.permissionsRevoked) {
-        apiCaller.callApi('user/update', 'put', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, token)
+        apiCaller.callApi('user/update', 'post', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, token)
           .then(resp => {
             logger.serverLog(TAG, `response for permissionsRevoked ${util.inspect(resp)}`)
           })
