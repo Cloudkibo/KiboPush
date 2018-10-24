@@ -234,7 +234,7 @@ function fbConnectDone (req, res) {
   console.log('fbPayload', fbPayload)
   apiCaller.callApi(`user/update`, 'post', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, token)
     .then(updated => {
-      apiCaller.callApi(`user/query`, 'post', {_id: userid})
+      apiCaller.callApi(`user/query`, 'post', {_id: userid}, token)
         .then(user => {
           if (!user) {
             return res.status(401)
@@ -323,7 +323,7 @@ function fetchPages (url, user, req, token) {
     json: true
 
   }
-  console.log('user', user)
+  console.log('user in fetchPages', user)
   needle.get(url, options, (err, resp) => {
     if (err !== null) {
       logger.serverLog(TAG, 'error from graph api to get pages list data: ')
