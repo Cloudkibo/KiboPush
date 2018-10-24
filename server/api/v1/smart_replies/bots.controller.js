@@ -163,7 +163,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
         true)
     } else {
       logger.serverLog(TAG, `video message`)
-      messageData = {
+      messageData = JSON.stringify({
         'messaging_type': 'MESSAGE_TAG',
         'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
         'recipient': {
@@ -178,7 +178,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
             }
           }
         }
-      }
+      })
     }
 
     Pages.findOne({ pageId: pageId }, (err, page) => {
