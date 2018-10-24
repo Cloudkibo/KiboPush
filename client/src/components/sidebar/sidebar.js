@@ -418,7 +418,7 @@ class Sidebar extends Component {
   }
 
   showTemplates () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.templates) {
+    if (this.props.user && this.state.templates) {
       if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser) && this.props.user.plan.broadcasts_templates) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
