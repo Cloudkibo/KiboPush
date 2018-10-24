@@ -20,11 +20,11 @@ class Sidebar extends Component {
       loading: true,
       ignore: true,
       dashboard: true,
-      broadcasts: true,
-      surveys: true,
-      polls: true,
-      livechat: true,
-      autoposting: true,
+      broadcasts: false,
+      surveys: false,
+      polls: false,
+      livechat: false,
+      autoposting: false,
       persistentMenu: true,
       pages: true,
       subscribers: true,
@@ -38,15 +38,23 @@ class Sidebar extends Component {
       welcomeMessage: true,
       segmentSubscribers: true,
       commentCapture: true,
-      smartReplies: true,
-      templates: true,
-      sequenceMessaging: true,
+      smartReplies: false,
+      templates: false,
+      sequenceMessaging: false,
       waitingResponse: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
   componentWillMount () {
+    let url = window.location.href
+    if (url === 'https://skibochat.cloudkibo.com/' || url === 'https://kibochat.cloudkibo.com') {
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true})
+    } else if (url === 'https://skiboengage.cloudkibo.com/' || url === 'https://kibochat.cloudkibo.com') {
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
+    } else if (url === 'https://staging.kibopush.com') {
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    }
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
   }
