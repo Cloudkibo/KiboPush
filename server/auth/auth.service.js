@@ -370,7 +370,7 @@ function fetchPages (url, user, req, token) {
                           {pageUserName: fanCount.body.username})
                       }
                       // save model to MongoDB
-                      apiCaller.callApi(`page`, 'post', payloadPage, req.headers.authorization)
+                      apiCaller.callApi(`pages`, 'post', payloadPage, req.headers.authorization)
                         .then(page => {
                           logger.serverLog(TAG,
                             `Page ${item.name} created with id ${page.pageId}`)
@@ -389,7 +389,7 @@ function fetchPages (url, user, req, token) {
                         updatedPayload['pageUserName'] = fanCount.body.username
                       }
 
-                      apiCaller.callApi(`page/update`, 'put', {query: {_id: page._id}, newPayload: updatedPayload}, token)
+                      apiCaller.callApi(`pages/update`, 'put', {query: {_id: page._id}, newPayload: updatedPayload}, token)
                         .then(updated => {
                           logger.serverLog(TAG,
                           `page updated successfuly ${JSON.stringify(updated)}`)
