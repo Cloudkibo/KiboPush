@@ -253,7 +253,7 @@ function fbConnectDone (req, res) {
       }
       fetchPages(`https://graph.facebook.com/v2.10/${
         fbPayload.fbId}/accounts?access_token=${
-        fbPayload.fbToken}`, user, req, token)
+        fbPayload.fbToken}`, userid, req, token)
       res.cookie('next', 'addPages', {expires: new Date(Date.now() + 60000)})
       res.redirect('/')
     })
@@ -352,7 +352,7 @@ function fetchPages (url, user, req, token) {
                     description: 'The user account does not belong to any company. Please contact support'
                   })
                 }
-                apiCaller.callApi(`pages/query`, 'post', {pageId: item.id, userId: user._id, companyId: companyUser.companyId}, token)
+                apiCaller.callApi(`pages/query`, 'post', {pageId: item.id, userId: user, companyId: companyUser.companyId}, token)
                   .then(pages => {
                     let page = pages[0]
                     if (!page) {
@@ -360,7 +360,7 @@ function fetchPages (url, user, req, token) {
                         pageId: item.id,
                         pageName: item.name,
                         accessToken: item.access_token,
-                        userId: user._id,
+                        userId: user,
                         companyId: companyUser.companyId,
                         likes: fanCount.body.fan_count,
                         pagePic: `https://graph.facebook.com/v2.10/${item.id}/picture`,
