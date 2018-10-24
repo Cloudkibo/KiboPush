@@ -227,6 +227,7 @@ function fbConnectDone (req, res) {
       description: 'Something went wrong, please try again.'
     })
   }
+  console.log('req.cookies', req.cookies)
   console.log('req.headers', req.headers)
   console.log('req.headers.authorization', req.headers.authorization)
   apiCaller.callApi(`user/update`, 'put', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, req.headers.authorization)
