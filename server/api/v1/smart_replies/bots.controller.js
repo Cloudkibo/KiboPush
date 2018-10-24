@@ -166,19 +166,19 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
       messageData = {
         'messaging_type': 'MESSAGE_TAG',
         'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
-        'recipient': {
+        'recipient': JSON.stringify({
           'id': senderId
-        },
-        'message': {
+        }),
+        'message': JSON.stringify({
           'attachment': {
             'type': 'video',
             'payload': {
-              'url': answer,
-              'is_reusable': true
+              'url': answer
             }
           }
-        }
+        })
       }
+      logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
     }
 
     Pages.findOne({ pageId: pageId }, (err, page) => {

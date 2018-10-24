@@ -47,10 +47,11 @@ class Sidebar extends Component {
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
   componentWillMount () {
-    let url = window.location.href
-    if (url === 'https://skibochat.cloudkibo.com/' || url === 'https://kibochat.cloudkibo.com') {
+    let url = window.location.hostname
+    console.log('url', url)
+    if (url === 'https://skibochat.cloudkibo.com' || url === 'https://kibochat.cloudkibo.com') {
       this.setState({livechat: true, smartReplies: true, waitingResponse: true})
-    } else if (url === 'https://skiboengage.cloudkibo.com/' || url === 'https://kibochat.cloudkibo.com') {
+    } else if (url === 'https://skiboengage.cloudkibo.com' || url === 'https://kiboengage.cloudkibo.com') {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
     } else if (url === 'https://staging.kibopush.com') {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})

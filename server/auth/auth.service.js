@@ -70,7 +70,6 @@ function isAuthenticated () {
  */
 function isAuthorizedSuperUser () {
   return compose()
-    .use(isAuthenticated())
     .use(function meetsRequirements (req, res, next) {
       if (req.user.isSuperUser) {
         next()
@@ -116,7 +115,6 @@ function doesPlanPermitsThisAction (action) {
   if (!action) throw new Error('Action needs to be set')
 
   return compose().use(function meetsRequirements (req, res, next) {
-    console.log('user: ', JSON.stringify(req.user.plan))
     apiCaller.callApi(`permissions_plan/query`, 'post', {plan_id: req.user.plan.plan_id._id}, req.headers.authorization)
       .then(plan => {
         plan = plan[0]
@@ -228,34 +226,37 @@ function fbConnectDone (req, res) {
       description: 'Something went wrong, please try again.'
     })
   }
-  console.log('req.cookies', req.cookies)
-  console.log('req.headers', req.headers)
-  console.log('req.headers.authorization', req.headers.authorization)
   let token = `Bearer ${req.cookies.token}`
-  console.log('fbPayload', fbPayload)
   apiCaller.callApi(`user/update`, 'post', {query: {_id: userid}, newPayload: {facebookInfo: fbPayload}, options: {}}, token)
-    .then(user => {
-      if (!user) {
-        return res.status(401)
-          .json({status: 'failed', description: 'Unauthorized'})
-      }
-      req.user = user
-      // set permissionsRevoked to false to indicate that permissions were regranted
-      if (user.permissionsRevoked) {
-        apiCaller.callApi('user/update', 'post', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, token)
-          .then(resp => {
-            logger.serverLog(TAG, `response for permissionsRevoked ${util.inspect(resp)}`)
-          })
-          .catch(err => {
-            return res.status(500)
-              .json({status: 'failed', description: `Internal Server Error: ${err}`})
-          })
-      }
-      fetchPages(`https://graph.facebook.com/v2.10/${
-        fbPayload.fbId}/accounts?access_token=${
-        fbPayload.fbToken}`, user, req, token)
-      res.cookie('next', 'addPages', {expires: new Date(Date.now() + 60000)})
-      res.redirect('/')
+    .then(updated => {
+      apiCaller.callApi(`user/query`, 'post', {_id: userid}, token)
+        .then(user => {
+          if (!user) {
+            return res.status(401)
+              .json({status: 'failed', description: 'Unauthorized'})
+          }
+          req.user = user[0]
+          // set permissionsRevoked to false to indicate that permissions were regranted
+          if (user.permissionsRevoked) {
+            apiCaller.callApi('user/update', 'post', {query: {'facebookInfo.fbId': user.facebookInfo.fbId}, newPayload: {permissionsRevoked: false}, options: {multi: true}}, token)
+              .then(resp => {
+                logger.serverLog(TAG, `response for permissionsRevoked ${util.inspect(resp)}`)
+              })
+              .catch(err => {
+                return res.status(500)
+                  .json({status: 'failed', description: `Internal Server Error: ${err}`})
+              })
+          }
+          fetchPages(`https://graph.facebook.com/v2.10/${
+            fbPayload.fbId}/accounts?access_token=${
+            fbPayload.fbToken}`, user[0], req, token)
+          res.cookie('next', 'addPages', {expires: new Date(Date.now() + 60000)})
+          res.redirect('/')
+        })
+      .catch(err => {
+        return res.status(500)
+          .json({status: 'failed', description: `Internal Server Error: ${err}`})
+      })
     })
     .catch(err => {
       return res.status(500)
@@ -325,7 +326,6 @@ function fetchPages (url, user, req, token) {
     }
     // logger.serverLog(TAG, 'resp from graph api to get pages list data: ')
     // logger.serverLogF(TAG, JSON.stringify(resp.body))
-
     const data = resp.body.data
     const cursor = resp.body.paging
     if (data) {
