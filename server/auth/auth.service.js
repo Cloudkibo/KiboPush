@@ -370,7 +370,7 @@ function fetchPages (url, user, req, token) {
                           {pageUserName: fanCount.body.username})
                       }
                       // save model to MongoDB
-                      apiCaller.callApi(`pages`, 'post', payloadPage, req.headers.authorization)
+                      apiCaller.callApi(`pages`, 'post', payloadPage, token)
                         .then(page => {
                           logger.serverLog(TAG,
                             `Page ${item.name} created with id ${page.pageId}`)
