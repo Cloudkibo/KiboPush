@@ -173,12 +173,12 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
           'attachment': {
             'type': 'video',
             'payload': {
-              'url': answer,
-              'is_reusable': true
+              'url': answer
             }
           }
         })
       }
+      logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
     }
 
     Pages.findOne({ pageId: pageId }, (err, page) => {
