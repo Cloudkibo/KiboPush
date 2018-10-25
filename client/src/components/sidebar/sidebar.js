@@ -50,10 +50,13 @@ class Sidebar extends Component {
     let url = window.location.hostname
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
-      this.setState({livechat: true, smartReplies: true, waitingResponse: true})
+      console.log('kibochat')
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false})
     } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
-      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
+      console.log('kiboEngage')
+      this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
     } else if (url === 'staging.kibopush.com') {
+      console.log('staging')
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
     }
     this.props.getuserdetails()
@@ -71,15 +74,6 @@ class Sidebar extends Component {
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
 
-    let url = window.location.hostname
-    console.log('url', url)
-    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
-      this.setState({livechat: true, smartReplies: true, waitingResponse: true})
-    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
-      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
-    } else if (url === 'staging.kibopush.com') {
-      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
-    }
    /* if (nextProps.user) {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
@@ -752,6 +746,8 @@ class Sidebar extends Component {
   }
 
   render () {
+    console.log('this.state', this.state)
+
     if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }
