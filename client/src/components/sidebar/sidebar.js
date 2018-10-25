@@ -49,11 +49,11 @@ class Sidebar extends Component {
   componentWillMount () {
     let url = window.location.hostname
     console.log('url', url)
-    if (url === 'https://skibochat.cloudkibo.com' || url === 'https://kibochat.cloudkibo.com') {
+    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       this.setState({livechat: true, smartReplies: true, waitingResponse: true})
-    } else if (url === 'https://skiboengage.cloudkibo.com' || url === 'https://kiboengage.cloudkibo.com') {
+    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
-    } else if (url === 'https://staging.kibopush.com') {
+    } else if (url === 'staging.kibopush.com') {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
     }
     this.props.getuserdetails()
@@ -70,7 +70,7 @@ class Sidebar extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
-    if (nextProps.user) {
+   /* if (nextProps.user) {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
         surveys: nextProps.user.uiMode.surveys,
@@ -89,7 +89,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }
+    }*/
   }
 
   showAbandonedCarts () {
