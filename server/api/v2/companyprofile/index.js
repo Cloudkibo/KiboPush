@@ -12,4 +12,8 @@ router.get('/members',
 
 router.post('/invite', auth.isAuthenticated(), controller.invite)
 
+router.get('/getAutomatedOptions',
+  auth.isAuthenticated(),
+  controller.getAutomatedOptions)
+
 module.exports = router
