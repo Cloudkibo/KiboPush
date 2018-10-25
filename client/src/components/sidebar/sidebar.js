@@ -49,11 +49,11 @@ class Sidebar extends Component {
   componentWillMount () {
     let url = window.location.hostname
     console.log('url', url)
-    if (url === 'https://skibochat.cloudkibo.com' || url === 'https://kibochat.cloudkibo.com') {
+    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       this.setState({livechat: true, smartReplies: true, waitingResponse: true})
-    } else if (url === 'https://skiboengage.cloudkibo.com' || url === 'https://kiboengage.cloudkibo.com') {
+    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
-    } else if (url === 'https://staging.kibopush.com') {
+    } else if (url === 'staging.kibopush.com') {
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
     }
     this.props.getuserdetails()
