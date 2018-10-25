@@ -70,7 +70,7 @@ class Sidebar extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
-    if (nextProps.user) {
+   /* if (nextProps.user) {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
         surveys: nextProps.user.uiMode.surveys,
@@ -89,7 +89,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }
+    }*/
   }
 
   showAbandonedCarts () {
