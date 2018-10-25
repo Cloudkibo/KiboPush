@@ -267,10 +267,12 @@ class Convo extends React.Component {
   }
 
   doesPageHaveSubscribers (pageId) {
+    console.log('doesPageHaveSubscribers pageId', pageId)
     if (this.props.pages && pageId) {
       let result = this.props.pages.find(page => {
         return page._id === pageId
       })
+    console.log('doesPageHaveSubscribers result', result)
       if (result) {
         return result.subscribers > 0
       }
