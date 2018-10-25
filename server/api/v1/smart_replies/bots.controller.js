@@ -15,8 +15,9 @@ const WaitingSubscribers = require('./waitingSubscribers.model')
 const UnAnsweredQuestions = require('./unansweredQuestions.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
-let utility = require('./../broadcasts/broadcasts.utility')
+const BroadcastUtility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
+const utility = require('./utility')
 
 function transformPayload (payload) {
   var transformed = []
@@ -147,66 +148,51 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
       return
     }
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
-    let messageData = {}
-    if (!isVideo) {
-      logger.serverLog(TAG, `text message`)
-      messageData = utility.prepareSendAPIPayload(
-        senderId,
-        { 'componentType': 'text',
-          'text': answer + '  (Bot)',
-          'buttons': [{ 'type': 'postback',
-            'title': 'Talk to Agent',
-            'payload': JSON.stringify(postbackPayload)
-          }] },
-        subscriber.firstName,
-        subscriber.lastName,
-        true)
-    } else {
-      logger.serverLog(TAG, `video message`)
-      messageData = {
-        'messaging_type': 'MESSAGE_TAG',
-        'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
-        'recipient': JSON.stringify({
-          'id': senderId
-        }),
-        'message': JSON.stringify({
-          'attachment': {
-            'type': 'video',
-            'payload': {
-              'url': answer
-            }
-          }
-        })
-      }
-      logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
-    }
 
     Pages.findOne({ pageId: pageId }, (err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      request(
-        {
-          'method': 'POST',
-          'json': true,
-          'formData': messageData,
-          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-            page.accessToken
-        },
-        (err, res) => {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At send message live chat ${JSON.stringify(err)}`)
-          } else {
-            if (res.statusCode !== 200) {
-              logger.serverLog(TAG,
-                `At send message live chat response ${JSON.stringify(
-                  res.body.error)}`)
-            } else {
-              logger.serverLog(TAG, 'Response sent to Messenger: ' + answer)
-            }
+      let messageData = {}
+      if (!isVideo) {
+        logger.serverLog(TAG, `text message`)
+        messageData = BroadcastUtility.prepareSendAPIPayload(
+          senderId,
+          { 'componentType': 'text',
+            'text': answer + '  (Bot)',
+            'buttons': [{ 'type': 'postback',
+              'title': 'Talk to Agent',
+              'payload': JSON.stringify(postbackPayload)
+            }] },
+          subscriber.firstName,
+          subscriber.lastName,
+          true)
+        utility.sendMessage(messageData, page.accessToken)
+      } else {
+        logger.serverLog(TAG, `video message`)
+        utility.uploadToFacebook(answer, page.accessToken)
+        .then(attachmentId => {
+          messageData = {
+            'messaging_type': 'MESSAGE_TAG',
+            'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
+            'recipient': JSON.stringify({
+              'id': senderId
+            }),
+            'message': JSON.stringify({
+              'attachment': {
+                'type': 'video',
+                'payload': {
+                  'attachment_id': attachmentId
+                }
+              }
+            })
           }
+          utility.sendMessage(messageData, page.accessToken)
         })
+        .catch(err => {
+          logger.serverLog(TAG, `Failed to upload video on facebook ${JSON.stringify(err)}`)
+        })
+      }
     })
   })
 }
