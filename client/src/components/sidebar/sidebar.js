@@ -70,6 +70,16 @@ class Sidebar extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
+
+    let url = window.location.hostname
+    console.log('url', url)
+    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true})
+    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true})
+    } else if (url === 'staging.kibopush.com') {
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    }
    /* if (nextProps.user) {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
