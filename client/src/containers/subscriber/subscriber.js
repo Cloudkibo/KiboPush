@@ -67,7 +67,7 @@ class Subscriber extends React.Component {
     props.allLocales()
     props.fetchAllSequence()
     props.loadMyPagesList()
-    props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
+    // props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
     props.loadTags()
     this.handleAdd = this.handleAdd.bind(this)
     this.handleAddIndividual = this.handleAddIndividual.bind(this)
@@ -382,6 +382,7 @@ class Subscriber extends React.Component {
     this.setState({ removeTag: value })
   }
   componentDidMount () {
+    console.log('component did mount called')
     document.title = 'KiboPush | Subscribers'
     let filterStatusValue = ''
     if (this.props.location.state) {
@@ -395,6 +396,8 @@ class Subscriber extends React.Component {
         this.setState({statusValue: 'unsubscribed'})
       }
       this.handleFilterByPageInitial(pageId, filterStatusValue)
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}})
     }
   }
   componentDidUpdate () {
