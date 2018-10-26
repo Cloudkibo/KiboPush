@@ -37,7 +37,7 @@ exports.getCriterias = function (body, companyUser) {
       isEnabledByPage: true
     }
   } else {
-    search = new RegExp('.*' + body.filter_criteria.search_value + '.*', 'i')
+    search = new RegExp('.*' + body.filter_criteria.search_value + '.*', 'i').toString()
     findCriteria = {
       companyId: mongoose.Types.ObjectId(companyUser.companyId),
       isEnabledByPage: true,
