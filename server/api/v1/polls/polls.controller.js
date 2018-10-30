@@ -787,7 +787,7 @@ exports.send = function (req, res) {
                                                       pollId: req.body._id,
                                                       seen: false
                                                     })
-        
+
                                                     pollBroadcast.save((err2, pollCreated) => {
                                                       if (err2) {
                                                         logger.serverLog(TAG, {
@@ -807,12 +807,12 @@ exports.send = function (req, res) {
                                                              user_id: req.user._id,
                                                             user_name: req.user.name,
                                                            company_id: companyUser.companyId
-                                                           
+
                                                           }
                                                         })
-                                                 
+
                                                       }
-                                                    }) 
+                                                    })
 
                                                   })
                                       } else {
@@ -915,6 +915,7 @@ exports.send = function (req, res) {
                                         }
                                         if (isLastMessage) {
                                           logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
+                                          console.log('inside poll send,', JSON.stringify(data), resp.body.access_token)
                                           needle.post(
                                             `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                             data, (err, resp) => {
@@ -940,7 +941,7 @@ exports.send = function (req, res) {
                                                       err2
                                                     })
                                                   } else {
-  
+
                                                    //return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     // return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     require('./../../../config/socketio').sendMessageToClient({
@@ -951,9 +952,9 @@ exports.send = function (req, res) {
                                                             user_id: req.user._id,
                                                             user_name: req.user.name,
                                                            company_id: companyUser.companyId
-                                                       
+
                                                       }
-                                                    })   
+                                                    })
                                                   }
                                                   // not using now
                                                   // Sessions.findOne({
@@ -991,7 +992,7 @@ exports.send = function (req, res) {
                                                   //       'Chat message saved for poll sent')
                                                   //   })
                                                   // })
-                                                })       
+                                                })
                                             })
                                         } else {
                                           logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
@@ -1029,8 +1030,8 @@ exports.send = function (req, res) {
                 }
                 return res.status(200)
                .json({status: 'success', payload: 'Polls sent successfully.'})
-              }) 
-              
+              })
+
             })
           })
         })
