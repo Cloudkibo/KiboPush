@@ -266,6 +266,20 @@ class Convo extends React.Component {
     }
   }
 
+  doesPageHaveSubscribers (pageId) {
+    console.log('doesPageHaveSubscribers pageId', pageId[0])
+    if (this.props.pages && pageId[0]) {
+      let result = this.props.pages.find(page => {
+        return page._id === pageId[0]
+      })
+      console.log('doesPageHaveSubscribers result', result)
+      if (result) {
+        return result.subscribers > 0
+      }
+    }
+    return false
+  }
+
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -374,14 +388,14 @@ class Convo extends React.Component {
                               </div>
                               <br />
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button style={{color: 'white'}} disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onClick={this.gotoCreate} className='btn btn-primary'>
+                                <button style={{color: 'white'}} disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoCreate} className='btn btn-primary'>
                                   Create New Broadcast
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
                                 {
                                   this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <button disabled={this.props.subscribers && this.props.subscribers.length === 0 ? true : null} onCLick={this.gotoTemplates} className='btn btn-primary'>
+                                  ? <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onCLick={this.gotoTemplates} className='btn btn-primary'>
                                     Use Template
                                   </button>
                                   : <button onClick={this.showProDialog} className='btn btn-primary'>

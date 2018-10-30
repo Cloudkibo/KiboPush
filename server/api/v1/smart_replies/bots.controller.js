@@ -15,7 +15,7 @@ const WaitingSubscribers = require('./waitingSubscribers.model')
 const UnAnsweredQuestions = require('./unansweredQuestions.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
-let utility = require('./../broadcasts/broadcasts.utility')
+const utility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
 
 function transformPayload (payload) {
@@ -164,21 +164,24 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
     } else {
       logger.serverLog(TAG, `video message`)
       messageData = {
-        'messaging_type': 'MESSAGE_TAG',
-        'tag': 'NON_PROMOTIONAL_SUBSCRIPTION',
-        'recipient': {
+        'recipient': JSON.stringify({
           'id': senderId
-        },
-        'message': {
+        }),
+        'message': JSON.stringify({
           'attachment': {
-            'type': 'video',
+            'type': 'template',
             'payload': {
-              'url': answer,
-              'is_reusable': true
+              'template_type': 'open_graph',
+              'elements': [
+                {
+                  'url': answer
+                }
+              ]
             }
           }
-        }
+        })
       }
+      logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
     }
 
     Pages.findOne({ pageId: pageId }, (err, page) => {
