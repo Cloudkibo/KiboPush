@@ -15,7 +15,8 @@ const botSchema = new Schema({
       questions: [String],
       answer: String,
       intent_name: String,
-      videoLink: String
+      videoLink: String,
+      attachment_id: String
     }],
   hitCount: Number,
   missCount: Number,
