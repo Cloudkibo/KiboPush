@@ -925,6 +925,7 @@ exports.send = function (req, res) {
                                                   `Error occured at subscriber :${JSON.stringify(
                                                     subscribers[j])}`)
                                               }
+                                              console.log('sent poll response', resp.body)
                                               let pollBroadcast = new PollPage({
                                                 pageId: pages[z].pageId,
                                                 userId: req.user._id,
