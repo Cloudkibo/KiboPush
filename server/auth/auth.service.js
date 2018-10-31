@@ -58,9 +58,13 @@ function isAuthenticated () {
           }
         })
         .catch(err => {
-          logger.serverLog(TAG, util.inspect(err.statusCode))
-          return res.status(500)
-            .json({status: 'failed', description: `Internal Server Error: ${err}`})
+          if (err.statusCode && err.statusCode === 401) {
+            return res.status(401)
+              .json({status: 'Unauthorized', description: 'jwt expired'})
+          } else {
+            return res.status(500)
+              .json({status: 'failed', description: `Internal Server Error: ${err}`})
+          }
         })
       }
     })
