@@ -84,7 +84,11 @@ export function getuserdetails () {
   return (dispatch) => {
     callApi('users').then(res => {
       console.log('response from getuserdetails', res)
-      dispatch(showuserdetails(res.payload))
+      if (res.status === 'Unauthorized') {
+        auth.logout()
+      } else {
+        dispatch(showuserdetails(res.payload))
+      }
     })
   }
 }
