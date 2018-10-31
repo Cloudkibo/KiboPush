@@ -58,6 +58,7 @@ function isAuthenticated () {
           }
         })
         .catch(err => {
+          logger.serverLog(TAG, util.inspect(err))
           return res.status(500)
             .json({status: 'failed', description: `Internal Server Error: ${err}`})
         })
