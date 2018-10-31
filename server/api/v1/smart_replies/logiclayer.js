@@ -15,20 +15,28 @@ const dir = path.resolve(__dirname, '../../../../smart-replies-files/')
 const downloadVideo = (data) => {
   return new Promise((resolve, reject) => {
     let video = youtubedl(data.url, ['--format=18'], { cwd: __dirname })
+    let size = ''
 
     video.on('info', (info) => {
       logger.serverLog(TAG, 'Download started')
       logger.serverLog(TAG, 'filename: ' + info.filename)
       logger.serverLog(TAG, 'size: ' + info.size)
+      size = info.size
     })
 
-    let stream = video.pipe(fs.createWriteStream(`${dir}bot-video.mp4`))
-    stream.on('error', (error) => {
-      stream.end()
-      reject(util.inspect(error))
-    })
-    stream.on('finish', () => {
-      resolve(`${dir}bot-video.mp4`)
+    video.on('complete', (info) => {
+      if (size < 25000000) {
+        let stream = video.pipe(fs.createWriteStream(`${dir}bot-video.mp4`))
+        stream.on('error', (error) => {
+          stream.end()
+          reject(util.inspect(error))
+        })
+        stream.on('finish', () => {
+          resolve(`${dir}bot-video.mp4`)
+        })
+      } else {
+        resolve('ERR_LIMIT_REACHED')
+      }
     })
   })
 }
@@ -180,20 +188,33 @@ exports.updatePayloadForVideo = (botId, payload) => {
           let fetchedPage = fetchPage(botId)
           // download youtube video
           let downloadedVideo = fetchedPage.then(result => {
-            data.userAccessToken = result.userId.facebookInfo
-            data.pageId = result.pageId
-            downloadVideo(data)
+            if (result === 'ERR_LIMIT_REACHED') {
+              payload[i].videoLink = payload[i].answer
+            } else {
+              data.userAccessToken = result.userId.facebookInfo
+              data.pageId = result.pageId
+              downloadVideo(data)
+            }
+          })
+          .catch(err => {
+            reject(util.inspect(err))
           })
           // upload on facebook
           let uploadedVideo = downloadedVideo.then(path => {
             data.serverPath = path
             uploadVideo(data)
           })
+          .catch(err => {
+            reject(util.inspect(err))
+          })
           // delete video
           uploadedVideo.then(attachmentId => {
             data.attachment_id = attachmentId
             payload[i].attachment_id = attachmentId
             deleteVideo(data)
+          })
+          .catch(err => {
+            reject(util.inspect(err))
           })
         } else {
           payload[i].videoLink = payload[i].answer
