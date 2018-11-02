@@ -172,6 +172,7 @@ exports.getMessageData = (data) => {
 }
 
 exports.updatePayloadForVideo = (botId, payload) => {
+  logger.serverLog(TAG, `payload receieved ${JSON.stringify(payload)}`)
   return new Promise((resolve, reject) => {
     /* eslint-disable no-useless-escape */
     let videoRegex = new RegExp(`^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$`, 'g')
@@ -221,6 +222,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
         }
       }
       if (i === (payload.length - 1)) {
+        logger.serverLog(TAG, `sending updated payload ${JSON.stringify(payload)}`)
         resolve(payload)
       }
     }
