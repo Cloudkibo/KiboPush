@@ -413,7 +413,7 @@ exports.edit = function (req, res) {
     })
   })
   .catch(err => {
-    return res.status(200).json({
+    return res.status(500).json({
       status: 'failed',
       payload: `Failed to update bot ${JSON.stringify(err)}`
     })

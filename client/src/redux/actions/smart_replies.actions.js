@@ -124,6 +124,7 @@ export function editBot (data, msg) {
     console.log('Creating Bot', data)
     callApi('bots/edit', 'post', data)
       .then(res => {
+        console.log('response from server: ', res)
         if (res.status === 'success') {
           dispatch(loadBotsList())
         } else {
