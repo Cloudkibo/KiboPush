@@ -175,7 +175,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
   logger.serverLog(TAG, `payload receieved ${JSON.stringify(payload)}`)
   return new Promise((resolve, reject) => {
     /* eslint-disable no-useless-escape */
-    let videoRegex = new RegExp(`^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$`, 'g')
+    let videoRegex = new RegExp(`^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}`, 'g')
     let YouTubeRegex = new RegExp('^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+', 'g')
     /* eslint-enable no-useless-escape */
     for (let i = 0; i < payload.length; i++) {
