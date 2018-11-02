@@ -389,6 +389,7 @@ exports.edit = function (req, res) {
   let botId = req.body.botId
   LogicLayer.updatePayloadForVideo(botId, payload)
   .then(updatedPayload => {
+    logger.serverLog(TAG, `updatedPayload ${JSON.stringify(updatedPayload)}`)
     Bots.update({ _id: botId }, { payload: updatedPayload }, (err, affected) => {
       if (err) {
         return logger.serverLog(TAG, 'Error Occured In editing the bot')
