@@ -170,7 +170,7 @@ export function deleteList (id, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('List deleted')
-          dispatch(loadCustomerLists())
+          dispatch(loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'}))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete list. ${res.description}`)
