@@ -28,8 +28,8 @@ exports.getCriterias = function (body, companyUser) {
     recordsToSkip = Math.abs(((body.requested_page) - (body.current_page - 1))) * body.number_of_records
     finalCriteria = [
       { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(body.last_id) } }] } },
-      { $skip: recordsToSkip },
       { $sort: {_id: -1} },
+      { $skip: recordsToSkip },
       { $limit: body.number_of_records }
     ]
   }
