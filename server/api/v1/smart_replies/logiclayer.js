@@ -180,8 +180,10 @@ exports.updatePayloadForVideo = (botId, payload) => {
     /* eslint-enable no-useless-escape */
     for (let i = 0; i < payload.length; i++) {
       if (videoRegex.test(payload[i].answer)) {
+        logger.serverLog(TAG, `answer is url`)
         // Check if youtube url
         if (YouTubeRegex.test(payload[i].answer)) {
+          logger.serverLog(TAG, `answer is YouTube video`)
           let data = {
             url: payload[i].answer
           }
@@ -189,6 +191,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
           let fetchedPage = fetchPage(botId)
           // download youtube video
           let downloadedVideo = fetchedPage.then(result => {
+            logger.serverLog(TAG, `fetchedPage result: ${JSON.stringify(result)}`)
             if (result === 'ERR_LIMIT_REACHED') {
               payload[i].videoLink = payload[i].answer
             } else {
@@ -198,6 +201,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
             }
           })
           .catch(err => {
+            logger.serverLog(TAG, `${util.inspect(err)}`)
             reject(util.inspect(err))
           })
           // upload on facebook
@@ -222,7 +226,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
         }
       }
       if (i === (payload.length - 1)) {
-        logger.serverLog(TAG, `sending updated payload ${JSON.stringify(payload)}`)
+        logger.serverLog(TAG, `returning updated payload ${JSON.stringify(payload)}`)
         resolve(payload)
       }
     }
