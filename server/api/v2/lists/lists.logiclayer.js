@@ -16,7 +16,7 @@ exports.getCriterias = function (body, companyUser) {
     ]
   } else if (body.first_page === 'next') {
     recordsToSkip = Math.abs(((body.requested_page - 1) - (body.current_page))) * body.number_of_records
-    console.log('recordsToSkip', recordsToSkip)
+    console.log('recordsToSkip in next lists', recordsToSkip)
     finalCriteria = [
       { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(body.last_id) } }] } },
       { $skip: recordsToSkip },
@@ -24,6 +24,7 @@ exports.getCriterias = function (body, companyUser) {
     ]
     console.log('finalCriteria', JSON.stringify(finalCriteria))
   } else if (body.first_page === 'previous') {
+    console.log('recordsToSkip in previous lists', recordsToSkip)
     recordsToSkip = Math.abs(((body.requested_page) - (body.current_page - 1))) * body.number_of_records
     finalCriteria = [
       { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(body.last_id) } }] } },

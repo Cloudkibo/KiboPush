@@ -115,7 +115,7 @@ exports.index = function (req, res) {
         ]
       } else if (req.body.first_page === 'next') {
         recordsToSkip = Math.abs(((req.body.requested_page - 1) - (req.body.current_page))) * req.body.number_of_records
-        console.log('broadcasts recordsToSkip', recordsToSkip)
+        console.log('recordsToSkip in next broadcast', recordsToSkip)
         finalCriteria = [
           { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
           { $sort: { datetime: -1 } },
@@ -124,6 +124,7 @@ exports.index = function (req, res) {
         ]
       } else if (req.body.first_page === 'previous') {
         recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
+        console.log('recordsToSkip in previous broadcast', recordsToSkip)
         finalCriteria = [
           { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(req.body.last_id) } }] } },
           { $sort: { datetime: 1 } },
