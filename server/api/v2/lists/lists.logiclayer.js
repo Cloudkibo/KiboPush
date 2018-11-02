@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 let _ = require('lodash')
 
 exports.getCriterias = function (body, companyUser) {
-  console.log('body in logicLayer', JSON.stringify(body))
   let findCriteria = {
     companyId: mongoose.Types.ObjectId(companyUser.companyId)
   }
@@ -16,15 +15,12 @@ exports.getCriterias = function (body, companyUser) {
     ]
   } else if (body.first_page === 'next') {
     recordsToSkip = Math.abs(((body.requested_page - 1) - (body.current_page))) * body.number_of_records
-    console.log('recordsToSkip in next lists', recordsToSkip)
     finalCriteria = [
       { $match: { $and: [findCriteria, { _id: { $gt: mongoose.Types.ObjectId(body.last_id) } }] } },
       { $skip: recordsToSkip },
       { $limit: body.number_of_records }
     ]
-    console.log('finalCriteria', JSON.stringify(finalCriteria))
   } else if (body.first_page === 'previous') {
-    console.log('recordsToSkip in previous lists', recordsToSkip)
     recordsToSkip = Math.abs(((body.requested_page) - (body.current_page - 1))) * body.number_of_records
     finalCriteria = [
       { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(body.last_id) } }] } },
