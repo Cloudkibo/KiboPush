@@ -80,7 +80,7 @@ class SegmentedList extends React.Component {
     } else if (this.state.pageNumber < data.selected) {
       this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', current_page: this.state.pageNumber, requested_page: data.selected})
     } else {
-      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[0]._id : 'none', number_of_records: 10, first_page: 'previous', current_page: this.state.pageNumber, requested_page: data.selected})
+      this.props.loadCustomerListsNew({last_id: this.props.customerLists.length > 0 ? this.props.customerLists[this.props.customerLists.length - 1]._id : 'none', number_of_records: 10, first_page: 'previous', current_page: this.state.pageNumber, requested_page: data.selected})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.customerLists)
