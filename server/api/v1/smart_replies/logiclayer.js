@@ -14,7 +14,7 @@ const dir = path.resolve(__dirname, '../../../../smart-replies-files/')
 
 const downloadVideo = (data) => {
   return new Promise((resolve, reject) => {
-    let video = youtubedl(data.url, ['--format=18'], { cwd: __dirname })
+    let video = youtubedl(data.url)
     let size = ''
 
     video.on('info', (info) => {
@@ -26,13 +26,13 @@ const downloadVideo = (data) => {
 
     video.on('complete', (info) => {
       if (size < 25000000) {
-        let stream = video.pipe(fs.createWriteStream(`${dir}bot-video.mp4`))
+        let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
         stream.on('error', (error) => {
           stream.end()
           reject(util.inspect(error))
         })
         stream.on('finish', () => {
-          resolve(`${dir}bot-video.mp4`)
+          resolve(`${dir}/bot-video.mp4`)
         })
       } else {
         resolve('ERR_LIMIT_REACHED')
