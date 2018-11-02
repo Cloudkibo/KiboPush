@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 let _ = require('lodash')
 
 exports.getCriterias = function (body, companyUser) {
+  console.log('body in logicLayer', JSON.stringify(body))
   let findCriteria = {
     companyId: mongoose.Types.ObjectId(companyUser.companyId)
   }
