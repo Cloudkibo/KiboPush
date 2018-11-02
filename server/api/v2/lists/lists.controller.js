@@ -9,6 +9,8 @@ exports.getAll = function (req, res) {
   utility.callApi(`companyUser/query`, 'post', {domain_email: req.user.domain_email}, req.headers.authorization) // fetch company user
   .then(companyuser => {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
+    console.log('criterias.countCriteria', JSON.stringify(criterias.countCriteria))
+    console.log('criterias.fetchCriteria', JSON.stringify(criterias.fetchCriteria))
     utility.callApi(`lists/aggregate/`, 'post', criterias.countCriteria, req.headers.authorization) // fetch lists count
     .then(count => {
       utility.callApi(`lists/aggregate/`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch lists
