@@ -29,7 +29,6 @@ exports.getCriterias = function (body, companyUser) {
     finalCriteria = [
       { $match: { $and: [findCriteria, { _id: { $lt: mongoose.Types.ObjectId(body.last_id) } }] } },
       { $skip: recordsToSkip },
-      { $sort: {_id: -1} },
       { $limit: body.number_of_records }
     ]
   }
