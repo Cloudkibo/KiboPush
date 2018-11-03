@@ -245,7 +245,7 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
           if (res.status === 'success') {
             msg.success('Conversation successfully sent')
             // dispatch(sendBroadcastSuccess())
-          } else {
+          } else if (res.status !== 'INVALID_SESSION') {
             if (res.description) {
               msg.error(`${res.description}`)
             } else {
