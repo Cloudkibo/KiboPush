@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { Picker } from 'emoji-mart'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import Popover from 'react-simple-popover'
@@ -55,9 +55,15 @@ class GreetingMessage extends React.Component {
     this.showPreviewDialog = this.showPreviewDialog.bind(this)
     this.closePreviewDialog = this.closePreviewDialog.bind(this)
     this.selectPage = this.selectPage.bind(this)
+    this.redirectToInviteSub = this.redirectToInviteSub.bind(this)
     props.loadMyPagesList()
   }
-
+  redirectToInviteSub () {
+    browserHistory.push({
+      pathname: '/inviteUsingLinkWizard',
+      state: 'history'
+    })
+  }
   showPreviewDialog () {
     var message = this.state.greetingMessage
     var name = this.props.user.facebookInfo.name.split(' ')
@@ -350,13 +356,13 @@ class GreetingMessage extends React.Component {
                              <div>
                               <Link className='linkMessageTypes' style={{color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block'}} onClick={this.viewGreetingMessage}>See how it looks </Link>
                               <button style={{display: 'inline-block'}} className='btn btn-primary' onClick={(e) => this.saveGreetingMessage(e)}>Save</button>
-                            </div> 
+                            </div>
                           </div> */}
                       <div class='m-portlet__foot m-portlet__foot--fit m--margin-top-40'>
                         <div className='m-form__actions'>
                           <div className='row'>
                             <div className='col-lg-6 m--align-left' >
-                              <Link to='/inviteUsingLinkWizard' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                              <Link onClick={() => this.redirectToInviteSub()} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                                 <span>
                                   <i className='la la-arrow-left' />
                                   <span>Back</span>&nbsp;&nbsp;
