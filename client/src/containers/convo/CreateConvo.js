@@ -59,7 +59,9 @@ class CreateConvo extends React.Component {
       lists: [],
       tabActive: 'broadcast',
       resetTarget: false,
-      setTarget: false
+      setTarget: false,
+      showInvalidSession: false,
+      invalidSessionMessage: ''
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -91,6 +93,7 @@ class CreateConvo extends React.Component {
     this.onTargetClick = this.onTargetClick.bind(this)
     this.onBroadcastClick = this.onBroadcastClick.bind(this)
     this.handleTargetValue = this.handleTargetValue.bind(this)
+    this.closeInvalidSession = this.closeInvalidSession.bind(this)
   }
 
   onNext (e) {
@@ -153,10 +156,17 @@ class CreateConvo extends React.Component {
       this.setState({tabActive: 'target', resetTarget: false})
     }
   }
+
+  closeInvalidSession () {
+    this.setState({showInvalidSession: false})
+  }
+
   handleSendBroadcast (res) {
     if (res.status === 'success') {
       this.initTab()
       this.setState({broadcast: [], list: [], resetTarget: true})
+    } else if (res.status === 'INVALID_SESSION') {
+      this.setState({showInvalidSession: true, invalidSessionMessage: res.description})
     }
   }
   scrollToTop () {
@@ -531,6 +541,25 @@ class CreateConvo extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
+        {
+          this.state.showInvalidSession &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeInvalidSession}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeInvalidSession}>
+              <h3>Error:</h3>
+              <p>{this.state.invalidSessionMessage}</p>
+              <br />
+              <p>You need to reconnect your Facebook account to send this broadcast.</p>
+              <a href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
+                <span>
+                  <i className='la la-power-off' />
+                  <span>Connect with Facebook</span>
+                </span>
+              </a>
+            </ModalDialog>
+          </ModalContainer>
+        }
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
