@@ -132,9 +132,30 @@ class Convo extends React.Component {
   handlePageClick (data) {
     console.log('data.selected', data.selected)
     if (data.selected === 0) {
-      this.props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }})
     } else if (this.state.pageNumber < data.selected) {
-      this.props.allBroadcasts({current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue, days: this.state.selectedDays}})
+      this.props.allBroadcasts({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        filter: this.state.filter,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
+          days: this.state.selectedDays
+        }}
+      )
     } else {
       this.props.allBroadcasts({
         current_page: this.state.pageNumber,
