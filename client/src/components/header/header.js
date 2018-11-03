@@ -283,69 +283,6 @@ class Header extends React.Component {
                       </a>
                     </li>
                   }
-                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                    <a href='' className='m-menu__link m-menu__toggle'>
-                      <i className='m-menu__link-icon flaticon-interface-4' />
-                      <span className='m-menu__link-text'>
-                        Change UI Mode
-                      </span>
-                      <i className='m-menu__hor-arrow la la-angle-down' />
-                      <i className='m-menu__ver-arrow la la-angle-right' />
-                    </a>
-                    <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
-                      <span className='m-menu__arrow m-menu__arrow--adjust' />
-                      <ul className='m-menu__subnav'>
-                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kiboengage') }}>
-                          <a className='m-menu__link '>
-                            {
-                              this.state.mode === 'Customer Engagement'
-                              ? <i className='m-menu__link-icon la la-check' />
-                              : <i className='m-menu__link-icon' />
-                            }
-                            <span className='m-menu__link-text'>
-                              Customer Engagement
-                            </span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibochat') }}>
-                          <a className='m-menu__link '>
-                            {
-                              this.state.mode === 'Customer Chat'
-                              ? <i className='m-menu__link-icon la la-check' />
-                              : <i className='m-menu__link-icon' />
-                            }
-                            <span className='m-menu__link-text'>
-                              Customer Chat
-                            </span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('kibocommerce') }}>
-                          <a className='m-menu__link '>
-                            {
-                              this.state.mode === 'E-Commerce'
-                              ? <i className='m-menu__link-icon la la-check' />
-                              : <i className='m-menu__link-icon' />
-                            }
-                            <span className='m-menu__link-text'>
-                              E-Commerce
-                            </span>
-                          </a>
-                        </li>
-                        <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.changeMode('all') }}>
-                          <a className='m-menu__link '>
-                            {
-                              this.state.mode === 'All'
-                              ? <i className='m-menu__link-icon la la-check' />
-                              : <i className='m-menu__link-icon' />
-                            }
-                            <span className='m-menu__link-text'>
-                              All
-                            </span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
                 </ul>
               </div>
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>

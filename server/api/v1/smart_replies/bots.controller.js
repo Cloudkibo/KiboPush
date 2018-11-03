@@ -15,8 +15,8 @@ const WaitingSubscribers = require('./waitingSubscribers.model')
 const UnAnsweredQuestions = require('./unansweredQuestions.model')
 let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
-let utility = require('./../broadcasts/broadcasts.utility')
 const _ = require('lodash')
+const LogicLayer = require('./logiclayer')
 
 function transformPayload (payload) {
   var transformed = []
@@ -134,9 +134,8 @@ function getWitResponse (message, token, bot, pageId, senderId) {
 }
 
 function sendMessenger (message, pageId, senderId, postbackPayload) {
-  // Check if its text or video
-  message = (message.videoLink && message.videoLink !== 0) ? message.videoLink : message.answer
-  let isVideo = (message.videoLink && message.videoLink !== 0)
+  logger.serverLog(TAG, `sendMessenger message is ${JSON.stringify(message)}`)
+
   Subscribers.findOne({ senderId: senderId }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -146,61 +145,41 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
       return
     }
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
-    let messageData = {}
-    if (!isVideo) {
-      messageData = utility.prepareSendAPIPayload(
-        senderId,
-        { 'componentType': 'text',
-          'text': message + '  (Bot)',
-          'buttons': [{ 'type': 'postback',
-            'title': 'Talk to Agent',
-            'payload': JSON.stringify(postbackPayload)
-          }] },
-        subscriber.firstName,
-        subscriber.lastName,
-        true)
-    } else {
-      messageData = {
-        'recipient': {
-          'id': senderId
-        },
-        'message': {
-          'attachment': {
-            'type': 'video',
-            'payload': {
-              'url': message,
-              'is_reusable': true
-            }
-          }
-        }
-      }
-    }
 
-    Pages.findOne({ pageId: pageId }, (err, page) => {
+    Pages.findOne({ pageId: pageId })
+    .exec((err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-      request(
-        {
-          'method': 'POST',
-          'json': true,
-          'formData': messageData,
-          'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-            page.accessToken
-        },
-        (err, res) => {
-          if (err) {
-            return logger.serverLog(TAG,
-              `At send message live chat ${JSON.stringify(err)}`)
-          } else {
-            if (res.statusCode !== 200) {
-              logger.serverLog(TAG,
-                `At send message live chat response ${JSON.stringify(
-                  res.body.error)}`)
-            } else {
-              logger.serverLog(TAG, 'Response sent to Messenger: ' + message)
-            }
-          }
+
+      LogicLayer.getMessageData(message)
+        .then(messageData => {
+          logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
+          request(
+            {
+              'method': 'POST',
+              'json': true,
+              'formData': messageData,
+              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+                page.accessToken
+            },
+            (err, res) => {
+              if (err) {
+                return logger.serverLog(TAG,
+                  `At send message live chat ${JSON.stringify(err)}`)
+              } else {
+                if (res.statusCode !== 200) {
+                  logger.serverLog(TAG,
+                    `At send message live chat response ${JSON.stringify(
+                      res.body.error)}`)
+                } else {
+                  logger.serverLog(TAG, `Response sent to Messenger: ${JSON.stringify(messageData)}`)
+                }
+              }
+            })
+        })
+        .catch(err => {
+          logger.serverLog(TAG, `Failed to send automated reply ${JSON.stringify(err)}`)
         })
     })
   })
@@ -406,27 +385,38 @@ exports.create = function (req, res) {
 exports.edit = function (req, res) {
   logger.serverLog(TAG,
     `Adding questions in edit bot ${JSON.stringify(req.body)}`)
+  let payload = req.body.payload
+  let botId = req.body.botId
+  LogicLayer.updatePayloadForVideo(botId, payload)
+  .then(updatedPayload => {
+    logger.serverLog(TAG, `updatedPayload ${JSON.stringify(updatedPayload)}`)
+    Bots.update({ _id: botId }, { payload: updatedPayload }, (err, affected) => {
+      if (err) {
+        return logger.serverLog(TAG, 'Error Occured In editing the bot')
+      }
+      logger.serverLog(TAG, 'affected rows %d: ' + JSON.stringify(affected))
+      Bots
+        .find({
+          _id: req.body.botId
+        }).populate('pageId').exec((err, bot) => {
+          if (err) {
+            return logger.serverLog(TAG, 'Error Occured In editing the bot')
+          }
+          logger.serverLog(TAG,
+            `returning Bot details ${JSON.stringify(bot)}`)
+          var entities = getEntities(req.body.payload)
+          trainingPipline(entities, req.body.payload, bot[0].witToken)
+          // trainBot(req.body.payload, bot[0].witToken)
+        })
 
-  Bots.update({ _id: req.body.botId }, { payload: req.body.payload }, (err, affected) => {
-    if (err) {
-      return logger.serverLog(TAG, 'Error Occured In editing the bot')
-    }
-    logger.serverLog(TAG, 'affected rows %d: ' + JSON.stringify(affected))
-    Bots
-      .find({
-        _id: req.body.botId
-      }).populate('pageId').exec((err, bot) => {
-        if (err) {
-          return logger.serverLog(TAG, 'Error Occured In editing the bot')
-        }
-        logger.serverLog(TAG,
-          `returning Bot details ${JSON.stringify(bot)}`)
-        var entities = getEntities(req.body.payload)
-        trainingPipline(entities, req.body.payload, bot[0].witToken)
-        // trainBot(req.body.payload, bot[0].witToken)
-      })
-
-    return res.status(200).json({ status: 'success' })
+      return res.status(200).json({ status: 'success' })
+    })
+  })
+  .catch(err => {
+    return res.status(500).json({
+      status: 'failed',
+      payload: `Failed to update bot ${JSON.stringify(err)}`
+    })
   })
 }
 

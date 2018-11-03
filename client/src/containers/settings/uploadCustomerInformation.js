@@ -47,6 +47,7 @@ class ResetPassword extends React.Component {
   parseCSV (file) {
     let self = this
     Papa.parse(file, {
+      skipEmptyLines: true,
       complete: function (results) {
         self.setState({columns: results.data[0], fileData: results.data})
       }

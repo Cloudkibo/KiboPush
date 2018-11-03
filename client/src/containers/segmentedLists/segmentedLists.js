@@ -87,17 +87,19 @@ class SegmentedList extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists && nextProps.count) {
-      var lists = []
-      for (var i = 0; i < nextProps.customerLists.length; i++) {
-        if (!(nextProps.customerLists[i].initialList)) {
-          lists.push(nextProps.customerLists[i])
-        } else {
-          if (nextProps.customerLists[i].content && nextProps.customerLists[i].content.length > 0) {
-            lists.push(nextProps.customerLists[i])
-          }
-        }
-      }
-      this.displayData(0, lists)
+      // var lists = []
+      // for (var i = 0; i < nextProps.customerLists.length; i++) {
+      //   if (!(nextProps.customerLists[i].initialList)) {
+      //     lists.push(nextProps.customerLists[i])
+      //   } else {
+      //     if (nextProps.customerLists[i].content && nextProps.customerLists[i].content.length > 0) {
+      //       lists.push(nextProps.customerLists[i])
+      //     }
+      //   }
+      // }
+      // this.displayData(0, lists)
+      // this.setState({ totalLength: nextProps.count })
+      this.displayData(0, nextProps.customerLists)
       this.setState({ totalLength: nextProps.count })
     }
   }

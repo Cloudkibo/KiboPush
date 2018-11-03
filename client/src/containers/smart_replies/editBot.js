@@ -84,14 +84,6 @@ class EditBot extends React.Component {
                       placeholder='Type the answer of your questions here...'
                       rows='3' onChange={this.handleAnswerChange.bind(this, i)} value={this.state.payload[i].answer} />
                   </div>
-                  <br />
-                  <br />
-                  <br />
-                  <div className='m-input-icon m-input-icon--right'>
-                    <input className='form-control'
-                      placeholder='Video Link'
-                      rows='i' onChange={this.handleVideoLinkChange.bind(this, i)} value={this.state.payload[i].videoLink} />
-                  </div>
                 </div>
               </div>
             </div>
@@ -202,7 +194,7 @@ class EditBot extends React.Component {
       }
     }
     console.log('this.state.payload', this.state.payload)
-    this.props.editBot({botId: this.state.id, payload: this.state.payload})
+    this.props.editBot({botId: this.state.id, payload: this.state.payload}, this.msg)
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
     this.msg.success('Bot updated successfully')
   }

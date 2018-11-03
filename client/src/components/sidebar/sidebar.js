@@ -20,11 +20,11 @@ class Sidebar extends Component {
       loading: true,
       ignore: true,
       dashboard: true,
-      broadcasts: true,
-      surveys: true,
-      polls: true,
-      livechat: true,
-      autoposting: true,
+      broadcasts: false,
+      surveys: false,
+      polls: false,
+      livechat: false,
+      autoposting: false,
       persistentMenu: true,
       pages: true,
       subscribers: true,
@@ -38,15 +38,27 @@ class Sidebar extends Component {
       welcomeMessage: true,
       segmentSubscribers: true,
       commentCapture: true,
-      smartReplies: true,
-      templates: true,
-      sequenceMessaging: true,
+      smartReplies: false,
+      templates: false,
+      sequenceMessaging: false,
       waitingResponse: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
   componentWillMount () {
+    let url = window.location.hostname
+    console.log('url', url)
+    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
+      console.log('kibochat')
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false})
+    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
+      console.log('kiboEngage')
+      this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
+    } else if (url === 'staging.kibopush.com') {
+      console.log('staging')
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    }
     this.props.getuserdetails()
     this.props.getAutomatedOptions()
   }
@@ -61,7 +73,8 @@ class Sidebar extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in sidebar', nextProps)
-    if (nextProps.user) {
+
+   /* if (nextProps.user) {
       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
         polls: nextProps.user.uiMode.polls,
         surveys: nextProps.user.uiMode.surveys,
@@ -80,7 +93,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }
+    }*/
   }
 
   showAbandonedCarts () {
@@ -180,10 +193,8 @@ class Sidebar extends Component {
   }
 
   showLiveChatItem () {
-    if (this.props.user && this.props.automated_options) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat &&
-          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+    if (this.props.user) {
+      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/liveChat' className='m-menu__link m-menu__toggle'>
@@ -439,8 +450,7 @@ class Sidebar extends Component {
   }
 
   showSmartRespliesItem () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-     this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
+    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/bots' className='m-menu__link'>
@@ -736,6 +746,8 @@ class Sidebar extends Component {
   }
 
   render () {
+    console.log('this.state', this.state)
+
     if (this.props.user && this.props.user.permissionsRevoked) {
       browserHistory.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
     }

@@ -339,7 +339,7 @@ const all = {
       commentCapture: true
     }
   },
-  API_URL_DEMO_APP: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? 'https://demoapp.cloudkibo.com/api/v1' : 'http://localhost:3001/api/v1',
+  API_URL_DEMO_APP: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? 'http://demoapp.cloudkibo.com/api/v1' : 'http://localhost:8000/api/v1',
   API_URL_ACCOUNTS: process.env.NODE_ENV === 'production' ? 'https://accounts.cloudkibo.com/api/v1' : process.env.NODE_ENV === 'staging' ? 'https://saccounts.cloudkibo.com/api/v1' : 'http://localhost:3001/api/v1',
   API_URL_WEBHOOK: process.env.NODE_ENV === 'production' ? 'https://webhook.cloudkibo.com/api' : process.env.NODE_ENV === 'staging' ? 'https://swebhook.cloudkibo.com/api' : 'http://localhost:3002/api'
 }

@@ -26,7 +26,7 @@ export default function callApi (endpoint, method = 'get', body) {
   }).then(response => {
     console.log('response', response)
     if (response.statusText === 'Unauthorized') {
-      // auth.logout()
+      auth.logout()
       browserHistory.push('/')
       return Promise.reject(response.statusText)
     }
