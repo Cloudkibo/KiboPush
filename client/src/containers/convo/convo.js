@@ -395,7 +395,7 @@ class Convo extends React.Component {
                               <div style={{display: 'inline-block', padding: '5px'}}>
                                 {
                                   this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                                  ? <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onCLick={this.gotoTemplates} className='btn btn-primary'>
+                                  ? <button disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null} onClick={this.gotoTemplates} className='btn btn-primary'>
                                     Use Template
                                   </button>
                                   : <button onClick={this.showProDialog} className='btn btn-primary'>
