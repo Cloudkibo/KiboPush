@@ -187,38 +187,33 @@ exports.updatePayloadForVideo = (botId, payload) => {
           let data = {
             url: payload[i].answer
           }
-          // fetch page data
+
           let fetchedPage = fetchPage(botId)
-          // download youtube video
-          let downloadedVideo = fetchedPage.then(result => {
+
+          fetchedPage.then(result => {
             logger.serverLog(TAG, `fetchedPage result: ${JSON.stringify(result)}`)
             if (result === 'ERR_LIMIT_REACHED') {
               payload[i].videoLink = payload[i].answer
             } else {
               data.userAccessToken = result.userId.facebookInfo
               data.pageId = result.pageId
-              downloadVideo(data)
+              return downloadVideo(data)
             }
+          })
+          .then(path => {
+            data.serverPath = path
+            return uploadVideo(data)
+          })
+          .then(attachmentId => {
+            data.attachment_id = attachmentId
+            payload[i].attachment_id = attachmentId
+            return deleteVideo(data)
+          })
+          .then(result => {
+            logger.serverLog(TAG, result)
           })
           .catch(err => {
             logger.serverLog(TAG, `${util.inspect(err)}`)
-            reject(util.inspect(err))
-          })
-          // upload on facebook
-          let uploadedVideo = downloadedVideo.then(path => {
-            data.serverPath = path
-            uploadVideo(data)
-          })
-          .catch(err => {
-            reject(util.inspect(err))
-          })
-          // delete video
-          uploadedVideo.then(attachmentId => {
-            data.attachment_id = attachmentId
-            payload[i].attachment_id = attachmentId
-            deleteVideo(data)
-          })
-          .catch(err => {
             reject(util.inspect(err))
           })
         } else {
