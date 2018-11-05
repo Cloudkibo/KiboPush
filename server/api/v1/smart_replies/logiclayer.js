@@ -15,16 +15,12 @@ const dir = path.resolve(__dirname, '../../../../smart-replies-files/')
 const downloadVideo = (data) => {
   return new Promise((resolve, reject) => {
     let video = youtubedl(data.url)
-    let size = ''
 
     video.on('info', (info) => {
       logger.serverLog(TAG, 'Download started')
       logger.serverLog(TAG, 'filename: ' + info.filename)
       logger.serverLog(TAG, 'size: ' + info.size)
-      size = info.size
-    })
-
-    video.on('complete', (info) => {
+      let size = info.size
       if (size < 25000000) {
         let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
         stream.on('error', (error) => {
