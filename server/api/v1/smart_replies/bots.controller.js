@@ -151,7 +151,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       }
-
+      message.senderId = senderId
       LogicLayer.getMessageData(message)
         .then(messageData => {
           logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
