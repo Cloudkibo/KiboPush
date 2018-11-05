@@ -191,7 +191,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
 
           fetchedPage.then(result => {
             logger.serverLog(TAG, `fetchedPage result: ${JSON.stringify(result)}`)
-            data.userAccessToken = result.userId.facebookInfo
+            data.userAccessToken = result.userId.facebookInfo.fbToken
             data.pageId = result.pageId
             return downloadVideo(data)
           })
