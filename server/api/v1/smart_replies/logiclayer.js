@@ -48,7 +48,7 @@ const uploadVideo = (data) => {
           reject(util.inspect(err))
         }
         let pageAccessToken = resp2.body.access_token
-        let fileReaderStream = fs.createReadStream(`${dir}${data.serverPath}`)
+        let fileReaderStream = fs.createReadStream(`${data.serverPath}`)
         const messageData = {
           'message': JSON.stringify({
             'attachment': {
