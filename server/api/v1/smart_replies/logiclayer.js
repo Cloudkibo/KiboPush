@@ -39,6 +39,7 @@ const downloadVideo = (data) => {
 }
 
 const uploadVideo = (data) => {
+  console.log('data in uploadVideo', util.inspect(data))
   return new Promise((resolve, reject) => {
     needle.get(
       `https://graph.facebook.com/v2.10/${data.pageId}?fields=access_token&access_token=${data.userAccessToken}`,
@@ -47,6 +48,7 @@ const uploadVideo = (data) => {
           logger.serverLog(TAG, `Failed to get page access_token ${JSON.stringify(err)}`)
           reject(util.inspect(err))
         }
+        console.log('page access_token response', util.inspect(resp2.body))
         let pageAccessToken = resp2.body.access_token
         let fileReaderStream = fs.createReadStream(`${data.serverPath}`)
         const messageData = {
