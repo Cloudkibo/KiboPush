@@ -8,7 +8,7 @@ import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
-// import { loadBroadcastsList } from './../redux/actions/broadcast.actions'
+import { allBroadcasts } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
@@ -73,6 +73,8 @@ socket.on('message', (data) => {
     store.dispatch(loadDashboardData())
   } else if (data.action === 'message_seen') {
     store.dispatch(socketUpdateSeen(data.payload))
+  } else if (data.action === 'broacast_seen') {
+    store.dispatch(allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}}))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
     store.dispatch(loadAutopostingList())
   } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
@@ -94,7 +96,7 @@ socket.on('message', (data) => {
   } else if (data.action === 'survey_send') {
     store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     //store.dispatch(sentVsSeen())
-  } 
+  }
   else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     store.dispatch(loadTags())
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
