@@ -317,7 +317,7 @@ class LiveChat extends React.Component {
               onClose={() => { this.setState({showVideo: false}) }}>
               <div>
                 <YouTube
-                  videoId='NYf0DrcNwTo'
+                  videoId='XUXc2ZD_lQY'
                   opts={{
                     height: '390',
                     width: '640',
