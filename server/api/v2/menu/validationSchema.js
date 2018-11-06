@@ -21,3 +21,13 @@ exports.menuPayload = {
     }
   }
 }
+
+exports.indexByPage = {
+  type: 'object',
+  properties: {
+    pageId: {
+      type: 'string',
+      required: true
+    }
+  }
+}

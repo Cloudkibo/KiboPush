@@ -62,7 +62,7 @@ export function fetchMenu (setMenu) {
 
 export function getIndexBypage (pageId, handleIndexByPage) {
   return (dispatch) => {
-    callApi(`menu/indexByPage/${pageId}`, 'get', {}).then(res => {
+    callApi(`menu/indexByPage`, 'post', {pageId: pageId}).then(res => {
       dispatch(updateIndexByPage(res.payload))
       console.log('updateIndexByPage', res)
       handleIndexByPage(res)
