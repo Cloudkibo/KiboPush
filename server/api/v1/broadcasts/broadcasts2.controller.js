@@ -297,7 +297,7 @@ exports.upload = function (req, res) {
   let fext = req.files.file.name.split('.')
   serverPath += '.' + fext[fext.length - 1].toLowerCase()
 
-  let dir = path.resolve(__dirname, '../../../../../broadcastFiles/')
+  let dir = path.resolve(__dirname, '../../../../broadcastFiles/')
 
   if (req.files.file.size === 0) {
     return res.status(400).json({
@@ -397,7 +397,7 @@ exports.upload = function (req, res) {
 }
 
 exports.download = function (req, res) {
-  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+  let dir = path.resolve(__dirname, '../../../../broadcastFiles/userfiles')
   try {
     res.sendfile(req.params.id, {root: dir})
   } catch (err) {
