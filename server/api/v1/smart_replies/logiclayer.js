@@ -137,7 +137,7 @@ exports.getMessageData = (data) => {
         }),
         'message': JSON.stringify({
           'attachment': {
-            'type': 'attachment',
+            'type': 'template',
             'payload': {
               'template_type': 'open_graph',
               'elements': [
