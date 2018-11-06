@@ -206,7 +206,7 @@ class Menu extends React.Component {
     }
 
     this.setState({menuItems: temp})
-    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage.pageId] }
+    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id] }
     this.props.saveCurrentMenuItem(currentState)
   }
   showPreview () {
