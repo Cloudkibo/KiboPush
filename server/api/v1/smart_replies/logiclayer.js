@@ -195,18 +195,22 @@ exports.updatePayloadForVideo = (botId, payload) => {
           })
           .then(path => {
             logger.serverLog(TAG, `downloadVideo response ${util.inspect(path)}`)
-            console.log((path === 'ERR_LIMIT_REACHED'))
             if (path === 'ERR_LIMIT_REACHED') {
               payload[i].videoLink = payload[i].answer
+              return path
             } else {
               data.serverPath = path
               return uploadVideo(data)
             }
           })
           .then(attachmentId => {
-            data.attachment_id = attachmentId
-            payload[i].attachment_id = attachmentId
-            return deleteVideo(data)
+            if (data.serverPath) {
+              data.attachment_id = attachmentId
+              payload[i].attachment_id = attachmentId
+              return deleteVideo(data)
+            } else {
+              return attachmentId
+            }
           })
           .then(result => {
             logger.serverLog(TAG, result)
