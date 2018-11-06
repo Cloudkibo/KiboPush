@@ -34,7 +34,7 @@ module.exports = function (app) {
   app.use('/api/page_broadcast', require('./api/v1/page_broadcast'))
   app.use('/api/livechat', require('./api/v1/livechat'))
   app.use('/api/sessions', require('./api/v1/sessions'))
-  app.use('/api/menu', require('./api/v2/menu'))
+  app.use('/api/menu', require('./api/v1/menu'))
   app.use('/api/api_settings', require('./api/v1/api_settings'))
   app.use('/api/api_ngp', require('./api/v1/api_ngp'))
   app.use('/api/templates', require('./api/v1/templates'))
