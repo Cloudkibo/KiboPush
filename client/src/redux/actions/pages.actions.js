@@ -110,7 +110,7 @@ export function removePageInAddPage (page) {
     callApi('pages/disable', 'post', page)
     .then(res => {
       console.log('res.payload', res.payload)
-      dispatch(updateOtherPages(res.payload))
+      dispatch(loadOtherPagesList())
       dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
     })
   }
