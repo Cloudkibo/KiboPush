@@ -470,7 +470,7 @@ class EditTemplate extends React.Component {
 
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       console.log('broadcast state', this.state.broadcast)
-      this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
+      this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: this.state.broadcast}, this.msg)
     } else {
       var res = checkConditions(this.state.pageValue, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
