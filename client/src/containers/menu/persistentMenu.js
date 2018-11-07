@@ -113,7 +113,7 @@ class Menu extends React.Component {
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
       for (var i = 0; i < this.props.pages.length; i++) {
-        if (this.props.pages[i]._id === this.props.currentMenuItem.currentPage) {
+        if (this.props.pages[i]._id === this.props.currentMenuItem.currentPage[0]) {
           this.setState({ selectPage: this.props.pages[i] })
         }
       }
