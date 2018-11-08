@@ -22,8 +22,8 @@ const TAG = 'config/integrations/twitter.js'
 // test twitter ids : [2616186000, 1430793200]
 
 let twitterClient = new Twit({
-  api_key: config.twitter.consumer_key,
-  api_secret_key: config.twitter.consumer_secret,
+  consumer_key: config.twitter.consumer_key,
+  consumer_secret: config.twitter.consumer_secret,
   access_token: config.twitter.consumer_token,
   access_token_secret: config.twitter.consumer_token_secret
 })
