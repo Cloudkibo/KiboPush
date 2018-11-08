@@ -24,8 +24,9 @@ exports.serverLog = function (label, data, hideFromProduction) {
   const namespace = `kibopush:${label}`
   const debug = require('debug')(namespace)
 
-  if (config.env === 'development' || config.env === 'staging') {
+  if (config.env === 'development' || config.env === 'test') {
     debug(data)
+    console.log(data)
     // todo use log levels like info, warn, error and debug
     // logger.info(`${namespace} - ${data}`)
   } else {
