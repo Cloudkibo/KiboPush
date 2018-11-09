@@ -22,7 +22,7 @@ const downloadVideo = (data) => {
       logger.serverLog(TAG, 'filename: ' + info.filename)
       logger.serverLog(TAG, 'size: ' + info.size)
       let size = info.size
-      if (size < 25000000) {
+      if (size < 10000000) {
         stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
         stream.on('error', (error) => {
           stream.end()
