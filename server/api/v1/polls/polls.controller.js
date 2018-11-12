@@ -866,12 +866,12 @@ exports.send = function (req, res) {
                         })
                       }
                     }
-
+                    console.log('subscriberFindCriteria', JSON.stringify(subscriberFindCriteria))
                     Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
                       if (err) {
                         return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
                       }
-
+                      console.log('subscribers Found', subscribers.length)
                       needle.get(
                       `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                       (err, resp) => {
@@ -880,10 +880,12 @@ exports.send = function (req, res) {
                           `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                         }
                         if (subscribers.length > 0) {
+                          console.log('subscribers.length', subscribers.length)
                           utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                             subscribers = taggedSubscribers
                             utility.applyPollFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
+                              console.log('subscribers.length after', subscribers.length)
                               for (let j = 0; j < subscribers.length && !abort; j++) {
                                 CompanyUsage.update({companyId: companyUser.companyId},
                                   { $inc: { polls: 1 } }, (err, updated) => {
