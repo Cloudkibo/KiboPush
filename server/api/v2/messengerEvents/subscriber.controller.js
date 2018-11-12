@@ -313,7 +313,8 @@ function createSession (page, subscriber, event) {
       }
     })
     .catch(err => {
-      logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
+      // logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
+      console.log(`Failed to fetch company ${JSON.stringify(err)}`)
     })
 }
 function saveLiveChat (page, subscriber, session, event) {
