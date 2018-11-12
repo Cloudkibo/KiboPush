@@ -102,7 +102,7 @@ exports.subscriber = function (req, res) {
                     console.log(`subscriber ${subscriber}`)
                     if (!subscriber) {
                       // subsriber not found, create subscriber
-                      callApi(`companyprofile/${page.companyId}`)
+                      callApi(`companyprofile/query`, 'post', {_id: page.companyId})
                         .then(company => {
                           callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId})
                             .then(planUsage => {
@@ -256,7 +256,7 @@ function updateList (phoneNumber, sender, page) {
 }
 function createSession (page, subscriber, event) {
   console.log('in createSession')
-  callApi(`companyprofile/${page.companyId}`)
+  callApi(`companyprofile/query`, 'post', {_id: page.companyId})
     .then(company => {
       if (!(company.automated_options === 'DISABLE_CHAT')) {
         Sessions.findOne({ page_id: page._id, subscriber_id: subscriber._id },
