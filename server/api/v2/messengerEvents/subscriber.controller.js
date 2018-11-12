@@ -96,7 +96,7 @@ exports.subscriber = function (req, res) {
                 } else if (subscriberSource === 'chat_plugin') {
                   payload.source = 'chat_plugin'
                 }
-                callApi(`subsribers/query`, 'post', {senderId: sender})
+                callApi(`subscribers/query`, 'post', {senderId: sender})
                   .then(result => {
                     let subscriber = result[0]
                     console.log(`subscriber ${subscriber}`)
