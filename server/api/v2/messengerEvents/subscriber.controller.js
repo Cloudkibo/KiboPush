@@ -104,10 +104,10 @@ exports.subscriber = function (req, res) {
                       // subsriber not found, create subscriber
                       callApi(`companyprofile/query`, 'post', {_id: page.companyId})
                         .then(company => {
-                          callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId})
+                          callApi(`featureUsage/planQuery`, 'post', {planId: company.planId})
                             .then(planUsage => {
                               planUsage = planUsage[0]
-                              callApi(`featureUsage/getCompanyUsage`, 'post', {companyId: company._id})
+                              callApi(`featureUsage/companyQuery`, 'post', {companyId: company._id})
                                 .then(companyUsage => {
                                   companyUsage = companyUsage[0]
                                   if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
@@ -115,7 +115,7 @@ exports.subscriber = function (req, res) {
                                   } else {
                                     callApi(`subscribers`, 'post', payload)
                                       .then(subscriberCreated => {
-                                        callApi(`featureUsage/updateCompanyUsage`, 'post', {query: {companyId: company._id}, newPayload: { $inc: { subscribers: 1 } }, options: {}})
+                                        callApi(`featureUsage/updateCompany`, 'post', {query: {companyId: company._id}, newPayload: { $inc: { subscribers: 1 } }, options: {}})
                                           .then(updated => {
                                             logger.serverLog(TAG, `company usage incremented successfully ${JSON.stringify(err)}`)
                                           })
@@ -264,10 +264,10 @@ function createSession (page, subscriber, event) {
             console.log(`found session ${util.inspect(session)}`)
             if (err) logger.serverLog(TAG, err)
             if (session === null) {
-              callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId})
+              callApi(`featureUsage/planQuery`, 'post', {planId: company.planId})
                 .then(planUsage => {
                   planUsage = planUsage[0]
-                  callApi(`featureUsage/getCompanyUsage`, 'post', {companyId: page.companyId})
+                  callApi(`featureUsage/companyQuery`, 'post', {companyId: page.companyId})
                     .then(companyUsage => {
                       companyUsage = companyUsage[0]
                       if (planUsage.sessions !== -1 && companyUsage.sessions >= planUsage.sessions) {
@@ -281,7 +281,7 @@ function createSession (page, subscriber, event) {
                         newSession.save((err, sessionSaved) => {
                           if (err) logger.serverLog(TAG, err)
                           logger.serverLog(TAG, 'new session created')
-                          callApi(`featureUsage/updateCompanyUsage`, 'put', {query: {companyId: page.companyId}, newPayload: { $inc: { sessions: 1 } }, options: {}})
+                          callApi(`featureUsage/updateCompany`, 'put', {query: {companyId: page.companyId}, newPayload: { $inc: { sessions: 1 } }, options: {}})
                             .then(updated => {
                               logger.serverLog(TAG, `company usage incremented successfully ${JSON.stringify(updated)}`)
                             })
