@@ -866,7 +866,7 @@ exports.send = function (req, res) {
                         })
                       }
                     }
-
+                    console.log('subscriberFindCriteria', JSON.stringify(subscriberFindCriteria))
                     Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
                       if (err) {
                         return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
