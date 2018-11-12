@@ -11,15 +11,13 @@ const utility = require('../../v1/broadcasts/broadcasts.utility')
 const og = require('open-graph')
 const Bots = require('../../v1/smart_replies/Bots.model')
 const { callApi } = require('../utility')
-const util = require('util')
 
 exports.subscriber = function (req, res) {
   res.status(200).json({
     status: 'success',
     description: `received the payload`
   })
-  // logger.serverLog(TAG, `in subscriber ${JSON.stringify(req.body)}`)
-  console.log(`in subscriber ${JSON.stringify(req.body)}`)
+  logger.serverLog(TAG, `in subscriber ${JSON.stringify(req.body)}`)
   let phoneNumber = ''
   let subscriberSource = 'direct_message'
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
@@ -36,16 +34,13 @@ exports.subscriber = function (req, res) {
     callApi(`pages/query`, 'post', { pageId: pageId, connected: true })
       .then(pages => {
         const page = pages[0]
-        console.log(`page ${util.inspect(page)}`)
         if (subscriberSource === 'customer_matching') {
           callApi(`phone/update`, 'put', {query: {number: event.prior_message.identifier, pageId: page._id, companyId: page.companyId}, newPayload: {hasSubscribed: true}, options: {}})
             .then(phonenumberupdated => {
-              // logger.serverLog(TAG, `phone number updated successfully ${JSON.stringify(phonenumberupdated)}`)
-              console.log(TAG, `phone number updated successfully ${JSON.stringify(phonenumberupdated)}`)
+              logger.serverLog(TAG, `phone number updated successfully ${JSON.stringify(phonenumberupdated)}`)
             })
             .catch(err => {
-              // logger.serverLog(TAG, `Failed to update phone number ${JSON.stringify(err)}`)
-              console.log(`Failed to update phone number ${JSON.stringify(err)}`)
+              logger.serverLog(TAG, `Failed to update phone number ${JSON.stringify(err)}`)
             })
         }
         needle.get(
@@ -99,7 +94,6 @@ exports.subscriber = function (req, res) {
                 callApi(`subscribers/query`, 'post', {senderId: sender})
                   .then(result => {
                     let subscriber = result[0]
-                    console.log(`subscriber ${subscriber}`)
                     if (!subscriber) {
                       // subsriber not found, create subscriber
                       callApi(`companyprofile/query`, 'post', {_id: page.companyId})
@@ -146,8 +140,7 @@ exports.subscriber = function (req, res) {
                                             }
                                           })
                                           .catch(err => {
-                                            // logger.serverLog(TAG, err)
-                                            console.log(`Error: ${util.inspect(err)}`)
+                                            logger.serverLog(TAG, err)
                                           })
                                         if (subscriberSource === 'customer_matching') {
                                           updateList(phoneNumber, sender, page)
@@ -169,24 +162,20 @@ exports.subscriber = function (req, res) {
                                           })
                                       })
                                       .catch(err => {
-                                        // logger.serverLog(TAG, `Failed to create subscriber ${JSON.stringify(err)}`)
-                                        console.log(`Failed to create subscriber ${JSON.stringify(err)}`)
+                                        logger.serverLog(TAG, `Failed to create subscriber ${JSON.stringify(err)}`)
                                       })
                                   }
                                 })
                                 .catch(err => {
-                                  // logger.serverLog(TAG, `Failed to fetch company usage ${JSON.stringify(err)}`)
-                                  console.log(`Failed to fetch company usage ${JSON.stringify(err)}`)
+                                  logger.serverLog(TAG, `Failed to fetch company usage ${JSON.stringify(err)}`)
                                 })
                             })
                             .catch(err => {
-                              // logger.serverLog(TAG, `Failed to fetch plan usage ${JSON.stringify(err)}`)
-                              console.log(`Failed to fetch plan usage ${JSON.stringify(err)}`)
+                              logger.serverLog(TAG, `Failed to fetch plan usage ${JSON.stringify(err)}`)
                             })
                         })
                         .catch(err => {
-                          // logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
-                          console.log(`Failed to fetch company ${JSON.stringify(err)}`)
+                          logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
                         })
                     } else {
                       if (!subscriber.isSubscribed) {
@@ -204,26 +193,22 @@ exports.subscriber = function (req, res) {
                     }
                   })
                   .catch(err => {
-                    // logger.serverLog(TAG, `Failed to fetch subscriber ${err}`)
-                    console.log(`Failed to fetch subscriber ${err}`)
+                    logger.serverLog(TAG, `Failed to fetch subscriber ${err}`)
                   })
               } else {
                 if (error) {
-                  // logger.serverLog(TAG, `ERROR in fetching subscriber info ${JSON.stringify(error)}`)
-                  console.log(`ERROR in fetching subscriber info ${JSON.stringify(error)}`)
+                  logger.serverLog(TAG, `ERROR in fetching subscriber info ${JSON.stringify(error)}`)
                 }
               }
             })
           })
       })
       .catch(err => {
-        // logger.serverLog(TAG, `Failed to fetch pages ${JSON.stringify(err)}`)
-        console.log(`Failed to fetch pages ${JSON.stringify(err)}`)
+        logger.serverLog(TAG, `Failed to fetch pages ${JSON.stringify(err)}`)
       })
   }
 }
 function updateList (phoneNumber, sender, page) {
-  console.log('in updateList')
   callApi(`phone/query`, 'post', {number: phoneNumber, hasSubscribed: true, pageId: page, companyId: page.companyId})
     .then(number => {
       if (number.length > 0) {
@@ -255,13 +240,11 @@ function updateList (phoneNumber, sender, page) {
     })
 }
 function createSession (page, subscriber, event) {
-  console.log('in createSession')
   callApi(`companyprofile/query`, 'post', {_id: page.companyId})
     .then(company => {
       if (!(company.automated_options === 'DISABLE_CHAT')) {
         Sessions.findOne({ page_id: page._id, subscriber_id: subscriber._id },
           (err, session) => {
-            console.log(`found session ${util.inspect(session)}`)
             if (err) logger.serverLog(TAG, err)
             if (session === null) {
               callApi(`featureUsage/planQuery`, 'post', {planId: company.planId})
@@ -313,12 +296,10 @@ function createSession (page, subscriber, event) {
       }
     })
     .catch(err => {
-      // logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
-      console.log(`Failed to fetch company ${JSON.stringify(err)}`)
+      logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
     })
 }
 function saveLiveChat (page, subscriber, session, event) {
-  console.log('in saveLiveChat')
   let chatPayload = {
     format: 'facebook',
     sender_id: subscriber._id,
@@ -391,7 +372,6 @@ function saveLiveChat (page, subscriber, session, event) {
 }
 
 function saveChatInDb (page, session, chatPayload, subscriber, event) {
-  console.log('in saveChatInDb')
   let newChat = new LiveChat(chatPayload)
   newChat.save((err, chat) => {
     if (err) return logger.serverLog(TAG, err)
