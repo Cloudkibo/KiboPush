@@ -34,6 +34,7 @@ exports.serverLog = function (label, data, hideFromProduction) {
       logger.info(`${namespace} - ${data}`)
     }
   }
+  console.log(data)
 }
 
 exports.clientLog = function (label, data) {
