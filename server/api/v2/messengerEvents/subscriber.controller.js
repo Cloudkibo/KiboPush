@@ -330,7 +330,7 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-  Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
+  Bots.findOne({ 'pageId': page._id.toString() }, (err, bot) => {
     if (err) {
       logger.serverLog(TAG, err)
     }
