@@ -880,10 +880,12 @@ exports.send = function (req, res) {
                           `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                         }
                         if (subscribers.length > 0) {
+                          logger.serverLog(TAG, `subscribers.length : ${JSON.stringify(subscribers.length)}`)
                           utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                             subscribers = taggedSubscribers
                             utility.applyPollFilterIfNecessary(req, subscribers, (repliedSubscribers) => {
                               subscribers = repliedSubscribers
+                              logger.serverLog(TAG, `subscribers.length after : ${JSON.stringify(subscribers.length)}`)
                               for (let j = 0; j < subscribers.length && !abort; j++) {
                                 CompanyUsage.update({companyId: companyUser.companyId},
                                   { $inc: { polls: 1 } }, (err, updated) => {
