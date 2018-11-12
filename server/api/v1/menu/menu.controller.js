@@ -145,7 +145,6 @@ exports.create = function (req, res) {
                 }
               })
               const requestUrl = `https://graph.facebook.com/v2.6/me/messenger_profile?access_token=${page.accessToken}`
-
               needle.request('post', requestUrl, req.body.payload, {json: true},
                 (err, resp) => {
                   if (err) {

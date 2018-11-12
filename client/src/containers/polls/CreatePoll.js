@@ -242,6 +242,21 @@ class CreatePoll extends React.Component {
       }
     }
   }
+
+  doesPageHaveSubscribers (pageId) {
+    console.log('doesPageHaveSubscribers pageId', pageId[0])
+    if (this.props.pages && pageId[0]) {
+      let result = this.props.pages.find(page => {
+        return page._id === pageId[0]
+      })
+      console.log('doesPageHaveSubscribers result', result)
+      if (result) {
+        return result.subscribers > 0
+      }
+    }
+    return false
+  }
+
   render () {
     // const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -417,7 +432,9 @@ class CreatePoll extends React.Component {
                   </div>
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
-                      <button className='btn btn-primary'
+                      <button
+                        disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                        className='btn btn-primary'
                         onClick={() => {
                           this.checkValidation()
                         }}> Create Poll

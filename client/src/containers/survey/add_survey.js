@@ -554,6 +554,21 @@ class AddSurvey extends React.Component {
       }
     }
   }
+
+  doesPageHaveSubscribers (pageId) {
+    console.log('doesPageHaveSubscribers pageId', pageId[0])
+    if (this.props.pages && pageId[0]) {
+      let result = this.props.pages.find(page => {
+        return page._id === pageId[0]
+      })
+      console.log('doesPageHaveSubscribers result', result)
+      if (result) {
+        return result.subscribers > 0
+      }
+    }
+    return false
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -657,12 +672,14 @@ class AddSurvey extends React.Component {
                                 </button>
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => {
-                                  this.createSurvey()
-                                  this.props.history.push({
-                                    pathname: '/surveys'
-                                  })
-                                }}>
+                                <button className='btn btn-primary'
+                                  disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                                  onClick={() => {
+                                    this.createSurvey()
+                                    this.props.history.push({
+                                      pathname: '/surveys'
+                                    })
+                                  }}>
                                   Save
                                 </button>
                               </div>
