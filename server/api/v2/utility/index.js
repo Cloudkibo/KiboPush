@@ -5,9 +5,17 @@ const TAG = 'api/v2/utility/index.js'
 const util = require('util')
 
 exports.callApi = (endpoint, method = 'get', body, token, type = 'accounts') => {
-  let headers = {
-    'content-type': 'application/json',
-    'Authorization': token
+  let headers = {}
+  if (token) {
+    headers = {
+      'content-type': 'application/json',
+      'Authorization': token
+    }
+  } else {
+    headers = {
+      'content-type': 'application/json',
+      'is_kibo_product': true
+    }
   }
   let uri = ''
   if (type === 'demoApp') {
