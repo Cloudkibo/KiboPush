@@ -199,7 +199,7 @@ exports.subscriber = function (req, res) {
                       }
                       if (!(event.postback &&
                         event.postback.title === 'Get Started')) {
-                        createSession(page, subsriber, event)
+                        createSession(page, subscriber, event)
                       }
                     }
                   })
