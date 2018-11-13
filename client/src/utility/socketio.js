@@ -15,6 +15,9 @@ import { loadTags } from './../redux/actions/tags.actions'
 import { loadSubscribersList } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 
+let url = window.location.hostname
+console.log('url for SOCKET to connect ', url)
+
 const socket = io('')
 let store
 
