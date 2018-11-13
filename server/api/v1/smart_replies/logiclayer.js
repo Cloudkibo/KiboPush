@@ -19,9 +19,9 @@ const downloadVideo = (data) => {
     // let stream
 
     video.on('info', (info) => {
-      logger.serverLog(TAG, 'Download started')
-      logger.serverLog(TAG, 'filename: ' + info.filename)
-      logger.serverLog(TAG, 'size: ' + info.size)
+      console.log('Download started')
+      console.log('filename: ' + info.filename)
+      console.log('size: ' + info.size)
       // let size = info.size
       // if (size < 25000000) {
       //   stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
@@ -35,22 +35,21 @@ const downloadVideo = (data) => {
       // } else {
       //   resolve('ERR_LIMIT_REACHED')
       // }
-    })
-
-    let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
-    video.on('data', (chunk) => {
-      downloaded += chunk
-      if (downloaded > 5000000) {
+      let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
+      video.on('data', (chunk) => {
+        downloaded += chunk
+        if (downloaded > 5000000) {
+          stream.end()
+          resolve(`${dir}/bot-video.mp4`)
+        }
+      })
+      stream.on('error', (error) => {
         stream.end()
+        reject(util.inspect(error))
+      })
+      stream.on('finish', () => {
         resolve(`${dir}/bot-video.mp4`)
-      }
-    })
-    stream.on('error', (error) => {
-      stream.end()
-      reject(util.inspect(error))
-    })
-    stream.on('finish', () => {
-      resolve(`${dir}/bot-video.mp4`)
+      })
     })
   })
 }
@@ -61,7 +60,7 @@ const uploadVideo = (data) => {
       `https://graph.facebook.com/v2.10/${data.pageId}?fields=access_token&access_token=${data.userAccessToken}`,
       (err, resp2) => {
         if (err) {
-          logger.serverLog(TAG, `Failed to get page access_token ${JSON.stringify(err)}`)
+          console.log(`Failed to get page access_token ${JSON.stringify(err)}`)
           reject(util.inspect(err))
         }
         let pageAccessToken = resp2.body.access_token
@@ -86,10 +85,10 @@ const uploadVideo = (data) => {
           },
           function (err, resp) {
             if (err) {
-              logger.serverLog(TAG, `Failed to upload attachment on Facebook ${JSON.stringify(err)}`)
+              console.log(`Failed to upload attachment on Facebook ${JSON.stringify(err)}`)
               reject(util.inspect(err))
             } else {
-              logger.serverLog(TAG, `video uploaded on Facebook ${JSON.stringify(resp.body)}`)
+              console.log(`video uploaded on Facebook ${JSON.stringify(resp.body)}`)
               resolve(resp.body.attachment_id)
             }
           })
@@ -186,7 +185,7 @@ exports.getMessageData = (data) => {
 }
 
 exports.updatePayloadForVideo = (botId, payload) => {
-  logger.serverLog(TAG, `payload receieved ${JSON.stringify(payload)}`)
+  console.log(`payload receieved ${JSON.stringify(payload)}`)
   return new Promise((resolve, reject) => {
     /* eslint-disable no-useless-escape */
     let videoRegex = new RegExp(`^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}`, 'g')
@@ -205,13 +204,13 @@ exports.updatePayloadForVideo = (botId, payload) => {
           let fetchedPage = fetchPage(botId)
 
           fetchedPage.then(result => {
-            logger.serverLog(TAG, `fetchedPage result: ${JSON.stringify(result)}`)
+            console.log(`fetchedPage result: ${JSON.stringify(result)}`)
             data.userAccessToken = result.userId.facebookInfo.fbToken
             data.pageId = result.pageId
             return downloadVideo(data)
           })
           .then(path => {
-            logger.serverLog(TAG, `downloadVideo response ${util.inspect(path)}`)
+            console.log(`downloadVideo response ${util.inspect(path)}`)
             if (path === 'ERR_LIMIT_REACHED') {
               payload[i].videoLink = payload[i].answer
               return path
@@ -232,7 +231,7 @@ exports.updatePayloadForVideo = (botId, payload) => {
           .then(result => {
             logger.serverLog(TAG, result)
             if (i === (payload.length - 1)) {
-              logger.serverLog(TAG, `returning updated payload ${JSON.stringify(payload)}`)
+              console.log(`returning updated payload ${JSON.stringify(payload)}`)
               resolve(payload)
             }
           })
@@ -243,13 +242,13 @@ exports.updatePayloadForVideo = (botId, payload) => {
         } else {
           payload[i].videoLink = payload[i].answer
           if (i === (payload.length - 1)) {
-            logger.serverLog(TAG, `returning updated payload ${JSON.stringify(payload)}`)
+            console.log(`returning updated payload ${JSON.stringify(payload)}`)
             resolve(payload)
           }
         }
       } else {
         if (i === (payload.length - 1)) {
-          logger.serverLog(TAG, `returning updated payload ${JSON.stringify(payload)}`)
+          console.log(`returning updated payload ${JSON.stringify(payload)}`)
           resolve(payload)
         }
       }
