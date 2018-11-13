@@ -17,7 +17,7 @@ exports.subscriber = function (req, res) {
     status: 'success',
     description: `received the payload`
   })
-  logger.serverLog(TAG, `in subscriber ${JSON.stringify(req.body)}`)
+  console.log(`in subscriber ${JSON.stringify(req.body)}`)
   let phoneNumber = ''
   let subscriberSource = 'direct_message'
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
@@ -47,7 +47,7 @@ exports.subscriber = function (req, res) {
           `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
           (err, resp2) => {
             if (err) {
-              logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+              console.log(`ERROR ${JSON.stringify(err)}`)
             }
             let pageAccessToken = resp2.body.access_token
             const options = {
@@ -57,7 +57,7 @@ exports.subscriber = function (req, res) {
 
             }
             needle.get(options.url, options, (error, response) => {
-              logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
+              console.log(`Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
               const subsriber = response.body
               if (!error && !response.error) {
                 if (event.sender && event.recipient && event.postback &&
@@ -65,7 +65,7 @@ exports.subscriber = function (req, res) {
                   event.postback.payload === '<GET_STARTED_PAYLOAD>') {
                   if (page.welcomeMessage &&
                     page.isWelcomeMessageEnabled) {
-                    logger.serverLog(TAG, `Going to send welcome message`)
+                    console.log(`Going to send welcome message`)
                     broadcastUtility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name)
                   }
                 }
@@ -162,20 +162,20 @@ exports.subscriber = function (req, res) {
                                           })
                                       })
                                       .catch(err => {
-                                        logger.serverLog(TAG, `Failed to create subscriber ${JSON.stringify(err)}`)
+                                        console.log(`Failed to create subscriber ${JSON.stringify(err)}`)
                                       })
                                   }
                                 })
                                 .catch(err => {
-                                  logger.serverLog(TAG, `Failed to fetch company usage ${JSON.stringify(err)}`)
+                                  console.log(`Failed to fetch company usage ${JSON.stringify(err)}`)
                                 })
                             })
                             .catch(err => {
-                              logger.serverLog(TAG, `Failed to fetch plan usage ${JSON.stringify(err)}`)
+                              console.log(`Failed to fetch plan usage ${JSON.stringify(err)}`)
                             })
                         })
                         .catch(err => {
-                          logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
+                          console.log(`Failed to fetch company ${JSON.stringify(err)}`)
                         })
                     } else {
                       if (!subscriber.isSubscribed) {
@@ -193,18 +193,18 @@ exports.subscriber = function (req, res) {
                     }
                   })
                   .catch(err => {
-                    logger.serverLog(TAG, `Failed to fetch subscriber ${err}`)
+                    console.log(`Failed to fetch subscriber ${err}`)
                   })
               } else {
                 if (error) {
-                  logger.serverLog(TAG, `ERROR in fetching subscriber info ${JSON.stringify(error)}`)
+                  console.log(`ERROR in fetching subscriber info ${JSON.stringify(error)}`)
                 }
               }
             })
           })
       })
       .catch(err => {
-        logger.serverLog(TAG, `Failed to fetch pages ${JSON.stringify(err)}`)
+        console.log(`Failed to fetch pages ${JSON.stringify(err)}`)
       })
   }
 }
