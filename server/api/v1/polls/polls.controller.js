@@ -779,6 +779,7 @@ exports.send = function (req, res) {
                                                         `Error occured at subscriber :${JSON.stringify(
                                                           subscribers[j])}`)
                                                     }
+                                                    logger.serverLog('Response from Poll Send', resp)
                                                     let pollBroadcast = new PollPage({
                                                       pageId: pages[z].pageId,
                                                       userId: req.user._id,
@@ -922,6 +923,7 @@ exports.send = function (req, res) {
                                                   `Error occured at subscriber :${JSON.stringify(
                                                     subscribers[j])}`)
                                               }
+                                              logger.serverLog('Response from Poll Send', resp)
                                               let pollBroadcast = new PollPage({
                                                 pageId: pages[z].pageId,
                                                 userId: req.user._id,
