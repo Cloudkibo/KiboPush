@@ -334,7 +334,9 @@ function fetchPages (url, user, req, token) {
     const data = resp.body.data
     const cursor = resp.body.paging
     if (data) {
+      console.log('Page data', data)
       data.forEach((item) => {
+        console.log('Page Item', item)
         // logger.serverLog(TAG,
         //   `foreach ${JSON.stringify(item.name)}`)
         //  createMenuForPage(item)
