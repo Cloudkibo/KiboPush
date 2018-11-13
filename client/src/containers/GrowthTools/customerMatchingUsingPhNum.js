@@ -431,9 +431,7 @@ class CustomerMatching extends React.Component {
       var customerLists = []
       for (var i = 0; i < nextProps.customerLists.length; i++) {
         var list = nextProps.customerLists[i]
-        if (list.initialList) {
-          customerLists.push(list)
-        }
+        customerLists.push(list)
       }
       this.setState({
         customerLists: customerLists
