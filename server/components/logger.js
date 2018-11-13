@@ -26,7 +26,6 @@ exports.serverLog = function (label, data, hideFromProduction) {
 
   if (config.env === 'development' || config.env === 'test') {
     debug(data)
-    console.log(data)
     // todo use log levels like info, warn, error and debug
     // logger.info(`${namespace} - ${data}`)
   } else {
@@ -34,6 +33,7 @@ exports.serverLog = function (label, data, hideFromProduction) {
       logger.info(`${namespace} - ${data}`)
     }
   }
+  console.log(data)
 }
 
 exports.clientLog = function (label, data) {
