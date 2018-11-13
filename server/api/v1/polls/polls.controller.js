@@ -773,13 +773,13 @@ exports.send = function (req, res) {
                                         needle.post(
                                           `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                                   data, (err, resp) => {
+                                                    logger.serverLog(TAG, 'Response from Poll Send', resp.body)
                                                     if (err) {
                                                       logger.serverLog(TAG, err)
                                                       logger.serverLog(TAG,
                                                         `Error occured at subscriber :${JSON.stringify(
                                                           subscribers[j])}`)
                                                     }
-                                                    logger.serverLog('Response from Poll Send', resp)
                                                     let pollBroadcast = new PollPage({
                                                       pageId: pages[z].pageId,
                                                       userId: req.user._id,
@@ -917,13 +917,14 @@ exports.send = function (req, res) {
                                           needle.post(
                                             `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                             data, (err, resp) => {
+                                              logger.serverLog(TAG, 'Response from Poll Send', resp.body)
                                               if (err) {
                                                 logger.serverLog(TAG, err)
                                                 logger.serverLog(TAG,
                                                   `Error occured at subscriber :${JSON.stringify(
                                                     subscribers[j])}`)
                                               }
-                                              logger.serverLog('Response from Poll Send', resp)
+                                              logger.serverLog(TAG, 'Response from Poll Send', resp.body)
                                               let pollBroadcast = new PollPage({
                                                 pageId: pages[z].pageId,
                                                 userId: req.user._id,
