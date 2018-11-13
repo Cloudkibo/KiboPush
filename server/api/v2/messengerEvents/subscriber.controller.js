@@ -43,12 +43,14 @@ exports.subscriber = function (req, res) {
               logger.serverLog(TAG, `Failed to update phone number ${JSON.stringify(err)}`)
             })
         }
+        console.log(`${JSON.stringify(page)}`)
         needle.get(
           `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
           (err, resp2) => {
             if (err) {
               console.log(`ERROR ${JSON.stringify(err)}`)
             }
+            console.log(`${JSON.stringify(resp2.body)}`)
             let pageAccessToken = resp2.body.access_token
             const options = {
               url: `https://graph.facebook.com/v2.6/${sender}?access_token=${pageAccessToken}`,
