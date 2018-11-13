@@ -14,6 +14,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
+import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 
 class CreatePoll extends React.Component {
@@ -243,20 +244,6 @@ class CreatePoll extends React.Component {
     }
   }
 
-  doesPageHaveSubscribers (pageId) {
-    console.log('doesPageHaveSubscribers pageId', pageId[0])
-    if (this.props.pages && pageId[0]) {
-      let result = this.props.pages.find(page => {
-        return page._id === pageId[0]
-      })
-      console.log('doesPageHaveSubscribers result', result)
-      if (result) {
-        return result.subscribers > 0
-      }
-    }
-    return false
-  }
-
   render () {
     // const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -433,7 +420,7 @@ class CreatePoll extends React.Component {
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
                       <button
-                        disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
                         className='btn btn-primary'
                         onClick={() => {
                           this.checkValidation()

@@ -15,6 +15,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from '../polls/utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {loadTags} from '../../redux/actions/tags.actions'
+import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 
 class AddSurvey extends React.Component {
@@ -555,20 +556,6 @@ class AddSurvey extends React.Component {
     }
   }
 
-  doesPageHaveSubscribers (pageId) {
-    console.log('doesPageHaveSubscribers pageId', pageId[0])
-    if (this.props.pages && pageId[0]) {
-      let result = this.props.pages.find(page => {
-        return page._id === pageId[0]
-      })
-      console.log('doesPageHaveSubscribers result', result)
-      if (result) {
-        return result.subscribers > 0
-      }
-    }
-    return false
-  }
-
   render () {
     var alertOptions = {
       offset: 14,
@@ -673,7 +660,7 @@ class AddSurvey extends React.Component {
                               </div>
                               <div style={{display: 'inline-block', padding: '5px'}}>
                                 <button className='btn btn-primary'
-                                  disabled={!this.doesPageHaveSubscribers(this.state.pageValue) ? true : null}
+                                  disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
                                   onClick={() => {
                                     this.createSurvey()
                                     this.props.history.push({
