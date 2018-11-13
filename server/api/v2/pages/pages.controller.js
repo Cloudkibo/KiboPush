@@ -194,7 +194,7 @@ exports.enable = function (req, res) {
               if (resp.body.is_published === false) {
                 return res.status(404).json({
                   status: 'failed',
-                  payload: 'Page is not published.'
+                  description: 'Page is not published.'
                 })
               } else {
                 utility.callApi(`pages/${page._id}/connect`, 'get', {}, req.headers.authorization) // fetch connected page
