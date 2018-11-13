@@ -400,7 +400,7 @@ exports.upload = function (req, res) {
 }
 
 exports.download = function (req, res) {
-  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles')
+  let dir = path.resolve(__dirname, '../../../../broadcastFiles/userfiles')
   try {
     res.sendfile(req.params.id, {root: dir})
   } catch (err) {

@@ -10,7 +10,7 @@ router.get('/',
   auth.isAuthenticated(),
   controller.index)
 
-router.get('/indexByPage/:id',
+router.post('/indexByPage',
   auth.isAuthenticated(),
   controller.indexByPage)
 

@@ -71,7 +71,7 @@ class WelcomeMessage extends React.Component {
   gotoEdit (page) {
     browserHistory.push({
       pathname: `/editWelcomeMessage`,
-      state: {module: 'welcome', _id: page._id, payload: page.welcomeMessage}
+      state: {module: 'welcome', pages: [page._id], payload: page.welcomeMessage}
     })
   }
 

@@ -17,7 +17,7 @@ exports.subscriber = function (req, res) {
     status: 'success',
     description: `received the payload`
   })
-  logger.serverLog(TAG, `in subscriber ${JSON.stringify(req.body)}`)
+  console.log(`in subscriber ${JSON.stringify(req.body)}`)
   let phoneNumber = ''
   let subscriberSource = 'direct_message'
   for (let i = 0; i < req.body.entry[0].messaging.length; i++) {
@@ -31,181 +31,182 @@ exports.subscriber = function (req, res) {
       subscriberSource = 'customer_matching'
       phoneNumber = event.prior_message.identifier
     }
-    callApi(`pages/query`, 'post', { pageId: pageId, connected: true }, req.headers.authorization)
+    callApi(`pages/query`, 'post', { pageId: pageId, connected: true })
       .then(pages => {
-        pages.forEach((page) => {
-          if (subscriberSource === 'customer_matching') {
-            callApi(`phone/update`, 'put', {query: {number: req.body.entry[0].messaging[0].prior_message.identifier, pageId: page._id, companyId: page.companyId}, newPayload: {hasSubscribed: true}, options: {}}, req.headers.authorization)
-              .then(phonenumberupdated => {
-                logger.serverLog(TAG, `phone number updated successfully ${JSON.stringify(phonenumberupdated)}`)
-              })
-              .catch(err => {
-                logger.serverLog(TAG, `Failed to update phone number ${JSON.stringify(err)}`)
-              })
-          }
-          needle.get(
-            `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
-            (err, resp2) => {
-              if (err) {
-                logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-              }
-              let pageAccessToken = resp2.body.access_token
-              const options = {
-                url: `https://graph.facebook.com/v2.6/${sender}?access_token=${pageAccessToken}`,
-                qs: { access_token: page.accessToken },
-                method: 'GET'
+        const page = pages[0]
+        if (subscriberSource === 'customer_matching') {
+          callApi(`phone/update`, 'put', {query: {number: event.prior_message.identifier, pageId: page._id, companyId: page.companyId}, newPayload: {hasSubscribed: true}, options: {}})
+            .then(phonenumberupdated => {
+              logger.serverLog(TAG, `phone number updated successfully ${JSON.stringify(phonenumberupdated)}`)
+            })
+            .catch(err => {
+              logger.serverLog(TAG, `Failed to update phone number ${JSON.stringify(err)}`)
+            })
+        }
+        console.log(`${JSON.stringify(page)}`)
+        needle.get(
+          `https://graph.facebook.com/v2.10/${page.pageId}?fields=access_token&access_token=${page.userId.facebookInfo.fbToken}`,
+          (err, resp2) => {
+            if (err) {
+              console.log(`ERROR ${JSON.stringify(err)}`)
+            }
+            console.log(`${JSON.stringify(resp2.body)}`)
+            let pageAccessToken = resp2.body.access_token
+            const options = {
+              url: `https://graph.facebook.com/v2.6/${sender}?access_token=${pageAccessToken}`,
+              qs: { access_token: page.accessToken },
+              method: 'GET'
 
-              }
-              needle.get(options.url, options, (error, response) => {
-                logger.serverLog(TAG, `Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
-                const subsriber = response.body
-                if (!error && !response.error) {
-                  if (event.sender && event.recipient && event.postback &&
-                    event.postback.payload &&
-                    event.postback.payload === '<GET_STARTED_PAYLOAD>') {
-                    if (page.welcomeMessage &&
-                      page.isWelcomeMessageEnabled) {
-                      logger.serverLog(TAG, `Going to send welcome message`)
-                      broadcastUtility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name)
-                    }
-                  }
-                  const payload = {
-                    firstName: subsriber.first_name,
-                    lastName: subsriber.last_name,
-                    locale: subsriber.locale,
-                    gender: subsriber.gender,
-                    userId: page.userId,
-                    provider: 'facebook',
-                    timezone: subsriber.timezone,
-                    profilePic: subsriber.profile_pic,
-                    companyId: page.companyId,
-                    pageScopedId: '',
-                    email: '',
-                    senderId: sender,
-                    pageId: page._id,
-                    isSubscribed: true
-                  }
-                  if (subscriberSource === 'customer_matching') {
-                    payload.phoneNumber = phoneNumber
-                    payload.source = 'customer_matching'
-                  } else if (subscriberSource === 'chat_plugin') {
-                    payload.source = 'chat_plugin'
-                  }
-                  callApi(`pages/query`, 'post', { _id: page._id, connected: true }, req.headers.authorization)
-                    .then(pageFound => {
-                      pageFound = pageFound[0]
-                      if (subsriber === null) {
-                        // subsriber not found, create subscriber
-                        callApi(`company/${page.companyId}`, 'get', {}, req.headers.authorization)
-                          .then(company => {
-                            callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId}, req.headers.authorization)
-                              .then(planUsage => {
-                                planUsage = planUsage[0]
-                                callApi(`featureUsage/getCompanyUsage`, 'post', {companyId: page.companyId}, req.headers.authorization)
-                                  .then(companyUsage => {
-                                    companyUsage = companyUsage[0]
-                                    if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
-                                      webhookUtility.limitReachedNotification('subscribers', company)
-                                    } else {
-                                      callApi(`subscribers`, 'post', payload, req.headers.authorization)
-                                        .then(subscriberCreated => {
-                                          callApi(`featureUsage/updateCompanyUsage`, 'post', {query: {companyId: page.companyId}, newPayload: { $inc: { subscribers: 1 } }, options: {}}, req.headers.authorization)
-                                            .then(updated => {
-                                              logger.serverLog(TAG, `company usage incremented successfully ${JSON.stringify(err)}`)
-                                            })
-                                            .catch(err => {
-                                              logger.serverLog(TAG, `Failed to update company usage ${JSON.stringify(err)}`)
-                                            })
-                                          callApi(`webhooks/query`, 'post', { pageId: pageId }, req.headers.authorization)
-                                            .then(webhook => {
-                                              if (webhook && webhook.isEnabled) {
-                                                needle.get(webhook.webhook_url, (err, r) => {
-                                                  if (err) {
-                                                    logger.serverLog(TAG, err)
-                                                  } else if (r.statusCode === 200) {
-                                                    if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
-                                                      var data = {
-                                                        subscription_type: 'NEW_SUBSCRIBER',
-                                                        payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
-                                                      }
-                                                      needle.post(webhook.webhook_url, data,
-                                                        (error, response) => {
-                                                          if (error) logger.serverLog(TAG, err)
-                                                        })
-                                                    }
-                                                  } else {
-                                                    webhookUtility.saveNotification(webhook)
-                                                  }
-                                                })
-                                              }
-                                            })
-                                            .catch(err => {
-                                              logger.serverLog(TAG, err)
-                                            })
-                                          if (subscriberSource === 'customer_matching') {
-                                            updateList(phoneNumber, sender, page)
-                                          }
-                                          if (!(event.postback &&
-                                            event.postback.title === 'Get Started')) {
-                                            createSession(page, subscriberCreated, event)
-                                          }
-                                          require('./../../../config/socketio')
-                                            .sendMessageToClient({
-                                              room_id: page.companyId,
-                                              body: {
-                                                action: 'dashboard_updated',
-                                                payload: {
-                                                  subscriber_id: subscriberCreated._id,
-                                                  company_id: page.companyId
-                                                }
-                                              }
-                                            })
-                                        })
-                                        .catch(err => {
-                                          logger.serverLog(TAG, `Failed to create subscriber ${JSON.stringify(err)}`)
-                                        })
-                                    }
-                                  })
-                                  .catch(err => {
-                                    logger.serverLog(TAG, `Failed to fetch company usage ${JSON.stringify(err)}`)
-                                  })
-                              })
-                              .catch(err => {
-                                logger.serverLog(TAG, `Failed to fetch plan usage ${JSON.stringify(err)}`)
-                              })
-                          })
-                          .catch(err => {
-                            logger.serverLog(TAG, `Failed to fetch company ${JSON.stringify(err)}`)
-                          })
-                      } else {
-                        if (!subsriber.isSubscribed) {
-                          // subscribing the subscriber again in case he
-                          // or she unsubscribed and removed chat
-                          callApi(`subscribers/update`, 'put', {query: { senderId: sender }, newPayload: {isSubscribed: true, isEnabledByPage: true}, options: {}}, req.headers.authorization)
-                            .then(subscriber => {
-                              logger.serverLog(TAG, subscriber)
-                            })
-                        }
-                        if (!(event.postback &&
-                          event.postback.title === 'Get Started')) {
-                          createSession(page, subsriber, event)
-                        }
-                      }
-                    })
-                    .catch(err => {
-                      logger.serverLog(TAG, `Failed to update page ${JSON.stringify(err)}`)
-                    })
-                } else {
-                  if (error) {
-                    logger.serverLog(TAG, `ERROR in fetching subscriber info ${JSON.stringify(error)}`)
+            }
+            needle.get(options.url, options, (error, response) => {
+              console.log(`Subscriber response git from facebook: ${JSON.stringify(response.body)}`)
+              const subsriber = response.body
+              if (!error && !response.error) {
+                if (event.sender && event.recipient && event.postback &&
+                  event.postback.payload &&
+                  event.postback.payload === '<GET_STARTED_PAYLOAD>') {
+                  if (page.welcomeMessage &&
+                    page.isWelcomeMessageEnabled) {
+                    console.log(`Going to send welcome message`)
+                    broadcastUtility.getBatchData(page.welcomeMessage, sender, page, sendBroadcast, subsriber.first_name, subsriber.last_name)
                   }
                 }
-              })
+                const payload = {
+                  firstName: subsriber.first_name,
+                  lastName: subsriber.last_name,
+                  locale: subsriber.locale,
+                  gender: subsriber.gender,
+                  userId: page.userId,
+                  provider: 'facebook',
+                  timezone: subsriber.timezone,
+                  profilePic: subsriber.profile_pic,
+                  companyId: page.companyId,
+                  pageScopedId: '',
+                  email: '',
+                  senderId: sender,
+                  pageId: page._id,
+                  isSubscribed: true
+                }
+                if (subscriberSource === 'customer_matching') {
+                  payload.phoneNumber = phoneNumber
+                  payload.source = 'customer_matching'
+                } else if (subscriberSource === 'chat_plugin') {
+                  payload.source = 'chat_plugin'
+                }
+                callApi(`subscribers/query`, 'post', {senderId: sender})
+                  .then(result => {
+                    let subscriber = result[0]
+                    if (!subscriber) {
+                      // subsriber not found, create subscriber
+                      callApi(`companyprofile/query`, 'post', {_id: page.companyId})
+                        .then(company => {
+                          callApi(`featureUsage/planQuery`, 'post', {planId: company.planId})
+                            .then(planUsage => {
+                              planUsage = planUsage[0]
+                              callApi(`featureUsage/companyQuery`, 'post', {companyId: company._id})
+                                .then(companyUsage => {
+                                  companyUsage = companyUsage[0]
+                                  if (planUsage.subscribers !== -1 && companyUsage.subscribers >= planUsage.subscribers) {
+                                    webhookUtility.limitReachedNotification('subscribers', company)
+                                  } else {
+                                    callApi(`subscribers`, 'post', payload)
+                                      .then(subscriberCreated => {
+                                        callApi(`featureUsage/updateCompany`, 'post', {query: {companyId: company._id}, newPayload: { $inc: { subscribers: 1 } }, options: {}})
+                                          .then(updated => {
+                                            logger.serverLog(TAG, `company usage incremented successfully ${JSON.stringify(err)}`)
+                                          })
+                                          .catch(err => {
+                                            logger.serverLog(TAG, `Failed to update company usage ${JSON.stringify(err)}`)
+                                          })
+                                        callApi(`webhooks/query`, 'post', { pageId: pageId })
+                                          .then(webhook => {
+                                            if (webhook && webhook.isEnabled) {
+                                              needle.get(webhook.webhook_url, (err, r) => {
+                                                if (err) {
+                                                  logger.serverLog(TAG, err)
+                                                } else if (r.statusCode === 200) {
+                                                  if (webhook && webhook.optIn.NEW_SUBSCRIBER) {
+                                                    var data = {
+                                                      subscription_type: 'NEW_SUBSCRIBER',
+                                                      payload: JSON.stringify({ subscriber: subsriber, recipient: pageId, sender: sender })
+                                                    }
+                                                    needle.post(webhook.webhook_url, data,
+                                                      (error, response) => {
+                                                        if (error) logger.serverLog(TAG, err)
+                                                      })
+                                                  }
+                                                } else {
+                                                  webhookUtility.saveNotification(webhook)
+                                                }
+                                              })
+                                            }
+                                          })
+                                          .catch(err => {
+                                            logger.serverLog(TAG, err)
+                                          })
+                                        if (subscriberSource === 'customer_matching') {
+                                          updateList(phoneNumber, sender, page)
+                                        }
+                                        if (!(event.postback &&
+                                          event.postback.title === 'Get Started')) {
+                                          createSession(page, subscriberCreated, event)
+                                        }
+                                        require('./../../../config/socketio')
+                                          .sendMessageToClient({
+                                            room_id: page.companyId,
+                                            body: {
+                                              action: 'dashboard_updated',
+                                              payload: {
+                                                subscriber_id: subscriberCreated._id,
+                                                company_id: page.companyId
+                                              }
+                                            }
+                                          })
+                                      })
+                                      .catch(err => {
+                                        console.log(`Failed to create subscriber ${JSON.stringify(err)}`)
+                                      })
+                                  }
+                                })
+                                .catch(err => {
+                                  console.log(`Failed to fetch company usage ${JSON.stringify(err)}`)
+                                })
+                            })
+                            .catch(err => {
+                              console.log(`Failed to fetch plan usage ${JSON.stringify(err)}`)
+                            })
+                        })
+                        .catch(err => {
+                          console.log(`Failed to fetch company ${JSON.stringify(err)}`)
+                        })
+                    } else {
+                      if (!subscriber.isSubscribed) {
+                        // subscribing the subscriber again in case he
+                        // or she unsubscribed and removed chat
+                        callApi(`subscribers/update`, 'put', {query: { senderId: sender }, newPayload: {isSubscribed: true, isEnabledByPage: true}, options: {}})
+                          .then(subscriber => {
+                            logger.serverLog(TAG, subscriber)
+                          })
+                      }
+                      if (!(event.postback &&
+                        event.postback.title === 'Get Started')) {
+                        createSession(page, subscriber, event)
+                      }
+                    }
+                  })
+                  .catch(err => {
+                    console.log(`Failed to fetch subscriber ${err}`)
+                  })
+              } else {
+                if (error) {
+                  console.log(`ERROR in fetching subscriber info ${JSON.stringify(error)}`)
+                }
+              }
             })
-        })
+          })
       })
       .catch(err => {
-        logger.serverLog(TAG, `Failed to fetch pages ${JSON.stringify(err)}`)
+        console.log(`Failed to fetch pages ${JSON.stringify(err)}`)
       })
   }
 }
@@ -241,17 +242,17 @@ function updateList (phoneNumber, sender, page) {
     })
 }
 function createSession (page, subscriber, event) {
-  callApi(`company/${page.companyId}`)
+  callApi(`companyprofile/query`, 'post', {_id: page.companyId})
     .then(company => {
       if (!(company.automated_options === 'DISABLE_CHAT')) {
         Sessions.findOne({ page_id: page._id, subscriber_id: subscriber._id },
           (err, session) => {
             if (err) logger.serverLog(TAG, err)
             if (session === null) {
-              callApi(`featureUsage/getPlanUsage`, 'post', {planId: company.planId})
+              callApi(`featureUsage/planQuery`, 'post', {planId: company.planId})
                 .then(planUsage => {
                   planUsage = planUsage[0]
-                  callApi(`featureUsage/getCompanyUsage`, 'post', {companyId: page.companyId})
+                  callApi(`featureUsage/companyQuery`, 'post', {companyId: page.companyId})
                     .then(companyUsage => {
                       companyUsage = companyUsage[0]
                       if (planUsage.sessions !== -1 && companyUsage.sessions >= planUsage.sessions) {
@@ -265,7 +266,7 @@ function createSession (page, subscriber, event) {
                         newSession.save((err, sessionSaved) => {
                           if (err) logger.serverLog(TAG, err)
                           logger.serverLog(TAG, 'new session created')
-                          callApi(`featureUsage/updateCompanyUsage`, 'put', {query: {companyId: page.companyId}, newPayload: { $inc: { sessions: 1 } }, options: {}})
+                          callApi(`featureUsage/updateCompany`, 'put', {query: {companyId: page.companyId}, newPayload: { $inc: { sessions: 1 } }, options: {}})
                             .then(updated => {
                               logger.serverLog(TAG, `company usage incremented successfully ${JSON.stringify(updated)}`)
                             })
@@ -312,7 +313,7 @@ function saveLiveChat (page, subscriber, session, event) {
     status: 'unseen', // seen or unseen
     payload: event.message
   }
-  Bots.findOne({ 'pageId': subscriber.pageId.toString() }, (err, bot) => {
+  Bots.findOne({ 'pageId': page._id.toString() }, (err, bot) => {
     if (err) {
       logger.serverLog(TAG, err)
     }

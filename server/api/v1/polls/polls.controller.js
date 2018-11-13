@@ -866,12 +866,10 @@ exports.send = function (req, res) {
                         })
                       }
                     }
-
                     Subscribers.find(subscriberFindCriteria, (err, subscribers) => {
                       if (err) {
                         return logger.serverLog(TAG, `error : ${JSON.stringify(err)}`)
                       }
-
                       needle.get(
                       `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                       (err, resp) => {
@@ -915,7 +913,6 @@ exports.send = function (req, res) {
                                         }
                                         if (isLastMessage) {
                                           logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
-                                          console.log('inside poll send,', JSON.stringify(data), resp.body.access_token)
                                           needle.post(
                                             `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
                                             data, (err, resp) => {
@@ -925,7 +922,6 @@ exports.send = function (req, res) {
                                                   `Error occured at subscriber :${JSON.stringify(
                                                     subscribers[j])}`)
                                               }
-                                              console.log('sent poll response', resp.body)
                                               let pollBroadcast = new PollPage({
                                                 pageId: pages[z].pageId,
                                                 userId: req.user._id,
