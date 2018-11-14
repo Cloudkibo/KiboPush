@@ -651,10 +651,12 @@ class AddSurvey extends React.Component {
                             <p>Do you want to send this survey right away or save it for later use? </p>
                             <div style={{width: '100%', textAlign: 'center'}}>
                               <div style={{display: 'inline-block', padding: '5px'}}>
-                                <button className='btn btn-primary' onClick={() => {
-                                  this.closeDialog()
-                                  this.goToSend()
-                                }}>
+                                <button className='btn btn-primary'
+                                  disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                                  onClick={() => {
+                                    this.closeDialog()
+                                    this.goToSend()
+                                  }}>
                                   Send
                                 </button>
                               </div>
@@ -733,6 +735,7 @@ class AddSurvey extends React.Component {
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right'}}>
                       <button className='btn btn-primary'
+                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
                         onClick={this.checkValidation}> Create Survey
                       </button>
                       <Link
