@@ -387,7 +387,7 @@ class Subscriber extends React.Component {
     document.title = 'KiboPush | Subscribers'
     let filterStatusValue = ''
     if (this.props.location.state) {
-      let pageId = this.props.location.state.page._id
+      let pageId = this.props.location.state.page.pageId
       this.setState({filterPage: pageId})
       if (this.props.location.state.filterStatus === 'subscribed') {
         filterStatusValue = true
