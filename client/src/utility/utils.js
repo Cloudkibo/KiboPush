@@ -21,6 +21,7 @@ export function isWebURL (value) {
 }
 
 export function doesPageHaveSubscribers (pages, pageId) {
+  console.log('doesPageHaveSubscribers pages', pages)
   console.log('doesPageHaveSubscribers pageId', pageId)
   if (pages && pageId[0]) {
     let result = pages.find(page => {
