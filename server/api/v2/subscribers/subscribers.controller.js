@@ -109,6 +109,7 @@ exports.getAll = function (req, res) {
     let criterias = logicLayer.getCriterias(req.body, companyuser)
     utility.callApi(`subscribers/aggregate`, 'post', criterias.countCriteria, req.headers.authorization) // fetch subscribers count
     .then(count => {
+      console.log(`Subscriber Count ${JSON.stringify(count)}`)
       utility.callApi(`subscribers/aggregate`, 'post', criterias.fetchCriteria, req.headers.authorization) // fetch subscribers
       .then(subscribers => {
         let subscriberIds = logicLayer.getSubscriberIds(subscribers)
