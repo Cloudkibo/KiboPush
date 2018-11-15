@@ -692,12 +692,15 @@ exports.send = function (req, res) {
                               }
 
                               needle.get(
-                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}`,
                               (err, resp) => {
+                                let accessToken = resp.body.accessToken
                                 if (err) {
                                   logger.serverLog(TAG,
-                                  `Page access token from graph api error ${JSON.stringify(
-                                  err)}`)
+                                  `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                                }
+                                if (!accessToken) {
+                                  accessToken = pages[z].accessToken
                                 }
                                 utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                   subscribers = taggedSubscribers
@@ -745,8 +748,9 @@ exports.send = function (req, res) {
                                               if (isLastMessage) {
                                                 logger.serverLog(TAG, 'inside suvery send' + JSON.stringify(data))
                                                 needle.post(
-                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                 data, (err, resp) => {
+                                                  console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                   if (err) {
                                                     return res.status(500).json({
                                                       status: 'failed',
@@ -844,12 +848,15 @@ exports.send = function (req, res) {
                             }
 
                             needle.get(
-                            `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                            `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}`,
                             (err, resp) => {
+                              let accessToken = resp.body.accessToken
                               if (err) {
                                 logger.serverLog(TAG,
-                                `Page access token from graph api error ${JSON.stringify(
-                                err)}`)
+                                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                              }
+                              if (!accessToken) {
+                                accessToken = pages[z].accessToken
                               }
                               utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                 subscribers = taggedSubscribers
@@ -898,8 +905,9 @@ exports.send = function (req, res) {
                                             if (isLastMessage) {
                                               logger.serverLog(TAG, 'inside send survey' + JSON.stringify(data))
                                               needle.post(
-                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                 data, (err, resp) => {
+                                                  console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                   if (err) {
                                                     return res.status(500).json({
                                                       status: 'failed',
@@ -1290,12 +1298,15 @@ exports.sendSurvey = function (req, res) {
                                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                                 }
                                 needle.get(
-                                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}`,
                                 (err, resp) => {
+                                  let accessToken = resp.body.accessToken
                                   if (err) {
                                     logger.serverLog(TAG,
-                                    `Page access token from graph api error ${JSON.stringify(
-                                    err)}`)
+                                    `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                                  }
+                                  if (!accessToken) {
+                                    accessToken = pages[z].accessToken
                                   }
                                   utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                     subscribers = taggedSubscribers
@@ -1345,8 +1356,9 @@ exports.sendSurvey = function (req, res) {
                                                 if (isLastMessage) {
                                                   logger.serverLog(TAG, 'inside direct survey send' + JSON.stringify(data))
                                                   needle.post(
-                                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                     data, (err, resp) => {
+                                                      console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                       if (err) {
                                                         return res.status(500).json({
                                                           status: 'failed',
@@ -1431,12 +1443,15 @@ exports.sendSurvey = function (req, res) {
                               }
 
                               needle.get(
-                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
+                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}}`,
                               (err, resp) => {
+                                let accessToken = resp.body.accessToken
                                 if (err) {
                                   logger.serverLog(TAG,
-                                  `Page access token from graph api error ${JSON.stringify(
-                                  err)}`)
+                                  `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                                }
+                                if (!accessToken) {
+                                  accessToken = pages[z].accessToken
                                 }
                                 utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                   subscribers = taggedSubscribers
@@ -1486,8 +1501,9 @@ exports.sendSurvey = function (req, res) {
                                               if (isLastMessage) {
                                                 logger.serverLog(TAG, 'inside direct survey sendd' + JSON.stringify(data))
                                                 needle.post(
-                                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                   data, (err, resp) => {
+                                                    console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                     if (err) {
                                                       return res.status(500).json({
                                                         status: 'failed',
