@@ -732,9 +732,13 @@ exports.send = function (req, res) {
                         needle.get(
                         `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                         (err, resp) => {
+                          let accessToken = resp.body.accessToken
                           if (err) {
                             logger.serverLog(TAG,
                             `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                          }
+                          if (!accessToken) {
+                            accessToken = pages[z].accessToken
                           }
                           utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                             subscribers = taggedSubscribers
@@ -771,7 +775,7 @@ exports.send = function (req, res) {
                                       if (isLastMessage) {
                                         logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
                                         needle.post(
-                                          `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                          `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                   data, (err, resp) => {
                                                     logger.serverLog(TAG, 'Response from Poll Send' + JSON.stringify(resp.body))
                                                     if (err) {
@@ -874,9 +878,13 @@ exports.send = function (req, res) {
                       needle.get(
                       `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                       (err, resp) => {
+                        let accessToken = resp.body.accessToken
                         if (err) {
                           logger.serverLog(TAG,
                           `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                        }
+                        if (!accessToken) {
+                          accessToken = pages[z].accessToken
                         }
                         if (subscribers.length > 0) {
                           utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
@@ -915,7 +923,7 @@ exports.send = function (req, res) {
                                         if (isLastMessage) {
                                           logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
                                           needle.post(
-                                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                            `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                             data, (err, resp) => {
                                               logger.serverLog(TAG, 'Response from Poll Send' + JSON.stringify(resp.body))
                                               if (err) {
@@ -1331,9 +1339,13 @@ exports.sendPoll = function (req, res) {
                           needle.get(
                           `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                           (err, resp) => {
+                            let accessToken = resp.body.accessToken
                             if (err) {
                               logger.serverLog(TAG,
                               `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                            }
+                            if (!accessToken) {
+                              accessToken = pages[z].accessToken
                             }
                             utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                               subscribers = taggedSubscribers
@@ -1371,7 +1383,7 @@ exports.sendPoll = function (req, res) {
                                         if (isLastMessage) {
                                           logger.serverLog(TAG, 'inside direct poll send' + JSON.stringify(data))
                                           needle.post(
-                                            `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                            `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                             data, (err, resp) => {
                                               if (err) {
                                                 logger.serverLog(TAG, err)
@@ -1458,9 +1470,13 @@ exports.sendPoll = function (req, res) {
                         needle.get(
                         `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                         (err, resp) => {
+                          let accessToken = resp.body.accessToken
                           if (err) {
                             logger.serverLog(TAG,
                             `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                          }
+                          if (!accessToken) {
+                            accessToken = pages[z].accessToken
                           }
                           if (subscribers.length > 0) {
                             utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
@@ -1500,7 +1516,7 @@ exports.sendPoll = function (req, res) {
                                           if (isLastMessage) {
                                             logger.serverLog(TAG, 'inside direct poll sendd', JSON.stringify(data))
                                             needle.post(
-                                              `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                              `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                               data, (err, resp) => {
                                                 if (err) {
                                                   logger.serverLog(TAG, err)
