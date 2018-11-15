@@ -462,6 +462,7 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
+    console.log('customerMatchingUsingPhNum state', this.state)
     var alertOptions = {
       offset: 14,
       position: 'top right',
