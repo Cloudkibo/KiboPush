@@ -199,6 +199,7 @@ exports.enable = function (req, res) {
               } else {
                 utility.callApi(`pages/${page._id}/connect`, 'get', {}, req.headers.authorization) // fetch connected page
                 .then(pageConnected => {
+                  console.log('pageConnected', pageConnected)
                   if (pageConnected !== {}) {
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(connectPage => {
