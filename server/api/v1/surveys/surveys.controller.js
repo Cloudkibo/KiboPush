@@ -694,11 +694,11 @@ exports.send = function (req, res) {
                               needle.get(
                               `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                               (err, resp) => {
-                                let accessToken = resp.body.accessToken
                                 if (err) {
                                   logger.serverLog(TAG,
                                   `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                                 }
+                                let accessToken = resp.body.accessToken
                                 if (!accessToken) {
                                   accessToken = pages[z].accessToken
                                 }
@@ -850,11 +850,11 @@ exports.send = function (req, res) {
                             needle.get(
                             `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                             (err, resp) => {
-                              let accessToken = resp.body.accessToken
                               if (err) {
                                 logger.serverLog(TAG,
                                 `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                               }
+                              let accessToken = resp.body.accessToken
                               if (!accessToken) {
                                 accessToken = pages[z].accessToken
                               }
@@ -1300,11 +1300,11 @@ exports.sendSurvey = function (req, res) {
                                 needle.get(
                                 `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                                 (err, resp) => {
-                                  let accessToken = resp.body.accessToken
                                   if (err) {
                                     logger.serverLog(TAG,
                                     `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                                   }
+                                  let accessToken = resp.body.accessToken
                                   if (!accessToken) {
                                     accessToken = pages[z].accessToken
                                   }
@@ -1445,11 +1445,11 @@ exports.sendSurvey = function (req, res) {
                               needle.get(
                               `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                               (err, resp) => {
-                                let accessToken = resp.body.accessToken
                                 if (err) {
                                   logger.serverLog(TAG,
                                   `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                                 }
+                                let accessToken = resp.body.accessToken
                                 if (!accessToken) {
                                   accessToken = pages[z].accessToken
                                 }
