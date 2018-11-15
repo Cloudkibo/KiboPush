@@ -370,8 +370,8 @@ class Sidebar extends Component {
   }
 
   showSurveysItem () {
-    if (true) {
-      if (true) {
+    if (this.props.user) {
+      if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/surveys' className='m-menu__link'>
