@@ -200,7 +200,8 @@ exports.enable = function (req, res) {
                 utility.callApi(`pages/query`, 'post', {pageId: req.body.pageId, connected: true}, req.headers.authorization) // fetch connected page
                 .then(pageConnected => {
                   console.log('pageConnected', pageConnected)
-                  if (pageConnected !== {}) {
+                  console.log('pageConnected.length', pageConnected.length)
+                  if (pageConnected.length === 0) {
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(connectPage => {
                       utility.callApi(`featureUsage/updateCompany`, 'put', {
