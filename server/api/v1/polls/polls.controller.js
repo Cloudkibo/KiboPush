@@ -736,6 +736,9 @@ exports.send = function (req, res) {
                             logger.serverLog(TAG,
                             `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                           }
+                          if (!resp) {
+                            resp = pages[z].accessToken
+                          }
                           utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                             subscribers = taggedSubscribers
                             for (let j = 0; j < subscribers.length && !abort; j++) {
@@ -877,6 +880,9 @@ exports.send = function (req, res) {
                         if (err) {
                           logger.serverLog(TAG,
                           `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                        }
+                        if (!resp) {
+                          resp = pages[z].accessToken
                         }
                         if (subscribers.length > 0) {
                           utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
@@ -1335,6 +1341,9 @@ exports.sendPoll = function (req, res) {
                               logger.serverLog(TAG,
                               `Page accesstoken from graph api Error${JSON.stringify(err)}`)
                             }
+                            if (!resp) {
+                              resp = pages[z].accessToken
+                            }
                             utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                               subscribers = taggedSubscribers
                               for (let j = 0; j < subscribers.length && !abort; j++) {
@@ -1461,6 +1470,9 @@ exports.sendPoll = function (req, res) {
                           if (err) {
                             logger.serverLog(TAG,
                             `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                          }
+                          if (!resp) {
+                            resp = pages[z].accessToken
                           }
                           if (subscribers.length > 0) {
                             utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
