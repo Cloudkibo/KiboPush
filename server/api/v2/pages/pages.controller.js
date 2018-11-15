@@ -197,7 +197,7 @@ exports.enable = function (req, res) {
                   description: 'Page is not published.'
                 })
               } else {
-                utility.callApi(`pages/${page._id}/connect`, 'get', {}, req.headers.authorization) // fetch connected page
+                utility.callApi(`pages/query`, 'get', {pageId: req.body.pageId, connected: true}, req.headers.authorization) // fetch connected page
                 .then(pageConnected => {
                   console.log('pageConnected', pageConnected)
                   if (pageConnected !== {}) {
