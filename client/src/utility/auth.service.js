@@ -32,7 +32,7 @@ const auth = {
   logout (cb) {
     cookie.remove('userid')
     cookie.remove('token')
-    console.log("THE LOGOUT IS BEING CALLED")
+    console.log('THE LOGOUT IS BEING CALLED')
     redirectToLogoutAccounts()
     if (cb) cb()
   },
