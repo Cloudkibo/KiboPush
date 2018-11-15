@@ -23,6 +23,7 @@ import Webhook from './webhooks'
 import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
+import UploadCustomerInformation from './uploadCustomerInformation'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -80,6 +81,7 @@ class Settings extends React.Component {
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
   }
   componentWillMount () {
     console.log('this.props.location', this.props.location)
@@ -119,7 +121,6 @@ class Settings extends React.Component {
     })
   }
   handleNGPKeyChange (event) {
-    
     this.setState({NGPKey: event.target.value})
     if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
       this.setState({isDisableButton: false})
@@ -182,6 +183,11 @@ class Settings extends React.Component {
   setGreetingMessage () {
     this.setState({
       openTab: 'greetingMessage'
+    })
+  }
+  setUploadCustomerFile () {
+    this.setState({
+      openTab: 'uploadCustomerInformation'
     })
   }
   setBilling () {
@@ -373,7 +379,7 @@ class Settings extends React.Component {
     */
     if (nextProps.apiEnableNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret,  isDisableInput: false, isDisableButton: false})
+        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false})
       }
     }
     if (nextProps.apiDisableNGP) {
@@ -393,7 +399,7 @@ class Settings extends React.Component {
         this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
         if (this.state.count1_ngp !== 1) {
           this.initializeSwitchNGP(nextProps.apiSuccessNGP.enabled)
-          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})     
+          this.setState({saveStateNGP: nextProps.apiSuccessNGP.enabled})
         }
         this.setState({count_ngp: 2})
       }
@@ -603,6 +609,12 @@ class Settings extends React.Component {
                         }
                       </li>
                     }
+                    <li className='m-nav__item'>
+                      <a className='m-nav__link' onClick={this.setUploadCustomerFile} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon la la-cloud-upload' />
+                        <span className='m-nav__link-text'>Upload Customer Information</span>
+                      </a>
+                    </li>
                     { this.props.user && this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
                       <a className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
@@ -684,6 +696,25 @@ class Settings extends React.Component {
                             </div>
                           </div>
                         </div>
+                        <br /><br />
+                        {
+                          <div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>API Key</label>
+                              <div className='col-7 input-group'>
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APIKey : ''} onChange={this.handleNGPKeyChange} />
+                              </div>
+                            </div>
+                            <div className='form-group m-form__group row'>
+                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                                  API Secret
+                                </label>
+                              <div className='col-7 input-group'>
+                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APISecret : ''} onChange={this.handleNGPSecretChange} />
+                              </div>
+                            </div>
+                          </div>
+                        }
                       </div>
                     </form>
                     <div className='form-group m-form__group'>
@@ -783,6 +814,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'chatWidget' &&
               <ChatWidget />
+            }
+            { this.state.openTab === 'uploadCustomerInformation' &&
+              <UploadCustomerInformation />
             }
             { this.state.openTab === 'billing' &&
               <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} />

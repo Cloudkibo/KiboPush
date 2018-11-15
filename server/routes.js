@@ -72,6 +72,7 @@ module.exports = function (app) {
   app.use('/api/twitterEvents', require('./api/v1/twitterEvents'))
   app.use('/api/messengerEvents', require('./api/v1/messengerEvents'))
   app.use('/api/wordpressEvents', require('./api/v1/wordpressEvents'))
+  app.use('/api/demoApp', require('./api/v2/demoApp'))
   app.use('/auth', require('./auth'))
   // v2 routes
   app.use('/api/v2/pages', require('./api/v2/pages'))
