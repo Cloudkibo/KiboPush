@@ -692,7 +692,7 @@ exports.send = function (req, res) {
                               }
 
                               needle.get(
-                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}`,
+                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                               (err, resp) => {
                                 let accessToken = resp.body.accessToken
                                 if (err) {
@@ -848,7 +848,7 @@ exports.send = function (req, res) {
                             }
 
                             needle.get(
-                            `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}`,
+                            `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                             (err, resp) => {
                               let accessToken = resp.body.accessToken
                               if (err) {
@@ -1298,7 +1298,7 @@ exports.sendSurvey = function (req, res) {
                                   return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                                 }
                                 needle.get(
-                                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}`,
+                                `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                                 (err, resp) => {
                                   let accessToken = resp.body.accessToken
                                   if (err) {
@@ -1443,7 +1443,7 @@ exports.sendSurvey = function (req, res) {
                               }
 
                               needle.get(
-                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${pages[z].userId.facebookInfo.fbToken}}`,
+                              `https://graph.facebook.com/v2.10/${pages[z].pageId}?fields=access_token&access_token=${currentUser.facebookInfo.fbToken}`,
                               (err, resp) => {
                                 let accessToken = resp.body.accessToken
                                 if (err) {
