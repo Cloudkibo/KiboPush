@@ -193,10 +193,10 @@ exports.updatePayloadForVideo = (botId, payload) => {
     /* eslint-enable no-useless-escape */
     for (let i = 0; i < payload.length; i++) {
       if (videoRegex.test(payload[i].answer)) {
-        logger.serverLog(TAG, `answer is url`)
+        console.log(`answer is url`)
         // Check if youtube url
         if (YouTubeRegex.test(payload[i].answer)) {
-          logger.serverLog(TAG, `answer is YouTube video`)
+          console.log(`answer is YouTube video`)
           let data = {
             url: payload[i].answer
           }
