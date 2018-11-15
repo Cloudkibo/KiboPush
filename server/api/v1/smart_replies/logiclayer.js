@@ -38,7 +38,7 @@ const downloadVideo = (data) => {
     })
     let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
     video.on('data', (chunk) => {
-      downloaded += chunk
+      downloaded += chunk.length
       console.log(`Downloaded ${downloaded / 1000000}MB`)
       if (downloaded > 5000000) {
         stream.end()
