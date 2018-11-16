@@ -266,7 +266,7 @@ exports.enable = function (req, res) {
                   } else {
                     res.status(400).json({
                       status: 'failed',
-                      payload: `Page is already connected by ${pageConnected.userId.name}. In order to manage this page please ask ${pageConnected.userId.name} to create a team account and invite you.`
+                      payload: `Page is already connected by ${pageConnected[0].userId.name}. In order to manage this page please ask ${pageConnected[0].userId.name} to create a team account and invite you.`
                     })
                   }
                 })
