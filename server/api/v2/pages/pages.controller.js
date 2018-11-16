@@ -201,7 +201,7 @@ exports.enable = function (req, res) {
                 .then(pageConnected => {
                   console.log('pageConnected', pageConnected)
                   console.log('pageConnected.length', pageConnected.length)
-                  console.log('pageConnected.userId.facebookInfo', pageConnected.userId.facebookInfo)
+                  console.log('pageConnected.userId.facebookInfo', pageConnected[0].userId.facebookInfo)
                   if (pageConnected.length === 0) {
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(connectPage => {
