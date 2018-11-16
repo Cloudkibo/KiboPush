@@ -490,6 +490,17 @@ exports.delete = function (req, res) {
               logger.serverLog(TAG,
                 `Error Occured in deleting Wit ai app ${JSON.stringify(
                   witres.body)}`)
+              witres.body.errors.forEach((error) => {
+                console.log('error', error)
+                if (error.include('Could not find app')) {
+                  Bots.remove({
+                    _id: req.body.botId
+                  }, function (err, _) {
+                    if (err) return res.status(500).json({ status: 'failed', payload: err })
+                    return res.status(200).json({ status: 'success' })
+                  })
+                }
+              })
               return res.status(500).json({ status: 'failed', payload: { error: witres.body.errors } })
             } else {
               logger.serverLog(TAG,
