@@ -202,7 +202,6 @@ exports.enable = function (req, res) {
                   console.log('pageConnected', pageConnected)
                   console.log('pageConnected.length', pageConnected.length)
                   if (pageConnected.length === 0) {
-                    pageConnected = pageConnected[0]
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(connectPage => {
                       utility.callApi(`featureUsage/updateCompany`, 'put', {
@@ -267,7 +266,7 @@ exports.enable = function (req, res) {
                     res.status(200).json({
                       status: 'success',
                       payload: {                        
-                        msg: `Page is already connected by ${pageConnected.userId.facebookInfo.name}. In order to manage this page please ask ${pageConnected.userId.facebookInfo.name} to create a team account and invite you.`
+                        msg: `Page is already connected by ${pageConnected[0].userId.facebookInfo.name}. In order to manage this page please ask ${pageConnected[0].userId.facebookInfo.name} to create a team account and invite you.`
                       }
                     })
                   }
