@@ -146,7 +146,7 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
     }
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
 
-    Pages.findOne({ pageId: pageId })
+    Pages.findOne({ pageId: pageId, connected: true })
     .exec((err, page) => {
       if (err) {
         logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
