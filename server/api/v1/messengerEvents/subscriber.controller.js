@@ -106,7 +106,7 @@ exports.subscriber = function (req, res) {
                   } else if (subscriberSource === 'chat_plugin') {
                     payload.source = 'chat_plugin'
                   }
-                  Subscribers.findOne({ _id: page._id, connected: true },
+                  Subscribers.findOne({ senderId: sender },
                     (err, subscriberFound) => {
                       if (err) logger.serverLog(TAG, err)
                       if (subscriberFound === null) {
