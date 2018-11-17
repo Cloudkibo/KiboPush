@@ -367,7 +367,7 @@ class Profile extends React.Component {
                 {
                   this.state.customerId !== '' &&
                   <a
-                    onCick={() => {
+                    onClick={() => {
                       window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
                     }}
                     className='btn m-btn--pill    btn-primary'
