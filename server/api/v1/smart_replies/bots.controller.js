@@ -114,8 +114,8 @@ function getWitResponse (message, token, bot, page, senderId) {
                 //   'intentId': intent.value,
                 //   'Question': temp._text
                 // }
-              console.log('Exists: ', bot.payload[i].questions.includes(temp._text))
-              if (bot.payload[i].questions.includes(temp._text)) {
+              console.log('Exists: ', bot.payload[i].questions.includes(JSON.stringify(temp._text)))
+              if (bot.payload[i].questions.includes(JSON.stringify(temp._text))) {
                 let postbackPayload = {
                   'action': 'waitingSubscriber',
                   'botId': bot._id,
