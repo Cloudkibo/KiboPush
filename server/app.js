@@ -46,5 +46,6 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // require('./config/integrations/pubsubhubbub')()
   require('./config/integrations/twitter').connect()
   require('./config/shopify')(appObj)
+  require('./ss')(appObj)
   require('./routes')(appObj)
 })
