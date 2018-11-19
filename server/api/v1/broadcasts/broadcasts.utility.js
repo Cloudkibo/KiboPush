@@ -25,6 +25,8 @@ const SequenceSubscribers = require('../sequenceMessaging/sequenceSubscribers.mo
 const SequenceMessages = require('../sequenceMessaging/message.model')
 const Subscribers = require('../subscribers/Subscribers.model')
 const SequenceSubscriberMessages = require('./../sequenceMessaging/sequenceSubscribersMessages.model')
+const youtubedl = require('youtube-dl')
+const util = require('util')
 
 function validateInput (body) {
   if (!_.has(body, 'platform')) return false
@@ -970,6 +972,66 @@ function updateSequenceSeen (req) {
   })
 }
 
+const downloadVideo = (data) => {
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/')
+  return new Promise((resolve, reject) => {
+    let video = youtubedl(data.url)
+    let downloaded = 0
+    // let stream
+
+    video.on('info', (info) => {
+      console.log('Download started')
+      console.log('filename: ' + info.filename)
+      console.log('size: ' + info.size)
+      // let size = info.size
+      // if (size < 25000000) {
+      //   stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
+      //   stream.on('error', (error) => {
+      //     stream.end()
+      //     reject(util.inspect(error))
+      //   })
+      //   stream.on('finish', () => {
+      //     resolve(`${dir}/bot-video.mp4`)
+      //   })
+      // } else {
+      //   resolve('ERR_LIMIT_REACHED')
+      // }
+    })
+    let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
+    video.on('data', (chunk) => {
+      downloaded += chunk.length
+      console.log(`Downloaded ${downloaded / 1000000}MB`)
+      if (downloaded > 5000000) {
+        stream.end()
+        video.end()
+        resolve(`bot-video.mp4`)
+      }
+    })
+    stream.on('error', (error) => {
+      stream.end()
+      video.end()
+      reject(util.inspect(error))
+    })
+    stream.on('finish', () => {
+      resolve(`bot-video.mp4`)
+    })
+  })
+}
+
+const deleteVideo = () => {
+  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/')
+  let serverPath = dir + '/bot-video.mp4'
+  return new Promise((resolve, reject) => {
+    fs.unlink(serverPath, (error) => {
+      if (error) {
+        reject(util.inspect(error))
+      } else {
+        resolve('Deleted successfully!')
+      }
+    })
+  })
+}
+
 exports.prepareSendAPIPayload = prepareSendAPIPayload
 exports.prepareBroadCastPayload = prepareBroadCastPayload
 exports.parseUrl = parseUrl
@@ -987,3 +1049,5 @@ exports.updateSurveySeen = updateSurveySeen
 exports.updateLivechatSeen = updateLivechatSeen
 exports.updateAutopostingSeen = updateAutopostingSeen
 exports.updateSequenceSeen = updateSequenceSeen
+exports.downloadVideo = downloadVideo
+exports.deleteVideo = deleteVideo
