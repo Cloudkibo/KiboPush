@@ -143,6 +143,8 @@ exports.viewList = function (req, res) {
     .then(list => {
       console.log('list', list)
       console.log('list.initialList', list.initialList)
+      console.log('list[0].initialList', list[0].initialList)
+
       if (list[0].initialList === true) {
         utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
