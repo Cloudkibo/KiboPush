@@ -7,11 +7,18 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
-import { unSubscribe, assignToTeam, assignToAgent, sendNotifications, fetchTeamAgents } from '../../redux/actions/livechat.actions'
+import {
+  unSubscribe,
+  assignToTeam,
+  assignToAgent,
+  sendNotifications,
+  fetchTeamAgents
+} from '../../redux/actions/livechat.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Select from 'react-select'
 import { assignTags, unassignTags, loadTags, createTag, getSubscriberTags } from '../../redux/actions/tags.actions'
 import AlertContainer from 'react-alert'
+import MapCustomer from './mapCustomer'
 
 // import Image from 'react-image-resizer'
 //  import ChatBox from './chatbox'
@@ -34,13 +41,13 @@ class Profile extends React.Component {
       removeTag: '',
       tagOptions: [],
       saveEnable: false,
-      assignedTeam: this.props.currentSession.assigned_to.name,
-      assignedAgent: this.props.currentSession.assigned_to.name,
-      Role: this.props.currentSession.assigned_to.type,
+      assignedTeam: '',
+      assignedAgent: '',
+      Role: '',
       assignAdmin: false,
       assignAgent: false,
-      isAssigned: this.props.currentSession.is_assigned
-      
+      isAssigned: '',
+      customerId: this.props.currentSession.customerId ? this.props.currentSession.customerId : ''
     }
     props.loadTags()
     this.toggleAdd = this.toggleAdd.bind(this)
@@ -61,7 +68,31 @@ class Profile extends React.Component {
     this.handleAgents = this.handleAgents.bind(this)
     this.unassignTeam = this.unassignTeam.bind(this)
     this.unassignAgent = this.unassignAgent.bind(this)
+    this.updateCustomerId = this.updateCustomerId.bind(this)
   }
+
+  componentWillMount () {
+    if (this.props.currentSession.is_assigned) {
+      if (this.props.currentSession.assigned_to.type === 'agent') {
+        this.setState({
+          assignedAgent: this.props.currentSession.assigned_to.name,
+          Role: this.props.currentSession.assigned_to.type,
+          isAssigned: this.props.currentSession.is_assigned
+        })
+      } else {
+        this.setState({
+          assignedTeam: this.props.currentSession.assigned_to.name,
+          Role: this.props.currentSession.assigned_to.type,
+          isAssigned: this.props.currentSession.is_assigned
+        })
+      }
+    }
+  }
+
+  updateCustomerId (id) {
+    this.setState({customerId: id})
+  }
+
   showAddTag () {
     this.setState({
       addTag: null,
@@ -154,7 +185,7 @@ class Profile extends React.Component {
       }
     }
     console.log('The team name  is', team.name)
-    //this.setState({assignedTeam: team.name})
+    // this.setState({assignedTeam: team.name})
     this.setState({teamValue: e.target.value, teamObject: team, assignedTeam: team.name})
   }
 
@@ -209,7 +240,7 @@ class Profile extends React.Component {
   }
 
   assignToTeam () {
-    this.setState({showAssignTeam: !this.state.showAssignTeam, Role: 'team', assignAdmin: false, isAssigned: true })
+    this.setState({ showAssignTeam: !this.state.showAssignTeam, Role: 'team', assignAdmin: false, isAssigned: true })
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
@@ -228,7 +259,7 @@ class Profile extends React.Component {
   }
 
   unassignTeam () {
-    this.setState({isAssigned: false}) 
+    this.setState({isAssigned: false})
     let data = {
       teamId: this.state.teamObject._id,
       teamName: this.state.teamObject.name,
@@ -241,7 +272,7 @@ class Profile extends React.Component {
     console.log('The value of unassigned is ', this.state.isAssigned)
   }
   unassignAgent () {
-    this.setState({isAssigned: false}) 
+    this.setState({isAssigned: false})
     let data = {
       agentId: this.state.agentObject._id,
       agentName: this.state.agentObject.name,
@@ -259,7 +290,6 @@ class Profile extends React.Component {
       this.props.sendNotifications(notificationsData)
     }
   }
-
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.tags) {
@@ -282,7 +312,7 @@ class Profile extends React.Component {
       transition: 'scale'
     }
 
-    return (        
+    return (
       <div className='col-xl-3'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
@@ -333,6 +363,19 @@ class Profile extends React.Component {
                 <a className='m-card-profile__email m-link'>
                   {this.props.currentSession.subscriber_id.gender + ', ' + this.props.currentSession.subscriber_id.locale}
                 </a>
+                <br />
+                {
+                  this.state.customerId !== '' &&
+                  <a
+                    onCick={() => {
+                      window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
+                    }}
+                    className='btn m-btn--pill    btn-primary'
+                  >
+                    <i className='fa fa-external-link' /> View Customer Details
+                  </a>
+                }
+                <MapCustomer updateCustomerId={this.updateCustomerId} currentSession={this.props.currentSession} msg={this.msg} />
                 {
                   (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                   <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
@@ -347,26 +390,25 @@ class Profile extends React.Component {
                         <span> {this.state.Role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
                       </div>
                     }
-                    { 
-                      (this.state.assignAdmin || this.state.isAssigned) && this.state.Role==='team'
-                      ?
-                      <div className='m-accordion__item'> 
-                      <div className='m-accordion__item-head'>
+                    {
+                      (this.state.assignAdmin || this.state.isAssigned) && this.state.Role === 'team'
+                      ? <div className='m-accordion__item'>
+                        <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-users' />
-                          </span> 
+                          </span>
                           <span className='m-accordion__item-title'>Unassign team</span>
                           <span style={{cursor: 'pointer'}} onClick={this.unassignTeam} className='m-accordion__item-icon'>
                             <i className='la la-minus' />
                           </span>
                         </div>
-                        </div>
+                      </div>
                       : this.state.showAssignTeam
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
                             <i className='fa fa-users' />
-                          </span> 
+                          </span>
                           <span className='m-accordion__item-title'>Assign to team</span>
                           <span style={{cursor: 'pointer'}} onClick={this.toggleAssignTeam} className='m-accordion__item-icon'>
                             <i className='la la-minus' />
@@ -399,7 +441,7 @@ class Profile extends React.Component {
                       </div>
                     }
                     {
-                      (this.state.assignAgent || this.state.isAssigned) && this.state.Role=== 'agent'
+                      (this.state.assignAgent || this.state.isAssigned) && this.state.Role === 'agent'
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
                           <span className='m-accordion__item-icon'>
@@ -410,7 +452,7 @@ class Profile extends React.Component {
                             <i className='la la-minus' />
                           </span>
                         </div>
-                        </div>
+                      </div>
                       : this.state.showAssignAgent
                       ? <div className='m-accordion__item'>
                         <div className='m-accordion__item-head'>
