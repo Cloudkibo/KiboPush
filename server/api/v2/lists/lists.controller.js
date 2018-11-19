@@ -142,8 +142,8 @@ exports.viewList = function (req, res) {
     utility.callApi(`lists/${req.params.id}`, 'get', {}, req.headers.authorization)
     .then(list => {
       console.log('list', list)
-      console.log('list[0].initialList', list[0].initialList)
-      if (list[0].initialList === true) {
+      console.log('list[0].initialList')
+      if (list.initialList === true) {
         utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
           hasSubscribed: true,
