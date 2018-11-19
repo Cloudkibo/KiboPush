@@ -114,7 +114,8 @@ function getWitResponse (message, token, bot, page, senderId) {
                 //   'intentId': intent.value,
                 //   'Question': temp._text
                 // }
-              console.log('Exists ', temp._text)
+              console.log('_text: ', typeof temp._text)
+              console.log('question: ', typeof bot.payload[i].questions[0])
               if (bot.payload[i].questions.indexOf(temp._text) > -1) {
                 let postbackPayload = {
                   'action': 'waitingSubscriber',
