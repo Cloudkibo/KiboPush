@@ -670,12 +670,12 @@ function uploadOnFacebook (payloadItem, pageAccessToken) {
     function (err, resp) {
       if (err) {
         logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
-        return ({status: 'failed', data: err})
+        return {status: 'failed', data: err}
       } else {
         logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
         payloadItem.fileurl.attachment_id = resp.body.attachment_id
         logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payloadItem)}`)
-        return ({status: 'success', data: payloadItem})
+        return {status: 'success', data: payloadItem}
       }
     })
 }
@@ -1003,17 +1003,11 @@ const downloadVideo = (data) => {
       console.log(`Downloaded ${downloaded / 1000000}MB`)
       if (downloaded > 5000000) {
         stream.end()
-        video.on('end', () => {
-          console.log('stop downloading')
-        })
         resolve(`bot-video.mp4`)
       }
     })
     stream.on('error', (error) => {
       stream.end()
-      video.on('end', () => {
-        console.log('stop downloading')
-      })
       reject(util.inspect(error))
     })
     stream.on('finish', () => {
