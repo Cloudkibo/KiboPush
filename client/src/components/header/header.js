@@ -505,7 +505,8 @@ class Header extends React.Component {
                                       <span className='m-nav-grid__text'>KiboChat</span>
                                     </div>
                                     }
-
+                                  </div>
+                                  <div className='m-nav-grid__row'>
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibodash'))
                                     ? <div onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item'>
