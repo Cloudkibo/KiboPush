@@ -190,6 +190,7 @@ class Header extends React.Component {
     }
 
     const environment = cookie.load('environment')
+    console.log('environment header', environment)
     window.location.replace(productUrls[product][environment])
   }
 
