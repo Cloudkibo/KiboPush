@@ -646,7 +646,7 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
 /* eslint-enable */
 
 function uploadOnFacebook (payloadItem, pageAccessToken) {
-  let dir = path.resolve(__dirname, '../../../broadcastFiles/')
+  let dir = path.resolve(__dirname, '../../../../broadcastFiles/')
   let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payloadItem.fileurl.name)
   let type = payloadItem.componentType === 'media' ? payloadItem.mediaType : payloadItem.componentType
   const messageData = {
@@ -973,7 +973,7 @@ function updateSequenceSeen (req) {
 }
 
 const downloadVideo = (data) => {
-  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/')
+  let dir = path.resolve(__dirname, '../../../../broadcastFiles/userfiles/')
   return new Promise((resolve, reject) => {
     let video = youtubedl(data.url)
     let downloaded = 0
@@ -1019,7 +1019,7 @@ const downloadVideo = (data) => {
 }
 
 const deleteVideo = () => {
-  let dir = path.resolve(__dirname, '../../../broadcastFiles/userfiles/')
+  let dir = path.resolve(__dirname, '../../../../broadcastFiles/userfiles/')
   let serverPath = dir + '/bot-video.mp4'
   return new Promise((resolve, reject) => {
     fs.unlink(serverPath, (error) => {
