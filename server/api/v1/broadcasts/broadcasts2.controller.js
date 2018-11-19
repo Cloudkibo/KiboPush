@@ -78,22 +78,29 @@ const updatePayload = (self, payload, broadcast, page) => {
             .then(path => {
               payload[j].componentType = 'video'
               payload[j].fileurl = { name: path }
-              let uploadResult = utility.uploadOnFacebook(payload[j], page.accessToken)
-              if (uploadResult.status === 'success') {
-                payload[j] = uploadResult.data
-                utility.deleteVideo()
-                  .then(result => {
-                    shouldReturn = operation(j, payload.length - 1)
-                  })
-                  .catch(err => {
-                    console.log(JSON.stringify(err))
-                  })
-              }
+              utility.uploadOnFacebook(payload[j], page.accessToken)
+                .then(data => {
+                  payload[j] = data
+                  utility.deleteVideo()
+                    .then(result => {
+                      shouldReturn = operation(j, payload.length - 1)
+                    })
+                    .catch(err => {
+                      console.log(JSON.stringify(err))
+                    })
+                })
+                .catch(err => {
+                  console.log(JSON.stringify(err))
+                })
             })
             .catch(err => {
               console.log(JSON.stringify(err))
             })
+        } else {
+          shouldReturn = operation(j, payload.length - 1)
         }
+      } else {
+        shouldReturn = operation(j, payload.length - 1)
       }
     } else {
       shouldReturn = operation(j, payload.length - 1)

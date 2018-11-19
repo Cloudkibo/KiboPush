@@ -646,38 +646,40 @@ function getBatchData (payload, recipientId, page, sendBroadcast, fname, lname, 
 /* eslint-enable */
 
 function uploadOnFacebook (payloadItem, pageAccessToken) {
-  let dir = path.resolve(__dirname, '../../../../broadcastFiles/')
-  let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payloadItem.fileurl.name)
-  let type = payloadItem.componentType === 'media' ? payloadItem.mediaType : payloadItem.componentType
-  const messageData = {
-    'message': JSON.stringify({
-      'attachment': {
-        'type': type,
-        'payload': {
-          'is_reusable': true
+  return new Promise((resolve, reject) => {
+    let dir = path.resolve(__dirname, '../../../../broadcastFiles/')
+    let fileReaderStream = fs.createReadStream(dir + '/userfiles/' + payloadItem.fileurl.name)
+    let type = payloadItem.componentType === 'media' ? payloadItem.mediaType : payloadItem.componentType
+    const messageData = {
+      'message': JSON.stringify({
+        'attachment': {
+          'type': type,
+          'payload': {
+            'is_reusable': true
+          }
         }
-      }
-    }),
-    'filedata': fileReaderStream
-  }
-  request(
-    {
-      'method': 'POST',
-      'json': true,
-      'formData': messageData,
-      'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
-    },
-    function (err, resp) {
-      if (err) {
-        logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
-        return {status: 'failed', data: err}
-      } else {
-        logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
-        payloadItem.fileurl.attachment_id = resp.body.attachment_id
-        logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payloadItem)}`)
-        return {status: 'success', data: payloadItem}
-      }
-    })
+      }),
+      'filedata': fileReaderStream
+    }
+    request(
+      {
+        'method': 'POST',
+        'json': true,
+        'formData': messageData,
+        'uri': 'https://graph.facebook.com/v2.6/me/message_attachments?access_token=' + pageAccessToken
+      },
+      function (err, resp) {
+        if (err) {
+          logger.serverLog(TAG, `ERROR! unable to upload attachment on Facebook: ${JSON.stringify(err)}`)
+          reject(err)
+        } else {
+          logger.serverLog(TAG, `file uploaded on Facebook: ${JSON.stringify(resp.body)}`)
+          payloadItem.fileurl.attachment_id = resp.body.attachment_id
+          logger.serverLog(TAG, `broadcast after attachment: ${JSON.stringify(payloadItem)}`)
+          resolve(payloadItem)
+        }
+      })
+  })
 }
 
 function addModuleIdIfNecessary (payload, broadcastId) {
