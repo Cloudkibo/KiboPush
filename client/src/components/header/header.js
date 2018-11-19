@@ -505,7 +505,8 @@ class Header extends React.Component {
                                       <span className='m-nav-grid__text'>KiboChat</span>
                                     </div>
                                     }
-
+                                  </div>
+                                  <div className='m-nav-grid__row'>
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibodash'))
                                     ? <div onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item'>
@@ -521,11 +522,11 @@ class Header extends React.Component {
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibocommerce'))
                                     ? <div onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item'>
-                                      <i className='m-nav-grid__icon flaticon-technology-2' />
+                                      <i className='m-nav-grid__icon flaticon-truck' />
                                       <span className='m-nav-grid__text'>KiboCommerce</span>
                                     </div>
                                     : <div onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item' disabled>
-                                      <i className='m-nav-grid__icon flaticon-technology-2' />
+                                      <i className='m-nav-grid__icon flaticon-truck' />
                                       <span className='m-nav-grid__text'>KiboCommerce</span>
                                     </div>
                                     }
