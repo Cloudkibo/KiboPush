@@ -40,9 +40,13 @@ const operation = (index, length) => {
   }
 }
 
-const updatePayload = (self, payload, broadcast) => {
+const updatePayload = (self, payload, broadcast, page) => {
   let shouldReturn = false
   logger.serverLog(TAG, `Update Payload: ${JSON.stringify(payload)}`)
+  /* eslint-disable no-useless-escape */
+  let videoRegex = new RegExp(`^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}`, 'g')
+  let YouTubeRegex = new RegExp('^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+', 'g')
+  /* eslint-enable no-useless-escape */
   for (let j = 0; j < payload.length; j++) {
     if (!self && payload[j].componentType === 'list') {
       payload[j].listItems.forEach((element, lindex) => {
@@ -64,6 +68,33 @@ const updatePayload = (self, payload, broadcast) => {
           shouldReturn = operation(j, payload.length - 1)
         }
       })
+    } else if (payload[j].componentType === 'text') {
+      if (videoRegex.test(payload[j].text)) {
+        console.log(`answer is url`)
+        // Check if youtube url
+        if (YouTubeRegex.test(payload[j].text)) {
+          console.log(`answer is YouTube video`)
+          utility.downloadVideo({url: payload[j].text})
+            .then(path => {
+              payload[j].componentType = 'video'
+              payload[j].fileurl = { name: path }
+              let uploadResult = utility.uploadOnFacebook(payload[j], page.accessToken)
+              if (uploadResult.status === 'success') {
+                payload[j] = uploadResult.data
+                utility.deleteVideo()
+                  .then(result => {
+                    shouldReturn = operation(j, payload.length - 1)
+                  })
+                  .catch(err => {
+                    console.log(JSON.stringify(err))
+                  })
+              }
+            })
+            .catch(err => {
+              console.log(JSON.stringify(err))
+            })
+        }
+      }
     } else {
       shouldReturn = operation(j, payload.length - 1)
     }
@@ -188,7 +219,7 @@ exports.sendConversation = function (req, res) {
       }
       let payloadData = req.body.payload
       if (req.body.self) {
-        let payload = updatePayload(req.body.self, payloadData)
+        let payload = updatePayload(req.body.self, payloadData, page)
         let interval = setInterval(() => {
           if (payload) {
             clearInterval(interval)
@@ -213,7 +244,7 @@ exports.sendConversation = function (req, res) {
               }
             }
           })
-          let payload = updatePayload(req.body.self, payloadData, broadcast)
+          let payload = updatePayload(req.body.self, payloadData, broadcast, page)
           utility.addModuleIdIfNecessary(payloadData, broadcast._id) // add module id in buttons for click count
           if (req.body.isList === true) {
             let ListFindCriteria = {}
