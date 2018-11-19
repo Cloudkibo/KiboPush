@@ -55,7 +55,7 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       }
       // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
       let temp = JSON.parse(witres.body)
-      if (Object.keys(JSON.parse(witres.body).entities).length === 0 || temp.entities.intent[0].confidence < 0.80) {
+      if (Object.keys(JSON.parse(witres.body).entities).length === 0 || temp.entities.intent[0].confidence < 0.50) {
         logger.serverLog(TAG, 'No response found')
         Bots.findOneAndUpdate({ _id: bot._id }, { $inc: { 'missCount': 1 } }).exec((err, dbRes) => {
           if (err) {
