@@ -1003,13 +1003,17 @@ const downloadVideo = (data) => {
       console.log(`Downloaded ${downloaded / 1000000}MB`)
       if (downloaded > 5000000) {
         stream.end()
-        video.end()
+        video.on('end', () => {
+          console.log('stop downloading')
+        })
         resolve(`bot-video.mp4`)
       }
     })
     stream.on('error', (error) => {
       stream.end()
-      video.end()
+      video.on('end', () => {
+        console.log('stop downloading')
+      })
       reject(util.inspect(error))
     })
     stream.on('finish', () => {
