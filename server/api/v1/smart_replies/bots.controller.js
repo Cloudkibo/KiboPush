@@ -89,9 +89,9 @@ function getWitResponse (message, token, bot, page, senderId) {
       // })
       // return { found: false, intent_name: 'Not Found' }
       // }
-      var intent = JSON.parse(witres.body).entities.intent[0]
+      // var intent = JSON.parse(witres.body).entities.intent[0]
       // if (intent.confidence > 0.50) {
-      logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
+      // logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
       Subscribers.findOne({ 'senderId': senderId, pageId: page._id }, (err, subscriber) => {
         if (err) {
           return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
@@ -105,13 +105,21 @@ function getWitResponse (message, token, bot, page, senderId) {
           // If sub not found, reply the answer
           if (!sub) {
             for (let i = 0; i < bot.payload.length; i++) {
-              if (bot.payload[i].intent_name === intent.value) {
+              // if (bot.payload[i].intent_name === intent.value) {
+                // let postbackPayload = {
+                //   'action': 'waitingSubscriber',
+                //   'botId': bot._id,
+                //   'subscriberId': subscriber._id,
+                //   'pageId': page.pageId,
+                //   'intentId': intent.value,
+                //   'Question': temp._text
+                // }
+              if (bot.payload[i].questions.indexOf(temp._text) > -1) {
                 let postbackPayload = {
                   'action': 'waitingSubscriber',
                   'botId': bot._id,
                   'subscriberId': subscriber._id,
                   'pageId': page.pageId,
-                  'intentId': intent.value,
                   'Question': temp._text
                 }
                 // Increase the hit count
@@ -126,9 +134,10 @@ function getWitResponse (message, token, bot, page, senderId) {
                 sendMessenger(bot.payload[i], page, senderId, postbackPayload)
               }
             }
-          } else {
-            logger.serverLog(TAG, 'reply will no tbe send for waiting subscriber')
           }
+          // } else {
+          //   logger.serverLog(TAG, 'reply will no tbe send for waiting subscriber')
+          // }
         })
       })
       // }
