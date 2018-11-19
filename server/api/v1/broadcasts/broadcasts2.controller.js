@@ -108,6 +108,7 @@ const updatePayload = (self, payload, broadcast, page) => {
       shouldReturn = operation(j, payload.length - 1)
     }
   }
+  console.log('shouldReturn ', shouldReturn)
   if (shouldReturn) {
     return payload
   }
