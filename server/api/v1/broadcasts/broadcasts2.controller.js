@@ -84,7 +84,7 @@ const updatePayload = (self, payload, broadcast, page) => {
                   payload[j] = data
                   utility.deleteVideo()
                     .then(result => {
-                      console.log('in deleteVideo then')
+                      console.log('in deleteVideo then', j)
                       shouldReturn = operation(j, payload.length - 1)
                     })
                     .catch(err => {
