@@ -11,6 +11,7 @@ import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { browserHistory, Link } from 'react-router'
 import Notification from 'react-web-notification'
+import cookie from 'react-cookie'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -166,6 +167,31 @@ class Header extends React.Component {
         state: {id: id}
       })
     }
+  }
+
+  goToSubProduct (product) {
+    let productUrls = {
+      'kiboengage': {
+        'staging': 'https://skiboengage.cloudkibo.com/',
+        'production': 'https://kiboengage.cloudkibo.com/'
+      },
+      'kibochat': {
+        'staging': 'https://skibochat.cloudkibo.com/',
+        'production': 'https://kibochat.cloudkibo.com/'
+      },
+      'kibodash': {
+        'staging': 'https://skibodash.cloudkibo.com/',
+        'production': 'https://kibodash.cloudkibo.com/'
+      },
+      'kibocommerce': {
+        'staging': 'https://skibocommerce.cloudkibo.com/',
+        'production': 'https://kibocommerce.cloudkibo.com/'
+      }
+    }
+
+    const environment = cookie.load('environment')
+    console.log('environment header', environment)
+    window.location.replace(productUrls[product][environment])
   }
 
   render () {
@@ -440,6 +466,79 @@ class Header extends React.Component {
                         </div>
                       </div>
                     </li>
+                    {/* APP CHOOSER */}
+                    <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                      <a href='#' className='m-nav__link m-dropdown__toggle'>
+                        <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
+                        <span className='m-nav__link-icon'>
+                          <i className='flaticon-squares-3' />
+                        </span>
+                      </a>
+                      <div className='m-dropdown__wrapper'>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                        <div className='m-dropdown__inner'>
+                          <div className='m-dropdown__body m-dropdown__body--paddingless'>
+                            <div className='m-dropdown__content'>
+                              <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
+                                <div className='m-nav-grid m-nav-grid--skin-light'>
+                                  <div className='m-nav-grid__row'>
+                                    {
+                                    (!window.location.hostname.toLowerCase().includes('kiboengage'))
+                                    ? <div onClick={() => { this.goToSubProduct('kiboengage') }} className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-network' />
+                                      <span className='m-nav-grid__text'>KiboEngage</span>
+                                    </div>
+                                    : <div onClick={() => { this.goToSubProduct('kiboengage') }} className='m-nav-grid__item' disabled>
+                                      <i className='m-nav-grid__icon flaticon-network' />
+                                      <span className='m-nav-grid__text'>KiboEngage</span>
+                                    </div>
+                                    }
+
+                                    {
+                                    (!window.location.hostname.toLowerCase().includes('kibochat'))
+                                    ? <div onClick={() => { this.goToSubProduct('kibochat') }} className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-speech-bubble' />
+                                      <span className='m-nav-grid__text'>KiboChat</span>
+                                    </div>
+                                    : <div onClick={() => { this.goToSubProduct('kibochat') }} className='m-nav-grid__item' disabled>
+                                      <i className='m-nav-grid__icon flaticon-speech-bubble' />
+                                      <span className='m-nav-grid__text'>KiboChat</span>
+                                    </div>
+                                    }
+
+                                    {
+                                    (!window.location.hostname.toLowerCase().includes('kibodash'))
+                                    ? <div onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-analytics' />
+                                      <span className='m-nav-grid__text'>KiboDash</span>
+                                    </div>
+                                    : <div onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item' disabled>
+                                      <i className='m-nav-grid__icon flaticon-analytics' />
+                                      <span className='m-nav-grid__text'>KiboDash</span>
+                                    </div>
+                                    }
+
+                                    {
+                                    (!window.location.hostname.toLowerCase().includes('kibocommerce'))
+                                    ? <div onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item'>
+                                      <i className='m-nav-grid__icon flaticon-technology-2' />
+                                      <span className='m-nav-grid__text'>KiboCommerce</span>
+                                    </div>
+                                    : <div onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item' disabled>
+                                      <i className='m-nav-grid__icon flaticon-technology-2' />
+                                      <span className='m-nav-grid__text'>KiboCommerce</span>
+                                    </div>
+                                    }
+
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+
                     <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-topbar__userpic'>
