@@ -142,7 +142,6 @@ exports.viewList = function (req, res) {
     utility.callApi(`lists/${req.params.id}`, 'get', {}, req.headers.authorization)
     .then(list => {
       console.log('list', list)
-      console.log('list[0].initialList')
       if (list.initialList === true) {
         utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
@@ -191,7 +190,7 @@ exports.viewList = function (req, res) {
         })
       } else {
         utility.callApi(`subscribers/query`, 'post', {
-          isSubscribed: true, _id: {$in: list[0].content}}, req.headers.authorization)
+          isSubscribed: true, _id: {$in: list.content}}, req.headers.authorization)
         .then(subscribers => {
           return res.status(201)
             .json({status: 'success', payload: subscribers})
