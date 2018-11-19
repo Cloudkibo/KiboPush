@@ -86,6 +86,10 @@ const updatePayload = (self, payload, broadcast, page) => {
                     .then(result => {
                       console.log('in deleteVideo then', j)
                       shouldReturn = operation(j, payload.length - 1)
+                      console.log('shouldReturn ', shouldReturn)
+                      if (shouldReturn) {
+                        return payload
+                      }
                     })
                     .catch(err => {
                       console.log(JSON.stringify(err))
@@ -100,17 +104,24 @@ const updatePayload = (self, payload, broadcast, page) => {
             })
         } else {
           shouldReturn = operation(j, payload.length - 1)
+          console.log('shouldReturn ', shouldReturn)
+          if (shouldReturn) {
+            return payload
+          }
         }
       } else {
         shouldReturn = operation(j, payload.length - 1)
+        console.log('shouldReturn ', shouldReturn)
+        if (shouldReturn) {
+          return payload
+        }
       }
     } else {
       shouldReturn = operation(j, payload.length - 1)
+      if (shouldReturn) {
+        return payload
+      }
     }
-  }
-  console.log('shouldReturn ', shouldReturn)
-  if (shouldReturn) {
-    return payload
   }
 }
 
