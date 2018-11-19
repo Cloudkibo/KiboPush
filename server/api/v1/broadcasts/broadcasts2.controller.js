@@ -80,9 +80,11 @@ const updatePayload = (self, payload, broadcast, page) => {
               payload[j].fileurl = { name: path }
               utility.uploadOnFacebook(payload[j], page.accessToken)
                 .then(data => {
+                  console.log('in uploadOnFacebook then')
                   payload[j] = data
                   utility.deleteVideo()
                     .then(result => {
+                      console.log('in deleteVideo then')
                       shouldReturn = operation(j, payload.length - 1)
                     })
                     .catch(err => {
