@@ -17,6 +17,7 @@ let request = require('request')
 const WIT_AI_TOKEN = 'RQC4XBQNCBMPETVHBDV4A34WSP5G2PYL'
 const _ = require('lodash')
 const LogicLayer = require('./logiclayer')
+const util = require('util')
 
 function transformPayload (payload) {
   var transformed = []
@@ -34,7 +35,7 @@ function transformPayload (payload) {
   return transformed
 }
 
-function getWitResponse (message, token, bot, pageId, senderId) {
+function getWitResponse (message, token, bot, page, senderId) {
   logger.serverLog(TAG, 'Trying to get a response from WIT AI')
   request(
     {
@@ -55,88 +56,98 @@ function getWitResponse (message, token, bot, pageId, senderId) {
       }
       // logger.serverLog(TAG, `Response from Wit AI Bot ${witres.body}`)
       let temp = JSON.parse(witres.body)
-      if (Object.keys(JSON.parse(witres.body).entities).length === 0 || temp.entities.intent[0].confidence < 0.80) {
-        logger.serverLog(TAG, 'No response found')
-        Bots.findOneAndUpdate({ _id: bot._id }, { $inc: { 'missCount': 1 } }).exec((err, dbRes) => {
-          if (err) {
-            throw err
-          } else {
-            // Will only run when the entities are not zero i.e. confidence is low
-            let unansweredQuestion = {}
-            if (!(Object.keys(JSON.parse(witres.body).entities).length === 0)) {
-              console.log(dbRes)
-              let temp = JSON.parse(witres.body)
-              console.log({ temp })
-
-              unansweredQuestion.botId = bot._id
-              unansweredQuestion.intentId = temp.entities.intent[0].value
-              unansweredQuestion.Question = temp._text
-              unansweredQuestion.Confidence = temp.entities.intent[0].confidence
-            } else {
-              unansweredQuestion.botId = bot._id
-              unansweredQuestion.Question = temp._text
-            }
-            let obj = new UnAnsweredQuestions(unansweredQuestion)
-            obj.save((err, result) => {
-              if (err) {
-                logger.serverLog(TAG, 'unable to insert record into Unanswered questions')
-              }
-              logger.serverLog(TAG, result)
-            })
-          }
-        })
-        return { found: false, intent_name: 'Not Found' }
-      }
-      var intent = JSON.parse(witres.body).entities.intent[0]
-      if (intent.confidence > 0.80) {
-        logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
-        Subscribers.findOne({ 'senderId': senderId }, (err, subscriber) => {
+      console.log(`WIT AI response ${util.inspect(temp)}`)
+       // if (Object.keys(JSON.parse(witres.body).entities).length === 0 || temp.entities.intent[0].confidence < 0.50) {
+        // logger.serverLog(TAG, 'No response found')
+      // Bots.findOneAndUpdate({ _id: bot._id }, { $inc: { 'missCount': 1 } }).exec((err, dbRes) => {
+      //   if (err) {
+      //     throw err
+      //   } else {
+      //     // Will only run when the entities are not zero i.e. confidence is low
+      //     let unansweredQuestion = {}
+      //     if (!(Object.keys(JSON.parse(witres.body).entities).length === 0)) {
+      //       console.log(dbRes)
+      //       let temp = JSON.parse(witres.body)
+      //       console.log({ temp })
+      //
+      //       unansweredQuestion.botId = bot._id
+      //       unansweredQuestion.intentId = temp.entities.intent[0].value
+      //       unansweredQuestion.Question = temp._text
+      //       unansweredQuestion.Confidence = temp.entities.intent[0].confidence
+      //     } else {
+      //       unansweredQuestion.botId = bot._id
+      //       unansweredQuestion.Question = temp._text
+      //     }
+      //     let obj = new UnAnsweredQuestions(unansweredQuestion)
+      //     obj.save((err, result) => {
+      //       if (err) {
+      //         logger.serverLog(TAG, 'unable to insert record into Unanswered questions')
+      //       }
+      //       logger.serverLog(TAG, result)
+      //     })
+      //   }
+      // })
+      // return { found: false, intent_name: 'Not Found' }
+      // }
+      // var intent = JSON.parse(witres.body).entities.intent[0]
+      // if (intent.confidence > 0.50) {
+      // logger.serverLog(TAG, 'Responding using bot: ' + intent.value)
+      Subscribers.findOne({ 'senderId': senderId, pageId: page._id }, (err, subscriber) => {
+        if (err) {
+          return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        }
+        // Bot will not respond if a subscriber is waiting subscriber
+        WaitingSubscribers.findOne({ 'subscriberId': subscriber._id }, (err, sub) => {
           if (err) {
             return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
           }
-          // Bot will not respond if a subscriber is waiting subscriber
-          WaitingSubscribers.findOne({ 'subscriberId': subscriber._id }, (err, sub) => {
-            if (err) {
-              return logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-            }
-            logger.serverLog(TAG, 'bot is ' + JSON.stringify(sub))
-            // If sub not found, reply the answer
-            if (!sub) {
-              for (let i = 0; i < bot.payload.length; i++) {
-                if (bot.payload[i].intent_name === intent.value) {
-                  let postbackPayload = {
-                    'action': 'waitingSubscriber',
-                    'botId': bot._id,
-                    'subscriberId': subscriber._id,
-                    'pageId': pageId,
-                    'intentId': intent.value,
-                    'Question': temp._text
-                  }
-                  // Increase the hit count
-                  Bots.findOneAndUpdate({ _id: bot._id }, { $inc: { 'hitCount': 1 } }).exec((err, dbRes) => {
-                    if (err) {
-                      throw err
-                    } else {
-                      console.log(dbRes)
-                    }
-                  })
-                  // send the message to sub
-                  sendMessenger(bot.payload[i], pageId, senderId, postbackPayload)
+          logger.serverLog(TAG, 'bot is ' + JSON.stringify(sub))
+          // If sub not found, reply the answer
+          if (!sub) {
+            for (let i = 0; i < bot.payload.length; i++) {
+              // if (bot.payload[i].intent_name === intent.value) {
+                // let postbackPayload = {
+                //   'action': 'waitingSubscriber',
+                //   'botId': bot._id,
+                //   'subscriberId': subscriber._id,
+                //   'pageId': page.pageId,
+                //   'intentId': intent.value,
+                //   'Question': temp._text
+                // }
+              if (bot.payload[i].questions.indexOf(temp._text) > -1) {
+                let postbackPayload = {
+                  'action': 'waitingSubscriber',
+                  'botId': bot._id,
+                  'subscriberId': subscriber._id,
+                  'pageId': page.pageId,
+                  'Question': temp._text
                 }
+                // Increase the hit count
+                Bots.findOneAndUpdate({ _id: bot._id }, { $inc: { 'hitCount': 1 } }).exec((err, dbRes) => {
+                  if (err) {
+                    throw err
+                  } else {
+                    console.log(dbRes)
+                  }
+                })
+                // send the message to sub
+                sendMessenger(bot.payload[i], page, senderId, postbackPayload)
               }
-            } else {
-              logger.serverLog(TAG, 'reply will no tbe send for waiting subscriber')
             }
-          })
+          }
+          // } else {
+          //   logger.serverLog(TAG, 'reply will no tbe send for waiting subscriber')
+          // }
         })
-      }
+      })
+      // }
     })
 }
 
-function sendMessenger (message, pageId, senderId, postbackPayload) {
+function sendMessenger (message, page, senderId, postbackPayload) {
   logger.serverLog(TAG, `sendMessenger message is ${JSON.stringify(message)}`)
 
-  Subscribers.findOne({ senderId: senderId }, (err, subscriber) => {
+  Subscribers.findOne({ senderId: senderId, pageId: page._id }, (err, subscriber) => {
     if (err) {
       logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
       return
@@ -146,70 +157,62 @@ function sendMessenger (message, pageId, senderId, postbackPayload) {
     }
     logger.serverLog(TAG, `Subscriber Info ${JSON.stringify(subscriber)}`)
 
-    Pages.findOne({ pageId: pageId, connected: true })
-    .exec((err, page) => {
-      if (err) {
-        logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-      }
-      message.senderId = senderId
-      LogicLayer.getMessageData(message)
-        .then(messageData => {
-          logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
-          request(
-            {
-              'method': 'POST',
-              'json': true,
-              'formData': messageData,
-              'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
-                page.accessToken
-            },
-            (err, res) => {
-              if (err) {
-                return logger.serverLog(TAG,
-                  `At send message live chat ${JSON.stringify(err)}`)
+    message.senderId = senderId
+    LogicLayer.getMessageData(message)
+      .then(messageData => {
+        logger.serverLog(TAG, `messageData: ${JSON.stringify({messageData})}`)
+        request(
+          {
+            'method': 'POST',
+            'json': true,
+            'formData': messageData,
+            'uri': 'https://graph.facebook.com/v2.6/me/messages?access_token=' +
+              page.accessToken
+          },
+          (err, res) => {
+            if (err) {
+              return logger.serverLog(TAG,
+                `At send message live chat ${JSON.stringify(err)}`)
+            } else {
+              if (res.statusCode !== 200) {
+                logger.serverLog(TAG,
+                  `At send message live chat response ${JSON.stringify(
+                    res.body.error)}`)
               } else {
-                if (res.statusCode !== 200) {
-                  logger.serverLog(TAG,
-                    `At send message live chat response ${JSON.stringify(
-                      res.body.error)}`)
-                } else {
-                  logger.serverLog(TAG, `Response sent to Messenger: ${JSON.stringify(messageData)}`)
-                }
+                logger.serverLog(TAG, `Response sent to Messenger: ${JSON.stringify(messageData)}`)
               }
-            })
-        })
-        .catch(err => {
-          logger.serverLog(TAG, `Failed to send automated reply ${JSON.stringify(err)}`)
-        })
-    })
+            }
+          })
+      })
+      .catch(err => {
+        logger.serverLog(TAG, `Failed to send automated reply ${JSON.stringify(err)}`)
+      })
   })
 }
 
 exports.respond = function (pageId, senderId, text) {
   logger.serverLog(TAG, ' ' + pageId + ' ' + senderId + ' ' + text)
-  Pages.find({ pageId: pageId }, (err, page) => {
+  Pages.findOne({ pageId: pageId, connected: true }, (err, page) => {
     if (err) {
       logger.serverLog(TAG, `ERROR PAGE ID ISSUE ${JSON.stringify(err)}`)
       return
     }
     logger.serverLog(TAG, `PAGES FETCHED ${JSON.stringify(page)}`)
-    for (let i = 0; i < page.length; i++) {
-      if (page[i] && page[i]._id) {
-        Bots.findOne({ pageId: page[i]._id }, (err, bot) => {
-          if (err) {
-            logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
-          } else {
-            if (!bot) {
-              logger.serverLog(TAG, `Couldnt find the bot while trying to respond ${page[i]._id}`)
-            }
-            if (bot && bot.isActive === 'true') {
-              // Write the bot response logic here
-              logger.serverLog(TAG, 'Responding using the bot as status is Active')
-              getWitResponse(text, bot.witToken, bot, pageId, senderId)
-            }
+    if (page) {
+      Bots.findOne({ pageId: page._id }, (err, bot) => {
+        if (err) {
+          logger.serverLog(TAG, `ERROR ${JSON.stringify(err)}`)
+        } else {
+          if (!bot) {
+            logger.serverLog(TAG, `Couldnt find the bot while trying to respond ${page._id}`)
           }
-        })
-      }
+          if (bot && bot.isActive === 'true') {
+            // Write the bot response logic here
+            logger.serverLog(TAG, 'Responding using the bot as status is Active')
+            getWitResponse(text, bot.witToken, bot, page, senderId)
+          }
+        }
+      })
     }
   })
 }
