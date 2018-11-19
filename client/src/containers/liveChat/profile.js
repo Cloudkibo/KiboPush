@@ -366,7 +366,7 @@ class Profile extends React.Component {
                 <br />
                 {
                   this.state.customerId !== '' &&
-                  <a
+                  <a style={{color: 'white'}}
                     onClick={() => {
                       window.open(`http://demoapp.cloudkibo.com/${this.state.customerId}`, '_blank', 'fullscreen=yes')
                     }}
