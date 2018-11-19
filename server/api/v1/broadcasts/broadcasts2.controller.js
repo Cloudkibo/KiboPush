@@ -254,6 +254,7 @@ exports.sendConversation = function (req, res) {
             }
           })
           let payload = updatePayload(req.body.self, payloadData, broadcast, page)
+          console.log('payload: ', JSON.stringify(payload))
           utility.addModuleIdIfNecessary(payloadData, broadcast._id) // add module id in buttons for click count
           if (req.body.isList === true) {
             let ListFindCriteria = {}
