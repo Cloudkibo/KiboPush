@@ -356,6 +356,9 @@ class CustomerMatching extends React.Component {
   }
 
   onTextChange (e) {
+    if (e.target.value === '') {
+      this.setState({disabled: true})
+    }
     this.setState({textAreaValue: e.target.value})
     if (e.target.value !== '' && ((this.state.file && this.state.file !== '') || this.inputPhoneNumbers.value !== '')) {
       this.setState({disabled: false})
