@@ -488,7 +488,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-network' />
                                       <span className='m-nav-grid__text'>KiboEngage</span>
                                     </a>
-                                    : <a backgroundColor='aliceblue' className='m-nav-grid__item' disabled>
+                                    : <a style={{backgroundColor: 'aliceblue'}} className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-network' />
                                       <span className='m-nav-grid__text'>KiboEngage</span>
                                     </a>
@@ -500,7 +500,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                       <span className='m-nav-grid__text'>KiboChat</span>
                                     </a>
-                                    : <a backgroundColor='aliceblue' className='m-nav-grid__item' disabled>
+                                    : <a style={{backgroundColor: 'aliceblue'}} className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                       <span className='m-nav-grid__text'>KiboChat</span>
                                     </a>
@@ -513,7 +513,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-analytics' />
                                       <span className='m-nav-grid__text'>KiboDash</span>
                                     </a>
-                                    : <a backgroundColor='aliceblue' className='m-nav-grid__item' disabled>
+                                    : <a style={{backgroundColor: 'aliceblue'}} className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-analytics' />
                                       <span className='m-nav-grid__text'>KiboDash</span>
                                     </a>
@@ -525,7 +525,7 @@ class Header extends React.Component {
                                       <i className='m-nav-grid__icon flaticon-truck' />
                                       <span className='m-nav-grid__text'>KiboCommerce</span>
                                     </a>
-                                    : <a backgroundColor='aliceblue' className='m-nav-grid__item' disabled>
+                                    : <a style={{backgroundColor: 'aliceblue'}} className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-truck' />
                                       <span className='m-nav-grid__text'>KiboCommerce</span>
                                     </a>
