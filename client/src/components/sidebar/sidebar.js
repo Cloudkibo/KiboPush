@@ -58,6 +58,9 @@ class Sidebar extends Component {
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    } else if (url.includes('localhost')) {
+      console.log('localhost')
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
     }
     this.props.getuserdetails()
     this.props.getAutomatedOptions()

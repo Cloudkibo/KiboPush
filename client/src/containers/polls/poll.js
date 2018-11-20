@@ -237,7 +237,7 @@ class Poll extends React.Component {
     } else {
       this.props.sendpoll(poll, this.msg)
       console.log('data send')
-      this.setState({ pageNumber: 0 })        
+      this.setState({ pageNumber: 0 })
     }
   }
   render () {
@@ -248,7 +248,7 @@ class Poll extends React.Component {
       theme: 'dark',
       time: 5000,
       transition: 'scale'
-      
+
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
@@ -420,7 +420,13 @@ class Poll extends React.Component {
                             <button style={{float: 'right'}}
                               className='btn btn-primary btn-sm'
                               onClick={() => {
-                                this.props.deletePoll(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+                                let loadData = {}
+                                if (this.state.pageNumber === 0) {
+                                  loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                } else {
+                                  loadData = {current_page: this.state.pageNumber, requested_page: this.state.pageNumber, last_id: this.props.polls.length > 0 ? this.props.polls[0]._id : 'none', number_of_records: 10, first_page: 'delete', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                }
+                                this.props.deletePoll(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete
                             </button>
