@@ -471,7 +471,7 @@ class Header extends React.Component {
                       <a href='#' className='m-nav__link m-dropdown__toggle'>
                         <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                         <span className='m-nav__link-icon'>
-                          <i className='flaticon-squares-3' />
+                          <i className='flaticon-app' />
                         </span>
                       </a>
                       <div className='m-dropdown__wrapper'>
@@ -484,51 +484,51 @@ class Header extends React.Component {
                                   <div className='m-nav-grid__row'>
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kiboengage'))
-                                    ? <div onClick={() => { this.goToSubProduct('kiboengage') }} className='m-nav-grid__item'>
+                                    ? <a href='#kiboengage' onClick={() => { this.goToSubProduct('kiboengage') }} className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-network' />
                                       <span className='m-nav-grid__text'>KiboEngage</span>
-                                    </div>
-                                    : <div onClick={() => { this.goToSubProduct('kiboengage') }} className='m-nav-grid__item' disabled>
+                                    </a>
+                                    : <a className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-network' />
                                       <span className='m-nav-grid__text'>KiboEngage</span>
-                                    </div>
+                                    </a>
                                     }
 
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibochat'))
-                                    ? <div onClick={() => { this.goToSubProduct('kibochat') }} className='m-nav-grid__item'>
+                                    ? <a href='#kibochat' onClick={() => { this.goToSubProduct('kibochat') }} className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                       <span className='m-nav-grid__text'>KiboChat</span>
-                                    </div>
-                                    : <div onClick={() => { this.goToSubProduct('kibochat') }} className='m-nav-grid__item' disabled>
+                                    </a>
+                                    : <a className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                       <span className='m-nav-grid__text'>KiboChat</span>
-                                    </div>
+                                    </a>
                                     }
                                   </div>
                                   <div className='m-nav-grid__row'>
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibodash'))
-                                    ? <div onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item'>
+                                    ? <a href='#kibodash' onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-analytics' />
                                       <span className='m-nav-grid__text'>KiboDash</span>
-                                    </div>
-                                    : <div onClick={() => { this.goToSubProduct('kibodash') }} className='m-nav-grid__item' disabled>
+                                    </a>
+                                    : <a className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-analytics' />
                                       <span className='m-nav-grid__text'>KiboDash</span>
-                                    </div>
+                                    </a>
                                     }
 
                                     {
                                     (!window.location.hostname.toLowerCase().includes('kibocommerce'))
-                                    ? <div onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item'>
+                                    ? <a href='#kibocommerce' onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item'>
                                       <i className='m-nav-grid__icon flaticon-truck' />
                                       <span className='m-nav-grid__text'>KiboCommerce</span>
-                                    </div>
-                                    : <div onClick={() => { this.goToSubProduct('kibocommerce') }} className='m-nav-grid__item' disabled>
+                                    </a>
+                                    : <a className='m-nav-grid__item' disabled>
                                       <i className='m-nav-grid__icon flaticon-truck' />
                                       <span className='m-nav-grid__text'>KiboCommerce</span>
-                                    </div>
+                                    </a>
                                     }
 
                                   </div>
