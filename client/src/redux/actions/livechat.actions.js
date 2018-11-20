@@ -5,6 +5,30 @@ import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 // import store from '../store/store'
 
+export function handleCustomers (customers) {
+  console.log('handleCustomers called: ', customers)
+  return {
+    type: ActionTypes.SHOW_CUSTOMERS,
+    data: customers
+  }
+}
+
+export function updateSessionsData (session, customerId) {
+  if (session.status === 'new') {
+    return {
+      type: ActionTypes.UPDATE_OPEN_SESSIONS_WITH_CUSTOMERID,
+      data: session,
+      customerId
+    }
+  } else {
+    return {
+      type: ActionTypes.UPDATE_CLOSE_SESSIONS_WITH_CUSTOMERID,
+      data: session,
+      customerId
+    }
+  }
+}
+
 export function showChatSessions (sessions) {
   var sorted = sessions.sort(function (a, b) {
     return new Date(b.last_activity_time) - new Date(a.last_activity_time)
@@ -342,6 +366,37 @@ export function fetchTeamAgents (id, handleAgents) {
       .then(res => {
         if (res.status === 'success') {
           handleAgents(res.payload)
+        }
+      })
+  }
+}
+
+export function getCustomers () {
+  console.log('getCustomers called')
+  return (dispatch) => {
+    callApi(`demoApp/getCustomers`)
+      .then(res => {
+        if (res.status === 'success') {
+          console.log(res.payload)
+          dispatch(handleCustomers(res.payload))
+        } else {
+          console.log('ERROR: ', res.payload)
+        }
+      })
+  }
+}
+
+export function appendSubscriber (data, session, msg) {
+  console.log('appendSubscriber called', data)
+  return (dispatch) => {
+    callApi(`demoApp/appendSubscriber`, 'post', data)
+      .then(res => {
+        console.log('response for appendSubscriber: ', res)
+        if (res.status === 'success') {
+          dispatch(updateSessionsData(session, data.customerId))
+          msg.success('Subscriber attached successfully!')
+        } else {
+          msg.error('Failed to attach subscriber!')
         }
       })
   }
