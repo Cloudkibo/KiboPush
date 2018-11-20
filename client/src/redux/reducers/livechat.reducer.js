@@ -11,6 +11,7 @@ const initialState = {
 }
 
 export function liveChat (state = initialState, action) {
+  console.log('action type', action.type)
   switch (action.type) {
     case ActionTypes.SHOW_CHAT_SESSIONS:
       return Object.assign({}, state, {
@@ -179,6 +180,36 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.CLEAR_SEARCH_RESULT:
       return Object.assign({}, state, {
         searchChat: undefined
+      })
+
+    case ActionTypes.SHOW_CUSTOMERS:
+      console.log('action.customers', action.customers)
+      return Object.assign({}, state, {
+        customers: action.data
+      })
+
+    case ActionTypes.UPDATE_OPEN_SESSIONS_WITH_CUSTOMERID:
+      let tempOpen = state.openSessions
+      for (let i = 0; i < tempOpen.length; i++) {
+        if (tempOpen[i]._id === action.data._id) {
+          tempOpen[i].customerId = action.customerId
+          break
+        }
+      }
+      return Object.assign({}, state, {
+        openSessions: tempOpen
+      })
+
+    case ActionTypes.UPDATE_CLOSE_SESSIONS_WITH_CUSTOMERID:
+      let tempClose = state.closeSessions
+      for (let i = 0; i < tempClose.length; i++) {
+        if (tempClose[i]._id === action.data._id) {
+          tempClose[i].customerId = action.customerId
+          break
+        }
+      }
+      return Object.assign({}, state, {
+        openSessions: tempClose
       })
 
     default:
