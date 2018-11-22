@@ -54,10 +54,10 @@ export function addInvitation (data, msg) {
       if (res.status === 'success') {
         msg.success('Invitation email sent')
         dispatch(invitationSuccess('Invitation email sent.'))
-        dispatch(updateInvitation(res.description))
+        dispatch(updateInvitation(res.payload))
       } else {
-        msg.error(res.description)
-        dispatch(invitationFailure(res.description))
+        msg.error(res.payload)
+        dispatch(invitationFailure(res.payload))
       }
     })
   }
