@@ -245,15 +245,6 @@ class ViewBot extends React.Component {
               </div>
               <br />
             </div>
-            <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-              <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px', 'marginBottom': '25px'}}>
-                <Link
-                  to='/bots'
-                  className='btn btn-secondary' style={{'marginLeft': '10px'}}>
-                  Back
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>
