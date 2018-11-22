@@ -35,9 +35,9 @@ exports.invite = function (req, res) {
   .catch((err) => {
     logger.serverLog(TAG, 'result from invite endpoint accounts')
     logger.serverLog(TAG, err)
-    console.log('err.status', err.status)
-    console.log('err.payload', err.payload)
-    res.status(200).json({status: err.status, payload: err.payload})
+    console.log('err.status', err.error.status)
+    console.log('err.payload', err.error.payload)
+    res.status(200).json({status: err.error.status, payload: err.error.payload})
   })
 }
 
