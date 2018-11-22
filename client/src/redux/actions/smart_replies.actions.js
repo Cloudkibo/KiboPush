@@ -119,13 +119,16 @@ export function createBot (data, msg) {
   }
 }
 
-export function editBot (data) {
+export function editBot (data, msg) {
   return (dispatch) => {
     console.log('Creating Bot', data)
     callApi('bots/edit', 'post', data)
       .then(res => {
+        console.log('response from server: ', res)
         if (res.status === 'success') {
           dispatch(loadBotsList())
+        } else {
+          msg.error(JSON.stringify(res.payload))
         }
       })
   }

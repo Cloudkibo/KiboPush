@@ -176,6 +176,13 @@ class CreateBot extends React.Component {
     this.setState({payload: payload})
   }
 
+  handleVideoLinkChange (i, event) {
+    let payload = this.state.payload
+    payload[i].videoLink = event.target.value
+    payload[i].intent_name = 'q' + (i + 1)
+    this.setState({payload: payload})
+  }
+
   createBot () {
     console.log('payload', this.state.payload)
     if (this.state.payload.length === 0) {
@@ -194,13 +201,13 @@ class CreateBot extends React.Component {
             }
           }
         }
-        if (this.state.payload[i].answer === '') {
+        if (this.state.payload[i].answer === '' && this.state.payload[i].videoLink === '') {
           this.msg.error('You must enter answer of the questions')
           return
         }
       }
     }
-    this.props.editBot({botId: this.state.id, payload: this.state.payload})
+    this.props.editBot({botId: this.state.id, payload: this.state.payload}, this.msg)
     this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
     this.props.history.push({
       pathname: `/bots`
