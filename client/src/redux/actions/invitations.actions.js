@@ -56,6 +56,7 @@ export function addInvitation (data, msg) {
         dispatch(invitationSuccess('Invitation email sent.'))
         dispatch(updateInvitation(res.payload))
       } else {
+        console.log('res.payload', res.payload)
         msg.error(res.payload)
         dispatch(invitationFailure(res.payload))
       }
