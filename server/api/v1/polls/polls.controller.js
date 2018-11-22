@@ -371,7 +371,7 @@ exports.create = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+    CompanyProfile.findOne({_id: companyUser.companyId}, (err, companyProfile) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
@@ -592,7 +592,7 @@ exports.send = function (req, res) {
         description: 'The user account does not belong to any company. Please contact support'
       })
     }
-    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+    CompanyProfile.findOne({_id: companyUser.companyId}, (err, companyProfile) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
@@ -1069,7 +1069,7 @@ exports.sendPoll = function (req, res) {
       })
     }
 
-    CompanyProfile.findOne({ownerId: req.user._id}, (err, companyProfile) => {
+    CompanyProfile.findOne({_id: companyUser.companyId}, (err, companyProfile) => {
       if (err) {
         return res.status(500).json({
           status: 'failed',
