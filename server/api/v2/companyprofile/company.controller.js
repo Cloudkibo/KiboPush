@@ -37,7 +37,7 @@ exports.invite = function (req, res) {
     logger.serverLog(TAG, err)
     console.log('err.status', err.error.status)
     console.log('err.payload', err.error.payload)
-    res.status(200).json({status: err.error.status, payload: err.error.payload})
+    res.status(200).json({status: 'failed', payload: err.error.payload})
   })
 }
 
