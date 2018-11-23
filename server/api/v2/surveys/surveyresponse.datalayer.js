@@ -1,4 +1,4 @@
-const SurveyResponse = require('./surveyresponse.model')
+const SurveyResponse = require('./../../v1/surveys/surveyresponse.model')
 
 exports.genericUpdateForResponse = (query, updated, options) => {
   return SurveyResponse.update(query, updated, options)

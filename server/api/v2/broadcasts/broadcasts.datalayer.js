@@ -1,4 +1,4 @@
-const Broadcasts = require('./broadcasts.model')
+const Broadcasts = require('./../../v1/broadcasts/broadcasts.model')
 
 exports.aggregateForBroadcasts = (aggregateObject) => {
   return Broadcasts.aggregate(aggregateObject)
@@ -14,17 +14,17 @@ exports.createForBroadcast = (payload) => {
 }
 
 exports.countBroadcasts = (query) => {
-    return Broadcasts.count(query)
+  return Broadcasts.count(query)
         .exec()
 }
 
 exports.updateBroadcast = (query) => {
-    return Broadcasts.update(query)
+  return Broadcasts.update(query)
         .exec()
 }
 
 exports.findBroadcastsWithSortLimit = (query, sort, limit) => {
-    return Broadcasts.find(query)
+  return Broadcasts.find(query)
         .sort(sort)
         .limit(limit)
         .exec()

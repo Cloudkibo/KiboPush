@@ -1,4 +1,4 @@
-const Surveys = require('./surveys.model')
+const Surveys = require('./../../v1/surveys/surveys.model')
 
 exports.findOneSurvey = (id) => {
   return Surveys.find({_id: id}).populate('userId companyId')

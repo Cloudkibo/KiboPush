@@ -1,5 +1,5 @@
-const PollResponse = require('./pollresponse.model')
-const Polls = require('./polls.model')
+const PollResponse = require('./../../v1/polls/pollresponse.model')
+const Polls = require('./../../v1/polls/Polls.model')
 
 exports.findOnePoll = (id) => {
   return Polls.find({_id: id})
