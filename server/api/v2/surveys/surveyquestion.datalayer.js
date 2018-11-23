@@ -1,4 +1,4 @@
-const SurveyQuestions = require('./surveyquestions.model')
+const SurveyQuestions = require('./../../v1/surveys/surveyquestions.model')
 
 exports.genericfindForSurveyQuestions = (query) => {
   return SurveyQuestions.find(query).populate('surveyId')

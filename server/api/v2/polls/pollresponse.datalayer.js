@@ -1,4 +1,4 @@
-const PollResponse = require('./pollresponse.model')
+const PollResponse = require('./../../v1/polls/pollresponse.model')
 
 exports.genericFindForPollResponse = (query) => {
   return PollResponse.find(query)

@@ -1,4 +1,4 @@
-const Notifications = require('./notifications.model')
+const Notifications = require('./../../v1/notifications/notifications.model')
 
 exports.genericFind = (query) => {
   return Notifications.find(query).populate('agentId companyId')
