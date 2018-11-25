@@ -14,7 +14,7 @@ router.get('/',
   controller.index)
 
 router.get('/plugin',
-  // auth.isAuthenticated(),
+  auth.isAuthenticated(),
   controller.getPlugin)
 
 router.post('/create',
