@@ -218,7 +218,7 @@ class Survey extends React.Component {
       this.msg.error('No subscribers match the selected criteria')
     } else {
       this.props.sendsurvey(survey, this.msg)
-      this.setState({ pageNumber: 0 })       
+      this.setState({ pageNumber: 0 })
     }
   }
   render () {
@@ -404,7 +404,13 @@ class Survey extends React.Component {
                             <button style={{float: 'right'}}
                               className='btn btn-primary btn-sm'
                               onClick={() => {
-                                this.props.deleteSurvey(this.state.deleteid, this.msg, {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+                                let loadData = {}
+                                if (this.state.pageNumber === 0) {
+                                  loadData = {last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                } else {
+                                  loadData = {current_page: this.state.pageNumber, requested_page: this.state.pageNumber, last_id: this.props.surveys.length > 0 ? this.props.surveys[0]._id : 'none', number_of_records: 10, first_page: 'delete', days: this.state.selectedDays === '' ? '0' : this.state.selectedDays}
+                                }
+                                this.props.deleteSurvey(this.state.deleteid, this.msg, loadData)
                                 this.closeDialogDelete()
                               }}>Delete
                             </button>
