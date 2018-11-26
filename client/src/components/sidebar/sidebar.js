@@ -97,7 +97,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }*/
+    }   */
   }
 
   showAbandonedCarts () {
