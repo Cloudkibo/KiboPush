@@ -152,7 +152,7 @@ function checkLastMessageAge (subscriberId, callback) {
           let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
           callback(null, (inMinutes > 30))
         } else {
-          callback(null, false)
+          callback(null, true)
         }
       }
     })
