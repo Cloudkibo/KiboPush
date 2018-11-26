@@ -138,11 +138,13 @@ function checkLastMessageAge (subscriberId, callback) {
       logger.serverLog(TAG, 'inside error')
       return callback(err)
     }
+    console.log(`subscriber ${JSON.stringify(subscriber)}`)
     sessions.findOne({ subscriber_id: subscriber._id }, (err, session) => {
       if (err) {
         logger.serverLog(TAG, 'inside error')
         return callback(err)
       }
+      console.log(`session ${JSON.stringify(session)}`)
       if (session && session.agent_activity_time) {
         let lastActivity = new Date(session.agent_activity_time)
         let inMiliSeconds = Date.now() - lastActivity
