@@ -767,6 +767,7 @@ exports.send = function (req, res) {
                                         logger.serverLog(TAG, 'inside error')
                                         return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                       }
+                                      console.log('isLastMessage: ', isLastMessage)
                                       if (isLastMessage) {
                                         logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
                                         needle.post(
@@ -896,6 +897,7 @@ exports.send = function (req, res) {
                                           logger.serverLog(TAG, 'inside error')
                                           return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                         }
+                                        console.log('isLastMessage: ', isLastMessage)
                                         if (isLastMessage) {
                                           logger.serverLog(TAG, 'inside poll send' + JSON.stringify(data))
                                           needle.post(
@@ -1336,6 +1338,7 @@ exports.sendPoll = function (req, res) {
                                           logger.serverLog(TAG, 'inside error')
                                           return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                         }
+                                        console.log('isLastMessage: ', isLastMessage)
                                         if (isLastMessage) {
                                           logger.serverLog(TAG, 'inside direct poll send' + JSON.stringify(data))
                                           needle.post(
@@ -1465,7 +1468,7 @@ exports.sendPoll = function (req, res) {
                                             logger.serverLog(TAG, 'inside error')
                                             return logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                                           }
-
+                                          console.log('isLastMessage: ', isLastMessage)
                                           if (isLastMessage) {
                                             logger.serverLog(TAG, 'inside direct poll sendd', JSON.stringify(data))
                                             needle.post(
