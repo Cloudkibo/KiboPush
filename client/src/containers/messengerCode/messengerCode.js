@@ -6,9 +6,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
-import { Link } from 'react-router'
+import { requestMessengerCode } from '../../redux/actions/messengerCode.actions'
 import AlertContainer from 'react-alert'
 
 class MessengerCode extends React.Component {
@@ -24,6 +23,7 @@ class MessengerCode extends React.Component {
     this.onPageChange = this.onPageChange.bind(this)
     this.onResolutionChange = this.onResolutionChange.bind(this)
     this.onRefChange = this.onRefChange.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   onPageChange (event) {
@@ -54,6 +54,18 @@ class MessengerCode extends React.Component {
 
   onRefChange (event) {
     this.setState({ref: event.target.value})
+  }
+
+  onSubmit (event) {
+    if (this.state.ref !== '') {
+      this.props.requestMessengerCode({
+        pageId: this.state.selectedPage.pageId,
+        image_size: parseInt(this.state.resoltion),
+        data: {ref: this.state.ref}
+      })
+    } else {
+      this.props.requestMessengerCode({pageId: this.state.selectedPage.pageId, image_size: parseInt(this.state.resoltion)})
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -138,7 +150,7 @@ class MessengerCode extends React.Component {
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                     <div className='col-12'>
                       <div className='m-form__actions' style={{'float': 'right', marginTop: '20px'}}>
-                        <button className='btn btn-primary'> Request Messenger Code
+                        <button className='btn btn-primary' onClick={this.onSubmit}> Request Messenger Code
                         </button>
                       </div>
                     </div>
@@ -162,7 +174,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesListNew: loadMyPagesListNew
+    loadMyPagesListNew: loadMyPagesListNew,
+    requestMessengerCode: requestMessengerCode
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessengerCode)
