@@ -38,6 +38,7 @@ class Sidebar extends Component {
       welcomeMessage: true,
       segmentSubscribers: true,
       commentCapture: true,
+      messengerCode: true,
       smartReplies: false,
       templates: false,
       sequenceMessaging: false,
@@ -96,7 +97,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }*/
+    }   */
   }
 
   showAbandonedCarts () {
@@ -262,6 +263,7 @@ class Sidebar extends Component {
             {this.showCommentCapture()}
             {this.showInviteUsingPhoneNumber()}
             {this.showInviteSubscribers()}
+            {this.showMessengerCode()}
           </ul>
         </div>
       </li>
@@ -528,6 +530,28 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Comment Capture
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showMessengerCode () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.messengerCode) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messengerCode' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Messenger Code
               </span>
             </Link>
           </li>
