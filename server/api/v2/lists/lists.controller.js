@@ -141,7 +141,7 @@ exports.viewList = function (req, res) {
   .then(companyUser => {
     utility.callApi(`lists/${req.params.id}`, 'get', {}, req.headers.authorization)
     .then(list => {
-      logger.serverLog(TAG, `found list ${util.inspect(list)}`)
+      console.log('list', list)
       if (list.initialList === true) {
         utility.callApi(`phone/query`, 'post', {
           companyId: companyUser.companyId,
@@ -149,10 +149,12 @@ exports.viewList = function (req, res) {
           fileName: list[0].listName
         }, req.headers.authorization)
         .then(number => {
+          console.log('number', number)
           if (number.length > 0) {
             let criterias = logicLayer.getSubscriberCriteria(number, companyUser)
             utility.callApi(`subscribers/query`, 'post', criterias, req.headers.authorization)
             .then(subscribers => {
+              console.log('subscribers', subscribers)
               let content = logicLayer.getContent(subscribers)
               utility.callApi(`lists/${req.params.id}`, 'put', {
                 content: content
@@ -162,14 +164,14 @@ exports.viewList = function (req, res) {
               })
               .catch(error => {
                 return res.status(500).json({
-                  status: 'failed',
+                  status: `failed ${error}`,
                   payload: `Failed to fetch list content ${JSON.stringify(error)}`
                 })
               })
             })
             .catch(error => {
               return res.status(500).json({
-                status: 'failed',
+                status: `failed ${error}`,
                 payload: `Failed to fetch subscribers ${JSON.stringify(error)}`
               })
             })
@@ -182,20 +184,20 @@ exports.viewList = function (req, res) {
         })
         .catch(error => {
           return res.status(500).json({
-            status: 'failed',
+            status: `failed ${error}`,
             payload: `Failed to fetch numbers ${JSON.stringify(error)}`
           })
         })
       } else {
         utility.callApi(`subscribers/query`, 'post', {
-          isSubscribed: true, _id: {$in: list[0].content}}, req.headers.authorization)
+          isSubscribed: true, _id: {$in: list.content}}, req.headers.authorization)
         .then(subscribers => {
           return res.status(201)
             .json({status: 'success', payload: subscribers})
         })
         .catch(error => {
           return res.status(500).json({
-            status: 'failed',
+            status: `failed ${error}`,
             payload: `Failed to fetch subscribers ${JSON.stringify(error)}`
           })
         })
@@ -203,14 +205,14 @@ exports.viewList = function (req, res) {
     })
     .catch(error => {
       return res.status(500).json({
-        status: 'failed',
+        status: `failed ${error}`,
         payload: `Failed to fetch list ${JSON.stringify(error)}`
       })
     })
   })
   .catch(error => {
     return res.status(500).json({
-      status: 'failed',
+      status: `failed ${error}`,
       payload: `Failed to fetch company user ${JSON.stringify(error)}`
     })
   })

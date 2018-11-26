@@ -356,6 +356,9 @@ class CustomerMatching extends React.Component {
   }
 
   onTextChange (e) {
+    if (e.target.value === '') {
+      this.setState({disabled: true})
+    }
     this.setState({textAreaValue: e.target.value})
     if (e.target.value !== '' && ((this.state.file && this.state.file !== '') || this.inputPhoneNumbers.value !== '')) {
       this.setState({disabled: false})
@@ -431,9 +434,7 @@ class CustomerMatching extends React.Component {
       var customerLists = []
       for (var i = 0; i < nextProps.customerLists.length; i++) {
         var list = nextProps.customerLists[i]
-        if (list.initialList) {
-          customerLists.push(list)
-        }
+        customerLists.push(list)
       }
       this.setState({
         customerLists: customerLists
@@ -464,6 +465,7 @@ class CustomerMatching extends React.Component {
   }
 
   render () {
+    console.log('customerMatchingUsingPhNum state', this.state)
     var alertOptions = {
       offset: 14,
       position: 'top right',

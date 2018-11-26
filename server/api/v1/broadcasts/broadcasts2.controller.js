@@ -40,37 +40,94 @@ const operation = (index, length) => {
   }
 }
 
-const updatePayload = (self, payload, broadcast) => {
-  let shouldReturn = false
-  logger.serverLog(TAG, `Update Payload: ${JSON.stringify(payload)}`)
-  for (let j = 0; j < payload.length; j++) {
-    if (!self && payload[j].componentType === 'list') {
-      payload[j].listItems.forEach((element, lindex) => {
-        if (element.default_action) {
-          let URLObject = new URL({
-            originalURL: element.default_action.url,
-            module: {
-              id: broadcast._id,
-              type: 'broadcast'
+const updatePayload = (self, payload, broadcast, page) => {
+  return new Promise((resolve, reject) => {
+    let shouldReturn = false
+    logger.serverLog(TAG, `Update Payload: ${JSON.stringify(payload)}`)
+    /* eslint-disable no-useless-escape */
+    let videoRegex = new RegExp(`^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}`, 'g')
+    let YouTubeRegex = new RegExp('^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+', 'g')
+    /* eslint-enable no-useless-escape */
+    for (let j = 0; j < payload.length; j++) {
+      if (!self && payload[j].componentType === 'list') {
+        payload[j].listItems.forEach((element, lindex) => {
+          if (element.default_action) {
+            let URLObject = new URL({
+              originalURL: element.default_action.url,
+              module: {
+                id: broadcast._id,
+                type: 'broadcast'
+              }
+            })
+            URLObject.save((err, savedurl) => {
+              if (err) logger.serverLog(TAG, err)
+              let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
+              payload[j].listItems[lindex].default_action.url = newURL
+            })
+          }
+          if (lindex === (payload[j].listItems.length - 1)) {
+            shouldReturn = operation(j, payload.length - 1)
+            if (shouldReturn) {
+              resolve(payload)
             }
-          })
-          URLObject.save((err, savedurl) => {
-            if (err) logger.serverLog(TAG, err)
-            let newURL = config.domain + '/api/URL/broadcast/' + savedurl._id
-            payload[j].listItems[lindex].default_action.url = newURL
-          })
-        }
-        if (lindex === (payload[j].listItems.length - 1)) {
+          }
+        })
+      } else if (payload[j].componentType === 'text') {
+        if (videoRegex.test(payload[j].text)) {
+          console.log(`answer is url`)
+          // Check if youtube url
+          if (YouTubeRegex.test(payload[j].text)) {
+            console.log(`answer is YouTube video`)
+            utility.downloadVideo({url: payload[j].text})
+              .then(path => {
+                payload[j].componentType = 'video'
+                payload[j].fileurl = { name: path }
+                utility.uploadOnFacebook(payload[j], page.accessToken)
+                  .then(data => {
+                    console.log('in uploadOnFacebook then')
+                    payload[j] = data
+                    utility.deleteVideo()
+                      .then(result => {
+                        console.log('in deleteVideo then', j)
+                        shouldReturn = operation(j, payload.length - 1)
+                        console.log('shouldReturn ', shouldReturn)
+                        if (shouldReturn) {
+                          resolve(payload)
+                        }
+                      })
+                      .catch(err => {
+                        console.log(JSON.stringify(err))
+                      })
+                  })
+                  .catch(err => {
+                    console.log(JSON.stringify(err))
+                  })
+              })
+              .catch(err => {
+                console.log(JSON.stringify(err))
+              })
+          } else {
+            shouldReturn = operation(j, payload.length - 1)
+            console.log('shouldReturn ', shouldReturn)
+            if (shouldReturn) {
+              resolve(payload)
+            }
+          }
+        } else {
           shouldReturn = operation(j, payload.length - 1)
+          console.log('shouldReturn ', shouldReturn)
+          if (shouldReturn) {
+            resolve(payload)
+          }
         }
-      })
-    } else {
-      shouldReturn = operation(j, payload.length - 1)
+      } else {
+        shouldReturn = operation(j, payload.length - 1)
+        if (shouldReturn) {
+          resolve(payload)
+        }
+      }
     }
-  }
-  if (shouldReturn) {
-    return payload
-  }
+  })
 }
 
 const sendTestBroadcast = (companyUser, page, payload, req, res) => {
@@ -188,13 +245,13 @@ exports.sendConversation = function (req, res) {
       }
       let payloadData = req.body.payload
       if (req.body.self) {
-        let payload = updatePayload(req.body.self, payloadData)
-        let interval = setInterval(() => {
-          if (payload) {
-            clearInterval(interval)
+        updatePayload(req.body.self, payloadData, undefined, page)
+          .then(payload => {
             sendTestBroadcast(companyUser, page, payload, req, res)
-          }
-        }, 3000)
+          })
+          .catch(err => {
+            console.log(JSON.stringify(err))
+          })
       } else {
         const broadcast = new Broadcasts(utility.prepareBroadCastPayload(req, companyUser.companyId))
         broadcast.save((err, broadcast) => {
@@ -213,75 +270,71 @@ exports.sendConversation = function (req, res) {
               }
             }
           })
-          let payload = updatePayload(req.body.self, payloadData, broadcast)
-          utility.addModuleIdIfNecessary(payloadData, broadcast._id) // add module id in buttons for click count
-          if (req.body.isList === true) {
-            let ListFindCriteria = {}
-            ListFindCriteria = _.merge(ListFindCriteria,
-              {
-                _id: {
-                  $in: req.body.segmentationList
-                }
-              })
-            Lists.find(ListFindCriteria, (err, lists) => {
-              if (err) {
-                return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
-              }
-              let subsFindCriteria = {pageId: page._id}
-              let listData = []
-              if (lists.length > 1) {
-                for (let i = 0; i < lists.length; i++) {
-                  for (let j = 0; j < lists[i].content.length; j++) {
-                    if (exists(listData, lists[i].content[j]) === false) {
-                      listData.push(lists[i].content[j])
-                    }
-                  }
-                }
-                subsFindCriteria = _.merge(subsFindCriteria, {
-                  _id: {
-                    $in: listData
-                  }
-                })
-              } else {
-                subsFindCriteria = _.merge(subsFindCriteria, {
-                  _id: {
-                    $in: lists[0].content
-                  }
-                })
-              }
-              let interval = setInterval(() => {
-                if (payload) {
-                  clearInterval(interval)
-                  sendToSubscribers(subsFindCriteria, req, res, page, broadcast, companyUser, payload)
-                }
-              }, 3000)
-            })
-          } else {
-            let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
-            if (req.body.isSegmented) {
-              if (req.body.segmentationGender.length > 0) {
-                subscriberFindCriteria = _.merge(subscriberFindCriteria,
+          updatePayload(req.body.self, payloadData, broadcast, page)
+            .then(payload => {
+              console.log('payload: ', JSON.stringify(payload))
+              utility.addModuleIdIfNecessary(payloadData, broadcast._id) // add module id in buttons for click count
+              if (req.body.isList === true) {
+                let ListFindCriteria = {}
+                ListFindCriteria = _.merge(ListFindCriteria,
                   {
-                    gender: {
-                      $in: req.body.segmentationGender
+                    _id: {
+                      $in: req.body.segmentationList
                     }
                   })
-              }
-              if (req.body.segmentationLocale.length > 0) {
-                subscriberFindCriteria = _.merge(subscriberFindCriteria, {
-                  locale: {
-                    $in: req.body.segmentationLocale
+                Lists.find(ListFindCriteria, (err, lists) => {
+                  if (err) {
+                    return logger.serverLog(TAG, `Error ${JSON.stringify(err)}`)
                   }
+                  let subsFindCriteria = {pageId: page._id}
+                  let listData = []
+                  if (lists.length > 1) {
+                    for (let i = 0; i < lists.length; i++) {
+                      for (let j = 0; j < lists[i].content.length; j++) {
+                        if (exists(listData, lists[i].content[j]) === false) {
+                          listData.push(lists[i].content[j])
+                        }
+                      }
+                    }
+                    subsFindCriteria = _.merge(subsFindCriteria, {
+                      _id: {
+                        $in: listData
+                      }
+                    })
+                  } else {
+                    subsFindCriteria = _.merge(subsFindCriteria, {
+                      _id: {
+                        $in: lists[0].content
+                      }
+                    })
+                  }
+                  sendToSubscribers(subsFindCriteria, req, res, page, broadcast, companyUser, payload)
                 })
-              }
-            }
-            let interval = setInterval(() => {
-              if (payload) {
-                clearInterval(interval)
+              } else {
+                let subscriberFindCriteria = {pageId: page._id, isSubscribed: true}
+                if (req.body.isSegmented) {
+                  if (req.body.segmentationGender.length > 0) {
+                    subscriberFindCriteria = _.merge(subscriberFindCriteria,
+                      {
+                        gender: {
+                          $in: req.body.segmentationGender
+                        }
+                      })
+                  }
+                  if (req.body.segmentationLocale.length > 0) {
+                    subscriberFindCriteria = _.merge(subscriberFindCriteria, {
+                      locale: {
+                        $in: req.body.segmentationLocale
+                      }
+                    })
+                  }
+                }
                 sendToSubscribers(subscriberFindCriteria, req, res, page, broadcast, companyUser, payload)
               }
-            }, 3000)
-          }
+            })
+            .catch(err => {
+              console.log(JSON.stringify(err))
+            })
         })
       }
     })

@@ -35,21 +35,22 @@ const downloadVideo = (data) => {
       // } else {
       //   resolve('ERR_LIMIT_REACHED')
       // }
-      let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
-      video.on('data', (chunk) => {
-        downloaded += chunk
-        if (downloaded > 5000000) {
-          stream.end()
-          resolve(`${dir}/bot-video.mp4`)
-        }
-      })
-      stream.on('error', (error) => {
+    })
+    let stream = video.pipe(fs.createWriteStream(`${dir}/bot-video.mp4`))
+    video.on('data', (chunk) => {
+      downloaded += chunk.length
+      console.log(`Downloaded ${downloaded / 1000000}MB`)
+      if (downloaded > 5000000) {
         stream.end()
-        reject(util.inspect(error))
-      })
-      stream.on('finish', () => {
         resolve(`${dir}/bot-video.mp4`)
-      })
+      }
+    })
+    stream.on('error', (error) => {
+      stream.end()
+      reject(util.inspect(error))
+    })
+    stream.on('finish', () => {
+      resolve(`${dir}/bot-video.mp4`)
     })
   })
 }
@@ -193,10 +194,10 @@ exports.updatePayloadForVideo = (botId, payload) => {
     /* eslint-enable no-useless-escape */
     for (let i = 0; i < payload.length; i++) {
       if (videoRegex.test(payload[i].answer)) {
-        logger.serverLog(TAG, `answer is url`)
+        console.log(`answer is url`)
         // Check if youtube url
         if (YouTubeRegex.test(payload[i].answer)) {
-          logger.serverLog(TAG, `answer is YouTube video`)
+          console.log(`answer is YouTube video`)
           let data = {
             url: payload[i].answer
           }

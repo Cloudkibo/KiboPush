@@ -99,6 +99,7 @@ import CreateTeam from './containers/teams/createTeam'
 import Teams from './containers/teams/teams'
 import EditTeam from './containers/teams/editTeam'
 import Bots from './containers/smart_replies/bots'
+import UnansweredQueries from './containers/smart_replies/unansweredQueries'
 import CreateBot from './containers/smart_replies/createBot'
 import EditBot from './containers/smart_replies/editBot'
 import ViewBot from './containers/smart_replies/viewBot'
@@ -243,6 +244,7 @@ const routes = (
     <Route path='/teams' component={Teams} onEnter={requireAuth} />
     <Route path='/editTeam' component={EditTeam} onEnter={requireAuth} />
     <Route path='/bots' component={Bots} onEnter={requireAuth} />
+    <Route path='/UnansweredQueries' component={UnansweredQueries} onEnter={requireAuth} />
     <Route path='/createBot' component={CreateBot} onEnter={requireAuth} />
     <Route path='/editBot' component={EditBot} onEnter={requireAuth} />
     <Route path='/viewBot' component={ViewBot} onEnter={requireAuth} />

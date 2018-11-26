@@ -27,14 +27,17 @@ exports.invite = function (req, res) {
 
   utility.callApi('companyprofile/invite', 'post', {email: req.body.email, name: req.body.name}, req.headers.authorization)
   .then((result) => {
+    console.log('result', result)
     logger.serverLog(TAG, 'result from invite endpoint accounts')
     logger.serverLog(TAG, result)
-    res.status(200).json(result)
+    res.status(200).json({status: 'success', payload: result})
   })
   .catch((err) => {
     logger.serverLog(TAG, 'result from invite endpoint accounts')
     logger.serverLog(TAG, err)
-    res.status(500).json(err)
+    console.log('err.status', err.error.status)
+    console.log('err.payload', err.error.payload)
+    res.status(200).json({status: 'failed', payload: err.error.payload})
   })
 }
 

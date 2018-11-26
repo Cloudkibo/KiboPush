@@ -14,6 +14,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
+import { doesPageHaveSubscribers } from '../../utility/utils'
 import Targeting from '../convo/Targeting'
 
 class CreatePoll extends React.Component {
@@ -242,6 +243,7 @@ class CreatePoll extends React.Component {
       }
     }
   }
+
   render () {
     // const { disabled, stayOpen } = this.state
     var alertOptions = {
@@ -417,7 +419,9 @@ class CreatePoll extends React.Component {
                   </div>
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right', 'marginRight': '20px'}}>
-                      <button className='btn btn-primary'
+                      <button
+                        disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
+                        className='btn btn-primary'
                         onClick={() => {
                           this.checkValidation()
                         }}> Create Poll
