@@ -145,12 +145,15 @@ function checkLastMessageAge (subscriberId, callback) {
         return callback(err)
       }
       console.log(`session ${JSON.stringify(session)}`)
-      if (session && session.agent_activity_time) {
-        let lastActivity = new Date(session.agent_activity_time)
-        let inMiliSeconds = Date.now() - lastActivity
-        let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
-
-        callback(null, (inMinutes > 30))
+      if (session) {
+        if (session.agent_activity_time) {
+          let lastActivity = new Date(session.agent_activity_time)
+          let inMiliSeconds = Date.now() - lastActivity
+          let inMinutes = Math.floor((inMiliSeconds / 1000) / 60)
+          callback(null, (inMinutes > 30))
+        } else {
+          callback(null, false)
+        }
       }
     })
   })
