@@ -117,6 +117,7 @@ import Features from './containers/features/features'
 import Usage from './containers/usage/usage'
 import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 import ConnectFBPages from './containers/signup/connectFbPages'
+import DiscoverTabs from './containers/GrowthTools/discoverTabs'
 
 import auth from './utility/auth.service'
 
@@ -186,6 +187,7 @@ const routes = (
     <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
     <Route path='/userSurveys' component={UserSurveys} onEnter={requireAuth} />
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
+    <Route path='/discoverTabs' component={DiscoverTabs} onEnter={requireAuth} />
     <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
