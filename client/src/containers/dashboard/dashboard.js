@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
     this.props.loadTopPages()
   }
   checkUserAccessToken (response) {
-    console.log(response)
+    console.log('checkUserAccessToken response', response)
   }
   closeProDialog () {
     this.setState({isShowingModalPro: false})
