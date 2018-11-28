@@ -21,7 +21,7 @@ const logger = require('../../../components/logger')
 // const mongoose = require('mongoose')
 const MailChimp = require('mailchimp-api-v3')
 const moment = require('moment')
-const needle = require('needle')
+
 // const PassportFacebookExtension = require('passport-facebook-extension')
 
 const TAG = 'api/user/user.controller.js'
@@ -1269,21 +1269,5 @@ exports.cancelDeletion = function (req, res) {
         return res.status(200).json({status: 'success', payload: updatedUser})
       }
     })
-  })
-}
-
-exports.validateUserAccessToken = (req, res) => {
-  console.log('user ', JSON.stringify(req.user))
-  needle.get(``, (err, response) => {
-    if (err) {
-      console.log(TAG, `ERROR at validating user access token ${JSON.stringify(err)}`)
-      res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
-    } else if (response.body.error) {
-      console.log(TAG, `ERROR at validating user access token ${JSON.stringify(err)}`)
-      res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
-    } else {
-      console.log(TAG, 'User Access Token validated successfully!')
-      res.status(200).json({status: 'success', payload: 'User Access Token validated successfully!'})
-    }
   })
 }
