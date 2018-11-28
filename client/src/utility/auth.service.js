@@ -49,7 +49,7 @@ function redirectToLogoutAccounts () {
   console.log('process.env', process.env)
   console.log('process.env.NODE_ENV', process.env.NODE_ENV)
   console.log('environment', environment)
-  if (environment === 'staging' || window.location.href.includes('skibo')) {
+  if (environment === 'staging' || window.location.href.includes('skibo') || window.location.href.includes('staging')) {
     window.location.replace('https://saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
   } else {
     window.location.replace('https://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
