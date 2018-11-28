@@ -150,16 +150,17 @@ exports.cancelDeletion = function (req, res) {
 
 exports.validateUserAccessToken = (req, res) => {
   console.log('user ', JSON.stringify(req.user))
-  needle.get(`https://graph.facebook.com/v2.6/me?access_token=${req.user.facebookInfo.fbToken}`, (err, response) => {
-    if (err) {
-      console.log(TAG, `ERROR at validating user access token ${JSON.stringify(err)}`)
-      res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
-    } else if (response.body.error) {
-      console.log(TAG, `ERROR at validating user access token ${JSON.stringify(err)}`)
-      res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
-    } else {
-      console.log(TAG, 'User Access Token validated successfully!')
-      res.status(200).json({status: 'success', payload: 'User Access Token validated successfully!'})
-    }
-  })
+  if (req.user.facebookInfo) {
+    needle.get(`https://graph.facebook.com/v2.6/me?access_token=${req.user.facebookInfo.fbToken}`, (err, response) => {
+      if (err) {
+        res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
+      } else if (response.body.error) {
+        res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
+      } else {
+        res.status(200).json({status: 'success', payload: 'User Access Token validated successfully!'})
+      }
+    })
+  } else {
+    res.status(200).json({status: 'success', payload: 'Facebook account is not connected.'})
+  }
 }
