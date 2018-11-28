@@ -22,7 +22,7 @@ import YouTube from 'react-youtube'
 import Halogen from 'halogen'
 //  import GettingStarted from './gettingStarted'
 import { joinRoom, registerAction } from '../../utility/socketio'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
 import Reports from './reports'
 import TopPages from './topPages'
 import moment from 'moment'
@@ -58,17 +58,22 @@ class Dashboard extends React.Component {
     this.showProDialog = this.showProDialog.bind(this)
     this.closeProDialog = this.closeProDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
   }
   showProDialog () {
     this.setState({isShowingModalPro: true})
   }
   componentWillMount () {
+    this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.getuserdetails()
     this.props.loadMyPagesList()
     this.props.loadDashboardData()
     this.props.loadSubscribersList()
     this.props.loadGraphData(0)
     this.props.loadTopPages()
+  }
+  checkUserAccessToken (response) {
+    console.log('checkUserAccessToken response', response)
   }
   closeProDialog () {
     this.setState({isShowingModalPro: false})
@@ -587,7 +592,8 @@ function mapDispatchToProps (dispatch) {
       getuserdetails: getuserdetails,
       sentVsSeen: sentVsSeen,
       loadGraphData: loadGraphData,
-      loadTopPages: loadTopPages
+      loadTopPages: loadTopPages,
+      validateUserAccessToken
     },
     dispatch)
 }

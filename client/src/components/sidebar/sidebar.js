@@ -264,6 +264,7 @@ class Sidebar extends Component {
             {this.showInviteUsingPhoneNumber()}
             {this.showInviteSubscribers()}
             {this.showMessengerCode()}
+            {this.showDiscoverTabs()}
           </ul>
         </div>
       </li>
@@ -561,7 +562,24 @@ class Sidebar extends Component {
       }
     }
   }
-
+  showDiscoverTabs () {
+    if (this.props.user) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/discoverTabs' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Discover Tabs
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
   showInviteUsingPhoneNumber () {
     if (this.props.user) {
       if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
@@ -589,7 +607,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/inviteSubscribers' className='m-menu__link'>
-              <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
               <span className='m-menu__link-text'>
