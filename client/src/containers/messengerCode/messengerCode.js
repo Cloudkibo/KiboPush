@@ -16,7 +16,8 @@ class MessengerCode extends React.Component {
     this.state = {
       selectedPage: {},
       ref: '',
-      resoltion: '1000'
+      resoltion: '1000',
+      image: 'https://skiboengage.cloudkibo.com/api/broadcasts/download/fd5f53099b1201811306114.png'
     }
     props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
 
@@ -74,6 +75,9 @@ class MessengerCode extends React.Component {
       this.setState({
         selectedPage: nextProps.pages[0]
       })
+    }
+    if (nextProps.image) {
+      this.setState({image: nextProps.image})
     }
   }
 
@@ -145,6 +149,15 @@ class MessengerCode extends React.Component {
                       </div>
                     </div>
                     <br />
+                    {this.state.image !== '' &&
+                      <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12' style={{display: 'flex'}}>
+                        <div className='col-3' />
+                        <div className='col-6'>
+                          <img src={this.state.image} />
+                        </div>
+                      </div>
+                    }
+                    <br />
                   </div>
                   <br /><br />
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
@@ -168,7 +181,8 @@ class MessengerCode extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    image: (state.messengerCodeInfo.image)
   }
 }
 
