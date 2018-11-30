@@ -26,9 +26,11 @@ export function showAgentsList (data) {
 }
 
 export function createTeam (data) {
+  console.log('data for createTeam', data)
   return (dispatch) => {
     callApi('teams/create', 'post', data)
       .then(res => {
+        console.log('response from createTeam', res)
         dispatch(loadTeamsList())
       })
   }

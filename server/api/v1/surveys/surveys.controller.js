@@ -29,6 +29,7 @@ const utility = require('./../broadcasts/broadcasts.utility')
 const compUtility = require('../../../components/utility')
 
 exports.allSurveys = function (req, res) {
+  logger.serverLog(TAG, `inside allsurveys endpoint`)
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
     if (err) {
       return res.status(500).json({
@@ -134,6 +135,63 @@ exports.allSurveys = function (req, res) {
             })
           })
         })
+      })
+    } else if (req.body.first_page === 'delete') {
+      let recordsToSkip = 0
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        'datetime': req.body.days !== '0' ? {
+          $gte: startDate
+        } : {$exists: true}
+      }
+      Surveys.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, surveysCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        // Finding the last document
+        Surveys.findOne({_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}})
+          .exec((err, lastRecord) => {
+            if (err) {
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error ${JSON.stringify(err)}`
+              })
+            }
+            Surveys.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: lastRecord._id}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+            .exec((err, surveys) => {
+              if (err) {
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error ${JSON.stringify(err)}`
+                })
+              }
+              SurveyPage.find({companyId: companyUser.companyId}, (err, surveypages) => {
+                if (err) {
+                  return res.status(404)
+                  .json({status: 'failed', description: 'Surveys not found'})
+                }
+                Surveys.find({}, {_id: 1, isresponded: 1}, (err2, responsesCount) => {
+                  if (err2) {
+                    return res.status(404)
+                    .json({status: 'failed', description: 'responses count not found'})
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {surveys: surveys, surveypages: surveypages, responsesCount: responsesCount, count: surveys.length > 0 && surveysCount.length > 0 ? surveysCount[0].count : ''}
+                  })
+                })
+              })
+            })
+          })
       })
     } else if (req.body.first_page === 'previous') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
@@ -696,8 +754,11 @@ exports.send = function (req, res) {
                               (err, resp) => {
                                 if (err) {
                                   logger.serverLog(TAG,
-                                  `Page access token from graph api error ${JSON.stringify(
-                                  err)}`)
+                                  `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                                }
+                                let accessToken = resp.body.accessToken
+                                if (!accessToken) {
+                                  accessToken = pages[z].accessToken
                                 }
                                 utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                   subscribers = taggedSubscribers
@@ -745,8 +806,9 @@ exports.send = function (req, res) {
                                               if (isLastMessage) {
                                                 logger.serverLog(TAG, 'inside suvery send' + JSON.stringify(data))
                                                 needle.post(
-                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                 data, (err, resp) => {
+                                                  console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                   if (err) {
                                                     return res.status(500).json({
                                                       status: 'failed',
@@ -848,8 +910,11 @@ exports.send = function (req, res) {
                             (err, resp) => {
                               if (err) {
                                 logger.serverLog(TAG,
-                                `Page access token from graph api error ${JSON.stringify(
-                                err)}`)
+                                `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                              }
+                              let accessToken = resp.body.accessToken
+                              if (!accessToken) {
+                                accessToken = pages[z].accessToken
                               }
                               utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                 subscribers = taggedSubscribers
@@ -898,8 +963,9 @@ exports.send = function (req, res) {
                                             if (isLastMessage) {
                                               logger.serverLog(TAG, 'inside send survey' + JSON.stringify(data))
                                               needle.post(
-                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                 data, (err, resp) => {
+                                                  console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                   if (err) {
                                                     return res.status(500).json({
                                                       status: 'failed',
@@ -1294,8 +1360,11 @@ exports.sendSurvey = function (req, res) {
                                 (err, resp) => {
                                   if (err) {
                                     logger.serverLog(TAG,
-                                    `Page access token from graph api error ${JSON.stringify(
-                                    err)}`)
+                                    `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                                  }
+                                  let accessToken = resp.body.accessToken
+                                  if (!accessToken) {
+                                    accessToken = pages[z].accessToken
                                   }
                                   utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                     subscribers = taggedSubscribers
@@ -1345,8 +1414,9 @@ exports.sendSurvey = function (req, res) {
                                                 if (isLastMessage) {
                                                   logger.serverLog(TAG, 'inside direct survey send' + JSON.stringify(data))
                                                   needle.post(
-                                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                    `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                     data, (err, resp) => {
+                                                      console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                       if (err) {
                                                         return res.status(500).json({
                                                           status: 'failed',
@@ -1435,8 +1505,11 @@ exports.sendSurvey = function (req, res) {
                               (err, resp) => {
                                 if (err) {
                                   logger.serverLog(TAG,
-                                  `Page access token from graph api error ${JSON.stringify(
-                                  err)}`)
+                                  `Page accesstoken from graph api Error${JSON.stringify(err)}`)
+                                }
+                                let accessToken = resp.body.accessToken
+                                if (!accessToken) {
+                                  accessToken = pages[z].accessToken
                                 }
                                 utility.applyTagFilterIfNecessary(req, subscribers, (taggedSubscribers) => {
                                   subscribers = taggedSubscribers
@@ -1486,8 +1559,9 @@ exports.sendSurvey = function (req, res) {
                                               if (isLastMessage) {
                                                 logger.serverLog(TAG, 'inside direct survey sendd' + JSON.stringify(data))
                                                 needle.post(
-                                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${resp.body.access_token}`,
+                                                  `https://graph.facebook.com/v2.6/me/messages?access_token=${accessToken}`,
                                                   data, (err, resp) => {
+                                                    console.log(`Response from survey ${JSON.stringify(resp.body)}`)
                                                     if (err) {
                                                       return res.status(500).json({
                                                         status: 'failed',

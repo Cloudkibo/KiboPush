@@ -355,7 +355,8 @@ class Webhook extends React.Component {
                     <div className='m-portlet__body'>
                       <div className='form-group m-form__group'>
                         <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                          Check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+                        Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank'>documentation</a>.
+                        Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
                         </div>
                       </div>
                       {

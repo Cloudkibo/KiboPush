@@ -75,6 +75,7 @@ function isAuthenticated () {
  */
 function isAuthorizedSuperUser () {
   return compose()
+    .use(isAuthenticated())
     .use(function meetsRequirements (req, res, next) {
       if (req.user.isSuperUser) {
         next()

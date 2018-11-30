@@ -197,9 +197,11 @@ exports.enable = function (req, res) {
                   description: 'Page is not published.'
                 })
               } else {
-                utility.callApi(`pages/${page._id}/connect`, 'get', {}, req.headers.authorization) // fetch connected page
+                utility.callApi(`pages/query`, 'post', {pageId: req.body.pageId, connected: true}, req.headers.authorization) // fetch connected page
                 .then(pageConnected => {
-                  if (pageConnected !== {}) {
+                  console.log('pageConnected', pageConnected)
+                  console.log('pageConnected.length', pageConnected.length)
+                  if (pageConnected.length === 0) {
                     utility.callApi(`pages/${req.body._id}`, 'put', {connected: true}, req.headers.authorization) // connect page
                     .then(connectPage => {
                       utility.callApi(`featureUsage/updateCompany`, 'put', {
@@ -261,10 +263,24 @@ exports.enable = function (req, res) {
                       })
                     })
                   } else {
-                    res.status(400).json({
-                      status: 'failed',
-                      payload: `Page is already connected by ${pageConnected.userId.facebookInfo.name}. In order to manage this page please ask ${pageConnected.userId.facebookInfo.name} to create a team account and invite you.`
+                    utility.callApi(`pages/query`, 'post', {userId: req.user._id, companyId: companyProfile._id}, req.headers.authorization) // fetch connected page
+                    .then(pages =>  {
+                      res.status(200).json({
+                        status: 'success',
+                        payload: {
+                          pages: pages,                        
+                          msg: `Page is already connected by ${pageConnected[0].userId.facebookInfo.name}. In order to manage this page please ask ${pageConnected[0].userId.facebookInfo.name} to create a team account and invite you.`
+                        }
+                      })
+
                     })
+                    .catch(error => {
+                      return res.status(500).json({
+                        status: 'failed',
+                        payload: `Failed to fetch page ${JSON.stringify(error)}`
+                      })
+                    })
+
                   }
                 })
                 .catch(error => {

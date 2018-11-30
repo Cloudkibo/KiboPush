@@ -38,6 +38,7 @@ class Sidebar extends Component {
       welcomeMessage: true,
       segmentSubscribers: true,
       commentCapture: true,
+      messengerCode: true,
       smartReplies: false,
       templates: false,
       sequenceMessaging: false,
@@ -57,6 +58,9 @@ class Sidebar extends Component {
       this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
+      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+    } else if (url.includes('localhost')) {
+      console.log('localhost')
       this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
     }
     this.props.getuserdetails()
@@ -93,7 +97,7 @@ class Sidebar extends Component {
         members: nextProps.user.uiMode.members,
         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
         commentCapture: nextProps.user.uiMode.commentCapture})
-    }*/
+    }   */
   }
 
   showAbandonedCarts () {
@@ -259,6 +263,8 @@ class Sidebar extends Component {
             {this.showCommentCapture()}
             {this.showInviteUsingPhoneNumber()}
             {this.showInviteSubscribers()}
+            {this.showMessengerCode()}
+            {this.showDiscoverTabs()}
           </ul>
         </div>
       </li>
@@ -535,6 +541,45 @@ class Sidebar extends Component {
     }
   }
 
+  showMessengerCode () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      // include user persmissions
+      if (this.state.messengerCode) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messengerCode' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Messenger Code
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+  showDiscoverTabs () {
+    if (this.props.user) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/discoverTabs' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Discover Tabs
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
   showInviteUsingPhoneNumber () {
     if (this.props.user) {
       if (this.state.phoneNumber && this.props.user.plan.customer_matching) {
@@ -562,7 +607,7 @@ class Sidebar extends Component {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/inviteSubscribers' className='m-menu__link'>
-              <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
               </i>
               <span className='m-menu__link-text'>
