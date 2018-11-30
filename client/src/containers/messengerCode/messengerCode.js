@@ -69,8 +69,7 @@ class MessengerCode extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps in pages', nextProps.pages)
-    console.log('nextProps in image', nextProps.image)
+    console.log('nextProps in pages', nextProps)
     if (nextProps.pages) {
       this.setState({
         selectedPage: nextProps.pages[0]
@@ -155,7 +154,7 @@ class MessengerCode extends React.Component {
                           </center>
                         </div>
                       </div>
-                    }
+                      }
                     <br />
                   </div>
                   <br /><br />
