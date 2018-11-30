@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
 import { requestMessengerCode } from '../../redux/actions/messengerCode.actions'
-import AlertContainer from 'react-alert'
 
 class MessengerCode extends React.Component {
   constructor (props, context) {
@@ -17,7 +16,7 @@ class MessengerCode extends React.Component {
       selectedPage: {},
       ref: '',
       resoltion: '1000',
-      image: 'https://skiboengage.cloudkibo.com/api/broadcasts/download/fd5f53099b1201811306114.png'
+      image: ''
     }
     props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
 
@@ -70,7 +69,8 @@ class MessengerCode extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('nextProps in pages', nextProps)
+    console.log('nextProps in pages', nextProps.pages)
+    console.log('nextProps in image', nextProps.image)
     if (nextProps.pages) {
       this.setState({
         selectedPage: nextProps.pages[0]
@@ -82,13 +82,6 @@ class MessengerCode extends React.Component {
   }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -153,7 +146,13 @@ class MessengerCode extends React.Component {
                       <div className='form-group m-form__group col-md-12 col-sm-12 col-lg-12' style={{display: 'flex'}}>
                         <div className='col-3' />
                         <div className='col-6'>
-                          <img src={this.state.image} />
+                          <img src={this.state.image} style={{display: 'block', width: '100%'}} />
+                          <br />
+                          <center>
+                            <a href={this.state.image} target='_blank' download class='btn btn-outline-success' style={{borderColor: '#34bfa3'}}>
+                              <i className='fa fa-download' />&nbsp;&nbsp;Download Image
+                            </a>
+                          </center>
                         </div>
                       </div>
                     }
