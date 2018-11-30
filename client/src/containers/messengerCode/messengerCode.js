@@ -149,7 +149,7 @@ class MessengerCode extends React.Component {
                           <img src={this.state.image} style={{display: 'block', width: '100%'}} />
                           <br />
                           <center>
-                            <a href={this.state.image} target='_blank' download class='btn btn-outline-success' style={{borderColor: '#34bfa3'}}>
+                            <a href={this.state.image} target='_blank' download className='btn btn-outline-success' style={{borderColor: '#34bfa3'}}>
                               <i className='fa fa-download' />&nbsp;&nbsp;Download Image
                             </a>
                           </center>
