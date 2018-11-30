@@ -10,7 +10,6 @@ const CompanyUsers = require('./../companyuser/companyuser.model')
 const Page = require('./../pages/Pages.model')
 
 const urllib = require('url')
-const fs = require('fs')
 const crypto = require('crypto')
 const config = require('../../../config/environment/index')
 const _ = require('lodash')
