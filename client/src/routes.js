@@ -108,6 +108,7 @@ import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
+import MessengerCode from './containers/messengerCode/messengerCode'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import Plans from './containers/billingPricing/plans'
 import Permissions from './containers/permissions/permissions'
@@ -251,6 +252,7 @@ const routes = (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
+    <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />
