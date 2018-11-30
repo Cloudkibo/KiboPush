@@ -32,7 +32,7 @@ exports.getCriterias = function (body, companyUser) {
       connected: true
     }
   } else {
-    search = new RegExp('.*' + body.filter_criteria.search_value + '.*', 'i')
+    search = '.*' + body.filter_criteria.search_value + '.*'
     findCriteria = Object.assign(findCriteria, {pageName: body.filter_criteria.search_value !== '' ? {$regex: search} : {$exists: true}})
   }
   if (body.first_page === 'first') {

@@ -125,7 +125,7 @@ class Autoposting extends React.Component {
           onClose={this.closeGuide}>
           <ModalDialog style={{width: '500px', top: '80px'}}
             onClose={this.closeGuide}>
-            <h4>Guielines for integrating WordPress blogs</h4>
+            <h4>Guidelines for integrating WordPress blogs</h4>
             <div className='panel-group accordion' id='accordion1'>
               <div className='panel panel-default'>
                 <div className='panel-heading guidelines-heading'>
@@ -166,7 +166,7 @@ class Autoposting extends React.Component {
                 </div>
                 <div id='collapse_2' className='panel-collapse collapse' aria-expanded='false' style={{height: '0px'}}>
                   <div className='panel-body'>
-                    <p>On self-hosted wordpress sites, install a plug-in 'HookPress by KiboPush' and follow the steps below to allow autoposting</p>
+                  <p>On self-hosted wordpress sites, Download and install our Plugin <a href={'api/autoposting/plugin'} download target='_blank'>HookPress by KiboPush</a> and follow the steps below to allow autoposting</p>
                     <ul>
                       <li>
                       Go to Settings -> Webhooks on WordPress dashboard

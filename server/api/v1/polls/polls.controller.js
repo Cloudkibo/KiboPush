@@ -286,6 +286,84 @@ exports.allPolls = function (req, res) {
           })
         })
       })
+    } else if (req.body.first_page === 'delete') {
+      logger.serverLog(TAG, `inside delete`)
+      let recordsToSkip = 0
+      let startDate = new Date()  // Current date
+      startDate.setDate(startDate.getDate() - req.body.days)
+      startDate.setHours(0)   // Set the hour, minute and second components to 0
+      startDate.setMinutes(0)
+      startDate.setSeconds(0)
+      let findCriteria = {
+        companyId: companyUser.companyId,
+        'datetime': req.body.days !== '0' ? {
+          $gte: startDate
+        } : {$exists: true}
+      }
+      Polls.aggregate([
+        { $match: findCriteria },
+        { $group: { _id: null, count: { $sum: 1 } } }
+      ], (err, pollsCount) => {
+        if (err) {
+          return res.status(404)
+            .json({status: 'failed', description: 'BroadcastsCount not found'})
+        }
+        Polls.findOne({_id: {$gt: mongoose.Types.ObjectId(req.body.last_id)}})
+          .exec((err, lastRecord) => {
+            if (err) {
+              logger.serverLog(TAG, `Error: ${err}`)
+              return res.status(500).json({
+                status: 'failed',
+                description: `Internal Server Error${JSON.stringify(err)}`
+              })
+            }
+            Polls.aggregate([{$match: {$and: [findCriteria, {_id: {$lt: lastRecord._id}}]}}, {$sort: {datetime: -1}}]).skip(recordsToSkip).limit(req.body.number_of_records)
+            .exec((err, polls) => {
+              if (err) {
+                logger.serverLog(TAG, `Error: ${err}`)
+                return res.status(500).json({
+                  status: 'failed',
+                  description: `Internal Server Error${JSON.stringify(err)}`
+                })
+              }
+              PollPage.find({companyId: companyUser.companyId}, (err, pollpages) => {
+                if (err) {
+                  return res.status(404)
+                  .json({status: 'failed', description: 'Polls not found'})
+                }
+                PollResponse.aggregate([{
+                  $group: {
+                    _id: {pollId: '$pollId'},
+                    count: {$sum: 1}
+                  }}
+                ], (err2, responsesCount1) => {
+                  if (err2) {
+                    return res.status(404)
+                    .json({status: 'failed', description: 'Polls not found'})
+                  }
+                  let responsesCount = []
+                  for (let i = 0; i < polls.length; i++) {
+                    responsesCount.push({
+                      _id: polls[i]._id,
+                      count: 0
+                    })
+                  }
+                  for (let i = 0; i < polls.length; i++) {
+                    for (let j = 0; j < responsesCount1.length; j++) {
+                      if (polls[i]._id.toString() === responsesCount1[j]._id.pollId.toString()) {
+                        responsesCount[i].count = responsesCount1[j].count
+                      }
+                    }
+                  }
+                  res.status(200).json({
+                    status: 'success',
+                    payload: {polls: polls, pollpages: pollpages, responsesCount: responsesCount, count: polls.length > 0 ? pollsCount[0].count : 0}
+                  })
+                })
+              })
+            })
+          })
+      })
     } else if (req.body.first_page === 'previous') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
       let startDate = new Date()  // Current date
@@ -809,16 +887,14 @@ exports.send = function (req, res) {
                                                           body: {
                                                             action: 'poll_send',
                                                             poll_id: pollCreated._id,
-                                                             user_id: req.user._id,
+                                                            user_id: req.user._id,
                                                             user_name: req.user.name,
-                                                           company_id: companyUser.companyId
+                                                            company_id: companyUser.companyId
 
                                                           }
                                                         })
-
                                                       }
                                                     })
-
                                                   })
                                       } else {
                                         logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
@@ -940,7 +1016,7 @@ exports.send = function (req, res) {
                                                 pollId: req.body._id,
                                                 seen: false
                                               })
-                                                pollBroadcast.save((err2, pollCreated) => {
+                                              pollBroadcast.save((err2, pollCreated) => {
                                                   if (err2) {
                                                     logger.serverLog(TAG, {
                                                       status: 'failed',
@@ -948,17 +1024,16 @@ exports.send = function (req, res) {
                                                       err2
                                                     })
                                                   } else {
-
-                                                   //return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
+                                                   // return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     // return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     require('./../../../config/socketio').sendMessageToClient({
                                                       room_id: companyUser.companyId,
                                                       body: {
-                                                            action: 'poll_send',
-                                                            poll_id: pollCreated._id,
-                                                            user_id: req.user._id,
-                                                            user_name: req.user.name,
-                                                           company_id: companyUser.companyId
+                                                        action: 'poll_send',
+                                                        poll_id: pollCreated._id,
+                                                        user_id: req.user._id,
+                                                        user_name: req.user.name,
+                                                        company_id: companyUser.companyId
 
                                                       }
                                                     })
@@ -1038,7 +1113,6 @@ exports.send = function (req, res) {
                 return res.status(200)
                .json({status: 'success', payload: 'Polls sent successfully.'})
               })
-
             })
           })
         })
