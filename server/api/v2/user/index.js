@@ -45,4 +45,8 @@ router.get('/cancelDeletion',
     auth.isAuthenticated(),
     controller.cancelDeletion)
 
+router.get('/validateUserAccessToken',
+    auth.isAuthenticated(),
+    controller.validateUserAccessToken)
+
 module.exports = router

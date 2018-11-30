@@ -45,10 +45,13 @@ const auth = {
 }
 
 function redirectToLogoutAccounts () {
-  const environment = cookie.load('environment') || process.env.NODE_ENV
+  const environment = cookie.load('environment')
   console.log('environment', environment)
-  if (environment === 'staging') window.location.replace('https://saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
-  if (environment === 'production') window.location.replace('https://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
+  if (environment === 'staging' || window.location.href.includes('skibo') || window.location.href.includes('staging')) {
+    window.location.replace('https://saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
+  } else {
+    window.location.replace('https://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
+  }
 }
 
 export default auth

@@ -109,6 +109,7 @@ import CreateMessageSeq from './containers/sequence/createMessage'
 import EditSequence from './containers/sequence/editSequence'
 import FacebookPosts from './containers/commentCapture/facebookPosts'
 import FacebookPost from './containers/commentCapture/newFacebookPost'
+import MessengerCode from './containers/messengerCode/messengerCode'
 import WaitingReplyList from './containers/smart_replies/waitingReplyList'
 import Plans from './containers/billingPricing/plans'
 import Permissions from './containers/permissions/permissions'
@@ -116,6 +117,7 @@ import Features from './containers/features/features'
 import Usage from './containers/usage/usage'
 import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 import ConnectFBPages from './containers/signup/connectFbPages'
+import DiscoverTabs from './containers/GrowthTools/discoverTabs'
 
 import auth from './utility/auth.service'
 
@@ -185,6 +187,7 @@ const routes = (
     <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
     <Route path='/userSurveys' component={UserSurveys} onEnter={requireAuth} />
     <Route path='/growthTools' component={GrowthTools} onEnter={requireAuth} />
+    <Route path='/discoverTabs' component={DiscoverTabs} onEnter={requireAuth} />
     <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
@@ -253,6 +256,7 @@ const routes = (
     <Route path='/editSequence' component={EditSequence} onEnter={requireAuth} />
     <Route path='/createMessageSeq' component={CreateMessageSeq} onEnter={requireAuth} />
     <Route path='/commentCapture' component={FacebookPosts} onEnter={requireAuth} />
+    <Route path='/messengerCode' component={MessengerCode} onEnter={requireAuth} />
     <Route path='/createPost' component={FacebookPost} onEnter={requireAuth} />
     <Route path='/WaitingReplyList' component={WaitingReplyList} onEnter={requireAuth} />
     <Route path='/viewPageSubscribers' component={ViewPageSubscribers} onEnter={requireAuth} />

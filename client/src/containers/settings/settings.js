@@ -713,6 +713,10 @@ class Settings extends React.Component {
                                 <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.buttonState ? this.state.APISecret : ''} onChange={this.handleNGPSecretChange} />
                               </div>
                             </div>
+                            {
+                              this.state.APIKey !== '' &&
+                                <button className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.setReset(e)}>Reset</button>
+                            }
                           </div>
                         }
                       </div>

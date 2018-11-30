@@ -18,6 +18,7 @@ const CompanyUsage = require('./../featureUsage/companyUsage.model')
 const PlanUsage = require('./../featureUsage/planUsage.model')
 const CompanyProfile = require('./../companyprofile/companyprofile.model')
 const callApi = require('./../api.caller.service.js')
+const fs = require('fs')
 
 exports.index = function (req, res) {
   CompanyUsers.findOne({domain_email: req.user.domain_email}, (err, companyUser) => {
@@ -48,8 +49,10 @@ exports.index = function (req, res) {
 
 exports.getPlugin = function (req, res) {
   logger.serverLog(TAG, 'Hit the getPlugin Endpoint')
+
   let plguinPath = `${config.root}/plugins/HookPress.zip`
   logger.serverLog(TAG, `${plguinPath} is the path`)
+
   fs.stat(plguinPath, (err, stat) => {
     if (err === null) {
       // File exists

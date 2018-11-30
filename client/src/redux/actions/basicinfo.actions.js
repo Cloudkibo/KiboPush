@@ -156,3 +156,11 @@ export function getKeys () {
     callApi('company/getKeys').then(res => dispatch(updateKeys(res)))
   }
 }
+
+export function validateUserAccessToken (cb) {
+  return (dispatch) => {
+    callApi('users/validateUserAccessToken').then(res => {
+      cb(res)
+    })
+  }
+}
