@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
 import { requestMessengerCode } from '../../redux/actions/messengerCode.actions'
+import AlertContainer from 'react-alert'
 
 class MessengerCode extends React.Component {
   constructor (props, context) {
@@ -57,6 +58,10 @@ class MessengerCode extends React.Component {
   }
 
   onSubmit (event) {
+    if (parseInt(this.state.resoltion) < 100 || parseInt(this.state.resoltion) > 2000) {
+      this.msg.error('Resolution must be between 100 to 2000 px')
+      return
+    }
     if (this.state.ref !== '') {
       this.props.requestMessengerCode({
         pageId: this.state.selectedPage.pageId,
@@ -82,8 +87,16 @@ class MessengerCode extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
