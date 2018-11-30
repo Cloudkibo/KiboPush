@@ -45,12 +45,20 @@ const auth = {
 }
 
 function redirectToLogoutAccounts () {
-  const environment = cookie.load('environment')
-  console.log('environment', environment)
-  if (environment === 'staging' || window.location.href.includes('skibo') || window.location.href.includes('staging')) {
-    window.location.replace('https://saccounts.cloudkibo.com/auth/logout?continue=http://staging.kibopush.com')
-  } else {
-    window.location.replace('https://accounts.cloudkibo.com/auth/logout?continue=http://app.kibopush.com')
+  let redirectUrls = {
+    'skiboengage': 'https://saccounts.cloudkibo.com/auth/logout?continue=https://skiboengage.cloudkibo.com',
+    'skibochat': 'https://saccounts.cloudkibo.com/auth/logout?continue=https://skibochat.cloudkibo.com',
+    'staging': 'https://saccounts.cloudkibo.com/auth/logout?continue=https://staging.kibopush.com',
+    'kiboengage': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kiboengage.cloudkibo.com',
+    'kibochat': 'https://accounts.cloudkibo.com/auth/logout?continue=https://kibochat.cloudkibo.com',
+    'app': 'https://accounts.cloudkibo.com/auth/logout?continue=https://app.kibopush.com'
+  }
+  let products = Object.keys(redirectUrls)
+  for (let i = 0; i < products.length; i++) {
+    if (window.location.href.includes(products[i])) {
+      window.location.replace(redirectUrls[products[i]])
+      break
+    }
   }
 }
 
