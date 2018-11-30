@@ -15,7 +15,7 @@ export function requestMessengerCode (data) {
       .then(res => {
         console.log('response from requestMessengerCode', res)
         if (res.status === 'success') {
-          dispatch(imageResponse(res.payload))
+          dispatch(imageResponse(res.payload.uri))
         }
       })
   }
