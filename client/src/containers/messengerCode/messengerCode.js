@@ -75,10 +75,7 @@ class MessengerCode extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in pages', nextProps)
-<<<<<<< HEAD
     console.log('nextProps in image', nextProps.image)
-=======
->>>>>>> 441bc251db581b2fd25890d674c829b572ce92ad
     if (nextProps.pages) {
       this.setState({
         selectedPage: nextProps.pages[0]
