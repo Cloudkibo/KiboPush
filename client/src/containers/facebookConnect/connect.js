@@ -52,16 +52,31 @@ class Connect extends React.Component {
                       <img src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
-                  <div className='m-login__signin'>
-                    <div className='m-login__head'>
-                      <h3 className='m-login__title'>Connect your facebook account</h3>
+                  {
+                    this.props.location && this.props.location.state && this.props.location.state.session_inavalidated
+                    ? <div className='m-login__signin'>
+                      <div className='m-login__head'>
+                        <h3 className='m-login__title'>Re-Connect your Facebook account</h3>
+                      </div>
+                      <div>
+                        <span>Your Facebook session has been invalidated. Please re-connect your Facebook account.</span>
+                      </div>
                     </div>
-                  </div>
+                    : <div className='m-login__signin'>
+                      <div className='m-login__head'>
+                        <h3 className='m-login__title'>Connect your Facebook account</h3>
+                      </div>
+                    </div>
+                  }
                   <div className='m-stack__item m-stack__item--center' style={{textAlign: 'center', paddingTop: 25}}>
                     <a href='/auth/facebook/' className='btn btn-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
                       <span>
                         <i className='la la-power-off' />
-                        <span>Connect with Facebook</span>
+                        {
+                          this.props.location && this.props.location.state && this.props.location.state.session_inavalidated
+                          ? <span>Re-connect with Facebook</span>
+                          : <span>Connect with Facebook</span>
+                        }
                       </span>
                     </a>
                   </div>

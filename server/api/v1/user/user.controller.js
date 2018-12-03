@@ -21,6 +21,7 @@ const logger = require('../../../components/logger')
 // const mongoose = require('mongoose')
 const MailChimp = require('mailchimp-api-v3')
 const moment = require('moment')
+const needle = require('needle')
 
 // const PassportFacebookExtension = require('passport-facebook-extension')
 
@@ -883,7 +884,6 @@ exports.joinCompany = function (req, res) {
                   domain_email: user.domain_email,
                   role: role
                 })
-        
                 companyUserData.save(function (err, companyUserSaved) {
                   if (err) {
                     return res.status(422).json({
@@ -891,15 +891,12 @@ exports.joinCompany = function (req, res) {
                       description: 'profile user save error: ' + JSON.stringify(err)
                     })
                   }
-        
                   let permissionsPayload = {
                     companyId: invitationToken.companyId,
                     userId: user._id
                   }
-        
                   let permissions = new Permissions(
                     _.merge(permissionsPayload, config.permissions[role] || {}))
-        
                   permissions.save(function (err, permissionSaved) {
                     if (err) {
                       return res.status(422).json({
@@ -918,26 +915,22 @@ exports.joinCompany = function (req, res) {
                     res.status(201).json({status: 'success', token: token})
                   })
                 })
-        
                 var today = new Date()
                 var uid = crypto.randomBytes(5).toString('hex')
                 let tokenString = 'f' + uid + '' + today.getFullYear() + '' +
                   (today.getMonth() + 1) + '' + today.getDate() + '' +
                   today.getHours() + '' + today.getMinutes() + '' +
                   today.getSeconds()
-        
                 let newToken = new VerificationToken({
                   userId: user._id,
                   token: tokenString
                 })
-        
                 newToken.save(function (err) {
                   if (err) {
                     logger.serverLog(TAG, `New Token save : ${JSON.stringify(
                       err)}`)
                   }
                 })
-        
                 Invitations.remove(
                   {email: req.body.email, companyId: invitationToken.companyId},
                   function (err) {
@@ -946,24 +939,20 @@ exports.joinCompany = function (req, res) {
                         err)}`)
                     }
                   })
-        
                 inviteagenttoken.remove({token: req.body.token}, function (err) {
                   if (err) {
                     logger.serverLog(TAG, `New Token save : ${JSON.stringify(
                       err)}`)
                   }
                 })
-        
                 let sendgrid = require('sendgrid')(config.sendgrid.username,
                   config.sendgrid.password)
-        
                 let email = new sendgrid.Email({
                   to: req.body.email,
                   from: 'support@cloudkibo.com',
                   subject: 'KiboPush: Account Verification',
                   text: 'Welcome to KiboPush'
                 })
-        
                 email.setHtml(
                   '<body style="min-width: 80%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;margin: 0;padding: 0;direction: ltr;background: #f6f8f1;width: 80% !important;"><table class="body", style="width:100%"> ' +
                   '<tr> <td class="center" align="center" valign="top"> <!-- BEGIN: Header --> <table class="page-header" align="center" style="width: 100%;background: #1f1f1f;"> <tr> <td class="center" align="center"> ' +
@@ -1012,7 +1001,6 @@ exports.joinCompany = function (req, res) {
                   ' </li> </ul> </p>  <!-- BEGIN: Note Panel --> <table class="twelve columns" style="margin-bottom: 10px"> ' +
                   '<tr> <td class="panel" style="background: #ECF8FF;border: 0;padding: 10px !important;"> </td> <td class="expander"> </td> </tr> </table> <p> Login now on KiboPush to see account details. </p> <!-- END: Note Panel --> </td> </tr> </table><span class="devider" style="border-bottom: 1px solid #eee;margin: 15px -15px;display: block;"></span> <!-- END: Disscount Content --> </td> </tr> </table> </td> </tr> </table> <!-- END: Content --> <!-- BEGIN: Footer --> <table class="page-footer" align="center" style="width: 100%;background: #2f2f2f;"> <tr> <td class="center" align="center" style="vertical-align: middle;color: #fff;"> <table class="container" align="center"> <tr> <td style="vertical-align: middle;color: #fff;"> <!-- BEGIN: Unsubscribet --> <table class="row"> <tr> <td class="wrapper last" style="vertical-align: middle;color: #fff;"><span style="font-size:12px;"><i>This is a system generated email and reply is not required.</i></span> </td> </tr> </table> <!-- END: Unsubscribe --> ' +
                   '<!-- END: Footer Panel List --> </td> </tr> </table> </td> </tr> </table> <!-- END: Footer --> </td> </tr></table></body>')
-        
                 sendgrid.send(email2, function (err, json) {
                   if (err) {
                     logger.serverLog(TAG,
@@ -1270,4 +1258,21 @@ exports.cancelDeletion = function (req, res) {
       }
     })
   })
+}
+
+exports.validateUserAccessToken = (req, res) => {
+  console.log('user ', JSON.stringify(req.user))
+  if (req.user.facebookInfo) {
+    needle.get(`https://graph.facebook.com/v2.6/me?access_token=${req.user.facebookInfo.fbToken}`, (err, response) => {
+      if (err) {
+        res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
+      } else if (response.body.error) {
+        res.status(500).json({status: 'failed', payload: JSON.stringify(err)})
+      } else {
+        res.status(200).json({status: 'success', payload: 'User Access Token validated successfully!'})
+      }
+    })
+  } else {
+    res.status(200).json({status: 'success', payload: 'Facebook account is not connected.'})
+  }
 }
