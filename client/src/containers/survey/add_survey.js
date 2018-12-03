@@ -30,7 +30,7 @@ class AddSurvey extends React.Component {
       alertType: '',
       timeout: 2000,
       title: '',
-      description: '',
+      description: 'Please respond to these questions',
       stayOpen: false,
       disabled: false,
       pageValue: [],
