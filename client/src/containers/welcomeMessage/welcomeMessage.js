@@ -2,7 +2,7 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 import {
-  loadMyPagesListNew
+  loadMyPagesList
 } from '../../redux/actions/pages.actions'
 import {isWelcomeMessageEnabled} from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
@@ -24,7 +24,7 @@ class WelcomeMessage extends React.Component {
       isShowingModal: false,
       isShowingZeroPageModal: props.pages && props.pages.length === 0
     }
-    props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
+    props.loadMyPagesList()
     this.initializeSwitch = this.initializeSwitch.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.gotoEdit = this.gotoEdit.bind(this)
@@ -215,7 +215,7 @@ function mapStateToProps (state) {
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesListNew: loadMyPagesListNew,
+    loadMyPagesList: loadMyPagesList,
     isWelcomeMessageEnabled: isWelcomeMessageEnabled
   }, dispatch)
 }
