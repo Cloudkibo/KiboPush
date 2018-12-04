@@ -9,8 +9,9 @@ export function appendSentSeenResponsesData (data) {
 
   for (let j = 0; j < surveys.length; j++) {
     let pagesurvey = pagesurveys.filter((c) => c.surveyId === surveys[j]._id)
-    surveys[j].sent = pagesurvey.length// total sent
+    let pageSurveyDelivered = pagesurvey.filter((c) => c.sent === true)
     let pagesurveyTapped = pagesurvey.filter((c) => c.seen === true)
+    surveys[j].sent = pageSurveyDelivered.length // total sent
     surveys[j].seen = pagesurveyTapped.length // total tapped
     surveys[j].responses = surveys[j].isresponded
   }

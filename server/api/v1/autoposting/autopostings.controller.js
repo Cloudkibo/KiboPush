@@ -67,7 +67,6 @@ exports.getPlugin = function (req, res) {
       return res.status(500).json({status: 'failed', payload: err.code})
     }
   })
-
 }
 
 exports.create = function (req, res) {
