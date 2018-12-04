@@ -242,7 +242,7 @@ export function fetchUserChats (sessionid, data, handleFunction) {
 export function uploadAttachment (fileData, handleUpload) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
-    fetch(`${API_URL}/livechat/upload`, {
+    fetch(`${API_URL}/broadcasts/upload`, {
       method: 'post',
       body: fileData,
       // eslint-disable-next-line no-undef
