@@ -63,7 +63,7 @@ class Media extends React.Component {
       this.setState({
         //  id: cardProps.id,
         componentType: 'media',
-        imgSrc: mediaProps.media.image_url,
+        imgSrc: mediaProps.media.fileurl.url,
         button: mediaProps.media.buttons
       })
     }
