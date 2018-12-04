@@ -43,10 +43,7 @@ class Button extends React.Component {
     this.closeShareButton = this.closeShareButton.bind(this)
   }
   shareButton () {
-    this.setState({shareButton: true})
-    if (this.state.title !== '') {
-      this.setState({disabled: false})
-    }
+    this.setState({shareButton: true, disabled: false, title: 'Share'})
   }
   showWebsite () {
     this.setState({openWebsite: true})
@@ -64,7 +61,7 @@ class Button extends React.Component {
     this.setState({openWebsite: false, url: '', disabled: true})
   }
   closeShareButton () {
-    this.setState({shareButton: false, disabled: true})
+    this.setState({shareButton: false, disabled: true, title: ''})
   }
   closeSubscribe () {
     this.setState({openSubscribe: false, sequenceValue: '', disabled: true})
@@ -180,7 +177,7 @@ class Button extends React.Component {
               <div>
                 <div style={{marginBottom: '10px'}}>Add upto 3 buttons</div>
                 <h6>Button Title:</h6>
-                <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
+                <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
                 {
                   !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton &&
