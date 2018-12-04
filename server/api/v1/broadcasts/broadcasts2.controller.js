@@ -546,6 +546,11 @@ exports.addButton = function (req, res) {
         payload: buttonPayload
       })
     })
+  } else if (req.body.type === 'element_share') {
+    return res.status(200).json({
+      status: 'success',
+      payload: {type: req.body.type}
+    })
   } else {
     if (req.body.module.type === 'sequenceMessaging') {
       let buttonId = uniqid()

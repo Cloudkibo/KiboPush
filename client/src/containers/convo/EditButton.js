@@ -16,13 +16,14 @@ class EditButton extends React.Component {
     console.log('this.props', this.props)
     this.state = {
       openPopover: false,
-      title: this.props.data.button.title,
+      title: this.props.data.button.type === 'element_share' ? 'Share' : this.props.data.button.title,
       url: '',
       disabled: false,
       sequenceValue: this.props.data.button.sequenceValue,
       openWebsite: this.props.data.button.openWebsite,
       openSubscribe: this.props.data.button.openSubscribe,
-      openUnsubscribe: this.props.data.button.openUnsubscribe
+      openUnsubscribe: this.props.data.button.openUnsubscribe,
+      shareButton: false
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -37,6 +38,8 @@ class EditButton extends React.Component {
     this.closeSubscribe = this.closeSubscribe.bind(this)
     this.closeUnsubscribe = this.closeUnsubscribe.bind(this)
     this.onSequenceChange = this.onSequenceChange.bind(this)
+    this.shareButton = this.shareButton.bind(this)
+    this.closeShareButton = this.closeShareButton.bind(this)
   }
 
   componentDidMount () {
@@ -62,7 +65,12 @@ class EditButton extends React.Component {
   showUnsubscribe () {
     this.setState({openUnsubscribe: true})
   }
-
+  shareButton () {
+    this.setState({shareButton: true, disabled: false, title: 'Share'})
+  }
+  closeShareButton () {
+    this.setState({shareButton: false, disabled: true, title: ''})
+  }
   closeWebsite () {
     this.setState({openWebsite: false})
   }
@@ -168,7 +176,7 @@ class EditButton extends React.Component {
     return (
       <div>
         <div id={'editButtonTarget-' + this.props.button_id} ref={(b) => { this.target = b }} className='align-center' onClick={this.handleClick}>
-          <button className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.button.title}</button>
+          <button className='btn btn-primary btn-sm' style={{width: 100 + '%', margin: 0, border: 2 + 'px', borderStyle: 'solid', borderColor: '#FF5E3A'}}>{this.props.data.button.type === 'element_share' ? 'Share' : this.props.data.button.title}</button>
         </div>
         <Popover placement='right-end' isOpen={this.state.openPopover} className='buttonPopover' target={'editButtonTarget-' + this.props.button_id} toggle={this.handleToggle}>
           <PopoverHeader><strong>Edit Button</strong></PopoverHeader>
@@ -178,10 +186,13 @@ class EditButton extends React.Component {
               <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
               <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
               {
-                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe &&
+                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton &&
                 <div>
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                  </div>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
                   </div>
                   {
                     this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
@@ -204,6 +215,12 @@ class EditButton extends React.Component {
                   <div style={{padding: '10px'}} className='card-block'>
                     <input type='text' className='form-control' value={this.state.url} onChange={this.changeUrl} placeholder='Enter link...' />
                   </div>
+                </div>
+              }
+              {
+                this.state.shareButton &&
+                <div className='card'>
+                  <h7 className='card-header'>Share this message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeShareButton} /></h7>
                 </div>
               }
               {
