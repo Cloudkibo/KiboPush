@@ -269,6 +269,7 @@ class Settings extends React.Component {
   }
   initializeSwitch (state) {
     console.log('initializingSwitch settings')
+    console.log('state', state)
     var self = this
     /* eslint-disable */
     $("[name='switch']").bootstrapSwitch({
@@ -424,6 +425,7 @@ class Settings extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('buttonState in render function', this.state.buttonState)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
