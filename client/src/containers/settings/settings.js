@@ -359,6 +359,8 @@ class Settings extends React.Component {
       }
     }
     if (nextProps.apiSuccess) {
+      console.log('nextProps.apiSuccess', nextProps.apiSuccess)
+      console.log('this.state.count', this.state.count)
       if (this.state.count === 1) {
         this.setState({APIKey: nextProps.apiSuccess.app_id, APISecret: nextProps.apiSuccess.app_secret, buttonState: nextProps.apiSuccess.enabled})
         if (this.state.count1 !== 1) {
