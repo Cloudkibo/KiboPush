@@ -693,7 +693,7 @@ class Settings extends React.Component {
                         <div className='form-group m-form__group row'>
                           <div className='col-lg-8 col-md-8 col-sm-12' />
                           <div className='col-lg-4 col-md-4 col-sm-4'>
-                            <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
+                            <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px', marginLeft: '0px'}}>
                               <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
                                 <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
                               </div>
