@@ -63,9 +63,11 @@ class Media extends React.Component {
     if (mediaProps.media && mediaProps.media !== '') {
       this.setState({
         //  id: cardProps.id,
+        showPreview: true,
         componentType: 'media',
         imgSrc: mediaProps.media.fileurl.url,
-        button: mediaProps.media.buttons
+        button: mediaProps.media.buttons,
+        mediaType: mediaProps.media.mediaType
       })
     }
   }
@@ -273,16 +275,16 @@ class Media extends React.Component {
               }
               {
                 this.state.showPreview && this.state.mediaType === 'image' &&
-                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.previewUrl} />
+                <img style={{maxWidth: 250, maxHeight: 250, margin: 10}} src={this.state.imgSrc} />
               }
               { this.state.showPreview && this.state.mediaType === 'video' &&
                 <div style={{padding: '10px'}}>
                   <ReactPlayer
-                    url={this.state.previewUrl}
+                    url={this.state.imgSrc}
                     controls
                     width='100%'
                     height='auto'
-                    onPlay={this.onTestURLVideo(this.state.previewUrl)}
+                    onPlay={this.onTestURLVideo(this.state.imgSrc)}
                   />
                 </div>
               }
