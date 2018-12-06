@@ -59,6 +59,7 @@ class Media extends React.Component {
     this.setState({errorMsg: error.message, showErrorDialogue: true})
   }
   updateMediaDetails (mediaProps) {
+    console.log('mediaProps', mediaProps)
     if (mediaProps.media && mediaProps.media !== '') {
       this.setState({
         //  id: cardProps.id,
