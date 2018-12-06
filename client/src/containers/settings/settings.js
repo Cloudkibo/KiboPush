@@ -82,6 +82,7 @@ class Settings extends React.Component {
     this.closeDialog = this.closeDialog.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
   componentWillMount () {
     console.log('this.props.location', this.props.location)
@@ -269,18 +270,18 @@ class Settings extends React.Component {
   }
   initializeSwitch (state) {
     console.log('initializingSwitch settings')
-    console.log('state', state)
+    //console.log('state', state)
     var self = this
-    /* eslint-disable */
-    $("[name='switch']").bootstrapSwitch({
+   /* /* eslint-disable */
+   // $("[name='switch']").bootstrapSwitch({
       /* eslint-enable */
-      onText: 'Enabled',
-      offText: 'Disabled',
-      offColor: 'danger',
-      state: state
-    })
+     // onText: 'Enabled',
+     // offText: 'Disabled',
+     // offColor: 'danger',
+     // state: state
+    //})
     /* eslint-disable */
-    $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+   // $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
       self.setState({buttonState: state})
       if (state === true) {
@@ -290,7 +291,34 @@ class Settings extends React.Component {
         self.setState({disable: true, buttonState: false})
         self.props.disable({company_id: self.props.user._id})
       }
-    })
+   // }) 
+  }
+  handleChange () {
+    console.log('Handle change function')
+   // console.log('state', state)
+  //  var self = this
+    
+   /* /* eslint-disable */
+   // $("[name='switch']").bootstrapSwitch({
+      /* eslint-enable */
+     // onText: 'Enabled',
+     // offText: 'Disabled',
+     // offColor: 'danger',
+     // state: state
+    //})
+    /* eslint-disable */
+   // $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
+      /* eslint-enable */
+      //self.setState({buttonState: !this.state.buttonState })
+      console.log('buttonState', this.state.buttonState)
+      if (this.state.buttonState === false) {
+        this.setState({disable: false, buttonState: true})
+        this.props.enable({company_id: this.props.user._id})
+      } else {
+        this.setState({disable: true, buttonState: false})
+        this.props.disable({company_id: this.props.user._id})
+      }
+   // }) 
   }
   initializeSwitchNGP (state) {
     var self = this
@@ -693,11 +721,12 @@ class Settings extends React.Component {
                         <div className='form-group m-form__group row'>
                           <div className='col-lg-8 col-md-8 col-sm-12' />
                           <div className='col-lg-4 col-md-4 col-sm-4'>
-                            <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px', marginLeft: '0px'}}>
-                              <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
-                                <input data-switch='true' type='checkbox' name='switch' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.buttonState} />
-                              </div>
-                            </div>
+                                <span className="m-switch m-switch--icon m-switch--primary">
+												<label>
+						                        <input type='checkbox' data-switch='true' checked={this.state.buttonState} onChange={this.handleChange} />
+						                        <span></span>
+						                        </label>
+						                    </span>
                           </div>
                         </div>
                         <br /><br />
