@@ -74,7 +74,7 @@ class Menu extends React.Component {
     registerAction({
       event: 'menu_updated',
       action: function (data) {
-        if (this.state.selectPage === '') {
+        if (self.state.selectPage === '') {
           compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
         } else {
           compProp.getIndexBypage(this.state.selectPage.pageId, self.handleIndexByPage)
