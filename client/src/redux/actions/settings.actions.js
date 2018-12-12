@@ -84,6 +84,7 @@ export function showWebhookResponse (data) {
   }
 }
 export function enable (API) {
+  console.log('API', API)
   return (dispatch) => {
     callApi('api_settings/enable', 'post', API)
       .then(res => {

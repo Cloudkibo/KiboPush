@@ -87,6 +87,7 @@ class SegmentedList extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.customerLists && nextProps.count) {
+      console.log('Will Receive Propes called after deletion')
       // var lists = []
       // for (var i = 0; i < nextProps.customerLists.length; i++) {
       //   if (!(nextProps.customerLists[i].initialList)) {
@@ -101,6 +102,9 @@ class SegmentedList extends React.Component {
       // this.setState({ totalLength: nextProps.count })
       this.displayData(0, nextProps.customerLists)
       this.setState({ totalLength: nextProps.count })
+    }
+    else {
+      this.setState({customerLists: nextProps.customerLists})
     }
   }
 

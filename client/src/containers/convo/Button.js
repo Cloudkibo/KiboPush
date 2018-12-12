@@ -22,7 +22,8 @@ class Button extends React.Component {
       openWebsite: false,
       openSubscribe: false,
       openUnsubscribe: false,
-      sequenceValue: ''
+      sequenceValue: '',
+      shareButton: false
     }
     props.fetchAllSequence()
     this.handleClick = this.handleClick.bind(this)
@@ -38,8 +39,12 @@ class Button extends React.Component {
     this.closeSubscribe = this.closeSubscribe.bind(this)
     this.closeUnsubscribe = this.closeUnsubscribe.bind(this)
     this.onSequenceChange = this.onSequenceChange.bind(this)
+    this.shareButton = this.shareButton.bind(this)
+    this.closeShareButton = this.closeShareButton.bind(this)
   }
-
+  shareButton () {
+    this.setState({shareButton: true, disabled: false, title: 'Share'})
+  }
   showWebsite () {
     this.setState({openWebsite: true})
   }
@@ -55,7 +60,9 @@ class Button extends React.Component {
   closeWebsite () {
     this.setState({openWebsite: false, url: '', disabled: true})
   }
-
+  closeShareButton () {
+    this.setState({shareButton: false, disabled: true, title: ''})
+  }
   closeSubscribe () {
     this.setState({openSubscribe: false, sequenceValue: '', disabled: true})
   }
@@ -113,8 +120,13 @@ class Button extends React.Component {
         }
         this.props.addButton(data, this.props.onAdd)
       }
+    } else if (this.state.shareButton) {
+      let data = {
+        type: 'element_share',
+        title: this.state.title
+      }
+      this.props.addButton(data, this.props.onAdd)
     }
-
     // this.setState({
     //   openPopover: false
     // })
@@ -125,12 +137,15 @@ class Button extends React.Component {
       sequenceValue: '',
       openWebsite: false,
       openSubscribe: false,
-      openUnsubscribe: false
+      openUnsubscribe: false,
+      shareButton: false
     })
   }
 
   changeTitle (event) {
     if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
+      this.setState({disabled: false})
+    } else if (this.state.shareButton && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -162,13 +177,16 @@ class Button extends React.Component {
               <div>
                 <div style={{marginBottom: '10px'}}>Add upto 3 buttons</div>
                 <h6>Button Title:</h6>
-                <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
+                <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
                 {
-                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe &&
+                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton &&
                   <div>
                     <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                    </div>
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
                     </div>
                     {
                       this.props.module !== 'sequenceMessaging' && this.props.sequences && this.props.sequences.length > 0 &&
@@ -191,6 +209,12 @@ class Button extends React.Component {
                     <div style={{padding: '10px'}} className='card-block'>
                       <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
                     </div>
+                  </div>
+                }
+                {
+                  this.state.shareButton &&
+                  <div className='card'>
+                    <h7 className='card-header'>Share this message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeShareButton} /></h7>
                   </div>
                 }
                 {

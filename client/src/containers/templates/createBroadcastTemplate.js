@@ -59,6 +59,7 @@ class CreateBroadcastTemplate extends React.Component {
 
   componentDidMount () {
     document.title = 'KiboPush | Create Broadcast Template'
+    console.log('this.props.template', this.props.template)
     if (this.props.template) {
       var temp = this.state.list
       for (var i = 0; i < this.props.template.payload.length; i++) {

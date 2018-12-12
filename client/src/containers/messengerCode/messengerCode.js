@@ -8,6 +8,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesListNew } from '../../redux/actions/pages.actions'
 import { requestMessengerCode } from '../../redux/actions/messengerCode.actions'
+import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
+import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 
 class MessengerCode extends React.Component {
   constructor (props, context) {
@@ -16,7 +19,8 @@ class MessengerCode extends React.Component {
       selectedPage: {},
       ref: '',
       resoltion: '1000',
-      image: ''
+      image: '',
+      showVideo: false
     }
     props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
 
@@ -57,6 +61,10 @@ class MessengerCode extends React.Component {
   }
 
   onSubmit (event) {
+    if (parseInt(this.state.resoltion) < 100 || parseInt(this.state.resoltion) > 2000) {
+      this.msg.error('Resolution must be between 100 to 2000 px')
+      return
+    }
     if (this.state.ref !== '') {
       this.props.requestMessengerCode({
         pageId: this.state.selectedPage.pageId,
@@ -70,6 +78,7 @@ class MessengerCode extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('nextProps in pages', nextProps)
+    console.log('nextProps in image', nextProps.image)
     if (nextProps.pages) {
       this.setState({
         selectedPage: nextProps.pages[0]
@@ -81,8 +90,37 @@ class MessengerCode extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        {
+          this.state.showVideo &&
+          <ModalContainer style={{width: '680px', top: 100}}
+            onClose={() => { this.setState({showVideo: false}) }}>
+            <ModalDialog style={{width: '680px', top: 100}}
+              onClose={() => { this.setState({showVideo: false}) }}>
+              <div>
+                <YouTube
+                  videoId='xpVyOxXvZPE'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 1
+                    }
+                  }}
+                />
+              </div>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -96,7 +134,7 @@ class MessengerCode extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Messenger Code? Here is the <a href='http://kibopush.com/messenger-code' target='_blank'>documentation</a>.
+              Need help in understanding Messenger Code? Here is the <a href='http://kibopush.com/messenger-codes' target='_blank'>documentation</a>.
               Or check out this <a href='#' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>

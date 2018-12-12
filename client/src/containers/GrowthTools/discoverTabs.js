@@ -79,7 +79,7 @@ class DiscoverTabs extends React.Component {
                 <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
                   <div className='col-12'>
                     <div className='m-form__actions' style={{'float': 'right', marginTop: '20px', marginBottom: '20px'}}>
-                      <Link to={'/https://www.facebook.com/page_tabs/?redirection=settings%2F%3Ftab%3Dmessenger_platformm'} target='_blank' className='btn btn-primary' >Discover Submission Form
+                      <Link to={'https://www.facebook.com/page_tabs/?redirection=settings%2F%3Ftab%3Dmessenger_platformm'} target='_blank' className='btn btn-primary' >Discover Submission Form
                       </Link>
                     </div>
                   </div>

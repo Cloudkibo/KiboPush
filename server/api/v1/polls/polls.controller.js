@@ -363,7 +363,6 @@ exports.allPolls = function (req, res) {
               })
             })
           })
-
       })
     } else if (req.body.first_page === 'previous') {
       let recordsToSkip = Math.abs(((req.body.requested_page) - (req.body.current_page - 1))) * req.body.number_of_records
@@ -888,16 +887,14 @@ exports.send = function (req, res) {
                                                           body: {
                                                             action: 'poll_send',
                                                             poll_id: pollCreated._id,
-                                                             user_id: req.user._id,
+                                                            user_id: req.user._id,
                                                             user_name: req.user.name,
-                                                           company_id: companyUser.companyId
+                                                            company_id: companyUser.companyId
 
                                                           }
                                                         })
-
                                                       }
                                                     })
-
                                                   })
                                       } else {
                                         logger.serverLog(TAG, 'agent was engaged just 30 minutes ago ')
@@ -1019,7 +1016,7 @@ exports.send = function (req, res) {
                                                 pollId: req.body._id,
                                                 seen: false
                                               })
-                                                pollBroadcast.save((err2, pollCreated) => {
+                                              pollBroadcast.save((err2, pollCreated) => {
                                                   if (err2) {
                                                     logger.serverLog(TAG, {
                                                       status: 'failed',
@@ -1027,17 +1024,16 @@ exports.send = function (req, res) {
                                                       err2
                                                     })
                                                   } else {
-
-                                                   //return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
+                                                   // return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     // return res.status(200).json({status: 'success', payload: 'Polls sent successfully.'})
                                                     require('./../../../config/socketio').sendMessageToClient({
                                                       room_id: companyUser.companyId,
                                                       body: {
-                                                            action: 'poll_send',
-                                                            poll_id: pollCreated._id,
-                                                            user_id: req.user._id,
-                                                            user_name: req.user.name,
-                                                           company_id: companyUser.companyId
+                                                        action: 'poll_send',
+                                                        poll_id: pollCreated._id,
+                                                        user_id: req.user._id,
+                                                        user_name: req.user.name,
+                                                        company_id: companyUser.companyId
 
                                                       }
                                                     })
@@ -1117,7 +1113,6 @@ exports.send = function (req, res) {
                 return res.status(200)
                .json({status: 'success', payload: 'Polls sent successfully.'})
               })
-
             })
           })
         })
