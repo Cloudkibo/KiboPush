@@ -32,6 +32,7 @@ import {featuresInfo} from './features.reducer'
 import {usageInfo} from './usage.reducer'
 import {abandonedInfo} from './abandonedCarts.reducer'
 import {messengerCodeInfo} from './messengerCode.reducer'
+import {landingPagesInfo} from './landingPages.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -65,7 +66,8 @@ const appReducer = combineReducers({
   featuresInfo,
   usageInfo,
   abandonedInfo,
-  messengerCodeInfo
+  messengerCodeInfo,
+  landingPagesInfo
 })
 
 export default appReducer
