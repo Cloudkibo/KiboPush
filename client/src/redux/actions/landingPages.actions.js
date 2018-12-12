@@ -32,22 +32,3 @@ export function deleteLandingPage (id, msg) {
     })
   }
 }
-export function createFacebookPost (data, msg, handleCreate) {
-  console.log('data', data)
-  return (dispatch) => {
-    callApi('post/create', 'post', data)
-      .then(res => {
-        console.log('response from server', res)
-        if (res.status === 'success' && res.payload) {
-          msg.success('Posted on Facebook successfully')
-          handleCreate()
-        } else {
-          if (res.status === 'failed' && res.description) {
-            msg.error(`Failed to post on facebook. ${res.description}`)
-          } else {
-            msg.error('Failed to post on facebook')
-          }
-        }
-      })
-  }
-}
