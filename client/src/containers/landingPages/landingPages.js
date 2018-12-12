@@ -23,7 +23,6 @@ class LandingPage extends React.Component {
       showVideo: false
     }
     props.fetchLandingPages()
-    props.saveCurrentPost(null)
 
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
