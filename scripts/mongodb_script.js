@@ -393,7 +393,6 @@ AutomationQueue.find({}, (err, data) => {
                     logger.serverLog(TAG, 'Internal Server Error on Setup ' + JSON.stringify(err))
                   }
                   let messageData = {}
-                  console.log('tweet: ', JSON.stringify(tweet))
                   if (!tweet.entities.media) { // (tweet.entities.urls.length === 0 && !tweet.entities.media) {
                     messageData = {
                       'messaging_type': 'UPDATE',
