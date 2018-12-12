@@ -100,7 +100,7 @@ class LandingPage extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Landing Pages</h3>
+              <h3 className='m-subheader__title'>Manage Landing Pages</h3>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ class LandingPage extends React.Component {
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
                       <h3 className='m-portlet__head-text'>
-                        Manage Landing Pages
+                        Landing Pages
                       </h3>
                     </div>
                   </div>
