@@ -1,0 +1,33 @@
+/* eslint-disable no-undef */
+/**
+ * Created by sojharo on 20/07/2017.
+ */
+
+import React from 'react'
+import { Link } from 'react-router'
+
+class Header extends React.Component {
+  render () {
+    return (
+      <div className='m-portlet__head'>
+        <div className='m-portlet__head-caption'>
+          <div className='m-portlet__head-title'>
+            <h3 className='m-portlet__head-text'>
+              Create Landing Page
+            </h3>
+          </div>
+        </div>
+        <div className='m-portlet__head-tools'>
+          <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+            <span>Save</span>
+          </Link>
+          <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}}>
+            <span>Deactivate</span>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+}
+
+export default Header
