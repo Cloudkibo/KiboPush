@@ -821,25 +821,25 @@ function handleThePagePostsForAutoPosting (event, status) {
                               sendAutopostingMessage(messageData, page, savedMsg)
                             } else {
                               // Logic to add into queue will go here
-                              logger.serverLog(TAG, 'inside adding to fb autoposting queue')
-                              let timeNow = new Date()
-                              let automatedQueueMessage = new AutomationQueue({
-                                automatedMessageId: savedMsg._id,
-                                subscriberId: subscriber._id,
-                                companyId: savedMsg.companyId,
-                                type: 'autoposting-fb',
-                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
-                              })
-
-                              automatedQueueMessage.save((error) => {
-                                if (error) {
-                                  logger.serverLog(TAG, {
-                                    status: 'failed',
-                                    description: 'Automation Queue autoposting-fb Message create failed',
-                                    error
-                                  })
-                                }
-                              })
+                              // logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              // let timeNow = new Date()
+                              // let automatedQueueMessage = new AutomationQueue({
+                              //   automatedMessageId: savedMsg._id,
+                              //   subscriberId: subscriber._id,
+                              //   companyId: savedMsg.companyId,
+                              //   type: 'autoposting-fb',
+                              //   scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              // })
+                              //
+                              // automatedQueueMessage.save((error) => {
+                              //   if (error) {
+                              //     logger.serverLog(TAG, {
+                              //       status: 'failed',
+                              //       description: 'Automation Queue autoposting-fb Message create failed',
+                              //       error
+                              //     })
+                              //   }
+                              // })
                             }
                           })
                         } else if (event.value.item === 'share') {
@@ -900,25 +900,25 @@ function handleThePagePostsForAutoPosting (event, status) {
                                 sendAutopostingMessage(messageData, page, savedMsg)
                               } else {
                                 // Logic to add into queue will go here
-                                logger.serverLog(TAG, 'inside adding to fb autoposting queue')
-                                let timeNow = new Date()
-                                let automatedQueueMessage = new AutomationQueue({
-                                  automatedMessageId: savedMsg._id,
-                                  subscriberId: subscriber._id,
-                                  companyId: savedMsg.companyId,
-                                  type: 'autoposting-fb',
-                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
-                                })
-
-                                automatedQueueMessage.save((error) => {
-                                  if (error) {
-                                    logger.serverLog(TAG, {
-                                      status: 'failed',
-                                      description: 'Automation Queue autoposting-fb Message create failed',
-                                      error
-                                    })
-                                  }
-                                })
+                                // logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                                // let timeNow = new Date()
+                                // let automatedQueueMessage = new AutomationQueue({
+                                //   automatedMessageId: savedMsg._id,
+                                //   subscriberId: subscriber._id,
+                                //   companyId: savedMsg.companyId,
+                                //   type: 'autoposting-fb',
+                                //   scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                // })
+                                //
+                                // automatedQueueMessage.save((error) => {
+                                //   if (error) {
+                                //     logger.serverLog(TAG, {
+                                //       status: 'failed',
+                                //       description: 'Automation Queue autoposting-fb Message create failed',
+                                //       error
+                                //     })
+                                //   }
+                                // })
                               }
                             })
                           })
@@ -980,25 +980,25 @@ function handleThePagePostsForAutoPosting (event, status) {
                                 sendAutopostingMessage(messageData, page, savedMsg)
                               } else {
                                 // Logic to add into queue will go here
-                                logger.serverLog(TAG, 'inside adding to fb autoposting queue')
-                                let timeNow = new Date()
-                                let automatedQueueMessage = new AutomationQueue({
-                                  automatedMessageId: savedMsg._id,
-                                  subscriberId: subscriber._id,
-                                  companyId: savedMsg.companyId,
-                                  type: 'autoposting-fb',
-                                  scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
-                                })
-
-                                automatedQueueMessage.save((error) => {
-                                  if (error) {
-                                    logger.serverLog(TAG, {
-                                      status: 'failed',
-                                      description: 'Automation Queue autoposting-fb Message create failed',
-                                      error
-                                    })
-                                  }
-                                })
+                                // logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                                // let timeNow = new Date()
+                                // let automatedQueueMessage = new AutomationQueue({
+                                //   automatedMessageId: savedMsg._id,
+                                //   subscriberId: subscriber._id,
+                                //   companyId: savedMsg.companyId,
+                                //   type: 'autoposting-fb',
+                                //   scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                                // })
+                                //
+                                // automatedQueueMessage.save((error) => {
+                                //   if (error) {
+                                //     logger.serverLog(TAG, {
+                                //       status: 'failed',
+                                //       description: 'Automation Queue autoposting-fb Message create failed',
+                                //       error
+                                //     })
+                                //   }
+                                // })
                               }
                             })
                           })
@@ -1030,25 +1030,25 @@ function handleThePagePostsForAutoPosting (event, status) {
                               sendAutopostingMessage(messageData, page, savedMsg)
                             } else {
                               // Logic to add into queue will go here
-                              logger.serverLog(TAG, 'inside adding to fb autoposting queue')
-                              let timeNow = new Date()
-                              let automatedQueueMessage = new AutomationQueue({
-                                automatedMessageId: savedMsg._id,
-                                subscriberId: subscriber._id,
-                                companyId: savedMsg.companyId,
-                                type: 'autoposting-fb',
-                                scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
-                              })
-
-                              automatedQueueMessage.save((error) => {
-                                if (error) {
-                                  logger.serverLog(TAG, {
-                                    status: 'failed',
-                                    description: 'Automation Queue autoposting-fb Message create failed',
-                                    error
-                                  })
-                                }
-                              })
+                              // logger.serverLog(TAG, 'inside adding to fb autoposting queue')
+                              // let timeNow = new Date()
+                              // let automatedQueueMessage = new AutomationQueue({
+                              //   automatedMessageId: savedMsg._id,
+                              //   subscriberId: subscriber._id,
+                              //   companyId: savedMsg.companyId,
+                              //   type: 'autoposting-fb',
+                              //   scheduledTime: timeNow.setMinutes(timeNow.getMinutes() + 30)
+                              // })
+                              //
+                              // automatedQueueMessage.save((error) => {
+                              //   if (error) {
+                              //     logger.serverLog(TAG, {
+                              //       status: 'failed',
+                              //       description: 'Automation Queue autoposting-fb Message create failed',
+                              //       error
+                              //     })
+                              //   }
+                              // })
                             }
                           })
                         }
