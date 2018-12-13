@@ -16,7 +16,7 @@ const all = {
   port: process.env.PORT || 3000,
 
   // Secure Server port
-  secure_port: process.env.SECURE_PORT || 8443,
+  secure_port: process.env.SECURE_PORT || 8444,
 
   // pubsubhubbub port
   pubsub_port: process.env.PUBSUB_PORT || 1337,
