@@ -17,12 +17,20 @@ class CreateLandingPage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      currentTab: this.props.location.state ? this.props.location.state.tab : '',
+      optInMessage: []
     }
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.onEdit = this.onEdit.bind(this)
+    this.setCurrentTab = this.setCurrentTab.bind(this)
   }
   onEdit () {
+  }
+  setCurrentTab (tab) {
+    this.setState({
+      currentTab: tab
+    })
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -57,8 +65,8 @@ class CreateLandingPage extends React.Component {
                 <Header />
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <State />
-                    <Preview />
+                    <State currentTab={this.state.currentTab} setCurrentTab={this.setCurrentTab} />
+                    <Preview currentTab={this.state.currentTab} optInMessage={this.state.optInMessage} />
                   </div>
                 </div>
               </div>
