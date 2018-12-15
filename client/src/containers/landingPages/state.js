@@ -23,7 +23,7 @@ class State extends React.Component {
   render () {
     return (
       <div className='col-md-6 col-lg-6 col-sm-6'>
-        <Tabs activeTab={this.state.activeTab} setActiveTab={this.setActiveTab} />
+        <Tabs activeTab={this.state.activeTab} setActiveTab={this.setActiveTab} optInMessage={this.props.optInMessage} />
       </div>
     )
   }

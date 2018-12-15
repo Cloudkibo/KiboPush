@@ -10,12 +10,14 @@ class OptInActions extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      optInMessage: this.props.optInMessage ? this.props.optInMessage : ''
     }
     this.editMessage = this.editMessage.bind(this)
   }
   editMessage () {
     browserHistory.push({
-      pathname: `/createLandingPageMessage`
+      pathname: `/createLandingPageMessage`,
+      state: {editMessage: this.state.optInMessage}
     })
   }
   render () {

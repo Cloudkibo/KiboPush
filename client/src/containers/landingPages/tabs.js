@@ -35,8 +35,8 @@ class Tab extends React.Component {
     }
   }
   componentDidMount () {
-    if (this.props.activeTab === 'optInAction') {
-      this.clickOptInAction()
+    if (this.props.activeTab !== '') {
+      this.onTabClick(this.props.activeTab)
     }
   }
   render () {
@@ -62,7 +62,7 @@ class Tab extends React.Component {
           </div>
           <div className='tab-pane' id='tab_2' />
           <div className='tab-pane' id='tab_3'>
-            <OptInActions />
+            <OptInActions optInMessage={this.props.optInMessage} />
           </div>
           <div className='tab-pane' id='tab_4'>
             <Setup />

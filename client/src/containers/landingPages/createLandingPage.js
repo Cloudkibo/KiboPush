@@ -7,7 +7,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {fetchLandingPages, deleteLandingPage} from '../../redux/actions/landingPages.actions'
-import { Link } from 'react-router'
 import AlertContainer from 'react-alert'
 import Header from './header'
 import State from './state'
@@ -18,7 +17,7 @@ class CreateLandingPage extends React.Component {
     super(props, context)
     this.state = {
       currentTab: this.props.location.state ? this.props.location.state.tab : '',
-      optInMessage: []
+      optInMessage: this.props.location.state ? this.props.location.state.message : []
     }
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
@@ -65,7 +64,7 @@ class CreateLandingPage extends React.Component {
                 <Header />
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <State currentTab={this.state.currentTab} setCurrentTab={this.setCurrentTab} />
+                    <State currentTab={this.state.currentTab} setCurrentTab={this.setCurrentTab} optInMessage={this.state.optInMessage} />
                     <Preview currentTab={this.state.currentTab} optInMessage={this.state.optInMessage} />
                   </div>
                 </div>
