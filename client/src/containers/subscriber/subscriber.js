@@ -388,8 +388,10 @@ class Subscriber extends React.Component {
     if (this.props.location.state && this.props.location.state.page) {
       let pageId = this.props.location.state.page._id
       let statusValue
-      if (this.props.location.state.filterStatus) {
-        statusValue = this.props.location.state.filterStatus
+      if (this.props.location.state.filterStatus === 'subscribed') {
+        statusValue = true
+      } else if (this.props.location.state.filterStatus === 'unsubscribed') {
+        statusValue = false
       } else {
         statusValue = ''
       }
@@ -809,6 +811,8 @@ class Subscriber extends React.Component {
     if (pageId !== '' && pageId !== 'all') {
       this.setState({filterByPage: pageId, status_value: statusValue, filter: true})
       this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: statusValue}})
+    } else {
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: this.state.filterByPage, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: this.state.status_value}})
     }
   }
   handleFilterByGender (e) {
