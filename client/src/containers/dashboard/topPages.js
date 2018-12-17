@@ -1,16 +1,24 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { savePageInformation } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+
 class TopPages extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onPageClick = this.onPageClick.bind(this)
+    this.goToSubscribers = this.goToSubscribers.bind(this)
   }
   onPageClick (e, page) {
     this.props.savePageInformation(page)
+  }
+  goToSubscribers (page) {
+    browserHistory.push({
+      pathname: `/subscribers`,
+      state: {page: page}
+    })
   }
   render () {
     return (
@@ -69,7 +77,7 @@ class TopPages extends React.Component {
                                    </div>
                                  </div>
                                  <div className='m-widget4__ext'>
-                                   <Link style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={(e) => { let pageSelected = page; this.onPageClick(e, pageSelected) }} to={'/pageSubscribers'} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                   <Link style={{marginRight: '20px', whiteSpace: 'normal'}} onClick={() => this.goToSubscribers(page)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
                                     See Subscribers
                                   </Link>
                                  </div>
