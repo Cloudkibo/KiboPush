@@ -1500,7 +1500,7 @@ class ChatBox extends React.Component {
                                             <div className='m-messenger__message-username'>
                                               {this.getRepliedByMsg(msg)}
                                             </div>
-                                            <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
+                                            <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
                                               {msg.payload.text}
                                             </div>
                                           </div>
