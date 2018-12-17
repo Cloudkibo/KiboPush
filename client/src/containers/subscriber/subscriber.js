@@ -385,18 +385,15 @@ class Subscriber extends React.Component {
   }
   componentDidMount () {
     document.title = 'KiboPush | Subscribers'
-    let filterStatusValue = ''
-    if (this.props.location.state) {
+    if (this.props.location.state && this.props.location.state.page) {
       let pageId = this.props.location.state.page._id
-      this.setState({filterPage: pageId})
-      if (this.props.location.state.filterStatus === 'subscribed') {
-        filterStatusValue = true
-        this.setState({statusValue: 'subscribed'})
+      let statusValue
+      if (this.props.location.state.filterStatus) {
+        statusValue = this.props.location.state.filterStatus
       } else {
-        filterStatusValue = false
-        this.setState({statusValue: 'unsubscribed'})
+        statusValue = ''
       }
-      this.handleFilterByPageInitial(pageId, filterStatusValue)
+      this.handleFilterByPageInitial(pageId, statusValue)
     }
   }
   componentDidUpdate () {
@@ -808,13 +805,10 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
 
-  handleFilterByPageInitial (pageId, isSubscribed) {
-    this.setState({filterByPage: pageId, status_value: isSubscribed})
+  handleFilterByPageInitial (pageId, statusValue) {
     if (pageId !== '' && pageId !== 'all') {
-      this.setState({filter: true})
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed}})
-    } else {
-      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: '', locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: isSubscribed}})
+      this.setState({filterByPage: pageId, status_value: statusValue, filter: true})
+      this.props.loadAllSubscribersListNew({last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.filterByGender, page_value: pageId, locale_value: this.state.filterByLocale, tag_value: this.state.filterByTag, status_value: statusValue}})
     }
   }
   handleFilterByGender (e) {
