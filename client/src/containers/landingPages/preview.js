@@ -17,6 +17,7 @@ class Preview extends React.Component {
   }
 
   render () {
+    console.log('render in preview', this.props.currentTab)
     return (
       <div className='col-md-6 col-lg-6 col-sm-6' style={{borderLeft: '0.07rem solid #EBEDF2', backgroundColor: this.props.initialState ? this.props.initialState.backgroundColor : '#fff'}}>
         {
@@ -32,16 +33,16 @@ class Preview extends React.Component {
             title='Here is your widget headline. Click here to change it!'
             description='We also put default text here. Make sure to turn it into a unique and valuable message.'
           />
-      }
-      {this.props.currentTab === 'submittedState' &&
-        <PreviewInitialSate
-          initialState={this.props.submittedState.state}
-          setInitialStatePreview={this.props.setSubmittedStatePreview}
-          title='Thank You for Reading Our Thank You Message!'
-          description='Once a user opt-ins through your form, he sees this. Unless you change it, of course.'
-          button='View it in Messenger'
-          />
-      }
+        }
+        {this.props.currentTab === 'submittedState' &&
+          <PreviewInitialSate
+            initialState={this.props.submittedState.state}
+            setInitialStatePreview={this.props.setSubmittedStatePreview}
+            title='Thank You for Reading Our Thank You Message!'
+            description='Once a user opt-ins through your form, he sees this. Unless you change it, of course.'
+            button='View it in Messenger'
+            />
+        }
       </div>
     )
   }

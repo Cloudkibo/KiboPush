@@ -8,9 +8,10 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {fetchLandingPages, deleteLandingPage} from '../../redux/actions/landingPages.actions'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import AlertContainer from 'react-alert'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class LandingPage extends React.Component {
   constructor (props, context) {
@@ -19,18 +20,40 @@ class LandingPage extends React.Component {
       landingPagesData: [],
       totalLength: 0,
       isShowingModalDelete: false,
+      isShowingCreate: false,
       deleteid: '',
-      showVideo: false
+      showVideo: false,
+      pageSelected: ''
     }
+    props.loadMyPagesList()
     props.fetchLandingPages()
 
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
+    this.closeCreateDialog = this.closeCreateDialog.bind(this)
+    this.showCreateDialog = this.showCreateDialog.bind(this)
     this.onEdit = this.onEdit.bind(this)
+    this.gotoCreate = this.gotoCreate.bind(this)
+    this.changePage = this.changePage.bind(this)
+  }
+  changePage (e) {
+    this.setState({pageSelected: e.target.value})
+  }
+  gotoCreate () {
+    browserHistory.push({
+      pathname: `/createLandingPage`,
+      state: {pageId: this.state.pageSelected}
+    })
   }
   onEdit () {
+  }
+  showCreateDialog () {
+    this.setState({isShowingCreate: true})
+  }
+  closeCreateDialog () {
+    this.setState({isShowingCreate: false})
   }
   showDialogDelete (id) {
     this.setState({isShowingModalDelete: true})
@@ -66,6 +89,9 @@ class LandingPage extends React.Component {
       this.displayData(0, nextProps.landingPages)
       this.setState({totalLength: nextProps.landingPages.length})
     }
+    if (nextProps.pages) {
+      this.setState({pageSelected: nextProps.pages[0]._id})
+    }
   }
 
   render () {
@@ -94,6 +120,35 @@ class LandingPage extends React.Component {
                   this.closeDialogDelete()
                 }}>Delete
               </button>
+            </ModalDialog>
+          </ModalContainer>
+        }
+        {
+          this.state.isShowingCreate &&
+          <ModalContainer style={{width: '500px'}}
+            onClose={this.closeCreateDialog}>
+            <ModalDialog style={{width: '500px'}}
+              onClose={this.closeCreateDialog}>
+              <h3>Create Landing Page</h3>
+              <div className='m-form'>
+                <div className='form-group m-form__group'>
+                  <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
+                  <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
+                    {
+                      this.props.pages.map((page, i) => (
+                        <option key={i} value={page._id}>{page.pageName}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{width: '100%', textAlign: 'center'}}>
+                <div style={{display: 'inline-block', padding: '5px', float: 'right'}}>
+                  <button className='btn btn-primary' onClick={() => this.gotoCreate()}>
+                    Create
+                  </button>
+                </div>
+              </div>
             </ModalDialog>
           </ModalContainer>
         }
@@ -126,7 +181,7 @@ class LandingPage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <Link onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
                         <span>
@@ -221,14 +276,16 @@ class LandingPage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    landingPages: (state.landingPagesInfo.landingPages)
+    landingPages: (state.landingPagesInfo.landingPages),
+    pages: (state.pagesInfo.pages)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchLandingPages: fetchLandingPages,
-    deleteLandingPage: deleteLandingPage
+    deleteLandingPage: deleteLandingPage,
+    loadMyPagesList: loadMyPagesList,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage)

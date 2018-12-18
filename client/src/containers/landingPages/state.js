@@ -60,6 +60,7 @@ class State extends React.Component {
     console.log('initialState temp:', initialState)
   }
   setSubmittedStatePreview (title, description, button) {
+    console.log('this.state.submittedState', this.state.submittedState)
     let submittedState = this.state.submittedState
     submittedState.title = title
     submittedState.description = description
@@ -87,6 +88,7 @@ class State extends React.Component {
   }
 
   render () {
+    console.log('render in state', this.state.submittedState)
     return (
       <div className='row'>
         <div className='col-md-6 col-lg-6 col-sm-6'>

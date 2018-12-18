@@ -6,11 +6,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import { createLandingPage } from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import Header from './header'
 import State from './state'
-import Preview from './preview'
 
 class CreateLandingPage extends React.Component {
   constructor (props, context) {
@@ -20,10 +19,9 @@ class CreateLandingPage extends React.Component {
       optInMessage: this.props.location.state ? this.props.location.state.message : [],
       initialState: this.props.location.state ? this.props.location.state.initialState : {},
       submittedState: this.props.location.state ? this.props.location.state.submittedState : {},
-      isActive: this.props.location.state ? this.props.location.state.isActive : true
+      isActive: this.props.location.state ? this.props.location.state.isActive : true,
+      pageId: this.props.location.state ? this.props.location.state.pageId : ''
     }
-
-    props.loadMyPagesList()
 
     this.setSubmittedState = this.setSubmittedState.bind(this)
     this.setInitialState = this.setInitialState.bind(this)
@@ -31,6 +29,7 @@ class CreateLandingPage extends React.Component {
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.onEdit = this.onEdit.bind(this)
     this.setCurrentTab = this.setCurrentTab.bind(this)
+    this.onSave = this.onSave.bind(this)
   }
   onEdit () {
   }
@@ -62,6 +61,9 @@ class CreateLandingPage extends React.Component {
     this.setState({submittedState: data})
     console.log('setSubmittedState:', data)
   }
+  onSave () {
+    this.props.createLandingPage({initialState: this.state.initialState, submittedState: this.state.submittedState, pageId: this.state.pageId, optInMessage: this.state.optInMessage, isActive: true}, this.msg)
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -77,7 +79,7 @@ class CreateLandingPage extends React.Component {
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
-                <Header />
+                <Header onSave={this.onSave} />
                 <div className='m-portlet__body'>
                   <State currentTab={this.state.currentTab}
                     setCurrentTab={this.setCurrentTab}
@@ -97,13 +99,12 @@ class CreateLandingPage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    pages: (state.pagesInfo.pages)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadMyPagesList: loadMyPagesList
+    createLandingPage: createLandingPage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateLandingPage)
