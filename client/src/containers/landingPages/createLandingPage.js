@@ -6,7 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {fetchLandingPages, deleteLandingPage} from '../../redux/actions/landingPages.actions'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AlertContainer from 'react-alert'
 import Header from './header'
 import State from './state'
@@ -16,9 +16,17 @@ class CreateLandingPage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      currentTab: this.props.location.state ? this.props.location.state.tab : '',
-      optInMessage: this.props.location.state ? this.props.location.state.message : []
+      currentTab: 'initialState',
+      optInMessage: this.props.location.state ? this.props.location.state.message : [],
+      initialState: this.props.location.state ? this.props.location.state.initialState : {},
+      submittedState: this.props.location.state ? this.props.location.state.submittedState : {},
+      isActive: this.props.location.state ? this.props.location.state.isActive : true
     }
+
+    props.loadMyPagesList()
+
+    this.setSubmittedState = this.setSubmittedState.bind(this)
+    this.setInitialState = this.setInitialState.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.onEdit = this.onEdit.bind(this)
@@ -27,6 +35,7 @@ class CreateLandingPage extends React.Component {
   onEdit () {
   }
   setCurrentTab (tab) {
+    console.log('setCurrentTab', tab)
     this.setState({
       currentTab: tab
     })
@@ -45,7 +54,14 @@ class CreateLandingPage extends React.Component {
       this.setState({totalLength: nextProps.landingPages.length})
     }
   }
-
+  setInitialState (data) {
+    this.setState({initialState: data})
+    console.log('setInitialState:', data)
+  }
+  setSubmittedState (data) {
+    this.setState({submittedState: data})
+    console.log('setSubmittedState:', data)
+  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -63,10 +79,11 @@ class CreateLandingPage extends React.Component {
               <div className='m-portlet'>
                 <Header />
                 <div className='m-portlet__body'>
-                  <div className='row'>
-                    <State currentTab={this.state.currentTab} setCurrentTab={this.setCurrentTab} optInMessage={this.state.optInMessage} />
-                    <Preview currentTab={this.state.currentTab} optInMessage={this.state.optInMessage} />
-                  </div>
+                  <State currentTab={this.state.currentTab}
+                    setCurrentTab={this.setCurrentTab}
+                    optInMessage={this.state.optInMessage}
+                    setInitialState={this.setInitialState}
+                    setSubmittedState={this.setSubmittedState} />
                 </div>
               </div>
             </div>
@@ -80,14 +97,13 @@ class CreateLandingPage extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    landingPages: (state.landingPagesInfo.landingPages)
+    pages: (state.pagesInfo.pages)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchLandingPages: fetchLandingPages,
-    deleteLandingPage: deleteLandingPage
+    loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CreateLandingPage)
