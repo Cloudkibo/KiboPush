@@ -283,7 +283,19 @@ export function saveGreetingMessage (data, msg) {
       })
   }
 }
-
+export function saveWhiteListDomains (data, msg, handleResponse) {
+  return (dispatch) => {
+    callApi('pages/whitelistDomain', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Domain saved successfully')
+          handleResponse(res.payload)
+        } else {
+          msg.error(res.description)
+        }
+      })
+  }
+}
 export function saveResponseMethod (data, msg) {
   console.log('data for saveResponseMethod', data)
   return (dispatch) => {

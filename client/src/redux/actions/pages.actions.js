@@ -122,3 +122,10 @@ export function loadOtherPagesList () {
       .then(res => dispatch(updateOtherPages(res.payload)))
   }
 }
+
+export function saveDomains () {
+  return (dispatch) => {
+    callApi('pages/whitelistDomain')
+      .then(res => dispatch(updateOtherPages(res.payload)))
+  }
+}

@@ -24,6 +24,7 @@ import YouTube from 'react-youtube'
 import AlertContainer from 'react-alert'
 import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import UploadCustomerInformation from './uploadCustomerInformation'
+import WhiteListDomains from './whitelistDomains'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -73,6 +74,7 @@ class Settings extends React.Component {
     this.setPayementMethods = this.setPayementMethods.bind(this)
     this.setChatWidget = this.setChatWidget.bind(this)
     this.setPermissions = this.setPermissions.bind(this)
+    this.setWhiteListDomains = this.setWhiteListDomains.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.handleNGPKeyChange = this.handleNGPKeyChange.bind(this)
     this.handleNGPSecretChange = this.handleNGPSecretChange.bind(this)
@@ -169,6 +171,11 @@ class Settings extends React.Component {
       openTab: 'showNGP'
     }, () => {
       this.initializeSwitchNGP(this.state.ngpButtonState)
+    })
+  }
+  setWhiteListDomains () {
+    this.setState({
+      openTab: 'whitelistDomains'
     })
   }
   setResetPass () {
@@ -291,13 +298,13 @@ class Settings extends React.Component {
         self.setState({disable: true, buttonState: false})
         self.props.disable({company_id: self.props.user._id})
       }
-   // }) 
+   // })
   }
   handleChange () {
     console.log('Handle change function')
    // console.log('state', state)
   //  var self = this
-    
+
    /* /* eslint-disable */
    // $("[name='switch']").bootstrapSwitch({
       /* eslint-enable */
@@ -318,7 +325,7 @@ class Settings extends React.Component {
         this.setState({disable: true, buttonState: false})
         this.props.disable({company_id: this.props.user._id})
       }
-   // }) 
+   // })
   }
   initializeSwitchNGP (state) {
     var self = this
@@ -690,6 +697,12 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    <li className='m-nav__item'>
+                      <a className='m-nav__link' onClick={this.setWhiteListDomains} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon flaticon-delete' />
+                        <span className='m-nav__link-text'>Whitelist Domains</span>
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -869,6 +882,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'webhook' &&
               <Webhook />
+            }
+            { this.state.openTab === 'whitelistDomains' &&
+              <WhiteListDomains />
             }
           </div>
         </div>
