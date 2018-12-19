@@ -36,6 +36,7 @@ export function updateTopPages (data) {
   }
 }
 export function updateSentVsSeen (data) {
+  console.log('sentVsSeen Data', data)
   return {
     type: ActionTypes.UPDATE_SENT_VS_SEEN,
     data
