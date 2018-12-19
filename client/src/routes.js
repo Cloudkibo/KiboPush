@@ -143,7 +143,7 @@ function redirectAuthUsers (nextState, replace) {
       })
     }
     replace({
-      pathname: '/dashboard',
+      pathname: '/createLandingPage',
       state: { nextPathname: nextState.location.pathname }
     })
   }
