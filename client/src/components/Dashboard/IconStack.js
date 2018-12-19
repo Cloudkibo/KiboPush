@@ -9,10 +9,10 @@ import { Link } from 'react-router'
 class IconStack extends React.Component {
   render () {
     return (
-      <Link to={{pathname: this.props.path, state: this.props.state}}>
+      <Link to={{pathname: this.props.path, state: this.props.state}} style={{color: '#575962'}}>
         <div className='m-widget21__item' style={{display: 'flex'}}>
           <span className='m-widget21__icon'>
-            <a className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
+            <a className={`btn btn-${this.props.iconStyle} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill`}>
               <i className={`${this.props.icon} m--font-light`} />
             </a>
           </span>
