@@ -107,24 +107,26 @@ class ProgressBox extends React.Component {
           <div className='m-portlet__body'>
             <div className='tab-content'>
               <div className='row'>
-                <div className='col-4' style={{margin: '10px'}}>
+                <div className='col-6'>
                   <div className='row'>
-                    <div className='col-2' style={{minWidth: '150px'}}>
+                    <div className='col-6' style={{minWidth: '150px'}}>
                       <IconStack
                         path='/subscribers'
                         state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'subscribed'}}
                         icon='flaticon-user-ok'
                         title={this.props.selectedPage ? this.props.selectedPage.subscribers : this.props.firstPage.subscribers}
                         subtitle='Subscribes'
+                        iconStyle='brand'
                       />
                     </div>
-                    <div className='col-2' style={{minWidth: '150px'}}>
+                    <div className='col-6' style={{minWidth: '150px'}}>
                       <IconStack
                         path='/subscribers'
                         state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'unsubscribed'}}
                         icon='flaticon-users'
                         title={this.props.selectedPage ? this.props.selectedPage.unsubscribes : this.props.firstPage.unsubscribes}
                         subtitle='Unsubscribes'
+                        iconStyle='warning'
                       />
                     </div>
                   </div>
@@ -135,13 +137,14 @@ class ProgressBox extends React.Component {
                     progressStyle='brand'
                   />
                 </div>
-                <div className='col-2' style={{margin: '10px 50px 0px 50px'}}>
+                <div className='col-2'>
                   <IconStack
                     path='/broadcasts'
                     state={{}}
                     icon='flaticon-paper-plane'
                     title={this.props.data.broadcast.broadcastSentCount !== null ? this.props.data.broadcast.broadcastSentCount : 0}
                     subtitle='Broadcasts'
+                    iconStyle='success'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
@@ -150,13 +153,14 @@ class ProgressBox extends React.Component {
                     progressStyle='success'
                   />
                 </div>
-                <div className='col-2' style={{margin: '10px'}}>
+                <div className='col-2'>
                   <IconStack
                     path='/poll'
                     state={{}}
                     icon='flaticon-graphic-2'
                     title={this.props.data.poll.pollSentCount !== null ? this.props.data.poll.pollSentCount : 0}
                     subtitle='Polls'
+                    iconStyle='danger'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
@@ -171,13 +175,14 @@ class ProgressBox extends React.Component {
                     progressStyle='danger'
                   />
                 </div>
-                <div className='col-2' style={{margin: '10px'}}>
+                <div className='col-2'>
                   <IconStack
                     path='/surveys'
                     state={{}}
                     icon='flaticon-statistics'
                     title={this.props.data.survey.surveySentCount !== null ? this.props.data.survey.surveySentCount : 0}
                     subtitle='Surveys'
+                    iconStyle='accent'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
