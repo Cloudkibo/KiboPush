@@ -9,7 +9,7 @@ class ProgressBar extends React.Component {
   render () {
     return (
       <div className='row'>
-        <div className='m-widget15'>
+        <div className='col-12 m-widget15'>
           <div className='m-widget15__item'>
             <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
               {this.props.rate}
@@ -18,7 +18,7 @@ class ProgressBar extends React.Component {
               {this.props.label}
             </span>
             <div className='m--space-10' />
-            <div className='progress m-progress--sm' style={{height: '6px', minWidth: '300px'}}>
+            <div className='progress m-progress--sm' style={{height: '6px'}}>
               <div className={`progress-bar bg-${this.props.progressStyle}`} role='progressbar' style={{width: this.props.rate}} aria-valuemin='0' aria-valuemax='100' />
             </div>
           </div>

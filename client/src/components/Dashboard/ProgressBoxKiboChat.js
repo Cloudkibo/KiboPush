@@ -136,7 +136,7 @@ class ProgressBox extends React.Component {
                 <div className='col-3'>
                   <IconStack
                     path='/liveChat'
-                    state={{}}
+                    state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage}}
                     icon='flaticon-chat-1'
                     title={this.props.data.sessions.count !== null ? this.props.data.sessions.count : 0}
                     subtitle='Sessions'
@@ -152,7 +152,7 @@ class ProgressBox extends React.Component {
                 <div className='col-3'>
                   <IconStack
                     path='/bots'
-                    state={{}}
+                    state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage}}
                     icon='flaticon-questions-circular-button'
                     title={this.props.data.bots.count !== null ? this.props.data.bots.count : 0}
                     subtitle='Bot Queries'
