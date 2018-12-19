@@ -103,24 +103,26 @@ class ProgressBox extends React.Component {
           <div className='m-portlet__body'>
             <div className='tab-content'>
               <div className='row'>
-                <div className='col-6' style={{margin: '10px'}}>
+                <div className='col-6'>
                   <div className='row'>
-                    <div className='col-3' style={{minWidth: '150px'}}>
+                    <div className='col-6' style={{minWidth: '150px'}}>
                       <IconStack
                         path='/subscribers'
                         state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'subscribed'}}
                         icon='flaticon-user-ok'
                         title={this.props.selectedPage ? this.props.selectedPage.subscribers : this.props.firstPage.subscribers}
                         subtitle='Subscribes'
+                        iconStyle='brand'
                       />
                     </div>
-                    <div className='col-3' style={{minWidth: '150px'}}>
+                    <div className='col-6' style={{minWidth: '150px'}}>
                       <IconStack
                         path='/subscribers'
                         state={{page: this.props.selectedPage ? this.props.selectedPage : this.props.firstPage, filterStatus: 'unsubscribed'}}
                         icon='flaticon-users'
                         title={this.props.selectedPage ? this.props.selectedPage.unsubscribes : this.props.firstPage.unsubscribes}
                         subtitle='Unsubscribes'
+                        iconStyle='warning'
                       />
                     </div>
                   </div>
@@ -131,13 +133,14 @@ class ProgressBox extends React.Component {
                     progressStyle='brand'
                   />
                 </div>
-                <div className='col-3' style={{margin: '10px 50px 0px 50px'}}>
+                <div className='col-3'>
                   <IconStack
                     path='/liveChat'
                     state={{}}
                     icon='flaticon-chat-1'
                     title={this.props.data.sessions.count !== null ? this.props.data.sessions.count : 0}
                     subtitle='Sessions'
+                    iconStyle='success'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
@@ -146,13 +149,14 @@ class ProgressBox extends React.Component {
                     progressStyle='success'
                   />
                 </div>
-                <div className='col-3' style={{margin: '10px'}}>
+                <div className='col-3'>
                   <IconStack
                     path='/bots'
                     state={{}}
                     icon='flaticon-questions-circular-button'
                     title={this.props.data.bots.count !== null ? this.props.data.bots.count : 0}
                     subtitle='Bot Queries'
+                    iconStyle='danger'
                   />
                   <div className='m--space-30' />
                   <ProgressBar
