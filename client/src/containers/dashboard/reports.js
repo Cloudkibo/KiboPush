@@ -12,6 +12,7 @@ class Reports extends React.Component {
     }
   }
   render () {
+    const url = window.location.hostname
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
         <div className='m-portlet m-portlet--full-height '>
@@ -54,10 +55,22 @@ class Reports extends React.Component {
                   <CartesianGrid strokeDasharray='3 3' />
                   <Tooltip />
                   <Legend />
-                  <Line type='monotone' dataKey='broadcastscount' name='Broadcasts' stroke='#8884d8' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='pollscount' name='Polls' stroke='#82ca9d' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='surveyscount' name='Surveys' stroke='#FF7F50' activeDot={{r: 8}} />
-                  <Line type='monotone' dataKey='sessionscount' name='Sessions' stroke='#A11644' activeDot={{r: 8}} />
+                  {
+                    url.includes('kiboengage.cloudkibo.com') &&
+                    <Line type='monotone' dataKey='broadcastscount' name='Broadcasts' stroke='#8884d8' activeDot={{r: 8}} />
+                  }
+                  {
+                    url.includes('kiboengage.cloudkibo.com') &&
+                    <Line type='monotone' dataKey='pollscount' name='Polls' stroke='#82ca9d' activeDot={{r: 8}} />
+                  }
+                  {
+                    url.includes('kiboengage.cloudkibo.com') &&
+                    <Line type='monotone' dataKey='surveyscount' name='Surveys' stroke='#FF7F50' activeDot={{r: 8}} />
+                  }
+                  {
+                    url.includes('kibochat.cloudkibo.com') &&
+                    <Line type='monotone' dataKey='sessionscount' name='Sessions' stroke='#A11644' activeDot={{r: 8}} />
+                  }
                 </LineChart>
               </center>
             </div>
