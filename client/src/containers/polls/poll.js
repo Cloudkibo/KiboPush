@@ -242,6 +242,7 @@ class Poll extends React.Component {
   }
   render () {
     console.log('poll props', this.props)
+    console.log('polls local state', this.state)
     var alertOptions = {
       offset: 75,
       position: 'top right',
