@@ -7,8 +7,9 @@
 import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import { connect } from 'react-redux'
-import CardBoxes from '../../components/Dashboard/CardBoxes'
-import ProgressBox from '../../components/Dashboard/ProgressBox'
+import CardBoxesContainer from '../../components/Dashboard/CardBoxesContainer'
+import ProgressBoxKiboEngage from '../../components/Dashboard/ProgressBoxKiboEngage'
+import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
 import { loadDashboardData, sentVsSeen, loadGraphData, loadTopPages } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
@@ -426,6 +427,7 @@ class Dashboard extends React.Component {
       transition: 'scale'
     }
     console.log('this.props.dashboard', this.props.dashboard)
+    const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {
@@ -514,13 +516,14 @@ class Dashboard extends React.Component {
             <div className='row'>
               {
                 this.props.dashboard &&
-                <CardBoxes data={this.props.dashboard} />
+                <CardBoxesContainer data={this.props.dashboard} />
               }
             </div>
             <div className='row'>
               {
-              this.props.pages && this.props.sentseendata &&
-              <ProgressBox pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
+              this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com')
+              ? <ProgressBoxKiboEngage pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
+              : <ProgressBoxKiboChat pages={this.props.pages} firstPage={this.props.pages[0]} data={this.props.sentseendata} changePage={this.changePage} selectedPage={this.props.currentPage} />
             }
             </div>
             {

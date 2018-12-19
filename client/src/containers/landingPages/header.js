@@ -18,9 +18,9 @@ class Header extends React.Component {
           </div>
         </div>
         <div className='m-portlet__head-tools'>
-          <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+          <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onSave}>
             <span>Save</span>
-          </Link>
+          </button>
           <Link to='/createLandingPage' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}}>
             <span>Deactivate</span>
           </Link>

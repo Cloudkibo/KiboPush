@@ -36,6 +36,7 @@ export function updateTopPages (data) {
   }
 }
 export function updateSentVsSeen (data) {
+  console.log('sentVsSeen Data', data)
   return {
     type: ActionTypes.UPDATE_SENT_VS_SEEN,
     data
@@ -54,7 +55,10 @@ export function sentVsSeen (pageId) {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
     callApi(`dashboard/sentVsSeen/${pageId}`)
-      .then(res => dispatch(updateSentVsSeen(res.payload)))
+      .then(res => {
+        console.log('sentVsSeen response', res)
+        dispatch(updateSentVsSeen(res.payload))
+      })
   }
 }
 export function loadGraphData (days) {
