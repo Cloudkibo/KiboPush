@@ -117,8 +117,8 @@ class MessageUs extends React.Component {
                   this.state.showbutton === true &&
                   <div>
                     <div className='input-group'>
-                      <label>Add the Message Us Widget to your website by copying the code below in your website HTML. This widget will help you
-                      start a conversation and send the person to Messenger.</label>
+                      <span>Add the Message Us Widget to your website by copying the code below in your website HTML. This widget will help you
+                      start a conversation and send the person to Messenger.</span>
                       <br />
                       <br />
                       <h5 className='m-portlet__head-text'>
