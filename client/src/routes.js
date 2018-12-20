@@ -272,7 +272,7 @@ const routes = (
     <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
-    <Route pathe='/messageUs' component={MessageUs} onEnter={requireAuth} />
+    <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
   </Route>
 
 )
