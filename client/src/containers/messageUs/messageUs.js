@@ -6,10 +6,9 @@ import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import {
-  loadMyPagesList
-} from '../../redux/actions/pages.actions'
-class SubscribeToMessenger extends React.Component {
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
+
+class MessageUs extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.onChange = this.onChange.bind(this)
@@ -17,7 +16,7 @@ class SubscribeToMessenger extends React.Component {
     this.onChangeValue = this.onChangeValue.bind(this)
     this.props.loadMyPagesList()
     this.state = {
-      'buttonText': 'Send to Messenger',
+      'buttonText': 'Message Us',
       'buttonColor': 'blue',
       'fontColor': 'white',
       'pageid': '',
@@ -44,7 +43,6 @@ class SubscribeToMessenger extends React.Component {
       // user has no connected pages
       this.setState({
         'showbutton': false
-
       })
     }
   }
@@ -84,7 +82,7 @@ class SubscribeToMessenger extends React.Component {
   }
 
   componentDidMount () {
-    document.title = 'KiboPush | Subscribe to Messenger'
+    document.title = 'KiboPush | Message Us'
   }
   render () {
     return (
@@ -96,7 +94,7 @@ class SubscribeToMessenger extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    HTML Widget
+                    Message Us Widget
                   </span>
                 </li>
               </ul>
@@ -121,13 +119,13 @@ class SubscribeToMessenger extends React.Component {
                       this.state.showbutton === true &&
                         <div>
                           <div className='input-group'>
-                            <label>Add the facebook messenger button to your website by copying the code below in your website's HTML. This button will send your facebook page
-                            link to your followers on the messenger.</label>
+                            <label>Add the Message Us Widget to your website by copying the code below in your website's HTML. This widget will help you
+                             start a conversation and send the person to Messenger.</label>
                             <br />
                             <br />
-                            <h3 className='m-portlet__head-text'>
-                              Get HTML code
-                            </h3>
+                            <h5 className='m-portlet__head-text'>
+                              Get Widget code
+                            </h5>
                             <br />
                           </div>
                           { this.props.pages &&
@@ -154,9 +152,9 @@ class SubscribeToMessenger extends React.Component {
                           <br />
                           <br />
                           <div className='alert alert-success'>
-                            <h4 className='block'>Code for Send To Messenger
-                            Button</h4>
-                          To embed the facebook messenger button on your
+                            <h4 className='block'>Code for Message Us
+                            Widget</h4>
+                          To embed the Message Us widget on your
                           website, you
                           need to put this line inside &lt;body&gt; tag of HTML
                           of your
@@ -228,9 +226,7 @@ class SubscribeToMessenger extends React.Component {
                               </div>
                             </div>
                           </div>
-
                         </div>
-
                     }
                   </div>
                 </div>
@@ -245,11 +241,10 @@ class SubscribeToMessenger extends React.Component {
 function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages)
-
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({loadMyPagesList: loadMyPagesList}, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SubscribeToMessenger)
+export default connect(mapStateToProps, mapDispatchToProps)(MessageUs)

@@ -39,6 +39,7 @@ class Sidebar extends Component {
       segmentSubscribers: true,
       commentCapture: true,
       landingPages: true,
+      messageUs: true,
       messengerCode: true,
       smartReplies: false,
       templates: false,
@@ -267,6 +268,7 @@ class Sidebar extends Component {
             {this.showMessengerCode()}
             {this.showDiscoverTabs()}
             {this.showLandingPages()}
+            {this.showMessageUs()}
           </ul>
         </div>
       </li>
@@ -555,6 +557,28 @@ class Sidebar extends Component {
               </i>
               <span className='m-menu__link-text'>
                 Landing Pages
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
+
+  showMessageUs () {
+    if (this.props.user) {
+      // include user persmissions
+      if (this.state.messageUs) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/messageUs' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                Message Us
               </span>
             </Link>
           </li>
