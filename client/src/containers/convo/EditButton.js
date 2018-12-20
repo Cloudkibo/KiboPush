@@ -26,7 +26,7 @@ class EditButton extends React.Component {
       openUnsubscribe: this.props.data.button.openUnsubscribe,
       shareButton: false,
       openWebView: this.props.data.button.messenger_extensions,
-      webviewurl: this.props.data.button.webviewurl,
+      webviewurl: this.props.data.button.url,
       webviewsize: this.props.data.button.webviewsize,
       webviewsizes: ['COMPACT ', 'TALL', 'FULL']
     }
@@ -162,7 +162,7 @@ class EditButton extends React.Component {
         title: this.state.title, // User defined label
         messenger_extensions: true,
         webview_height_ratio: this.state.webviewsize,
-        pageId: this.props.data.button.pageId
+        pageId: this.props.pageId
       }
       this.props.editButton(data, this.props.onEdit)
     }
@@ -225,7 +225,7 @@ class EditButton extends React.Component {
               <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
               <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
               {
-                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.webviewurl &&
+                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView &&
                 <div>
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
