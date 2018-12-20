@@ -423,7 +423,7 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.module === 'welcome') {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
-      var res = checkConditions([this.props.location.state.pages], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
+      var res = checkConditions(this.props.location.state.pages, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
