@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { editButton, deleteButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { Link } from 'react-router'
 
 class EditButton extends React.Component {
   constructor (props, context) {
@@ -23,7 +24,11 @@ class EditButton extends React.Component {
       openWebsite: this.props.data.button.openWebsite,
       openSubscribe: this.props.data.button.openSubscribe,
       openUnsubscribe: this.props.data.button.openUnsubscribe,
-      shareButton: false
+      shareButton: false,
+      openWebView: this.props.data.button.messenger_extensions,
+      webviewurl: this.props.data.button.webviewurl,
+      webviewsize: this.props.data.button.webviewsize,
+      webviewsizes: ['COMPACT ', 'TALL', 'FULL']
     }
     this.handleClick = this.handleClick.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -40,8 +45,11 @@ class EditButton extends React.Component {
     this.onSequenceChange = this.onSequenceChange.bind(this)
     this.shareButton = this.shareButton.bind(this)
     this.closeShareButton = this.closeShareButton.bind(this)
+    this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
+    this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
+    this.closeWebview = this.closeWebview.bind(this)
+    this.showWebView = this.showWebView.bind(this)
   }
-
   componentDidMount () {
     if (this.props.data.button.type === 'postback') {
       if (this.props.data.button.payload.action === 'subscribe') {
@@ -57,7 +65,25 @@ class EditButton extends React.Component {
   showWebsite () {
     this.setState({openWebsite: true})
   }
-
+  onChangeWebviewSize (event) {
+    if (event.target.value !== -1) {
+      this.setState({webviewsize: event.target.value})
+    }
+  }
+  showWebView () {
+    this.setState({openWebView: true})
+  }
+  closeWebview () {
+    this.setState({openWebView: false})
+  }
+  changeWebviewUrl (e) {
+    if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
+    }
+    this.setState({webviewurl: e.target.value})
+  }
   showSubscribe () {
     this.setState({openSubscribe: true})
   }
@@ -128,6 +154,17 @@ class EditButton extends React.Component {
         }
         this.props.editButton(data, this.props.onEdit)
       }
+    } else if (!this.state.webviewurl) {
+      let data = {
+        id: this.props.index,
+        type: 'web_url',
+        url: this.state.webviewurl, // User defined link,
+        title: this.state.title, // User defined label
+        messenger_extensions: true,
+        webview_height_ratio: this.state.webviewsize,
+        pageId: this.props.data.button.pageId
+      }
+      this.props.editButton(data, this.props.onEdit)
     }
     this.setState({
       openPopover: false
@@ -135,7 +172,7 @@ class EditButton extends React.Component {
   }
 
   changeTitle (event) {
-    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.webviewurl) || isWebURL(this.state.url)) && event.target.value !== '') {
       this.setState({disabled: false})
     } else {
       this.setState({disabled: true})
@@ -165,7 +202,9 @@ class EditButton extends React.Component {
       sequenceValue: '',
       openWebsite: false,
       openSubscribe: false,
-      openUnsubscribe: false
+      openUnsubscribe: false,
+      webviewurl: '',
+      webviewsize: 'FULL'
     })
     let temp = this.props.data.button.newUrl.split('/')
     let id = temp[temp.length - 1]
@@ -186,10 +225,13 @@ class EditButton extends React.Component {
               <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
               <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
               {
-                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton &&
+                !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.webviewurl &&
                 <div>
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                  </div>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open webview</h7>
                   </div>
                   <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
                     <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
@@ -221,6 +263,27 @@ class EditButton extends React.Component {
                 this.state.shareButton &&
                 <div className='card'>
                   <h7 className='card-header'>Share this message <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeShareButton} /></h7>
+                </div>
+              }
+              {
+                this.state.openWebView &&
+                <div className='card'>
+                  <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    <div>
+                      <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
+                    </div>
+                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
+                    <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                    <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
+                      {
+                        this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
+                          <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
                 </div>
               }
               {
