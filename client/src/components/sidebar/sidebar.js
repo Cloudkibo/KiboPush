@@ -44,7 +44,8 @@ class Sidebar extends Component {
       smartReplies: false,
       templates: false,
       sequenceMessaging: false,
-      waitingResponse: false
+      waitingResponse: false,
+      isKiboChat: false
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -54,7 +55,7 @@ class Sidebar extends Component {
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       console.log('kibochat')
-      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false})
+      this.setState({livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, isKiboChat: false})
     } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       console.log('kiboEngage')
       this.setState({ broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false })
@@ -170,6 +171,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastingItems () {
+  if(this.state.isKiboChat) {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
         <a className='m-menu__link m-menu__toggle'>
@@ -196,6 +198,12 @@ class Sidebar extends Component {
         </div>
       </li>
     )
+  }
+    else {
+    return (
+    <div></div>
+  )
+  }
   }
 
   showLiveChatItem () {
