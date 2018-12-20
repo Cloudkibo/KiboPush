@@ -162,7 +162,7 @@ class EditButton extends React.Component {
         title: this.state.title, // User defined label
         messenger_extensions: true,
         webview_height_ratio: this.state.webviewsize,
-        pageId: this.props.pages[0]
+        pageId: this.props.data.button.pageId
       }
       this.props.editButton(data, this.props.onEdit)
     }

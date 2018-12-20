@@ -196,11 +196,11 @@ class Text extends React.Component {
         }) : ''}
         {this.props.removeState && this.state.button.length < 3
         ? <div>
-          <Button button_id={this.props.id} pages={this.props.pages} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
+          <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         </div>
         : <div>
           {this.state.button.length < 1 &&
-            <Button button_id={this.props.id} pages={this.props.pages} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
+            <Button button_id={this.props.id} pageId={this.props.pageId} module={this.props.module} onAdd={this.addButton} styling={this.state.styling} />
         }
         </div>
       }

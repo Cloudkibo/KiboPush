@@ -61,7 +61,8 @@ class CreateConvo extends React.Component {
       resetTarget: false,
       setTarget: false,
       showInvalidSession: false,
-      invalidSessionMessage: ''
+      invalidSessionMessage: '',
+      pageId: ''
     }
     props.getuserdetails()
     props.getFbAppId()
@@ -186,6 +187,10 @@ class CreateConvo extends React.Component {
         comp.setState({showMessengerModal: false})
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
       }
+    })
+    let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
+    this.setState({
+      pageId: pageId
     })
   }
 
@@ -641,7 +646,7 @@ class CreateConvo extends React.Component {
                             <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                               <div className='row' >
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' id='text' onClick={() => { var temp = this.state.list; this.msg.info('New Text Component Added'); this.setState({list: [...temp, <Text id={timeStamp} pageId={this.state.pageId} key={timeStamp} handleText={this.handleText} onRemove={this.removeComponent} removeState />]}); this.handleText({id: timeStamp, text: '', button: []}) }}>
                                     <div className='align-center'>
                                       <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: 25}} />
                                       <h6>Text</h6>
@@ -657,7 +662,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Card Component Added'); this.setState({list: [...temp, <Card id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleCard={this.handleCard} onRemove={this.removeComponent} singleCard />]}); this.handleCard({id: timeStamp, componentType: 'card', title: '', description: '', fileurl: '', buttons: []}) }}>
                                     <div className='align-center'>
                                       <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: 25}} />
                                       <h6>Card</h6>
@@ -665,7 +670,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Gallery Component Added'); this.setState({list: [...temp, <Gallery id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleGallery={this.handleGallery} onRemove={this.removeComponent} />]}); this.handleGallery({id: timeStamp, componentType: 'gallery', cards: []}) }}>
                                     <div className='align-center'>
                                       <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Gallery' style={{maxHeight: 25}} />
                                       <h6>Gallery</h6>
@@ -699,7 +704,7 @@ class CreateConvo extends React.Component {
                                   </div>
                                 </div>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New List Component Added'); this.setState({list: [...temp, <List id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleList={this.handleList} onRemove={this.removeComponent} />]}); this.handleList({id: timeStamp, componentType: 'list', listItems: [], topElementStyle: 'compact'}) }}>
                                     <div className='align-center'>
                                       <img src='https://cdn.cloudkibo.com/public/icons/list.png' alt='List' style={{maxHeight: 25}} />
                                       <h6>List</h6>
@@ -709,7 +714,7 @@ class CreateConvo extends React.Component {
                               </div>
                               <div className='row'>
                                 <div className='col-3'>
-                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} pages={this.props.location.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
+                                  <div className='ui-block hoverbordercomponent' onClick={() => { var temp = this.state.list; this.msg.info('New Media Component Added'); this.setState({list: [...temp, <Media id={timeStamp} pageId={this.state.pageId} pages={this.props.location.state.pages} key={timeStamp} handleMedia={this.handleMedia} onRemove={this.removeComponent} />]}); this.handleMedia({id: timeStamp, componentType: 'media', fileurl: '', buttons: []}) }}>
                                     <div className='align-center'>
                                       <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: 25}} />
                                       <h6>Media</h6>
