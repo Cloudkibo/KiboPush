@@ -263,6 +263,11 @@ class Settings extends React.Component {
     } else {
       this.setState({ isDisableInput: true, isDisableButton: true })
     }
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'whitelistDomains') {
+        this.setWhiteListDomains()
+      }
+    }
   }
   componentDidUpdate () {
     console.log('in componentDidUpdate')

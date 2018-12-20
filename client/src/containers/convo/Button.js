@@ -6,6 +6,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { Link } from 'react-router'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { addButton } from '../../redux/actions/broadcast.actions'
 import { isWebURL } from './../../utility/utils'
@@ -18,12 +19,16 @@ class Button extends React.Component {
       openPopover: false,
       title: '',
       url: '',
+      webviewurl: '',
       disabled: true,
       openWebsite: false,
+      openWebView: false,
       openSubscribe: false,
       openUnsubscribe: false,
       sequenceValue: '',
-      shareButton: false
+      shareButton: false,
+      webviewsize: 'FULL',
+      webviewsizes: ['COMPACT ', 'TALL', 'FULL']
     }
     props.fetchAllSequence()
     this.handleClick = this.handleClick.bind(this)
@@ -33,14 +38,23 @@ class Button extends React.Component {
     this.changeUrl = this.changeUrl.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
     this.showWebsite = this.showWebsite.bind(this)
+    this.showWebView = this.showWebView.bind(this)
     this.showSubscribe = this.showSubscribe.bind(this)
     this.showUnsubscribe = this.showUnsubscribe.bind(this)
     this.closeWebsite = this.closeWebsite.bind(this)
+    this.closeWebview = this.closeWebview.bind(this)
     this.closeSubscribe = this.closeSubscribe.bind(this)
     this.closeUnsubscribe = this.closeUnsubscribe.bind(this)
     this.onSequenceChange = this.onSequenceChange.bind(this)
     this.shareButton = this.shareButton.bind(this)
     this.closeShareButton = this.closeShareButton.bind(this)
+    this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
+    this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
+  }
+  onChangeWebviewSize (event) {
+    if (event.target.value !== -1) {
+      this.setState({webviewsize: event.target.value})
+    }
   }
   shareButton () {
     this.setState({shareButton: true, disabled: false, title: 'Share'})
@@ -48,7 +62,9 @@ class Button extends React.Component {
   showWebsite () {
     this.setState({openWebsite: true})
   }
-
+  showWebView () {
+    this.setState({openWebView: true})
+  }
   showSubscribe () {
     this.setState({openSubscribe: true})
   }
@@ -56,7 +72,9 @@ class Button extends React.Component {
   showUnsubscribe () {
     this.setState({openUnsubscribe: true})
   }
-
+  closeWebview () {
+    this.setState({openWebView: false, webviewurl: '', disabled: true})
+  }
   closeWebsite () {
     this.setState({openWebsite: false, url: '', disabled: true})
   }
@@ -126,6 +144,20 @@ class Button extends React.Component {
         title: this.state.title
       }
       this.props.addButton(data, this.props.onAdd)
+    } else if (this.state.webviewurl !== '') {
+      let data = {
+        type: 'web_url',
+        url: this.state.webviewurl, // User defined link,
+        title: this.state.title, // User defined label
+        messenger_extensions: true,
+        webview_height_ratio: this.state.webviewsize,
+        pageId: this.props.pages[0],
+        module: {
+          type: this.props.module,
+          id: ''// messageId
+        }
+      }
+      this.props.addButton(data, this.props.onAdd)
     }
     // this.setState({
     //   openPopover: false
@@ -134,8 +166,10 @@ class Button extends React.Component {
       openPopover: false,
       title: '',
       url: '',
+      webviewurl: '',
       sequenceValue: '',
       openWebsite: false,
+      openWebView: false,
       openSubscribe: false,
       openUnsubscribe: false,
       shareButton: false
@@ -143,7 +177,7 @@ class Button extends React.Component {
   }
 
   changeTitle (event) {
-    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url)) && event.target.value !== '') {
+    if ((this.state.sequenceValue !== '' || isWebURL(this.state.url) || isWebURL(this.state.webviewurl)) && event.target.value !== '') {
       this.setState({disabled: false})
     } else if (this.state.shareButton && event.target.value !== '') {
       this.setState({disabled: false})
@@ -162,7 +196,14 @@ class Button extends React.Component {
     }
     this.setState({url: event.target.value})
   }
-
+  changeWebviewUrl (e) {
+    if (isWebURL(this.state.webviewurl) && this.state.title !== '') {
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
+    }
+    this.setState({webviewurl: e.target.value})
+  }
   render () {
     return (
       <div className='ui-block hoverborder' style={this.props.styling} onClick={this.handleClick}>
@@ -180,10 +221,13 @@ class Button extends React.Component {
                 <input type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' disabled={this.state.shareButton} />
                 <h6 style={{marginTop: '10px'}}>When this button is pressed:</h6>
                 {
-                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton &&
+                  !this.state.openWebsite && !this.state.openSubscribe && !this.state.openUnsubscribe && !this.state.shareButton && !this.state.openWebView &&
                   <div>
                     <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                    </div>
+                    <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
+                      <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
                     </div>
                     <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.shareButton}>
                       <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-share' /> Add Share button</h7>
@@ -208,6 +252,27 @@ class Button extends React.Component {
                     <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <input type='text' value={this.state.url} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                    </div>
+                  </div>
+                }
+                {
+                  this.state.openWebView &&
+                  <div className='card'>
+                    <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                    <div style={{padding: '10px'}} className='card-block'>
+                      <div>
+                        <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
+                      </div>
+                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
+                      <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                      <label className='form-label col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                      <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
+                        {
+                          this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
+                            <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
+                          ))
+                        }
+                      </select>
                     </div>
                   </div>
                 }
