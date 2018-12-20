@@ -151,11 +151,7 @@ class Button extends React.Component {
         title: this.state.title, // User defined label
         messenger_extensions: true,
         webview_height_ratio: this.state.webviewsize,
-        pageId: this.props.pageId,
-        module: {
-          type: this.props.module,
-          id: ''// messageId
-        }
+        pageId: this.props.pageId
       }
       this.props.addButton(data, this.props.onAdd)
     }
