@@ -13,10 +13,10 @@ const all = {
   root: path.normalize(`${__dirname}/../../..`),
 
   // Server port
-  port: process.env.PORT || 3001,
+  port: process.env.PORT || 3000,
 
   // Secure Server port
-  secure_port: process.env.SECURE_PORT || 8444,
+  secure_port: process.env.SECURE_PORT || 8443,
 
   // pubsubhubbub port
   pubsub_port: process.env.PUBSUB_PORT || 1337,
