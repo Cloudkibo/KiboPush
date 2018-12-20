@@ -121,6 +121,7 @@ import AbandonedCarts from './containers/abandoned_carts/abandonedCarts'
 import ConnectFBPages from './containers/signup/connectFbPages'
 import DiscoverTabs from './containers/GrowthTools/discoverTabs'
 import LandingPageMessage from './containers/landingPages/createMessage'
+import DemoSSA from './containers/demoSSA/demoSSA'
 
 import auth from './utility/auth.service'
 
@@ -273,6 +274,7 @@ const routes = (
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
     <Route path='/messageUs' component={MessageUs} onEnter={requireAuth} />
+    <Route path='/demoSSA' component={DemoSSA} />
   </Route>
 
 )
