@@ -86,151 +86,143 @@ class MessageUs extends React.Component {
   }
   render () {
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-          <div className='m-portlet__head'>
-            <div className='m-portlet__head-tools'>
-              <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
-                <li className='nav-item m-tabs__item'>
-                  <span className='nav-link m-tabs__link active'>
-                    <i className='flaticon-share m--hide' />
-                    Message Us Widget
-                  </span>
-                </li>
-              </ul>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-content'>
+          {this.state.showbutton !== true &&
+            <div
+              className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+              role='alert'>
+              <div className='m-alert__icon'>
+                <i className='flaticon-exclamation m--font-danger' />
+              </div>
+              <div className='m-alert__text'>
+                You do nott have any connected pages. Please click
+                <Link to='/addpages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect Facebook pages to get the widget code.
+              </div>
             </div>
-          </div>
-          <div className='tab-content'>
-            <div className='tab-pane active' id='m_user_profile_tab_1'>
-              <form className='m-form m-form--fit m-form--label-align-right'>
-                <div className='m-portlet__body'>
-                  {this.state.showbutton !== true &&
-                    <div className='form-group m-form__group row'>
-                      <div className='input-group'>
-                        <div className='alert alert-success'>
-                        You don't have any connected pages. Please click
-                        <Link to='/addpages' style={{color: 'blue', cursor: 'pointer'}}> here </Link> to connect facebook pages to get the HTML code.
+          }
+          <div className='m-portlet m-portlet--mobile'>
+            <div className='m-portlet__head'>
+              <div className='m-portlet__head-caption'>
+                <div className='m-portlet__head-title'>
+                  <h3 className='m-portlet__head-text'>
+                    Message Us Widget
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className='m-portlet__body'>
+              <div className='form-group m-form__group row'>
+                {
+                  this.state.showbutton === true &&
+                  <div>
+                    <div className='input-group'>
+                      <label>Add the Message Us Widget to your website by copying the code below in your website HTML. This widget will help you
+                      start a conversation and send the person to Messenger.</label>
+                      <br />
+                      <br />
+                      <h5 className='m-portlet__head-text'>
+                        Get Widget code
+                      </h5>
+                      <br />
+                    </div>
+                    { this.props.pages &&
+                      <div>
+                        <label>
+                          Choose Page
+                        </label>
+                        <div>
+                          <select
+                            className='form-control'
+                            onChange={this.onChangeValue}
+                          >
+                            { this.props.pages.map((page, i) => (
+                              (
+                                page.connected &&
+                                <option value={page.pageId} key={page.pageId}>{page.pageName}</option>
+                              )
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    }
+                    <br />
+                    <br />
+                    <div className='alert alert-success'>
+                      <h4 className='block'>Code for Message Us Widget</h4>
+                      To embed the Message Us widget on your website, you
+                      need to put this line inside &lt;body&gt; tag of HTML of your
+                      website&#39;s each page.
+                      <br /><br />
+                      <center>
+                        <code className='codeBox'>
+                          &lt;a class='btn'
+                          href="https://m.me/{this.state.pageid}"
+                          style='{'background:' + this.state.buttonColor +
+                          ';color: ' + this.state.fontColor +
+                          '; border-color: white;'}' &gt;&lt;i class="fa
+                          fa-facebook
+                          fa-lg" &gt; &lt;/i&gt;{this.state.buttonText} &lt;
+                          /a&gt;
+                        </code>
+                      </center>
+                      <br />
+                      Note: For css, we are using Bootstrap library. The
+                      class btn
+                      is defined in Bootrap css file.
+                      <br />
+                    </div>
+                    <div className='tab-content'>
+                      <div className='tab-pane active' id='home-1'
+                        role='tabpanel'
+                        aria-expanded='true'
+                        style={{display: 'flex', flexDirection: 'row'}}
+                      >
+                        <br />
+                        <div className='col-xl-6'>
+                          <div className='form-group'>
+                            <label htmlFor='colorbtn'> Choose Color</label>
+                            <select className='form-control' id='colorbtn'
+                              ref='colorbtn'
+                              onChange={this.handleChange.bind(this)}
+                            >
+                              <option value='blue'>Blue</option>
+                              <option value='white'>White</option>
+                            </select>
+                          </div>
+                          <div className='form-group'>
+                            <label htmlFor='textbtn'> Button Text</label>
+                            <input type='text' className='form-control'
+                              ref='textbtn'
+                              placeholder='Send on Messenger'
+                              id='textbtn' onChange={this.onChange}
+                            />
+                          </div>
+                        </div>
+                        <div className='col-xl-6'>
+                          <div className='form-group' style={{
+                            textAlign: 'center',
+                            border: 'dashed',
+                            height: '135px',
+                            padding: '20px',
+                            color: '#3c763d'
+                          }}>
+                            <label htmlFor='textbtn'> Button Preview</label>
+                            <br />
+                            <a className='btn' href='#' style={{
+                              'backgroundColor': this.state.buttonColor,
+                              'color': this.state.fontColor,
+                              'borderColor': this.state.fontColor
+                            }}>
+                              <i className='fa fa-facebook fa-lg' /> {this.state.buttonText}
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
-                }
-                  <div className='form-group m-form__group row'>
-                    {
-                      this.state.showbutton === true &&
-                        <div>
-                          <div className='input-group'>
-                            <label>Add the Message Us Widget to your website by copying the code below in your website's HTML. This widget will help you
-                             start a conversation and send the person to Messenger.</label>
-                            <br />
-                            <br />
-                            <h5 className='m-portlet__head-text'>
-                              Get Widget code
-                            </h5>
-                            <br />
-                          </div>
-                          { this.props.pages &&
-                          <div>
-                            <label>
-                              Choose Page
-                            </label>
-                            <div>
-                              <select
-                                className='form-control'
-                                onChange={this.onChangeValue}>
-                                { this.props.pages.map((page, i) => (
-                                (
-                                  page.connected &&
-                                  <option
-                                    value={page.pageId} key={page.pageId}>{page.pageName}</option>
-                                )
-                              ))
-                              }
-                              </select>
-                            </div>
-                          </div>
-                        }
-                          <br />
-                          <br />
-                          <div className='alert alert-success'>
-                            <h4 className='block'>Code for Message Us
-                            Widget</h4>
-                          To embed the Message Us widget on your
-                          website, you
-                          need to put this line inside &lt;body&gt; tag of HTML
-                          of your
-                          website&#39;s each page.
-                          <br /><br />
-                            <center>
-                              <code className='codeBox'>
-                              &lt;a class='btn'
-                              href="https://m.me/{this.state.pageid}"
-                              style='{'background:' + this.state.buttonColor +
-                            ';color: ' + this.state.fontColor +
-                            '; border-color: white;'}' &gt;&lt;i class="fa
-                              fa-facebook
-                              fa-lg" &gt; &lt;/i&gt;{this.state.buttonText} &lt;
-                              /a&gt;
-                            </code>
-                            </center>
-                            <br />
-                          Note: For css, we are using Bootstrap library. The
-                          class btn
-                          is defined in Bootrap css file.
-                          <br />
-                          </div>
-
-                          {/* Below one is working, but it isn't from new template */}
-                          <div className='tab-content'>
-                            <div className='tab-pane active' id='home-1'
-                              role='tabpanel'
-                              aria-expanded='true'
-                              style={{display: 'flex', flexDirection: 'row'}}>
-                              <br />
-                              <div className='col-xl-6'>
-                                <div className='form-group'>
-                                  <label htmlFor='colorbtn'> Choose Color</label>
-                                  <select className='form-control' id='colorbtn'
-                                    ref='colorbtn'
-                                    onChange={this.handleChange.bind(this)}>
-                                    <option value='blue'>Blue</option>
-                                    <option value='white'>White</option>
-                                  </select>
-                                </div>
-                                <div className='form-group'>
-                                  <label htmlFor='textbtn'> Button Text</label>
-                                  <input type='text' className='form-control'
-                                    ref='textbtn'
-                                    placeholder='Send on Messenger'
-                                    id='textbtn' onChange={this.onChange} />
-                                </div>
-                              </div>
-                              <div className='col-xl-6'>
-                                <div className='form-group' style={{
-                                  textAlign: 'center',
-                                  border: 'dashed',
-                                  height: '135px',
-                                  padding: '20px',
-                                  color: '#3c763d'
-                                }}>
-                                  <label htmlFor='textbtn'> Button Preview</label>
-                                  <br />
-                                  <a className='btn' href='#' style={{
-                                    'backgroundColor': this.state.buttonColor,
-                                    'color': this.state.fontColor,
-                                    'borderColor': this.state.fontColor
-                                  }}>
-                                    <i
-                                      className='fa fa-facebook fa-lg' /> {this.state.buttonText}
-                                  </a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                    }
                   </div>
-                </div>
-              </form>
+                }
+              </div>
             </div>
           </div>
         </div>
