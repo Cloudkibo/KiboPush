@@ -12,7 +12,6 @@ import ResetPassword from './resetPassword'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
 import ShowPermissions from './showPermissions'
-import SubscribeToMessenger from './subscribeToMessenger'
 import ConnectFb from './connectFb'
 import Billing from './billing'
 import PaymentMethods from './paymentMethods'
@@ -67,7 +66,6 @@ class Settings extends React.Component {
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
-    this.setSubscribeToMessenger = this.setSubscribeToMessenger.bind(this)
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
     this.setBilling = this.setBilling.bind(this)
     this.setWebhook = this.setWebhook.bind(this)
@@ -223,11 +221,6 @@ class Settings extends React.Component {
       openTab: 'chatWidget'
     })
   }
-  setSubscribeToMessenger () {
-    this.setState({
-      openTab: 'subscribeToMessenger'
-    })
-  }
   setWelcomeMessage () {
     this.setState({
       openTab: 'welcomeMessage'
@@ -277,7 +270,7 @@ class Settings extends React.Component {
   }
   initializeSwitch (state) {
     console.log('initializingSwitch settings')
-    //console.log('state', state)
+    // console.log('state', state)
     var self = this
    /* /* eslint-disable */
    // $("[name='switch']").bootstrapSwitch({
@@ -286,18 +279,18 @@ class Settings extends React.Component {
      // offText: 'Disabled',
      // offColor: 'danger',
      // state: state
-    //})
+    // })
     /* eslint-disable */
    // $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
-      self.setState({buttonState: state})
-      if (state === true) {
-        self.setState({disable: false, buttonState: true})
-        self.props.enable({company_id: self.props.user._id})
-      } else {
-        self.setState({disable: true, buttonState: false})
-        self.props.disable({company_id: self.props.user._id})
-      }
+    self.setState({buttonState: state})
+    if (state === true) {
+      self.setState({disable: false, buttonState: true})
+      self.props.enable({company_id: self.props.user._id})
+    } else {
+      self.setState({disable: true, buttonState: false})
+      self.props.disable({company_id: self.props.user._id})
+    }
    // })
   }
   handleChange () {
@@ -312,19 +305,19 @@ class Settings extends React.Component {
      // offText: 'Disabled',
      // offColor: 'danger',
      // state: state
-    //})
+    // })
     /* eslint-disable */
    // $('input[name="switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
-      //self.setState({buttonState: !this.state.buttonState })
-      console.log('buttonState', this.state.buttonState)
-      if (this.state.buttonState === false) {
-        this.setState({disable: false, buttonState: true})
-        this.props.enable({company_id: this.props.user._id})
-      } else {
-        this.setState({disable: true, buttonState: false})
-        this.props.disable({company_id: this.props.user._id})
-      }
+      // self.setState({buttonState: !this.state.buttonState })
+    console.log('buttonState', this.state.buttonState)
+    if (this.state.buttonState === false) {
+      this.setState({disable: false, buttonState: true})
+      this.props.enable({company_id: this.props.user._id})
+    } else {
+      this.setState({disable: true, buttonState: false})
+      this.props.disable({company_id: this.props.user._id})
+    }
    // })
   }
   initializeSwitchNGP (state) {
@@ -596,12 +589,6 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Welcome Message</span>
                       </a>
                     </li>
-                    <li className='m-nav__item'>
-                      <a className='m-nav__link' onClick={this.setSubscribeToMessenger} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-alarm' />
-                        <span className='m-nav__link-text'>HTML Widget</span>
-                      </a>
-                    </li>
                     { this.props.user && this.props.user.role === 'buyer' && (this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'all') &&
                     <li className='m-nav__item'>
                       {
@@ -734,12 +721,12 @@ class Settings extends React.Component {
                         <div className='form-group m-form__group row'>
                           <div className='col-lg-8 col-md-8 col-sm-12' />
                           <div className='col-lg-4 col-md-4 col-sm-4'>
-                                <span className="m-switch m-switch--icon m-switch--primary">
-												<label>
-						                        <input type='checkbox' data-switch='true' checked={this.state.buttonState} onChange={this.handleChange} />
-						                        <span></span>
-						                        </label>
-						                    </span>
+                            <span className='m-switch m-switch--icon m-switch--primary'>
+                              <label>
+                                <input type='checkbox' data-switch='true' checked={this.state.buttonState} onChange={this.handleChange} />
+                                <span />
+                              </label>
+                            </span>
                           </div>
                         </div>
                         <br /><br />
@@ -852,9 +839,6 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'greetingMessage' &&
               <GreetingMessage user={this.props.user} />
-            }
-            { this.state.openTab === 'subscribeToMessenger' &&
-              <SubscribeToMessenger />
             }
             { this.state.openTab === 'welcomeMessage' &&
               <WelcomeMessage />

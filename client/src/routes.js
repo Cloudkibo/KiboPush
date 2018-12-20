@@ -4,7 +4,7 @@ import React from 'react'
 import App from './sub.app.js'
 import Home from './containers/home'
 import Login from './containers/login/new'
-// import LoginSignup from './containers/login/loginSignup'
+import MessageUs from './containers/messageUs/messageUs'
 import Signup from './containers/signup/signup'
 import ResendVerificationEmail from './containers/signup/resendEmail'
 import ForgotPassword from './containers/login/resetPassword'
@@ -272,6 +272,7 @@ const routes = (
     <Route path='/abandonedCarts' component={AbandonedCarts} onEnter={requireAuth} />
     <Route path='/greetingMessage' component={GreetingMessage} onEnter={requireAuth} />
     <Route path='/createLandingPageMessage' component={LandingPageMessage} onEnter={requireAuth} />
+    <Route pathe='/messageUs' component={MessageUs} onEnter={requireAuth} />
   </Route>
 
 )
