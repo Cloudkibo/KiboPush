@@ -424,7 +424,7 @@ class CreateConvo extends React.Component {
       this.props.createWelcomeMessage({_id: this.props.location.state._id, welcomeMessage: this.state.broadcast}, this.msg)
     } else {
       let pageId = this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
-      var res = checkConditions(pageId, this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
+      var res = checkConditions([pageId], this.state.genderValue, this.state.localeValue, this.state.tagValue, this.props.subscribers)
       if (res === false) {
         this.msg.error('No subscribers match the selected criteria')
       } else {
