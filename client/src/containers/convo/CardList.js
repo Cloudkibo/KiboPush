@@ -66,10 +66,42 @@ class Card extends React.Component {
     }
   }
   closeWebview () {
-    this.setState({openWebView: false, webviewurl: '', disabled: true})
+    this.setState({openWebView: false, webviewurl: '', webviewsize: 'FULL', disabled: true})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button
+    })
+    if (this.state.checkbox) {
+      this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('compact')
+    }
   }
   closeWebsite () {
     this.setState({openWebsite: false, elementUrl: '', disabled: true})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button
+    })
+    if (this.state.checkbox) {
+      this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('compact')
+    }
   }
   changeWebviewUrl (e) {
     if (isWebURL(this.state.webviewurl)) {
@@ -77,7 +109,7 @@ class Card extends React.Component {
     } else {
       this.setState({disabled: true})
     }
-    this.setState({webviewurl: e.target.value})
+    this.setState({webviewurl: e.target.value, elementUrl: ''})
   }
   handleCheckbox (e) {
     this.setState({checkbox: !this.state.checkbox})
@@ -91,10 +123,8 @@ class Card extends React.Component {
         defaultAction = {
           type: 'web_url',
           url: this.state.webviewurl, // User defined link,
-          title: this.state.title, // User defined label
           messenger_extensions: true,
-          webview_height_ratio: this.state.webviewsize,
-          pageId: this.props.pageId
+          webview_height_ratio: this.state.webviewsize
         }
       }
       if (this.state.elementUrl !== '') {
@@ -140,7 +170,7 @@ class Card extends React.Component {
     } else {
       this.setState({disabled: true})
     }
-    this.setState({elementUrl: event.target.value})
+    this.setState({elementUrl: event.target.value, webviewurl: '', webviewsize: 'FULL'})
   }
   handleDone () {
     let defaultAction
@@ -148,10 +178,8 @@ class Card extends React.Component {
       defaultAction = {
         type: 'web_url',
         url: this.state.webviewurl, // User defined link,
-        title: this.state.title, // User defined label
         messenger_extensions: true,
-        webview_height_ratio: this.state.webviewsize,
-        pageId: this.props.pageId
+        webview_height_ratio: this.state.webviewsize
       }
     }
     if (this.state.elementUrl !== '') {
@@ -183,11 +211,35 @@ class Card extends React.Component {
     }
   }
   handleClick (e) {
-    this.setState({disabled: true})
+    if (this.state.elementUrl !== '' && isWebURL(this.state.elementUrl)) {
+      this.setState({disabled: false, openWebsite: true})
+    }
+    if (this.state.webviewurl !== '' && isWebURL(this.state.webviewurl)) {
+      this.setState({disabled: false, openWebView: true})
+    }
     this.setState({openPopover: !this.state.openPopover})
   }
   handleClose (e) {
-    this.setState({openPopover: false, elementUrl: '', checkbox: false})
+    this.setState({openPopover: false, elementUrl: '', webviewurl: '', webviewsize: 'FULL', openWebsite: false, openWebView: false, checkbox: false})
+    this.props.handleCard({id: this.props.id,
+      componentType: 'card',
+      fileurl: this.state.fileurl,
+      image_url: this.state.image_url,
+      fileName: this.state.fileName,
+      type: this.state.type,
+      size: this.state.size,
+      title: this.state.title,
+      description: this.state.subtitle,
+      buttons: this.state.button
+    })
+    this.setState({
+      openPopover: false
+    })
+    if (this.state.checkbox) {
+      this.props.topElementStyle('LARGE')
+    } else {
+      this.props.topElementStyle('compact')
+    }
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
