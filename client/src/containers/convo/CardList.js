@@ -11,6 +11,7 @@ import EditButton from './EditButton'
 import { uploadImage } from '../../redux/actions/convos.actions'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import { isWebURL } from './../../utility/utils'
+import { Link } from 'react-router'
 
 class Card extends React.Component {
   constructor (props, context) {
@@ -31,6 +32,12 @@ class Card extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.changeUrl = this.changeUrl.bind(this)
     this.removeImage = this.removeImage.bind(this)
+    this.showWebView = this.showWebView.bind(this)
+    this.showWebsite = this.showWebsite.bind(this)
+    this.changeWebviewUrl = this.changeWebviewUrl.bind(this)
+    this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
+    this.closeWebsite = this.closeWebsite.bind(this)
+    this.closeWebview = this.closeWebview.bind(this)
     this.state = {
       imgSrc: props.img ? props.img : '',
       title: props.title ? props.title : '',
@@ -45,8 +52,32 @@ class Card extends React.Component {
       openPopover: false,
       elementUrl: '',
       disabled: true,
-      checkbox: false
+      checkbox: false,
+      openWebView: false,
+      openWebsite: false,
+      webviewsize: 'FULL',
+      webviewurl: '',
+      webviewsizes: ['COMPACT ', 'TALL', 'FULL']
     }
+  }
+  onChangeWebviewSize (event) {
+    if (event.target.value !== -1) {
+      this.setState({webviewsize: event.target.value})
+    }
+  }
+  closeWebview () {
+    this.setState({openWebView: false, webviewurl: '', disabled: true})
+  }
+  closeWebsite () {
+    this.setState({openWebsite: false, elementUrl: '', disabled: true})
+  }
+  changeWebviewUrl (e) {
+    if (isWebURL(this.state.webviewurl)) {
+      this.setState({disabled: false})
+    } else {
+      this.setState({disabled: true})
+    }
+    this.setState({webviewurl: e.target.value})
   }
   handleCheckbox (e) {
     this.setState({checkbox: !this.state.checkbox})
@@ -54,7 +85,23 @@ class Card extends React.Component {
     if (e.target.value) {
       this.setState({disabled: false})
     }
-    if (this.state.elementUrl !== '') {
+    if (this.state.elementUrl !== '' || this.state.webviewurl !== '') {
+      let defaultAction
+      if (this.state.webviewurl !== '') {
+        defaultAction = {
+          type: 'web_url',
+          url: this.state.webviewurl, // User defined link,
+          title: this.state.title, // User defined label
+          messenger_extensions: true,
+          webview_height_ratio: this.state.webviewsize,
+          pageId: this.props.pageId
+        }
+      }
+      if (this.state.elementUrl !== '') {
+        defaultAction = {
+          type: 'web_url', url: this.state.elementUrl
+        }
+      }
       this.props.handleCard({id: this.props.id,
         componentType: 'card',
         fileurl: this.state.fileurl,
@@ -65,7 +112,7 @@ class Card extends React.Component {
         title: this.state.title,
         description: this.state.subtitle,
         buttons: this.state.button,
-        default_action: {type: 'web_url', url: this.state.elementUrl}
+        default_action: defaultAction
       })
     } else {
       this.props.handleCard({id: this.props.id,
@@ -96,7 +143,23 @@ class Card extends React.Component {
     this.setState({elementUrl: event.target.value})
   }
   handleDone () {
+    let defaultAction
+    if (this.state.webviewurl !== '') {
+      defaultAction = {
+        type: 'web_url',
+        url: this.state.webviewurl, // User defined link,
+        title: this.state.title, // User defined label
+        messenger_extensions: true,
+        webview_height_ratio: this.state.webviewsize,
+        pageId: this.props.pageId
+      }
+    }
     if (this.state.elementUrl !== '') {
+      defaultAction = {
+        type: 'web_url', url: this.state.elementUrl
+      }
+    }
+    if (this.state.elementUrl !== '' || this.state.webviewurl !== '') {
       this.props.handleCard({id: this.props.id,
         componentType: 'card',
         fileurl: this.state.fileurl,
@@ -107,7 +170,7 @@ class Card extends React.Component {
         title: this.state.title,
         description: this.state.subtitle,
         buttons: this.state.button,
-        default_action: {type: 'web_url', url: this.state.elementUrl}
+        default_action: defaultAction
       })
     }
     this.setState({
@@ -128,6 +191,12 @@ class Card extends React.Component {
   }
   handleToggle () {
     this.setState({openPopover: !this.state.openPopover})
+  }
+  showWebView () {
+    this.setState({openWebView: true})
+  }
+  showWebsite () {
+    this.setState({openWebsite: true})
   }
   componentDidMount () {
     console.log('this.props', this.props)
@@ -348,8 +417,48 @@ class Card extends React.Component {
                     <br /><br />
                   </div>
                 }
-              <input type='text' className='form-control' onChange={this.changeUrl} placeholder='Enter URL...' value={this.state.elementUrl} />
-              <br />This can be used to open a web page on a list item click
+              This can be used to open a web page on a list item click
+              {
+                !this.state.openWebsite && !this.state.openWebView &&
+                <div>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebsite}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a website</h7>
+                  </div>
+                  <div style={{border: '1px dashed #ccc', padding: '10px', cursor: 'pointer'}} onClick={this.showWebView}>
+                    <h7 style={{verticalAlign: 'middle', fontWeight: 'bold'}}><i className='fa fa-external-link' /> Open a webview</h7>
+                  </div>
+                </div>
+              }
+              {
+                this.state.openWebsite &&
+                <div className='card'>
+                  <h7 className='card-header'>Open Website <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebsite} /></h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    <input type='text' value={this.state.elementUrl} className='form-control' onChange={this.changeUrl} placeholder='Enter link...' />
+                  </div>
+                </div>
+              }
+              {
+                this.state.openWebView &&
+                <div className='card'>
+                  <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                  <div style={{padding: '10px'}} className='card-block'>
+                    <div>
+                      <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
+                    </div>
+                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
+                    <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                    <label className='form-label col-form-label' style={{textAlign: 'left'}}>Change Page</label>
+                    <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
+                      {
+                        this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
+                          <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                </div>
+              }
               <hr style={{color: '#ccc'}} />
               <button onClick={this.handleDone} className='btn btn-primary btn-sm pull-right' disabled={(this.state.disabled)}> Done </button>
               <button style={{color: '#333', backgroundColor: '#fff', borderColor: '#ccc'}} onClick={this.handleClose} className='btn pull-left'> Cancel </button>
@@ -415,16 +524,16 @@ class Card extends React.Component {
         <div className='row'>
           <div className='col-md-6'>
             {(!this.state.button || !this.state.button.length > 0) &&
-              <Button module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
+              <Button pageId={this.props.pageId} module={this.props.module} button_id={this.props.button_id !== null ? (this.props.button_id + '-' + this.props.id) : this.props.id} onAdd={this.addButton} styling={{width: '120%', marginLeft: this.state.checkbox ? '15px' : '12px'}} />
             }
             {(this.state.button) ? this.state.button.map((obj, index) => {
               return (<div style={{width: '120%', marginTop: '10px', marginLeft: this.state.checkbox ? '15px' : '12px'}}>
-                <EditButton module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
+                <EditButton pageId={this.props.pageId} module={this.props.module} button_id={(this.props.button_id !== null ? this.props.button_id + '-' + this.props.id : this.props.id) + '-' + index} data={{id: index, button: obj}} onEdit={this.editButton} onRemove={this.removeButton} />
               </div>)
             }) : ''}
           </div>
           <div className='col-md-6' style={{marginTop: '15px'}}>
-            {this.state.elementUrl === '' && !this.state.checkbox
+            {(this.state.elementUrl === '' && this.state.webviewurl === '') && !this.state.checkbox
               ? <a className='m-link' onClick={this.handleClick} id={'buttonTarget-' + this.props.id} ref={(b) => { this.target = b }} style={{color: '#716aca', cursor: 'pointer', width: '110px'}}>
                 <i className='la la-plus' /> Add Action
                 </a>
