@@ -246,7 +246,7 @@ class Dashboard extends React.Component {
         var sessionsData = graphData.sessionsgraphdata
         sessionsData = this.includeZeroCounts(sessionsData)
       }
-      let dataChart = this.prepareLineChartData(sessionsData)
+      let dataChart = this.prepareLineChartData([], [], [], sessionsData)
       this.setState({chartData: dataChart})
     }
   }
