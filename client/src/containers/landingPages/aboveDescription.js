@@ -9,30 +9,27 @@ class AboveDescription extends React.Component {
   render () {
     return (
       <div>
-        <div className='m-form__actions'>
-          <div className='row'>
-            <div className='col-lg-6 m--align-left'>
-              {this.props.page !== 'initialState' &&
-                <button className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleBack(this.props.page)}>
-                  <span>
-                    <i className='la la-arrow-left' />
-                    <span>Back</span>&nbsp;&nbsp;
-                  </span>
-                </button>
-              }
-            </div>
-            <div className='col-lg-6 m--align-right'>
-              {this.props.page !== 'submit' &&
-                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={() => this.props.handleNext(this.props.page)}>
-                  <span>
-                    <span>Next</span>&nbsp;&nbsp;
-                    <i className='la la-arrow-right' />
-                  </span>
-                </button>
-              }
-            </div>
-          </div>
-        </div>
+        <textarea className='addMenu' value={this.props.title} rows='3' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', marginBottom: '10px', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={this.props.handleTitleChange} />
+        <img style={{width: '300px', height: '300px', margin: '10px auto 10px auto', display: 'block'}} src={this.props.initialState.mediaLink} />
+        <textarea className='addMenu' value={this.props.description} rows='3' style={{fontWeight: '500', fontSize: 'large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.descriptionColor : '#000'}} onChange={this.props.handleDescriptionChange} />
+        <br />
+        {this.props.currentTab && this.props.currentTab === 'submittedState'
+        ? <center>
+          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon'>
+            <span>
+              <input type='text' value={this.props.buttonText} style={{width: '150px', backgroundColor: '#337ab7', border: '0', color: 'white'}} onChange={this.props.handleButtonText} />
+              <i className='la la-edit' />
+            </span>
+          </button>
+        </center>
+        : this.props.fbAppId &&
+        <div className='fb-send-to-messenger'
+          messenger_app_id={this.props.fbAppId}
+          page_id={this.props.pageId}
+          data-ref='send to messenger'
+          color='blue'
+          size='standard' />
+        }
       </div>
     )
   }

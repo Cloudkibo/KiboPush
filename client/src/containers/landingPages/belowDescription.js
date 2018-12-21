@@ -5,13 +5,13 @@
 
 import React from 'react'
 
-class AboveHeadline extends React.Component {
+class BelowDescription extends React.Component {
   render () {
     return (
       <div>
-        <img style={{width: '300px', height: '300px', margin: '10px auto 10px auto', display: 'block'}} src={this.props.initialState.mediaLink} />
         <textarea className='addMenu' value={this.props.title} rows='3' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', marginBottom: '10px', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={this.props.handleTitleChange} />
         <textarea className='addMenu' value={this.props.description} rows='3' style={{fontWeight: '500', fontSize: 'large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.descriptionColor : '#000'}} onChange={this.props.handleDescriptionChange} />
+        <img style={{width: '300px', height: '300px', margin: '10px auto 10px auto', display: 'block'}} src={this.props.initialState.mediaLink} />
         <br />
         {this.props.currentTab && this.props.currentTab === 'submittedState'
         ? <center>
@@ -35,4 +35,4 @@ class AboveHeadline extends React.Component {
   }
 }
 
-export default AboveHeadline
+export default BelowDescription

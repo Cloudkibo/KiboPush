@@ -23,7 +23,7 @@ class InitialState extends React.Component {
       showBackgroundPicker: false,
       selectedRadio: 'text',
       mediaPlacement: 'aboveHeadline',
-      imgSrc: 'https://skiboengage.cloudkibo.com/api/broadcasts/download/fa6b852e7b7201812178455.jpeg'
+      imgSrc: ''
     }
     this.showColorPicker = this.showColorPicker.bind(this)
     this.toggleColorPicker = this.toggleColorPicker.bind(this)
@@ -41,7 +41,8 @@ class InitialState extends React.Component {
 
   handleImage (obj) {
     console.log('handleImage', obj)
-    this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, this.state.imgSrc, this.state.mediaPlacement)
+    this.setState(imgSrc: obj.image_url)
+    this.props.setInitialState(this.state.selectedRadio, this.state.backgroundColor, this.state.headingColor, this.state.descriptionColor, obj.image_url, this.state.mediaPlacement)
   }
 
   _onChange (images) {

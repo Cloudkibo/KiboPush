@@ -32,6 +32,7 @@ class Preview extends React.Component {
             setInitialStatePreview={this.props.setInitialStatePreview}
             title='Here is your widget headline. Click here to change it!'
             description='We also put default text here. Make sure to turn it into a unique and valuable message.'
+            pageId={this.props.pageId}
           />
         }
         {this.props.currentTab === 'submittedState' &&
@@ -41,6 +42,7 @@ class Preview extends React.Component {
             title='Thank You for Reading Our Thank You Message!'
             description='Once a user opt-ins through your form, he sees this. Unless you change it, of course.'
             button='View it in Messenger'
+            currentTab={this.props.currentTab}
             />
         }
       </div>

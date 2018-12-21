@@ -85,7 +85,8 @@ class CreateLandingPage extends React.Component {
                     setCurrentTab={this.setCurrentTab}
                     optInMessage={this.state.optInMessage}
                     setInitialState={this.setInitialState}
-                    setSubmittedState={this.setSubmittedState} />
+                    setSubmittedState={this.setSubmittedState}
+                    pageId={this.props.location.state.pageId} />
                 </div>
               </div>
             </div>

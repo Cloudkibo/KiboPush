@@ -92,8 +92,8 @@ class Tab extends React.Component {
     }
   }
   componentDidMount () {
-    if (this.props.activeTab !== '') {
-      this.onTabClick(this.props.activeTab)
+    if (this.props.currentTab !== '') {
+      this.onTabClick(this.props.currentTab)
     }
   }
   render () {

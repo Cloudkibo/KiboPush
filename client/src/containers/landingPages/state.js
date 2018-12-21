@@ -92,7 +92,7 @@ class State extends React.Component {
     return (
       <div className='row'>
         <div className='col-md-6 col-lg-6 col-sm-6'>
-          <Tabs setInitialState={this.setInitialState} setSubmittedState={this.setSubmittedState} currentTab={this.props.currentTab} setCurrentTab={this.props.setCurrentTab} />
+          <Tabs setInitialState={this.setInitialState} setSubmittedState={this.setSubmittedState} currentTab={this.props.currentTab} setCurrentTab={this.props.setCurrentTab} pageId={this.props.pageId} />
         </div>
         <Preview
           initialState={this.state.initialState}
@@ -100,6 +100,7 @@ class State extends React.Component {
           submittedState={this.state.submittedState}
           setSubmittedStatePreview={this.setSubmittedStatePreview}
           currentTab={this.props.currentTab}
+          pageId={this.props.pageId}
            />
       </div>
     )
