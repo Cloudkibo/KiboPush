@@ -16,7 +16,9 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
       if (res.status === 'success') {
         fileInfo.fileurl = res.payload
         console.log('fileInfo: ', fileInfo)
-        setLoading()
+        if (setLoading) {
+          setLoading()
+        }
         handleFunction(fileInfo)
       } else {
         console.log(res.description)
