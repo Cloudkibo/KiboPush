@@ -42,9 +42,10 @@ class LandingPage extends React.Component {
     this.setState({pageSelected: e.target.value})
   }
   gotoCreate () {
+    let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     browserHistory.push({
       pathname: `/createLandingPage`,
-      state: {pageId: this.state.pageSelected}
+      state: {pageId: pageId}
     })
   }
   onEdit (landingPage) {
