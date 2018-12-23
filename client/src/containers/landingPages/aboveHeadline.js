@@ -7,6 +7,23 @@ import React from 'react'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class AboveHeadline extends React.Component {
+  componentDidMount () {
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: this.props.fbAppId,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v3.2'
+      })
+    };
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) { return }
+      js = d.createElement(s); js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
+  }
   render () {
     console.log('this.props in aboveHeadline', this.props)
     return (
@@ -18,13 +35,6 @@ class AboveHeadline extends React.Component {
         <textarea className='addMenu' value={this.props.title} rows='2' style={{fontWeight: '600', fontSize: 'xx-large', textAlign: 'center', height: 'auto', marginBottom: '10px', color: this.props.initialState ? this.props.initialState.titleColor : '#000'}} onChange={this.props.handleTitleChange} />
         <textarea className='addMenu' value={this.props.description} rows='2' style={{fontWeight: '500', fontSize: 'large', textAlign: 'center', height: 'auto', color: this.props.initialState ? this.props.initialState.descriptionColor : '#000'}} onChange={this.props.handleDescriptionChange} />
         <br />
-          {<div className='fb-send-to-messenger'
-              messenger_app_id={JSON.stringify(this.props.fbAppId)}
-              page_id={JSON.stringify(this.props.pageId)}
-              data-ref='<send to messenger>'
-              color='<blue>'
-              size='<standard>' />
-            }
         {this.props.currentTab && this.props.currentTab === 'submittedState'
         ? <center style={{marginTop: '10px'}}>
           <button className='btn btn-primary m-btn m-btn--custom m-btn--icon'>
@@ -35,13 +45,12 @@ class AboveHeadline extends React.Component {
           </button>
         </center>
         : this.props.fbAppId &&
-        <MessengerPlugin className='fb-send-to-messenger'
-          messenger_app_id={this.props.fbAppId}
-          page_id={JSON.stringify(this.props.pageId)}
-          data-ref='<send to messenger>'
-          color='<blue>'
-          size='<standard>'
-        />
+        <div className='fb-send-to-messenger'
+            messenger_app_id={JSON.stringify(this.props.fbAppId)}
+            page_id={JSON.stringify(this.props.pageId)}
+            data-ref='<send to messenger>'
+            color='<blue>'
+            size='<standard>' />
         }
       </div>
     )

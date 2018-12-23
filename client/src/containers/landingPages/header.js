@@ -32,7 +32,7 @@ class Header extends React.Component {
           }
           {this.props.isEdit && this.props.isActive &&
             <button className='addLink btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.setStatus(false)}>
-              <span>Deactivate</span>
+              <span style={{color: 'black'}}>Deactivate</span>
             </button>
           }
         </div>
