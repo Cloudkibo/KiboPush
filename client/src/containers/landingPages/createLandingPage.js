@@ -45,7 +45,7 @@ class CreateLandingPage extends React.Component {
       initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
       optInMessage: this.state.optInMessage,
-      isActive: this.state.isActive})
+      isActive: this.state.isActive}, this.msg)
   }
   onSave () {
     this.props.createLandingPage({initialState: this.props.landingPage.initialState,

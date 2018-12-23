@@ -17,16 +17,21 @@ class Header extends React.Component {
           </div>
         </div>
         <div className='m-portlet__head-tools'>
-          <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onSave}>
+          {this.props.isEdit
+          ? <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
             <span>Save</span>
           </button>
+          : <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onSave}>
+            <span>Save</span>
+          </button>
+        }
           {this.props.isEdit && !this.props.isActive &&
-            <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.onEdit(true)}>
+            <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.setStatus(true)}>
               <span>Activate</span>
             </button>
           }
           {this.props.isEdit && this.props.isActive &&
-            <button className='addLink btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.onEdit(false)}>
+            <button className='addLink btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginLeft: '5px'}} onClick={() => this.props.setStatus(false)}>
               <span>Deactivate</span>
             </button>
           }

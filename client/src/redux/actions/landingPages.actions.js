@@ -54,6 +54,21 @@ export function createLandingPage (data, msg) {
   }
 }
 
+export function editLandingPage (id, data, msg) {
+  console.log('data for editLandingPage', data)
+  return (dispatch) => {
+    callApi(`landingPage/update/${id}`, 'post', data)
+    .then(res => {
+      console.log('response from editLandingPage', res)
+      if (res.status === 'success') {
+        msg.success('Landing Page saved successfully')
+      } else {
+        msg.error('Failed to save landing page')
+      }
+    })
+  }
+}
+
 export function updateLandingPageData (landingPageData, tabValue, updateKey, updateValue, stateKey, editLandingPage) {
   return (dispatch) => {
     let landingPage = {
