@@ -46,10 +46,7 @@ class AboveHeadline extends React.Component {
         : this.props.fbAppId &&
         <div className='fb-send-to-messenger'
           messenger_app_id={JSON.stringify(this.props.fbAppId)}
-          page_id={JSON.stringify(this.props.pageId)}
-          data-ref='<send to messenger>'
-          color='<blue>'
-          size='<standard>' />
+          page_id={JSON.stringify(this.props.pageId)} />
         }
       </div>
     )
