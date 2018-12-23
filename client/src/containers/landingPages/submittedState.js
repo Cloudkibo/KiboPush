@@ -9,7 +9,6 @@ import Footer from './footer'
 import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { isWebURL } from './../../utility/utils'
 
 class SubmittedState extends React.Component {
   constructor (props) {

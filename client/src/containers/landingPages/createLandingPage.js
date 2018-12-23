@@ -16,9 +16,7 @@ class CreateLandingPage extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      optInMessage: this.props.location.state ? this.props.location.state.message : [{
-        text: 'hello'
-      }],
+      optInMessage: this.props.location.state ? this.props.location.state.message : [],
       isActive: props.location.state && props.location.state._id ? props.location.state.isActive : true,
       isEdit: false
     }

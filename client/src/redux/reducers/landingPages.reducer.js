@@ -11,7 +11,7 @@ const initialState = {
       descriptionColor: '#000',
       buttonText: 'Send To Messenger',
       mediaType: 'image',
-      mediaLink: 'https://skiboengage.cloudkibo.com/api/broadcasts/download/f0d88c1e994201812231241.png',
+      mediaLink: '',
       mediaPlacement: 'aboveHeadline'
     },
     submittedState: {
@@ -26,7 +26,7 @@ const initialState = {
         titleColor: '#000',
         descriptionColor: '#000',
         mediaType: 'image',
-        mediaLink: 'https://skiboengage.cloudkibo.com/api/broadcasts/download/f5c1e0e4db42018122392130.png',
+        mediaLink: '',
         mediaPlacement: 'aboveHeadline'
       }
     },

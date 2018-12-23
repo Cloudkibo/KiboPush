@@ -50,7 +50,9 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
         data.fileurl = res.payload
         data.image_url = res.payload.url
         console.log('fileInfo: ', data)
-        setLoading()
+        if (setLoading) {
+          setLoading()
+        }
         handleUpload(data)
       } else {
         console.log(res.description)
