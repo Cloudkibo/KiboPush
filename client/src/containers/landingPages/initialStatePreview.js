@@ -50,7 +50,7 @@ class PreviewInitialSate extends React.Component {
         fjs.parentNode.insertBefore(js, fjs)
       }(document, 'script', 'facebook-jssdk'))
       FB.init({
-      appId: '{your-app-id}',
+      appId: 'nextProps.fbAppId',
       status: true,
       xfbml: true,
       version: 'v2.7' // or v2.6, v2.5, v2.4, v2.3
