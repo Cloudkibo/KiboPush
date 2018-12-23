@@ -36,7 +36,7 @@ class PreviewInitialSate extends React.Component {
     if (nextProps.fbAppId) {
       window.fbAsyncInit = function () {
         FB.init({
-          appId: this.props.fbAppId,
+          appId: nextProps.fbAppId,
           autoLogAppEvents: true,
           xfbml: true,
           version: 'v3.2'
