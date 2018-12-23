@@ -4,7 +4,6 @@
  */
 
 import React from 'react'
-var MessengerPlugin = require('react-messenger-plugin').default
 
 class AboveHeadline extends React.Component {
   componentDidMount () {
@@ -46,11 +45,11 @@ class AboveHeadline extends React.Component {
         </center>
         : this.props.fbAppId &&
         <div className='fb-send-to-messenger'
-            messenger_app_id={JSON.stringify(this.props.fbAppId)}
-            page_id={JSON.stringify(this.props.pageId)}
-            data-ref='<send to messenger>'
-            color='<blue>'
-            size='<standard>' />
+          messenger_app_id={JSON.stringify(this.props.fbAppId)}
+          page_id={JSON.stringify(this.props.pageId)}
+          data-ref='<send to messenger>'
+          color='<blue>'
+          size='<standard>' />
         }
       </div>
     )
