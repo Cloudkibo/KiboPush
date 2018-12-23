@@ -49,6 +49,12 @@ class PreviewInitialSate extends React.Component {
         js.src = 'https://connect.facebook.net/en_US/sdk.js'
         fjs.parentNode.insertBefore(js, fjs)
       }(document, 'script', 'facebook-jssdk'))
+      FB.init({
+      appId: '{your-app-id}',
+      status: true,
+      xfbml: true,
+      version: 'v2.7' // or v2.6, v2.5, v2.4, v2.3
+    })
     }
   }
 
@@ -105,7 +111,9 @@ class PreviewInitialSate extends React.Component {
               pageId={this.props.landingPage.pageId}
               currentTab={this.props.landingPage.currentTab} />
           }
-
+          <div className='fb-send-to-messenger'
+            messengerAppId={this.props.fbAppId}
+            pageId={this.props.landingPage.pageId} />
       </div>
     )
   }
