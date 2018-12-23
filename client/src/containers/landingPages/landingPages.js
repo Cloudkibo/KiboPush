@@ -23,7 +23,7 @@ class LandingPage extends React.Component {
       isShowingCreate: false,
       deleteid: '',
       showVideo: false,
-      pageSelected: ''
+      pageSelected: {}
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
@@ -42,16 +42,15 @@ class LandingPage extends React.Component {
     this.setState({pageSelected: e.target.value})
   }
   gotoCreate () {
-    let pageId = this.props.pages.filter((page) => page._id === this.state.pageSelected)[0].pageId
     browserHistory.push({
       pathname: `/createLandingPage`,
-      state: {pageId: pageId}
+      state: {pageId: this.state.pageSelected.pageId, _id: this.state.pageSelected._id}
     })
   }
   onEdit (landingPage) {
     browserHistory.push({
       pathname: `/createLandingPage`,
-      state: {pageId: landingPage.pageId, _id: landingPage._id}
+      state: {pageId: landingPage.pageId, _id: landingPage._id, module: 'edit'}
     })
   }
   showCreateDialog () {
@@ -141,7 +140,7 @@ class LandingPage extends React.Component {
                   <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                     {
                       this.props.pages.map((page, i) => (
-                        <option key={i} value={page._id}>{page.pageName}</option>
+                        <option key={i} value={page}>{page.pageName}</option>
                       ))
                     }
                   </select>

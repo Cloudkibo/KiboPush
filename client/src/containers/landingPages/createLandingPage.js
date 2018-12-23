@@ -29,7 +29,8 @@ class CreateLandingPage extends React.Component {
     this.setStatus = this.setStatus.bind(this)
   }
   componentDidMount () {
-    if (this.props.location.state && this.props.location.state._id) {
+    console.log('this.props.location.state', this.props.location.state)
+    if (this.props.location.state && this.props.location.state.module) {
       this.setState({isEdit: true, isActive: this.props.location.state.landingPage.isActive})
       this.props.updateLandingPageData('', '', '', '', '', {
         pageId: this.props.location.state.landingPage.pageId,
@@ -49,7 +50,7 @@ class CreateLandingPage extends React.Component {
   onSave () {
     this.props.createLandingPage({initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
-      pageId: this.props.landingPage.pageId,
+      pageId: this.props.location.state._id,
       optInMessage: [],
       isActive: this.state.isActive}, this.msg)
   }
