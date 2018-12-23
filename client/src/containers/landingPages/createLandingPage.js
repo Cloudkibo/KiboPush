@@ -50,7 +50,7 @@ class CreateLandingPage extends React.Component {
     this.props.createLandingPage({initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
       pageId: this.props.landingPage.pageId,
-      optInMessage: this.state.optInMessage,
+      optInMessage: [],
       isActive: this.state.isActive}, this.msg)
   }
   setStatus (value) {
