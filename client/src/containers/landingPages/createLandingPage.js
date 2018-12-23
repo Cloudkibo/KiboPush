@@ -30,10 +30,10 @@ class CreateLandingPage extends React.Component {
   }
   componentDidMount () {
     console.log('this.props.location.state', this.props.location.state)
-    if (this.props.location.state && this.props.location.state.module) {
+    if (this.props.location.state && this.props.location.state.module === 'edit') {
       this.setState({isEdit: true, isActive: this.props.location.state.landingPage.isActive})
       this.props.updateLandingPageData('', '', '', '', '', {
-        pageId: this.props.location.state.landingPage.pageId,
+        pageId: this.props.location.state.landingPage.pageId.pageId,
         initialState: this.props.location.state.landingPage.initialState,
         submittedState: this.props.location.state.landingPage.submittedState,
         currentTab: 'initialState'

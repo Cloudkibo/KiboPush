@@ -51,7 +51,7 @@ class LandingPage extends React.Component {
   onEdit (landingPage) {
     browserHistory.push({
       pathname: `/createLandingPage`,
-      state: {pageId: landingPage.pageId, _id: landingPage._id, module: 'edit'}
+      state: {module: 'edit', landingPage: landingPage}
     })
   }
   showCreateDialog () {
